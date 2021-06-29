@@ -76,7 +76,7 @@ const Nav = () => {
                           멘토링
                         </a>
                       </Link>
-                      <Link href="/shop">
+                      <Link href="/bookstore">
                         <a style={linkStyle}>
                           <ShopOutlined style={{ marginRight: 10 }} />
                           서점
@@ -159,7 +159,7 @@ const Nav = () => {
                           멘토링
                         </a>
                       </Link>
-                      <Link href="/shop">
+                      <Link href="/bookstore">
                         <a style={linkStyle}>
                           <ShopOutlined style={{ marginRight: 10 }} />
                           서점
@@ -224,7 +224,7 @@ const Nav = () => {
                   <Link href="/mentoring">
                     <a style={linkStyle}>멘토링</a>
                   </Link>
-                  <Link href="/shop">
+                  <Link href="/bookstore">
                     <a style={linkStyle}>서점</a>
                   </Link>
                 </div>
@@ -276,7 +276,7 @@ const Nav = () => {
                   <Link href="/mentoring">
                     <a style={linkStyle}>멘토링</a>
                   </Link>
-                  <Link href="/shop">
+                  <Link href="/bookstore">
                     <a style={linkStyle}>서점</a>
                   </Link>
                 </div>

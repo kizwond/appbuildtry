@@ -20,6 +20,7 @@
   text-align: center;
   color: #404740;
   cursor: pointer;
+  list-style: none;
 }
 .TopItemWrapper:first-child {
   margin-right: 0;

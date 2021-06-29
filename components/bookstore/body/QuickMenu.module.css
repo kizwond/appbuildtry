@@ -1,0 +1,61 @@
+.QuickMenu {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.QuickMenuWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 24px 13px;
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+.QuickMenuItem {
+  padding-left: 10px;
+  margin-right: 9px;
+  flex: none;
+  display: inline-block;
+}
+
+.QuickMenuItemAnchor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  flex: none;
+}
+
+.QuickMenuItemBg {
+  flex: none;
+  height: 44px;
+  width: 44px;
+}
+
+.QuickMenuItemBgRect {
+  fill: rgb(223, 19, 19);
+  stroke: black;
+  stroke-width: 1;
+}
+
+.QuickMenuItemInnerText {
+  top: 7px;
+  position: absolute;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+}
+
+.QuickMenuItemText {
+  font-size: 13px;
+  line-height: 1.23;
+  color: #525a61;
+  min-width: 76px;
+  text-align: center;
+  word-break: keep-all;
+  margin-top: 8px;
+}

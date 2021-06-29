@@ -1,0 +1,123 @@
+.CarouselWrapper {
+  max-width: 2129.8px;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.CarouselView {
+  width: 100%;
+  height: 286.6666666666667px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.CarouselList {
+  flex: none;
+  display: flex;
+  align-items: center;
+}
+
+.CarouselItem {
+  flex: none;
+  position: relative;
+  width: 414.95px;
+  height: 276.6333333333333px;
+  overflow: hidden;
+  border-radius: 6px;
+  line-height: 0;
+  margin: 0 5px;
+}
+.CarouselItem:nth-child(2) {
+  width: 430px;
+  height: 286.6666666666667px;
+}
+
+.BannerIamgeLink {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  outline: none;
+}
+
+.BannerImage {
+  object-fit: cover;
+  object-position: 0 0;
+}
+
+/* 아래부터 캐러셀 컨트롤(화살표) */
+.CarouselControllerWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.CarouselController {
+  width: 430px;
+  height: 286.6666666666667px;
+  position: relative;
+}
+
+.SlideBadge {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 54px;
+  height: 24px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 22px;
+  text-align: center;
+  color: white;
+}
+
+.ArrowWrapper {
+  opacity: 0.7;
+  margin: 0px 20px;
+  pointer-events: auto;
+}
+
+.ArrowButton {
+  background: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+  box-shadow: rgb(0 0 0 / 33%) 0px 0.8px 3px;
+  opacity: 0.5;
+  transition: opacity 0.1s ease 0s;
+  cursor: pointer;
+}
+
+.ArrowLeft {
+  transform-origin: center center;
+  transform: rotateX(180deg) translate(-2%, 0px) rotate(180deg);
+  top: 1.5px;
+  fill: rgb(128, 137, 145);
+}
+
+.ArrowRight {
+  top: 1.5px;
+  fill: rgb(128, 137, 145);
+}
+
+.HiddenBannerText {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0px;
+  overflow: hidden;
+  border: 0px;
+  clip: rect(0px, 0px, 0px, 0px);
+}

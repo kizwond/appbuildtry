@@ -1,0 +1,36 @@
+.BoxWrapper {
+  border-bottom: 1px solid #e6e8eb;
+}
+
+.Top {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.TopWrapper {
+  display: flex;
+  flex-direction: row;
+  height: 48px;
+  align-items: center;
+}
+
+.TopItemWrapper {
+  height: 100%;
+  margin-right: 10px;
+  text-align: center;
+  color: #404740;
+  cursor: pointer;
+}
+.TopItemWrapper:first-child {
+  margin-right: 0;
+}
+
+.TopItemLink {
+  display: inline-block;
+  padding: 0 22px;
+  font-size: 16px;
+  font-weight: bolder;
+  line-height: 48px;
+  height: 100%;
+  width: 100%;
+}

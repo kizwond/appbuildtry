@@ -6,7 +6,7 @@ import Layout from "../components/layout/Layout";
 import RecentStudyList from "../components/index/RecentStudyList";
 import Hero from "../components/index/Hero";
 import NewBooks from "../components/index/NewBooks";
-
+import Footer from "../components/index/Footer";
 import { useWindowSize } from "react-use";
 const Home = () => {
   const { width } = useWindowSize();
@@ -33,7 +33,8 @@ const Home = () => {
     <Layout>
       <Hero />
       <RecentStudyList />
-      {/* <NewBooks /> */}
+      <NewBooks />
+      <Footer />
     </Layout>
   );
 };

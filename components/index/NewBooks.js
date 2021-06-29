@@ -39,7 +39,7 @@ const NewBooks = () => {
             </Link>
           </div>
           <div style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
-            <NewBookCard />
+            {/* <NewBookCard /> */}
           </div>
         </div>
 

@@ -23,9 +23,9 @@ const BookListTable = () => {
                   <div className={styles.BookTitle}>{book.book_info.title}</div>
                 </a>
               </Link>
-              <span className={styles.BookAuthor}>
+              <span>
                 <Link href="/">
-                  <a>{book.book_info.author}</a>
+                  <a className={styles.BookAuthor}>{book.book_info.author}</a>
                 </Link>
               </span>
             </div>

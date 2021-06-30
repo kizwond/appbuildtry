@@ -75,7 +75,7 @@
 }
 
 .BookTitleBelowThumbnail {
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.33em;
   max-height: 2.7em;
   margin-bottom: 4.5px;
@@ -102,5 +102,5 @@
   word-wrap: break-word;
   white-space: normal;
   word-break: keep-all;
-  color: white;
+  color: #d0d5d8;
 }

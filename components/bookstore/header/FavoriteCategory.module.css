@@ -21,7 +21,6 @@
   height: 100%;
   margin-right: 10px;
   text-align: center;
-  color: #404740;
   cursor: pointer;
   list-style: none;
 }
@@ -37,4 +36,5 @@
   line-height: 48px;
   height: 100%;
   width: 100%;
+  color: #404740;
 }

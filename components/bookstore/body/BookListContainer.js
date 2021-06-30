@@ -13,10 +13,12 @@ const BookListContainer = ({ children, bg_color, ft_color, clock, type }) => {
           </div>
         </div>
       ) : (
-        <div className={styles.BookListTableWrapper}>
-          <div className={styles.SlidingContainer}>
-            <div className={styles.BookListTable}>
-              <ul className={styles.BookListGrid}>{children}</ul>
+        <div className={styles.BookListWraper}>
+          <div className={styles.BookListTableWrapper}>
+            <div className={styles.SlidingContainer}>
+              <div className={styles.BookListTable}>
+                <ul className={styles.BookListGrid}>{children}</ul>
+              </div>
             </div>
           </div>
         </div>

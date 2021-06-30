@@ -3,10 +3,10 @@ import SearchBar from "./header/SearchBar";
 
 const BookstoreHeader = () => {
   return (
-    <div>
+    <>
       <SearchBar />
       <FavoriteCategory />
-    </div>
+    </>
   );
 };
 

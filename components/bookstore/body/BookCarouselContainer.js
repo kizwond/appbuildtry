@@ -18,8 +18,8 @@ const BookCarouselContainer = () => {
                         <Image
                           src={`/image/bookcover/bookcover${index + 1}.png`}
                           alt={book.book_info.title}
-                          width={140}
-                          height={220}
+                          width={100}
+                          height={160}
                           // layout="fill"
                           // sizes="(max-width: 999px) 100px, 140px"
                         />

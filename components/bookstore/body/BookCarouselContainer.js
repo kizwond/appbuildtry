@@ -9,22 +9,21 @@ const BookCarouselContainer = () => {
       <div className={styles.BookListWraper}>
         <div className={styles.BookListCarouselWrapper}>
           <ul className={styles.BookListCarousel}>
-            {sellbooklist.map((book, index) => (
+            {sellbooklist.slice(1, 7).map((book, index) => (
               <li className={styles.BookItemWrapper} key={index}>
                 <Link href="/detailbook">
                   <a className={styles.BookItemLink}>
                     <div className={styles.ThumbnailContainer}>
                       <div className={styles.ThumbnailWrapper}>
-                        {/* <Image
-                          src={book.book_info.bookcover.url_small}
+                        <Image
+                          src={`/image/bookcover/bookcover${index + 1}.png`}
                           alt={book.book_info.title}
                           width={140}
                           height={220}
                           // layout="fill"
                           // sizes="(max-width: 999px) 100px, 140px"
-                          className={styles.Thumbnail}
-                          style={{ width: "140px" }}
-                        /> */}
+                        />
+
                         <div className={styles.DiscountWrapper}>
                           <div className={styles.DiscountSticker}>
                             <span className={styles.DiscountNumber}>10</span>

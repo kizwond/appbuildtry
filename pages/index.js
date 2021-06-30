@@ -1,36 +1,23 @@
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
-
 import Layout from "../components/layout/Layout";
 import RecentStudyList from "../components/index/RecentStudyList";
 import Hero from "../components/index/Hero";
 import NewBooks from "../components/index/NewBooks";
 import Footer from "../components/index/Footer";
-import { useWindowSize } from "react-use";
+import { useSelector, useDispatch } from "react-redux";
+import { logIn, logOut } from "../redux/actions";
+
+
 const Home = () => {
-  const { width } = useWindowSize();
-
-  if (width < 769 && width > 426) {
-    var tablet = true;
-  } else {
-    tablet = false;
-  }
-
-  if (width < 1025 && width > 769) {
-    var laptop = true;
-  } else {
-    laptop = false;
-  }
-
-  if (width > 1024) {
-    var desktop = true;
-  } else {
-    desktop = false;
-  }
-
+  const isLogged = useSelector(state => state.isLogged)
+  const dispatch = useDispatch()
+  console.log(isLogged)
   return (
     <Layout>
+      {isLogged && <div>로그인상태</div>}
+      {!isLogged && <div>로그아웃상태</div>}
+      
+      {!isLogged && <button onClick={()=>dispatch(logIn(true))}>로그인테스트</button>}
+      {isLogged && <button onClick={()=>dispatch(logOut(false))}>로그아웃테스트</button>}
       <Hero />
       <RecentStudyList />
       <NewBooks />

@@ -84,7 +84,7 @@ const Nav = () => {
                       </Link>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                      <Link href="/login">
+                      <Link href="/account/login">
                         <a style={linkStyle}>
                           <UserOutlined style={{ marginRight: 10 }} />
                           로그인
@@ -167,7 +167,7 @@ const Nav = () => {
                       </Link>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                      <Link href="/login">
+                      <Link href="/account/login">
                         <a style={linkStyle}>
                           <UserOutlined style={{ marginRight: 10 }} />
                           로그인
@@ -229,7 +229,7 @@ const Nav = () => {
                   </Link>
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Link href="/login">
+                  <Link href="/account/login">
                     <a style={linkStyle}>로그인</a>
                   </Link>
                   <Link href="/register">
@@ -281,7 +281,7 @@ const Nav = () => {
                   </Link>
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Link href="/login">
+                  <Link href="/account/login">
                     <a style={linkStyle}>로그인</a>
                   </Link>
                   <Link href="/register">

@@ -1,49 +1,55 @@
-import styles from "./BookCarouselContainer.module.css";
+import styles from "./BookListCarousel.module.css";
 import Link from "next/link";
 import Image from "next/image";
 
-const BookCarouselContainer = () => {
+const BookListCarousel = () => {
   return (
-    <section className={styles.BookCarouselContainer}>
-      <h2 className={styles.BookSectionTitle}>집 앞 서점에 방금 나온 신간</h2>
-      <div className={styles.BookListWraper}>
-        <div className={styles.BookListCarouselWrapper}>
-          <ul className={styles.BookListCarousel}>
-            {sellbooklist.slice(1, 7).map((book, index) => (
-              <li className={styles.BookItemWrapper} key={index}>
-                <Link href="/detailbook">
-                  <a className={styles.BookItemLink}>
-                    <div className={styles.ThumbnailContainer}>
-                      <div className={styles.ThumbnailWrapper}>
-                        <Image
-                          src={`/image/bookcover/bookcover${index + 1}.png`}
-                          alt={book.book_info.title}
-                          width={100}
-                          height={160}
-                          // layout="fill"
-                          // sizes="(max-width: 999px) 100px, 140px"
-                        />
+    <>
+      {sellbooklist.slice(1, 7).map((book, index) => (
+        <li className={styles.BookItemWrapper} key={index}>
+          <Link href="/detailbook">
+            <a className={styles.BookItemLink}>
+              <div className={styles.ThumbnailContainer}>
+                <div className={styles.ThumbnailWrapper}>
+                  <Image
+                    src={`/image/bookcover/bookcover${index + 1}.png`}
+                    alt={book.book_info.title}
+                    width={100}
+                    height={160}
+                    // layout="fill"
+                    // sizes="(max-width: 999px) 100px, 140px"
+                  />
 
-                        <div className={styles.DiscountWrapper}>
-                          <div className={styles.DiscountSticker}>
-                            <span className={styles.DiscountNumber}>10</span>
-                            <span className={styles.DiscountPercent}>%</span>
-                          </div>
-                        </div>
-                      </div>
+                  <div className={styles.DiscountWrapper}>
+                    <div className={styles.DiscountSticker}>
+                      <span className={styles.DiscountNumber}>10</span>
+                      <span className={styles.DiscountPercent}>%</span>
                     </div>
-                  </a>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </Link>
+          <div className={styles.BookInfoContainer}>
+            <Link href="/bookstore">
+              <a>
+                <div className={styles.BookTitleBelowThumbnail}>{book.book_info.title}</div>
+              </a>
+            </Link>
+
+            <Link href="/bookstore">
+              <a>
+                <span className={styles.BookAuthorBelowThumbnail}>{book.book_info.author}</span>
+              </a>
+            </Link>
+          </div>
+        </li>
+      ))}
+    </>
   );
 };
 
-export default BookCarouselContainer;
+export default BookListCarousel;
 
 const sellbooklist = [
   {

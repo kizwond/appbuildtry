@@ -3,7 +3,8 @@ import BookstoreHeader from "../../../components/bookstore/BookstoreHeader";
 import Layout from "../../../components/layout/Layout";
 import styles from "./[book_id].module.css";
 import BookDetailContainer from "../../../components/bookstore/book-detail/BookDetailContainer";
-import BookDetailArea from "../../../components/bookstore/book-detail/BookDetailArea";
+import BookDetailAreaWrapper from "../../../components/bookstore/book-detail/BookDetailAreaWrapper";
+import BookDetailBoxModule from "../../../components/bookstore/book-detail/BookDetailBoxModule";
 
 const BookDetail = () => {
   const router = useRouter();
@@ -13,7 +14,9 @@ const BookDetail = () => {
     <Layout>
       <BookstoreHeader />
       <BookDetailContainer>
-        <BookDetailArea />
+        <BookDetailAreaWrapper>
+          <BookDetailBoxModule></BookDetailBoxModule>
+        </BookDetailAreaWrapper>
         <div className={styles.AdvertisingArea}>광고</div>
       </BookDetailContainer>
       post: {book_id}

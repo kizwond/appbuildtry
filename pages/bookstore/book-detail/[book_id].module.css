@@ -1,9 +1,3 @@
-.BookDetailArea {
-  width: 793px;
-  background: #fff;
-  display: table-cell;
-  vertical-align: top;
-}
 /* 우측 광고 css */
 .AdvertisingArea {
   display: table-cell;

@@ -1,0 +1,18 @@
+.BookDetailContainer {
+  width: 100%;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  min-height: 500px;
+}
+
+.BookDetail {
+  width: 1016px;
+  margin: 0 auto 60px auto;
+  border-top: none;
+}
+
+.BookDetailWrapper {
+  display: table;
+  width: 1016px;
+}

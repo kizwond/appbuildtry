@@ -7,7 +7,7 @@ const BookListCarousel = () => {
     <>
       {sellbooklist.slice(1, 7).map((book, index) => (
         <li className={styles.BookItemWrapper} key={index}>
-          <Link href="/detailbook">
+          <Link href={`/bookstore/book-detail/${book._id}`}>
             <a className={styles.BookItemLink}>
               <div className={styles.ThumbnailContainer}>
                 <div className={styles.ThumbnailWrapper}>

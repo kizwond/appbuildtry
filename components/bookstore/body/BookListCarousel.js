@@ -5,7 +5,7 @@ import Image from "next/image";
 const BookListCarousel = () => {
   return (
     <>
-      {sellbooklist.slice(1, 7).map((book, index) => (
+      {sellbooklist.map((book, index) => (
         <li className={styles.BookItemWrapper} key={index}>
           <Link href={`/bookstore/book-detail/${book._id}`}>
             <a className={styles.BookItemLink}>

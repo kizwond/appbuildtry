@@ -4,9 +4,33 @@ import { Form, Input, Button } from "antd";
 import Footer from "../../components/index/Footer";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { logIn, logOut } from "../../redux/actions";
+import Router from "next/router";
+
 const LoginComponent = () => {
+  const dispatch = useDispatch()
+
   const onFinish = (values) => {
-    console.log("Success:", values);
+    axios.post('http://localhost:5000/api/user/login', {
+      user_id:values.user_id,
+      password:values.password
+    })
+    .then(res => {
+      console.log(res)
+      if(res.data.msg === "아이디가 없는 듯요"){
+        alert('유저정보가 없습니다. 아이디와 비밀번호를 확인하여 주세요.')
+      } else {
+        dispatch(logIn(true))
+        console.log(res.data.user)
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        Router.push("/")
+      }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   };
 
   const onFinishFailed = (errorInfo) => {

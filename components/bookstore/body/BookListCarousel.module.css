@@ -1,48 +1,9 @@
-.BookCarouselContainer {
-  padding-top: 36px;
-  padding-bottom: 36px;
-  background: orchid;
-}
-
-.BookSectionTitle {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding-left: 25px;
-  padding-right: 8px;
-  font-size: 19px;
-  font-weight: normal;
-  color: white;
-}
-
-.BookListWraper {
-  width: 1005px;
-  margin: 20px auto 0px;
-  position: relative;
-}
-
-.BookListCarouselWrapper {
-  width: 964px;
-  margin: -8px auto 0px;
-  overflow: hidden;
-}
-
-.BookListCarousel {
-  display: flex;
-  flex-wrap: nowrap;
-  padding-top: 8px;
-  padding-left: 7px;
-}
-
-.BookListCarousel > li + li {
-  margin-left: 22px;
-}
-
 .BookItemWrapper {
   display: flex;
   flex-direction: column;
   box-sizing: content-box;
-  min-width: 140px;
-  width: 140px;
+  min-width: 100px;
+  width: 100px;
   height: 100%;
 }
 
@@ -51,8 +12,8 @@
 }
 
 .ThumbnailContainer {
-  width: 140px;
-  height: 216px;
+  width: 100px;
+  height: 167px;
   display: flex;
   align-items: flex-end;
   flex-shrink: 0;
@@ -65,10 +26,10 @@
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.15) 100%);
 }
 
-.Thumbnail {
+/* .Thumbnail {
   width: 140px;
   max-height: calc(140px * 1.618 - 10px);
-}
+} */
 
 .DiscountWrapper {
   position: absolute;
@@ -104,4 +65,42 @@
   font-size: 14px;
   position: relative;
   line-height: 9px;
+}
+
+.BookInfoContainer {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.BookTitleBelowThumbnail {
+  font-weight: 800;
+  line-height: 1.33em;
+  max-height: 2.7em;
+  margin-bottom: 4.5px;
+  font-size: 14px;
+  color: black;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  word-wrap: break-word;
+  white-space: normal;
+  word-break: keep-all;
+  color: white;
+}
+
+.BookAuthorBelowThumbnail {
+  height: 19px;
+  font-size: 14px;
+  line-height: 1.36;
+  color: #636c73;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  word-wrap: break-word;
+  white-space: normal;
+  word-break: keep-all;
+  color: #d0d5d8;
 }

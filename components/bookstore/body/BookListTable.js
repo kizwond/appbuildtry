@@ -1,50 +1,42 @@
-import styles from "./BookCarouselContainer.module.css";
+import React from "react";
+import styles from "./BookListTable.module.css";
 import Link from "next/link";
 import Image from "next/image";
 
-const BookCarouselContainer = () => {
+const BookListTable = () => {
   return (
-    <section className={styles.BookCarouselContainer}>
-      <h2 className={styles.BookSectionTitle}>집 앞 서점에 방금 나온 신간</h2>
-      <div className={styles.BookListWraper}>
-        <div className={styles.BookListCarouselWrapper}>
-          <ul className={styles.BookListCarousel}>
-            {sellbooklist.map((book, index) => (
-              <li className={styles.BookItemWrapper} key={index}>
-                <Link href="/detailbook">
-                  <a className={styles.BookItemLink}>
-                    <div className={styles.ThumbnailContainer}>
-                      <div className={styles.ThumbnailWrapper}>
-                        {/* <Image
-                          src={book.book_info.bookcover.url_small}
-                          alt={book.book_info.title}
-                          width={140}
-                          height={220}
-                          // layout="fill"
-                          // sizes="(max-width: 999px) 100px, 140px"
-                          className={styles.Thumbnail}
-                          style={{ width: "140px" }}
-                        /> */}
-                        <div className={styles.DiscountWrapper}>
-                          <div className={styles.DiscountSticker}>
-                            <span className={styles.DiscountNumber}>10</span>
-                            <span className={styles.DiscountPercent}>%</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
+    <>
+      {sellbooklist.map((book, index) => (
+        <li className={styles.BookListTable} key={index}>
+          <Link href="/">
+            <a className={styles.BookThumbnailAnchor}>
+              <div className={styles.BookThumbnailWrapper}>
+                <Image src={`/image/bookcover/bookcover${index + 1}.png`} alt={book.book_info.title} width={50} height={70} />
+              </div>
+            </a>
+          </Link>
+          <div className={styles.BookItemMetaInfoBox}>
+            <h3 className={styles.BookItemSeq}>{index + 1}</h3>
+            <div className={styles.BookItemContainer}>
+              <Link href="/">
+                <a>
+                  <div className={styles.BookTitle}>{book.book_info.title}</div>
+                </a>
+              </Link>
+              <span>
+                <Link href="/">
+                  <a className={styles.BookAuthor}>{book.book_info.author}</a>
                 </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
+              </span>
+            </div>
+          </div>
+        </li>
+      ))}
+    </>
   );
 };
 
-export default BookCarouselContainer;
+export default BookListTable;
 
 const sellbooklist = [
   {
@@ -273,6 +265,38 @@ const sellbooklist = [
       title: "하룻밤에 읽는 한국사",
     },
     _id: "6073c62ce46f627b2516ebfa",
+  },
+  {
+    book_info: {
+      author: "이규현",
+      bookcover: {
+        url_large: "https://bookcoverofcogbook.s3.ap-northeast-2.amazonaws.com/large/16181893713344.png",
+        url_medium: "https://bookcoverofcogbook.s3.ap-northeast-2.amazonaws.com/medium/16181893713344.png",
+        url_original: "https://bookcoverofcogbook.s3.ap-northeast-2.amazonaws.com/original/16181893713344.png",
+        url_small: "https://bookcoverofcogbook.s3.ap-northeast-2.amazonaws.com/medium/16181893713344.png",
+      },
+      category: ["elementaryschool", "middleschool", "highschool", "worker"],
+      hashtag: ["영어단어", "수능특강", "수능영어", "넥서스", "노노", "개발자", "디자이너", "인문학", "역사", "한국사", "한국사"],
+      indexes:
+        "프롤로그-즐거운 미술경매 미술경매 기초지식 미술경매의 현장들 역사에 남은, 역사에 남을 컬렉터들 역사에 남은, 역사에 남을 딜러들 경매의 스타 작가들에게는 다 이유가 있다 컬렉터 되어 보기",
+      intro_author:
+        "저자 - 이규현 전 조선일보 문화부 미술담당 기자로 서울디지털대학교 초빙교수(아트비즈니스 전공), 연세대, 중앙대 교양미술 강사활동을 했다. 연세대 국문학과 졸업했고, 중앙대 예술대학원 박물관미술관학과에서 미술이론 전공으로 석사학위 받았다. 그는 뉴욕 크리스티 경매회사에 있는 대학원 과정인 크리스티 에듀케이션(Christie’s Education)에서 Advanced Certificate 과정을 졸업했다. 미술경매의 전문가인 그는 자신이 정말 좋아하는 작품을 손에 넣게 된 미술애호가들의 그 행복한 순간들을 목격하고 기록한 것이다. 미술경매 취재를 시작하면서, 아니, 일간지 기자가 경매장까지 취재를 오다니...라는 말을 듣곤 했다고 한다.  그의 저서로는 『그림쇼핑』이 있고, 논문으로는 「신문 미술기사의 특성과 시대별 기능변화 연구-해방 이후 한국종합일간지를 중심으로」가 있다.",
+      intro_book:
+        "미술품 경매가 투자수단으로 각광 받고 있는 현 시점에서, 조선일보 미술담당 기자이자 세계 2대 경매회사 중 하나인 크리스티에서 대학원 과정을 졸업하기도 한 저자가 이 책을 통해 미술경매에 필요한 필수지식을 전한다. 하지만 저자는 여기서 그치지 않고, 역사에 기록될 유명 아트딜러들과 컬렉터들의 이야기를 함께 소개함으로써 단지 재테크에만 목적을 두는 것이 아닌 미술을 즐길 줄 아는 진정한 컬렉터가 되는 길로 독자들을 안내하고 있다.",
+      original_book_id: "",
+      price: 11760,
+      promotion: {
+        gap: "undefined",
+        name: "",
+        period: {
+          from: "1970-01-01T00:00:00.000Z",
+          to: "1970-01-01T00:00:00.000Z",
+        },
+      },
+      publisher: "살림 출판",
+      title: "미술이야기",
+    },
+    _id: "60739c45ad7ba776d9cd73d1",
   },
   {
     book_info: {

@@ -1,9 +1,10 @@
 .BoxWrapper {
   border-bottom: 1px solid #e6e8eb;
+  width: 100%;
 }
 
 .Top {
-  max-width: 1000px;
+  max-width: 768px;
   margin: 0 auto;
 }
 
@@ -12,13 +13,14 @@
   flex-direction: row;
   height: 48px;
   align-items: center;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .TopItemWrapper {
   height: 100%;
   margin-right: 10px;
   text-align: center;
-  color: #404740;
   cursor: pointer;
   list-style: none;
 }
@@ -34,4 +36,5 @@
   line-height: 48px;
   height: 100%;
   width: 100%;
+  color: #404740;
 }

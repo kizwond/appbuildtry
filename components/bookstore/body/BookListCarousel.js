@@ -1,55 +1,289 @@
-import styles from "./BookListCarousel.module.css";
+// import styles from "./BookListCarousel.module.css";
 import Link from "next/link";
-import Image from "next/image";
+import styled from "styled-components";
 
 const BookListCarousel = () => {
   return (
-    <>
+    <BookList>
       {sellbooklist.map((book, index) => (
-        <li className={styles.BookItemWrapper} key={index}>
-          <Link href={`/bookstore/book-detail/${book._id}`}>
-            <a className={styles.BookItemLink}>
-              <div className={styles.ThumbnailContainer}>
-                <div className={styles.ThumbnailWrapper}>
-                  <Image
-                    src={`/image/bookcover/bookcover${index + 1}.png`}
-                    alt={book.book_info.title}
-                    width={100}
-                    height={160}
-                    // layout="fill"
-                    // sizes="(max-width: 999px) 100px, 140px"
-                  />
-
-                  <div className={styles.DiscountWrapper}>
-                    <div className={styles.DiscountSticker}>
-                      <span className={styles.DiscountNumber}>10</span>
-                      <span className={styles.DiscountPercent}>%</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </a>
-          </Link>
-          <div className={styles.BookInfoContainer}>
-            <Link href="/bookstore">
-              <a>
-                <div className={styles.BookTitleBelowThumbnail}>{book.book_info.title}</div>
-              </a>
+        <>
+          <BookWrapper key={index}>
+            <Link href={`/bookstore/book-detail/${book._id}`}>
+              <StyledAnchor>
+                <ThumbnailWrapper>
+                  <StyledThumbnailWrapper>
+                    <ImageWrapper src={`/image/bookcover/bookcover${index + 1}.png`} alt={book.book_info.title} />
+                    <BadgeContainer>
+                      <DiscountBadge role="img" aria-label="10% 할인">
+                        <DiscountNumber>10</DiscountNumber>
+                        <DiscountPercentage>%</DiscountPercentage>
+                      </DiscountBadge>
+                    </BadgeContainer>
+                  </StyledThumbnailWrapper>
+                </ThumbnailWrapper>
+              </StyledAnchor>
             </Link>
-
-            <Link href="/bookstore">
-              <a>
-                <span className={styles.BookAuthorBelowThumbnail}>{book.book_info.author}</span>
-              </a>
-            </Link>
-          </div>
-        </li>
+            <MetaInfoContainer>
+              <Link href="/">
+                <a>
+                  <MetaInfoBookTitle>{book.book_info.title}</MetaInfoBookTitle>
+                </a>
+              </Link>
+              <MetaInfoAuthorsWrapper>
+                <a href="/author/3065">{book.book_info.author}</a>
+              </MetaInfoAuthorsWrapper>
+            </MetaInfoContainer>
+          </BookWrapper>
+        </>
       ))}
-    </>
+    </BookList>
+
+    // <>
+    //   {sellbooklist.map((book, index) => (
+    //     <li className={styles.BookItemWrapper} key={index}>
+    //       <Link href={`/bookstore/book-detail/${book._id}`}>
+    //         <a className={styles.BookItemLink}>
+    //           <div className={styles.ThumbnailContainer}>
+    //             <div className={styles.ThumbnailWrapper}>
+    //               <Image
+    //                 src={`/image/bookcover/bookcover${index + 1}.png`}
+    //                 alt={book.book_info.title}
+    //                 width={100}
+    //                 height={160}
+    //                 // layout="fill"
+    //                 // sizes="(max-width: 999px) 100px, 140px"
+    //               />
+
+    //               <div className={styles.DiscountWrapper}>
+    //                 <div className={styles.DiscountSticker}>
+    //                   <span className={styles.DiscountNumber}>10</span>
+    //                   <span className={styles.DiscountPercent}>%</span>
+    //                 </div>
+    //               </div>
+    //             </div>
+    //           </div>
+    //         </a>
+    //       </Link>
+    //       <div className={styles.BookInfoContainer}>
+    //         <Link href="/bookstore">
+    //           <a>
+    //             <div className={styles.BookTitleBelowThumbnail}>{book.book_info.title}</div>
+    //           </a>
+    //         </Link>
+
+    //         <Link href="/bookstore">
+    //           <a>
+    //             <span className={styles.BookAuthorBelowThumbnail}>{book.book_info.author}</span>
+    //           </a>
+    //         </Link>
+    //       </div>
+    //     </li>
+    //   ))}
+    // </>
   );
 };
 
 export default BookListCarousel;
+
+const BookList = styled.ul`
+  flex: none;
+  margin-left: 10px;
+  padding-top: 7px;
+  padding-left: 7px;
+  display: flex;
+  flex-wrap: nowrap;
+  list-style-type: none;
+
+  @media (min-width: 1000px) {
+    margin-left: 0;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+  }
+`;
+
+const BookWrapper = styled.li`
+  display: flex;
+  flex-direction: column;
+  box-sizing: content-box;
+  min-width: 140px;
+  width: 140px;
+  margin-right: 12px;
+
+  @media (max-width: 999px) {
+    min-width: 100px;
+    width: 100px;
+  }
+  @media (min-width: 834px) {
+    margin-right: 20px;
+  }
+  @media (min-width: 1000px) {
+    margin-right: 22px;
+  }
+`;
+
+const StyledAnchor = styled.a`
+  display: inline-block;
+  &:link {
+    text-decoration: none;
+  }
+`;
+
+const ThumbnailWrapper = styled.div`
+  width: 140px;
+  height: 216px;
+  display: flex;
+  align-items: flex-end;
+  flex-shrink: 0;
+  transition: opacity 0.2s;
+  max-height: calc(140px * 1.618 - 10px);
+
+  @media (max-width: 999px) {
+    width: 100px;
+    height: 153px;
+    max-height: calc(100px * 1.618 - 10px);
+  }
+
+  & img {
+    max-height: calc(140px * 1.618 - 10px);
+    @media (max-width: 999px) {
+      max-height: calc(100px * 1.618 - 10px);
+    }
+  }
+`;
+
+const StyledThumbnailWrapper = styled.div`
+  position: relative;
+  line-height: 0;
+  max-height: inherit;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.15);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.15) 100%);
+
+  &::after {
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.2) 100%);
+    border: solid 1px rgba(0, 0, 0, 0.1);
+    content: "";
+  }
+
+  &:hover::after,
+  &active::after {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.15) 100%);
+  }
+`;
+
+const ImageWrapper = styled.img`
+  @media (max-width: 999px) {
+    width: 100px;
+  }
+  @media (min-width: 1000px) {
+    width: 140px;
+  }
+`;
+
+const BadgeContainer = styled.div`
+  position: absolute;
+  display: block;
+  top: -7px;
+  left: -7px;
+  z-index: 2;
+`;
+
+const DiscountBadge = styled.div`
+  width: 34px;
+  height: 34px;
+  border-radius: 34px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  background: #59667a;
+  position: relative;
+  color: white;
+`;
+
+const DiscountNumber = styled.span`
+  font-size: 16px;
+  mix-blend-mode: normal;
+  font-weight: bold;
+  line-height: 14px;
+  opacity: 0.99;
+`;
+
+const DiscountPercentage = styled.span`
+  top: 1.6px;
+  transform: scale(0.92);
+  font-weight: bold;
+  margin-left: 0.7px;
+  font-size: 11px;
+  position: relative;
+  line-height: 9px;
+`;
+
+const MetaInfoContainer = styled.div`
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.2s ease-in-out;
+`;
+
+const MetaInfoBookTitle = styled.div`
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.33em;
+  color: #000000;
+  max-height: 2.7em;
+  margin-bottom: 4.5px;
+  font-size: 14px;
+  color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+  white-space: normal;
+  word-break: keep-all;
+
+  @media (max-width: 999px) {
+    font-size: 14px;
+  }
+  @media (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    white-space: nowrap;
+  }
+`;
+
+const MetaInfoAuthorsWrapper = styled.span`
+  height: 19px;
+  font-size: 14px;
+  line-height: 1.36;
+  color: #9ea7ad;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-wrap: break-word;
+  white-space: normal;
+  word-break: keep-all;
+
+  @media (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    white-space: nowrap;
+  }
+`;
 
 const sellbooklist = [
   {

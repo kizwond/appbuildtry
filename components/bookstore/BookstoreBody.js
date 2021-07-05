@@ -11,13 +11,12 @@ const BookstoreBody = () => {
     <main className={styles.Body}>
       <AdCarousel />
       <QuickMenu />
-      <BookListContainer />
-      {/* <BookListContainer bg_color ft_color type="carousel">
+      <BookListContainer bg_color="#5d4040" ft_color="white" title="새로 나온 책">
         <BookListCarousel />
       </BookListContainer>
-      <BookListContainer clock={<Timer />} type="table">
+      <BookListContainer clock={<Timer />} title="잘 팔리는 책들" type="table">
         <BookListTable />
-      </BookListContainer> */}
+      </BookListContainer>
       bookstorebody
     </main>
   );

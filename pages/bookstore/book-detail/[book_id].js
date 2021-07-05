@@ -1,10 +1,8 @@
 import { useRouter } from "next/router";
 import BookstoreHeader from "../../../components/bookstore/BookstoreHeader";
 import Layout from "../../../components/layout/Layout";
-import styles from "./[book_id].module.css";
-import BookDetailContainer from "../../../components/bookstore/book-detail/BookDetailContainer";
-import BookDetailAreaWrapper from "../../../components/bookstore/book-detail/BookDetailAreaWrapper";
-import BookDetailBoxModule from "../../../components/bookstore/book-detail/BookDetailBoxModule";
+import styled from "styled-components";
+import { ReadOutlined } from "@ant-design/icons";
 
 const BookDetail = () => {
   const router = useRouter();
@@ -13,18 +11,169 @@ const BookDetail = () => {
   return (
     <Layout>
       <BookstoreHeader />
-      <BookDetailContainer>
-        <BookDetailAreaWrapper>
-          <BookDetailBoxModule></BookDetailBoxModule>
-        </BookDetailAreaWrapper>
-        <div className={styles.AdvertisingArea}>광고</div>
-      </BookDetailContainer>
+      <BooksDetailArticle>
+        <div>
+          <section>
+            <DetailHeaderWrapper>
+              <HeaderThumbnailWrap>
+                <HeaderThumbnail>
+                  <BookThumbnailWrapper>
+                    <BookThumbnail>
+                      <ThumbnailImage>
+                        <StyledImageTag src="/image/bookcover/bookcover5.png" alt={details.book_info.title} />
+                      </ThumbnailImage>
+                    </BookThumbnail>
+                  </BookThumbnailWrapper>
+                </HeaderThumbnail>
+                <HeaderPreReading>
+                  <ButtonStyled>
+                    <span>
+                      <ReadOutlined style={{ marginRight: "3px" }} />
+                      <span>미리보기</span>
+                    </span>
+                  </ButtonStyled>
+                </HeaderPreReading>
+              </HeaderThumbnailWrap>
+              <HeaderInfoWrap>
+                <InfoCategoryWrap></InfoCategoryWrap>
+              </HeaderInfoWrap>
+            </DetailHeaderWrapper>
+          </section>
+        </div>
+      </BooksDetailArticle>
       post: {book_id}
     </Layout>
   );
 };
 
 export default BookDetail;
+
+const BooksDetailArticle = styled.div`
+  width: 100%;
+  overflow: hidden;
+`;
+
+const DetailHeaderWrapper = styled.article`
+  display: table;
+  width: 100%;
+  padding: 20px 15px 30px 15px;
+  box-sizing: border-box !important;
+`;
+
+const HeaderThumbnailWrap = styled.div`
+  display: table-cell;
+  width: 110px;
+  padding-right: 15px;
+`;
+
+const HeaderThumbnail = styled.div`
+  font-size: 14px;
+`;
+
+const BookThumbnailWrapper = styled.div`
+  width: 110px;
+`;
+
+const BookThumbnail = styled.div`
+  display: inline-block;
+  position: relative;
+  height: auto;
+`;
+
+const ThumbnailImage = styled.div`
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #d9d9d9;
+
+  &:before {
+    content: "";
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: -webkit-gradient(
+      linear,
+      left top,
+      right top,
+      color-stop(0, rgba(0, 0, 0, 0.2)),
+      color-stop(5%, rgba(0, 0, 0, 0)),
+      color-stop(95%, rgba(0, 0, 0, 0)),
+      color-stop(100%, rgba(0, 0, 0, 0.2))
+    );
+    background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.2) 100%);
+    background: -o-linear-gradient(left, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.2) 100%);
+    background: -ms-linear-gradient(left, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.2) 100%);
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0, rgba(0, 0, 0, 0) 5%, rgba(0, 0, 0, 0) 95%, rgba(0, 0, 0, 0.2) 100%);
+  }
+`;
+
+const StyledImageTag = styled.img`
+  width: 110px;
+  max-width: 167px;
+`;
+
+const HeaderPreReading = styled.div`
+  padding-top: 10px;
+  text-align: center;
+`;
+
+const RuiButtonBlueLine40 = styled.div`
+  font-family: ridi-roboto, Helvetica Neue, Apple SD Gothic Neo, "나눔고딕", Nanum Gothic, "돋움", arial, Dotum, Tahoma, Geneva, sans-serif;
+  letter-spacing: -0.03em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  border: 0;
+  box-shadow: none;
+  outline: 0;
+  text-decoration: none;
+  box-sizing: border-box;
+  border-radius: 4px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  line-height: 1em;
+  vertical-align: baseline;
+  transition: background 0.2s, color 0.2s;
+  color: #1f8ce6;
+  background: #fff;
+  border: 1px solid #1f8ce6;
+  box-shadow: 0 1px 1px 0 rgb(31 140 230 / 30%);
+  font-size: 13px;
+  padding: 12px 26px;
+
+  &:focus,
+  &:hover,
+  &:link,
+  &:visited {
+    color: #1f8ce6;
+  }
+`;
+
+const ButtonStyled = styled(RuiButtonBlueLine40)`
+  width: 110px;
+  padding: 12px 0;
+`;
+
+const HeaderInfoWrap = styled.div`
+  display: table-cell;
+  width: 110px;
+  padding-right: 15px;
+`;
+
+const InfoCategoryWrap = styled.p`
+  margin: 0;
+  padding: 0;
+`;
 
 const details = {
   _id: "6073c62ce46f627b2516ebfa",

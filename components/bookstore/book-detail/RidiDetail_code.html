@@ -6337,9 +6337,10 @@
     <script type="text/javascript" id="">
       !(function (b, e, f, g, a, c, d) {
         b.fbq ||
-          ((a = b.fbq = function () {
-            a.callMethod ? a.callMethod.apply(a, arguments) : a.queue.push(arguments);
-          }),
+          ((a = b.fbq =
+            function () {
+              a.callMethod ? a.callMethod.apply(a, arguments) : a.queue.push(arguments);
+            }),
           b._fbq || (b._fbq = a),
           (a.push = a),
           (a.loaded = !0),

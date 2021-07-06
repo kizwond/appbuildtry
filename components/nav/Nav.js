@@ -90,7 +90,7 @@ const Nav = () => {
                           로그인
                         </a>
                       </Link>
-                      <Link href="/register">
+                      <Link href="/account/register">
                         <a style={linkStyle}>
                           <FileTextOutlined style={{ marginRight: 10 }} />
                           회원가입
@@ -173,7 +173,7 @@ const Nav = () => {
                           로그인
                         </a>
                       </Link>
-                      <Link href="/register">
+                      <Link href="/account/register">
                         <a style={linkStyle}>
                           <FileTextOutlined style={{ marginRight: 10 }} />
                           회원가입
@@ -232,7 +232,7 @@ const Nav = () => {
                   <Link href="/account/login">
                     <a style={linkStyle}>로그인</a>
                   </Link>
-                  <Link href="/register">
+                  <Link href="/account/register">
                     <a style={linkStyle}>회원가입</a>
                   </Link>
                   <Link href="/basket">
@@ -284,7 +284,7 @@ const Nav = () => {
                   <Link href="/account/login">
                     <a style={linkStyle}>로그인</a>
                   </Link>
-                  <Link href="/register">
+                  <Link href="/account/register">
                     <a style={linkStyle}>회원가입</a>
                   </Link>
                   <Link href="/basket">

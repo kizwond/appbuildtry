@@ -8,7 +8,7 @@ const BookListCarousel = () => {
       {sellbooklist.map((book, index) => (
         <>
           <BookWrapper key={index}>
-            <Link href={`/bookstore/book-detail/${book._id}`}>
+            <Link href={`/bookstore/book-detail/${book._id}`} passHref>
               <StyledAnchor>
                 <ThumbnailWrapper>
                   <StyledThumbnailWrapper>

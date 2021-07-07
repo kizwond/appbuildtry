@@ -9,6 +9,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from "@apo
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql",
   cache: new InMemoryCache(),
+  credentials: "include"
   // headers: [
   //   { key: "Access-Control-Allow-Credentials", value: "true" },
   //   { key: "Access-Control-Allow-Origin", value: "*" },

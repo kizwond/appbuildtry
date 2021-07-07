@@ -2,13 +2,14 @@ import React from "react";
 import styles from "./BookListTable.module.css";
 import Link from "next/link";
 import Image from "next/image";
+import styled from "styled-components";
 
 const BookListTable = () => {
   return (
-    <>
+    <BookListGrid>
       {sellbooklist.map((book, index) => (
         <li className={styles.BookListTable} key={index}>
-          <Link href="/">
+          <Link href={`/bookstore/book-detail/${book._id}`}>
             <a className={styles.BookThumbnailAnchor}>
               <div className={styles.BookThumbnailWrapper}>
                 <Image src={`/image/bookcover/bookcover${index + 1}.png`} alt={book.book_info.title} width={50} height={70} />
@@ -32,11 +33,19 @@ const BookListTable = () => {
           </div>
         </li>
       ))}
-    </>
+    </BookListGrid>
   );
 };
 
 export default BookListTable;
+
+const BookListGrid = styled.div`
+  display: grid;
+  grid: repeat(3, 94px) / auto-flow 308px;
+  grid-column-gap: 13px;
+  padding: 0 24px;
+  list-style: none;
+`;
 
 const sellbooklist = [
   {

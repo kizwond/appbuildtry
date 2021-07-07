@@ -1,8 +1,0 @@
-/* 우측 광고 css */
-.AdvertisingArea {
-  display: table-cell;
-  width: 207px;
-  background: 0 0;
-  vertical-align: top;
-  border-left: 1px solid #e6e8eb;
-}

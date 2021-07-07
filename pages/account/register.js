@@ -8,28 +8,55 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { logIn, logOut } from "../../redux/actions";
 import Router from "next/router";
+import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
+
+const SignUpMutation = gql`
+  mutation SignUpMutation($username: String!, $password: String!, $name: String!, $email: String!) {
+    signup(username: $username, password: $password, name: $name, email: $email) {
+      _id
+      user_info {
+        username
+        password
+      }
+      msg
+    }
+  }
+`;
 
 const LoginComponent = () => {
-  const dispatch = useDispatch()
-  const onFinish = (values) => {
-    axios.post('http://localhost:5000/api/user/login', {
-      user_id:values.user_id,
-      password:values.password
-    })
-    .then(res => {
-      console.log(res)
-      if(res.data.msg === "아이디가 없는 듯요"){
-        alert('유저정보가 없습니다. 아이디와 비밀번호를 확인하여 주세요.')
-      } else {
-        dispatch(logIn(true))
-        console.log(res.data.user)
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-        Router.push("/")
-      }
-    })
-    .catch(function (error) {
+  const dispatch = useDispatch();
+
+  const [signup] = useMutation(SignUpMutation, { onCompleted: showdata });
+
+  function showdata(data) {
+    if (data.signup.msg === "ID 중복") {
+      alert("동일 아이디가 이미 사용중임 다시 ㄱㄱ");
+    } else {
+      alert("회원가입완료!!! 로그인페이지로 이동합니다!!!");
+      Router.push("/account/login");
+    }
+  }
+
+  async function postuser(username, password) {
+    try {
+      await signup({
+        variables: {
+          username: username,
+          password: password,
+          name: "yoon",
+          email: "test@test.com",
+        },
+      });
+    } catch (error) {
       console.log(error);
-    });
+    }
+  }
+
+  const onFinish = (values) => {
+    const username = values.user_id;
+    const password = values.password;
+
+    postuser(username, password);
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -40,11 +67,11 @@ const LoginComponent = () => {
     <div style={register_container}>
       <Form
         className="register_form"
-        id='register_form'
+        id="register_form"
         name="register"
         onFinish={onFinish}
         initialValues={{
-          prefix: '82',
+          prefix: "82",
         }}
         scrollToFirstError
       >
@@ -54,7 +81,7 @@ const LoginComponent = () => {
           rules={[
             {
               required: true,
-              message: '사용할 아이디를 입력해주세요.',
+              message: "사용할 아이디를 입력해주세요.",
             },
           ]}
         >
@@ -67,7 +94,7 @@ const LoginComponent = () => {
           rules={[
             {
               required: true,
-              message: '비밀번호를 입력해 주세요.',
+              message: "비밀번호를 입력해 주세요.",
             },
           ]}
           hasFeedback
@@ -78,20 +105,20 @@ const LoginComponent = () => {
         <Form.Item
           name="confirm"
           label="비밀번호 확인"
-          dependencies={['password']}
+          dependencies={["password"]}
           hasFeedback
           rules={[
             {
               required: true,
-              message: '비밀번호를 다시한번 입력해 주세요.',
+              message: "비밀번호를 다시한번 입력해 주세요.",
             },
             ({ getFieldValue }) => ({
               validator(rule, value) {
-                if (!value || getFieldValue('password') === value) {
+                if (!value || getFieldValue("password") === value) {
                   return Promise.resolve();
                 }
 
-                return Promise.reject('비밀번호가 일치하지 않습니다.');
+                return Promise.reject("비밀번호가 일치하지 않습니다.");
               },
             }),
           ]}

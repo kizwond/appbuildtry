@@ -8,29 +8,55 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { logIn, logOut } from "../../redux/actions";
 import Router from "next/router";
+import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
+
+
+const SignInMutation = gql`
+  mutation SignInMutation($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      _id
+      user_info {
+        username
+        password
+      }
+      msg
+    }
+  }
+`;
 
 const LoginComponent = () => {
   const dispatch = useDispatch()
 
-  const onFinish = (values) => {
-    axios.post('http://localhost:5000/api/user/login', {
-      user_id:values.user_id,
-      password:values.password
-    })
-    .then(res => {
-      console.log(res)
-      if(res.data.msg === "아이디가 없는 듯요"){
-        alert('유저정보가 없습니다. 아이디와 비밀번호를 확인하여 주세요.')
-      } else {
-        dispatch(logIn(true))
-        console.log(res.data.user)
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-        Router.push("/")
-      }
-    })
-    .catch(function (error) {
+  const [login] = useMutation(SignInMutation, { onCompleted: showdata });
+
+  function showdata(data) {
+    console.log("data", data)
+    // if (data.login.msg === "로그인 성공") {
+    //   alert("로그인성공!!! 메인화면으로 이동합니다.");
+    //   Router.push("/");
+    // } else {
+    //   alert("뭔가 잘못되었네요. 다시 해봐요.");
+    // }
+  }
+
+  async function postuser(username, password) {
+    try {
+      await login({
+        variables: {
+          username: username,
+          password: password,
+        },
+      });
+    } catch (error) {
       console.log(error);
-    });
+    }
+  }
+
+  const onFinish = (values) => {
+    const username = values.user_id;
+    const password = values.password;
+
+    postuser(username, password);
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -58,7 +84,7 @@ const LoginComponent = () => {
           <Link href="/account/find/password">
             <a>비밀번호 찾기 / </a>
           </Link>
-          <Link href="/register">
+          <Link href="/account/register">
             <a>회원가입 </a>
           </Link>
         </div>

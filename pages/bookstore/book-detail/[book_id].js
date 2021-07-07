@@ -10,7 +10,8 @@ import Link from "next/link";
 import DetailHeader from "../../../components/bookstore/book-detail/DetailHeader";
 import DetailPrice from "../../../components/bookstore/book-detail/DetailPrice";
 import DetailOtherInfo from "../../../components/bookstore/book-detail/DetailOtherInfo";
-import Detail_Intro from "../../../components/bookstore/book-detail/Detail_Intro";
+import DetailIntro from "../../../components/bookstore/book-detail/DetailIntro";
+import DetailReview from "./DetailReview";
 
 const BookDetail = () => {
   const router = useRouter();
@@ -25,7 +26,8 @@ const BookDetail = () => {
             <DetailHeader />
             <DetailPrice />
             <DetailOtherInfo />
-            <Detail_Intro />
+            <DetailIntro />
+            <DetailReview />
           </section>
         </div>
       </BooksDetailArticle>

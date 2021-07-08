@@ -16,8 +16,10 @@ const DetailIntroContentIndex = ({ active, content_item }) => {
   };
 
   return (
-    <ContentArea className={active == 2 ? "active" : "inactive"}>
+    <ContentArea>
       <p ref={ref} className={foldIndex ? "Folded" : "Unfolded"}>
+        {height}
+        {height}
         {content_item}
       </p>
       {height < 175 ? null : (
@@ -43,7 +45,6 @@ export default DetailIntroContentIndex;
 
 const ContentArea = styled.div`
   padding: 15px 15px 20px 15px;
-  display: none;
 
   & p {
     padding: 0;

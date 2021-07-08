@@ -186,7 +186,7 @@ const InfoCategoryWrap = styled.p`
 `;
 
 const InfoTitleWrap = styled.h3`
-  padding: 10px 0;
+  padding: 5px 0 6px 0;
   line-height: 1.2em;
   font-size: 23px;
   color: #000;
@@ -197,16 +197,22 @@ const InfoTitleWrap = styled.h3`
 const InfoSubTitleWrap = styled.h4`
   padding: 0;
   margin: 0;
-  padding-bottom: 7px;
+  padding-bottom: 2px;
   font-size: 14px;
   color: #636c73;
-  line-height: 1.4em;
   font-weight: 400;
 `;
 
 const MetaDataRating = styled.p`
   margin: 0;
   padding: 0;
+  & .ant-rate {
+    font-size: 16px;
+  }
+
+  & .ant-rate-star {
+    margin-right: 0px;
+  }
 `;
 const RatingScore = styled.span`
   display: inline-block;

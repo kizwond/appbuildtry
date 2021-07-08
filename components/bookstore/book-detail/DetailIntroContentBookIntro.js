@@ -16,7 +16,7 @@ const DetailIntroContentBookIntro = ({ active, content_item }) => {
   };
 
   return (
-    <ContentArea className={active == 1 ? "active" : "inactive"}>
+    <ContentArea>
       <p ref={ref} className={foldIntroBook ? "Folded" : "Unfolded"}>
         {content_item}
       </p>
@@ -43,7 +43,6 @@ export default DetailIntroContentBookIntro;
 
 const ContentArea = styled.div`
   padding: 15px 15px 20px 15px;
-  display: none;
 
   & p {
     padding: 0;

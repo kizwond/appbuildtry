@@ -8,10 +8,22 @@ import { Drawer } from "antd";
 
 // import useWindowSize from "../../utils/useWindowSize";
 import { useWindowSize } from "react-use";
+import { gql, useLazyQuery } from "@apollo/client";
+
+const LOGOUT = gql`
+    query {
+      logout {
+        msg
+      }
+    }
+  `;
 
 const Nav = () => {
   const { width } = useWindowSize();
   const [visible, setVisible] = useState(false);
+  
+  const [logout, { loading, error, data }] = useLazyQuery(LOGOUT);
+
   const showDrawer = () => {
     setVisible(true);
   };
@@ -36,6 +48,18 @@ const Nav = () => {
   } else {
     desktop = false;
   }
+  var setCookie = function(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+    }
+    
+  const onClickLogout = () => {
+    logout()
+    setCookie('refreshToken');
+    setCookie('accessToken');
+    window.location.href ="/"
+  }
+  
+
   return (
     <>
       {width < 426 && (
@@ -64,7 +88,7 @@ const Nav = () => {
                           학습
                         </a>
                       </Link>
-                      <Link href="/write">
+                      <Link href="/books/write">
                         <a style={linkStyle}>
                           <FormOutlined style={{ marginRight: 10 }} />
                           만들기
@@ -90,6 +114,7 @@ const Nav = () => {
                           로그인
                         </a>
                       </Link>
+                      <button onClick={() => onClickLogout()}>로그아웃</button>
                       <Link href="/account/register">
                         <a style={linkStyle}>
                           <FileTextOutlined style={{ marginRight: 10 }} />
@@ -147,7 +172,7 @@ const Nav = () => {
                           학습
                         </a>
                       </Link>
-                      <Link href="/write">
+                      <Link href="/books/write">
                         <a style={linkStyle}>
                           <FormOutlined style={{ marginRight: 10 }} />
                           만들기
@@ -173,6 +198,7 @@ const Nav = () => {
                           로그인
                         </a>
                       </Link>
+                      <button onClick={() => onClickLogout()}>로그아웃</button>
                       <Link href="/account/register">
                         <a style={linkStyle}>
                           <FileTextOutlined style={{ marginRight: 10 }} />
@@ -218,7 +244,7 @@ const Nav = () => {
                   <Link href="/study">
                     <a style={linkStyle}>학습</a>
                   </Link>
-                  <Link href="/write">
+                  <Link href="/books/write">
                     <a style={linkStyle}>만들기</a>
                   </Link>
                   <Link href="/mentoring">
@@ -232,6 +258,7 @@ const Nav = () => {
                   <Link href="/account/login">
                     <a style={linkStyle}>로그인</a>
                   </Link>
+                  <button onClick={() => onClickLogout()}>로그아웃</button>
                   <Link href="/account/register">
                     <a style={linkStyle}>회원가입</a>
                   </Link>
@@ -270,7 +297,7 @@ const Nav = () => {
                   <Link href="/study">
                     <a style={linkStyle}>학습</a>
                   </Link>
-                  <Link href="/write">
+                  <Link href="/books/write">
                     <a style={linkStyle}>만들기</a>
                   </Link>
                   <Link href="/mentoring">
@@ -284,6 +311,7 @@ const Nav = () => {
                   <Link href="/account/login">
                     <a style={linkStyle}>로그인</a>
                   </Link>
+                  <button onClick={() => onClickLogout()}>로그아웃</button>
                   <Link href="/account/register">
                     <a style={linkStyle}>회원가입</a>
                   </Link>

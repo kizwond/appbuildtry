@@ -17,7 +17,6 @@ const SignInMutation = gql`
       _id
       user_info {
         username
-        password
       }
       msg
     }
@@ -31,12 +30,13 @@ const LoginComponent = () => {
 
   function showdata(data) {
     console.log("data", data)
-    // if (data.login.msg === "로그인 성공") {
-    //   alert("로그인성공!!! 메인화면으로 이동합니다.");
-    //   Router.push("/");
-    // } else {
-    //   alert("뭔가 잘못되었네요. 다시 해봐요.");
-    // }
+    if (data.login.msg === "로그인 성공") {
+      alert("로그인성공!!! 메인화면으로 이동합니다.");
+      // Router.push("/");
+      window.location.href = "/"
+    } else {
+      alert("뭔가 잘못되었네요. 다시 해봐요.");
+    }
   }
 
   async function postuser(username, password) {

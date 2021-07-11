@@ -13,12 +13,16 @@ import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation
 const SignUpMutation = gql`
   mutation SignUpMutation($username: String!, $password: String!, $name: String!, $email: String!) {
     signup(username: $username, password: $password, name: $name, email: $email) {
-      _id
-      user_info {
-        username
-        password
-      }
+      status
       msg
+      user {
+        _id
+        user_info {
+          username
+          name
+          email
+        }
+      }
     }
   }
 `;
@@ -29,6 +33,7 @@ const LoginComponent = () => {
   const [signup] = useMutation(SignUpMutation, { onCompleted: showdata });
 
   function showdata(data) {
+    console.log(data)
     if (data.signup.msg === "ID 중복") {
       alert("동일 아이디가 이미 사용중임 다시 ㄱㄱ");
     } else {

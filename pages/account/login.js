@@ -14,11 +14,16 @@ import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation
 const SignInMutation = gql`
   mutation SignInMutation($username: String!, $password: String!) {
     login(username: $username, password: $password) {
-      _id
-      user_info {
-        username
-      }
+      status
       msg
+      user{
+        _id
+         user_info {
+          username
+          name
+          email        
+        }
+      }
     }
   }
 `;

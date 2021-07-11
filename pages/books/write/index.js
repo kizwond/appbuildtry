@@ -23,9 +23,24 @@ const CreateBook = gql`
   }
 `;
 
+const GetCategory = gql`
+  query {
+    getBookcategory {
+      status
+      msg
+      mybook {
+        _id
+        name
+        seq
+      }
+    }
+  }
+`;
+
 const WriteComponent = () => {
   const dispatch = useDispatch();
-
+  const { loading, error, data } = useQuery(GetCategory);
+  console.log("category", data)
   const [createMybook] = useMutation(CreateBook, { onCompleted: showdata });
 
   function showdata(data) {
@@ -33,7 +48,7 @@ const WriteComponent = () => {
     if (data.createMybook.msg === "책 생성 성공적!") {
       alert("책 만들기 성공!!!!");
       // Router.push("/");
-      window.location.reload()
+      window.location.reload();
     } else {
       alert("뭔가 잘못되었네요. 다시 해봐요.");
     }
@@ -58,7 +73,7 @@ const WriteComponent = () => {
   };
   return (
     <div>
-      <BookList/>
+      <BookList />
       <Form name="write-book" className="write-book-form" initialValues={{ category: "미지정" }} onFinish={onFinish}>
         <Form.Item name="book_title" rules={[{ required: true, message: "책제목을 입력해주세요!!!" }]}>
           <Input placeholder="책제목" />
@@ -77,12 +92,8 @@ const WriteComponent = () => {
 };
 
 const BookList = () => {
-  return(
-    <div>
-      book list
-    </div>
-  )
-}
+  return <div>book list</div>;
+};
 const Write = () => {
   return (
     <Layout>

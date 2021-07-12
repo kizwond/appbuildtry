@@ -9,26 +9,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { logIn, logOut } from "../../../redux/actions";
 import Router from "next/router";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
-
-const CreateBook = gql`
-  mutation CreateBookMutation($title: String!) {
-    createMybook(title: $title) {
-      status
-      msg
-      mybook {
-        title
-        user_id
-      }
-    }
-  }
-`;
-
+import CategorySettingModal from '../../../components/books/write/category/CategorySettingModal'
 const GetCategory = gql`
   query {
-    getBookcategory {
+    bookcategory_get {
       status
       msg
-      mybook {
+      bookcategory {
         _id
         name
         seq
@@ -40,58 +27,43 @@ const GetCategory = gql`
 const WriteComponent = () => {
   const dispatch = useDispatch();
   const { loading, error, data } = useQuery(GetCategory);
-  console.log("category", data)
-  const [createMybook] = useMutation(CreateBook, { onCompleted: showdata });
+  console.log("category", data);
 
-  function showdata(data) {
-    console.log("data", data);
-    if (data.createMybook.msg === "책 생성 성공적!") {
-      alert("책 만들기 성공!!!!");
-      // Router.push("/");
-      window.location.reload();
-    } else {
-      alert("뭔가 잘못되었네요. 다시 해봐요.");
-    }
-  }
-
-  async function postbook(book_title) {
-    try {
-      await createMybook({
-        variables: {
-          title: book_title,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  const onFinish = (values) => {
-    const book_title = values.book_title;
-    // const category = values.category;
-
-    postbook(book_title);
+  const linkStyle = {
+    color: "black",
+    padding: 10,
+    fontSize: "1rem",
   };
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <div>
-      <BookList />
-      <Form name="write-book" className="write-book-form" initialValues={{ category: "미지정" }} onFinish={onFinish}>
-        <Form.Item name="book_title" rules={[{ required: true, message: "책제목을 입력해주세요!!!" }]}>
-          <Input placeholder="책제목" />
-        </Form.Item>
-        <Form.Item name="category">
-          <Input placeholder="카테고리" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
-            만들기
-          </Button>
-        </Form.Item>
-      </Form>
+      <LikeBookList />
+      <button onClick={showModal}>카테고리 설정</button>
+      <CategorySettingModal isModalVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel}/>
+      <Link href="/books/write/createbook">
+        <a style={linkStyle}>
+          <button>새책만들기</button>
+        </a>
+      </Link>
     </div>
   );
 };
 
-const BookList = () => {
+const LikeBookList = () => {
   return <div>book list</div>;
 };
 const Write = () => {

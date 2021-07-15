@@ -1,89 +1,140 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Button, Popover, Form, Input, Space } from "antd";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
 import { SettingOutlined, PlusOutlined, ArrowUpOutlined, ArrowDownOutlined, EditOutlined } from "@ant-design/icons";
 
 const GetCategory = gql`
   query {
-    bookcategory_get {
+    mybookcate_get {
       status
       msg
-      bookcategory {
+      mybookcates {
         _id
-        name
-        seq
+        mybookcate_info {
+          user_id
+          name
+          seq
+        }
       }
     }
   }
 `;
 
 const CreateNewCategory = gql`
-  mutation CreateNewCategory($name: String!, $current_bookcategory_id: String!) {
-    bookcategory_create(name: $name, current_bookcategory_id: $current_bookcategory_id) {
+  mutation CreateNewCategory($name: String!, $current_mybookcate_id: String!) {
+    mybookcate_create(name: $name, current_mybookcate_id: $current_mybookcate_id) {
       status
       msg
-      bookcategory {
+      mybookcates {
         _id
-        name
-        seq
+        mybookcate_info {
+          name
+          seq
+        }
       }
-      mybook {
-        book_info {
+      mybooks {
+        _id
+        mybook_info {
           title
+          type
+          user_id
+          mybookcate_id
+          seq_in_category
+          hide_or_show
+          studylike
+          writelike
+          seq_in_studylike
+          seq_in_writelike
         }
       }
     }
   }
 `;
 const DeleteCategory = gql`
-  mutation DeleteCategory($bookcategory_id: String!) {
-    bookcategory_delete(bookcategory_id: $bookcategory_id) {
+  mutation DeleteCategory($mybookcate_id: String!) {
+    mybookcate_delete(mybookcate_id: $mybookcate_id) {
       status
       msg
-      bookcategory {
+      mybookcates {
         _id
-        name
-        seq
+        mybookcate_info {
+          name
+          seq
+        }
       }
-      mybook {
-        book_info {
+      mybooks {
+        _id
+        mybook_info {
           title
+          type
+          user_id
+          mybookcate_id
+          seq_in_category
+          hide_or_show
+          studylike
+          writelike
+          seq_in_studylike
+          seq_in_writelike
         }
       }
     }
   }
 `;
 const UpdateCategory = gql`
-  mutation UpdateCategory($name: String!, $bookcategory_id: String!) {
-    bookcategory_update(name: $name, bookcategory_id: $bookcategory_id) {
+  mutation UpdateCategory($name: String!, $mybookcate_id: String!) {
+    mybookcate_update(name: $name, mybookcate_id: $mybookcate_id) {
       status
       msg
-      bookcategory {
+      mybookcates {
         _id
-        name
-        seq
+        mybookcate_info {
+          name
+          seq
+        }
       }
-      mybook {
-        book_info {
+      mybooks {
+        _id
+        mybook_info {
           title
+          type
+          user_id
+          mybookcate_id
+          seq_in_category
+          hide_or_show
+          studylike
+          writelike
+          seq_in_studylike
+          seq_in_writelike
         }
       }
     }
   }
 `;
 const PositioningCategory = gql`
-  mutation PositioningCategory($direction: String, $bookcategory_id: String!) {
-    bookcategory_changeposition(direction: $direction, bookcategory_id: $bookcategory_id) {
+  mutation PositioningCategory($direction: String, $mybookcate_id: String!) {
+    mybookcate_changeorder(direction: $direction, mybookcate_id: $mybookcate_id) {
       status
       msg
-      bookcategory {
+      mybookcates {
         _id
-        name
-        seq
+        mybookcate_info {
+          name
+          seq
+        }
       }
-      mybook {
-        book_info {
+      mybooks {
+        _id
+        mybook_info {
           title
+          type
+          user_id
+          mybookcate_id
+          seq_in_category
+          hide_or_show
+          studylike
+          writelike
+          seq_in_studylike
+          seq_in_writelike
         }
       }
     }
@@ -101,24 +152,38 @@ const CategorySettingModal = ({ isModalVisible, handleOk, handleCancel }) => {
 
 const ModalContents = () => {
   const { loading, error, data } = useQuery(GetCategory);
-  console.log("category", data);
-  const [category, setCategory] = useState(data.bookcategory_get.bookcategory);
-  const [createBookcategory] = useMutation(CreateNewCategory, { onCompleted: showdatacreate });
-  const [bookcategory_delete] = useMutation(DeleteCategory, { onCompleted: showdatadelete });
-  const [bookcategory_update] = useMutation(UpdateCategory, { onCompleted: showdataupdate });
-  const [bookcategory_changeposition] = useMutation(PositioningCategory, { onCompleted: showdataposition });
-    const lastSeq = category.length -1;
+  const [category, setCategory] = useState();
+  const [lastSeq, setLastSeq] = useState();
+
+  useEffect(() => {
+    if(data){
+      setCategory(data.mybookcate_get.mybookcates)
+      const lastSeq = data.mybookcate_get.mybookcates.length - 1;
+      setLastSeq(Number(lastSeq))
+
+    }  
+    
+     
+    console.log(lastSeq)
+    console.log(category)
+  });
+
+  const [mybookcate_create] = useMutation(CreateNewCategory, { onCompleted: showdatacreate });
+  const [mybookcate_delete] = useMutation(DeleteCategory, { onCompleted: showdatadelete });
+  const [mybookcate_update] = useMutation(UpdateCategory, { onCompleted: showdataupdate });
+  const [mybookcate_changeorder] = useMutation(PositioningCategory, { onCompleted: showdataposition });
+  
   function showdataposition(data) {
     console.log("data", data);
-    setCategory(data.bookcategory_changeposition.bookcategory);
+    setCategory(data.mybookcate_changeorder.mybookcates);
   }
 
   async function positionCategory(direction, id) {
     try {
-      await bookcategory_changeposition({
+      await mybookcate_changeorder({
         variables: {
           direction: direction,
-          bookcategory_id: id,
+          mybookcate_id: id,
         },
       });
     } catch (error) {
@@ -133,15 +198,15 @@ const ModalContents = () => {
 
   function showdatacreate(data) {
     console.log("data", data);
-    setCategory(data.bookcategory_create.bookcategory);
+    setCategory(data.mybookcate_create.mybookcates);
   }
 
   async function postCategory(name, id) {
     try {
-      await createBookcategory({
+      await mybookcate_create({
         variables: {
           name: name,
-          current_bookcategory_id: id,
+          current_mybookcate_id: id,
         },
       });
     } catch (error) {
@@ -156,14 +221,14 @@ const ModalContents = () => {
 
   function showdataupdate(data) {
     console.log("data", data);
-    setCategory(data.bookcategory_update.bookcategory);
+    setCategory(data.mybookcate_update.mybookcates);
   }
   async function updateCategory(name, id) {
     try {
-      await bookcategory_update({
+      await mybookcate_update({
         variables: {
           name: name,
-          bookcategory_id: id,
+          mybookcate_id: id,
         },
       });
     } catch (error) {
@@ -178,14 +243,14 @@ const ModalContents = () => {
 
   function showdatadelete(data) {
     console.log("data", data);
-    setCategory(data.bookcategory_delete.bookcategory);
+    setCategory(data.mybookcate_delete.mybookcates);
   }
 
   async function deleteCategory(id) {
     try {
-      await bookcategory_delete({
+      await mybookcate_delete({
         variables: {
-          bookcategory_id: id,
+          mybookcate_id: id,
         },
       });
     } catch (error) {
@@ -196,10 +261,21 @@ const ModalContents = () => {
     console.log(id);
     deleteCategory(id);
   };
-
-  const categoryList = category.map((item) => (
-    <CategoryList lastSeq={lastSeq} onFinishPosition={onFinishPosition} onFinishUpdate={onFinishUpdate} onFinish={onFinish} categoryDelete={categoryDelete} key={category._id} category={item} />
-  ));
+  if(category) {
+    console.log("check",category)
+    var categoryList = category.map((item) => (
+      <CategoryList
+        lastSeq={lastSeq}
+        onFinishPosition={onFinishPosition}
+        onFinishUpdate={onFinishUpdate}
+        onFinish={onFinish}
+        categoryDelete={categoryDelete}
+        key={category._id}
+        category={item}
+      />
+    ));
+  }
+  
   return (
     <>
       <div style={{ fontSize: "11px", border: "1px solid lightgrey" }}>
@@ -289,12 +365,10 @@ const CategoryList = ({ lastSeq, onFinish, category, categoryDelete, onFinishUpd
             <PlusOutlined onClick={() => setNewInput(true)} style={{ fontSize: "13px" }} />
           </Popover>
         </li>
-        <li style={{ width: "10%" }}>{category.name}</li>
+        <li style={{ width: "10%" }}>{category.mybookcate_info.name}</li>
         <li>
-          {category.name === "(미지정)" ? (
-            <button disabled>
-            이름바꾸기
-          </button>
+          {category.mybookcate_info.name === "(미지정)" ? (
+            <button disabled>이름바꾸기</button>
           ) : (
             <Popover placement="rightTop" title={updateCategoryText} visible={updatenewInput} content={updatecontent(category._id)} trigger="click">
               <button onClick={() => setupdateNewInput(true)} style={{ fontSize: "11px" }}>
@@ -304,14 +378,17 @@ const CategoryList = ({ lastSeq, onFinish, category, categoryDelete, onFinishUpd
           )}
         </li>
         <li>
-          {category.name === "(미지정)" ? (
-            <><button disabled>up</button><button disabled>down</button></>
-          ) : category.seq === 1 ? (
+          {category.mybookcate_info.name === "(미지정)" ? (
+            <>
+              <button disabled>up</button>
+              <button disabled>down</button>
+            </>
+          ) : category.mybookcate_info.seq === 1 ? (
             <>
               <button disabled>up</button>
               <button onClick={() => onFinishPosition("down", category._id)}>down</button>
             </>
-          ) : category.seq === lastSeq ? (
+          ) : category.mybookcate_info.seq === lastSeq ? (
             <>
               <button onClick={() => onFinishPosition("up", category._id)}>up</button>
               <button disabled>down</button>
@@ -323,7 +400,7 @@ const CategoryList = ({ lastSeq, onFinish, category, categoryDelete, onFinishUpd
             </>
           )}
         </li>
-        <li>{category.name === "(미지정)" ? <button disabled>삭제</button> : <button onClick={() => categoryDelete(category._id)}>삭제</button>}</li>
+        <li>{category.mybookcate_info.name === "(미지정)" ? <button disabled>삭제</button> : <button onClick={() => categoryDelete(category._id)}>삭제</button>}</li>
         <li>00권{lastSeq}</li>
         <li>블라블라</li>
       </ul>

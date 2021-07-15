@@ -13,7 +13,7 @@ const GET_USER = gql`
     me {
       status
       msg
-      user {
+      users {
         _id
         user_info {
           username

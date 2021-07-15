@@ -15,7 +15,7 @@ const SignUpMutation = gql`
     signup(username: $username, password: $password, name: $name, email: $email) {
       status
       msg
-      user {
+      users {
         _id
         user_info {
           username

@@ -13,24 +13,34 @@ import CategorySettingModal from "../../../components/books/write/category/Categ
 
 const GetCategory = gql`
   query {
-    bookcategory_get {
+    mybookcate_get {
       status
       msg
-      bookcategory {
+      mybookcates {
         _id
-        name
-        seq
+        mybookcate_info {
+          user_id
+          name
+          seq
+        }
       }
     }
     mybook_get {
       status
       msg
-      mybook {
-        book_info {
+      mybooks {
+        _id
+        mybook_info {
           title
+          type
           user_id
-          bookcategory_id
+          mybookcate_id
           seq_in_category
+          hide_or_show
+          studylike
+          writelike
+          seq_in_studylike
+          seq_in_writelike
         }
       }
     }
@@ -51,8 +61,8 @@ const WriteComponent = () => {
 
     if (data) {
       console.log(data);
-      setCategory(data.bookcategory_get.bookcategory);
-      setBooks(data.mybook_get.mybook);
+      setCategory(data.mybookcate_get.mybookcates);
+      setBooks(data.mybook_get.mybooks);
     }
     console.log(category);
     console.log(books);
@@ -101,7 +111,7 @@ const BookList = ({ category, books }) => {
   if (category) {
     var categoryList = category.map((category) => (
       <>
-        <div>{category.name}</div>
+        <div>{category.mybookcate_info.name}</div>
         <ul>
           <BooksInCategory categoryId={category._id} books={books} />
         </ul>
@@ -114,11 +124,13 @@ const BookList = ({ category, books }) => {
 
 const BooksInCategory = ({ books, categoryId }) => {
   if (books) {
+    console.log(books, "asdf")
+    console.log(categoryId)
     var list = books.map((book) => {
-      if (book.book_info.bookcategory_id === categoryId) {
+      if (book.mybook_info.mybookcate_id === categoryId) {
         return (
           <>
-            <li>{book.book_info.title}</li>
+            <li>{book.mybook_info.title}</li>
           </>
         );
       }

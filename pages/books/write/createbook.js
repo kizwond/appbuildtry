@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../../../components/layout/Layout";
 import { Form, Input, Button, Select } from "antd";
 import Footer from "../../../components/index/Footer";
@@ -13,31 +13,34 @@ import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation
 const { Option } = Select;
 
 const CreateBookMutation = gql`
-  mutation CreateBookMutation($title: String!, $bookcategory_id:String) {
-    mybook_create(title: $title, bookcategory_id:$bookcategory_id) {
+  mutation CreateBookMutation($title: String!, $mybookcate_id: String) {
+    mybook_create(title: $title, mybookcate_id: $mybookcate_id) {
       status
       msg
-      mybook {
-       book_info {
-        title
-        user_id
-        bookcategory_id
-        seq_in_category
-       }
+      mybooks {
+        mybook_info {
+          title
+          user_id
+          mybookcate_id
+          seq_in_category
+        }
       }
     }
   }
 `;
 
 const GetCategory = gql`
-query {
-    bookcategory_get {
+  query {
+    mybookcate_get {
       status
       msg
-      bookcategory {
+      mybookcates {
         _id
-        name
-        seq
+        mybookcate_info {
+          user_id
+          name
+          seq
+        }
       }
     }
   }
@@ -45,15 +48,22 @@ query {
 
 const CreateBookComponent = () => {
   const [mybook_create] = useMutation(CreateBookMutation, { onCompleted: showdata });
+  const [category, setCategory] = useState();
   const { loading, error, data } = useQuery(GetCategory);
-  const [category, setCategory] = useState(data.bookcategory_get.bookcategory);
   
+  useEffect(() => {
+    if(data){
+      setCategory(data.mybookcate_get.mybookcates)
+    }  
+    console.log(category)
+  });
+
   function showdata(item) {
     console.log("data", item);
     if (item.mybook_create.msg === "책 생성 성공적!") {
       alert("책 만들기 성공!!!!");
       // Router.push("/");
-      window.location.href="/books/write";
+      window.location.href = "/books/write";
     } else {
       alert("뭔가 잘못되었네요. 다시 해봐요.");
     }
@@ -64,7 +74,7 @@ const CreateBookComponent = () => {
       await mybook_create({
         variables: {
           title: book_title,
-          bookcategory_id: id
+          mybookcate_id: id,
         },
       });
     } catch (error) {
@@ -72,7 +82,7 @@ const CreateBookComponent = () => {
     }
   }
   const onFinish = (values) => {
-      console.log(values)
+    console.log(values);
     postbook(values.book_title, values.category_id);
   };
 
@@ -83,20 +93,17 @@ const CreateBookComponent = () => {
           <Input placeholder="책제목" />
         </Form.Item>
         <Form.Item name="category">
-        <Form.Item
-              className="category_select_naming"
-              name='category_id'
-              rules={[{ required: false, message: '카테고리를 선택해 주세요' }]}
-              
-            >
-              <Select style={{ width: "100%" }} placeholder="카테고리를 선택해 주세요." >
+          <Form.Item className="category_select_naming" name="category_id" rules={[{ required: false, message: "카테고리를 선택해 주세요" }]}>
+            <Select style={{ width: "100%" }} placeholder="카테고리를 선택해 주세요.">
               <Option>카테고리선택</Option>
-                {category && category.map((category)=>(
-                                      <Option key={category._id} value={category._id}>{category.name}</Option>
-                                    )) }
-                                   
-              </Select>
-            </Form.Item>
+              {category &&
+                category.map((category) => (
+                  <Option key={category._id} value={category._id}>
+                    {category.mybookcate_info.name}
+                  </Option>
+                ))}
+            </Select>
+          </Form.Item>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
@@ -109,12 +116,12 @@ const CreateBookComponent = () => {
 };
 
 const CreateBook = () => {
-    return (
-      <Layout>
-        <CreateBookComponent />
-        <Footer />
-      </Layout>
-    );
-  };
-  
-  export default CreateBook;
+  return (
+    <Layout>
+      <CreateBookComponent />
+      <Footer />
+    </Layout>
+  );
+};
+
+export default CreateBook;

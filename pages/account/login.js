@@ -16,7 +16,7 @@ const SignInMutation = gql`
     login(username: $username, password: $password) {
       status
       msg
-      user{
+      users {
         _id
          user_info {
           username

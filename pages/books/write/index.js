@@ -309,7 +309,7 @@ const LikeBooksInCategory = ({ categoryName, books, categoryId, deleteBook, onFi
       var totalLength = 0;
     }
     var list = books.map((book) => {
-      if (book.mybook_info.mybookcate_id === categoryId) {
+      if (book.mybook_info.mybookcate_id === categoryId && book.mybook_info.writelike === false) {
         return (
           <Fragment key={book._id}>
             <LikeListItem categoryName={categoryName} totalLength={totalLength} lastSeq={lastSeq} book={book} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />

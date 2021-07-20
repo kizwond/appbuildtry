@@ -13,6 +13,7 @@ import DetailOtherInfo from "../../../components/bookstore/book-detail/DetailOth
 import DetailIntro from "../../../components/bookstore/book-detail/DetailIntro";
 import DetailReview from "../../../components/bookstore/book-detail/DetailReview";
 import RatingArea from "../../../components/bookstore/book-detail/RatingArea";
+import ReviewListComponent from "../../../components/bookstore/book-detail/ReviewListComponent";
 
 const BookDetail = () => {
   const router = useRouter();
@@ -30,6 +31,7 @@ const BookDetail = () => {
             <DetailIntro />
             <DetailReview />
             <RatingArea />
+            <ReviewListComponent />
           </section>
         </div>
       </BooksDetailArticle>

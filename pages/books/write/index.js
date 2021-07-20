@@ -10,7 +10,7 @@ import { logIn, logOut } from "../../../redux/actions";
 import Router from "next/router";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
 import CategorySettingModal from "../../../components/books/write/category/CategorySettingModal";
-import { GetCategory, BookDeleteMutation, BookUpdateMutation, PositioningBookMutation } from "../../../graphql/query/writemain";
+import { GetCategory, BookDeleteMutation, BookUpdateMutation, PositioningBookMutation, BookLikeMutation,PositioningLikeBookMutation } from "../../../graphql/query/writemain";
 
 const WriteComponent = () => {
   const dispatch = useDispatch();
@@ -20,6 +20,8 @@ const WriteComponent = () => {
   const [mybook_delete] = useMutation(BookDeleteMutation, { onCompleted: showdatadelete });
   const [mybook_update] = useMutation(BookUpdateMutation, { onCompleted: showdataupdate });
   const [mybook_changeorder] = useMutation(PositioningBookMutation, { onCompleted: showdatareposition });
+  const [mybook_changewritelike] = useMutation(BookLikeMutation, { onCompleted: showdataupdatelike });
+  const [mybook_changewritelikeorder] = useMutation(PositioningLikeBookMutation, { onCompleted: showdatarepositionlike });
 
   //카테고리내에 책 순서 변경
   function showdatareposition(data) {
@@ -43,6 +45,30 @@ const WriteComponent = () => {
   const onFinishPositionBook = (direction, id) => {
     console.log(direction, id);
     positionBooks(direction, id);
+  };
+
+  //좋아요 책 순서 변경
+  function showdatarepositionlike(data) {
+    console.log("data", data);
+    setBooks(data.mybook_changewritelikeorder.mybooks);
+  }
+
+  async function positionBooksLike(direction, id) {
+    try {
+      await mybook_changewritelikeorder({
+        variables: {
+          direction: direction,
+          mybook_id: id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const onFinishPositionBookLike = (direction, id) => {
+    console.log(direction, id);
+    positionBooksLike(direction, id);
   };
 
   // 책이름 변경 뮤테이션
@@ -93,6 +119,28 @@ const WriteComponent = () => {
     }
   }
 
+ // 좋아요 기능
+  function showdataupdatelike(data) {
+    console.log("data", data);
+    setBooks(data.mybook_changewritelike.mybooks);
+  }
+  async function updateBookLike(id, like) {
+    try {
+      await mybook_changewritelike({
+        variables: {
+          mybook_id: id,
+          writelike: like,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const onClickLike = (id, like) => {
+    console.log(id, like)
+    updateBookLike(id, like);
+  }
   //useEffect
   useEffect(() => {
     if (data) {
@@ -118,7 +166,7 @@ const WriteComponent = () => {
 
   return (
     <div>
-      <LikeBookList category={category} books={books} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />
+      <LikeBookList onClickLike={onClickLike} category={category} books={books} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBookLike={onFinishPositionBookLike} />
       <button onClick={showModal}>카테고리 설정</button>
       <CategorySettingModal isModalVisible={isModalVisible} handleOk={handleOk} handleCancel={handleCancel} />
       <Link href="/books/write/createbook">
@@ -126,18 +174,18 @@ const WriteComponent = () => {
           <button>새책만들기</button>
         </a>
       </Link>
-      <BookList category={category} books={books} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />
+      <BookList onClickLike={onClickLike} category={category} books={books} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />
     </div>
   );
 };
 
 //책 리스트 컨테이너
-const BookList = ({ category, books, deleteBook, onFinishUpdate, onFinishPositionBook }) => {
+const BookList = ({ category, books, deleteBook, onFinishUpdate, onFinishPositionBook, onClickLike }) => {
   if (category) {
     var categoryList = category.map((category) => (
       <Fragment key={category._id}>
         <div>
-          <BooksInCategory cateName={category.mybookcate_info.name} categoryId={category._id} books={books} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />
+          <BooksInCategory onClickLike={onClickLike} cateName={category.mybookcate_info.name} categoryId={category._id} books={books} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />
         </div>
       </Fragment>
     ));
@@ -163,7 +211,7 @@ const BookList = ({ category, books, deleteBook, onFinishUpdate, onFinishPositio
 };
 
 //카테고리내에 책 리스트 컴퍼넌트
-const BooksInCategory = ({ cateName, books, categoryId, deleteBook, onFinishUpdate, onFinishPositionBook }) => {
+const BooksInCategory = ({ cateName, books, categoryId, deleteBook, onFinishUpdate, onFinishPositionBook, onClickLike }) => {
   if (books) {
     console.log(books);
     const seq = books.filter((book) => book.mybook_info.mybookcate_id === categoryId);
@@ -175,7 +223,7 @@ const BooksInCategory = ({ cateName, books, categoryId, deleteBook, onFinishUpda
       if (book.mybook_info.mybookcate_id === categoryId) {
         return (
           <Fragment key={book._id}>
-            <ListItem cateName={cateName} totalLength={totalLength} lastSeq={lastSeq} book={book} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />
+            <ListItem onClickLike={onClickLike} cateName={cateName} totalLength={totalLength} lastSeq={lastSeq} book={book} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />
           </Fragment>
         );
       }
@@ -184,7 +232,7 @@ const BooksInCategory = ({ cateName, books, categoryId, deleteBook, onFinishUpda
   return <>{list}</>;
 };
 
-const ListItem = ({ book, deleteBook, onFinishUpdate, onFinishPositionBook, lastSeq, totalLength,cateName }) => {
+const ListItem = ({ book, deleteBook, onFinishUpdate, onFinishPositionBook, lastSeq, totalLength,cateName, onClickLike }) => {
   const [updatenewInput, setupdateNewInput] = useState(false);
   const updateNameText = <span style={{ fontSize: "11px" }}>변경할 이름을 입력해 주세요.</span>;
   const updatecontent = (id, hide_or_show) => (
@@ -255,7 +303,8 @@ const ListItem = ({ book, deleteBook, onFinishUpdate, onFinishPositionBook, last
           )}
         </li>
         <li>
-          <button>좋아요</button>
+          {book.mybook_info.writelike === true &&  <button onClick={() => onClickLike(book._id, false)}>해제</button>}
+          {book.mybook_info.writelike === false && <button onClick={() => onClickLike(book._id, true)}>좋아요</button>}
         </li>
         <li>
           <button>숨기기</button>
@@ -269,12 +318,12 @@ const ListItem = ({ book, deleteBook, onFinishUpdate, onFinishPositionBook, last
 };
 
 
-const LikeBookList = ({ category, books, deleteBook, onFinishUpdate, onFinishPositionBook }) => {
+const LikeBookList = ({ category, books, deleteBook, onFinishUpdate, onFinishPositionBookLike, onClickLike }) => {
   if (category) {
     var categoryList = category.map((category) => (
       <Fragment key={category._id}>
         <div>
-          <LikeBooksInCategory categoryName={category.mybookcate_info.name} categoryId={category._id} books={books} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />
+          <LikeBooksInCategory categoryName={category.mybookcate_info.name} categoryId={category._id} books={books} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBookLike={onFinishPositionBookLike} />
         </div>
       </Fragment>
     ));
@@ -294,34 +343,39 @@ const LikeBookList = ({ category, books, deleteBook, onFinishUpdate, onFinishPos
           <li>삭제</li>
         </ul>
       </div>
-      {categoryList}
+      {/* {categoryList} */}
+      <LikeBooksInCategory category={category} books={books} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBookLike={onFinishPositionBookLike} onClickLike={onClickLike}/>
     </div>
   );
 };
 
 //카테고리내에 책 리스트 컴퍼넌트
-const LikeBooksInCategory = ({ categoryName, books, categoryId, deleteBook, onFinishUpdate, onFinishPositionBook }) => {
+const LikeBooksInCategory = ({ category, books, deleteBook, onFinishUpdate, onFinishPositionBookLike, onClickLike }) => {
   if (books) {
     console.log(books);
-    const seq = books.filter((book) => book.mybook_info.mybookcate_id === categoryId);
-    const lastSeq = seq.length - 1;
-    if (lastSeq === 0) {
-      var totalLength = 0;
-    }
-    var list = books.map((book) => {
-      if (book.mybook_info.mybookcate_id === categoryId && book.mybook_info.writelike === false) {
+    const likebooks = books.filter((book) => book.mybook_info.writelike === true);
+    likebooks.sort(function (a, b) { 
+      return a.mybook_info.seq_in_writelike < b.mybook_info.seq_in_writelike ? -1 : a.mybook_info.seq_in_writelike > b.mybook_info.seq_in_writelike ? 1 : 0;  
+    });
+    const lastSeq = likebooks.length;
+
+    var list = likebooks.map((book) => {
+        const categoryNameFilter = category.filter((item)=>{
+          return item._id === book.mybook_info.mybookcate_id
+        })
+        const categoryName = categoryNameFilter[0].mybookcate_info.name;
         return (
           <Fragment key={book._id}>
-            <LikeListItem categoryName={categoryName} totalLength={totalLength} lastSeq={lastSeq} book={book} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBook={onFinishPositionBook} />
+            <LikeListItem lastSeq={lastSeq} categoryName={categoryName} book={book} deleteBook={deleteBook} onFinishUpdate={onFinishUpdate} onFinishPositionBookLike={onFinishPositionBookLike} onClickLike={onClickLike} />
           </Fragment>
         );
-      }
+      
     });
   }
   return <>{list}</>;
 };
 
-const LikeListItem = ({ book, deleteBook, onFinishUpdate, onFinishPositionBook, lastSeq, totalLength, categoryName }) => {
+const LikeListItem = ({ categoryName, book, deleteBook, onFinishUpdate, onFinishPositionBookLike, onClickLike, lastSeq }) => {
   const [updatenewInput, setupdateNewInput] = useState(false);
   const updateNameText = <span style={{ fontSize: "11px" }}>변경할 이름을 입력해 주세요.</span>;
   const updatecontent = (id, hide_or_show) => (
@@ -368,29 +422,31 @@ const LikeListItem = ({ book, deleteBook, onFinishUpdate, onFinishPositionBook, 
             </button>
           </Popover>
         </li>
-        <li>책정보 블라블라{lastSeq}</li>
+        <li>책정보 블라블라</li>
         <li>
-          {totalLength === 0 && (
+          
+          {book.mybook_info.seq_in_writelike === 0 && (
             <>
               <button disabled>up</button>
+              <button onClick={() => onFinishPositionBookLike("down", book._id)}>down</button>
+            </>
+          )}
+          {book.mybook_info.seq_in_writelike === lastSeq-1 && (
+            <>
+              <button onClick={() => onFinishPositionBookLike("up", book._id)}>up</button>
               <button disabled>down</button>
             </>
           )}
-          {totalLength !== 0 && book.mybook_info.seq_in_category === 0 && (
+          {book.mybook_info.seq_in_writelike !== lastSeq-1 && book.mybook_info.seq_in_writelike !== 0 && (
             <>
-              <button disabled>up</button>
-              <button onClick={() => onFinishPositionBook("down", book._id)}>down</button>
-            </>
-          )}
-          {totalLength !== 0 && book.mybook_info.seq_in_category === lastSeq && (
-            <>
-              <button onClick={() => onFinishPositionBook("up", book._id)}>up</button>
-              <button disabled>down</button>
+              <button onClick={() => onFinishPositionBookLike("up", book._id)}>up</button>
+              <button onClick={() => onFinishPositionBookLike("down", book._id)}>down</button>
             </>
           )}
         </li>
         <li>
-          <button>좋아요</button>
+          {book.mybook_info.writelike === true &&  <button onClick={() => onClickLike(book._id, false)}>해제</button>}
+          {book.mybook_info.writelike === false && <button onClick={() => onClickLike(book._id, true)}>좋아요</button>}
         </li>
         <li>
           <button>숨기기</button>

@@ -97,10 +97,71 @@ export const BookUpdateMutation = gql`
     }
   }
 `;
+export const BookLikeMutation = gql`
+  mutation BookLikeMutation($mybook_id: String!, $writelike: Boolean) {
+    mybook_changewritelike(mybook_id: $mybook_id, writelike: $writelike) {
+      status
+      msg
+      mybookcates {
+        _id
+        mybookcate_info {
+          name
+          seq
+        }
+      }
+      mybooks {
+        _id
+        mybook_info {
+          title
+          type
+          user_id
+          mybookcate_id
+          seq_in_category
+          hide_or_show
+          studylike
+          writelike
+          seq_in_studylike
+          seq_in_writelike
+        }
+      }
+    }
+  }
+`;
 
 export const PositioningBookMutation = gql`
   mutation PositioningBookMutation($direction: String, $mybook_id: String!) {
     mybook_changeorder(direction: $direction, mybook_id: $mybook_id) {
+      status
+      msg
+      mybookcates {
+        _id
+        mybookcate_info {
+          name
+          seq
+        }
+      }
+      mybooks {
+        _id
+        mybook_info {
+          title
+          type
+          user_id
+          mybookcate_id
+          seq_in_category
+          hide_or_show
+          studylike
+          writelike
+          seq_in_studylike
+          seq_in_writelike
+        }
+      }
+    }
+  }
+`;
+
+export const PositioningLikeBookMutation = gql`
+  mutation PositioningLikeBookMutation($direction: String, $mybook_id: String!) {
+    mybook_changewritelikeorder(direction: $direction, mybook_id: $mybook_id) {
       status
       msg
       mybookcates {

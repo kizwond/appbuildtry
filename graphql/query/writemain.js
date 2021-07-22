@@ -189,3 +189,34 @@ export const PositioningLikeBookMutation = gql`
     }
   }
 `;
+
+export const BookChangeCategoryMutation = gql`
+  mutation BookChangeCategoryMutation($mybook_id: String, $target_mybookcate_id : String) {
+    mybook_movetoothercate(mybook_id: $mybook_id, target_mybookcate_id: $target_mybookcate_id) {
+      status
+      msg
+      mybookcates {
+        _id
+        mybookcate_info {
+          name
+          seq
+        }
+      }
+      mybooks {
+        _id
+        mybook_info {
+          title
+          type
+          user_id
+          mybookcate_id
+          seq_in_category
+          hide_or_show
+          studylike
+          writelike
+          seq_in_studylike
+          seq_in_writelike
+        }
+      }
+    }
+  }
+`;

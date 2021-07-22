@@ -158,7 +158,7 @@ const SubmitButtonWrapper = styled.div`
 `;
 
 const SubmitButton = styled.div`
-  font-family: ridi-roboto, Helvetica Neue, Apple SD Gothic Neo, "나눔고딕", Nanum Gothic, "돋움", arial, Dotum, Tahoma, Geneva, sans-serif;
+  font-family: Helvetica Neue, Apple SD Gothic Neo, "나눔고딕", "돋움", arial, Tahoma, Geneva, sans-serif;
   letter-spacing: -0.03em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

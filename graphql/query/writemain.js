@@ -220,3 +220,25 @@ export const BookChangeCategoryMutation = gql`
     }
   }
 `;
+
+
+//북에디트 페이지 
+
+export const GetIndex = gql`
+  query Index($mybook_id:String){
+    index_get(mybook_id:$mybook_id) {
+      status
+      msg
+      indexes {
+        _id
+        index_info {
+          mybook_id 
+          name  
+          seq 
+          level 
+          type 
+        }
+      }
+    }
+  }
+`;

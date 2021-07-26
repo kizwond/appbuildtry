@@ -19,6 +19,7 @@ import {
   PositioningLikeBookMutation,
   BookChangeCategoryMutation,
 } from "../../../graphql/query/writemain";
+import { useRouter } from "next/router";
 
 const { Option } = Select;
 
@@ -352,6 +353,8 @@ const ListItem = ({ category, book, deleteBook, onFinishUpdate, onFinishPosition
     onFinishBookMoveCategory(book._id, value);
   }
 
+  const router = useRouter();
+
   return (
     <>
       <ul style={{ display: "flex", justifyContent: "space-between", listStyle: "none" }}>
@@ -359,11 +362,7 @@ const ListItem = ({ category, book, deleteBook, onFinishUpdate, onFinishPosition
         {book.mybook_info.seq_in_category !== 0 && <li style={{ visibility: "hidden" }}>{cateName}</li>}
 
         <li>
-          <Link href="/books/write/bookedit">
-            <a>
-              <button>{book.mybook_info.title}</button>
-            </a>
-          </Link>
+          <button onClick={() => router.push(`/books/write/${book._id}`)}>{book.mybook_info.title}</button>
         </li>
         <li>
           <Popover placement="rightTop" title={updateNameText} visible={updatenewInput} content={updatecontent(book._id, book.mybook_info.hide_or_show)} trigger="click">

@@ -1,10 +1,14 @@
 import { Rate } from "antd";
 import styled from "styled-components";
 import { CaretDownFilled, CaretUpFilled, StarFilled } from "@ant-design/icons";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 const DetailReview = () => {
   const [visibleGraph, setVisibleGraph] = useState(false);
+
+  const onToggleVisibleGraph = useCallback(() => {
+    setVisibleGraph((prev) => !prev);
+  }, []);
 
   return (
     <DetailReviewWrapper>
@@ -33,12 +37,7 @@ const DetailReview = () => {
                 별점 분포 보기
                 {!visibleGraph ? <CaretDownFilled /> : <CaretUpFilled />}
               </GraphViewButton>
-              <ScoreGraphWrapper
-                className={!visibleGraph ? "invisible" : "visible"}
-                onClick={() => {
-                  setVisibleGraph(!visibleGraph);
-                }}
-              >
+              <ScoreGraphWrapper className={!visibleGraph ? "invisible" : "visible"} onClick={onToggleVisibleGraph}>
                 <ScoreGraph>
                   <ScoreGraphItem>
                     <StarFilled />5

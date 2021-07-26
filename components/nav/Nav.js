@@ -11,17 +11,17 @@ import { useWindowSize } from "react-use";
 import { gql, useLazyQuery } from "@apollo/client";
 
 const LOGOUT = gql`
-    query {
-      logout {
-        msg
-      }
+  query {
+    logout {
+      msg
     }
-  `;
+  }
+`;
 
 const Nav = () => {
   const { width } = useWindowSize();
   const [visible, setVisible] = useState(false);
-  
+
   const [logout, { loading, error, data }] = useLazyQuery(LOGOUT);
 
   const showDrawer = () => {
@@ -48,17 +48,16 @@ const Nav = () => {
   } else {
     desktop = false;
   }
-  var setCookie = function(name) {
-    document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-    }
-    
+  var setCookie = function (name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1999 00:00:10 GMT;";
+  };
+
   const onClickLogout = () => {
-    logout()
-    setCookie('refreshToken');
-    setCookie('accessToken');
-    window.location.href ="/"
-  }
-  
+    logout();
+    setCookie("refreshToken");
+    setCookie("accessToken");
+    window.location.href = "/";
+  };
 
   return (
     <>
@@ -121,7 +120,7 @@ const Nav = () => {
                           회원가입
                         </a>
                       </Link>
-                      <Link href="/basket">
+                      <Link href="/cart">
                         <a style={linkStyle}>
                           <ShoppingCartOutlined style={{ marginRight: 10 }} />
                           장바구니
@@ -205,7 +204,7 @@ const Nav = () => {
                           회원가입
                         </a>
                       </Link>
-                      <Link href="/basket">
+                      <Link href="/cart">
                         <a style={linkStyle}>
                           <ShoppingCartOutlined style={{ marginRight: 10 }} />
                           장바구니
@@ -262,7 +261,7 @@ const Nav = () => {
                   <Link href="/account/register">
                     <a style={linkStyle}>회원가입</a>
                   </Link>
-                  <Link href="/basket">
+                  <Link href="/cart">
                     <a style={linkStyle}>
                       <ShoppingCartOutlined />
                     </a>
@@ -315,7 +314,7 @@ const Nav = () => {
                   <Link href="/account/register">
                     <a style={linkStyle}>회원가입</a>
                   </Link>
-                  <Link href="/basket">
+                  <Link href="/cart">
                     <a style={linkStyle}>
                       <ShoppingCartOutlined />
                     </a>

@@ -1,0 +1,12 @@
+// 커스텀 훅스 사용
+import { useCallback, useState } from "react";
+
+const useInput = (initialValue = null) => {
+  const [value, setValue] = useState(initialValue);
+  const handler = useCallback((e) => {
+    setValue(e.target.value);
+  }, []);
+  return [value, handler];
+};
+
+export default useInput;

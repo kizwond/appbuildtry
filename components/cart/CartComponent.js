@@ -1,22 +1,26 @@
 import React, { useCallback, useState } from "react";
 import { Button, Checkbox } from "antd";
 import { connect } from "react-redux";
+import CheckboxComponent from "./CheckBoxComponent";
 
 const CartComponent = ({ cart, deleteItem }) => {
   const checkedItem = cart.map((item) => item._id);
   const [checkItem, setCheckItem] = useState(checkedItem);
 
-  const onChangeCheckbox = useCallback((e, params) => {
-    if (e.target.checked) {
-      let newCheckItem = [...checkItem].concat(params);
-      setCheckItem(newCheckItem.concat(params));
-      // this.props.onAddBookFromCheckedList(params);
-      console.log(params, "등록");
-    } else {
-      console.log(params, "해제");
-      setCheckItem(checkItem.filter((item) => item !== params));
-    }
-  }, []);
+  const onChangeCheckbox = useCallback(
+    (e, params) => {
+      if (e.target.checked) {
+        let newCheckItem = [...checkItem].concat(params);
+        setCheckItem(newCheckItem.concat(params));
+        // this.props.onAddBookFromCheckedList(params);
+        console.log(params, "등록");
+      } else {
+        console.log(params, "해제");
+        setCheckItem(checkItem.filter((item) => item !== params));
+      }
+    },
+    [checkItem]
+  );
 
   return (
     <>
@@ -63,6 +67,7 @@ const CartComponent = ({ cart, deleteItem }) => {
           </div>
         </li>
       ))}
+      <CheckboxComponent />
     </>
   );
 };

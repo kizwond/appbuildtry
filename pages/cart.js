@@ -1,11 +1,11 @@
-import React from "react";
-import CartComponent from "../components/cart/CartComponent";
-import Layout from "../components/layout/Layout";
+import React from 'react';
+import Cart from '../components/cart/Cart';
+import Layout from '../components/layout/Layout';
 
 const cart = () => {
   return (
     <Layout>
-      <CartComponent />
+      <Cart />
     </Layout>
   );
 };

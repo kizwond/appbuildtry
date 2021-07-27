@@ -1,14 +1,17 @@
-import "antd/dist/antd.css";
-import "../styles/globals.css";
-import { createStore, applyMiddleware } from "redux";
-import allReducers from "../redux/reducers";
-import { composeWithDevTools } from "redux-devtools-extension";
-import { Provider } from "react-redux";
+import 'antd/dist/antd.css';
+import '../styles/globals.css';
+import wrapper from '../redux/store/configureStore';
 
-import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, gql } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+  gql,
+} from '@apollo/client';
 const link = createHttpLink({
   uri: 'http://localhost:4000/graphql',
-  credentials: 'include'
+  credentials: 'include',
 });
 
 const client = new ApolloClient({
@@ -19,25 +22,21 @@ const client = new ApolloClient({
 // const client = new ApolloClient({
 //   uri: "http://localhost:4000/graphql",
 //   cache: new InMemoryCache(),
-  // credentials: "include",
-  // headers: [
-  //   { key: "Access-Control-Allow-Credentials", value: "true" },
-  //   { key: "Access-Control-Allow-Origin", value: "*" },
-  //   { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
-  //   { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
-  // ]
+// credentials: "include",
+// headers: [
+//   { key: "Access-Control-Allow-Credentials", value: "true" },
+//   { key: "Access-Control-Allow-Origin", value: "*" },
+//   { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+//   { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
+// ]
 // });
-
-const store = createStore(allReducers, composeWithDevTools());
 
 const App = ({ Component, pageProps }) => {
   return (
     <ApolloProvider client={client}>
-      <Provider store={store}>
-        <Component {...pageProps} />
-      </Provider>
+      <Component {...pageProps} />
     </ApolloProvider>
   );
 };
 
-export default App;
+export default wrapper.withRedux(App);

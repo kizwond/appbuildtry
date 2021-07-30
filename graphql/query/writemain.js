@@ -242,3 +242,22 @@ export const GetIndex = gql`
     }
   }
 `;
+
+export const IndexCreateMutation = gql`
+  mutation IndexCreateMutation($mybook_id: String, $name : String, $current_index_id: String, $current_seq: Int, $current_level: Int ) {
+    index_create(mybook_id: $mybook_id, name : $name, current_index_id: $current_index_id, current_seq: $current_seq, current_level: $current_level) {
+      status
+      msg
+      indexes {
+        _id
+        index_info {
+          mybook_id 
+          name  
+          seq 
+          level 
+          type 
+        }
+      }
+    }
+  }
+`;

@@ -170,68 +170,90 @@ const booksInCart = [
 ];
 
 export const initialState = {
-  booksIdsInCart: [],
   booksInCart: booksInCart,
-  addBookIdInCartLoading: false,
-  addBookIdInCartDone: false,
-  addBookIdInCartError: null,
-  deleteBookIdInCartLoading: false,
-  deleteBookIdInCartDone: false,
-  deleteBookIdInCartError: null,
+  updateBooksInCartLoading: false,
+  updateBooksInCartDone: false,
+  updateBooksInCartError: null,
+  addBookInCartLoading: false,
+  addBookInCartDone: false,
+  addBookInCartError: null,
+  deleteBookInCartLoading: false,
+  deleteBookInCartDone: false,
+  deleteBookInCartError: null,
 };
 
-export const ADD_BOOK_ID_IN_CART_REQUEST = 'cart/ADD_BOOK_ID_IN_CART_REQUEST';
-export const ADD_BOOK_ID_IN_CART_SUCCESS = 'cart/ADD_BOOK_ID_IN_CART_SUCCESS';
-export const ADD_BOOK_ID_IN_CART_FAILURE = 'cart/ADD_BOOK_ID_IN_CART_FAILURE';
-export const addBookIdInCart = (data) => ({
-  type: ADD_BOOK_ID_IN_CART_REQUEST,
+export const UPDATE_BOOKS_IN_CART_REQUEST = 'cart/UPDATE_BOOKS_IN_CART_REQUEST';
+export const UPDATE_BOOKS_IN_CART_SUCCESS = 'cart/UPDATE_BOOKS_IN_CART_SUCCESS';
+export const UPDATE_BOOKS_IN_CART_FAILURE = 'cart/UPDATE_BOOKS_IN_CART_FAILURE';
+export const updateBooksInCart = (data) => ({
+  type: UPDATE_BOOKS_IN_CART_REQUEST,
   data,
 });
 
-export const DELETE_BOOK_ID_IN_CART_REQUEST =
-  'cart/DELETE_BOOK_ID_IN_CART_REQUEST';
-export const DELETE_BOOK_ID_IN_CART_SUCCESS =
-  'cart/DELETE_BOOK_ID_IN_CART_SUCCESS';
-export const DELETE_BOOK_ID_IN_CART_FAILURE =
-  'cart/DELETE_BOOK_ID_IN_CART_FAILURE';
-export const deleteBookIdInCart = (data) => ({
-  type: DELETE_BOOK_ID_IN_CART_REQUEST,
+export const ADD_BOOK_IN_CART_REQUEST = 'cart/ADD_BOOK_IN_CART_REQUEST';
+export const ADD_BOOK_IN_CART_SUCCESS = 'cart/ADD_BOOK_IN_CART_SUCCESS';
+export const ADD_BOOK_IN_CART_FAILURE = 'cart/ADD_BOOK_IN_CART_FAILURE';
+export const addBookInCart = (data) => ({
+  type: ADD_BOOK_IN_CART_REQUEST,
+  data,
+});
+
+export const DELETE_BOOK_IN_CART_REQUEST = 'cart/DELETE_BOOK_IN_CART_REQUEST';
+export const DELETE_BOOK_IN_CART_SUCCESS = 'cart/DELETE_BOOK_IN_CART_SUCCESS';
+export const DELETE_BOOK_IN_CART_FAILURE = 'cart/DELETE_BOOK_IN_CART_FAILURE';
+export const deleteBookInCart = (data) => ({
+  type: DELETE_BOOK_IN_CART_REQUEST,
   data,
 });
 
 export default function cart(state = initialState, action) {
   return produce(state, (draft) => {
     switch (action.type) {
-      case ADD_BOOK_ID_IN_CART_REQUEST:
-        draft.addBookIdInCartLoading = true;
-        draft.addBookIdInCartDone = false;
-        draft.addBookIdInCartError = null;
+      case UPDATE_BOOKS_IN_CART_REQUEST:
+        draft.updateBooksInCartLoading = true;
+        draft.updateBooksInCartDone = false;
+        draft.updateBooksInCartError = null;
         break;
-      case ADD_BOOK_ID_IN_CART_SUCCESS:
-        draft.addBookIdInCartLoading = false;
-        draft.addBookIdInCartDone = true;
-        draft.booksIdsInCart = [...draft.booksIdsInCart, ...action.data];
+      case UPDATE_BOOKS_IN_CART_SUCCESS:
+        draft.updateBooksInCartLoading = false;
+        draft.updateBooksInCartDone = true;
+        draft.booksInCart = [...action.data];
         break;
-      case ADD_BOOK_ID_IN_CART_FAILURE:
-        draft.addBookIdInCartLoading = false;
-        draft.addBookIdInCartError = action.error;
+      case UPDATE_BOOKS_IN_CART_FAILURE:
+        draft.updateBooksInCartLoading = false;
+        draft.updateBooksInCartError = action.error;
         break;
 
-      case DELETE_BOOK_ID_IN_CART_REQUEST:
-        draft.deleteBookIdInCartLoading = true;
-        draft.deleteBookIdInCartDone = false;
-        draft.deleteBookIdInCartError = null;
+      case ADD_BOOK_IN_CART_REQUEST:
+        draft.addBookInCartLoading = true;
+        draft.addBookInCartDone = false;
+        draft.addBookInCartError = null;
         break;
-      case DELETE_BOOK_ID_IN_CART_SUCCESS:
-        draft.deleteBookIdInCartLoading = false;
-        draft.deleteBookIdInCartDone = true;
-        draft.booksIdsInCart = draft.booksIdsInCart.filter(
-          (_bookId) => _bookId !== action.data
+      case ADD_BOOK_IN_CART_SUCCESS:
+        draft.addBookInCartLoading = false;
+        draft.addBookInCartDone = true;
+        draft.booksInCart = [...draft.booksInCart, ...action.data];
+        break;
+      case ADD_BOOK_IN_CART_FAILURE:
+        draft.addBookInCartLoading = false;
+        draft.addBookInCartError = action.error;
+        break;
+
+      case DELETE_BOOK_IN_CART_REQUEST:
+        draft.deleteBookInCartLoading = true;
+        draft.deleteBookInCartDone = false;
+        draft.deleteBookInCartError = null;
+        break;
+      case DELETE_BOOK_IN_CART_SUCCESS:
+        draft.deleteBookInCartLoading = false;
+        draft.deleteBookInCartDone = true;
+        draft.booksInCart = draft.booksInCart.filter(
+          (book) => book._id !== action.data
         );
         break;
-      case DELETE_BOOK_ID_IN_CART_FAILURE:
-        draft.deleteBookIdInCartLoading = false;
-        draft.deleteBookIdInCartError = action.error;
+      case DELETE_BOOK_IN_CART_FAILURE:
+        draft.deleteBookInCartLoading = false;
+        draft.deleteBookInCartError = action.error;
         break;
       default:
         break;

@@ -6,31 +6,31 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import { Provider } from "react-redux";
 
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, gql } from "@apollo/client";
-const link = createHttpLink({
-  uri: 'http://localhost:4000/graphql',
-  credentials: 'include'
-});
 
-const client = new ApolloClient({
-  cache: new InMemoryCache(),
-  link,
-});
-
-// const client = new ApolloClient({
-//   uri: "http://localhost:4000/graphql",
-//   cache: new InMemoryCache(),
-  // credentials: "include",
-  // headers: [
-  //   { key: "Access-Control-Allow-Credentials", value: "true" },
-  //   { key: "Access-Control-Allow-Origin", value: "*" },
-  //   { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
-  //   { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
-  // ]
-// });
+import { useUserAgent } from "next-useragent";
 
 const store = createStore(allReducers, composeWithDevTools());
 
 const App = ({ Component, pageProps }) => {
+  const ua = useUserAgent();
+  console.log(ua);
+  if(ua.isDesktop === true) {
+    var from = "pc"
+  } else {
+    from = "mobile"
+  } 
+
+  const link = createHttpLink({
+    uri: "http://localhost:4000/graphql",
+    credentials: "include",
+    headers: { from: from },
+  });
+
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link,
+  });
+
   return (
     <ApolloProvider client={client}>
       <Provider store={store}>

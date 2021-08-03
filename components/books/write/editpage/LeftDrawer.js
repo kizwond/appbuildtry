@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, Button, Tree, Modal } from "antd";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
-import { GetIndex, IndexCreateMutation } from "../../../../graphql/query/writemain";
+import { GetIndex, IndexCreateMutation, IndexRenameMutation } from "../../../../graphql/query/bookIndex";
 import IndexSettingModal from "../index/IndexSettingModal";
 
 const LeftDrawer = ({ book_id }) => {
@@ -47,6 +47,33 @@ const LeftDrawer = ({ book_id }) => {
     postindex(values.mybook_id, values.name, values.current_index_id, values.current_seq, values.current_level);
   };
 
+  //목차 이름변경
+  const [index_update] = useMutation(IndexRenameMutation, { onCompleted: showindexdatarename });
+
+  function showindexdatarename(data) {
+    console.log("data", data);
+    setIndexInfo(data.index_update.indexes);
+  }
+
+  async function postindexrename(mybook_id, name, index_id) {
+    try {
+      await index_update({
+        variables: {
+          mybook_id: mybook_id,
+          name: name,
+          index_id: index_id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const onFinishRename = (values) => {
+    console.log(values);
+    postindexrename(values.mybook_id, values.name, values.current_index_id);
+  };
+
+  //
   const showDrawer = () => {
     setVisible(true);
   };
@@ -67,7 +94,7 @@ const LeftDrawer = ({ book_id }) => {
         목차
       </Button>
       <Drawer title="Basic Drawer" placement="left" closable={true} onClose={onClose} visible={visible} mask={false}>
-        <IndexSettingModal indexinfo={indexinfo} onFinish={onFinish} />
+        <IndexSettingModal indexinfo={indexinfo} onFinish={onFinish} onFinishRename={onFinishRename}/>
         <Tree showLine={true} showIcon={true} defaultExpandAll={true} onSelect={onSelect} treeData={treeData} />
       </Drawer>
     </>

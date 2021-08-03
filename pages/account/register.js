@@ -1,39 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import Layout from "../../components/layout/Layout";
 import { Form, Input, Button } from "antd";
 import Footer from "../../components/index/Footer";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import Link from "next/link";
-import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
-import { logIn, logOut } from "../../redux/actions";
 import Router from "next/router";
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
-
-const SignUpMutation = gql`
-  mutation SignUpMutation($username: String!, $password: String!, $name: String!, $email: String!) {
-    signup(username: $username, password: $password, name: $name, email: $email) {
-      status
-      msg
-      users {
-        _id
-        user_info {
-          username
-          name
-          email
-        }
-      }
-    }
-  }
-`;
+import { useMutation } from "@apollo/client";
+import { SignUpMutation } from "../../graphql/query/account";
 
 const LoginComponent = () => {
-  const dispatch = useDispatch();
-
   const [signup] = useMutation(SignUpMutation, { onCompleted: showdata });
 
   function showdata(data) {
-    console.log(data)
+    console.log(data);
     if (data.signup.msg === "ID 중복") {
       alert("동일 아이디가 이미 사용중임 다시 ㄱㄱ");
     } else {
@@ -58,14 +35,7 @@ const LoginComponent = () => {
   }
 
   const onFinish = (values) => {
-    const username = values.user_id;
-    const password = values.password;
-
-    postuser(username, password);
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    postuser(values.user_id, values.password);
   };
 
   return (
@@ -92,7 +62,6 @@ const LoginComponent = () => {
         >
           <Input />
         </Form.Item>
-
         <Form.Item
           name="password"
           label="비밀번호"
@@ -106,7 +75,6 @@ const LoginComponent = () => {
         >
           <Input.Password />
         </Form.Item>
-
         <Form.Item
           name="confirm"
           label="비밀번호 확인"
@@ -122,7 +90,6 @@ const LoginComponent = () => {
                 if (!value || getFieldValue("password") === value) {
                   return Promise.resolve();
                 }
-
                 return Promise.reject("비밀번호가 일치하지 않습니다.");
               },
             }),

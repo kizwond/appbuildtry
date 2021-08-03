@@ -2,13 +2,9 @@ import React, { useState, useEffect, Fragment } from "react";
 import Layout from "../../../components/layout/Layout";
 import { Form, Input, Button, Space, Popover, Select } from "antd";
 import Footer from "../../../components/index/Footer";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
-import { logIn, logOut } from "../../../redux/actions";
-import Router from "next/router";
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
+import { useDispatch } from "react-redux";
+import { useQuery, useMutation } from "@apollo/client";
 import CategorySettingModal from "../../../components/books/write/category/CategorySettingModal";
 import {
   GetCategory,
@@ -24,7 +20,6 @@ import { useRouter } from "next/router";
 const { Option } = Select;
 
 const WriteComponent = () => {
-  const dispatch = useDispatch();
   const { loading, error, data } = useQuery(GetCategory);
   const [category, setCategory] = useState();
   const [books, setBooks] = useState();
@@ -195,7 +190,7 @@ const WriteComponent = () => {
   };
   const handleOk = () => {
     setIsModalVisible(false);
-  };
+  };  
   const handleCancel = () => {
     setIsModalVisible(false);
   };

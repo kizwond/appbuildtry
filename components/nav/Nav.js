@@ -10,6 +10,8 @@ import { Drawer } from "antd";
 import { useWindowSize } from "react-use";
 import { gql, useLazyQuery } from "@apollo/client";
 
+import { useSelector, useDispatch } from "react-redux";
+
 const LOGOUT = gql`
   query {
     logout {
@@ -19,6 +21,7 @@ const LOGOUT = gql`
 `;
 
 const Nav = () => {
+  const isLogged = useSelector((state) => state.isLogged);
   const { width } = useWindowSize();
   const [visible, setVisible] = useState(false);
 
@@ -107,13 +110,21 @@ const Nav = () => {
                       </Link>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                      <Link href="/account/login">
-                        <a style={linkStyle}>
-                          <UserOutlined style={{ marginRight: 10 }} />
-                          로그인
-                        </a>
-                      </Link>
-                      <button onClick={() => onClickLogout()}>로그아웃</button>
+                      {isLogged && (
+                        <>
+                          <button onClick={() => onClickLogout()}>로그아웃</button>
+                        </>
+                      )}
+                      {!isLogged && (
+                        <>
+                          <Link href="/account/login">
+                            <a style={linkStyle}>
+                              <UserOutlined style={{ marginRight: 10 }} />
+                              로그인
+                            </a>
+                          </Link>
+                        </>
+                      )}
                       <Link href="/account/register">
                         <a style={linkStyle}>
                           <FileTextOutlined style={{ marginRight: 10 }} />
@@ -191,13 +202,21 @@ const Nav = () => {
                       </Link>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                      <Link href="/account/login">
-                        <a style={linkStyle}>
-                          <UserOutlined style={{ marginRight: 10 }} />
-                          로그인
-                        </a>
-                      </Link>
-                      <button onClick={() => onClickLogout()}>로그아웃</button>
+                      {isLogged && (
+                        <>
+                          <button onClick={() => onClickLogout()}>로그아웃</button>
+                        </>
+                      )}
+                      {!isLogged && (
+                        <>
+                          <Link href="/account/login">
+                            <a style={linkStyle}>
+                              <UserOutlined style={{ marginRight: 10 }} />
+                              로그인
+                            </a>
+                          </Link>
+                        </>
+                      )}
                       <Link href="/account/register">
                         <a style={linkStyle}>
                           <FileTextOutlined style={{ marginRight: 10 }} />
@@ -254,10 +273,21 @@ const Nav = () => {
                   </Link>
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Link href="/account/login">
-                    <a style={linkStyle}>로그인</a>
-                  </Link>
-                  <button onClick={() => onClickLogout()}>로그아웃</button>
+                  {isLogged && (
+                    <>
+                      <button onClick={() => onClickLogout()}>로그아웃</button>
+                    </>
+                  )}
+                  {!isLogged && (
+                    <>
+                      <Link href="/account/login">
+                        <a style={linkStyle}>
+                          <UserOutlined style={{ marginRight: 10 }} />
+                          로그인
+                        </a>
+                      </Link>
+                    </>
+                  )}
                   <Link href="/account/register">
                     <a style={linkStyle}>회원가입</a>
                   </Link>
@@ -307,10 +337,21 @@ const Nav = () => {
                   </Link>
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Link href="/account/login">
-                    <a style={linkStyle}>로그인</a>
-                  </Link>
-                  <button onClick={() => onClickLogout()}>로그아웃</button>
+                  {isLogged && (
+                    <>
+                      <button onClick={() => onClickLogout()}>로그아웃</button>
+                    </>
+                  )}
+                  {!isLogged && (
+                    <>
+                      <Link href="/account/login">
+                        <a style={linkStyle}>
+                          <UserOutlined style={{ marginRight: 10 }} />
+                          로그인
+                        </a>
+                      </Link>
+                    </>
+                  )}
                   <Link href="/account/register">
                     <a style={linkStyle}>회원가입</a>
                   </Link>

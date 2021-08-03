@@ -1,145 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Popover, Form, Input, Space } from "antd";
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
-import { SettingOutlined, PlusOutlined, ArrowUpOutlined, ArrowDownOutlined, EditOutlined } from "@ant-design/icons";
+import { useQuery, useMutation } from "@apollo/client";
+import { PlusOutlined } from "@ant-design/icons";
+import { GetCategory, CreateNewCategory, DeleteCategory, UpdateCategory, PositioningCategory } from "../../../../graphql/query/category";
 
-const GetCategory = gql`
-  query {
-    mybookcate_get {
-      status
-      msg
-      mybookcates {
-        _id
-        mybookcate_info {
-          user_id
-          name
-          seq
-        }
-      }
-    }
-  }
-`;
-
-const CreateNewCategory = gql`
-  mutation CreateNewCategory($name: String!, $current_mybookcate_id: String!) {
-    mybookcate_create(name: $name, current_mybookcate_id: $current_mybookcate_id) {
-      status
-      msg
-      mybookcates {
-        _id
-        mybookcate_info {
-          name
-          seq
-        }
-      }
-      mybooks {
-        _id
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          hide_or_show
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
-        }
-      }
-    }
-  }
-`;
-const DeleteCategory = gql`
-  mutation DeleteCategory($mybookcate_id: String!) {
-    mybookcate_delete(mybookcate_id: $mybookcate_id) {
-      status
-      msg
-      mybookcates {
-        _id
-        mybookcate_info {
-          name
-          seq
-        }
-      }
-      mybooks {
-        _id
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          hide_or_show
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
-        }
-      }
-    }
-  }
-`;
-const UpdateCategory = gql`
-  mutation UpdateCategory($name: String!, $mybookcate_id: String!) {
-    mybookcate_update(name: $name, mybookcate_id: $mybookcate_id) {
-      status
-      msg
-      mybookcates {
-        _id
-        mybookcate_info {
-          name
-          seq
-        }
-      }
-      mybooks {
-        _id
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          hide_or_show
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
-        }
-      }
-    }
-  }
-`;
-const PositioningCategory = gql`
-  mutation PositioningCategory($direction: String, $mybookcate_id: String!) {
-    mybookcate_changeorder(direction: $direction, mybookcate_id: $mybookcate_id) {
-      status
-      msg
-      mybookcates {
-        _id
-        mybookcate_info {
-          name
-          seq
-        }
-      }
-      mybooks {
-        _id
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          hide_or_show
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
-        }
-      }
-    }
-  }
-`;
 const CategorySettingModal = ({ isModalVisible, handleOk, handleCancel }) => {
   return (
     <>
@@ -156,23 +20,21 @@ const ModalContents = () => {
   const [lastSeq, setLastSeq] = useState();
 
   useEffect(() => {
-    if(data){
-      setCategory(data.mybookcate_get.mybookcates)
+    if (data) {
+      setCategory(data.mybookcate_get.mybookcates);
       const lastSeq = data.mybookcate_get.mybookcates.length - 1;
-      setLastSeq(Number(lastSeq))
+      setLastSeq(Number(lastSeq));
+    }
 
-    }  
-    
-     
-    console.log(lastSeq)
-    console.log(category)
+    console.log(lastSeq);
+    console.log(category);
   });
 
   const [mybookcate_create] = useMutation(CreateNewCategory, { onCompleted: showdatacreate });
   const [mybookcate_delete] = useMutation(DeleteCategory, { onCompleted: showdatadelete });
   const [mybookcate_update] = useMutation(UpdateCategory, { onCompleted: showdataupdate });
   const [mybookcate_changeorder] = useMutation(PositioningCategory, { onCompleted: showdataposition });
-  
+
   function showdataposition(data) {
     console.log("data", data);
     setCategory(data.mybookcate_changeorder.mybookcates);
@@ -261,8 +123,8 @@ const ModalContents = () => {
     console.log(id);
     deleteCategory(id);
   };
-  if(category) {
-    console.log("check",category)
+  if (category) {
+    console.log("check", category);
     var categoryList = category.map((item) => (
       <CategoryList
         lastSeq={lastSeq}
@@ -275,7 +137,7 @@ const ModalContents = () => {
       />
     ));
   }
-  
+
   return (
     <>
       <div style={{ fontSize: "11px", border: "1px solid lightgrey" }}>

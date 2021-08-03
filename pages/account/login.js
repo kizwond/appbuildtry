@@ -1,44 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import Layout from "../../components/layout/Layout";
 import { Form, Input, Button } from "antd";
 import Footer from "../../components/index/Footer";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
-import { logIn, logOut } from "../../redux/actions";
-import Router from "next/router";
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
-
-
-const SignInMutation = gql`
-  mutation SignInMutation($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      status
-      msg
-      users {
-        _id
-         user_info {
-          username
-          name
-          email        
-        }
-      }
-    }
-  }
-`;
+import { useMutation } from "@apollo/client";
+import { SignInMutation } from "../../graphql/query/account";
 
 const LoginComponent = () => {
-  const dispatch = useDispatch()
-
   const [login] = useMutation(SignInMutation, { onCompleted: showdata });
 
   function showdata(data) {
-    console.log("data", data)
+    console.log("data", data);
     if (data.login.msg === "로그인 성공") {
       alert("로그인성공!!! 메인화면으로 이동합니다.");
       // Router.push("/");
-      window.location.href = "/"
+      window.location.href = "/";
     } else {
       alert("뭔가 잘못되었네요. 다시 해봐요.");
     }
@@ -58,14 +35,7 @@ const LoginComponent = () => {
   }
 
   const onFinish = (values) => {
-    const username = values.user_id;
-    const password = values.password;
-
-    postuser(username, password);
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    postuser(values.user_id, values.password);
   };
 
   return (

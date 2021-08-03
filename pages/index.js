@@ -5,25 +5,10 @@ import Hero from "../components/index/Hero";
 import NewBooks from "../components/index/NewBooks";
 import Footer from "../components/index/Footer";
 import { useSelector, useDispatch } from "react-redux";
-import { logIn, logOut } from "../redux/actions";
-import { gql, useQuery } from "@apollo/client";
+import { logIn } from "../redux/actions";
+import { useQuery } from "@apollo/client";
+import {GET_USER} from '../graphql/query/account';
 
-const GET_USER = gql`
-  query {
-    me {
-      status
-      msg
-      users {
-        _id
-        user_info {
-          username
-          name
-          email
-        }
-      }
-    }
-  }
-`;
 const Home = () => {
   const isLogged = useSelector((state) => state.isLogged);
   const dispatch = useDispatch();
@@ -44,7 +29,7 @@ const Home = () => {
         dispatch(logIn(true));
       }
     }
-  });
+  }, [data, dispatch]);
 
   return (
     <Layout>

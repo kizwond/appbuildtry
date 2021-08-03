@@ -9,7 +9,7 @@ import { useUserAgent } from "next-useragent";
 const App = ({ Component, pageProps }) => {
   const ua = useUserAgent();
   console.log(ua);
-  if(ua.isDesktop === true) {
+  if(ua.isWindows === true) {
     var from = "pc"
   } else {
     from = "mobile"

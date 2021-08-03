@@ -8,25 +8,18 @@ import { Drawer } from "antd";
 
 // import useWindowSize from "../../utils/useWindowSize";
 import { useWindowSize } from "react-use";
-import { gql, useLazyQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 
 import { useSelector, useDispatch } from "react-redux";
-
-const LOGOUT = gql`
-  query {
-    logout {
-      msg
-    }
-  }
-`;
+import { LOGOUT } from "../../graphql/query/account";
 
 const Nav = () => {
   const isLogged = useSelector((state) => state.isLogged);
   const { width } = useWindowSize();
   const [visible, setVisible] = useState(false);
 
-  const [logout, { loading, error, data }] = useLazyQuery(LOGOUT);
-
+  // const [logout, { loading, error, data }] = useLazyQuery(LOGOUT);
+  const [logout] = useMutation(LOGOUT);
   const showDrawer = () => {
     setVisible(true);
   };
@@ -57,8 +50,7 @@ const Nav = () => {
 
   const onClickLogout = () => {
     logout();
-    setCookie("refreshToken");
-    setCookie("accessToken");
+    console.log("here")
     window.location.href = "/";
   };
 

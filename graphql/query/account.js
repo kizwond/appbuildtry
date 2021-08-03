@@ -52,3 +52,11 @@ mutation SignUpMutation($username: String!, $password: String!, $name: String!, 
 }
 `;
 
+export const LOGOUT = gql`
+mutation {
+    logout {
+      status
+      msg
+    }
+  }
+`;

@@ -28,7 +28,7 @@ const ModalContents = () => {
 
     console.log(lastSeq);
     console.log(category);
-  });
+  },[data, lastSeq, category]);
 
   const [mybookcate_create] = useMutation(CreateNewCategory, { onCompleted: showdatacreate });
   const [mybookcate_delete] = useMutation(DeleteCategory, { onCompleted: showdatadelete });

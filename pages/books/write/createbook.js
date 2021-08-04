@@ -56,7 +56,7 @@ const CreateBookComponent = () => {
       setCategory(data.mybookcate_get.mybookcates)
     }  
     console.log(category)
-  });
+  },[data, category]);
 
   function showdata(item) {
     console.log("data", item);

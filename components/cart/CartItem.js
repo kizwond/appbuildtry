@@ -32,7 +32,7 @@ const CartItem = ({
         />
       </div>
       <div>
-        <img
+        {/* <img
           className="ThumbnailImage"
           src={book.book_info.bookcover.url_small}
           alt=""
@@ -41,7 +41,7 @@ const CartItem = ({
             width: '80px',
             maxHeight: '114px',
           }}
-        />
+        /> */}
       </div>
       <div
         style={{

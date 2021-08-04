@@ -20,6 +20,8 @@ import { useRouter } from "next/router";
 const { Option } = Select;
 
 const WriteComponent = () => {
+  const router = useRouter();
+
   const { loading, error, data } = useQuery(GetCategory);
   const [category, setCategory] = useState();
   const [books, setBooks] = useState();
@@ -176,12 +178,15 @@ const WriteComponent = () => {
   useEffect(() => {
     if (data) {
       console.log(data);
+      if(data.mybook_get.status === "401"){
+        router.push("/account/login");
+      }
       setCategory(data.mybookcate_get.mybookcates);
       setBooks(data.mybook_get.mybooks);
     }
     console.log(category);
     console.log(books);
-  });
+  },[data, category, books,router]);
 
   // 카테고리 설정 모달 visible
   const [isModalVisible, setIsModalVisible] = useState(false);

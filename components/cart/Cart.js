@@ -17,7 +17,7 @@ const Cart = () => {
   useEffect(() => {
     setCheckedBooks(booksInCart);
     console.log('카트랜더링');
-  }, []);
+  }, [booksInCart]);
 
   const BooksChecked = checkedBooks.filter((book) => book !== '');
 
@@ -49,7 +49,7 @@ const Cart = () => {
     } else {
       updateCheckedBooks(booksInCart);
     }
-  }, [checkedBooks]);
+  }, [booksInCart,checkedBooks,updateCheckedBooks]);
 
   const handleDeleteAllCheckedBooks = useCallback(() => {
     let willBeUpdatedBooksInCart = checkedBooks.map((book, index) => {
@@ -64,7 +64,7 @@ const Cart = () => {
       updateBooksInCart(willBeUpdatedBooksInCart.filter((book) => book !== ''))
     );
     setCheckedBooks(NewCheckedBooks);
-  }, [checkedBooks]);
+  }, [booksInCart,checkedBooks,dispatch]);
 
   return (
     <CartWrapper>

@@ -15,6 +15,11 @@ const LoginComponent = () => {
     if (data.login.msg === "로그인 성공") {
       alert("로그인성공!!! 메인화면으로 이동합니다.");
       // Router.push("/");
+      if(data.login.token !== null){
+        localStorage.setItem("accessToken", data.login.token.accessToken);
+        localStorage.setItem("refreshToken",  data.login.token.refreshToken);
+      }
+      
       window.location.href = "/";
     } else {
       alert("뭔가 잘못되었네요. 다시 해봐요.");

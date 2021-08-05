@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3333",
+    "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,6 +16,7 @@
     "faker": "^5.5.3",
     "graphql": "^15.5.1",
     "immer": "^9.0.5",
+    "mobile-detect": "^1.4.5",
     "next": "11.0.1",
     "next-redux-wrapper": "^7.0.2",
     "next-useragent": "^2.6.0",

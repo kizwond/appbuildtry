@@ -31,6 +31,10 @@ export const SignInMutation = gql`
           email        
         }
       }
+      token{
+        accessToken
+        refreshToken
+      }
     }
   }
 `;

@@ -50,6 +50,8 @@ const Nav = () => {
 
   const onClickLogout = () => {
     logout();
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
     console.log("here")
     window.location.href = "/";
   };

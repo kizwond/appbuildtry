@@ -7,38 +7,36 @@ import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, gql } from
 import { useUserAgent } from "next-useragent";
 
 import { useWindowSize } from "react-use";
+import MobileDetect from '../node_modules/mobile-detect/mobile-detect';
+
+// const refreshToken = localStorage.getItem('refreshToken')
+
 const App = ({ Component, pageProps }) => {
-  const { width } = useWindowSize();
-  if (width < 769 && width > 426) {
-    var tablet = true;
-  } else {
-    tablet = false;
-  }
+ 
 
-  if (width < 1025 && width > 769) {
-    var laptop = true;
-  } else {
-    laptop = false;
-  }
-
-  if (width > 1024) {
-    var desktop = true;
-  } else {
-    desktop = false;
-  }
-  
-  if(laptop === true){
-    var from = "pc"
-  } else if(desktop === true){
-    var from = "pc"
-  } else {
-    var from = "mobile"
-  }
+  const ISSERVER = typeof window === "undefined";
+  if(!ISSERVER) {
+    var accessToken = localStorage.getItem('accessToken')
+    console.log(accessToken)
+    var md = new MobileDetect(window.navigator.userAgent);
+    if(md.mobile()) {
+     console.log("mobile")
+     var from = "mobile"
+    }
+    else {
+     console.log("pc")
+     var from = "pc"
+    }
+   }
   console.log(from)
+ 
+  
   const link = createHttpLink({
-    uri: "http://52.79.153.108/graphql",
+    uri: "http://localhost:5000/graphql",
     credentials: "include",
-    headers: { from:from },
+    headers: { from:from,
+      Authorization: accessToken 
+  },
   });
 
   const client = new ApolloClient({

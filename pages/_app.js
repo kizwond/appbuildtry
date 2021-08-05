@@ -36,7 +36,7 @@ const App = ({ Component, pageProps }) => {
   }
   console.log(from)
   const link = createHttpLink({
-    uri: "http://localhost:5000/graphql",
+    uri: "http://52.79.153.108/graphql",
     credentials: "include",
     headers: { from:from },
   });

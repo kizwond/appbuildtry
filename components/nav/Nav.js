@@ -78,7 +78,7 @@ const Nav = () => {
                 <div style={{ width: "100%", height: 50, display: "flex", margin: "auto" }}>
                   <div style={{ display: "flex", width: "100%", justifyContent: "space-between", flexDirection: "column" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                      <Link href="/study">
+                      <Link href="/books/study">
                         <a style={linkStyle}>
                           <ReadOutlined style={{ marginRight: 10 }} />
                           학습
@@ -170,7 +170,7 @@ const Nav = () => {
                 <div style={{ width: "100%", height: 50, display: "flex", margin: "auto" }}>
                   <div style={{ display: "flex", width: "100%", justifyContent: "space-between", flexDirection: "column" }}>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                      <Link href="/study">
+                      <Link href="/books/study">
                         <a style={linkStyle}>
                           <ReadOutlined style={{ marginRight: 10 }} />
                           학습
@@ -253,7 +253,7 @@ const Nav = () => {
               </Link>
               <div style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Link href="/study">
+                  <Link href="/books/study">
                     <a style={linkStyle}>학습</a>
                   </Link>
                   <Link href="/books/write">
@@ -317,7 +317,7 @@ const Nav = () => {
               </Link>
               <div style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <Link href="/study">
+                  <Link href="/books/study">
                     <a style={linkStyle}>학습</a>
                   </Link>
                   <Link href="/books/write">

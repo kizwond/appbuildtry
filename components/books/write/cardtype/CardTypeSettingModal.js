@@ -118,7 +118,7 @@ const NewCardTemplete = ({ book_id }) => {
 
     addCardType({ name: name, type: type, face1: face1, face2: face2, selection: selectionNum });
 
-    // setVisible(false)
+    setVisible(false)
   };
   const handleCancel = (e) => {
     setVisible(false);
@@ -577,3 +577,31 @@ export default NewCardTemplete;
 // }
 
 // export default NewCardTemplete;
+
+
+// variables: {
+//   forUpdateUserflagconfig: {
+//     details : {
+//       flag1 :{
+//         shape : String
+//         color : String
+//       }
+//       flag1 :{
+//         shape : String
+//         color : String
+//       }
+//       flag1 :{
+//         shape : String
+//         color : String
+//       }
+//       flag1 :{
+//         shape : String
+//         color : String
+//       }
+//       flag1 :{
+//         shape : String
+//         color : String
+//       }
+//     }
+//   },
+// },

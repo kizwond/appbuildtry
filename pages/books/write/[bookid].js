@@ -17,7 +17,7 @@ const Book = () => {
       <div style={{display:"flex", justifyContent:"space-between"}}>
       <LeftDrawer book_id={query.bookid}/>
       <h1>hello {query.bookid}</h1>
-      <RightDrawer/>
+      <RightDrawer book_id={query.bookid}/>
       </div>
     </Layout>
   );

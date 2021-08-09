@@ -67,7 +67,7 @@ const Home = () => {
       }
       console.log("done");
     } else {
-      alert("뭔가 잘못되었네요. 다시 해봐요.");
+      console.log("로그아웃상태입니다.");
     }
   }
 

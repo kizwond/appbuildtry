@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import reactCSS from 'reactcss';
 import { GithubPicker } from 'react-color';
 
-const ColorPicker = ({ color, onChangeColor, index }) => {
+const ColorPicker = memo(({ color, onChangeColor, index }) => {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
 
   const handleClick = () => {
@@ -56,11 +56,15 @@ const ColorPicker = ({ color, onChangeColor, index }) => {
       {displayColorPicker ? (
         <div style={styles.popover}>
           <div style={styles.cover} onClick={handleClose} />
-          <GithubPicker color={color} onChange={handleChange} />
+          <GithubPicker
+            color={color}
+            colors={['blue', 'yellow', 'green', 'black', 'pink']}
+            onChange={handleChange}
+          />
         </div>
       ) : null}
     </div>
   );
-};
+});
 
 export default ColorPicker;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Drawer, Button } from 'antd';
 import CardTypeSettingModal from '../../../../components/books/write/cardtype/CardTypeSettingModal'
 
-const RightDrawer = () => {
+const RightDrawer = ({book_id}) => {
     const [visible, setVisible] = useState(false);
   
     const showDrawer = () => {
@@ -26,7 +26,7 @@ const RightDrawer = () => {
           visible={visible}
           mask={false}
         >
-           <CardTypeSettingModal/>
+           <CardTypeSettingModal book_id={book_id}/>
           <p>Some contents...</p>
           <p>Some contents...</p>
           <p>Some contents...</p>

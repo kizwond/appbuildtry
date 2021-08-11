@@ -17,7 +17,7 @@ const Nav = () => {
   const isLogged = useSelector((state) => state.isLogged);
   const { width } = useWindowSize();
   const [visible, setVisible] = useState(false);
-
+  console.log(isLogged)
   // const [logout, { loading, error, data }] = useLazyQuery(LOGOUT);
   const [logout] = useMutation(LOGOUT);
   const showDrawer = () => {

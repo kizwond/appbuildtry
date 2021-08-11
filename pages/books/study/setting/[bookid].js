@@ -24,7 +24,7 @@ const BookSetting = () => {
         return null;
         break;
       case 'set_level_and_cycle':
-        return <LevelAndCycleSetting book_id={query} />;
+        return <LevelAndCycleSetting mybook_id={query.bookid} />;
         break;
       case 'select_category':
         return null;

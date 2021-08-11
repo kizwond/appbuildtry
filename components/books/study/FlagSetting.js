@@ -41,7 +41,7 @@ const FlagSetting = () => {
       await userflagconfig_update({
         variables: {
           forUpdateUserflagconfig: {
-            detail: {
+            details: {
               flag1: {
                 shape: flag[0].shape,
                 color: flag[0].color,

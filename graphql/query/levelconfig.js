@@ -6,14 +6,7 @@ export const GET_LEVEL_CONFIG = gql`
       status
       msg
       levelconfigs {
-        _id
-        levelconfig_info {
-          user_id
-          mybook_id
-        }
         restudy {
-          maxRatio
-          levelchangeSensitivity
           option {
             diffi1 {
               on_off

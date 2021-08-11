@@ -36,59 +36,37 @@ export const GET_USER_FLAG_CONFIG = gql`
   }
 `;
 
-export const UpdateUserFlagConfig = gql`
-  mutation userflagconfig_update($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      status
-      msg
-      users {
-        _id
-        user_info {
-          username
-          name
-          email
-        }
-      }
-      token {
-        accessToken
-        refreshToken
-      }
-    }
-  }
-`;
-
-export const SignUpMutation = gql`
-  mutation SignUpMutation(
-    $username: String!
-    $password: String!
-    $name: String!
-    $email: String!
+export const UPDATE_USER_FLAG_CONFIG = gql`
+  mutation user_flag_config_update(
+    $forUpdateUserflagconfig: forUpdateUserflagconfig
   ) {
-    signup(
-      username: $username
-      password: $password
-      name: $name
-      email: $email
-    ) {
+    userflagconfig_update(forUpdateUserflagconfig: $forUpdateUserflagconfig) {
       status
       msg
-      users {
-        _id
-        user_info {
-          username
-          name
-          email
+      userflagconfigs {
+        details {
+          flag1 {
+            shape
+            color
+          }
+          flag2 {
+            shape
+            color
+          }
+          flag3 {
+            shape
+            color
+          }
+          flag4 {
+            shape
+            color
+          }
+          flag5 {
+            shape
+            color
+          }
         }
       }
-    }
-  }
-`;
-
-export const LOGOUT = gql`
-  mutation {
-    logout {
-      status
-      msg
     }
   }
 `;

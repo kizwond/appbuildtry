@@ -12,17 +12,10 @@ import { useQuery, useMutation } from '@apollo/client';
 
 const FlagSetting = () => {
   const [flag, setFlag] = useState([]);
-  const showDataFromServer = (data) => {
-    console.log('그래프큐엘에서 데이터 받음, 플래그', data);
-    // TODO 보낸 데이터와 서버 저장 데이터와 비교하는 코드 짜보자
-  };
-  const { loading, error, data } = useQuery(GET_USER_FLAG_CONFIG);
-  const [userflagconfig_update] = useMutation(UPDATE_USER_FLAG_CONFIG, {
-    onCompleted: showDataFromServer,
-  });
 
-  useEffect(() => {
-    if (!loading) {
+  const { loading, error, data, refetch } = useQuery(GET_USER_FLAG_CONFIG, {
+    onCompleted: (data) => {
+      console.log('유즈', data.userflagconfig_get.userflagconfigs[0].details);
       const flags_array = ['flag1', 'flag2', 'flag3', 'flag4', 'flag5'];
       const server_flags = data.userflagconfig_get.userflagconfigs[0].details;
       const for_flags_data = flags_array.map((flag, index) => ({
@@ -33,8 +26,20 @@ const FlagSetting = () => {
       }));
 
       setFlag(for_flags_data);
-    }
-  }, [data, loading]);
+    },
+    notifyOnNetworkStatusChange: true,
+    // fetchPolicy: 'network-only', // Doesn't check cache before making a network request
+  });
+
+  // if (loading) {
+  //   return <div>로딩중..</div>;
+  // }
+
+  // if (error) {
+  //   return <div>에러 발생 : {error}</div>;
+  // }
+
+  const [userflagconfig_update] = useMutation(UPDATE_USER_FLAG_CONFIG);
 
   const submitFlag = async () => {
     try {
@@ -66,6 +71,7 @@ const FlagSetting = () => {
           },
         },
       });
+      refetch();
     } catch (error) {
       console.log(error);
     }

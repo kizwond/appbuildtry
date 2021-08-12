@@ -12,7 +12,7 @@ const BookSetting = () => {
 
   const [selectedMenu, setSelectedMenu] = useState('study_data_detail');
 
-  const Content = (menu_item) => {
+  const content = (menu_item) => {
     switch (menu_item) {
       case 'study_data_detail':
         return null;
@@ -24,7 +24,7 @@ const BookSetting = () => {
         return null;
         break;
       case 'set_level_and_cycle':
-        return <LevelAndCycleSetting mybook_id={query.bookid} />;
+        return <LevelAndCycleSetting book_id={query.bookid} />;
         break;
       case 'select_category':
         return null;
@@ -37,6 +37,32 @@ const BookSetting = () => {
         break;
     }
   };
+  const title = (menu_item) => {
+    switch (menu_item) {
+      case 'study_data_detail':
+        return '학습 상세 정보 보기';
+        break;
+      case 'set_flags':
+        return '플래그 설정';
+        break;
+      case 'cards_progress':
+        return '카드 학습 상태 관리';
+        break;
+      case 'set_level_and_cycle':
+        return '레벨 및 복습 주기 설정';
+        break;
+      case 'select_category':
+        return '카테고리 이동';
+        break;
+      case 'delete_book':
+        return '책 삭제';
+        break;
+
+      default:
+        break;
+    }
+  };
+
   return (
     <Layout>
       <MainWrapper>
@@ -83,7 +109,9 @@ const BookSetting = () => {
                 <Col xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}></Col>
                 <Col xs={22} sm={22} md={18} lg={18} xl={18} xxl={18}>
                   <div style={{ marginTop: '10px', minWidth: '270px' }}>
-                    <Card title="플래그 설정">{Content(selectedMenu)}</Card>
+                    <Card title={title(selectedMenu)}>
+                      {content(selectedMenu)}
+                    </Card>
                   </div>
                 </Col>
                 <Col xs={1} sm={1} md={4} lg={4} xl={4} xxl={4}></Col>

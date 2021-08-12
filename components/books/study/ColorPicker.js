@@ -7,7 +7,6 @@ const ColorPicker = memo(({ color, onChangeColor, index }) => {
 
   const handleClick = () => {
     setDisplayColorPicker((prev) => !prev);
-    console.log('handleclick');
   };
 
   const handleClose = () => {

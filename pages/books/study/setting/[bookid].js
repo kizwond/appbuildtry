@@ -107,14 +107,14 @@ const BookSetting = () => {
             <StyledContentWrapper>
               <Row>
                 <Col xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}></Col>
-                <Col xs={22} sm={22} md={18} lg={18} xl={18} xxl={18}>
+                <Col xs={22} sm={22} md={20} lg={20} xl={20} xxl={20}>
                   <div style={{ marginTop: '10px', minWidth: '270px' }}>
                     <Card title={title(selectedMenu)}>
                       {content(selectedMenu)}
                     </Card>
                   </div>
                 </Col>
-                <Col xs={1} sm={1} md={4} lg={4} xl={4} xxl={4}></Col>
+                <Col xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}></Col>
               </Row>
             </StyledContentWrapper>
           </Col>

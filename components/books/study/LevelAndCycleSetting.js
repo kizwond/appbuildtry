@@ -17,6 +17,7 @@ import {
   ArrowDownOutlined,
   ArrowLeftOutlined,
   ArrowRightOutlined,
+  CloseSquareOutlined,
 } from '@ant-design/icons';
 
 const LevelAndCycleSetting = ({ book_id }) => {
@@ -212,30 +213,40 @@ const LevelAndCycleSetting = ({ book_id }) => {
           style={{ width: 60 }}
           onChange={(value) => {}}
         >
-          <Select.Option>없음</Select.Option>
+          <Select.Option value="없음" key="없음">
+            <Tooltip placement="leftTop" title="제스처 사용안함">
+              <div style={{ width: '100%' }}>
+                <CloseSquareOutlined />
+              </div>
+            </Tooltip>
+          </Select.Option>
           <Select.Option value="up" key="up">
-            <Tooltip placement="top" title="위로">
+            <Tooltip placement="leftTop" title="위로" mouseEnterDelay={0.4}>
               <div style={{ width: '100%' }}>
                 <ArrowUpOutlined />
               </div>
             </Tooltip>
           </Select.Option>
           <Select.Option value="down" key="down">
-            <Tooltip placement="bottom" title="아래로">
+            <Tooltip
+              placement="leftBottom"
+              title="아래로"
+              mouseEnterDelay={0.4}
+            >
               <div style={{ width: '100%' }}>
                 <ArrowDownOutlined />
               </div>
             </Tooltip>
           </Select.Option>
           <Select.Option value="left" key="left">
-            <Tooltip placement="left" title="왼쪽">
+            <Tooltip placement="left" title="왼쪽" mouseEnterDelay={0.4}>
               <div style={{ width: '100%' }}>
                 <ArrowLeftOutlined />
               </div>
             </Tooltip>
           </Select.Option>
           <Select.Option value="right" key="right">
-            <Tooltip placement="right" title="오른쪽">
+            <Tooltip placement="right" title="오른쪽" mouseEnterDelay={0.4}>
               <div style={{ width: '100%' }}>
                 <ArrowRightOutlined />
               </div>

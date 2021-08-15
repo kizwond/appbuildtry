@@ -113,6 +113,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
       key: 'nick',
       render: (nick, record) => (
         <Input
+          disabled={restudyOption[record.key].on_off === 'on' ? false : true}
           placeholder={nick}
           allowClear
           onChange={(e) => {
@@ -128,8 +129,9 @@ const LevelAndCycleSetting = ({ book_id }) => {
       render: (period, record) => {
         return (
           <Select
+            disabled={restudyOption[record.key].on_off === 'on' ? false : true}
             defaultValue={period}
-            style={{ width: 60 }}
+            style={{ width: 80 }}
             onChange={(value) => {
               const tableData = produce(restudyOption, (draft) => {
                 draft[record.key].period = value;
@@ -169,7 +171,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
           >
             {record.periodOption.map((num) => (
               <Select.Option value={num} key={num}>
-                {num}
+                {`${num}분`}
               </Select.Option>
             ))}
           </Select>
@@ -182,6 +184,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
       key: 'shortcutkey',
       render: (short, record) => (
         <Input
+          disabled={restudyOption[record.key].on_off === 'on' ? false : true}
           placeholder={short}
           maxLength={1}
           style={{ width: 35 }}
@@ -207,13 +210,14 @@ const LevelAndCycleSetting = ({ book_id }) => {
       title: '제스처',
       dataIndex: 'gesture',
       key: 'gesture',
-      render: (ges) => (
+      render: (ges, record) => (
         <Select
           defaultValue={ges}
           style={{ width: 60 }}
           onChange={(value) => {}}
+          disabled={restudyOption[record.key].on_off === 'on' ? false : true}
         >
-          <Select.Option value="없음" key="없음">
+          <Select.Option value={null} key={null}>
             <Tooltip placement="leftTop" title="제스처 사용안함">
               <div style={{ width: '100%' }}>
                 <CloseSquareOutlined />

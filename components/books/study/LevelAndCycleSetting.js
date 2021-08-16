@@ -1,24 +1,12 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Input,
-  Select,
-  Table,
-  Tooltip,
-} from '../../../node_modules/antd/lib/index';
+import { Button, Checkbox, Divider, Input, Select, Table, Tooltip } from '../../../node_modules/antd/lib/index';
 import { GET_LEVEL_CONFIG } from '../../../graphql/query/levelconfig';
 import { useQuery } from '@apollo/client';
 import produce from 'immer';
-import {
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  ArrowLeftOutlined,
-  ArrowRightOutlined,
-  CloseSquareOutlined,
-} from '@ant-design/icons';
+import { ArrowUpOutlined, ArrowDownOutlined, ArrowLeftOutlined, ArrowRightOutlined, CloseSquareOutlined } from '@ant-design/icons';
+import InputComponent from './InputComponent';
+import PeriodComponent from './PeriodComponent';
 
 const LevelAndCycleSetting = ({ book_id }) => {
   const [restudyOption, setRestudyOption] = useState([]);
@@ -75,11 +63,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
 
       if (index < 4 && index > 0) {
         let diffi_preiodOptionArray = [];
-        for (
-          let i = tableData[index - 1].period + 1;
-          i < tableData[index + 1].period;
-          i++
-        ) {
+        for (let i = tableData[index - 1].period + 1; i < tableData[index + 1].period; i++) {
           diffi_preiodOptionArray.push(i);
         }
         item.periodOption = diffi_preiodOptionArray;
@@ -112,13 +96,11 @@ const LevelAndCycleSetting = ({ book_id }) => {
       dataIndex: 'nick',
       key: 'nick',
       render: (nick, record) => (
-        <Input
+        <InputComponent
           disabled={restudyOption[record.key].on_off === 'on' ? false : true}
           placeholder={nick}
-          allowClear
-          onChange={(e) => {
-            onChangeNickName(e, record.key);
-          }}
+          onChangeNickName={onChangeNickName}
+          recordKey={record.key}
         />
       ),
     },
@@ -127,54 +109,17 @@ const LevelAndCycleSetting = ({ book_id }) => {
       dataIndex: 'period',
       key: 'period',
       render: (period, record) => {
+        const changePeriodOption = (newArray) => {
+          setRestudyOption(newArray);
+        };
         return (
-          <Select
-            disabled={restudyOption[record.key].on_off === 'on' ? false : true}
-            defaultValue={period}
-            style={{ width: 80 }}
-            onChange={(value) => {
-              const tableData = produce(restudyOption, (draft) => {
-                draft[record.key].period = value;
-
-                draft = draft.map((item, index) => {
-                  if (index == 0) {
-                    let diffi_preiodOptionArray = [];
-                    for (let i = 1; i < draft[index + 1].period; i++) {
-                      diffi_preiodOptionArray.push(i);
-                    }
-                    item.periodOption = diffi_preiodOptionArray;
-                  }
-                  if (index == 4) {
-                    let diffi5_preiodOptionArray = [];
-                    for (let i = draft[index - 1].period + 1; i < 61; i++) {
-                      diffi5_preiodOptionArray.push(i);
-                    }
-                    item.periodOption = diffi5_preiodOptionArray;
-                  }
-
-                  if (index < 4 && index > 0) {
-                    let diffi_preiodOptionArray = [];
-                    for (
-                      let i = draft[index - 1].period + 1;
-                      i < draft[index + 1].period;
-                      i++
-                    ) {
-                      diffi_preiodOptionArray.push(i);
-                    }
-                    item.periodOption = diffi_preiodOptionArray;
-                  }
-                  return item;
-                });
-              });
-              setRestudyOption(tableData);
-            }}
-          >
-            {record.periodOption.map((num) => (
-              <Select.Option value={num} key={num}>
-                {`${num}분`}
-              </Select.Option>
-            ))}
-          </Select>
+          <PeriodComponent
+            period={period}
+            arrayIndex={record.key}
+            selectOptionArray={record.periodOption}
+            changePeriodOption={changePeriodOption}
+            restudyOption={restudyOption}
+          />
         );
       },
     },
@@ -211,12 +156,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
       dataIndex: 'gesture',
       key: 'gesture',
       render: (ges, record) => (
-        <Select
-          defaultValue={ges}
-          style={{ width: 60 }}
-          onChange={(value) => {}}
-          disabled={restudyOption[record.key].on_off === 'on' ? false : true}
-        >
+        <Select defaultValue={ges} style={{ width: 60 }} onChange={(value) => {}} disabled={restudyOption[record.key].on_off === 'on' ? false : true}>
           <Select.Option value={null} key={null}>
             <Tooltip placement="leftTop" title="제스처 사용안함">
               <div style={{ width: '100%' }}>
@@ -232,11 +172,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
             </Tooltip>
           </Select.Option>
           <Select.Option value="down" key="down">
-            <Tooltip
-              placement="leftBottom"
-              title="아래로"
-              mouseEnterDelay={0.4}
-            >
+            <Tooltip placement="leftBottom" title="아래로" mouseEnterDelay={0.4}>
               <div style={{ width: '100%' }}>
                 <ArrowDownOutlined />
               </div>
@@ -286,9 +222,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
       <div>레벨민감도 : {levelchangeSensitivity}</div>
 
       <div>최대비율: {maxRatio}</div>
-      <button onClick={() => console.log(restudyOption)}>
-        스테이터스 확인용
-      </button>
+      <button onClick={() => console.log(restudyOption)}>스테이터스 확인용</button>
     </div>
   );
 };

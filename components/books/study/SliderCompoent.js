@@ -41,13 +41,21 @@ const SliderCompoent = ({ configured, selected, onChange, min, max }) => {
         tooltipVisible={true}
         value={typeof selected === 'number' ? selected : 10}
         onChange={(value) => {
+          // if (value > max) {
+          //   return;
+          // }
+          // if (value < min) {
+          //   return;
+          // }
+          // onChange(value)
+          // 왜 if문에 리턴으로 하니까 많이 버벅될까?
           if (value > max) {
-            return;
+            onChange(max);
+          } else if (value < min) {
+            onChange(min);
+          } else {
+            onChange(value);
           }
-          if (value < min) {
-            return;
-          }
-          onChange(value);
         }}
       />
     </div>

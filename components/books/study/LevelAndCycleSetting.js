@@ -18,16 +18,16 @@ const LevelAndCycleSetting = ({ book_id }) => {
   const [levelchangeSensitivity, setLevelchangeSensitivity] = useState(80);
   const [maxRatio, setMaxRatio] = useState(80);
 
-  const { loading, error, data } = useQuery(GET_LEVEL_CONFIG, {
+  const { loading, error, data, refetch } = useQuery(GET_LEVEL_CONFIG, {
     variables: { mybook_id: book_id },
-    onCompleted: (data) => funcOnCompletedUseQuery(data),
+    onCompleted: (data) => funcOnCompletedUseQuery(data, 'get'),
   });
 
   const [levelconfig_update] = useMutation(UPDATE_LEVEL_CONFIG);
 
-  const funcOnCompletedUseQuery = (data) => {
-    console.log(data);
-    const restudy = data.levelconfig_get.levelconfigs[0].restudy;
+  const funcOnCompletedUseQuery = (data, method) => {
+    const restudy = data[`levelconfig_${method}`].levelconfigs[0].restudy;
+    console.log(restudy);
     const restudy_option = restudy.option;
     const tableData = Object.keys(restudy_option)
       .filter((diffi) => diffi != '__typename')
@@ -285,7 +285,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
           />
           <SliderCompoent
             configured={data.levelconfig_get.levelconfigs[0].restudy.maxRatio}
-            maxRatio={maxRatio}
+            selected={maxRatio}
             onChange={onChangeMaxRatio}
             min={10}
             max={90}
@@ -318,7 +318,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
               data.levelconfig_get.levelconfigs[0].restudy
                 .levelchangeSensitivity
             }
-            maxRatio={levelchangeSensitivity}
+            selected={levelchangeSensitivity}
             onChange={onChangeLevelchangeSensitivity}
             min={50}
             max={90}

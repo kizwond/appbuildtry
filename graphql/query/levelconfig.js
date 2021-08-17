@@ -51,3 +51,57 @@ export const GET_LEVEL_CONFIG = gql`
     }
   }
 `;
+
+export const UPDATE_LEVEL_CONFIG = gql`
+  mutation user_level_config_update(
+    $forUpdateLevelconfig: forUpdateLevelconfig
+  ) {
+    levelconfig_update(forUpdateLevelconfig: $forUpdateLevelconfig) {
+      status
+      msg
+      levelconfigs {
+        restudy {
+          maxRatio
+          levelchangeSensitivity
+          option {
+            diffi1 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+            diffi2 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+            diffi3 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+            diffi4 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+            diffi5 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+          }
+        }
+      }
+    }
+  }
+`;

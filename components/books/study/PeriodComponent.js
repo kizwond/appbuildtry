@@ -2,12 +2,18 @@ import React from 'react';
 import produce from 'immer';
 import { Select } from 'antd';
 
-const PeriodComponent = ({ period, arrayIndex, selectOptionArray, changePeriodOption, restudyOption }) => {
+const PeriodComponent = ({
+  period,
+  arrayIndex,
+  selectOptionArray,
+  changePeriodOption,
+  restudyOption,
+}) => {
   return (
     <Select
       // disabled={restudyOption[arrayIndex].on_off === 'on' ? false : true}
       defaultValue={period}
-      style={{ width: 80 }}
+      style={{ width: 75 }}
       onChange={(selected_period) => {
         const tableData = produce(restudyOption, (draft) => {
           const period_before_selected = draft[arrayIndex].period;
@@ -21,13 +27,19 @@ const PeriodComponent = ({ period, arrayIndex, selectOptionArray, changePeriodOp
           }
           // 차이 만큼 이전/이후 diffi의 기간 더하고 빼기
           const gap =
-            period_before_selected - selected_period > 0 ? period_before_selected - selected_period : selected_period - period_before_selected;
+            period_before_selected - selected_period > 0
+              ? period_before_selected - selected_period
+              : selected_period - period_before_selected;
 
           if (arrayIndex == 0) {
             //diffi1의 경우 diffi2만 수정
             if (period_before_selected > selected_period) {
               for (let i = 0; i < gap; i++) {
-                next_diffi_period_option.splice(0, 0, selected_period + gap - i);
+                next_diffi_period_option.splice(
+                  0,
+                  0,
+                  selected_period + gap - i
+                );
               }
             } else if (period_before_selected < selected_period) {
               next_diffi_period_option.splice(0, gap);
@@ -35,7 +47,10 @@ const PeriodComponent = ({ period, arrayIndex, selectOptionArray, changePeriodOp
           } else if (arrayIndex == 4) {
             // diffi5의 경우 이전 diffi4만 수정
             if (period_before_selected > selected_period) {
-              previous_diffi_period_option.splice(previous_diffi_period_option.length - gap, gap);
+              previous_diffi_period_option.splice(
+                previous_diffi_period_option.length - gap,
+                gap
+              );
             } else if (period_before_selected < selected_period) {
               for (let i = 0; i < gap; i++) {
                 previous_diffi_period_option.push(selected_period - gap + i);
@@ -44,9 +59,16 @@ const PeriodComponent = ({ period, arrayIndex, selectOptionArray, changePeriodOp
           } else {
             //diffi2,3,4의 경우 이전,다음 diffi수정
             if (period_before_selected > selected_period) {
-              previous_diffi_period_option.splice(previous_diffi_period_option.length - gap, gap);
+              previous_diffi_period_option.splice(
+                previous_diffi_period_option.length - gap,
+                gap
+              );
               for (let i = 0; i < gap; i++) {
-                next_diffi_period_option.splice(0, 0, selected_period + gap - i);
+                next_diffi_period_option.splice(
+                  0,
+                  0,
+                  selected_period + gap - i
+                );
               }
             } else if (period_before_selected < selected_period) {
               next_diffi_period_option.splice(0, gap);

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { Row, Col, Menu, Card, PageHeader } from "antd";
 import styled from "styled-components";
-
+import CardSetting from '../cardtype/CardTypeSetting'
 const CardTypeContainer = () => {
   const { query } = useRouter();
 
@@ -12,7 +12,7 @@ const CardTypeContainer = () => {
   const content = (menu_item) => {
     switch (menu_item) {
       case "card_setting":
-        return <div>카드설정</div>;
+        return <CardSetting/>;
         break;
       case "face_setting":
         return <div>면설정</div>;

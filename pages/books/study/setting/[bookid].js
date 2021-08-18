@@ -6,6 +6,7 @@ import { Row, Col, Menu, Card, PageHeader } from 'antd';
 import styled from 'styled-components';
 import FlagSetting from '../../../../components/books/study/FlagSetting';
 import LevelAndCycleSetting from '../../../../components/books/study/LevelAndCycleSetting';
+import { Divider } from '../../../../node_modules/antd/lib/index';
 
 const BookSetting = () => {
   const { query } = useRouter();
@@ -84,8 +85,8 @@ const BookSetting = () => {
                     mode="inline"
                     className="aside-container"
                     onClick={(e) => setSelectedMenu(e.key)}
+                    style={{ borderRight: 'none' }}
                   >
-                    <Menu.Divider />
                     <Menu.Item key="study_data_detail">
                       학습 상세 정보 보기
                     </Menu.Item>
@@ -104,19 +105,28 @@ const BookSetting = () => {
             </div>
           </StyledCol>
           <Col xs={18} sm={18} md={18} lg={18} xl={19} xxl={20}>
-            <StyledContentWrapper>
-              <Row>
-                <Col xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}></Col>
-                <Col xs={22} sm={22} md={20} lg={20} xl={20} xxl={20}>
-                  <div style={{ marginTop: '10px', minWidth: '270px' }}>
-                    <Card title={title(selectedMenu)}>
-                      {content(selectedMenu)}
-                    </Card>
-                  </div>
-                </Col>
-                <Col xs={1} sm={1} md={2} lg={2} xl={2} xxl={2}></Col>
-              </Row>
-            </StyledContentWrapper>
+            <PageHeader
+              title={
+                <div
+                  style={{
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    marginBottom: '3px',
+                  }}
+                >
+                  {title(selectedMenu)}
+                </div>
+              }
+            />
+            <Row>
+              <Col xs={22} sm={22} md={22} lg={22} xl={22} xxl={22}>
+                <div style={{ minWidth: '270px' }}>
+                  <StyledCard bordered={false}>
+                    {content(selectedMenu)}
+                  </StyledCard>
+                </div>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </MainWrapper>
@@ -145,6 +155,7 @@ const MainWrapper = styled.div`
 `;
 const StyledCol = styled(Col)`
   z-index: 1;
+  border-right: 1px solid #f0f0f0;
 `;
 const StyledSection = styled.section`
   height: 100%;
@@ -152,8 +163,9 @@ const StyledSection = styled.section`
   overflow: hidden;
 `;
 
-const StyledContentWrapper = styled.div`
-  width: 100%;
-  height: 90vh;
-  background-color: #ececec;
+const StyledCard = styled(Card)`
+  max-width: 800px;
+  & .ant-card-body {
+    padding-top: 0;
+  }
 `;

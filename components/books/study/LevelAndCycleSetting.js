@@ -1,32 +1,40 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from 'react';
-import { Button, Checkbox, Divider, Input, Select, Table, Tooltip } from '../../../node_modules/antd/lib/index';
-import { GET_LEVEL_CONFIG } from '../../../graphql/query/levelconfig';
-import { useQuery } from '@apollo/client';
+import { Button, Checkbox, Divider, Input, Select, Table, Tooltip } from 'antd';
+import {
+  GET_LEVEL_CONFIG,
+  UPDATE_LEVEL_CONFIG,
+} from '../../../graphql/query/levelconfig';
+import { useQuery, useMutation } from '@apollo/client';
 import produce from 'immer';
-import { ArrowUpOutlined, ArrowDownOutlined, ArrowLeftOutlined, ArrowRightOutlined, CloseSquareOutlined } from '@ant-design/icons';
 import InputComponent from './InputComponent';
 import PeriodComponent from './PeriodComponent';
+import GestureComponent from './GestureComponent';
+import { InputNumber, PageHeader } from '../../../node_modules/antd/lib/index';
+import SliderCompoent from './SliderCompoent';
 
 const LevelAndCycleSetting = ({ book_id }) => {
   const [restudyOption, setRestudyOption] = useState([]);
   const [levelchangeSensitivity, setLevelchangeSensitivity] = useState(80);
   const [maxRatio, setMaxRatio] = useState(80);
 
-  const { loading, error, data } = useQuery(GET_LEVEL_CONFIG, {
+  const { loading, error, data, refetch } = useQuery(GET_LEVEL_CONFIG, {
     variables: { mybook_id: book_id },
-    onCompleted: (data) => funcOnCompletedUseQuery(data),
+    onCompleted: (data) => funcOnCompletedUseQuery(data, 'get'),
   });
 
-  const funcOnCompletedUseQuery = (data) => {
-    console.log(data);
-    const restudy = data.levelconfig_get.levelconfigs[0].restudy;
+  const [levelconfig_update] = useMutation(UPDATE_LEVEL_CONFIG);
+
+  const funcOnCompletedUseQuery = (data, method) => {
+    const restudy = data[`levelconfig_${method}`].levelconfigs[0].restudy;
+    console.log(restudy);
     const restudy_option = restudy.option;
     const tableData = Object.keys(restudy_option)
       .filter((diffi) => diffi != '__typename')
       .map((diffi, index) => ({
         key: index,
         periodOption: [],
+        diffi: diffi,
         difficulty:
           diffi == 'diffi1'
             ? '모르겠음'
@@ -63,7 +71,11 @@ const LevelAndCycleSetting = ({ book_id }) => {
 
       if (index < 4 && index > 0) {
         let diffi_preiodOptionArray = [];
-        for (let i = tableData[index - 1].period + 1; i < tableData[index + 1].period; i++) {
+        for (
+          let i = tableData[index - 1].period + 1;
+          i < tableData[index + 1].period;
+          i++
+        ) {
           diffi_preiodOptionArray.push(i);
         }
         item.periodOption = diffi_preiodOptionArray;
@@ -84,145 +96,270 @@ const LevelAndCycleSetting = ({ book_id }) => {
 
   if (loading) <Table loading={loading} />;
   if (error) <div>Error : {erros}</div>;
-
-  const columns = [
-    {
-      title: '구분',
-      dataIndex: 'difficulty',
-      key: 'difficulty',
-    },
-    {
-      title: '별칭',
-      dataIndex: 'nick',
-      key: 'nick',
-      render: (nick, record) => (
-        <InputComponent
-          disabled={restudyOption[record.key].on_off === 'on' ? false : true}
-          placeholder={nick}
-          onChangeNickName={onChangeNickName}
-          recordKey={record.key}
-        />
-      ),
-    },
-    {
-      title: '섹션 내 반복 주기',
-      dataIndex: 'period',
-      key: 'period',
-      render: (period, record) => {
-        const changePeriodOption = (newArray) => {
-          setRestudyOption(newArray);
-        };
-        return (
-          <PeriodComponent
-            period={period}
-            arrayIndex={record.key}
-            selectOptionArray={record.periodOption}
-            changePeriodOption={changePeriodOption}
-            restudyOption={restudyOption}
-          />
-        );
+  let columns = [];
+  if (data) {
+    columns = [
+      {
+        title: '구분',
+        dataIndex: 'difficulty',
+        key: 'difficulty',
       },
-    },
-    {
-      title: '단축키',
-      dataIndex: 'shortcutkey',
-      key: 'shortcutkey',
-      render: (short, record) => (
-        <Input
-          disabled={restudyOption[record.key].on_off === 'on' ? false : true}
-          placeholder={short}
-          maxLength={1}
-          style={{ width: 35 }}
-          onChange={(e) => {
-            console.log(e.target.value);
-            if (e.target.value == '') {
+      {
+        title: '별칭',
+        dataIndex: 'nick',
+        key: 'nick',
+        render: (nick, record) => (
+          <InputComponent
+            disabled={restudyOption[record.key].on_off === 'on' ? false : true}
+            placeholder={nick}
+            onChangeNickName={onChangeNickName}
+            recordKey={record.key}
+          />
+        ),
+      },
+      {
+        title: '섹션 내 반복 주기',
+        dataIndex: 'period',
+        key: 'period',
+        width: 90,
+        render: (period, record) => {
+          const changePeriodOption = (newArray) => {
+            setRestudyOption(newArray);
+          };
+          return (
+            <PeriodComponent
+              period={period}
+              arrayIndex={record.key}
+              selectOptionArray={record.periodOption}
+              changePeriodOption={changePeriodOption}
+              restudyOption={restudyOption}
+            />
+          );
+        },
+      },
+      {
+        title: '단축키',
+        dataIndex: 'shortcutkey',
+        key: 'shortcutkey',
+        width: 40,
+        render: (short, record) => (
+          <Input
+            disabled={restudyOption[record.key].on_off === 'on' ? false : true}
+            placeholder={short}
+            maxLength={1}
+            style={{ width: 35 }}
+            onChange={(e) => {
+              console.log(e.target.value);
+              if (e.target.value == '') {
+                setRestudyOption(
+                  produce(restudyOption, (draft) => {
+                    draft[record.key].shortcutkey = null;
+                  })
+                );
+              }
               setRestudyOption(
                 produce(restudyOption, (draft) => {
-                  draft[record.key].shortcutkey = null;
+                  draft[record.key].shortcutkey = e.target.value;
                 })
               );
-            }
+            }}
+          />
+        ),
+      },
+      {
+        title: '제스처',
+        dataIndex: 'gesture',
+        key: 'gesture',
+        width: 70,
+        render: (gesture, record) => {
+          const onChangeGesture = (_gesture) => {
             setRestudyOption(
               produce(restudyOption, (draft) => {
-                draft[record.key].shortcutkey = e.target.value;
+                draft[record.key].gesture = _gesture;
               })
             );
-          }}
-        />
-      ),
-    },
-    {
-      title: '제스처',
-      dataIndex: 'gesture',
-      key: 'gesture',
-      render: (ges, record) => (
-        <Select defaultValue={ges} style={{ width: 60 }} onChange={(value) => {}} disabled={restudyOption[record.key].on_off === 'on' ? false : true}>
-          <Select.Option value={null} key={null}>
-            <Tooltip placement="leftTop" title="제스처 사용안함">
-              <div style={{ width: '100%' }}>
-                <CloseSquareOutlined />
-              </div>
-            </Tooltip>
-          </Select.Option>
-          <Select.Option value="up" key="up">
-            <Tooltip placement="leftTop" title="위로" mouseEnterDelay={0.4}>
-              <div style={{ width: '100%' }}>
-                <ArrowUpOutlined />
-              </div>
-            </Tooltip>
-          </Select.Option>
-          <Select.Option value="down" key="down">
-            <Tooltip placement="leftBottom" title="아래로" mouseEnterDelay={0.4}>
-              <div style={{ width: '100%' }}>
-                <ArrowDownOutlined />
-              </div>
-            </Tooltip>
-          </Select.Option>
-          <Select.Option value="left" key="left">
-            <Tooltip placement="left" title="왼쪽" mouseEnterDelay={0.4}>
-              <div style={{ width: '100%' }}>
-                <ArrowLeftOutlined />
-              </div>
-            </Tooltip>
-          </Select.Option>
-          <Select.Option value="right" key="right">
-            <Tooltip placement="right" title="오른쪽" mouseEnterDelay={0.4}>
-              <div style={{ width: '100%' }}>
-                <ArrowRightOutlined />
-              </div>
-            </Tooltip>
-          </Select.Option>
-        </Select>
-      ),
-    },
-    {
-      title: '사용 여부',
-      dataIndex: 'on_off',
-      key: 'on_off',
-      render: (on_off, record) => (
-        <Checkbox
-          defaultChecked={on_off == 'on' ? true : false}
-          onChange={(e) => {
-            console.log(e.target.checked);
-            setRestudyOption(
-              produce(restudyOption, (draft) => {
-                draft[record.key].on_off = e.target.checked ? 'on' : 'off';
-              })
-            );
-          }}
-        />
-      ),
-    },
-  ];
+          };
+          return (
+            <GestureComponent
+              gesture={gesture}
+              on_off={restudyOption[record.key].on_off}
+              onChangeGesture={onChangeGesture}
+            />
+          );
+        },
+      },
+      {
+        title: '사용 여부',
+        dataIndex: 'on_off',
+        key: 'on_off',
+        width: 70,
+        render: (on_off, record) => (
+          <Checkbox
+            defaultChecked={on_off == 'on' ? true : false}
+            onChange={(e) => {
+              console.log(e.target.checked);
+              setRestudyOption(
+                produce(restudyOption, (draft) => {
+                  draft[record.key].on_off = e.target.checked ? 'on' : 'off';
+                })
+              );
+            }}
+          />
+        ),
+      },
+    ];
+  }
+
+  const onChangeMaxRatio = (value) => {
+    setMaxRatio(value);
+  };
+  const onChangeLevelchangeSensitivity = (value) => {
+    setLevelchangeSensitivity(value);
+  };
+
+  const submitConfigToServer = async () => {
+    let optionObject = {};
+    console.log(levelchangeSensitivity);
+
+    restudyOption.map((item) => {
+      optionObject = {
+        ...optionObject,
+        [item.diffi]: {
+          on_off: item.on_off,
+          nick: item.nick,
+          period: item.period,
+          shortcutkey: item.shortcutkey,
+          gesture: item.gesture,
+        },
+      };
+    });
+
+    try {
+      await levelconfig_update({
+        variables: {
+          forUpdateLevelconfig: {
+            mybook_id: book_id,
+            restudy: {
+              maxRatio: maxRatio,
+              levelchangeSensitivity: levelchangeSensitivity,
+              option: optionObject,
+            },
+          },
+        },
+      });
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
-      <Table dataSource={restudyOption} columns={columns} pagination={false} />
-      <Divider />
+      <div
+        style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '4px' }}
+      >
+        섹션 내 반복 주기
+      </div>
+      <Table
+        size="small"
+        bordered
+        dataSource={restudyOption}
+        columns={columns}
+        pagination={false}
+      />
+      <div
+        style={{ fontSize: '16px', fontWeight: 'bold', margin: '20px 0 4px 0' }}
+      >
+        복습 시작 기억량
+      </div>
+      <div>최대비율: {maxRatio}%</div>
+      {data && (
+        <>
+          <InputNumber
+            min={10}
+            max={90}
+            value={maxRatio}
+            onChange={onChangeMaxRatio}
+            formatter={(value) => `${value}%`}
+            parser={(value) => value.replace('%', '')}
+          />
+          <SliderCompoent
+            configured={data.levelconfig_get.levelconfigs[0].restudy.maxRatio}
+            selected={maxRatio}
+            onChange={onChangeMaxRatio}
+            min={10}
+            max={90}
+          />
+        </>
+      )}
+      <div
+        style={{
+          fontSize: '16px',
+          fontWeight: 'bold',
+          margin: '0 0 4px 0',
+          paddingTop: '10px',
+        }}
+      >
+        레벨 민감도
+      </div>
       <div>레벨민감도 : {levelchangeSensitivity}</div>
-
-      <div>최대비율: {maxRatio}</div>
-      <button onClick={() => console.log(restudyOption)}>스테이터스 확인용</button>
+      {data && (
+        <>
+          <InputNumber
+            min={50}
+            max={90}
+            value={levelchangeSensitivity}
+            onChange={onChangeLevelchangeSensitivity}
+            formatter={(value) => `${value}%`}
+            parser={(value) => value.replace('%', '')}
+          />
+          <SliderCompoent
+            configured={
+              data.levelconfig_get.levelconfigs[0].restudy
+                .levelchangeSensitivity
+            }
+            selected={levelchangeSensitivity}
+            onChange={onChangeLevelchangeSensitivity}
+            min={50}
+            max={90}
+          />
+        </>
+      )}
+      {/* <Slider
+        marks={{
+          0: '0',
+          50: '50%',
+          [data.levelconfig_get.levelconfigs[0].restudy.levelchangeSensitivity]:
+            {
+              style: {
+                color: '#f50',
+              },
+              label: <strong>현재</strong>,
+            },
+          90: '90%',
+          100: '100%',
+        }}
+        tipFormatter={formatter}
+        tooltipVisible={true}
+        defaultValue={levelchangeSensitivity}
+        value={
+          typeof levelchangeSensitivity === 'number'
+            ? levelchangeSensitivity
+            : 10
+        }
+        onChange={(value) => {
+          if (value > 90) {
+            return;
+          }
+          if (value < 50) {
+            return;
+          }
+          setLevelchangeSensitivity(value);
+        }}
+      /> */}
+      <Button loading={loading} onClick={submitConfigToServer}>
+        제출하기
+      </Button>
     </div>
   );
 };

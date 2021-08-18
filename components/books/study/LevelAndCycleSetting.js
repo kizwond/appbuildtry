@@ -16,7 +16,7 @@ import SliderCompoent from './SliderCompoent';
 const LevelAndCycleSetting = ({ book_id }) => {
   const [restudyOption, setRestudyOption] = useState([]);
   const [levelchangeSensitivity, setLevelchangeSensitivity] = useState(80);
-  const [maxRatio, setMaxRatio] = useState(80);
+  const [restudyRatio, setRestudyRatio] = useState(80);
 
   const { loading, error, data, refetch } = useQuery(GET_LEVEL_CONFIG, {
     variables: { mybook_id: book_id },
@@ -84,13 +84,10 @@ const LevelAndCycleSetting = ({ book_id }) => {
     });
     setRestudyOption(newTableData);
     setLevelchangeSensitivity(restudy.levelchangeSensitivity);
-    setMaxRatio(restudy.maxRatio);
+    setRestudyRatio(restudy.restudyRatio);
   };
 
-  const onChangeNickName = (e, index) => {
-    const newData = produce(restudyOption, (draft) => {
-      draft[index].nick = e.target.value;
-    });
+  const onChangeNickName = (newData) => {
     setRestudyOption(newData);
   };
 
@@ -111,6 +108,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
         render: (nick, record) => (
           <InputComponent
             disabled={restudyOption[record.key].on_off === 'on' ? false : true}
+            restudyOption={restudyOption}
             placeholder={nick}
             onChangeNickName={onChangeNickName}
             recordKey={record.key}
@@ -145,23 +143,49 @@ const LevelAndCycleSetting = ({ book_id }) => {
         render: (short, record) => (
           <Input
             disabled={restudyOption[record.key].on_off === 'on' ? false : true}
-            placeholder={short}
+            value={short}
+            allowClear
             maxLength={1}
-            style={{ width: 35 }}
+            style={{ width: 55 }}
+            onClick={(e) => {
+              e.target.value = '';
+            }}
             onChange={(e) => {
-              console.log(e.target.value);
-              if (e.target.value == '') {
+              const shortcutKyesArrayExceptMeAndEmptyValue = restudyOption
+                .map((item) => item.shortcutkey)
+                .filter((item, index) => index != record.key)
+                .filter((i) => i != '');
+              const isSameKeyInShortcutKyes =
+                shortcutKyesArrayExceptMeAndEmptyValue.includes(e.target.value);
+
+              console.log(shortcutKyesArrayExceptMeAndEmptyValue);
+              if (isSameKeyInShortcutKyes) {
+                let previous_shortcut = short;
+                const diffi_have_same_shortcutkey = restudyOption.filter(
+                  (diffi) => diffi.shortcutkey == e.target.value
+                )[0];
                 setRestudyOption(
                   produce(restudyOption, (draft) => {
-                    draft[record.key].shortcutkey = null;
+                    draft[record.key].shortcutkey = e.target.value;
+                  })
+                );
+                setTimeout(() => {
+                  alert(
+                    `${diffi_have_same_shortcutkey.difficulty}의 단축키 ${diffi_have_same_shortcutkey.shortcutkey}와 중복됩니다.`
+                  );
+                  setRestudyOption(
+                    produce(restudyOption, (draft) => {
+                      draft[record.key].shortcutkey = previous_shortcut;
+                    })
+                  );
+                }, 500);
+              } else {
+                setRestudyOption(
+                  produce(restudyOption, (draft) => {
+                    draft[record.key].shortcutkey = e.target.value;
                   })
                 );
               }
-              setRestudyOption(
-                produce(restudyOption, (draft) => {
-                  draft[record.key].shortcutkey = e.target.value;
-                })
-              );
             }}
           />
         ),
@@ -210,8 +234,8 @@ const LevelAndCycleSetting = ({ book_id }) => {
     ];
   }
 
-  const onChangeMaxRatio = (value) => {
-    setMaxRatio(value);
+  const onChangeRestudyRatio = (value) => {
+    setRestudyRatio(value);
   };
   const onChangeLevelchangeSensitivity = (value) => {
     setLevelchangeSensitivity(value);
@@ -240,7 +264,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
           forUpdateLevelconfig: {
             mybook_id: book_id,
             restudy: {
-              maxRatio: maxRatio,
+              restudyRatio: restudyRatio,
               levelchangeSensitivity: levelchangeSensitivity,
               option: optionObject,
             },
@@ -272,21 +296,23 @@ const LevelAndCycleSetting = ({ book_id }) => {
       >
         복습 시작 기억량
       </div>
-      <div>최대비율: {maxRatio}%</div>
+      <div>최대비율: {restudyRatio}%</div>
       {data && (
         <>
           <InputNumber
             min={10}
             max={90}
-            value={maxRatio}
-            onChange={onChangeMaxRatio}
+            value={restudyRatio}
+            onChange={onChangeRestudyRatio}
             formatter={(value) => `${value}%`}
             parser={(value) => value.replace('%', '')}
           />
           <SliderCompoent
-            configured={data.levelconfig_get.levelconfigs[0].restudy.maxRatio}
-            selected={maxRatio}
-            onChange={onChangeMaxRatio}
+            configured={
+              data.levelconfig_get.levelconfigs[0].restudy.restudyRatio
+            }
+            selected={restudyRatio}
+            onChange={onChangeRestudyRatio}
             min={10}
             max={90}
           />

@@ -7,7 +7,7 @@ export const GET_LEVEL_CONFIG = gql`
       msg
       levelconfigs {
         restudy {
-          maxRatio
+          restudyRatio
           levelchangeSensitivity
           option {
             diffi1 {
@@ -61,7 +61,7 @@ export const UPDATE_LEVEL_CONFIG = gql`
       msg
       levelconfigs {
         restudy {
-          maxRatio
+          restudyRatio
           levelchangeSensitivity
           option {
             diffi1 {

@@ -1,18 +1,15 @@
 /* eslint-disable react/display-name */
-import React, { useState } from "react";
-import { useRouter } from "next/router";
-import { Row, Col, Menu, Card, PageHeader } from "antd";
-import styled from "styled-components";
-import CardSetting from '../cardtype/CardTypeSetting'
-const CardTypeContainer = () => {
-  const { query } = useRouter();
+import React, { useState, useEffect } from "react";
+import CardDetailSetting from "./CardDetailSetting";
 
+const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
   const [selectedMenu, setSelectedMenu] = useState("card_setting");
+  const [cardType, setCardType] = useState();
 
   const content = (menu_item) => {
     switch (menu_item) {
       case "card_setting":
-        return <CardSetting/>;
+        return <CardDetailSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} />;
         break;
       case "face_setting":
         return <div>면설정</div>;
@@ -27,39 +24,29 @@ const CardTypeContainer = () => {
         break;
     }
   };
-  const title = (menu_item) => {
-    switch (menu_item) {
-      case "card_setting":
-        return "카드설정";
-        break;
-      case "face_setting":
-        return "면설정";
-        break;
-      case "row_setting":
-        return "행설정";
-        break;
-      case "font_setting":
-        return "폰트설정";
-        break;
-      default:
-        break;
+  useEffect(() => {
+    if (cardTypeDetail) {
+      setCardType(cardTypeDetail[0]);
+      console.log("CardTypeContainer", cardTypeId);
+      console.log("CardTypeContainer", cardTypeSetId);
+      console.log("cardTypeDetail", cardTypeDetail);
     }
-  };
+  }, [cardTypeId, cardTypeSetId, cardTypeDetail]);
 
+  const onClickMenu = (value) => {
+    setSelectedMenu(value);
+
+    console.log(cardType);
+  };
   return (
     <>
       <div>
-        <Menu mode="inline" className="aside-container" onClick={(e) => setSelectedMenu(e.key)}>
-          {/* <Menu.Divider /> */}
-          <Menu.Item key="card_setting">카드설정</Menu.Item>
-          <Menu.Item key="face_setting">면설정</Menu.Item>
-          <Menu.Item key="row_setting">행설정</Menu.Item>
-          <Menu.Item key="font_setting">폰트설정</Menu.Item>
-        </Menu>
+        <button onClick={() => onClickMenu("card_setting")}>카드설정</button>
+        <button onClick={() => onClickMenu("face_setting")}>면설정</button>
+        <button onClick={() => onClickMenu("row_setting")}>행설정</button>
+        <button onClick={() => onClickMenu("font_setting")}>폰트설정</button>
       </div>
-      <div>
-        <Card title={title(selectedMenu)}>{content(selectedMenu)}</Card>
-      </div>
+      <div>{content(selectedMenu)}</div>
     </>
   );
 };

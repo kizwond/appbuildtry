@@ -1,13 +1,12 @@
 import React, { useRef } from 'react';
 import { Input, Tooltip } from 'antd';
 import { useState } from 'react';
-import produce from 'immer';
 
-const InputComponent = ({
+const NickInput = ({
   disabled,
-  placeholder,
-  onChangeNickName,
-  recordKey,
+  selectedNick,
+  onChangeState,
+  index,
   restudyOption,
 }) => {
   const [showLimitText, setShowLitmitText] = useState(false);
@@ -25,7 +24,7 @@ const InputComponent = ({
             // 중복된 닉이 있을 때
             const nickArrayExceptMeAndEmptyValue = restudyOption
               .map((item) => item.nick)
-              .filter((item, index) => index != recordKey)
+              .filter((item, _index) => _index != index)
               .filter((i) => i != '');
             const isSameKeyInNick = nickArrayExceptMeAndEmptyValue.includes(
               e.target.value
@@ -34,32 +33,29 @@ const InputComponent = ({
               const diffi_have_same_nick = restudyOption.filter(
                 (diffi) => diffi.nick == e.target.value
               )[0];
-              alert(`${diffi_have_same_nick}의 별칭과 중복됩니다`);
-              setTimeout(() => inputRef.current.focus({ cursor: 'all' }), 0);
-            } else {
-              const newData = produce(restudyOption, (draft) => {
-                draft[recordKey].nick = e.target.value;
-              });
-              onChangeNickName(newData);
+              alert(`${diffi_have_same_nick.difficulty}의 별칭과 중복됩니다`);
+              const timer = setTimeout(
+                () => inputRef.current.focus({ cursor: 'all' }),
+                0
+              );
             }
           }}
-          // onAfterChange={() => console.log('마우스 떠남')}
           ref={inputRef}
           onClick={() => {
             inputRef.current.focus({ cursor: 'all' });
           }}
           disabled={disabled}
-          value={placeholder}
+          value={selectedNick}
           style={{ minWidth: '65px' }}
           maxLength={8}
           onChange={(e) => {
-            const newData = produce(restudyOption, (draft) => {
-              draft[recordKey].nick = e.target.value;
-            });
-            onChangeNickName(newData);
+            // const newData = produce(restudyOption, (draft) => {
+            //   draft[index].nick = e.target.value;
+            // });
+            onChangeState('restudyOption', e.target.value, index, 'nick');
             if (e.target.value.length > 7) {
               setShowLitmitText(true);
-              let timer = setTimeout(() => setShowLitmitText(false), 2000);
+              const timer = setTimeout(() => setShowLitmitText(false), 2000);
               // clearTimeout(timer);
             } else {
               setShowLitmitText(false);
@@ -71,4 +67,4 @@ const InputComponent = ({
   );
 };
 
-export default InputComponent;
+export default NickInput;

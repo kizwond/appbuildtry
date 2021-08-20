@@ -4,26 +4,28 @@ import { Select } from 'antd';
 
 const PeriodComponent = ({
   period,
-  arrayIndex,
+  index,
   selectOptionArray,
-  changePeriodOption,
+  onChangeState,
   restudyOption,
 }) => {
   return (
     <Select
-      // disabled={restudyOption[arrayIndex].on_off === 'on' ? false : true}
+      // disabled={restudyOption[index].on_off === 'on' ? false : true}
       defaultValue={period}
       style={{ width: 75 }}
       onChange={(selected_period) => {
         const tableData = produce(restudyOption, (draft) => {
-          const period_before_selected = draft[arrayIndex].period;
+          const period_before_selected = draft[index].period;
           let previous_diffi_period_option;
           let next_diffi_period_option;
-          if (arrayIndex > 0) {
-            previous_diffi_period_option = draft[arrayIndex - 1].periodOption;
+          if (index > 0) {
+            if (index != 4) {
+              previous_diffi_period_option = draft[index - 1].periodOption;
+            }
           }
-          if (arrayIndex < 4) {
-            next_diffi_period_option = draft[arrayIndex + 1].periodOption;
+          if (index < 3) {
+            next_diffi_period_option = draft[index + 1].periodOption;
           }
           // 차이 만큼 이전/이후 diffi의 기간 더하고 빼기
           const gap =
@@ -31,7 +33,7 @@ const PeriodComponent = ({
               ? period_before_selected - selected_period
               : selected_period - period_before_selected;
 
-          if (arrayIndex == 0) {
+          if (index == 0) {
             //diffi1의 경우 diffi2만 수정
             if (period_before_selected > selected_period) {
               for (let i = 0; i < gap; i++) {
@@ -44,7 +46,7 @@ const PeriodComponent = ({
             } else if (period_before_selected < selected_period) {
               next_diffi_period_option.splice(0, gap);
             }
-          } else if (arrayIndex == 4) {
+          } else if (index == 3) {
             // diffi5의 경우 이전 diffi4만 수정
             if (period_before_selected > selected_period) {
               previous_diffi_period_option.splice(
@@ -78,27 +80,27 @@ const PeriodComponent = ({
             }
           }
 
-          draft[arrayIndex].period = selected_period;
+          draft[index].period = selected_period;
 
-          // draft = draft.map((item, index) => {
-          //   if (index == 0) {
+          // draft = draft.map((item, _index) => {
+          //   if (_index == 0) {
           //     let diffi_preiodOptionArray = [];
-          //     for (let i = 1; i < draft[index + 1].period; i++) {
+          //     for (let i = 1; i < draft[_index + 1].period; i++) {
           //       diffi_preiodOptionArray.push(i);
           //     }
           //     item.periodOption = diffi_preiodOptionArray;
           //   }
-          //   if (index == 4) {
+          //   if (_index == 4) {
           //     let diffi5_preiodOptionArray = [];
-          //     for (let i = draft[index - 1].period + 1; i < 61; i++) {
+          //     for (let i = draft[_index - 1].period + 1; i < 61; i++) {
           //       diffi5_preiodOptionArray.push(i);
           //     }
           //     item.periodOption = diffi5_preiodOptionArray;
           //   }
 
-          //   if (index < 4 && index > 0) {
+          //   if (_index < 4 && _index > 0) {
           //     let diffi_preiodOptionArray = [];
-          //     for (let i = draft[index - 1].period + 1; i < draft[index + 1].period; i++) {
+          //     for (let i = draft[_index - 1].period + 1; i < draft[_index + 1].period; i++) {
           //       diffi_preiodOptionArray.push(i);
           //     }
           //     item.periodOption = diffi_preiodOptionArray;
@@ -107,7 +109,7 @@ const PeriodComponent = ({
           // });
         });
 
-        changePeriodOption(tableData);
+        onChangeState('restudyOptionPeriod', tableData);
       }}
     >
       {selectOptionArray.map((num) => (

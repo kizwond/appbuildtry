@@ -1,22 +1,23 @@
 /* eslint-disable react/display-name */
-import React, { useEffect, useState } from 'react';
-import { Button, Checkbox, Divider, Input, Select, Table, Tooltip } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { Button, Checkbox, Table, Tooltip } from 'antd';
 import {
   GET_LEVEL_CONFIG,
   UPDATE_LEVEL_CONFIG,
 } from '../../../graphql/query/levelconfig';
 import { useQuery, useMutation } from '@apollo/client';
 import produce from 'immer';
-import InputComponent from './InputComponent';
+import NickInput from './NickInput';
 import PeriodComponent from './PeriodComponent';
 import GestureComponent from './GestureComponent';
-import { InputNumber, PageHeader } from '../../../node_modules/antd/lib/index';
+import { InputNumber } from '../../../node_modules/antd/lib/index';
 import SliderCompoent from './SliderCompoent';
+import ShortcutkeyInput from './ShortcutkeyInput';
 
 const LevelAndCycleSetting = ({ book_id }) => {
   const [restudyOption, setRestudyOption] = useState([]);
   const [levelchangeSensitivity, setLevelchangeSensitivity] = useState(80);
-  const [maxRatio, setMaxRatio] = useState(80);
+  const [restudyRatio, setRestudyRatio] = useState(80);
 
   const { loading, error, data, refetch } = useQuery(GET_LEVEL_CONFIG, {
     variables: { mybook_id: book_id },
@@ -27,7 +28,6 @@ const LevelAndCycleSetting = ({ book_id }) => {
 
   const funcOnCompletedUseQuery = (data, method) => {
     const restudy = data[`levelconfig_${method}`].levelconfigs[0].restudy;
-    console.log(restudy);
     const restudy_option = restudy.option;
     const tableData = Object.keys(restudy_option)
       .filter((diffi) => diffi != '__typename')
@@ -61,7 +61,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
         }
         item.periodOption = diffi_preiodOptionArray;
       }
-      if (index == 4) {
+      if (index == 3) {
         let diffi5_preiodOptionArray = [];
         for (let i = tableData[index - 1].period + 1; i < 61; i++) {
           diffi5_preiodOptionArray.push(i);
@@ -69,7 +69,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
         item.periodOption = diffi5_preiodOptionArray;
       }
 
-      if (index < 4 && index > 0) {
+      if (index < 3 && index > 0) {
         let diffi_preiodOptionArray = [];
         for (
           let i = tableData[index - 1].period + 1;
@@ -84,15 +84,43 @@ const LevelAndCycleSetting = ({ book_id }) => {
     });
     setRestudyOption(newTableData);
     setLevelchangeSensitivity(restudy.levelchangeSensitivity);
-    setMaxRatio(restudy.maxRatio);
+    setRestudyRatio(restudy.restudyRatio);
   };
 
-  const onChangeNickName = (e, index) => {
-    const newData = produce(restudyOption, (draft) => {
-      draft[index].nick = e.target.value;
-    });
-    setRestudyOption(newData);
+  function onChangeRestudyOption(selected_value, index, name) {
+    // 함수에 들어가는 인자를 불러오는 arguments를 쓰기 위해서는 const, let 으로 할당하면 안되고
+    // 함수 선언을 하여야한다.
+    if (arguments.length > 1) {
+      const newData = produce(restudyOption, (draft) => {
+        draft[index][name] = selected_value;
+      });
+      setRestudyOption(newData);
+    } else {
+      setRestudyOption(selected_value);
+    }
+  }
+  const methodsSetStateObject = {
+    restudyRatio: (value) => {
+      setRestudyRatio(value);
+    },
+    levelchangeSensitivity: (value) => {
+      setLevelchangeSensitivity(value);
+    },
+    restudyOption: (value, index, property) => {
+      const newData = produce(restudyOption, (draft) => {
+        draft[index][property] = value;
+      });
+      setRestudyOption((prev) => newData);
+    },
+    restudyOptionPeriod: (value) => {
+      setRestudyOption(value);
+    },
   };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChangeState = useCallback((callback, value, index, property) => {
+    methodsSetStateObject[callback](value, index, property);
+  });
 
   if (loading) <Table loading={loading} />;
   if (error) <div>Error : {erros}</div>;
@@ -102,18 +130,19 @@ const LevelAndCycleSetting = ({ book_id }) => {
       {
         title: '구분',
         dataIndex: 'difficulty',
-        key: 'difficulty',
+        // key: 'difficulty',
       },
       {
         title: '별칭',
         dataIndex: 'nick',
-        key: 'nick',
-        render: (nick, record) => (
-          <InputComponent
-            disabled={restudyOption[record.key].on_off === 'on' ? false : true}
-            placeholder={nick}
-            onChangeNickName={onChangeNickName}
-            recordKey={record.key}
+        // key: 'nick',
+        render: (nick, record, index) => (
+          <NickInput
+            disabled={restudyOption[index].on_off === 'on' ? false : true}
+            restudyOption={restudyOption}
+            selectedNick={nick}
+            onChangeState={onChangeState}
+            index={index}
           />
         ),
       },
@@ -122,16 +151,16 @@ const LevelAndCycleSetting = ({ book_id }) => {
         dataIndex: 'period',
         key: 'period',
         width: 90,
-        render: (period, record) => {
-          const changePeriodOption = (newArray) => {
-            setRestudyOption(newArray);
-          };
+        render: (period, record, index) => {
+          if (index == 4) {
+            return <span style={{ color: 'gray' }}>세션 탈출</span>;
+          }
           return (
             <PeriodComponent
               period={period}
-              arrayIndex={record.key}
+              index={index}
               selectOptionArray={record.periodOption}
-              changePeriodOption={changePeriodOption}
+              onChangeState={onChangeState}
               restudyOption={restudyOption}
             />
           );
@@ -142,27 +171,13 @@ const LevelAndCycleSetting = ({ book_id }) => {
         dataIndex: 'shortcutkey',
         key: 'shortcutkey',
         width: 40,
-        render: (short, record) => (
-          <Input
-            disabled={restudyOption[record.key].on_off === 'on' ? false : true}
-            placeholder={short}
-            maxLength={1}
-            style={{ width: 35 }}
-            onChange={(e) => {
-              console.log(e.target.value);
-              if (e.target.value == '') {
-                setRestudyOption(
-                  produce(restudyOption, (draft) => {
-                    draft[record.key].shortcutkey = null;
-                  })
-                );
-              }
-              setRestudyOption(
-                produce(restudyOption, (draft) => {
-                  draft[record.key].shortcutkey = e.target.value;
-                })
-              );
-            }}
+        render: (short, record, index) => (
+          <ShortcutkeyInput
+            disabled={restudyOption[index].on_off === 'on' ? false : true}
+            selectedShortcutkey={short}
+            index={index}
+            restudyOption={restudyOption}
+            onChangeRestudyOption={onChangeRestudyOption}
           />
         ),
       },
@@ -171,19 +186,13 @@ const LevelAndCycleSetting = ({ book_id }) => {
         dataIndex: 'gesture',
         key: 'gesture',
         width: 70,
-        render: (gesture, record) => {
-          const onChangeGesture = (_gesture) => {
-            setRestudyOption(
-              produce(restudyOption, (draft) => {
-                draft[record.key].gesture = _gesture;
-              })
-            );
-          };
+        render: (gesture, record, index) => {
           return (
             <GestureComponent
               gesture={gesture}
-              on_off={restudyOption[record.key].on_off}
-              onChangeGesture={onChangeGesture}
+              index={index}
+              on_off={restudyOption[index].on_off}
+              onChangeRestudyOption={onChangeRestudyOption}
             />
           );
         },
@@ -193,29 +202,27 @@ const LevelAndCycleSetting = ({ book_id }) => {
         dataIndex: 'on_off',
         key: 'on_off',
         width: 70,
-        render: (on_off, record) => (
-          <Checkbox
-            defaultChecked={on_off == 'on' ? true : false}
-            onChange={(e) => {
-              console.log(e.target.checked);
-              setRestudyOption(
-                produce(restudyOption, (draft) => {
-                  draft[record.key].on_off = e.target.checked ? 'on' : 'off';
-                })
-              );
-            }}
-          />
-        ),
+        render: (on_off, record, index) => {
+          if (index == 4) {
+            return (
+              <Tooltip title="변경불가">
+                <Checkbox disabled checked />
+              </Tooltip>
+            );
+          }
+          return (
+            <Checkbox
+              defaultChecked={on_off == 'on' ? true : false}
+              onChange={(e) => {
+                const on_off = e.target.checked ? 'on' : 'off';
+                onChangeRestudyOption(on_off, index, 'on_off');
+              }}
+            />
+          );
+        },
       },
     ];
   }
-
-  const onChangeMaxRatio = (value) => {
-    setMaxRatio(value);
-  };
-  const onChangeLevelchangeSensitivity = (value) => {
-    setLevelchangeSensitivity(value);
-  };
 
   const submitConfigToServer = async () => {
     let optionObject = {};
@@ -240,7 +247,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
           forUpdateLevelconfig: {
             mybook_id: book_id,
             restudy: {
-              maxRatio: maxRatio,
+              restudyRatio: restudyRatio,
               levelchangeSensitivity: levelchangeSensitivity,
               option: optionObject,
             },
@@ -262,6 +269,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
       </div>
       <Table
         size="small"
+        loading={loading}
         bordered
         dataSource={restudyOption}
         columns={columns}
@@ -272,21 +280,23 @@ const LevelAndCycleSetting = ({ book_id }) => {
       >
         복습 시작 기억량
       </div>
-      <div>최대비율: {maxRatio}%</div>
+      <div>최대비율: {restudyRatio}%</div>
       {data && (
         <>
           <InputNumber
             min={10}
             max={90}
-            value={maxRatio}
-            onChange={onChangeMaxRatio}
+            value={restudyRatio}
+            onChange={(_value) => onChangeState('restudyRatio', _value)}
             formatter={(value) => `${value}%`}
             parser={(value) => value.replace('%', '')}
           />
           <SliderCompoent
-            configured={data.levelconfig_get.levelconfigs[0].restudy.maxRatio}
-            selected={maxRatio}
-            onChange={onChangeMaxRatio}
+            configured={
+              data.levelconfig_get.levelconfigs[0].restudy.restudyRatio
+            }
+            selected={restudyRatio}
+            onChange={(_value) => onChangeState('restudyRatio', _value)}
             min={10}
             max={90}
           />
@@ -309,7 +319,9 @@ const LevelAndCycleSetting = ({ book_id }) => {
             min={50}
             max={90}
             value={levelchangeSensitivity}
-            onChange={onChangeLevelchangeSensitivity}
+            onChange={(_value) =>
+              onChangeState('levelchangeSensitivity', _value)
+            }
             formatter={(value) => `${value}%`}
             parser={(value) => value.replace('%', '')}
           />
@@ -319,44 +331,14 @@ const LevelAndCycleSetting = ({ book_id }) => {
                 .levelchangeSensitivity
             }
             selected={levelchangeSensitivity}
-            onChange={onChangeLevelchangeSensitivity}
+            onChange={(_value) =>
+              onChangeState('levelchangeSensitivity', _value)
+            }
             min={50}
             max={90}
           />
         </>
       )}
-      {/* <Slider
-        marks={{
-          0: '0',
-          50: '50%',
-          [data.levelconfig_get.levelconfigs[0].restudy.levelchangeSensitivity]:
-            {
-              style: {
-                color: '#f50',
-              },
-              label: <strong>현재</strong>,
-            },
-          90: '90%',
-          100: '100%',
-        }}
-        tipFormatter={formatter}
-        tooltipVisible={true}
-        defaultValue={levelchangeSensitivity}
-        value={
-          typeof levelchangeSensitivity === 'number'
-            ? levelchangeSensitivity
-            : 10
-        }
-        onChange={(value) => {
-          if (value > 90) {
-            return;
-          }
-          if (value < 50) {
-            return;
-          }
-          setLevelchangeSensitivity(value);
-        }}
-      /> */}
       <Button loading={loading} onClick={submitConfigToServer}>
         제출하기
       </Button>

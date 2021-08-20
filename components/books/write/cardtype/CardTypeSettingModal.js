@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, Modal, Input, Radio, InputNumber, Space, Button } from "antd";
 import axios from "axios";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import { CardTypeCreate } from "../../../../graphql/query/cardtype";
-import { useMutation } from "@apollo/client";
+import { GetCardTypeSet, CardTypeCreate } from "../../../../graphql/query/cardtype";
+import { useMutation, useQuery } from "@apollo/client";
 
 const radioStyle = {
   display: "block",
@@ -22,8 +22,24 @@ const NewCardTemplete = ({ book_id }) => {
   const [face2Num, setFace2Num] = useState();
   const [onChangeFlipMode, setOnChangeFlipMode] = useState("normal");
   const [selection, setSelection] = useState();
+  const [cardTypeSetId, setCardTypeSetId] = useState();
 
-  const [cardtype_create] = useMutation(CardTypeCreate, { onCompleted: showdatacreate });
+  const [cardTypes, setCardTypes] = useState();
+  const { loading, error, data } = useQuery(GetCardTypeSet, {
+    variables: { mybook_id: book_id },
+  });
+  useEffect(() => {
+    console.log("카드타입셋을 불러옴");
+    if (data) {
+      console.log("--->", data);
+      setCardTypeSetId(data.cardtypeset_getbymybookid.cardtypesets[0]._id);
+      setCardTypes(data.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
+    } else {
+      console.log("why here?")
+    }
+  }, [data]);
+
+  const [cardtypeset_addcardtype] = useMutation(CardTypeCreate, { onCompleted: showdatacreate });
 
   function showdatacreate(data) {
     console.log("data", data);
@@ -53,18 +69,22 @@ const NewCardTemplete = ({ book_id }) => {
     });
     console.log(has);
     try {
-      await cardtype_create({
+      await cardtypeset_addcardtype({
         variables: {
-          forCreateCardtype: {
-            mybook_id: book_id,
-            cardtype: type,
-            hasSelection: has,
-            name: value.name,
-            numofrow_makerflag: 5,
-            numofrow_face1: value.face1,
-            numofrow_selection: value.selection,
-            numofrow_face2: value.face2,
-            numofrow_annotation: 1,
+          forAddCardtype: {
+            cardtypeset_id: cardTypeSetId,
+            cardtype_info: {
+              name: value.name,
+              cardtype: type,
+              hasSelection: has,
+              num_of_row: {
+                makerflag: 5,
+                face1: value.face1,
+                selection: value.selection,
+                face2: value.face2,
+                annotation: 1,
+              },
+            },
           },
         },
       });
@@ -118,7 +138,7 @@ const NewCardTemplete = ({ book_id }) => {
 
     addCardType({ name: name, type: type, face1: face1, face2: face2, selection: selectionNum });
 
-    setVisible(false)
+    setVisible(false);
   };
   const handleCancel = (e) => {
     setVisible(false);
@@ -577,7 +597,6 @@ export default NewCardTemplete;
 // }
 
 // export default NewCardTemplete;
-
 
 // variables: {
 //   forUpdateUserflagconfig: {

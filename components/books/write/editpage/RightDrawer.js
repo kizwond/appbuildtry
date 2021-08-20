@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Drawer, Button } from 'antd';
 import CardTypeSettingModal from '../../../../components/books/write/cardtype/CardTypeSettingModal'
-import CardSetting from './cardtype/CardTypeSetting';
+import CardTypeSetting from './cardtype/CardTypeSetting';
 import CardtypeContainer from '../../write/editpage/cardtype/CardtypeContainer'
 const RightDrawer = ({book_id}) => {
     const [visible, setVisible] = useState(false);
-  
+    const [cardTypeId, setCardTypeId] = useState();
+    const [cardTypeSetId, setCardTypeSetId] = useState();
+    const [cardTypeDetail, setCardTypeDetail] = useState();
     const showDrawer = () => {
       setVisible(true);
     };
@@ -13,7 +15,16 @@ const RightDrawer = ({book_id}) => {
     const onClose = () => {
       setVisible(false);
     };
-  
+
+    function handleChange(value, cardTypeSetId, cardType) {
+      console.log("cardTypeId",value);
+      console.log("cardTypeSetId",cardTypeSetId);
+      console.log("cardType", cardType)
+      setCardTypeId(value);
+      setCardTypeSetId(cardTypeSetId)
+      setCardTypeDetail(cardType)
+    }
+
     return (
       <>
         <Button type="primary" onClick={showDrawer}>
@@ -26,10 +37,11 @@ const RightDrawer = ({book_id}) => {
           onClose={onClose}
           visible={visible}
           mask={false}
+          width={400}
         >
            <CardTypeSettingModal book_id={book_id}/>
-           <CardSetting book_id={book_id}/>
-           <CardtypeContainer />
+           <CardTypeSetting book_id={book_id} handleChange={handleChange}/>
+           <CardtypeContainer cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail}/>
         </Drawer>
       </>
     );

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { memo, useRef } from 'react';
 import { Input, Tooltip } from 'antd';
 import { useState } from 'react';
 
@@ -41,9 +41,6 @@ const NickInput = ({
             }
           }}
           ref={inputRef}
-          onClick={() => {
-            inputRef.current.focus({ cursor: 'all' });
-          }}
           disabled={disabled}
           value={selectedNick}
           style={{ minWidth: '65px' }}
@@ -67,4 +64,4 @@ const NickInput = ({
   );
 };
 
-export default NickInput;
+export default memo(NickInput);

@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Button, Checkbox, Table, Tooltip } from 'antd';
 import {
   GET_LEVEL_CONFIG,
@@ -13,7 +13,6 @@ import GestureComponent from './GestureComponent';
 import { InputNumber } from '../../../node_modules/antd/lib/index';
 import SliderCompoent from './SliderCompoent';
 import ShortcutkeyInput from './ShortcutkeyInput';
-import Test from './Test';
 
 const LevelAndCycleSetting = ({ book_id }) => {
   const [restudyOption, setRestudyOption] = useState([]);
@@ -111,16 +110,17 @@ const LevelAndCycleSetting = ({ book_id }) => {
       const newData = produce(restudyOption, (draft) => {
         draft[index][property] = value;
       });
-      setRestudyOption(newData);
+      setRestudyOption((prev) => newData);
     },
     restudyOptionPeriod: (value) => {
       setRestudyOption(value);
     },
   };
 
-  const onChangeState = (callback, value, index, property) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChangeState = useCallback((callback, value, index, property) => {
     methodsSetStateObject[callback](value, index, property);
-  };
+  });
 
   if (loading) <Table loading={loading} />;
   if (error) <div>Error : {erros}</div>;
@@ -262,7 +262,6 @@ const LevelAndCycleSetting = ({ book_id }) => {
 
   return (
     <div>
-      <Test data={data} />
       <div
         style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '4px' }}
       >

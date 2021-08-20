@@ -1,6 +1,8 @@
 /* eslint-disable react/display-name */
 import React, { useState, useEffect } from "react";
 import CardDetailSetting from "./CardDetailSetting";
+import CardFaceSetting from "./CardFaceSetting";
+import CardRowSetting from "./CardRowSetting";
 
 const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
   const [selectedMenu, setSelectedMenu] = useState("card_setting");
@@ -12,10 +14,10 @@ const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
         return <CardDetailSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} />;
         break;
       case "face_setting":
-        return <div>면설정</div>;
+        return <CardFaceSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} />;
         break;
       case "row_setting":
-        return <div>행설정</div>;
+        return <CardRowSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} />;
         break;
       case "font_setting":
         return <div>폰트설정</div>;

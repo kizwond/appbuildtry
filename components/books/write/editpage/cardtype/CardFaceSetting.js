@@ -4,13 +4,14 @@ import { useQuery, useMutation } from "@apollo/client";
 import { Form, Input, Button, Radio, Select, Cascader, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
 import { UpdateCardType, GetCardTypeSet } from "../../../../../graphql/query/cardtype";
 const { Option } = Select;
-const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
+
+const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
   const [cardType, setCardType] = useState([]);
   const [current_cardTypeId, set_current_CardTypeId] = useState();
   const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
 
-  const [card_direction, set_card_direction] = useState();
-  const [left_face_ratio, set_left_face_ratio] = useState();
+  const [faceSelected, setFaceSelected] = useState("default");
+
   const [background_color, set_background_color] = useState();
 
   const [outer_margin_top, set_outer_margin_top] = useState();
@@ -42,35 +43,7 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
     console.log("카드 디테일 세팅 화면 온");
     if (cardTypeId) {
       console.log("cardTypeId", cardTypeId);
-      setCardType(cardTypeDetail[0].card_style);
-      set_card_direction(cardTypeDetail[0].card_style.card_direction);
-      set_left_face_ratio(cardTypeDetail[0].card_style.left_face_ratio);
-      set_background_color(cardTypeDetail[0].card_style.details[0].background_color);
-
-      set_outer_margin_top(cardTypeDetail[0].card_style.details[0].outer_margin.top);
-      set_outer_margin_bottom(cardTypeDetail[0].card_style.details[0].outer_margin.bottom);
-      set_outer_margin_left(cardTypeDetail[0].card_style.details[0].outer_margin.left);
-      set_outer_margin_right(cardTypeDetail[0].card_style.details[0].outer_margin.right);
-
-      set_inner_padding_top(cardTypeDetail[0].card_style.details[0].inner_padding.top);
-      set_inner_padding_bottom(cardTypeDetail[0].card_style.details[0].inner_padding.bottom);
-      set_inner_padding_left(cardTypeDetail[0].card_style.details[0].inner_padding.left);
-      set_inner_padding_right(cardTypeDetail[0].card_style.details[0].inner_padding.right);
-      
-      set_border_top_type(cardTypeDetail[0].card_style.details[0].border.top.type);
-      set_border_bottom_type(cardTypeDetail[0].card_style.details[0].border.bottom.type);
-      set_border_left_type(cardTypeDetail[0].card_style.details[0].border.left.type);
-      set_border_right_type(cardTypeDetail[0].card_style.details[0].border.right.type);
-
-      set_border_top_thickness(cardTypeDetail[0].card_style.details[0].border.top.thickness);
-      set_border_bottom_thickness(cardTypeDetail[0].card_style.details[0].border.bottom.thickness);
-      set_border_left_thickness(cardTypeDetail[0].card_style.details[0].border.left.thickness);
-      set_border_right_thickness(cardTypeDetail[0].card_style.details[0].border.right.thickness);
-
-      set_border_top_color(cardTypeDetail[0].card_style.details[0].border.top.color);
-      set_border_bottom_color(cardTypeDetail[0].card_style.details[0].border.bottom.color);
-      set_border_left_color(cardTypeDetail[0].card_style.details[0].border.left.color);
-      set_border_right_color(cardTypeDetail[0].card_style.details[0].border.right.color);
+      setCardType(cardTypeDetail[0].cardtype_info.cardtype);
     }
   }, [cardTypeId, cardTypeDetail]);
 
@@ -86,9 +59,7 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
         variables: {
           forUpdateCardtypeDetail: {
             cardtype_id: cardTypeId,
-            card_style: {
-              card_direction: card_direction,
-              left_face_ratio: left_face_ratio,
+            face_style: {
               details: {
                 background_color: background_color,
                 outer_margin: {
@@ -135,8 +106,6 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
     }
   }
 
-  const directionHandler = (e) => set_card_direction(e);
-  const leftFaceRatioHandler = (e) => set_left_face_ratio(e);
   const backgroundColorHandler = (e) => set_background_color(e.target.value);
 
   const outerMarginTopHandler = (e) => set_outer_margin_top(e);
@@ -166,26 +135,123 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
 
   const handleSubmit = () => updatecardtype();
 
+  const selectFaceHandler = (e) => {
+    console.log(e);
+    setFaceSelected(e);
+    if(e === "face1"){
+        set_background_color(cardTypeDetail[0].face_style[0].background_color);
+
+        set_outer_margin_top(cardTypeDetail[0].face_style[0].outer_margin.top);
+        set_outer_margin_bottom(cardTypeDetail[0].face_style[0].outer_margin.bottom);
+        set_outer_margin_left(cardTypeDetail[0].face_style[0].outer_margin.left);
+        set_outer_margin_right(cardTypeDetail[0].face_style[0].outer_margin.right);
+    
+        set_inner_padding_top(cardTypeDetail[0].face_style[0].inner_padding.top);
+        set_inner_padding_bottom(cardTypeDetail[0].face_style[0].inner_padding.bottom);
+        set_inner_padding_left(cardTypeDetail[0].face_style[0].inner_padding.left);
+        set_inner_padding_right(cardTypeDetail[0].face_style[0].inner_padding.right);
+    
+        set_border_top_type(cardTypeDetail[0].face_style[0].border.top.type);
+        set_border_bottom_type(cardTypeDetail[0].face_style[0].border.bottom.type);
+        set_border_left_type(cardTypeDetail[0].face_style[0].border.left.type);
+        set_border_right_type(cardTypeDetail[0].face_style[0].border.right.type);
+    
+        set_border_top_thickness(cardTypeDetail[0].face_style[0].border.top.thickness);
+        set_border_bottom_thickness(cardTypeDetail[0].face_style[0].border.bottom.thickness);
+        set_border_left_thickness(cardTypeDetail[0].face_style[0].border.left.thickness);
+        set_border_right_thickness(cardTypeDetail[0].face_style[0].border.right.thickness);
+    
+        set_border_top_color(cardTypeDetail[0].face_style[0].border.top.color);
+        set_border_bottom_color(cardTypeDetail[0].face_style[0].border.bottom.color);
+        set_border_left_color(cardTypeDetail[0].face_style[0].border.left.color);
+        set_border_right_color(cardTypeDetail[0].face_style[0].border.right.color);
+    } else if(e === "face2"){
+        set_background_color(cardTypeDetail[0].face_style[1].background_color);
+
+        set_outer_margin_top(cardTypeDetail[0].face_style[1].outer_margin.top);
+        set_outer_margin_bottom(cardTypeDetail[0].face_style[1].outer_margin.bottom);
+        set_outer_margin_left(cardTypeDetail[0].face_style[1].outer_margin.left);
+        set_outer_margin_right(cardTypeDetail[0].face_style[1].outer_margin.right);
+    
+        set_inner_padding_top(cardTypeDetail[0].face_style[1].inner_padding.top);
+        set_inner_padding_bottom(cardTypeDetail[0].face_style[1].inner_padding.bottom);
+        set_inner_padding_left(cardTypeDetail[0].face_style[1].inner_padding.left);
+        set_inner_padding_right(cardTypeDetail[0].face_style[1].inner_padding.right);
+    
+        set_border_top_type(cardTypeDetail[0].face_style[1].border.top.type);
+        set_border_bottom_type(cardTypeDetail[0].face_style[1].border.bottom.type);
+        set_border_left_type(cardTypeDetail[0].face_style[1].border.left.type);
+        set_border_right_type(cardTypeDetail[0].face_style[1].border.right.type);
+    
+        set_border_top_thickness(cardTypeDetail[0].face_style[1].border.top.thickness);
+        set_border_bottom_thickness(cardTypeDetail[0].face_style[1].border.bottom.thickness);
+        set_border_left_thickness(cardTypeDetail[0].face_style[1].border.left.thickness);
+        set_border_right_thickness(cardTypeDetail[0].face_style[1].border.right.thickness);
+    
+        set_border_top_color(cardTypeDetail[0].face_style[1].border.top.color);
+        set_border_bottom_color(cardTypeDetail[0].face_style[1].border.bottom.color);
+        set_border_left_color(cardTypeDetail[0].face_style[1].border.left.color);
+        set_border_right_color(cardTypeDetail[0].face_style[1].border.right.color);
+    }else if(e === "annotation"){
+        set_background_color(cardTypeDetail[0].face_style[2].background_color);
+
+        set_outer_margin_top(cardTypeDetail[0].face_style[2].outer_margin.top);
+        set_outer_margin_bottom(cardTypeDetail[0].face_style[2].outer_margin.bottom);
+        set_outer_margin_left(cardTypeDetail[0].face_style[2].outer_margin.left);
+        set_outer_margin_right(cardTypeDetail[0].face_style[2].outer_margin.right);
+    
+        set_inner_padding_top(cardTypeDetail[0].face_style[2].inner_padding.top);
+        set_inner_padding_bottom(cardTypeDetail[0].face_style[2].inner_padding.bottom);
+        set_inner_padding_left(cardTypeDetail[0].face_style[2].inner_padding.left);
+        set_inner_padding_right(cardTypeDetail[0].face_style[2].inner_padding.right);
+    
+        set_border_top_type(cardTypeDetail[0].face_style[2].border.top.type);
+        set_border_bottom_type(cardTypeDetail[0].face_style[2].border.bottom.type);
+        set_border_left_type(cardTypeDetail[0].face_style[2].border.left.type);
+        set_border_right_type(cardTypeDetail[0].face_style[2].border.right.type);
+    
+        set_border_top_thickness(cardTypeDetail[0].face_style[2].border.top.thickness);
+        set_border_bottom_thickness(cardTypeDetail[0].face_style[2].border.bottom.thickness);
+        set_border_left_thickness(cardTypeDetail[0].face_style[2].border.left.thickness);
+        set_border_right_thickness(cardTypeDetail[0].face_style[2].border.right.thickness);
+    
+        set_border_top_color(cardTypeDetail[0].face_style[2].border.top.color);
+        set_border_bottom_color(cardTypeDetail[0].face_style[2].border.bottom.color);
+        set_border_left_color(cardTypeDetail[0].face_style[2].border.left.color);
+        set_border_right_color(cardTypeDetail[0].face_style[2].border.right.color);
+    }
+    
+  };
   return (
     <div>
       <div>카드설정</div>
       <ul>
         <li>
-          <div>레이아웃</div>
-          <div>방향</div>
-          <Select value={card_direction} style={{ width: 120 }} onChange={directionHandler}>
-            <Option value="left-right">좌우</Option>
-            <Option value="top-bottom">위아래</Option>
+          <div>면선택</div>
+          <Select value={faceSelected} style={{ width: 120 }} onChange={selectFaceHandler}>
+            <Option value="default">면선택</Option>
+            {cardType === "read" && (
+              <React.Fragment>
+                <Select.Option value="face1">1면</Select.Option>
+                <Select.Option value="annotation">주석</Select.Option>
+              </React.Fragment>
+            )}
+
+            {cardType === "flip" && (
+              <React.Fragment>
+                <Select.Option value="face1">1면</Select.Option>
+                <Select.Option value="face2">2면</Select.Option>
+                <Select.Option value="annotation">주석</Select.Option>
+              </React.Fragment>
+            )}
           </Select>
-          <div>1면 비율</div>
-          <InputNumber value={left_face_ratio} onChange={leftFaceRatioHandler} />
         </li>
         <li>
-          <div>카드배경색</div>
+          <div>면배경색</div>
           <input type="color" id="head" name="background_color" value={background_color} onChange={backgroundColorHandler}></input>
         </li>
         <li>
-          <div>카드테두리바깥쪽여백</div>
+          <div>면테두리바깥쪽여백</div>
           <div>
             <span>상</span>
             <InputNumber value={outer_margin_top} onChange={outerMarginTopHandler} />
@@ -204,7 +270,7 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
           </div>
         </li>
         <li>
-          <div>카드테두리안쪽여백</div>
+          <div>면테두리안쪽여백</div>
           <div>
             <span>상</span>
             <InputNumber value={inner_padding_top} onChange={innerPaddingTopHandler} />
@@ -223,7 +289,7 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
           </div>
         </li>
         <li>
-          <div>카드테두리</div>
+          <div>면테두리</div>
           <div>
             <span>상</span>
             <Select value={border_top_type} style={{ width: 120 }} onChange={borderTopTypeHandler}>
@@ -265,10 +331,12 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
             <InputNumber value={border_right_thickness} onChange={borderRightThicknessHandler} />
           </div>
         </li>
-        <li><button onClick={handleSubmit}>적용하기</button></li>
+        <li>
+          <button onClick={handleSubmit}>적용하기</button>
+        </li>
       </ul>
     </div>
   );
 };
 
-export default CardDetailSetting;
+export default CardFaceSetting;

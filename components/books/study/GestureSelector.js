@@ -1,6 +1,5 @@
 import React from 'react';
 import { Select, Tooltip } from 'antd';
-import produce from 'immer';
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
@@ -9,18 +8,13 @@ import {
   CloseSquareOutlined,
 } from '@ant-design/icons';
 
-const GestureComponent = ({
-  gesture,
-  on_off,
-  onChangeRestudyOption,
-  index,
-}) => {
+const GestureSelector = ({ gesture, on_off, onChangeGesture }) => {
   return (
     <Select
       defaultValue={gesture}
       style={{ width: 60 }}
       onChange={(_gesture) => {
-        onChangeRestudyOption(_gesture, index, 'gesture');
+        onChangeGesture(_gesture);
       }}
       disabled={on_off === 'on' ? false : true}
     >
@@ -63,4 +57,4 @@ const GestureComponent = ({
   );
 };
 
-export default GestureComponent;
+export default GestureSelector;

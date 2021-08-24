@@ -2,16 +2,16 @@ import React from 'react';
 import produce from 'immer';
 import { Select } from 'antd';
 
-const PeriodComponent = ({
+const PeriodSelector = ({
   period,
   index,
   selectOptionArray,
-  onChangeState,
+  changePeriodOption,
   restudyOption,
 }) => {
   return (
     <Select
-      // disabled={restudyOption[index].on_off === 'on' ? false : true}
+      // disabled={restudyOption[arrayIndex].on_off === 'on' ? false : true}
       defaultValue={period}
       style={{ width: 75 }}
       onChange={(selected_period) => {
@@ -82,25 +82,25 @@ const PeriodComponent = ({
 
           draft[index].period = selected_period;
 
-          // draft = draft.map((item, _index) => {
-          //   if (_index == 0) {
+          // draft = draft.map((item, index) => {
+          //   if (index == 0) {
           //     let diffi_preiodOptionArray = [];
-          //     for (let i = 1; i < draft[_index + 1].period; i++) {
+          //     for (let i = 1; i < draft[index + 1].period; i++) {
           //       diffi_preiodOptionArray.push(i);
           //     }
           //     item.periodOption = diffi_preiodOptionArray;
           //   }
-          //   if (_index == 4) {
+          //   if (index == 4) {
           //     let diffi5_preiodOptionArray = [];
-          //     for (let i = draft[_index - 1].period + 1; i < 61; i++) {
+          //     for (let i = draft[index - 1].period + 1; i < 61; i++) {
           //       diffi5_preiodOptionArray.push(i);
           //     }
           //     item.periodOption = diffi5_preiodOptionArray;
           //   }
 
-          //   if (_index < 4 && _index > 0) {
+          //   if (index < 4 && index > 0) {
           //     let diffi_preiodOptionArray = [];
-          //     for (let i = draft[_index - 1].period + 1; i < draft[_index + 1].period; i++) {
+          //     for (let i = draft[index - 1].period + 1; i < draft[index + 1].period; i++) {
           //       diffi_preiodOptionArray.push(i);
           //     }
           //     item.periodOption = diffi_preiodOptionArray;
@@ -109,7 +109,7 @@ const PeriodComponent = ({
           // });
         });
 
-        onChangeState('restudyOptionPeriod', tableData);
+        changePeriodOption(tableData);
       }}
     >
       {selectOptionArray.map((num) => (
@@ -121,4 +121,4 @@ const PeriodComponent = ({
   );
 };
 
-export default PeriodComponent;
+export default PeriodSelector;

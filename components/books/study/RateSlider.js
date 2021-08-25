@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Slider } from 'antd';
 
-const SliderCompoent = ({ configured, selected, onChange, min, max }) => {
+const RateSlider = ({ configured, selected, onChange, min, max }) => {
   function formatter(value) {
     return `${value}%`;
   }
@@ -41,14 +41,6 @@ const SliderCompoent = ({ configured, selected, onChange, min, max }) => {
         tooltipVisible={true}
         value={typeof selected === 'number' ? selected : 10}
         onChange={(value) => {
-          // if (value > max) {
-          //   return;
-          // }
-          // if (value < min) {
-          //   return;
-          // }
-          // onChange(value)
-          // 왜 if문에 리턴으로 하니까 많이 버벅될까?
           if (value > max) {
             onChange(max);
           } else if (value < min) {
@@ -62,4 +54,4 @@ const SliderCompoent = ({ configured, selected, onChange, min, max }) => {
   );
 };
 
-export default SliderCompoent;
+export default memo(RateSlider);

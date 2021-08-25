@@ -20,21 +20,6 @@ const ShortcutkeyInput = ({
       onClick={() => {
         inputRef.current.focus({ cursor: 'all' });
       }}
-      onBlur={(e) => {
-        const shortcutKyesArrayExceptMeAndEmptyValue = restudyOption
-          .map((item) => item.shortcutkey)
-          .filter((item, _index) => _index != index)
-          .filter((i) => i != '');
-        const isSameKeyInShortcutKyes =
-          shortcutKyesArrayExceptMeAndEmptyValue.includes(e.target.value);
-
-        if (isSameKeyInShortcutKyes) {
-          const timer = setTimeout(
-            () => inputRef.current.focus({ cursor: 'all' }),
-            0
-          );
-        }
-      }}
       onChange={(e) => {
         onChangeRestudyOption(e.target.value, index, 'shortcutkey');
 
@@ -55,7 +40,6 @@ const ShortcutkeyInput = ({
             alert(
               `${diffi_have_same_shortcutkey.difficulty}의 단축키 ${diffi_have_same_shortcutkey.shortcutkey}와 중복됩니다.`
             );
-            setTimeout(() => inputRef.current.focus({ cursor: 'all' }), 0);
           }, 300);
         }
       }}

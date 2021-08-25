@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Drawer, Button, Tree, Modal } from "antd";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
-import { GetIndex, IndexCreateMutation, IndexRenameMutation } from "../../../../graphql/query/bookIndex";
+import { GetIndex, IndexCreateMutation, IndexRenameMutation, IndexLevelMutation, IndexDeleteMutation } from "../../../../graphql/query/bookIndex";
 import IndexSettingModal from "../index/IndexSettingModal";
 
 const LeftDrawer = ({ book_id }) => {
@@ -11,31 +11,34 @@ const LeftDrawer = ({ book_id }) => {
     variables: { mybook_id: book_id },
   });
   const [indexinfo, setIndexInfo] = useState();
+  const [indexSetInfo, setIndexSetInfo] = useState();
 
   useEffect(() => {
     if (data) {
       console.log(data);
-      setIndexInfo(data.index_get.indexes);
+      setIndexInfo(data.indexset_getbymybookid.indexsets[0].indexes);
+      setIndexSetInfo(data.indexset_getbymybookid.indexsets[0]);
     }
-  },[data]);
+  }, [data]);
 
   //새 목차 추가
-  const [index_create] = useMutation(IndexCreateMutation, { onCompleted: showindexdata });
+  const [indexset_addindex] = useMutation(IndexCreateMutation, { onCompleted: showindexdata });
 
   function showindexdata(data) {
     console.log("data", data);
-    setIndexInfo(data.index_create.indexes);
+    setIndexInfo(data.indexset_addindex.indexsets[0].indexes);
+    setIndexSetInfo(data.indexset_addindex.indexsets[0]);
   }
 
-  async function postindex(mybook_id, name, current_index_id, current_seq, current_level) {
+  async function postindex(name, current_index_id, indexset_id) {
     try {
-      await index_create({
+      await indexset_addindex({
         variables: {
-          mybook_id: mybook_id,
-          name: name,
-          current_index_id: current_index_id,
-          current_seq: Number(current_seq),
-          current_level: Number(current_level),
+          forAddIndex: {
+            indexset_id: indexset_id,
+            name: name,
+            current_position_index_id: current_index_id,
+          },
         },
       });
     } catch (error) {
@@ -44,24 +47,27 @@ const LeftDrawer = ({ book_id }) => {
   }
   const onFinish = (values) => {
     console.log(values);
-    postindex(values.mybook_id, values.name, values.current_index_id, values.current_seq, values.current_level);
+    postindex(values.name, values.current_index_id, values.indexset_id);
   };
 
   //목차 이름변경
-  const [index_update] = useMutation(IndexRenameMutation, { onCompleted: showindexdatarename });
+  const [indexset_updateindexname] = useMutation(IndexRenameMutation, { onCompleted: showindexdatarename });
 
   function showindexdatarename(data) {
     console.log("data", data);
-    setIndexInfo(data.index_update.indexes);
+    setIndexInfo(data.indexset_updateindexname.indexsets[0].indexes);
+    setIndexSetInfo(data.indexset_updateindexname.indexsets[0]);
   }
 
-  async function postindexrename(mybook_id, name, index_id) {
+  async function postindexrename(name, current_index_id, indexset_id) {
     try {
-      await index_update({
+      await indexset_updateindexname({
         variables: {
-          mybook_id: mybook_id,
-          name: name,
-          index_id: index_id,
+          forUpdateIndexName: {
+            indexset_id: indexset_id,
+            name: name,
+            index_id: current_index_id,
+          },
         },
       });
     } catch (error) {
@@ -70,7 +76,64 @@ const LeftDrawer = ({ book_id }) => {
   }
   const onFinishRename = (values) => {
     console.log(values);
-    postindexrename(values.mybook_id, values.name, values.current_index_id);
+    postindexrename(values.name, values.current_index_id, values.indexset_id);
+  };
+
+  //목차 레벨변경변경
+  const [indexset_updateindexlevel] = useMutation(IndexLevelMutation, { onCompleted: showindexdatarelevel });
+
+  function showindexdatarelevel(data) {
+    console.log("data", data);
+    setIndexInfo(data.indexset_updateindexlevel.indexsets[0].indexes);
+    setIndexSetInfo(data.indexset_updateindexlevel.indexsets[0]);
+  }
+
+  async function postindexrelevel(direction, current_index_id, indexset_id) {
+    try {
+      await indexset_updateindexlevel({
+        variables: {
+          forUpdateIndexLevel: {
+            indexset_id: indexset_id,
+            direction: direction,
+            index_id: current_index_id,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const onFinishChangeLevel = (direction, index_id, indexset_id) => {
+    postindexrelevel(direction, index_id, indexset_id);
+  };
+
+  //목차 삭제
+  const [indexset_deleteindex] = useMutation(IndexDeleteMutation, { onCompleted: showindexdatadelete });
+
+  function showindexdatadelete(data) {
+    console.log("data", data);
+    setIndexInfo(data.indexset_deleteindex.indexsets[0].indexes);
+    setIndexSetInfo(data.indexset_deleteindex.indexsets[0]);
+  }
+
+  async function postindexdelete(moveto_index_id, current_index_id, indexset_id) {
+    try {
+      await indexset_deleteindex({
+        variables: {
+          forDeleteIndex: {
+            indexset_id: indexset_id,
+            moveto_index_id: moveto_index_id,
+            delete_index_id: current_index_id,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const onFinishIndexDelete = (values) => {
+    console.log(values)
+    postindexdelete(values.moveto_index_id, values.current_index_id, values.indexset_id);
   };
 
   //
@@ -86,15 +149,20 @@ const LeftDrawer = ({ book_id }) => {
     console.log("selected", selectedKeys, info);
   };
 
-  
-
   return (
     <>
       <Button type="primary" onClick={showDrawer}>
         목차
       </Button>
       <Drawer title="Basic Drawer" placement="left" closable={true} onClose={onClose} visible={visible} mask={false}>
-        <IndexSettingModal indexinfo={indexinfo} onFinish={onFinish} onFinishRename={onFinishRename}/>
+        <IndexSettingModal
+          indexSetInfo={indexSetInfo}
+          indexinfo={indexinfo}
+          onFinish={onFinish}
+          onFinishRename={onFinishRename}
+          onFinishChangeLevel={onFinishChangeLevel}
+          onFinishIndexDelete={onFinishIndexDelete}
+        />
         <Tree showLine={true} showIcon={true} defaultExpandAll={true} onSelect={onSelect} treeData={treeData} />
       </Drawer>
     </>

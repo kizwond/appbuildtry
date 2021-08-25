@@ -3,24 +3,25 @@ import React, { useState, useEffect } from "react";
 import CardDetailSetting from "./CardDetailSetting";
 import CardFaceSetting from "./CardFaceSetting";
 import CardRowSetting from "./CardRowSetting";
+import CardFontSetting from "./CardFontSetting";
 
-const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
+const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedCardTypeList }) => {
   const [selectedMenu, setSelectedMenu] = useState("card_setting");
   const [cardType, setCardType] = useState();
 
   const content = (menu_item) => {
     switch (menu_item) {
       case "card_setting":
-        return <CardDetailSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} />;
+        return <CardDetailSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList}/>;
         break;
       case "face_setting":
-        return <CardFaceSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} />;
+        return <CardFaceSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList}/>;
         break;
       case "row_setting":
-        return <CardRowSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} />;
+        return <CardRowSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />;
         break;
       case "font_setting":
-        return <div>폰트설정</div>;
+        return <CardFontSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />;
         break;
       default:
         break;

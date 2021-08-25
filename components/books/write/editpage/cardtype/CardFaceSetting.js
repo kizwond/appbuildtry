@@ -2,10 +2,10 @@ import React, { useState, useEffect, Fragment } from "react";
 import { GetCardType } from "../../../../../graphql/query/cardtype";
 import { useQuery, useMutation } from "@apollo/client";
 import { Form, Input, Button, Radio, Select, Cascader, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
-import { UpdateCardType, GetCardTypeSet } from "../../../../../graphql/query/cardtype";
+import { UpdateCardType, GetCardTypeSet, UpdateCardFace } from "../../../../../graphql/query/cardtype";
 const { Option } = Select;
 
-const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
+const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedCardTypeList }) => {
   const [cardType, setCardType] = useState([]);
   const [current_cardTypeId, set_current_CardTypeId] = useState();
   const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
@@ -47,20 +47,25 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
     }
   }, [cardTypeId, cardTypeDetail]);
 
-  const [cardtypeset_updateDetail] = useMutation(UpdateCardType, { onCompleted: afterupdatemutation });
+  const [cardtypeset_updatefacestyle] = useMutation(UpdateCardFace, { onCompleted: afterupdatemutation });
 
   function afterupdatemutation(data) {
     console.log("data", data);
+    getUpdatedCardTypeList(data.cardtypeset_updatefacestyle.cardtypesets[0].cardtypes)
   }
 
-  async function updatecardtype() {
+  async function updatefacestyle() {
+    console.log(faceSelected)
+    console.log(cardTypeSetId)
+    console.log(cardTypeId)
     try {
-      await cardtypeset_updateDetail({
+      await cardtypeset_updatefacestyle({
         variables: {
-          forUpdateCardtypeDetail: {
-            cardtype_id: cardTypeId,
+          forUpdateFaceStyle: {
+            cardtypeset_id : cardTypeSetId,
+            cardtype_id : cardTypeId,
+            target_face : Number(faceSelected),
             face_style: {
-              details: {
                 background_color: background_color,
                 outer_margin: {
                   top: outer_margin_top,
@@ -76,27 +81,26 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
                 },
                 border: {
                   top: {
-                    type: border_top_type,
+                    bordertype: border_top_type,
                     thickness: border_top_thickness,
                     color: border_top_color,
                   },
                   bottom: {
-                    type: border_bottom_type,
+                    bordertype: border_bottom_type,
                     thickness: border_bottom_thickness,
                     color: border_bottom_color,
                   },
                   left: {
-                    type: border_left_type,
+                    bordertype: border_left_type,
                     thickness: border_left_thickness,
                     color: border_left_color,
                   },
                   right: {
-                    type: border_right_type,
+                    bordertype: border_right_type,
                     thickness: border_right_thickness,
                     color: border_right_color,
                   },
                 },
-              },
             },
           },
         },
@@ -133,98 +137,42 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
   const borderLeftColorHandler = (e) => set_border_left_color(e);
   const borderRightColorHandler = (e) => set_border_right_color(e);
 
-  const handleSubmit = () => updatecardtype();
+  const handleSubmit = () => updatefacestyle();
 
   const selectFaceHandler = (e) => {
     console.log(e);
     setFaceSelected(e);
-    if(e === "face1"){
-        set_background_color(cardTypeDetail[0].face_style[0].background_color);
+    set_background_color(cardTypeDetail[0].face_style[e].background_color);
 
-        set_outer_margin_top(cardTypeDetail[0].face_style[0].outer_margin.top);
-        set_outer_margin_bottom(cardTypeDetail[0].face_style[0].outer_margin.bottom);
-        set_outer_margin_left(cardTypeDetail[0].face_style[0].outer_margin.left);
-        set_outer_margin_right(cardTypeDetail[0].face_style[0].outer_margin.right);
-    
-        set_inner_padding_top(cardTypeDetail[0].face_style[0].inner_padding.top);
-        set_inner_padding_bottom(cardTypeDetail[0].face_style[0].inner_padding.bottom);
-        set_inner_padding_left(cardTypeDetail[0].face_style[0].inner_padding.left);
-        set_inner_padding_right(cardTypeDetail[0].face_style[0].inner_padding.right);
-    
-        set_border_top_type(cardTypeDetail[0].face_style[0].border.top.type);
-        set_border_bottom_type(cardTypeDetail[0].face_style[0].border.bottom.type);
-        set_border_left_type(cardTypeDetail[0].face_style[0].border.left.type);
-        set_border_right_type(cardTypeDetail[0].face_style[0].border.right.type);
-    
-        set_border_top_thickness(cardTypeDetail[0].face_style[0].border.top.thickness);
-        set_border_bottom_thickness(cardTypeDetail[0].face_style[0].border.bottom.thickness);
-        set_border_left_thickness(cardTypeDetail[0].face_style[0].border.left.thickness);
-        set_border_right_thickness(cardTypeDetail[0].face_style[0].border.right.thickness);
-    
-        set_border_top_color(cardTypeDetail[0].face_style[0].border.top.color);
-        set_border_bottom_color(cardTypeDetail[0].face_style[0].border.bottom.color);
-        set_border_left_color(cardTypeDetail[0].face_style[0].border.left.color);
-        set_border_right_color(cardTypeDetail[0].face_style[0].border.right.color);
-    } else if(e === "face2"){
-        set_background_color(cardTypeDetail[0].face_style[1].background_color);
+    set_outer_margin_top(cardTypeDetail[0].face_style[e].outer_margin.top);
+    set_outer_margin_bottom(cardTypeDetail[0].face_style[e].outer_margin.bottom);
+    set_outer_margin_left(cardTypeDetail[0].face_style[e].outer_margin.left);
+    set_outer_margin_right(cardTypeDetail[0].face_style[e].outer_margin.right);
 
-        set_outer_margin_top(cardTypeDetail[0].face_style[1].outer_margin.top);
-        set_outer_margin_bottom(cardTypeDetail[0].face_style[1].outer_margin.bottom);
-        set_outer_margin_left(cardTypeDetail[0].face_style[1].outer_margin.left);
-        set_outer_margin_right(cardTypeDetail[0].face_style[1].outer_margin.right);
-    
-        set_inner_padding_top(cardTypeDetail[0].face_style[1].inner_padding.top);
-        set_inner_padding_bottom(cardTypeDetail[0].face_style[1].inner_padding.bottom);
-        set_inner_padding_left(cardTypeDetail[0].face_style[1].inner_padding.left);
-        set_inner_padding_right(cardTypeDetail[0].face_style[1].inner_padding.right);
-    
-        set_border_top_type(cardTypeDetail[0].face_style[1].border.top.type);
-        set_border_bottom_type(cardTypeDetail[0].face_style[1].border.bottom.type);
-        set_border_left_type(cardTypeDetail[0].face_style[1].border.left.type);
-        set_border_right_type(cardTypeDetail[0].face_style[1].border.right.type);
-    
-        set_border_top_thickness(cardTypeDetail[0].face_style[1].border.top.thickness);
-        set_border_bottom_thickness(cardTypeDetail[0].face_style[1].border.bottom.thickness);
-        set_border_left_thickness(cardTypeDetail[0].face_style[1].border.left.thickness);
-        set_border_right_thickness(cardTypeDetail[0].face_style[1].border.right.thickness);
-    
-        set_border_top_color(cardTypeDetail[0].face_style[1].border.top.color);
-        set_border_bottom_color(cardTypeDetail[0].face_style[1].border.bottom.color);
-        set_border_left_color(cardTypeDetail[0].face_style[1].border.left.color);
-        set_border_right_color(cardTypeDetail[0].face_style[1].border.right.color);
-    }else if(e === "annotation"){
-        set_background_color(cardTypeDetail[0].face_style[2].background_color);
+    set_inner_padding_top(cardTypeDetail[0].face_style[e].inner_padding.top);
+    set_inner_padding_bottom(cardTypeDetail[0].face_style[e].inner_padding.bottom);
+    set_inner_padding_left(cardTypeDetail[0].face_style[e].inner_padding.left);
+    set_inner_padding_right(cardTypeDetail[0].face_style[e].inner_padding.right);
 
-        set_outer_margin_top(cardTypeDetail[0].face_style[2].outer_margin.top);
-        set_outer_margin_bottom(cardTypeDetail[0].face_style[2].outer_margin.bottom);
-        set_outer_margin_left(cardTypeDetail[0].face_style[2].outer_margin.left);
-        set_outer_margin_right(cardTypeDetail[0].face_style[2].outer_margin.right);
-    
-        set_inner_padding_top(cardTypeDetail[0].face_style[2].inner_padding.top);
-        set_inner_padding_bottom(cardTypeDetail[0].face_style[2].inner_padding.bottom);
-        set_inner_padding_left(cardTypeDetail[0].face_style[2].inner_padding.left);
-        set_inner_padding_right(cardTypeDetail[0].face_style[2].inner_padding.right);
-    
-        set_border_top_type(cardTypeDetail[0].face_style[2].border.top.type);
-        set_border_bottom_type(cardTypeDetail[0].face_style[2].border.bottom.type);
-        set_border_left_type(cardTypeDetail[0].face_style[2].border.left.type);
-        set_border_right_type(cardTypeDetail[0].face_style[2].border.right.type);
-    
-        set_border_top_thickness(cardTypeDetail[0].face_style[2].border.top.thickness);
-        set_border_bottom_thickness(cardTypeDetail[0].face_style[2].border.bottom.thickness);
-        set_border_left_thickness(cardTypeDetail[0].face_style[2].border.left.thickness);
-        set_border_right_thickness(cardTypeDetail[0].face_style[2].border.right.thickness);
-    
-        set_border_top_color(cardTypeDetail[0].face_style[2].border.top.color);
-        set_border_bottom_color(cardTypeDetail[0].face_style[2].border.bottom.color);
-        set_border_left_color(cardTypeDetail[0].face_style[2].border.left.color);
-        set_border_right_color(cardTypeDetail[0].face_style[2].border.right.color);
-    }
+    set_border_top_type(cardTypeDetail[0].face_style[e].border.top.bordertype);
+    set_border_bottom_type(cardTypeDetail[0].face_style[e].border.bottom.bordertype);
+    set_border_left_type(cardTypeDetail[0].face_style[e].border.left.bordertype);
+    set_border_right_type(cardTypeDetail[0].face_style[e].border.right.bordertype);
+
+    set_border_top_thickness(cardTypeDetail[0].face_style[e].border.top.thickness);
+    set_border_bottom_thickness(cardTypeDetail[0].face_style[e].border.bottom.thickness);
+    set_border_left_thickness(cardTypeDetail[0].face_style[e].border.left.thickness);
+    set_border_right_thickness(cardTypeDetail[0].face_style[e].border.right.thickness);
+
+    set_border_top_color(cardTypeDetail[0].face_style[e].border.top.color);
+    set_border_bottom_color(cardTypeDetail[0].face_style[e].border.bottom.color);
+    set_border_left_color(cardTypeDetail[0].face_style[e].border.left.color);
+    set_border_right_color(cardTypeDetail[0].face_style[e].border.right.color);
     
   };
   return (
     <div>
-      <div>카드설정</div>
+      <div>면설정</div>
       <ul>
         <li>
           <div>면선택</div>
@@ -232,16 +180,16 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
             <Option value="default">면선택</Option>
             {cardType === "read" && (
               <React.Fragment>
-                <Select.Option value="face1">1면</Select.Option>
-                <Select.Option value="annotation">주석</Select.Option>
+                <Select.Option value="0">1면</Select.Option>
+                <Select.Option value="2">주석</Select.Option>
               </React.Fragment>
             )}
 
             {cardType === "flip" && (
               <React.Fragment>
-                <Select.Option value="face1">1면</Select.Option>
-                <Select.Option value="face2">2면</Select.Option>
-                <Select.Option value="annotation">주석</Select.Option>
+                <Select.Option value="0">1면</Select.Option>
+                <Select.Option value="1">2면</Select.Option>
+                <Select.Option value="2">주석</Select.Option>
               </React.Fragment>
             )}
           </Select>

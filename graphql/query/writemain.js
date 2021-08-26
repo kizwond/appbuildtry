@@ -14,7 +14,7 @@ export const GetCategory = gql`
         }
       }
     }
-    mybook_get {
+    mybook_getAllMybook {
       status
       msg
       mybooks {

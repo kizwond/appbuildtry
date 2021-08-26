@@ -4,9 +4,7 @@ import {
   BOOK_CHANGE_CATEGORY_MUTATION,
   GET_My_BOOK_CATEGORY_AND_MY_BOOK_CATEGORIES,
 } from '../../../graphql/query/studyCategory';
-import { Select, Button } from 'antd';
-import { BookChangeCategoryMutation } from '../../../graphql/query/writemain';
-import produce from 'immer';
+import { Select, Button, Alert, Space } from 'antd';
 
 const CategorySetting = ({ book_id }) => {
   const [categories, setCategories] = useState('');
@@ -15,25 +13,12 @@ const CategorySetting = ({ book_id }) => {
     GET_My_BOOK_CATEGORY_AND_MY_BOOK_CATEGORIES,
     {
       variables: { mybook_id: book_id },
-      onCompleted: (data) => {
-        const newData = produce(data, (draft) => {
-          draft.mybookcate_get.mybookcates.map((_item) => {
-            delete _item.__typename;
-            delete _item.mybookcate_info.__typename;
-            // return _item;
-          });
-          draft.mybook_getbyid.mybooks.map((_item) => {
-            delete _item.__typename;
-            delete _item.mybook_info.__typename;
-            // return _item;
-            console.log('동작');
-          });
-        });
-        setCategories(newData.mybookcate_get.mybookcates);
+      onCompleted: (_data) => {
+        setCategories(_data.mybookcate_get.mybookcates);
         setSelectedCategory(
-          newData.mybook_getbyid.mybooks[0].mybook_info.mybookcate_id
+          _data.mybook_getbyMybookid.mybooks[0].mybook_info.mybookcate_id
         );
-        // console.log('카테고리 정보 불러옴', newData);
+        console.log('카테고리 정보 불러옴', _data);
       },
     }
   );
@@ -41,12 +26,12 @@ const CategorySetting = ({ book_id }) => {
     onCompleted: showdatarebookmovecategory,
   });
 
-  function showdatarebookmovecategory(data) {
-    console.log('data', data);
-    if (data.mybook_movetoothercate.msg !== '카테고리 이동 성공적!') {
+  function showdatarebookmovecategory(_data) {
+    console.log('use mutation', _data);
+    if (_data.mybook_movetoothercate.msg !== '카테고리 이동 성공적!') {
       alert('서버 오류 발생 하였습니다');
     }
-    // setBooks(data.mybook_movetoothercate.mybooks);
+    console.log('usequery', data);
   }
 
   async function bookMoveCategory() {
@@ -63,23 +48,43 @@ const CategorySetting = ({ book_id }) => {
   }
 
   return (
-    // <div>ㅎㅇ</div>
-    <>
-      <Select
-        value={selectedCategory}
-        style={{ width: 120 }}
-        onChange={(v) => setSelectedCategory(v)}
-      >
-        <Select.Option value="info">선택</Select.Option>
-        {categories &&
-          categories.map((category) => (
-            <Select.Option key={category._id}>
-              {category.mybookcate_info.name}
-            </Select.Option>
-          ))}
-      </Select>
-      <Button onClick={bookMoveCategory}>변경하기</Button>
-    </>
+    <Alert
+      message={
+        data && (
+          <>
+            <b>
+              {data && data.mybook_getbyMybookid.mybooks[0].mybook_info.title}
+            </b>
+            이 이동할 카테고리를 선택하십시오.
+          </>
+        )
+      }
+      description={
+        <>
+          <div style={{ marginBottom: '15px' }}>
+            <i>※ 책은 이동할 카테고리 내 책 목록 중 제일 위에 표시됩니다.</i>
+          </div>
+          <Space align="center">
+            <Select
+              value={selectedCategory}
+              style={{ width: 120 }}
+              onChange={(v) => setSelectedCategory(v)}
+            >
+              <Select.Option value="info">선택</Select.Option>
+              {categories &&
+                categories.map((category) => (
+                  <Select.Option key={category._id}>
+                    {category.mybookcate_info.name}
+                  </Select.Option>
+                ))}
+            </Select>
+            <span>카테고리로</span>
+            <Button onClick={bookMoveCategory}>이동</Button>
+          </Space>
+        </>
+      }
+      type="info"
+    />
   );
 };
 

@@ -6,6 +6,7 @@ export const GET_USER_FLAG_CONFIG = gql`
       status
       msg
       userflagconfigs {
+        _id
         userflagconfig_info {
           user_id
         }
@@ -44,6 +45,7 @@ export const UPDATE_USER_FLAG_CONFIG = gql`
       status
       msg
       userflagconfigs {
+        _id
         details {
           flag1 {
             shape

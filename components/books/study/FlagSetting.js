@@ -13,7 +13,7 @@ import { useQuery, useMutation } from '@apollo/client';
 const FlagSetting = () => {
   const [flag, setFlag] = useState([]);
 
-  const { loading, error, data, refetch } = useQuery(GET_USER_FLAG_CONFIG, {
+  const { loading, error, data } = useQuery(GET_USER_FLAG_CONFIG, {
     onCompleted: (data) => {
       console.log('유즈', data.userflagconfig_get.userflagconfigs[0].details);
       const flags_array = ['flag1', 'flag2', 'flag3', 'flag4', 'flag5'];
@@ -28,16 +28,7 @@ const FlagSetting = () => {
       setFlag(for_flags_data);
     },
     notifyOnNetworkStatusChange: true,
-    // fetchPolicy: 'network-only', // Doesn't check cache before making a network request
   });
-
-  // if (loading) {
-  //   return <div>로딩중..</div>;
-  // }
-
-  // if (error) {
-  //   return <div>에러 발생 : {error}</div>;
-  // }
 
   const [userflagconfig_update] = useMutation(UPDATE_USER_FLAG_CONFIG);
 
@@ -71,7 +62,6 @@ const FlagSetting = () => {
           },
         },
       });
-      refetch();
     } catch (error) {
       console.log(error);
     }

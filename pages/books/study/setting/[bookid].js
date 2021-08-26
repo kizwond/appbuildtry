@@ -8,6 +8,7 @@ import FlagSetting from '../../../../components/books/study/FlagSetting';
 import LevelAndCycleSetting from '../../../../components/books/study/LevelAndCycleSetting';
 import { Divider } from '../../../../node_modules/antd/lib/index';
 import CategorySetting from '../../../../components/books/study/CategorySetting';
+import DeleteBook from '../../../../components/books/study/DeleteBook';
 
 const BookSetting = () => {
   const { query } = useRouter();
@@ -32,7 +33,7 @@ const BookSetting = () => {
         return <CategorySetting book_id={query.bookid} />;
         break;
       case 'delete_book':
-        return null;
+        return <DeleteBook book_id={query.bookid} />;
         break;
 
       default:

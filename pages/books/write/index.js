@@ -178,11 +178,11 @@ const WriteComponent = () => {
   useEffect(() => {
     if (data) {
       console.log(data);
-      if(data.mybook_get.status === "401"){
+      if(data.mybook_getAllMybook.status === "401"){
         router.push("/account/login");
       }
       setCategory(data.mybookcate_get.mybookcates);
-      setBooks(data.mybook_get.mybooks);
+      setBooks(data.mybook_getAllMybook.mybooks);
     }
     console.log(category);
     console.log(books);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import Layout from '../../../components/layout/Layout';
-import { Form, Input, Button, Space, Popover, Select } from 'antd';
+import { Form, Input, Button, Space, Checkbox , Select } from 'antd';
 import Footer from '../../../components/index/Footer';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
@@ -191,11 +191,11 @@ const BoomListMain = () => {
   useEffect(() => {
     if (data) {
       console.log(data);
-      if (data.mybook_get.status === '401') {
+      if (data.mybook_getAllMybook.status === '401') {
         router.push('/account/login');
       }
       setCategory(data.mybookcate_get.mybookcates);
-      setBooks(data.mybook_get.mybooks);
+      setBooks(data.mybook_getAllMybook.mybooks);
     }
     console.log(category);
     console.log(books);
@@ -212,8 +212,13 @@ const BoomListMain = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
+  const sesstionStart =() => {
+    console.log("session start button clicked!!")
+    router.push("/books/study/sessionSetting");
+  }
   return (
+    <>
+    <div><button onClick={()=>sesstionStart()}>세션시작</button></div>
     <div>
       좋아요리스트
       <LikeBookList
@@ -236,6 +241,7 @@ const BoomListMain = () => {
         onFinishBookMoveCategory={onFinishBookMoveCategory}
       />
     </div>
+    </>
   );
 };
 
@@ -407,10 +413,24 @@ const ListItem = ({
     onFinishBookMoveCategory(book._id, value);
   }
 
+  function onChangeCheckBox(e) {
+    console.log(`selected ${e.target.checked}`);
+    console.log(`selected ${book.mybook_info.title}`);
+    const session_books = sessionStorage.getItem("books_selected");
+    console.log(session_books)
+    // const value = {book_id : }
+    if(session_books === null){
+      sessionStorage.setItem("books_selected", JSON.stringify(objectData));
+    }
+
+    // sessionStorage.setItem("books_selected", this.props.book_id);
+  }
+
   const router = useRouter();
 
-  return (
+  return (  
     <>
+    <Checkbox onChange={onChangeCheckBox}/>
       <ul
         style={{
           display: 'flex',

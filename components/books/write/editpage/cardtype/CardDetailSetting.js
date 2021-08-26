@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { Form, Input, Button, Radio, Select, Cascader, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
 import { UpdateCardType, GetCardTypeSet } from "../../../../../graphql/query/cardtype";
 const { Option } = Select;
-const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
+const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail,getUpdatedCardTypeList }) => {
   const [cardType, setCardType] = useState([]);
   const [current_cardTypeId, set_current_CardTypeId] = useState();
   const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
@@ -57,10 +57,10 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
       set_inner_padding_left(cardTypeDetail[0].card_style.details[0].inner_padding.left);
       set_inner_padding_right(cardTypeDetail[0].card_style.details[0].inner_padding.right);
       
-      set_border_top_type(cardTypeDetail[0].card_style.details[0].border.top.type);
-      set_border_bottom_type(cardTypeDetail[0].card_style.details[0].border.bottom.type);
-      set_border_left_type(cardTypeDetail[0].card_style.details[0].border.left.type);
-      set_border_right_type(cardTypeDetail[0].card_style.details[0].border.right.type);
+      set_border_top_type(cardTypeDetail[0].card_style.details[0].border.top.bordertype);
+      set_border_bottom_type(cardTypeDetail[0].card_style.details[0].border.bottom.bordertype);
+      set_border_left_type(cardTypeDetail[0].card_style.details[0].border.left.bordertype);
+      set_border_right_type(cardTypeDetail[0].card_style.details[0].border.right.bordertype);
 
       set_border_top_thickness(cardTypeDetail[0].card_style.details[0].border.top.thickness);
       set_border_bottom_thickness(cardTypeDetail[0].card_style.details[0].border.bottom.thickness);
@@ -74,54 +74,56 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail }) => {
     }
   }, [cardTypeId, cardTypeDetail]);
 
-  const [cardtypeset_updateDetail] = useMutation(UpdateCardType, { onCompleted: afterupdatemutation });
+  const [cardtypeset_updatecardstyle] = useMutation(UpdateCardType, { onCompleted: afterupdatemutation });
 
   function afterupdatemutation(data) {
     console.log("data", data);
+    getUpdatedCardTypeList(data.cardtypeset_updatecardstyle.cardtypesets[0].cardtypes)
   }
 
   async function updatecardtype() {
     try {
-      await cardtypeset_updateDetail({
+      await cardtypeset_updatecardstyle({
         variables: {
-          forUpdateCardtypeDetail: {
+          forUpdateCardStyle: {
+            cardtypeset_id: cardTypeSetId,
             cardtype_id: cardTypeId,
             card_style: {
               card_direction: card_direction,
-              left_face_ratio: left_face_ratio,
+              left_face_ratio: Number(left_face_ratio),
               details: {
                 background_color: background_color,
                 outer_margin: {
-                  top: outer_margin_top,
-                  bottom: outer_margin_bottom,
-                  left: outer_margin_left,
-                  right: outer_margin_right,
+                  top: Number(outer_margin_top),
+                  bottom: Number(outer_margin_bottom),
+                  left: Number(outer_margin_left),
+                  right: Number(outer_margin_right),
                 },
                 inner_padding: {
-                  top: inner_padding_top,
-                  bottom: inner_padding_bottom,
-                  left: inner_padding_left,
-                  right: inner_padding_right,
+                  top: Number(inner_padding_top),
+                  bottom: Number(inner_padding_bottom),
+                  left: Number(inner_padding_left),
+                  right: Number(inner_padding_right),
                 },
                 border: {
                   top: {
-                    type: border_top_type,
-                    thickness: border_top_thickness,
+                    bordertype: border_top_type,
+                    thickness: Number(border_top_thickness),
                     color: border_top_color,
                   },
                   bottom: {
-                    type: border_bottom_type,
-                    thickness: border_bottom_thickness,
+                    bordertype: border_bottom_type,
+                    thickness: Number(border_bottom_thickness),
                     color: border_bottom_color,
                   },
                   left: {
-                    type: border_left_type,
-                    thickness: border_left_thickness,
+                    bordertype: border_left_type,
+                    thickness: Number(border_left_thickness),
                     color: border_left_color,
                   },
                   right: {
-                    type: border_right_type,
-                    thickness: border_right_thickness,
+                    bordertype: border_right_type,
+                    thickness: Number(border_right_thickness),
                     color: border_right_color,
                   },
                 },

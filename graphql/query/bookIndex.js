@@ -1,18 +1,21 @@
 import { gql } from '@apollo/client';
 
 export const GetIndex = gql`
-  query Index($mybook_id: String) {
-    index_get(mybook_id: $mybook_id) {
+  query Index($mybook_id: ID) {
+    indexset_getbymybookid(mybook_id: $mybook_id) {
       status
       msg
-      indexes {
+      indexsets {
         _id
-        index_info {
+        indexset_info {
           mybook_id
-          name
-          seq
-          level
-          type
+          user_id
+        }
+        indexes {
+          _id
+          name     
+          level 
+          indextype 
         }
       }
     }
@@ -20,30 +23,21 @@ export const GetIndex = gql`
 `;
 
 export const IndexCreateMutation = gql`
-  mutation IndexCreateMutation(
-    $mybook_id: String
-    $name: String
-    $current_index_id: String
-    $current_seq: Int
-    $current_level: Int
-  ) {
-    index_create(
-      mybook_id: $mybook_id
-      name: $name
-      current_index_id: $current_index_id
-      current_seq: $current_seq
-      current_level: $current_level
-    ) {
+  mutation IndexCreateMutation($forAddIndex: forAddIndex) {
+    indexset_addindex(forAddIndex: $forAddIndex) {
       status
       msg
-      indexes {
+      indexsets {
         _id
-        index_info {
+        indexset_info {
           mybook_id
-          name
-          seq
-          level
-          type
+          user_id
+        }
+        indexes {
+          _id
+          name     
+          level 
+          indextype 
         }
       }
     }
@@ -51,22 +45,65 @@ export const IndexCreateMutation = gql`
 `;
 
 export const IndexRenameMutation = gql`
-  mutation IndexRenameMutation(
-    $mybook_id: String
-    $name: String
-    $index_id: String
-  ) {
-    index_update(mybook_id: $mybook_id, name: $name, index_id: $index_id) {
+  mutation IndexRenameMutation($forUpdateIndexName: forUpdateIndexName) {
+    indexset_updateindexname(forUpdateIndexName: $forUpdateIndexName) {
       status
       msg
-      indexes {
+      indexsets {
         _id
-        index_info {
+        indexset_info {
           mybook_id
-          name
-          seq
-          level
-          type
+          user_id
+        }
+        indexes {
+          _id
+          name     
+          level 
+          indextype 
+        }
+      }
+    }
+  }
+`;
+
+export const IndexLevelMutation = gql`
+  mutation IndexLevelMutation($forUpdateIndexLevel: forUpdateIndexLevel) {
+    indexset_updateindexlevel(forUpdateIndexLevel: $forUpdateIndexLevel) {
+      status
+      msg
+      indexsets {
+        _id
+        indexset_info {
+          mybook_id
+          user_id
+        }
+        indexes {
+          _id
+          name     
+          level 
+          indextype 
+        }
+      }
+    }
+  }
+`;
+
+export const IndexDeleteMutation = gql`
+  mutation IndexDeleteMutation($forDeleteIndex: forDeleteIndex) {
+    indexset_deleteindex(forDeleteIndex: $forDeleteIndex) {
+      status
+      msg
+      indexsets {
+        _id
+        indexset_info {
+          mybook_id
+          user_id
+        }
+        indexes {
+          _id
+          name     
+          level 
+          indextype 
         }
       }
     }

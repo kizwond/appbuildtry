@@ -1,30 +1,13 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { GetCardType } from "../../../../../graphql/query/cardtype";
-import { useQuery, useMutation } from "@apollo/client";
 import { Form, Input, Button, Radio, Select, Cascader, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
-import { GetCardTypeSet } from "../../../../../graphql/query/cardtype";
 
-const CardSetting = ({ book_id, handleChange }) => {
-  const [cardTypes, setCardTypes] = useState([]);
+const CardSetting = ({ book_id, handleChange, cardTypes }) => {
+
   const [cardTypeId, setCardTypeId] = useState();
-  const [mybook_id, setMybook_id] = useState(book_id);
+  const [mybook_id, setMybook_id] = useState();
   const [card_direction, setCard_direction] = useState();
   const [cardTypeSetId, setCardTypeSetId] = useState();
-  const { loading, error, data } = useQuery(GetCardTypeSet, {
-    variables: { mybook_id: mybook_id },
-  });
 
-  useEffect(() => {
-    console.log("컴포넌트가 화면에 나타남");
- 
-    if (data) {
-        console.log("cardtypesetting page",data)
-        if(data.cardtypeset_getbymybookid.cardtypesets[0] !== null){
-          setCardTypeSetId(data.cardtypeset_getbymybookid.cardtypesets[0]._id);
-          setCardTypes(data.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
-        }
-    }
-  }, [data]);
 
   if (cardTypes.length > 0) {
     console.log("뭔가있음");
@@ -44,8 +27,7 @@ const CardSetting = ({ book_id, handleChange }) => {
       }
     })
     console.log(cardType)
-    setCardTypeId(value);
-    handleChange(value, cardTypeSetId, cardType )
+    handleChange(value, cardType )
   }
 
   return (

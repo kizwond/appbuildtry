@@ -14,7 +14,7 @@ const radioStyle = {
   top: "2px",
 };
 
-const NewCardTemplete = ({ book_id }) => {
+const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
   const [visible, setVisible] = useState(false);
   const [type, setType] = useState("read");
   const [name, setName] = useState("");
@@ -43,6 +43,7 @@ const NewCardTemplete = ({ book_id }) => {
 
   function showdatacreate(data) {
     console.log("data", data);
+    getUpdatedCardTypeList(data.cardtypeset_addcardtype.cardtypesets[0].cardtypes);
   }
 
   async function cardtypecreate(value) {

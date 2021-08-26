@@ -6,6 +6,7 @@ export const GET_LEVEL_CONFIG = gql`
       status
       msg
       levelconfigs {
+        _id
         restudy {
           restudyRatio
           levelchangeSensitivity
@@ -60,6 +61,7 @@ export const UPDATE_LEVEL_CONFIG = gql`
       status
       msg
       levelconfigs {
+        _id
         restudy {
           restudyRatio
           levelchangeSensitivity

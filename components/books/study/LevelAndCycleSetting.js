@@ -18,7 +18,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
   const [levelchangeSensitivity, setLevelchangeSensitivity] = useState(80);
   const [restudyRatio, setRestudyRatio] = useState(80);
 
-  const { loading, error, data, refetch } = useQuery(GET_LEVEL_CONFIG, {
+  const { loading, error, data } = useQuery(GET_LEVEL_CONFIG, {
     variables: { mybook_id: book_id },
     onCompleted: (data) => funcOnCompletedUseQuery(data, 'get'),
   });
@@ -29,7 +29,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
 
   const funcOnCompletedUseQuery = (data, method) => {
     const restudy = data[`levelconfig_${method}`].levelconfigs[0].restudy;
-    console.log(restudy);
+    console.log('useQuery데이터', data);
     const restudy_option = restudy.option;
     const tableData = Object.keys(restudy_option)
       .filter((diffi) => diffi != '__typename')
@@ -274,7 +274,6 @@ const LevelAndCycleSetting = ({ book_id }) => {
           },
         },
       });
-      refetch();
     } catch (error) {
       console.log(error);
     }

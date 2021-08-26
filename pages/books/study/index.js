@@ -416,14 +416,25 @@ const ListItem = ({
   function onChangeCheckBox(e) {
     console.log(`selected ${e.target.checked}`);
     console.log(`selected ${book.mybook_info.title}`);
-    const session_books = sessionStorage.getItem("books_selected");
+    const session_books =JSON.parse(sessionStorage.getItem("books_selected"));
     console.log(session_books)
-    // const value = {book_id : }
-    if(session_books === null){
-      sessionStorage.setItem("books_selected", JSON.stringify(objectData));
+    console.log(book._id)
+    const value = [{book_id : book._id, book_title: book.mybook_info.title}]
+    const value2 = {book_id : book._id, book_title: book.mybook_info.title}
+    if(e.target.checked === true){
+      if(session_books === null){
+        sessionStorage.setItem("books_selected", JSON.stringify(value));
+      } else {
+        const revalue = session_books.concat(value2)
+        sessionStorage.setItem("books_selected", JSON.stringify(revalue));
+        console.log("hello")
+      }
+    } else {
+      const filtered = session_books.filter(item=> item.book_id !== book._id)
+      console.log(filtered)
+      sessionStorage.setItem("books_selected", JSON.stringify(filtered));
     }
-
-    // sessionStorage.setItem("books_selected", this.props.book_id);
+    
   }
 
   const router = useRouter();

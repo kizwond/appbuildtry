@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, memo } from 'react';
 import { Input, Tooltip } from 'antd';
 import { useState } from 'react';
 import produce from 'immer';
@@ -6,7 +6,7 @@ import produce from 'immer';
 const NickInput = ({
   disabled,
   placeholder,
-  onChangeNickName,
+  onChangeRestudyOption,
   recordKey,
   restudyOption,
 }) => {
@@ -21,6 +21,9 @@ const NickInput = ({
         visible={showLimitText}
       >
         <Input
+          // key={placeholder}
+          defaultValue={placeholder}
+          value={placeholder}
           onBlur={(e) => {
             // 중복된 닉이 있을 때
             const nickArrayExceptMeAndEmptyValue = restudyOption
@@ -39,22 +42,21 @@ const NickInput = ({
               const newData = produce(restudyOption, (draft) => {
                 draft[recordKey].nick = e.target.value;
               });
-              onChangeNickName(newData);
+              onChangeRestudyOption(newData);
             }
           }}
           ref={inputRef}
-          onClick={() => {
-            inputRef.current.focus({ cursor: 'all' });
-          }}
+          // onClick={() => {
+          //   inputRef.current.focus({ cursor: 'all' });
+          // }}
           disabled={disabled}
-          value={placeholder}
           style={{ minWidth: '65px' }}
-          maxLength={8}
+          maxLength={11}
           onChange={(e) => {
             const newData = produce(restudyOption, (draft) => {
               draft[recordKey].nick = e.target.value;
             });
-            onChangeNickName(newData);
+            onChangeRestudyOption(newData);
             if (e.target.value.length > 7) {
               setShowLitmitText(true);
               let timer = setTimeout(() => setShowLitmitText(false), 2000);
@@ -69,4 +71,4 @@ const NickInput = ({
   );
 };
 
-export default NickInput;
+export default memo(NickInput);

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { memo } from 'react';
+import produce from 'immer';
 import { Select, Tooltip } from 'antd';
 import {
   ArrowUpOutlined,
@@ -8,13 +9,26 @@ import {
   CloseSquareOutlined,
 } from '@ant-design/icons';
 
-const GestureSelector = ({ gesture, on_off, onChangeGesture }) => {
+const GestureSelector = ({
+  gesture,
+  on_off,
+  restudyOption,
+  onChangeRestudyOption,
+  index,
+}) => {
+  const onChange = (value) => {
+    onChangeRestudyOption(
+      produce(restudyOption, (draft) => {
+        draft[index].gesture = value;
+      })
+    );
+  };
   return (
     <Select
       defaultValue={gesture}
       style={{ width: 60 }}
-      onChange={(_gesture) => {
-        onChangeGesture(_gesture);
+      onChange={(value) => {
+        onChange(value);
       }}
       disabled={on_off === 'on' ? false : true}
     >
@@ -57,4 +71,4 @@ const GestureSelector = ({ gesture, on_off, onChangeGesture }) => {
   );
 };
 
-export default GestureSelector;
+export default memo(GestureSelector);

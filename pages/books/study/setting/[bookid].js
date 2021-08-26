@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import FlagSetting from '../../../../components/books/study/FlagSetting';
 import LevelAndCycleSetting from '../../../../components/books/study/LevelAndCycleSetting';
 import { Divider } from '../../../../node_modules/antd/lib/index';
+import CategorySetting from '../../../../components/books/study/CategorySetting';
 
 const BookSetting = () => {
   const { query } = useRouter();
@@ -28,7 +29,7 @@ const BookSetting = () => {
         return <LevelAndCycleSetting book_id={query.bookid} />;
         break;
       case 'select_category':
-        return null;
+        return <CategorySetting book_id={query.bookid} />;
         break;
       case 'delete_book':
         return null;

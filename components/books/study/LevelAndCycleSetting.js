@@ -23,7 +23,9 @@ const LevelAndCycleSetting = ({ book_id }) => {
     onCompleted: (data) => funcOnCompletedUseQuery(data, 'get'),
   });
 
-  const [levelconfig_update] = useMutation(UPDATE_LEVEL_CONFIG);
+  const [levelconfig_update] = useMutation(UPDATE_LEVEL_CONFIG, {
+    onCompleted: (data) => console.log('뮤태 후', data),
+  });
 
   const funcOnCompletedUseQuery = (data, method) => {
     const restudy = data[`levelconfig_${method}`].levelconfigs[0].restudy;
@@ -87,9 +89,9 @@ const LevelAndCycleSetting = ({ book_id }) => {
     setRestudyRatio(restudy.restudyRatio);
   };
 
-  const onChangeNickName = (newData) => {
+  const onChangeRestudyOption = useCallback((newData) => {
     setRestudyOption(newData);
-  };
+  }, []);
 
   if (loading) <Table loading={loading} />;
   if (error) <div>Error : {erros}</div>;
@@ -110,7 +112,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
             disabled={restudyOption[record.key].on_off === 'on' ? false : true}
             restudyOption={restudyOption}
             placeholder={nick}
-            onChangeNickName={onChangeNickName}
+            onChangeRestudyOption={onChangeRestudyOption}
             recordKey={record.key}
           />
         ),
@@ -121,9 +123,6 @@ const LevelAndCycleSetting = ({ book_id }) => {
         key: 'period',
         width: 90,
         render: (period, record, index) => {
-          const changePeriodOption = (newArray) => {
-            setRestudyOption(newArray);
-          };
           if (index == 4) {
             return <span style={{ color: 'gray' }}>세션 탈출</span>;
           }
@@ -132,7 +131,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
               period={period}
               index={index}
               selectOptionArray={record.periodOption}
-              changePeriodOption={changePeriodOption}
+              onChangeRestudyOption={onChangeRestudyOption}
               restudyOption={restudyOption}
             />
           );
@@ -198,22 +197,15 @@ const LevelAndCycleSetting = ({ book_id }) => {
         dataIndex: 'gesture',
         key: 'gesture',
         width: 70,
-        render: (gesture, record) => {
-          const onChangeGesture = (_gesture) => {
-            setRestudyOption(
-              produce(restudyOption, (draft) => {
-                draft[record.key].gesture = _gesture;
-              })
-            );
-          };
-          return (
-            <GestureSelector
-              gesture={gesture}
-              on_off={restudyOption[record.key].on_off}
-              onChangeGesture={onChangeGesture}
-            />
-          );
-        },
+        render: (gesture, record, index) => (
+          <GestureSelector
+            gesture={gesture}
+            on_off={record.on_off}
+            restudyOption={restudyOption}
+            index={index}
+            onChangeRestudyOption={onChangeRestudyOption}
+          />
+        ),
       },
       {
         title: '사용 여부',

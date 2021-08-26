@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const GET_LEVEL_CONFIG = gql`
-  query GetLevelConfig($mybook_id: String) {
+  query GetLevelConfig($mybook_id: ID) {
     levelconfig_get(mybook_id: $mybook_id) {
       status
       msg

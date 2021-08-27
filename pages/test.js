@@ -20,11 +20,14 @@ const Test = () => {
         }
 
         console.log('카테고리설정');
-        setSelectedCategory([
-          ...selectedCategory,
-          received_data.mybook_getbyMybookid.mybooks[0].mybook_info
-            .mybookcate_id,
-        ]);
+        setTimeout(() => {
+          console.log(counter.current);
+          setSelectedCategory([
+            ...selectedCategory,
+            received_data.mybook_getbyMybookid.mybooks[0].mybook_info
+              .mybookcate_id,
+          ]);
+        }, 1000);
         console.log('통신완료 후 onCopleted 코드 종료');
       },
     }
@@ -35,7 +38,7 @@ const Test = () => {
     bookIdsList.current = booklist.map((book) => book.book_id);
   }, [bookIdsList]);
 
-  console.log(counter.current);
+  // console.log(counter.current);
 
   return (
     <div>

@@ -9,6 +9,11 @@ const SessionSetting = () => {
   const counter = useRef(0);
   const bookIdsList = useRef([]);
   const [indexesList, setIndexesList] = useState([]);
+  useEffect(() => {
+    const booklist = JSON.parse(sessionStorage.getItem('books_selected'));
+    console.log('북아이디리스트 설정 - 유즈 이펙트');
+    bookIdsList.current = booklist.map((book) => book.book_id);
+  }, [bookIdsList]);
 
   const { loading, error, data, variables } = useQuery(
     GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
@@ -25,22 +30,18 @@ const SessionSetting = () => {
       variables: { mybook_id: bookIdsList.current[counter.current] },
       onCompleted: (received_data) => {
         console.log('통신완료 후 onCompleted 코드 시작');
+        if (counter.current < bookIdsList.current.length - 1) {
+          console.log('카운터설정');
+          counter.current += 1;
+        }
 
-        setTimeout(() => {
-          console.log('인덱스 정보 추가');
-          console.log(counter.current);
-          if (counter.current < bookIdsList.current.length - 1) {
-            console.log('카운터설정');
-            counter.current += 1;
-          }
-          setCardsList([
-            ...cardsList,
-            received_data.session_getNumCardsbyIndex,
-          ]);
-        }, 1000);
+        console.log('카테고리설정');
+        setCardsList([...cardsList, received_data]);
+        console.log(received_data);
         console.log('통신완료 후 onCopleted 코드 종료');
       },
     }
+
     //   또는 아래 코드 처럼 onCompleted에서 useRef로만 사용하고 useEffect에서
     //   refetch(variables value) 사용하는 것도 작동한다.
     // 어느 것이 제대로 된 접근법인지는 모르겠다
@@ -70,13 +71,15 @@ const SessionSetting = () => {
   // const variables = { mybook_id: bookIdsList.current[counter.current] };
   // refetch(variables);
   // }, [counter, refetch]);
-  console.log(cardsList);
-  useEffect(() => {
-    const booklist = JSON.parse(sessionStorage.getItem('books_selected'));
-    console.log('북아이디리스트 설정 - 유즈 이펙트');
-    bookIdsList.current = booklist.map((book) => book.book_id);
-  }, [bookIdsList]);
 
+  if (error) {
+    console.log('에러', error);
+    console.log(variables);
+    return <div>에러발생</div>;
+  }
+
+  console.log(bookIdsList.current[counter.current]);
+  console.log(cardsList);
   return (
     <Layout>
       <div>

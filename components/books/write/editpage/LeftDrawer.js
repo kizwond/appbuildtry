@@ -5,7 +5,18 @@ import { GetIndex, IndexCreateMutation, IndexRenameMutation, IndexLevelMutation,
 import IndexSettingModal from "../index/IndexSettingModal";
 import { UnorderedListOutlined, DoubleLeftOutlined,CarryOutOutlined } from '@ant-design/icons';
 
-const LeftDrawer = ({ book_id }) => {
+const LeftDrawer = () => {
+  const ISSERVER = typeof window === "undefined";
+  if (!ISSERVER) {
+    var book_id = localStorage.getItem("book_id")
+    console.log(book_id)
+    if(book_id !== null){
+      localStorage.removeItem("book_id")
+      localStorage.setItem("book_id", book_id)
+    }else{
+      localStorage.setItem("book_id", book_id)
+    }
+  }
   const [visible, setVisible] = useState(false);
 
   const { loading, error, data } = useQuery(GetIndex, {
@@ -13,6 +24,7 @@ const LeftDrawer = ({ book_id }) => {
   });
   const [indexinfo, setIndexInfo] = useState();
   const [indexSetInfo, setIndexSetInfo] = useState();
+  const [selectedIndexId, setSelectedIndexId] = useState();
 
   useEffect(() => {
     if (data) {
@@ -147,7 +159,9 @@ const LeftDrawer = ({ book_id }) => {
   };
 
   const onSelect = (selectedKeys, info) => {
-    console.log("selected", selectedKeys, info);
+    console.log("selected", selectedKeys[0], info);
+    setSelectedIndexId(selectedKeys[0])
+
   };
 if(indexinfo){
   console.log(indexinfo)
@@ -158,7 +172,7 @@ if(indexinfo){
             let level = {
               title: table.name,
               index_id:table._id,
-             
+             key:table._id,
               level: 1,
               icon: <CarryOutOutlined />,
               children: [],}
@@ -167,7 +181,7 @@ if(indexinfo){
             let level = {
               title: table.name,
               index_id:table._id,
-             
+              key:table._id,
               level: 2,
               icon: <CarryOutOutlined />,
               children: [],}
@@ -176,7 +190,7 @@ if(indexinfo){
             let level = {
               title: table.name,
               index_id:table._id,
-             
+              key:table._id,
               level: 3,
               icon: <CarryOutOutlined />,
               children: [],}
@@ -185,7 +199,7 @@ if(indexinfo){
             let level = {
               title: table.name,
               index_id:table._id,
-             
+              key:table._id,
               level: 4,
               icon: <CarryOutOutlined />,
               children: [],}
@@ -194,7 +208,7 @@ if(indexinfo){
             let level = {
               title: table.name,
               index_id:table._id,
-             
+              key:table._id,
               level: 5,
               icon: <CarryOutOutlined />,
               children: [],}
@@ -496,46 +510,3 @@ if(level_all.length > 0){
 };
 
 export default LeftDrawer;
-
-const treeData = [
-  {
-    title: "parent 1",
-    key: "0-0",
-    children: [
-      {
-        title: "parent 1-0",
-        key: "0-0-0",
-        disabled: true,
-        children: [
-          {
-            title: "leaf",
-            key: "0-0-0-0",
-            disableCheckbox: true,
-          },
-          {
-            title: "leaf",
-            key: "0-0-0-1",
-          },
-        ],
-      },
-      {
-        title: "parent 1-1",
-        key: "0-0-1",
-        children: [
-          {
-            title: (
-              <span
-                style={{
-                  color: "#1890ff",
-                }}
-              >
-                sss
-              </span>
-            ),
-            key: "0-0-1-0",
-          },
-        ],
-      },
-    ],
-  },
-];

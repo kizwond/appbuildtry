@@ -11,12 +11,25 @@ import WriteContainer from "../../../components/books/write/editpage/WriteContai
 const Book = () => {
   const { query } = useRouter();
   console.log(query);
+  const ISSERVER = typeof window === "undefined";
+  if (!ISSERVER) {
+    const bookid = localStorage.getItem("book_id")
+    console.log(bookid)
+    if(bookid !== null){
+      localStorage.removeItem("book_id")
+      localStorage.setItem("book_id", query.bookid)
+    }else{
+      localStorage.setItem("book_id", query.bookid)
+    }
+  }
 
+ 
+  
   return (
     <Layout>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <LeftDrawer book_id={query.bookid} />
-        <WriteContainer />
+        <WriteContainer book_id={query.bookid} />
         <RightDrawer book_id={query.bookid} />
       </div>
     </Layout>

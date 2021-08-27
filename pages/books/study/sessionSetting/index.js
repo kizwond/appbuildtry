@@ -18,6 +18,15 @@ const SessionSetting = () => {
   const { loading, error, data, variables } = useQuery(
     GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
     {
+      // variables 변경 감지하려면 component가 re-render되어야 한다.
+      //  useRef로 variables의 값으로 됐을 때 useRef가 업데이트되어도 component가 재랜더링되지 않기 때문에
+      //  apollo에서는 variables의 값이 변경됨을 감지할 기회가 없다(재랜더링 되지 않기 때문)
+      //  하지만 아래 setCardList(state값)가 변경되어 재랜더링 될 때
+      //  useQuery에서 variables 값이 변경됨을 감지하고 refetch를 수행한다.
+      //  onCompleted에서  any state를 변경해야 refetch수행
+
+      //  또는 useQuery의 updateQuery 를 메서드를 사용하여 refetch를 수행할 수도 있을 것 같으나
+      //  다음 기회에 연구
       variables: { mybook_id: bookIdsList.current[counter.current] },
       onCompleted: (received_data) => {
         console.log('통신완료 후 onCompleted 코드 시작');

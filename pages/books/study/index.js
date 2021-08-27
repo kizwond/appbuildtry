@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import Layout from '../../../components/layout/Layout';
-import { Form, Input, Button, Space, Popover, Select } from 'antd';
+import { Form, Input, Button, Space, Checkbox , Select } from 'antd';
 import Footer from '../../../components/index/Footer';
 import Link from 'next/link';
 import { useDispatch } from 'react-redux';
@@ -212,8 +212,13 @@ const BoomListMain = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
+  const sesstionStart =() => {
+    console.log("session start button clicked!!")
+    router.push("/books/study/sessionSetting");
+  }
   return (
+    <>
+    <div><button onClick={()=>sesstionStart()}>세션시작</button></div>
     <div>
       좋아요리스트
       <LikeBookList
@@ -236,6 +241,7 @@ const BoomListMain = () => {
         onFinishBookMoveCategory={onFinishBookMoveCategory}
       />
     </div>
+    </>
   );
 };
 
@@ -407,10 +413,35 @@ const ListItem = ({
     onFinishBookMoveCategory(book._id, value);
   }
 
+  function onChangeCheckBox(e) {
+    console.log(`selected ${e.target.checked}`);
+    console.log(`selected ${book.mybook_info.title}`);
+    const session_books =JSON.parse(sessionStorage.getItem("books_selected"));
+    console.log(session_books)
+    console.log(book._id)
+    const value = [{book_id : book._id, book_title: book.mybook_info.title}]
+    const value2 = {book_id : book._id, book_title: book.mybook_info.title}
+    if(e.target.checked === true){
+      if(session_books === null){
+        sessionStorage.setItem("books_selected", JSON.stringify(value));
+      } else {
+        const revalue = session_books.concat(value2)
+        sessionStorage.setItem("books_selected", JSON.stringify(revalue));
+        console.log("hello")
+      }
+    } else {
+      const filtered = session_books.filter(item=> item.book_id !== book._id)
+      console.log(filtered)
+      sessionStorage.setItem("books_selected", JSON.stringify(filtered));
+    }
+    
+  }
+
   const router = useRouter();
 
-  return (
+  return (  
     <>
+    <Checkbox onChange={onChangeCheckBox}/>
       <ul
         style={{
           display: 'flex',

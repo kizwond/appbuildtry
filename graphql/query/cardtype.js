@@ -360,6 +360,23 @@ export const CardTypeCreate = gql`
 `;
 export const GetCardTypeSet = gql`
   query GetCardTypeSet($mybook_id: ID) {
+    indexset_getbymybookid(mybook_id: $mybook_id){
+      status
+      msg 
+      indexsets {
+        _id
+        indexset_info {
+          mybook_id
+          user_id
+        }
+        indexes {
+          _id
+          name     
+          level 
+          indextype 
+        }
+      }       
+    }
     cardtypeset_getbymybookid(mybook_id: $mybook_id) {
       status
       msg

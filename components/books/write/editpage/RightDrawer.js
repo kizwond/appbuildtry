@@ -6,7 +6,18 @@ import CardtypeContainer from '../../write/editpage/cardtype/CardtypeContainer'
 import { GetCardTypeSet } from "../../../../graphql/query/cardtype";
 import { useQuery, useMutation } from "@apollo/client";
 
-const RightDrawer = ({book_id}) => {
+const RightDrawer = () => {
+  const ISSERVER = typeof window === "undefined";
+  if (!ISSERVER) {
+    var book_id = localStorage.getItem("book_id")
+    console.log(book_id)
+    if(book_id !== null){
+      localStorage.removeItem("book_id")
+      localStorage.setItem("book_id", book_id)
+    }else{
+      localStorage.setItem("book_id", book_id)
+    }
+  }
     const [visible, setVisible] = useState(false);
     const [cardTypeId, setCardTypeId] = useState();
     const [cardTypeSetId, setCardTypeSetId] = useState();

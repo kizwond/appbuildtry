@@ -353,6 +353,12 @@ const ListItem = ({ category, book, deleteBook, onFinishUpdate, onFinishPosition
     onFinishBookMoveCategory(book._id, value);
   }
 
+  function movepage(bookid) {
+    localStorage.removeItem("book_id")
+    localStorage.setItem("book_id", bookid)
+    router.push(`/books/write/${bookid}`)
+  }
+
   const router = useRouter();
 
   return (
@@ -362,7 +368,7 @@ const ListItem = ({ category, book, deleteBook, onFinishUpdate, onFinishPosition
         {book.mybook_info.seq_in_category !== 0 && <li style={{ visibility: "hidden" }}>{cateName}</li>}
 
         <li>
-          <button onClick={() => router.push(`/books/write/${book._id}`)}>{book.mybook_info.title}</button>
+          <button onClick={() => movepage(book._id)}>{book.mybook_info.title}</button>
         </li>
         <li>
           <Popover placement="rightTop" title={updateNameText} visible={updatenewInput} content={updatecontent(book._id, book.mybook_info.hide_or_show)} trigger="click">

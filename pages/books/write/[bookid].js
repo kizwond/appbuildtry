@@ -5,32 +5,45 @@ import Layout from "../../../components/layout/Layout";
 
 import LeftDrawer from "../../../components/books/write/editpage/LeftDrawer";
 import RightDrawer from "../../../components/books/write/editpage/RightDrawer";
-import { GetIndex, IndexCreateMutation } from "../../../graphql/query/writemain";
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
+import { GetIndex } from "../../../graphql/query/bookIndex";
+import { useQuery } from "@apollo/client";
 import WriteContainer from "../../../components/books/write/editpage/WriteContainer";
+
 const Book = () => {
   const { query } = useRouter();
   console.log(query);
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
-    const bookid = localStorage.getItem("book_id")
-    console.log(bookid)
-    if(bookid !== null){
-      localStorage.removeItem("book_id")
-      localStorage.setItem("book_id", query.bookid)
-    }else{
-      localStorage.setItem("book_id", query.bookid)
-    }
+    var bookid = localStorage.getItem("book_id")
+    if(query.bookid === undefined){
+       var book_id = bookid
+     } else {
+       book_id = query.bookid;
+     }
+  } 
+  
+  const [indexChanged, setIndexChanged] = useState()
+  const { loading, error, data } = useQuery(GetIndex, {
+    variables: { mybook_id: book_id },
+  });
+  const index_changed = (value) => {
+    console.log("index changed!!!!", value)
+    setIndexChanged(value)
   }
 
- 
+  useEffect(() => {
+    if (data) {
+      localStorage.removeItem("first_index")
+      localStorage.setItem("first_index", data.indexset_getbymybookid.indexsets[0].indexes[0]._id)
+    }
+  }, [data,indexChanged]);
   
   return (
     <Layout>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <LeftDrawer book_id={query.bookid} />
-        <WriteContainer book_id={query.bookid} />
-        <RightDrawer book_id={query.bookid} />
+        <LeftDrawer index_changed={index_changed} indexChanged={indexChanged} book_id={book_id} />
+        <WriteContainer indexChanged={indexChanged} book_id={book_id} />
+        <RightDrawer book_id={book_id} />
       </div>
     </Layout>
   );

@@ -1,14 +1,25 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { GetCardTypeSet, CardTypeCreate } from "../../../../graphql/query/cardtype";
-import { useMutation, useQuery, useLazyQuery  } from "@apollo/client";
+import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FloatingMenu from "./sidemenu/FloatingMenu";
 import { Input, Form, Button } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
 
-const WriteContainer = () => {
+const WriteContainer = ({ indexChanged }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
+    var first_index_tmp = localStorage.getItem("first_index");
+    if (indexChanged) {
+      if (indexChanged === first_index_tmp) {
+        var first_index = first_index_tmp;
+      } else {
+        first_index = indexChanged;
+      }
+    } else {
+      var first_index = localStorage.getItem("first_index");
+    }
+
     console.log(book_id);
     if (book_id !== null) {
       localStorage.removeItem("book_id");
@@ -22,7 +33,10 @@ const WriteContainer = () => {
   const [cardTypes, setCardTypes] = useState();
   const [cardTypeInfos, setcardTypeInfos] = useState();
   const [indexId, setIndexId] = useState();
+  const [cardSetId, setCardSetId] = useState();
+  const [cards, setCards] = useState();
   const [editorOn, setEditorOn] = useState();
+  const [cardId, setCardId] = useState();
 
   const [face1_input1, set_face1_input1] = useState();
   const [face1_input2, set_face1_input2] = useState();
@@ -36,23 +50,27 @@ const WriteContainer = () => {
   const [face2_input4, set_face2_input4] = useState();
   const [face2_input5, set_face2_input5] = useState();
 
-  const { loading, error, data:data1 } = useQuery(GetCardTypeSet, {
-    variables: { mybook_id: book_id },
+  const {
+    loading,
+    error,
+    data: data1,
+  } = useQuery(GetCardTypeSet, {
+    variables: { mybook_id: book_id, index_id: first_index },
   });
-  
+
   useEffect(() => {
     console.log("카드타입셋을 불러옴");
     if (data1) {
       console.log("--->", data1);
       setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
       setCardTypes(data1.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
-      setIndexId(data1.indexset_getbymybookid.indexsets[0].indexes[0]._id)
+      setIndexId(data1.indexset_getbymybookid.indexsets[0].indexes[0]._id);
+      setCardSetId(data1.cardset_getbyindexid.cardsets[0]._id);
+      setCards(data1.cardset_getbyindexid.cardsets[0].cards);
     } else {
       console.log("why here?");
     }
-  }, [data1]);
-
-  const [cardset_getbyindexid, { data:data2 }] = useLazyQuery(GetCardSet);
+  }, [data1, indexChanged]);
 
   const cardTypeInfo = (cardtype_info) => {
     setcardTypeInfos(cardtype_info);
@@ -114,37 +132,75 @@ const WriteContainer = () => {
 
   const onFinish = (values) => {
     console.log(values);
-    // addcard(values)
+
+    const face1_contents_temp = [];
+    for (var i = 0; i < 5; i++) {
+      face1_contents_temp.push(values[`face1_input${i}`]);
+    }
+    var face1_contents = face1_contents_temp.filter(function (el) {
+      return el != null;
+    });
+
+    const face2_contents_temp = [];
+    for (var i = 0; i < 5; i++) {
+      face2_contents_temp.push(values[`face2_input${i}`]);
+    }
+    var face2_contents = face2_contents_temp.filter(function (el) {
+      return el != null;
+    });
+    if(cardId){
+      var current_position_card_id = cardId
+    } else {
+      current_position_card_id = null
+    }
+    const cardtype = cardTypeInfos.cardtype;
+    const cardtype_id = cardTypes[0]._id;
+    addcard(cardtype, cardtype_id,current_position_card_id, face1_contents, face2_contents);
   };
 
   const [cardset_addcard] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 
   function afteraddcardmutation(data) {
     console.log("data", data);
+    setCards(data.cardset_addcard.cardsets[0].cards);
   }
 
-  async function addcard(values) {
+  // useEffect(() => {
+  //   console.log("카드타입셋을 불러옴");
+  //   if (data1) {
+  //     console.log("--->", data1);
+  //     setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
+  //     setCardTypes(data1.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
+  //     setIndexId(data1.indexset_getbymybookid.indexsets[0].indexes[0]._id);
+  //     setCardSetId(data1.cardset_getbyindexid.cardsets[0]._id);
+  //     setCards(data1.cardset_getbyindexid.cardsets[0].cards);
+  //   } else {
+  //     console.log("why here?");
+  //   }
+  // }, [data1, indexChanged]);
+
+  async function addcard(cardtype, cardtype_id,current_position_card_id, face1_contents, face2_contents) {
     try {
       await cardset_addcard({
         variables: {
           forAddCard: {
-            cardset_id: ID,
-            current_position_card_id: ID,
+            cardset_id: cardSetId,
+            current_position_card_id: current_position_card_id,
             card_info: {
-              cardtypeset_id,
+              cardtypeset_id: cardTypeSetId,
               cardtype_id,
               cardtype,
-              hasParent,
-              parent_card_id,
+              hasParent: "no",
+              parent_card_id: null,
             },
             contents: {
-              user_flag: values.bbbbb,
-              maker_flag: values.bbbbb,
-              face1: values.bbbbb,
-              selection: values.bbbbb,
-              face2: values.bbbbb,
-              annotation: values.bbbbb,
-              memo: values.bbbbb,
+              user_flag: null,
+              maker_flag: null,
+              face1: face1_contents,
+              selection: null,
+              face2: face2_contents,
+              annotation: null,
+              memo: null,
             },
           },
         },
@@ -153,11 +209,53 @@ const WriteContainer = () => {
       console.log(error);
     }
   }
+  if (cards) {
+    var contents = cards.map((content) => {
+      return (
+        <>
+          {content.card_info.cardtype === "read" && (
+            <div onClick={()=>onClickCard(content._id)} style={{ border: "1px solid grey", marginBottom: "5px" }}>
+              <div>
+                {content.contents.mycontents_id.face1.map((item) => (
+                  <>
+                    <div>{item}</div>
+                  </>
+                ))}
+              </div>
+            </div>
+          )}
 
+          {content.card_info.cardtype === "flip" && (
+            <div onClick={()=>onClickCard(content._id)} style={{ border: "1px solid grey", marginBottom: "5px" }}>
+              <div>
+                {content.contents.mycontents_id.face1.map((item) => (
+                  <>
+                    <div>{item}</div>
+                  </>
+                ))}
+                {content.contents.mycontents_id.face2.map((item) => (
+                  <>
+                    <div>{item}</div>
+                  </>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      );
+    });
+  }
+  const onClickCard = (card_id) =>{
+    console.log("cardClicked!!!!!")
+    console.log(card_id)
+    setCardId(card_id)
+  }
   return (
     <div className="editor_panel" id="editor_panel" style={{ ...a4Page, position: "relative" }}>
       <FloatingMenu cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} />
       <div className="a4">
+        {contents}
+        <h1>selected index id : {first_index}</h1>
         <div>1. 우측 카드추가 부분에 cardTypeSet를 query해서 뿌려주고</div>
         <div>2. 카드타입 클릭시 해당 카드타입 설정에 따라 input창을 여기다가 뿌려주고</div>
         <div>3. form submit시 mutation 해서 저장해주고.</div>

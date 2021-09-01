@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID } from '../graphql/query/studySessionSetting';
-import { Tree } from 'antd';
-import produce from 'immer';
+import { Tree, Table } from 'antd';
 
 const Test = () => {
   const [treeData, setTreeData] = useState([]);
+  const [checkedKeys, setCheckedKeys] = useState([]);
   const { loading, error, data } = useQuery(
     GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
     {
@@ -25,7 +25,12 @@ const Test = () => {
             key: item._id,
             level: item.level,
             index: index,
-            children: [],
+            progress_for_total_card: item.num_cards.total.progress,
+            total_cards_number_for_total_card: item.num_cards.total.total,
+            yet_cards_number_for_total_card: item.num_cards.total.yet,
+            completed_cards_number_for_total_card:
+              item.num_cards.total.completed,
+            holding_cards_number_for_total_card: item.num_cards.total.hold,
           })
         );
       let data_for_tree_level_one = rawIndexes.filter(
@@ -49,9 +54,17 @@ const Test = () => {
           for (let k = 0; k < son.length; k++) {
             if (parents[i].index < son[k].index) {
               if (i + 1 == parents.length) {
-                parents[i].children = [...parents[i].children, son[k]];
+                if (parents[i].children == undefined) {
+                  parents[i].children = [son[k]];
+                } else {
+                  parents[i].children = [...parents[i].children, son[k]];
+                }
               } else if (parents[i + 1].index > son[k].index) {
-                parents[i].children = [...parents[i].children, son[k]];
+                if (parents[i].children == undefined) {
+                  parents[i].children = [son[k]];
+                } else {
+                  parents[i].children = [...parents[i].children, son[k]];
+                }
               }
             }
           }
@@ -83,16 +96,92 @@ const Test = () => {
   }, [data]);
 
   console.log(treeData);
+  console.log(data);
 
-  const onCheck = (checkedKeysValue) => {
-    console.log('onCheck', checkedKeysValue);
+  const columns = [
+    {
+      title: '목차',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: (
+        <>
+          <div>학습</div>
+          <div>완료율</div>
+        </>
+      ),
+      dataIndex: 'progress_for_total_card',
+      key: 'progress_for_total_card',
+    },
+    {
+      title: (
+        <>
+          <div>전체</div>
+          <div>카드</div>
+        </>
+      ),
+      dataIndex: 'total_cards_number_for_total_card',
+      key: 'total_cards_number_for_total_card',
+    },
+    {
+      title: (
+        <>
+          <div>미학습</div>
+          <div>카드</div>
+        </>
+      ),
+      dataIndex: 'yet_cards_number_for_total_card',
+      key: 'yet_cards_number_for_total_card',
+    },
+    {
+      title: (
+        <>
+          <div>학습</div>
+          <div>완료</div>
+          <div>카드</div>
+        </>
+      ),
+      dataIndex: 'completed_cards_number_for_total_card',
+      key: 'completed_cards_number_for_total_card',
+    },
+    {
+      title: (
+        <>
+          <div>학습</div>
+          <div>보류</div>
+          <div>카드</div>
+        </>
+      ),
+      dataIndex: 'holding_cards_number_for_total_card',
+      key: 'holding_cards_number_for_total_card',
+    },
+  ];
+
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        'selectedRows: ',
+        selectedRows
+      );
+    },
+    onSelect: (record, selected, selectedRows) => {
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log(selected, selectedRows, changeRows);
+    },
   };
 
   return (
     <>
-      {treeData.length > 0 ? (
-        <Tree checkable checkStrictly onCheck={onCheck} treeData={treeData} />
-      ) : null}
+      <Table
+        columns={columns}
+        dataSource={treeData}
+        rowSelection={{ ...rowSelection, checkStrictly: true }}
+        bordered
+      />
     </>
   );
 };

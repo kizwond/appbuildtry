@@ -19,6 +19,7 @@ export const GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID = gql`
           num_cards {
             total {
               progress
+              total
               yet
               ing {
                 total

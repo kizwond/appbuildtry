@@ -140,11 +140,11 @@ const SessionSetting = () => {
     }
   }, [data]);
 
-  // if (error) {
-  //   console.log('에러', error);
-  //   console.log(variables);
-  //   return <div>에러발생</div>;
-  // }
+  if (error) {
+    console.log('에러', error);
+    console.log(variables);
+    return <div>에러발생</div>;
+  }
 
   console.log(cardsList);
 

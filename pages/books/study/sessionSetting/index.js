@@ -65,7 +65,7 @@ const SessionSetting = () => {
           forCreateSession: {
             sessionScope: sessionScope,
             sessionConfig: {
-              studyMode: 'read',
+              studyMode: 'flip',
               detailedOption: {
                 sortOption: 'standard',
                 useCardtype: ['read', 'flip'],

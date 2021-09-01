@@ -73,6 +73,9 @@ export const SESSION_CREATE_SESSION = gql`
     session_createSession(forCreateSession: $forCreateSession) {
       status
       msg
+      sessions {
+        _id
+      }
     }
   }
 `;

@@ -41,7 +41,12 @@ const SessionSetting = () => {
   }, []);
 
   const [session_createSession] = useMutation(SESSION_CREATE_SESSION, {
-    onCompleted: (data) => console.log(data),
+    onCompleted: (data) => {
+      sessionStorage.setItem(
+        'session_Id',
+        JSON.stringify(data.session_createSession.sessions[0]._id)
+      );
+    },
   });
 
   const submitCreateSessionConfigToServer = async () => {

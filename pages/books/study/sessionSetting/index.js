@@ -70,7 +70,7 @@ const SessionSetting = () => {
                 sortOption: 'standard',
                 useCardtype: ['read', 'flip'],
                 useStatus: ['yet', 'ing', 'hold', 'completed'],
-                needStudyTimeCondition: 'untilToday',
+                needStudyTimeCondition: 'all',
                 needStudyTimeRange: [0, 1],
                 numStartCards: {
                   onOff: 'off',

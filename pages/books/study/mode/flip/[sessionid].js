@@ -1,30 +1,31 @@
 import React, { useState, useEffect, Fragment } from "react";
-import StudyLayout from "../../../../../components/layout/StudyLayout";
+import Layout from "../../../../../components/layout/Layout";
 import { GetSession } from "../../../../../graphql/query/session";
 import { useMutation, useQuery } from "@apollo/client";
-
+import { useRouter } from 'next/router';
 const FlipMode = () => {
+  const { query } = useRouter();
+  console.log(query.sessionid)
+
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
-    var session_id = localStorage.getItem("session_id");
-    console.log(session_id);
-  }
+    var session_id_temp = sessionStorage.getItem("session_Id")
+    if(query.sessionid === undefined){
+       var session_id = session_id_temp
+     } else {
+      session_id = query.sessionid;
+     }
+     console.log(session_id)
+  } 
 
-  const [cardInfos, setCardInfos] = useState();
   const { loading, error, data } = useQuery(GetSession, {
     variables: { session_id: session_id },
+    onCompleted:(data)=>console.log(data)
   });
-
-  useEffect(() => {
-    console.log("세션 카드 인포 저장");
-    if (data) {
-      console.log("--->", data);
-      setCardInfos(data.getsession);
-    }
-  }, [data]);
-
+  
+  console.log("here")
   return (
-    <StudyLayout>
+    <Layout>
       <div>
         <div style={{ marginTop: "50px", margin: "auto", width: "600px", height: "500px", border: "1px solid grey" }}>
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
@@ -40,7 +41,7 @@ const FlipMode = () => {
         </div>
       </div>
       <div>뒤집기모드</div>
-    </StudyLayout>
+    </Layout>
   );
 };
 

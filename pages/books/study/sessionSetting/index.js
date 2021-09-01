@@ -20,8 +20,10 @@ import {
   Button,
 } from 'antd';
 import styled from 'styled-components';
+import { useRouter } from "next/router";
 
 const SessionSetting = () => {
+  const router = useRouter();
   const [cardsList, setCardsList] = useState([]);
   const [checkedKeys, setCheckedKeys] = useState([]);
   const counter = useRef(0);
@@ -46,6 +48,7 @@ const SessionSetting = () => {
         'session_Id',
         JSON.stringify(data.session_createSession.sessions[0]._id)
       );
+      router.push(`/books/study/mode/flip/${data.session_createSession.sessions[0]._id}`);
     },
   });
 
@@ -137,11 +140,11 @@ const SessionSetting = () => {
     }
   }, [data]);
 
-  if (error) {
-    console.log('에러', error);
-    console.log(variables);
-    return <div>에러발생</div>;
-  }
+  // if (error) {
+  //   console.log('에러', error);
+  //   console.log(variables);
+  //   return <div>에러발생</div>;
+  // }
 
   console.log(cardsList);
 

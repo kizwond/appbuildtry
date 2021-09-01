@@ -189,6 +189,8 @@ const BoomListMain = () => {
   };
   //useEffect
   useEffect(() => {
+    sessionStorage.removeItem("books_selected");
+    sessionStorage.removeItem("session_Id");
     if (data) {
       console.log(data);
       if (data.mybook_getAllMybook.status === '401') {

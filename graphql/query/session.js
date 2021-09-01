@@ -84,10 +84,25 @@ export const GetSession = gql`
             studyTimesInSession
             userFlagOriginal
             userFlagPrev
+            statusCurrent
+            recentKnowTime
+            recentStudyResult
+            recentExamResult
+            recentExamTime
+            recentStudyTime
+            recentSelection
+            recentSelectTime
+            needStudyTime
+            currentLevStudyTimes
+            currentLevAccuStudyTime
+            totalStudyTimes
+            totalExamTimes
+            recentStayHour
+            totalStayHour
+            levelCurrent
           }
         }
       }
     }
   }
 `;
-

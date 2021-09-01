@@ -1,8 +1,10 @@
 import { gql } from '@apollo/client';
 
 export const GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID = gql`
-  query getSessionCardsDataByBooksId($mybook_id: ID) {
-    session_getNumCardsbyIndex(mybook_id: $mybook_id) {
+  query getSessionCardsDataByBooksId(
+    $forGetNumCardsbyIndex: forGetNumCardsbyIndex
+  ) {
+    session_getNumCardsbyIndex(forGetNumCardsbyIndex: $forGetNumCardsbyIndex) {
       status
       msg
       indexsets {
@@ -62,6 +64,15 @@ export const GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID = gql`
           }
         }
       }
+    }
+  }
+`;
+
+export const SESSION_CREATE_SESSION = gql`
+  mutation sessionCreateSession($forCreateSession: forCreateSession) {
+    session_createSession(forCreateSession: $forCreateSession) {
+      status
+      msg
     }
   }
 `;

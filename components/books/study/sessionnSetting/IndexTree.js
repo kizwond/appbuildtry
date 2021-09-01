@@ -20,6 +20,13 @@ const IndexTree = ({
         progress_for_total_card: item.num_cards.total.progress,
         total_cards_number_for_total_card: item.num_cards.total.total,
         yet_cards_number_for_total_card: item.num_cards.total.yet,
+        total_on_study_cards_number_for_total_card: item.num_cards.total.ing,
+        until_today_on_study_cards_number_for_total_card:
+          item.num_cards.total.ing.untilToday,
+        until_now_on_study_cards_number_for_total_card:
+          item.num_cards.total.ing.untilNow,
+        from_tomorrow_on_study_cards_number_for_total_card:
+          item.num_cards.total.ing.afterTomorrow,
         completed_cards_number_for_total_card: item.num_cards.total.completed,
         holding_cards_number_for_total_card: item.num_cards.total.hold,
       }));
@@ -108,6 +115,19 @@ const IndexTree = ({
           dataSource={treeData}
           rowSelection={{ ...rowSelection, checkStrictly: true }}
           bordered
+          size="small"
+          pagination={false}
+          title={() => (
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div>
+                <b>목차 내 카드 정보</b>
+              </div>
+              <div>
+                괄호 안 숫자는 현재 시각 기준으로 산출한 복습 필요 카드
+                수량입니다.
+              </div>
+            </div>
+          )}
         />
       ) : null}
     </>
@@ -131,6 +151,7 @@ const columns = [
     ),
     dataIndex: 'progress_for_total_card',
     key: 'progress_for_total_card',
+    width: 150,
     // eslint-disable-next-line react/display-name
     render: () => (
       <>
@@ -152,6 +173,7 @@ const columns = [
     ),
     dataIndex: 'total_cards_number_for_total_card',
     key: 'total_cards_number_for_total_card',
+    width: 80,
   },
   {
     title: (
@@ -162,6 +184,49 @@ const columns = [
     ),
     dataIndex: 'yet_cards_number_for_total_card',
     key: 'yet_cards_number_for_total_card',
+    width: 80,
+  },
+  {
+    title: '학습 중 카드',
+    children: [
+      {
+        title: (
+          <>
+            <div>전체</div>
+            <div>학습 중 카드</div>
+          </>
+        ),
+        dataIndex: 'yet_cards_number_for_total_card',
+        key: 'yet_cards_number_for_total_card',
+        width: 95,
+      },
+      {
+        title: (
+          <>
+            <div>금일 이전</div>
+            <div>복습 필요*</div>
+          </>
+        ),
+        dataIndex: 'until_today_on_study_cards_number_for_total_card',
+        key: 'until_today_on_study_cards_number_for_total_card',
+        width: 95,
+        // eslint-disable-next-line react/display-name
+        render: (text, record) => (
+          <div>{`${text}(${record.until_now_on_study_cards_number_for_total_card})`}</div>
+        ),
+      },
+      {
+        title: (
+          <>
+            <div>내일 이후</div>
+            <div>복습 필요</div>
+          </>
+        ),
+        dataIndex: 'from_tomorrow_on_study_cards_number_for_total_card',
+        key: 'from_tomorrow_on_study_cards_number_for_total_card',
+        width: 95,
+      },
+    ],
   },
   {
     title: (
@@ -173,6 +238,7 @@ const columns = [
     ),
     dataIndex: 'completed_cards_number_for_total_card',
     key: 'completed_cards_number_for_total_card',
+    width: 80,
   },
   {
     title: (
@@ -184,5 +250,6 @@ const columns = [
     ),
     dataIndex: 'holding_cards_number_for_total_card',
     key: 'holding_cards_number_for_total_card',
+    width: 80,
   },
 ];

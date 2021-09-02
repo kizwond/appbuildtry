@@ -68,6 +68,95 @@ export const GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID = gql`
   }
 `;
 
+export const GET_SESSTION_CONFIG = gql`
+  query getSessionCardsDataByBooksId($mybook_ids: [ID]) {
+    session_getSessionConfig(mybook_ids: $mybook_ids) {
+      status
+      msg
+      sessionConfigs {
+        studyMode
+        read {
+          sortOption
+          useCardtype
+          useStatus
+          needStudyTimeCondition
+          needStudyTimeRange
+          numStartCards {
+            onOff
+            yet
+            ing
+            hold
+            completed
+          }
+        }
+        flip {
+          sortOption
+          useCardtype
+          useStatus
+          needStudyTimeCondition
+          needStudyTimeRange
+          numStartCards {
+            onOff
+            yet
+            ing
+            hold
+            completed
+          }
+        }
+        exam {
+          sortOption
+          useCardtype
+          useStatus
+          needStudyTimeCondition
+          needStudyTimeRange
+          numStartCards {
+            onOff
+            yet
+            ing
+            hold
+            completed
+          }
+        }
+        advancedFilter {
+          onOff
+          userFlag {
+            onOff
+            value
+          }
+          makerFlag {
+            onOff
+            value
+          }
+          recentStudyTime {
+            onOff
+            value
+          }
+          level {
+            onOff
+            value
+          }
+          studyTimes {
+            onOff
+            value
+          }
+          recentDifficulty {
+            onOff
+            value
+          }
+          examResult {
+            onOff
+            value
+          }
+          cardMaker {
+            onOff
+            value
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const SESSION_CREATE_SESSION = gql`
   mutation sessionCreateSession($forCreateSession: forCreateSession) {
     session_createSession(forCreateSession: $forCreateSession) {

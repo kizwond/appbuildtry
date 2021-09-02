@@ -175,81 +175,81 @@ const columns = [
     key: 'total_cards_number_for_total_card',
     width: 80,
   },
-  {
-    title: (
-      <>
-        <div>미학습</div>
-        <div>카드</div>
-      </>
-    ),
-    dataIndex: 'yet_cards_number_for_total_card',
-    key: 'yet_cards_number_for_total_card',
-    width: 80,
-  },
-  {
-    title: '학습 중 카드',
-    children: [
-      {
-        title: (
-          <>
-            <div>전체</div>
-            <div>학습 중 카드</div>
-          </>
-        ),
-        dataIndex: 'yet_cards_number_for_total_card',
-        key: 'yet_cards_number_for_total_card',
-        width: 95,
-      },
-      {
-        title: (
-          <>
-            <div>금일 이전</div>
-            <div>복습 필요*</div>
-          </>
-        ),
-        dataIndex: 'until_today_on_study_cards_number_for_total_card',
-        key: 'until_today_on_study_cards_number_for_total_card',
-        width: 95,
-        // eslint-disable-next-line react/display-name
-        render: (text, record) => (
-          <div>{`${text}(${record.until_now_on_study_cards_number_for_total_card})`}</div>
-        ),
-      },
-      {
-        title: (
-          <>
-            <div>내일 이후</div>
-            <div>복습 필요</div>
-          </>
-        ),
-        dataIndex: 'from_tomorrow_on_study_cards_number_for_total_card',
-        key: 'from_tomorrow_on_study_cards_number_for_total_card',
-        width: 95,
-      },
-    ],
-  },
-  {
-    title: (
-      <>
-        <div>학습</div>
-        <div>완료</div>
-        <div>카드</div>
-      </>
-    ),
-    dataIndex: 'completed_cards_number_for_total_card',
-    key: 'completed_cards_number_for_total_card',
-    width: 80,
-  },
-  {
-    title: (
-      <>
-        <div>학습</div>
-        <div>보류</div>
-        <div>카드</div>
-      </>
-    ),
-    dataIndex: 'holding_cards_number_for_total_card',
-    key: 'holding_cards_number_for_total_card',
-    width: 80,
-  },
+  // {
+  //   title: (
+  //     <>
+  //       <div>미학습</div>
+  //       <div>카드</div>
+  //     </>
+  //   ),
+  //   dataIndex: 'yet_cards_number_for_total_card',
+  //   key: 'yet_cards_number_for_total_card',
+  //   width: 80,
+  // },
+  // {
+  //   title: '학습 중 카드',
+  //   children: [
+  //     {
+  //       title: (
+  //         <>
+  //           <div>전체</div>
+  //           <div>학습 중 카드</div>
+  //         </>
+  //       ),
+  //       dataIndex: 'yet_cards_number_for_total_card',
+  //       key: 'yet_cards_number_for_total_card',
+  //       width: 95,
+  //     },
+  //     {
+  //       title: (
+  //         <>
+  //           <div>금일 이전</div>
+  //           <div>복습 필요*</div>
+  //         </>
+  //       ),
+  //       dataIndex: 'until_today_on_study_cards_number_for_total_card',
+  //       key: 'until_today_on_study_cards_number_for_total_card',
+  //       width: 95,
+  //       // eslint-disable-next-line react/display-name
+  //       render: (text, record) => (
+  //         <div>{`${text}(${record.until_now_on_study_cards_number_for_total_card})`}</div>
+  //       ),
+  //     },
+  //     {
+  //       title: (
+  //         <>
+  //           <div>내일 이후</div>
+  //           <div>복습 필요</div>
+  //         </>
+  //       ),
+  //       dataIndex: 'from_tomorrow_on_study_cards_number_for_total_card',
+  //       key: 'from_tomorrow_on_study_cards_number_for_total_card',
+  //       width: 95,
+  //     },
+  //   ],
+  // },
+  // {
+  //   title: (
+  //     <>
+  //       <div>학습</div>
+  //       <div>완료</div>
+  //       <div>카드</div>
+  //     </>
+  //   ),
+  //   dataIndex: 'completed_cards_number_for_total_card',
+  //   key: 'completed_cards_number_for_total_card',
+  //   width: 80,
+  // },
+  // {
+  //   title: (
+  //     <>
+  //       <div>학습</div>
+  //       <div>보류</div>
+  //       <div>카드</div>
+  //     </>
+  //   ),
+  //   dataIndex: 'holding_cards_number_for_total_card',
+  //   key: 'holding_cards_number_for_total_card',
+  //   width: 80,
+  // },
 ];

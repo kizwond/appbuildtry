@@ -7,7 +7,7 @@ const SwichComponent = (props) => {
     switchCom = (
       <Switch
         size="small"
-        checked={props.isOn?.includes(props.switchArrayValue)}
+        checked={props.target?.includes(props.switchArrayValue)}
         onClick={(checked) => {
           onChangeArrayValuesForSwitch(
             checked,

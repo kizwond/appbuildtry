@@ -220,45 +220,23 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
             <Col span={menuColSize}>
               <Row align="top" gutter={8}>
                 <ColFormItem menuColDivider={menuColDivider} title="읽기카드">
-                  <Switch
-                    size="small"
-                    checked={sessionConfig[mode]?.useCardtype.includes('read')}
-                    onClick={(checked, e) => {
-                      // e.target.name으로 'read'값을 입력하였으나 switch off상태에서
-                      // off를 그대로 클릭하면 e 값이 undefined로 됨. 쓰면 안되겠음
-                      onChangeArrayValuesForSwitch(
-                        checked,
-                        onChangeValueAnother,
-                        'read',
-                        sessionConfig,
-                        mode,
-                        'useCardtype'
-                      );
-                    }}
-                  />
                   <SwichComponent
                     funct={onChangeValueAnother}
                     switchArrayValue="read"
                     bigGrandParent={sessionConfig}
                     grandParent={mode}
                     parent="useCardtype"
-                    isOn={sessionConfig[mode]?.useCardtype}
+                    target={sessionConfig[mode]?.useCardtype}
                   />
                 </ColFormItem>
                 <ColFormItem menuColDivider={menuColDivider} title="뒤집기카드">
-                  <Switch
-                    size="small"
-                    checked={sessionConfig[mode]?.useCardtype.includes('flip')}
-                    onClick={(checked) => {
-                      onChangeArrayValuesForSwitch(
-                        checked,
-                        onChangeValueAnother,
-                        'flip',
-                        sessionConfig,
-                        mode,
-                        'useCardtype'
-                      );
-                    }}
+                  <SwichComponent
+                    funct={onChangeValueAnother}
+                    switchArrayValue="flip"
+                    bigGrandParent={sessionConfig}
+                    grandParent={mode}
+                    parent="useCardtype"
+                    target={sessionConfig[mode]?.useCardtype}
                   />
                 </ColFormItem>
               </Row>
@@ -299,43 +277,43 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
                     paddingBottom: '5px',
                   }}
                 >
-                  <Switch
-                    size="small"
-                    checked={selectedStudyStatus?.includes('ing')}
-                    onClick={(checked) => {
-                      onChangeArrayValueForSwitch(checked, 'useStatus', 'ing');
-                    }}
+                  <SwichComponent
+                    funct={onChangeValueAnother}
+                    switchArrayValue="ing"
+                    bigGrandParent={sessionConfig}
+                    grandParent={mode}
+                    parent="useStatus"
+                    target={sessionConfig[mode]?.useStatus}
                   />
                 </ColFormItem>
                 <ColFormItem menuColDivider={menuColDivider} title="미학습">
-                  <Switch
-                    size="small"
-                    checked={selectedStudyStatus?.includes('yet')}
-                    onClick={(checked) => {
-                      onChangeArrayValueForSwitch(checked, 'useStatus', 'yet');
-                    }}
+                  <SwichComponent
+                    funct={onChangeValueAnother}
+                    switchArrayValue="yet"
+                    bigGrandParent={sessionConfig}
+                    grandParent={mode}
+                    parent="useStatus"
+                    target={sessionConfig[mode]?.useStatus}
                   />
                 </ColFormItem>
                 <ColFormItem menuColDivider={menuColDivider} title="학습완료">
-                  <Switch
-                    size="small"
-                    checked={selectedStudyStatus?.includes('completed')}
-                    onClick={(checked) => {
-                      onChangeArrayValueForSwitch(
-                        checked,
-                        'useStatus',
-                        'completed'
-                      );
-                    }}
+                  <SwichComponent
+                    funct={onChangeValueAnother}
+                    switchArrayValue="completed"
+                    bigGrandParent={sessionConfig}
+                    grandParent={mode}
+                    parent="useStatus"
+                    target={sessionConfig[mode]?.useStatus}
                   />
                 </ColFormItem>
                 <ColFormItem menuColDivider={menuColDivider} title="학습보류">
-                  <Switch
-                    size="small"
-                    checked={selectedStudyStatus?.includes('hold')}
-                    onClick={(checked) => {
-                      onChangeArrayValueForSwitch(checked, 'useStatus', 'hold');
-                    }}
+                  <SwichComponent
+                    funct={onChangeValueAnother}
+                    switchArrayValue="hold"
+                    bigGrandParent={sessionConfig}
+                    grandParent={mode}
+                    parent="useStatus"
+                    target={sessionConfig[mode]?.useStatus}
                   />
                 </ColFormItem>
               </Row>
@@ -542,15 +520,19 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
                 checked={isOnAdvancedFilter}
                 onChange={(checked) => {
                   if (checked) {
-                    const newData = produce(sessionConfig, (draft) => {
-                      draft.advancedFilter.onOff = 'on';
-                    });
-                    onChangeValue(newData);
+                    onChangeValueAnother(
+                      'on',
+                      sessionConfig,
+                      'advancedFilter',
+                      'onOff'
+                    );
                   } else {
-                    const newData = produce(sessionConfig, (draft) => {
-                      draft.advancedFilter.onOff = 'off';
-                    });
-                    onChangeValue(newData);
+                    onChangeValueAnother(
+                      'off',
+                      sessionConfig,
+                      'advancedFilter',
+                      'onOff'
+                    );
                   }
                 }}
               />
@@ -582,15 +564,25 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
                         checked={isOnUserFlag}
                         onChange={(checked) => {
                           if (checked) {
-                            const newData = produce(sessionConfig, (draft) => {
-                              draft.advancedFilter.userFlag.onOff = 'on';
-                            });
-                            onChangeValue(newData);
+                            // const newData = produce(sessionConfig, (draft) => {
+                            //   draft.advancedFilter.userFlag.onOff = 'on';
+                            // });
+                            // onChangeValue(newData);
+                            onChangeValueAnother(
+                              'on',
+                              sessionConfig,
+                              'advancedFilter',
+                              'userFlag',
+                              'onOff'
+                            );
                           } else {
-                            const newData = produce(sessionConfig, (draft) => {
-                              draft.advancedFilter.userFlag.onOff = 'off';
-                            });
-                            onChangeValue(newData);
+                            onChangeValueAnother(
+                              'off',
+                              sessionConfig,
+                              'advancedFilter',
+                              'userFlag',
+                              'onOff'
+                            );
                           }
                         }}
                       />

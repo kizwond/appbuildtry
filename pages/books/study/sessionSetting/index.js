@@ -194,25 +194,17 @@ const SessionSetting = () => {
 export default SessionSetting;
 
 const StyledCol = styled(Col)`
-  & .ant-form-item {
-    margin-bottom: 0px;
-    font-size: 11px;
+  & * {
+    font-size: 0.8rem;
   }
-
-  & .ant-form {
-    font-size: 13px;
-  }
-  & .ant-form label {
-    font-size: 11px;
-  }
-  & .ant-picker-input > input {
-    font-size: 10px;
+  & span.ant-radio + * {
+    font-size: 0.8rem;
   }
   & .ant-radio-group {
     display: block;
   }
   & .ant-input-number-sm {
     width: 55px;
-    font-size: 11px;
+    font-size: 0.8rem;
   }
 `;

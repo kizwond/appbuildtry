@@ -17,6 +17,8 @@ import ColFormItem from './ColFormItem';
 import produce from 'immer';
 import { onChangeArrayValuesForSwitch } from './functionTool';
 import SwichComponent from './SwichComponent';
+import { Space, Tag } from '../../../../node_modules/antd/lib/index';
+import moment from '../../../../node_modules/moment/moment';
 
 const menuTitleColSize = 3;
 const menuColSize = 21;
@@ -71,6 +73,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
       setSessionConfig(args[0]);
     }
   });
+  // 아래 손봐야함 => 그냥 args[1]을 sessionConfig로 지정해야겠음 어차피 sessionConfig쓰는데
   const onChangeValueAnother = (...args) => {
     const length = args.length;
     console.log(args);
@@ -90,32 +93,59 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
       });
       setSessionConfig(newData);
     } else if (length == 2) {
-      const newData = produce(args[1], (draft) => {
-        draft[args[2]] = args[0];
-      });
-      setSessionConfig(newData);
+      setSessionConfig(args[0]);
     } else if (length == 1) {
       setSessionConfig(args[0]);
     }
   };
 
-  const onChangeArrayValueForSwitch = (checked, name, value) => {
-    if (checked) {
-      const new_array = [...sessionConfig[mode][name], value];
-      console.log(
-        `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
-        new_array
-      );
-      onChangeValue(new_array, name);
+  const onChangeArrayValueForAdvancedFilter = (checked, name, value) => {
+    if (sessionConfig.advancedFilter[name].onOff == 'off') {
+      if (checked) {
+        const newData = produce(sessionConfig, (draft) => {
+          draft.advancedFilter[name].value.push(value);
+          draft.advancedFilter[name].onOff = 'on';
+        });
+        console.log(
+          `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
+          newData.advancedFilter[name].value
+        );
+        setSessionConfig(newData);
+      } else if (!checked) {
+        const newData = produce(sessionConfig, (draft) => {
+          draft.advancedFilter[name].value = draft.advancedFilter[
+            name
+          ].value.filter((item) => item != value);
+          draft.advancedFilter[name].onOff = 'on';
+        });
+        console.log(
+          `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
+          newData.advancedFilter[name].value
+        );
+        setSessionConfig(newData);
+      }
     } else {
-      const new_array = sessionConfig[mode][name].filter(
-        (item) => item !== value
-      );
-      onChangeValue(new_array, name);
-      console.log(
-        `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
-        new_array
-      );
+      if (checked) {
+        const newData = produce(sessionConfig, (draft) => {
+          draft.advancedFilter[name].value.push(value);
+        });
+        console.log(
+          `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
+          newData.advancedFilter[name].value
+        );
+        setSessionConfig(newData);
+      } else if (!checked) {
+        const newData = produce(sessionConfig, (draft) => {
+          draft.advancedFilter[name].value = draft.advancedFilter[
+            name
+          ].value.filter((item) => item != value);
+        });
+        console.log(
+          `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
+          newData.advancedFilter[name].value
+        );
+        setSessionConfig(newData);
+      }
     }
   };
 
@@ -359,10 +389,35 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
                         {sessionConfig[mode]?.needStudyTimeCondition ==
                           'custom' && (
                           <DatePicker.RangePicker
-                            format="M월D일"
+                            format="MM-DD"
                             placeholder={['시작', '종료']}
                             onChange={(date, dateString) => {
-                              console.log('date', dateString);
+                              const now = new Date();
+                              const year = now.getFullYear();
+                              const month = now.getMonth() + 1;
+                              const day = now.getDate();
+                              const today = moment(
+                                `${year}-${month}-${day}`,
+                                'YYYY-MM-DD'
+                              );
+                              // console.log(today);
+                              const startYear = date[0]._d.getFullYear();
+                              const startDate = moment(
+                                `${startYear}-${dateString[0]}`,
+                                'YYYY-MM-DD'
+                              );
+                              const endYear = date[0]._d.getFullYear();
+                              const endDate = moment(
+                                `${endYear}-${dateString[1]}`,
+                                'YYYY-MM-DD'
+                              );
+                              const dif_from_startDate = moment
+                                .duration(startDate.diff(today))
+                                .asDays();
+                              const dif_from_endDate = moment
+                                .duration(endDate.diff(today))
+                                .asDays();
+                              console.log(dif_from_endDate);
                             }}
                             size="small"
                           />
@@ -497,7 +552,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
         <div
           style={{
             border: isOnAdvancedFilter ? '1px solid lightgrey' : 'none',
-            background: 'white',
+            backgroundColor: isOnAdvancedFilter ? '#FFE4D3' : '#FFF',
             borderRadius: '5px',
             padding: '5px',
           }}
@@ -540,57 +595,148 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
           </Row>
           {isOnAdvancedFilter && (
             <>
-              <Row>
-                <Col span={menuTitleColSize}>
-                  <Row>
-                    <Col span={2}></Col>
-                    <Col span={22}>
-                      <span
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: '600',
-                        }}
-                      >
-                        사용자 플래그 필터
-                      </span>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col>
-                  <Row>
-                    <Col span={3}>
-                      <Switch
-                        size="small"
-                        checked={isOnUserFlag}
-                        onChange={(checked) => {
-                          if (checked) {
-                            // const newData = produce(sessionConfig, (draft) => {
-                            //   draft.advancedFilter.userFlag.onOff = 'on';
-                            // });
-                            // onChangeValue(newData);
-                            onChangeValueAnother(
-                              'on',
-                              sessionConfig,
-                              'advancedFilter',
-                              'userFlag',
-                              'onOff'
-                            );
-                          } else {
-                            onChangeValueAnother(
-                              'off',
-                              sessionConfig,
-                              'advancedFilter',
-                              'userFlag',
-                              'onOff'
-                            );
-                          }
-                        }}
-                      />
-                    </Col>
-                    <Col></Col>
-                  </Row>
-                </Col>
-              </Row>
+              <Card size="small">
+                <Row>
+                  <Col span={menuTitleColSize}>
+                    <span
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: '600',
+                      }}
+                    >
+                      사용자 플래그 필터
+                    </span>
+                  </Col>
+                  <Col span={menuColSize}>
+                    <Row>
+                      <Col span={2}>
+                        <Switch
+                          size="small"
+                          checked={isOnUserFlag}
+                          onChange={(checked) => {
+                            if (checked) {
+                              // const newData = produce(sessionConfig, (draft) => {
+                              //   draft.advancedFilter.userFlag.onOff = 'on';
+                              // });
+                              // onChangeValue(newData);
+                              onChangeValueAnother(
+                                'on',
+                                sessionConfig,
+                                'advancedFilter',
+                                'userFlag',
+                                'onOff'
+                              );
+                            } else {
+                              onChangeValueAnother(
+                                'off',
+                                sessionConfig,
+                                'advancedFilter',
+                                'userFlag',
+                                'onOff'
+                              );
+                            }
+                          }}
+                        />
+                      </Col>
+                      <Col span={22}>
+                        <Card size="small">
+                          <Space size={10}>
+                            <Tag.CheckableTag
+                              checked={sessionConfig.advancedFilter.userFlag.value.includes(
+                                0
+                              )}
+                              onChange={(checked) => {
+                                onChangeArrayValueForAdvancedFilter(
+                                  checked,
+                                  'userFlag',
+                                  0
+                                );
+                              }}
+                            >
+                              플래그 없음
+                            </Tag.CheckableTag>
+
+                            <Tag.CheckableTag
+                              checked={sessionConfig.advancedFilter.userFlag.value.includes(
+                                1
+                              )}
+                              onChange={(checked) => {
+                                onChangeArrayValueForAdvancedFilter(
+                                  checked,
+                                  'userFlag',
+                                  1
+                                );
+                              }}
+                            >
+                              플래그1
+                            </Tag.CheckableTag>
+
+                            <Tag.CheckableTag
+                              checked={sessionConfig.advancedFilter.userFlag.value.includes(
+                                2
+                              )}
+                              onChange={(checked) => {
+                                onChangeArrayValueForAdvancedFilter(
+                                  checked,
+                                  'userFlag',
+                                  2
+                                );
+                              }}
+                            >
+                              플래그2
+                            </Tag.CheckableTag>
+
+                            <Tag.CheckableTag
+                              checked={sessionConfig.advancedFilter.userFlag.value.includes(
+                                3
+                              )}
+                              onChange={(checked) => {
+                                onChangeArrayValueForAdvancedFilter(
+                                  checked,
+                                  'userFlag',
+                                  3
+                                );
+                              }}
+                            >
+                              플래그3
+                            </Tag.CheckableTag>
+
+                            <Tag.CheckableTag
+                              checked={sessionConfig.advancedFilter.userFlag.value.includes(
+                                4
+                              )}
+                              onChange={(checked) => {
+                                onChangeArrayValueForAdvancedFilter(
+                                  checked,
+                                  'userFlag',
+                                  4
+                                );
+                              }}
+                            >
+                              플래그4
+                            </Tag.CheckableTag>
+
+                            <Tag.CheckableTag
+                              checked={sessionConfig.advancedFilter.userFlag.value.includes(
+                                5
+                              )}
+                              onChange={(checked) => {
+                                onChangeArrayValueForAdvancedFilter(
+                                  checked,
+                                  'userFlag',
+                                  5
+                                );
+                              }}
+                            >
+                              플래그5
+                            </Tag.CheckableTag>
+                          </Space>
+                        </Card>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
             </>
           )}
         </div>

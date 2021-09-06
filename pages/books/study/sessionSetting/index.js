@@ -195,16 +195,16 @@ export default SessionSetting;
 
 const StyledCol = styled(Col)`
   & * {
-    font-size: 0.8rem;
+    font-size: 11px;
   }
   & span.ant-radio + * {
-    font-size: 0.8rem;
+    font-size: 11px;
   }
   & .ant-radio-group {
     display: block;
   }
   & .ant-input-number-sm {
     width: 55px;
-    font-size: 0.8rem;
+    font-size: 11px;
   }
 `;

@@ -9,6 +9,7 @@ const FlipMode = () => {
   console.log(query.sessionid)
 
   const[cardListStudying, setCardListStudying] = useState();
+  const[sessionScope, setSessionScope] = useState();
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -22,19 +23,23 @@ const FlipMode = () => {
   } 
 
   const { loading, error, data } = useQuery(GetSession, {
-    variables: { session_id: session_id },
+    variables: { session_id: session_id},
     onCompleted:onCompletedGetSession
   });
 
   function onCompletedGetSession(){
+    console.log("hello : ", data)
+    console.log("hello : ", data.session_getSession.sessions[0].sessionScope)
     console.log("hello : ",data.session_getSession.sessions[0].cardlistStudying)
     setCardListStudying(data.session_getSession.sessions[0].cardlistStudying)
+    setSessionScope(data.session_getSession.sessions[0].sessionScope)
+    sessionStorage.setItem("card_seq", 0)
   }
   
   console.log("here")
   return (
     <Layout>
-      <CardContainer cardListStudying={cardListStudying}/>
+      <CardContainer cardListStudying={cardListStudying} sessionScope={sessionScope}/>
     </Layout>
   );
 };

@@ -1,25 +1,40 @@
-import Link from "next/link";
-import Image from "next/image";
-import profilePic from "../../public/image/logo2.png";
-import { ShoppingCartOutlined, BellOutlined, UserOutlined, MenuOutlined, ReadOutlined, FormOutlined, TeamOutlined, ShopOutlined, FileTextOutlined } from "@ant-design/icons";
-import { Input, Avatar } from "antd";
-import React, { useState } from "react";
-import { Drawer } from "antd";
+import Link from 'next/link';
+import Image from 'next/image';
+import profilePic from '../../public/image/logo2.png';
+import {
+  ShoppingCartOutlined,
+  BellOutlined,
+  UserOutlined,
+  MenuOutlined,
+  ReadOutlined,
+  FormOutlined,
+  TeamOutlined,
+  ShopOutlined,
+  FileTextOutlined,
+} from '@ant-design/icons';
+import { Input, Avatar } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Drawer } from 'antd';
 
 // import useWindowSize from "../../utils/useWindowSize";
-import { useWindowSize } from "react-use";
-import { useMutation } from "@apollo/client";
+import { useWindowSize } from 'react-use';
+import { useMutation } from '@apollo/client';
 
-import { useSelector, useDispatch } from "react-redux";
-import { LOGOUT } from "../../graphql/query/account";
+import { useSelector, useDispatch } from 'react-redux';
+import { LOGOUT } from '../../graphql/query/account';
 
 const Nav = () => {
   const isLogged = useSelector((state) => state.isLogged);
   const { width } = useWindowSize();
+  const [windowWith, setWindowWith] = useState(0);
   const [visible, setVisible] = useState(false);
-  console.log(isLogged)
+  console.log(isLogged);
   // const [logout, { loading, error, data }] = useLazyQuery(LOGOUT);
   const [logout] = useMutation(LOGOUT);
+
+  useEffect(() => {
+    setWindowWith(width);
+  }, [width]);
   const showDrawer = () => {
     setVisible(true);
   };
@@ -27,42 +42,57 @@ const Nav = () => {
   const onClose = () => {
     setVisible(false);
   };
-  if (width < 769 && width > 426) {
+  if (windowWith < 769 && windowWith > 426) {
     var tablet = true;
   } else {
     tablet = false;
   }
 
-  if (width < 1025 && width > 769) {
+  if (windowWith < 1025 && windowWith > 769) {
     var laptop = true;
   } else {
     laptop = false;
   }
 
-  if (width > 1024) {
+  if (windowWith > 1024) {
     var desktop = true;
   } else {
     desktop = false;
   }
   var setCookie = function (name) {
-    document.cookie = name + "=; expires=Thu, 01 Jan 1999 00:00:10 GMT;";
+    document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
   };
 
   const onClickLogout = () => {
     logout();
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('refreshToken')
-    console.log("here")
-    window.location.href = "/";
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    console.log('here');
+    window.location.href = '/';
   };
 
   return (
     <>
-      {width < 426 && (
+      {windowWith < 426 && (
         <>
-          <div style={{ position: "relative", width: "100%", paddingRight: 10, paddingLeft: 10, height: 40 }}>
-            <div style={{ display: "inline-block", position: "absolute", top: "50%", transform: "translate(0,-50%)" }}>
-              <MenuOutlined style={{ fontSize: "25px" }} onClick={showDrawer} />
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              paddingRight: 10,
+              paddingLeft: 10,
+              height: 40,
+            }}
+          >
+            <div
+              style={{
+                display: 'inline-block',
+                position: 'absolute',
+                top: '50%',
+                transform: 'translate(0,-50%)',
+              }}
+            >
+              <MenuOutlined style={{ fontSize: '25px' }} onClick={showDrawer} />
               <Drawer
                 title={
                   <>
@@ -75,9 +105,23 @@ const Nav = () => {
                 onClose={onClose}
                 visible={visible}
               >
-                <div style={{ width: "100%", height: 50, display: "flex", margin: "auto" }}>
-                  <div style={{ display: "flex", width: "100%", justifyContent: "space-between", flexDirection: "column" }}>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
+                <div
+                  style={{
+                    width: '100%',
+                    height: 50,
+                    display: 'flex',
+                    margin: 'auto',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      width: '100%',
+                      justifyContent: 'space-between',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <Link href="/books/study">
                         <a style={linkStyle}>
                           <ReadOutlined style={{ marginRight: 10 }} />
@@ -103,10 +147,12 @@ const Nav = () => {
                         </a>
                       </Link>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {isLogged && (
                         <>
-                          <button onClick={() => onClickLogout()}>로그아웃</button>
+                          <button onClick={() => onClickLogout()}>
+                            로그아웃
+                          </button>
                         </>
                       )}
                       {!isLogged && (
@@ -143,7 +189,13 @@ const Nav = () => {
               </Drawer>
             </div>
             <Link href="/">
-              <a style={{ position: "absolute", left: "50%", transform: "translate(-50%)" }}>
+              <a
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translate(-50%)',
+                }}
+              >
                 <Image src={profilePic} width="80px" height="40px" alt="logo" />
               </a>
             </Link>
@@ -152,9 +204,24 @@ const Nav = () => {
       )}
       {tablet && (
         <>
-          <div style={{ position: "relative", width: "100%", paddingRight: 10, paddingLeft: 10, height: 40 }}>
-            <div style={{ display: "inline-block", position: "absolute", top: "50%", transform: "translate(0,-50%)" }}>
-              <MenuOutlined style={{ fontSize: "25px" }} onClick={showDrawer} />
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              paddingRight: 10,
+              paddingLeft: 10,
+              height: 40,
+            }}
+          >
+            <div
+              style={{
+                display: 'inline-block',
+                position: 'absolute',
+                top: '50%',
+                transform: 'translate(0,-50%)',
+              }}
+            >
+              <MenuOutlined style={{ fontSize: '25px' }} onClick={showDrawer} />
               <Drawer
                 title={
                   <>
@@ -167,9 +234,23 @@ const Nav = () => {
                 onClose={onClose}
                 visible={visible}
               >
-                <div style={{ width: "100%", height: 50, display: "flex", margin: "auto" }}>
-                  <div style={{ display: "flex", width: "100%", justifyContent: "space-between", flexDirection: "column" }}>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
+                <div
+                  style={{
+                    width: '100%',
+                    height: 50,
+                    display: 'flex',
+                    margin: 'auto',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      width: '100%',
+                      justifyContent: 'space-between',
+                      flexDirection: 'column',
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
                       <Link href="/books/study">
                         <a style={linkStyle}>
                           <ReadOutlined style={{ marginRight: 10 }} />
@@ -195,10 +276,12 @@ const Nav = () => {
                         </a>
                       </Link>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {isLogged && (
                         <>
-                          <button onClick={() => onClickLogout()}>로그아웃</button>
+                          <button onClick={() => onClickLogout()}>
+                            로그아웃
+                          </button>
                         </>
                       )}
                       {!isLogged && (
@@ -235,7 +318,13 @@ const Nav = () => {
               </Drawer>
             </div>
             <Link href="/">
-              <a style={{ position: "absolute", left: "50%", transform: "translate(-50%)" }}>
+              <a
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translate(-50%)',
+                }}
+              >
                 <Image src={profilePic} width="80px" height="40px" alt="logo" />
               </a>
             </Link>
@@ -244,15 +333,33 @@ const Nav = () => {
       )}
       {laptop && (
         <>
-          <div style={{ borderBottom: "1px solid lightgrey" }}>
-            <div style={{ width: "100%", height: 50, display: "flex", margin: "auto" }}>
+          <div style={{ borderBottom: '1px solid lightgrey' }}>
+            <div
+              style={{
+                width: '100%',
+                height: 50,
+                display: 'flex',
+                margin: 'auto',
+              }}
+            >
               <Link href="/">
-                <a style={{ marginRight: "30px" }}>
-                  <Image src={profilePic} width="100px" height="50px" alt="logo" />
+                <a style={{ marginRight: '30px' }}>
+                  <Image
+                    src={profilePic}
+                    width="100px"
+                    height="50px"
+                    alt="logo"
+                  />
                 </a>
               </Link>
-              <div style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
-                <div style={{ display: "flex", alignItems: "center" }}>
+              <div
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Link href="/books/study">
                     <a style={linkStyle}>학습</a>
                   </Link>
@@ -266,7 +373,7 @@ const Nav = () => {
                     <a style={linkStyle}>서점</a>
                   </Link>
                 </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   {isLogged && (
                     <>
                       <button onClick={() => onClickLogout()}>로그아웃</button>
@@ -308,15 +415,33 @@ const Nav = () => {
       )}
       {desktop && (
         <>
-          <div style={{ borderBottom: "1px solid lightgrey" }}>
-            <div style={{ width: 1200, height: 50, display: "flex", margin: "auto" }}>
+          <div style={{ borderBottom: '1px solid lightgrey' }}>
+            <div
+              style={{
+                width: 1200,
+                height: 50,
+                display: 'flex',
+                margin: 'auto',
+              }}
+            >
               <Link href="/">
-                <a style={{ marginRight: "30px" }}>
-                  <Image src={profilePic} width="100px" height="50px" alt="logo" />
+                <a style={{ marginRight: '30px' }}>
+                  <Image
+                    src={profilePic}
+                    width="100px"
+                    height="50px"
+                    alt="logo"
+                  />
                 </a>
               </Link>
-              <div style={{ display: "flex", width: "100%", justifyContent: "space-between" }}>
-                <div style={{ display: "flex", alignItems: "center" }}>
+              <div
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   <Link href="/books/study">
                     <a style={linkStyle}>학습</a>
                   </Link>
@@ -330,7 +455,7 @@ const Nav = () => {
                     <a style={linkStyle}>서점</a>
                   </Link>
                 </div>
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
                   {isLogged && (
                     <>
                       <button onClick={() => onClickLogout()}>로그아웃</button>
@@ -377,7 +502,7 @@ const Nav = () => {
 export default Nav;
 
 const linkStyle = {
-  color: "black",
+  color: 'black',
   padding: 10,
-  fontSize: "1rem",
+  fontSize: '1rem',
 };

@@ -139,16 +139,6 @@ const SessionSetting = () => {
           setFirstFetch(false);
         }
 
-        // const bookIndexIdsList =
-        //   received_data.session_getNumCardsbyIndex.indexsets[0].indexes.map(
-        //     (item) => item._id
-        //   );
-        // setCheckedKeys({
-        //   ...checkedKeys,
-        //   [received_data.session_getNumCardsbyIndex.indexsets[0].indexset_info
-        //     .mybook_id]: bookIndexIdsList,
-        // });
-
         console.log('카테고리설정');
         setCardsList([...cardsList, received_data]);
         console.log(received_data);
@@ -174,7 +164,10 @@ const SessionSetting = () => {
 
   useEffect(() => {
     if (bookList.length > 0) {
-      if (counter < bookList.length - 1 || counter == 0) {
+      if (counter < bookList.length - 1) {
+        loadData();
+        console.log('서버에 인덱스 요청보냄');
+      } else if (counter == 0) {
         loadData();
         console.log('서버에 인덱스 요청보냄');
       }
@@ -200,6 +193,13 @@ const SessionSetting = () => {
   if (!error && !loading) {
     return (
       <Layout>
+        <button
+          onClick={() => {
+            loadFilteredData();
+          }}
+        >
+          확인
+        </button>
         <Row>
           <StyledCol xs={24} sm={24} md={24} lg={7} xl={6} xxl={5}>
             {bookList.length > 0 && (

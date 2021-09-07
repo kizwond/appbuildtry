@@ -19,6 +19,7 @@ import { onChangeArrayValuesForSwitch } from './functionTool';
 import SwichComponent from './SwichComponent';
 import { Space, Tag } from '../../../../node_modules/antd/lib/index';
 import moment from '../../../../node_modules/moment/moment';
+import GetFilteredIndexButton from './GetFilteredIndexButton';
 
 const menuTitleColSize = 3;
 const menuColSize = 21;
@@ -612,6 +613,14 @@ const SessionConfig = ({
                 }}
               />
             </Col>
+            {isOnAdvancedFilter && (
+              <Col>
+                <GetFilteredIndexButton
+                  book_ids={book_ids}
+                  advancedFilter={sessionConfig.advancedFilter}
+                />
+              </Col>
+            )}
           </Row>
           {isOnAdvancedFilter && (
             <>

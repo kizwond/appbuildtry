@@ -243,7 +243,28 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
   if (!error && !loading) {
     return (
       <Card>
-        <Typography.Title level={4}>세션 설정</Typography.Title>
+        <Row>
+          <Col span={12}>
+            <Typography.Title level={4}>세션 설정</Typography.Title>
+          </Col>
+          <Col span={12}>
+            <Button
+              block
+              style={{
+                background: 'green',
+                minWidth: '100px',
+                color: 'white',
+                fontSize: '13px',
+                fontWeight: '700',
+              }}
+              onClick={() =>
+                submitCreateSessionConfigToServer(sessionConfig, mode)
+              }
+            >
+              세션 시작
+            </Button>
+          </Col>
+        </Row>
         <div
           style={{
             display: 'flex',
@@ -287,7 +308,14 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
           }}
         >
           <Row align="top" gutter={8}>
-            <Col span={menuTitleColSize}>
+            <Col
+              xs={8}
+              sm={menuTitleColSize}
+              md={menuTitleColSize}
+              lg={24}
+              xl={24}
+              xxl={24}
+            >
               <span style={{ fontSize: '12px', fontWeight: '700' }}>
                 보기 순서
               </span>

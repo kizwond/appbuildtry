@@ -44,32 +44,32 @@ const SessionSetting = () => {
     },
   });
 
-  const submitCreateSessionConfigToServer = async () => {
+  const submitCreateSessionConfigToServer = async (_sessionConfig, _mode) => {
     const keysArray = Object.keys(checkedKeys);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
       index_ids: checkedKeys[item],
     }));
-
+    const selectedMode = _sessionConfig[_mode];
     try {
       await session_createSession({
         variables: {
           forCreateSession: {
             sessionScope: sessionScope,
             sessionConfig: {
-              studyMode: 'flip',
+              studyMode: _mode,
               detailedOption: {
-                sortOption: 'standard',
-                useCardtype: ['read', 'flip'],
-                useStatus: ['yet', 'ing', 'hold', 'completed'],
-                needStudyTimeCondition: 'all',
-                needStudyTimeRange: [0, 1],
+                sortOption: selectedMode.sortOption,
+                useCardtype: selectedMode.useCardtype,
+                useStatus: selectedMode.useStatus,
+                needStudyTimeCondition: selectedMode.needStudyTimeCondition,
+                needStudyTimeRange: selectedMode.needStudyTimeRange,
                 numStartCards: {
-                  onOff: 'off',
-                  yet: 50,
-                  ing: 50,
-                  hold: 0,
-                  completed: 0,
+                  onOff: selectedMode.numStartCards.onOff,
+                  yet: selectedMode.numStartCards.yet,
+                  ing: selectedMode.numStartCards.ing,
+                  hold: selectedMode.numStartCards.hold,
+                  completed: selectedMode.numStartCards.completed,
                 },
               },
               advancedFilter: {
@@ -195,16 +195,16 @@ export default SessionSetting;
 
 const StyledCol = styled(Col)`
   & * {
-    font-size: 11px;
+    font-size: 0.7rem;
   }
   & span.ant-radio + * {
-    font-size: 11px;
+    font-size: 0.7rem;
   }
   & .ant-radio-group {
     display: block;
   }
   & .ant-input-number-sm {
     width: 55px;
-    font-size: 11px;
+    font-size: 0.7rem;
   }
 `;

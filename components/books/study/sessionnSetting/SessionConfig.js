@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import {
   Radio,
   Switch,
@@ -24,132 +24,63 @@ const menuTitleColSize = 3;
 const menuColSize = 21;
 const menuColDivider = 6;
 
-const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
-  const [bookIdsList, setBookIdsList] = useState();
+const SessionConfig = ({
+  submitCreateSessionConfigToServer,
+  book_ids,
+  firstFetch,
+}) => {
   const [mode, setMode] = useState('flip');
   const [sessionConfig, setSessionConfig] = useState({});
-  const { loading, error, data, variables } = useQuery(GET_SESSTION_CONFIG, {
-    variables: {
-      mybook_ids: bookIdsList,
-    },
-    onCompleted: (received_data) => {
-      console.log(received_data);
-      setMode(
-        received_data.session_getSessionConfig.sessionConfigs[0].studyMode
-      );
-      setSessionConfig(
-        received_data.session_getSessionConfig.sessionConfigs[0]
-      );
-    },
-  });
+  const [loadConfigData, { loading, error, data, variables }] = useLazyQuery(
+    GET_SESSTION_CONFIG,
+    {
+      variables: {
+        mybook_ids: book_ids,
+      },
+      onCompleted: (received_data) => {
+        console.log(received_data);
+        setMode(
+          received_data.session_getSessionConfig.sessionConfigs[0].studyMode
+        );
+        setSessionConfig(
+          received_data.session_getSessionConfig.sessionConfigs[0]
+        );
+      },
+    }
+  );
 
   useEffect(() => {
-    const booklist = JSON.parse(sessionStorage.getItem('books_selected'));
-    console.log('북아이디리스트 설정 - 유즈 이펙트');
-
-    const book_ids_list = booklist.map((book) => book.book_id);
-    setBookIdsList(book_ids_list);
-  }, []);
-
-  // useEffect(() => {
-  //   if (sessionConfig.advancedFilter?.userFlag?.onOff == 'off') {
-  //     const newData = produce(sessionConfig, (draft) => {
-  //       draft.advancedFilter.userFlag.value = [];
-  //     });
-
-  //     setSessionConfig(newData);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [sessionConfig.advancedFilter?.userFlag?.onOff]);
-  // useEffect(() => {
-  //   if (sessionConfig.advancedFilter?.makerFlag?.onOff == 'off') {
-  //     const newData = produce(sessionConfig, (draft) => {
-  //       draft.advancedFilter.makerFlag.value = [];
-  //     });
-
-  //     setSessionConfig(newData);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [sessionConfig.advancedFilter?.makerFlag?.onOff]);
-  // useEffect(() => {
-  //   if (sessionConfig.advancedFilter?.recentDifficulty?.onOff == 'off') {
-  //     const newData = produce(sessionConfig, (draft) => {
-  //       draft.advancedFilter.recentDifficulty.value = [];
-  //     });
-
-  //     setSessionConfig(newData);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [sessionConfig.advancedFilter?.recentDifficulty?.onOff]);
-  // useEffect(() => {
-  //   if (sessionConfig.advancedFilter?.examResult?.onOff == 'off') {
-  //     const newData = produce(sessionConfig, (draft) => {
-  //       draft.advancedFilter.examResult.value = [];
-  //     });
-
-  //     setSessionConfig(newData);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [sessionConfig.advancedFilter?.examResult?.onOff]);
-  // useEffect(() => {
-  //   if (sessionConfig.advancedFilter?.recentStudyTime?.onOff == 'off') {
-  //     onChangeValueAnother(
-  //       null,
-  //       sessionConfig,
-  //       'advancedFilter',
-  //       'recentStudyTime',
-  //       'value'
-  //     );
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [sessionConfig.advancedFilter?.recentStudyTime?.onOff]);
-  // useEffect(() => {
-  //   if (sessionConfig.advancedFilter?.level?.onOff == 'off') {
-  //     onChangeValueAnother(
-  //       [null, null],
-  //       sessionConfig,
-  //       'advancedFilter',
-  //       'level',
-  //       'value'
-  //     );
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [sessionConfig.advancedFilter?.level?.onOff]);
-  // useEffect(() => {
-  //   if (sessionConfig.advancedFilter?.studyTimes?.onOff == 'off') {
-  //     onChangeValueAnother(
-  //       [null, null],
-  //       sessionConfig,
-  //       'advancedFilter',
-  //       'studyTimes',
-  //       'value'
-  //     );
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [sessionConfig.advancedFilter?.studyTimes?.onOff]);
-
-  const onChangeValue = useCallback((...args) => {
-    const length = args.length;
-    console.log(args);
-    if (length == 4) {
-      const newData = produce(sessionConfig, (draft) => {
-        draft[mode][args[1]][args[2]][args[3]] = args[0];
-      });
-      setSessionConfig(newData);
-    } else if (length == 3) {
-      const newData = produce(sessionConfig, (draft) => {
-        draft[mode][args[1]][args[2]] = args[0];
-      });
-      setSessionConfig(newData);
-    } else if (length == 2) {
-      const newData = produce(sessionConfig, (draft) => {
-        draft[mode][args[1]] = args[0];
-      });
-      setSessionConfig(newData);
-    } else if (length == 1) {
-      setSessionConfig(args[0]);
+    if (firstFetch) {
+      loadConfigData();
+      console.log('서버에 컴피그 요청보냄');
     }
-  });
+  }, [firstFetch, loadConfigData]);
+
+  const onChangeValue = useCallback(
+    (...args) => {
+      const length = args.length;
+      console.log(args);
+      if (length == 4) {
+        const newData = produce(sessionConfig, (draft) => {
+          draft[mode][args[1]][args[2]][args[3]] = args[0];
+        });
+        setSessionConfig(newData);
+      } else if (length == 3) {
+        const newData = produce(sessionConfig, (draft) => {
+          draft[mode][args[1]][args[2]] = args[0];
+        });
+        setSessionConfig(newData);
+      } else if (length == 2) {
+        const newData = produce(sessionConfig, (draft) => {
+          draft[mode][args[1]] = args[0];
+        });
+        setSessionConfig(newData);
+      } else if (length == 1) {
+        setSessionConfig(args[0]);
+      }
+    },
+    [sessionConfig, mode]
+  );
   // 아래 손봐야함 => 그냥 args[1]을 sessionConfig로 지정해야겠음 어차피 sessionConfig쓰는데
   const onChangeValueAnother = (...args) => {
     const length = args.length;
@@ -177,52 +108,26 @@ const SessionConfig = ({ submitCreateSessionConfigToServer }) => {
   };
 
   const onChangeArrayValueForAdvancedFilter = (checked, name, value) => {
-    if (sessionConfig.advancedFilter[name].onOff == 'off') {
-      if (checked) {
-        const newData = produce(sessionConfig, (draft) => {
-          draft.advancedFilter[name].value.push(value);
-          draft.advancedFilter[name].onOff = 'on';
-        });
-        console.log(
-          `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
-          newData.advancedFilter[name].value
-        );
-        setSessionConfig(newData);
-      } else if (!checked) {
-        const newData = produce(sessionConfig, (draft) => {
-          draft.advancedFilter[name].value = draft.advancedFilter[
-            name
-          ].value.filter((item) => item != value);
-          draft.advancedFilter[name].onOff = 'on';
-        });
-        console.log(
-          `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
-          newData.advancedFilter[name].value
-        );
-        setSessionConfig(newData);
-      }
-    } else {
-      if (checked) {
-        const newData = produce(sessionConfig, (draft) => {
-          draft.advancedFilter[name].value.push(value);
-        });
-        console.log(
-          `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
-          newData.advancedFilter[name].value
-        );
-        setSessionConfig(newData);
-      } else if (!checked) {
-        const newData = produce(sessionConfig, (draft) => {
-          draft.advancedFilter[name].value = draft.advancedFilter[
-            name
-          ].value.filter((item) => item != value);
-        });
-        console.log(
-          `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
-          newData.advancedFilter[name].value
-        );
-        setSessionConfig(newData);
-      }
+    if (checked) {
+      const newData = produce(sessionConfig, (draft) => {
+        draft.advancedFilter[name].value.push(value);
+      });
+      console.log(
+        `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
+        newData.advancedFilter[name].value
+      );
+      setSessionConfig(newData);
+    } else if (!checked) {
+      const newData = produce(sessionConfig, (draft) => {
+        draft.advancedFilter[name].value = draft.advancedFilter[
+          name
+        ].value.filter((item) => item != value);
+      });
+      console.log(
+        `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
+        newData.advancedFilter[name].value
+      );
+      setSessionConfig(newData);
     }
   };
 

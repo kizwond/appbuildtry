@@ -3,19 +3,32 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID } from '../../../../graphql/query/studySessionSetting';
 import { Button } from '../../../../node_modules/antd/lib/index';
 
-const GetFilteredIndexButton = ({ advancedFilter, book_ids }) => {
+const GetFilteredIndexButton = ({
+  advancedFilter,
+  book_ids,
+  onChangeAFCardList,
+  AFCardList,
+  onToggleIsAFilter,
+  advancedFilteredCheckedIndexes,
+  onChangeIndexesOfAFCardList,
+  onChangeAFButtonClick,
+}) => {
   const [counter, setCounter] = useState(0);
-  const [checkedKeys, setCheckedKeys] = useState([]);
-  const [cardsList, setCardsList] = useState([]);
   const [isOnProcessing, setIsOnProcessing] = useState(true);
 
   const [loadFilteredData, { loading, error, data }] = useLazyQuery(
     GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
     {
       onCompleted: (received_data) => {
-        setCardsList([...cardsList, received_data]);
+        if (counter == 0) {
+          onChangeAFCardList([received_data]);
+          setIsOnProcessing(true);
+        } else {
+          onChangeAFCardList([...AFCardList, received_data]);
+        }
         if (counter == book_ids.length - 1) {
           setIsOnProcessing(false);
+          setCounter(0);
         }
         if (counter < book_ids.length - 1) {
           console.log('카운터설정');
@@ -69,14 +82,14 @@ const GetFilteredIndexButton = ({ advancedFilter, book_ids }) => {
 
   useEffect(() => {
     if (isOnProcessing) {
-      if (counter < book_ids.length) {
-        loadFilteredData({ variables });
-        console.log(`서버에 ${counter + 1}번째 요청보냄`);
-      } else if (counter == 0) {
-        loadFilteredData({ variables });
-        console.log('서버에 인덱스 요청시작');
+      if (counter > 0) {
+        if (counter < book_ids.length) {
+          loadFilteredData({ variables });
+          console.log(`서버에 ${counter + 1}번째 요청보냄`);
+        }
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadFilteredData, counter, isOnProcessing]);
 
   useEffect(() => {
@@ -86,8 +99,8 @@ const GetFilteredIndexButton = ({ advancedFilter, book_ids }) => {
           data.session_getNumCardsbyIndex.indexsets[0].indexes.map(
             (item) => item._id
           );
-        setCheckedKeys({
-          ...checkedKeys,
+        onChangeIndexesOfAFCardList({
+          ...advancedFilteredCheckedIndexes,
           [data.session_getNumCardsbyIndex.indexsets[0].indexset_info
             .mybook_id]: bookIndexIdsList,
         });
@@ -98,21 +111,16 @@ const GetFilteredIndexButton = ({ advancedFilter, book_ids }) => {
 
   return (
     <>
-      <Button onClick={() => loadFilteredData({ variables })}>
-        고급필터 적용하기
-      </Button>
       <Button
+        size="small"
         onClick={() => {
-          console.log('checkey', checkedKeys);
-          console.log('data', data);
-          console.log('counter', counter);
-          console.log('cardsList', cardsList);
-          console.log('book_ids', book_ids);
+          onToggleIsAFilter(true);
+          loadFilteredData({ variables });
+          onChangeAFButtonClick();
         }}
       >
-        내용확인
+        고급필터 적용하기
       </Button>
-      ;
     </>
   );
 };

@@ -20,6 +20,16 @@ const SessionSetting = () => {
   const [bookList, setBookList] = useState([]);
   const [firstFetch, setFirstFetch] = useState();
 
+  const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState(
+    []
+  );
+  const [advancedFilteredCheckedIndexes, setAdvancedFilteredCheckedIndexes] =
+    useState([]);
+  const [
+    isAdvancedFilteredCardListShowed,
+    setIsAdvancedFilteredCardListShowed,
+  ] = useState(false);
+
   useEffect(() => {
     const booklist = JSON.parse(sessionStorage.getItem('books_selected'));
     console.log('북아이디리스트 설정 - 유즈 이펙트');
@@ -189,6 +199,25 @@ const SessionSetting = () => {
       [selectedBookId]: checkedKeysValueOfBook,
     });
   };
+  const onAdvancedFilteredCheckIndexesCheckedKeys = (
+    checkedKeysValueOfBook,
+    selectedBookId
+  ) => {
+    setAdvancedFilteredCheckedIndexes({
+      ...advancedFilteredCheckedIndexes,
+      [selectedBookId]: checkedKeysValueOfBook,
+    });
+  };
+
+  const onToggleIsAFilter = (falsy) => {
+    setIsAdvancedFilteredCardListShowed(falsy);
+  };
+  const onChangeAFCardList = (value) => {
+    setAdvancedFilteredCardsList(value);
+  };
+  const onChangeIndexesOfAFCardList = (value) => {
+    setAdvancedFilteredCheckedIndexes(value);
+  };
 
   if (!error && !loading) {
     return (
@@ -207,21 +236,27 @@ const SessionSetting = () => {
                 submitCreateSessionConfigToServer={
                   submitCreateSessionConfigToServer
                 }
+                onToggleIsAFilter={onToggleIsAFilter}
+                onChangeAFCardList={onChangeAFCardList}
+                AFCardList={advancedFilteredCardsList}
                 book_ids={bookList.map((book) => book.book_id)}
                 firstFetch={firstFetch}
+                advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
+                onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
               />
             )}
           </StyledCol>
           <StyledColForTable xs={24} sm={24} md={24} lg={17} xl={18} xxl={19}>
             <Card size="small">
               <Tabs type="card" tabPosition="top">
-                {bookList.map((book, index) => (
-                  <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                    <Card
-                      size="small"
-                      style={{ background: 'yellow', marginTop: '0px' }}
-                    >
-                      {cardsList[0] && (
+                {!isAdvancedFilteredCardListShowed &&
+                  cardsList[0] &&
+                  bookList.map((book, index) => (
+                    <Tabs.TabPane tab={book.book_title} key={book.book_id}>
+                      <Card
+                        size="small"
+                        style={{ background: 'yellow', marginTop: '0px' }}
+                      >
                         <IndexTree
                           bookIndexInfo={
                             cardsList[index]?.session_getNumCardsbyIndex
@@ -231,15 +266,50 @@ const SessionSetting = () => {
                           selectedbookId={book.book_id}
                           onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
                         />
-                      )}
-                    </Card>
-                  </Tabs.TabPane>
-                ))}
+                      </Card>
+                    </Tabs.TabPane>
+                  ))}
+                {isAdvancedFilteredCardListShowed &&
+                  bookList.map((book, index) => (
+                    <Tabs.TabPane tab={book.book_title} key={book.book_id}>
+                      <Card
+                        size="small"
+                        style={{ background: 'yellow', marginTop: '0px' }}
+                      >
+                        <IndexTree
+                          bookIndexInfo={
+                            advancedFilteredCardsList[index]
+                              ?.session_getNumCardsbyIndex?.indexsets[0]
+                              ?.indexes
+                          }
+                          checkedKeys={
+                            advancedFilteredCheckedIndexes[book.book_id]
+                          }
+                          selectedbookId={book.book_id}
+                          onCheckIndexesCheckedKeys={
+                            onAdvancedFilteredCheckIndexesCheckedKeys
+                          }
+                        />
+                      </Card>
+                    </Tabs.TabPane>
+                  ))}
               </Tabs>
             </Card>
           </StyledColForTable>
         </Row>
-        <button onClick={() => console.log(checkedKeys)}>
+        <button
+          onClick={() => {
+            console.log('advancedFilteredCardsList', advancedFilteredCardsList);
+            console.log(
+              'isAdvancedFilteredCardListShowed',
+              isAdvancedFilteredCardListShowed
+            );
+            console.log(
+              'advancedFilteredCheckedIndexes',
+              advancedFilteredCheckedIndexes
+            );
+          }}
+        >
           체크된 아이디 확인
         </button>
       </Layout>

@@ -29,7 +29,14 @@ const SessionConfig = ({
   submitCreateSessionConfigToServer,
   book_ids,
   firstFetch,
+  onToggleIsAFilter,
+  onChangeAFCardList,
+  AFCardList,
+  advancedFilteredCheckedIndexes,
+  onChangeIndexesOfAFCardList,
 }) => {
+  const [counterForButtonClick, setCounterForButtonClick] = useState(0);
+
   const [mode, setMode] = useState('flip');
   const [sessionConfig, setSessionConfig] = useState({});
   const [loadConfigData, { loading, error, data, variables }] = useLazyQuery(
@@ -132,6 +139,9 @@ const SessionConfig = ({
     }
   };
 
+  const onChangeAFButtonClick = () => {
+    setCounterForButtonClick((prev) => prev + 1);
+  };
   const isOnNumStartCards = sessionConfig[mode]?.numStartCards?.onOff == 'on';
   const isOnAdvancedFilter = sessionConfig?.advancedFilter?.onOff == 'on';
   const isOnUserFlag = sessionConfig?.advancedFilter?.userFlag.onOff == 'on';
@@ -578,7 +588,7 @@ const SessionConfig = ({
             padding: '5px',
           }}
         >
-          <Row align="top" gutter={8}>
+          <Row align="top" gutter={8} style={{ marginBottom: '4px' }}>
             <Col span={menuTitleColSize}>
               <span
                 style={{
@@ -590,7 +600,7 @@ const SessionConfig = ({
                 고급필터
               </span>
             </Col>
-            <Col span={menuColSize}>
+            <Col span={3}>
               <Switch
                 size="small"
                 checked={isOnAdvancedFilter}
@@ -602,6 +612,9 @@ const SessionConfig = ({
                       'advancedFilter',
                       'onOff'
                     );
+                    if (counterForButtonClick > 0) {
+                      onToggleIsAFilter(true);
+                    }
                   } else {
                     onChangeValueAnother(
                       'off',
@@ -609,6 +622,7 @@ const SessionConfig = ({
                       'advancedFilter',
                       'onOff'
                     );
+                    onToggleIsAFilter(false);
                   }
                 }}
               />
@@ -618,6 +632,14 @@ const SessionConfig = ({
                 <GetFilteredIndexButton
                   book_ids={book_ids}
                   advancedFilter={sessionConfig.advancedFilter}
+                  onChangeAFCardList={onChangeAFCardList}
+                  AFCardList={AFCardList}
+                  onToggleIsAFilter={onToggleIsAFilter}
+                  advancedFilteredCheckedIndexes={
+                    advancedFilteredCheckedIndexes
+                  }
+                  onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
+                  onChangeAFButtonClick={onChangeAFButtonClick}
                 />
               </Col>
             )}

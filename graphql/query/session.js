@@ -119,3 +119,12 @@ export const GetSession = gql`
     }
   }
 `;
+
+export const UpdateResults = gql`
+  mutation UpdateResults($forUpdateResults: forUpdateResults) {
+    session_updateResults(forUpdateResults: $forUpdateResults) {
+      status
+      msg
+    }
+  }
+`;

@@ -7,9 +7,9 @@ const ColFormItem = ({ menuColDivider, children, title, style }) => {
       xs={8}
       sm={menuColDivider}
       md={menuColDivider}
-      lg={12}
-      xl={12}
-      xxl={12}
+      lg={8}
+      xl={8}
+      xxl={8}
       style={style ? style : {}}
     >
       <Row align="top" gutter={8}>

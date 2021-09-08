@@ -31,9 +31,11 @@ const FlipMode = () => {
     console.log("hello : ", data)
     console.log("hello : ", data.session_getSession.sessions[0].sessionScope)
     console.log("hello : ",data.session_getSession.sessions[0].cardlistStudying)
+    sessionStorage.setItem("cardListStudying", JSON.stringify(data.session_getSession.sessions[0].cardlistStudying))
     setCardListStudying(data.session_getSession.sessions[0].cardlistStudying)
     setSessionScope(data.session_getSession.sessions[0].sessionScope)
     sessionStorage.setItem("card_seq", 0)
+    sessionStorage.removeItem("cardlist_to_send")
   }
   
   console.log("here")

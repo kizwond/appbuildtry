@@ -1,9 +1,64 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { GetContents } from "../../../../../graphql/query/getContents";
 import { GetLevelConfig, UpdateResults } from "../../../../../graphql/query/session";
+import Timer from "./Timer";
 
 const CardContainer = ({ cardListStudying, sessionScope }) => {
+  //timer related
+  const [timer, setTimer] = useState(0);
+  const [timerTotal, setTimerTotal] = useState(0);
+
+  const [isActive, setIsActive] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const [isActiveTotal, setIsActiveTotal] = useState(false);
+  const [isPausedTotal, setIsPausedTotal] = useState(false);
+
+  const increment = useRef(null);
+  const incrementTotal = useRef(null);
+
+  const handleStart = useCallback(async () => {
+    setIsActive(true);
+    setIsPaused(true);
+    increment.current = setInterval(() => {
+      setTimer((timer) => timer + 1);
+    }, 1000);
+    incrementTotal.current = setInterval(() => {
+      setTimerTotal((timer) => timer + 1);
+    }, 1000);
+  }, []);
+
+  const handlePause = useCallback(async () => {
+    clearInterval(increment.current);
+    clearInterval(incrementTotal.current);
+    setIsPaused(false);
+  }, []);
+
+  const handleResume = useCallback(async () => {
+    setIsPaused(true);
+    handleStart();
+  }, [handleStart]);
+
+  const formatTime = () => {
+    const getSeconds = `0${timer % 60}`.slice(-2);
+    const minutes = `${Math.floor(timer / 60)}`;
+    const getMinutes = `0${minutes % 60}`.slice(-2);
+    const getHours = `0${Math.floor(timer / 3600)}`.slice(-2);
+
+    return `${getHours} : ${getMinutes} : ${getSeconds}`;
+  };
+
+  const formatTimeTotal = () => {
+    const getSeconds = `0${timerTotal % 60}`.slice(-2);
+    const minutes = `${Math.floor(timerTotal / 60)}`;
+    const getMinutes = `0${minutes % 60}`.slice(-2);
+    const getHours = `0${Math.floor(timerTotal / 3600)}`.slice(-2);
+
+    return `${getHours} : ${getMinutes} : ${getSeconds}`;
+  };
+  //timer related END!!!
+
   const [cards, setCards] = useState();
   const [levelconfigs, setLevelconfigs] = useState();
   const [diffis, setDiffis] = useState();
@@ -19,7 +74,7 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
 
   useEffect(() => {
     console.log("here---------------------------------------------------");
-
+    console.log(cardListStudying);
     if (cardListStudying) {
       console.log(cardListStudying);
 
@@ -47,15 +102,11 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
   function onCompletedGetContents() {
     console.log(data);
     setCards(data.session_getContents.contents);
-    //   console.log("hello : ",data.session_getContents.sessions[0].cardlistStudying)
-    //   setCardListStudying(data.session_getContents.sessions[0].cardlistStudying)
   }
 
   function onCompletedGetLevelConfig() {
     console.log("data1", data1);
     setLevelconfigs(data1.levelconfig_getLevelconfigs.levelconfigs);
-    //   console.log("hello : ",data.session_getContents.sessions[0].cardlistStudying)
-    //   setCardListStudying(data.session_getContents.sessions[0].cardlistStudying)
   }
   const cardShow = useCallback(async () => {
     if (cards) {
@@ -79,39 +130,11 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
       setFace1Contents(face1_contents);
       setFace2Contents(face2_contents);
     }
-  }, [cards]);
-
-  const onDiffClickHandler = useCallback(async () => {
-    const card_seq = sessionStorage.getItem("card_seq");
-    sessionStorage.setItem("card_seq", Number(card_seq) + 1);
-    cardShow();
-  }, [cardShow]);
-
-  useEffect(() => {
-    if (cards) {
-      const card_seq = sessionStorage.getItem("card_seq");
-      console.log(card_seq);
-      console.log(cards);
-      const current_card = cards[card_seq];
-      const face1 = current_card.face1.map((item) => (
-        <>
-          <div>{item}</div>
-        </>
-      ));
-      const face2 = current_card.face2.map((item) => (
-        <>
-          <div>{item}</div>
-        </>
-      ));
-      var face1_contents = <div>{face1}</div>;
-      var face2_contents = <div>{face2}</div>;
-      setFace1Contents(face1_contents);
-      setFace2Contents(face2_contents);
-    }
     if (levelconfigs) {
       const card_seq = sessionStorage.getItem("card_seq");
       console.log("sssssssssssssssssssssss", cards);
       const current_card_book_id = cardListStudying[card_seq].card_info.mybook_id;
+      const current_card_id = cardListStudying[card_seq].contents.mycontents_id;
       console.log("current_card_book_id------------->", current_card_book_id);
       console.log("levelconfigs", levelconfigs);
       console.log(levelconfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id));
@@ -129,12 +152,142 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
       console.log(useDiffi);
       const diffiButtons = useDiffi.map((item) => (
         <>
-          <button onClick={() => onDiffClickHandler()}>{item.nick}</button>
+          <button onClick={() => onDiffClickHandler(item.period, item.name, current_card_id)}>{item.nick}</button>
         </>
       ));
       setDiffis(diffiButtons);
     }
   }, [cards, levelconfigs, cardListStudying, onDiffClickHandler]);
+
+  const milliseconds = (h, m, s) => (h * 60 * 60 + m * 60 + s) * 1000;
+
+  const onDiffClickHandler = useCallback(
+    async (interval, diffi, current_card_id) => {
+      const now = new Date();
+      const now_mili_convert = Date.parse(now);
+      const result = milliseconds(0, interval, 0);
+      const need_review_time = now_mili_convert + result;
+      const review_date = new Date(need_review_time);
+      console.log(interval);
+      const card_seq = sessionStorage.getItem("card_seq");
+      sessionStorage.setItem("card_seq", Number(card_seq) + 1);
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      console.log("card_details_session", card_details_session);
+
+      const current_card_info_index = card_details_session.findIndex((item) => item.contents.mycontents_id === current_card_id);
+      console.log(current_card_info_index);
+      //여기에 세션스토리지에 학습결과 저장하는 코드 들어가야함.
+
+      // currentLevElapsedTime; // 지금시간 - recent know time(null이면 null로) recentStudyResult === diffi5 => reset
+      // currentLevStudyHour //해당카드 누적 학습시간(diffi5 시 리셋) recentStudyResult === diffi5 => reset
+      // currentLevStudyTimes // + 1 recentStudyResult === diffi5 => reset
+      // levelCurrent //
+      // levelOriginal //
+      // needStudyTime //
+      // recentExamResult //
+      // recentExamTime //
+      // recentKnowTime //
+      // recentSelectTime // 현재시각
+      // recentSelection // diffi
+      // recentStayHour // timer
+      // recentStudyResult // diffi
+      // recentStudyTime //현재시각
+      // retentionRate //
+      // statusCurrent  // yet => ing
+      // statusOriginal  //
+      // statusPrev  // ing => hold => ing
+      // studyTimesInSession // +1
+      // totalExamTimes //
+      // totalStayHour // 누적
+      // totalStudyTimes // +1
+      // userFlagOriginal //
+      // userFlagPrev //
+
+      //여기에 세션스토리지에 학습결과 저장하는 코드 들어가야함.
+
+      //학습정보 업데이트
+      card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = ""
+      card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = ""
+      card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1
+      // card_details_session[current_card_info_index].studyStatus.levelCurrent = 
+      // card_details_session[current_card_info_index].studyStatus.levelOriginal = 
+      // card_details_session[current_card_info_index].studyStatus.needStudyTime = 
+      // card_details_session[current_card_info_index].studyStatus.recentExamResult = 
+      // card_details_session[current_card_info_index].studyStatus.recentExamTime = 
+      // card_details_session[current_card_info_index].studyStatus.recentKnowTime = 
+      card_details_session[current_card_info_index].studyStatus.recentSelectTime = now
+      card_details_session[current_card_info_index].studyStatus.recentSelection = diffi
+      card_details_session[current_card_info_index].studyStatus.recentStayHour = String(timer)
+      card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi
+      card_details_session[current_card_info_index].studyStatus.recentStudyTime = now
+      // card_details_session[current_card_info_index].studyStatus.retentionRate = 
+      card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing"
+      // card_details_session[current_card_info_index].studyStatus.statusOriginal =
+      // card_details_session[current_card_info_index].studyStatus.statusPrev = 
+      card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1
+      // card_details_session[current_card_info_index].studyStatus.totalExamTimes = 
+      card_details_session[current_card_info_index].studyStatus.totalStayHour = String(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer)
+      card_details_session[current_card_info_index].studyStatus.totalStudyTimes = card_details_session[current_card_info_index].studyStatus.totalStudyTimes + 1
+
+      console.log(card_details_session);
+
+      //업데이트된 학습정보 세션스토리지에 다시 저장
+      sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
+
+      //서버에 보내기 위한 학습정보 리스트 생성
+      const updateThis = card_details_session[current_card_info_index];
+      const getUpdateThis = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+
+      if (getUpdateThis) {
+        var finalUpdate = getUpdateThis.concat(updateThis);
+      } else {
+        finalUpdate = [updateThis];
+      }
+
+      sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
+      const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+      console.log("cardlist_to_send", cardlist_to_send);
+      //===================================
+      if (card_details_session.length - 1 == Number(card_seq)) {
+        console.log("공부끝")
+        finishStudy()
+      } else {
+        console.log(card_details_session.length - 1, "======",Number(card_seq) )
+        console.log("아직 안끝")
+        cardShow();
+        setTimer(0);
+      }
+      
+    },
+    [cardShow, timer]
+  );
+
+  const finishStudy = async () => {
+    alert("학습할 카드가 없습니다. 학습결과 화면으로 이동합니다.");
+    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+    if (cardlist_to_send) {
+      console.log("서버에 학습데이타를 전송할 시간이다!!!!");
+      sessionStorage.setItem("card_seq", 0);
+      const sessionId = sessionStorage.getItem("session_Id");
+      cardlist_to_send.forEach(function(v){ delete v.__typename });
+      cardlist_to_send.forEach(function(v){ delete v.card_info.__typename });
+      cardlist_to_send.forEach(function(v){ delete v.contents.__typename });
+      cardlist_to_send.forEach(function(v){ delete v.studyStatus.__typename });
+      console.log("cardlist_to_send : ", cardlist_to_send)
+      console.log("sessionId : ", sessionId)
+      console.log(typeof(sessionId))
+      sessionupdateresults(cardlist_to_send, sessionId)
+    } else {
+      console.log("공부끝")
+    }
+  };
+  useEffect(() => {
+    cardShow()
+  }, [cardShow]);
+
+  useEffect(() => {
+    handleStart();
+  }, [handleStart]);
 
   const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataposition });
 
@@ -142,57 +295,13 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
     console.log("data", data);
   }
 
-  async function sessionupdateresults(value) {
+  async function sessionupdateresults(cardlist_to_send, sessionId) {
     try {
       await session_updateResults({
         variables: {
           forUpdateResults: {
-            session_id: ID,
-            studyResults: {
-              _id: ID,
-              seqInCardlist: Int,
-              card_info: {
-                mybook_id: ID,
-                cardset_id: ID,
-                cardtypeset_id: ID,
-                cardtype_id: ID,
-                cardtype: String,
-                time_created: String,
-                hasParent: String,
-                parent_card_id: ID,
-              },
-              contents: {
-                maker_flag: Int,
-                user_flag: Int,
-                location: String,
-                mycontents_id: String,
-                buycontents_id: String,
-              },
-              studyStatus: {
-                statusOriginal: String,
-                statusPrev: String,
-                levelOriginal: Int,
-                studyTimesInSession: Int,
-                userFlagOriginal: Int,
-                userFlagPrev: Int,
-                statusCurrent: String,
-                recentKnowTime: String,
-                recentStudyResult: String,
-                recentExamResult: String,
-                recentExamTime: String,
-                recentStudyTime: String,
-                recentSelection: String,
-                recentSelectTime: String,
-                needStudyTime: String,
-                currentLevStudyTimes: Int,
-                currentLevAccuStudyTime: String,
-                totalStudyTimes: Int,
-                totalExamTimes: Int,
-                recentStayHour: String,
-                totalStayHour: String,
-                levelCurrent: Int,
-              },
-            },
+            session_id: sessionId,
+            studyResults: cardlist_to_send,
           },
         },
       });
@@ -208,15 +317,26 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
   };
 
   return (
-    <div style={{ marginTop: "50px", margin: "auto", width: "600px", height: "500px", border: "1px solid grey" }}>
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
-        <div style={{ display: "flex", flexDirection: "column", height: "80%", alignItems: "center", justifyContent: "center" }}>
-          <div>face1: {face1Contents}</div>
-          <div>face2: {face2Contents}</div>
+    <>
+      <Timer
+        isActive={isActive}
+        isPaused={isPaused}
+        formatTime={formatTime}
+        formatTimeTotal={formatTimeTotal}
+        handleStart={handleStart}
+        handlePause={handlePause}
+        handleResume={handleResume}
+      />
+      <div style={{ marginTop: "50px", margin: "auto", width: "600px", height: "500px", border: "1px solid grey" }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "column", height: "80%", alignItems: "center", justifyContent: "center" }}>
+            <div>face1: {face1Contents}</div>
+            <div>face2: {face2Contents}</div>
+          </div>
+          <div style={{ padding: 10, display: "flex", alignItems: "center", justifyContent: "space-around" }}>{diffis}</div>
         </div>
-        <div style={{ padding: 10, display: "flex", alignItems: "center", justifyContent: "space-around" }}>{diffis}</div>
       </div>
-    </div>
+    </>
   );
 };
 

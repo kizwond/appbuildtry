@@ -46,7 +46,7 @@ const SessionSetting = () => {
     onCompleted: (data) => {
       sessionStorage.setItem(
         'session_Id',
-        JSON.stringify(data.session_createSession.sessions[0]._id)
+        data.session_createSession.sessions[0]._id
       );
       console.log(data);
       router.push(
@@ -56,9 +56,8 @@ const SessionSetting = () => {
   });
 
   const submitCreateSessionConfigToServer = async (_sessionConfig, _mode) => {
-    const keysArray = isAdvancedFilteredCardListShowed
-      ? Object.keys(advancedFilteredCheckedIndexes)
-      : Object.keys(checkedKeys);
+    const keysArray = Object.keys(checkedKeys);
+    console.log("keysArray",keysArray)
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
       index_ids: isAdvancedFilteredCardListShowed

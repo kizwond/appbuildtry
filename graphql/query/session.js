@@ -16,6 +16,7 @@ export const GetLevelConfig = gql`
           levelchangeSensitivity
           option {
             diffi1 {
+              name
               on_off
               nick
               period
@@ -23,6 +24,7 @@ export const GetLevelConfig = gql`
               gesture
             }
             diffi2 {
+              name
               on_off
               nick
               period
@@ -30,6 +32,7 @@ export const GetLevelConfig = gql`
               gesture
             }
             diffi3 {
+              name
               on_off
               nick
               period
@@ -37,6 +40,7 @@ export const GetLevelConfig = gql`
               gesture
             }
             diffi4 {
+              name
               on_off
               nick
               period
@@ -44,6 +48,7 @@ export const GetLevelConfig = gql`
               gesture
             }
             diffi5 {
+              name
               on_off
               nick
               period
@@ -72,6 +77,7 @@ export const GetSession = gql`
           index_ids
         }
         cardlistStudying {
+          _id
           seqInCardlist
           card_info {
             mybook_id
@@ -97,6 +103,8 @@ export const GetSession = gql`
             studyTimesInSession
             userFlagOriginal
             userFlagPrev
+            retentionRate
+
             statusCurrent
             recentKnowTime
             recentStudyResult
@@ -107,7 +115,8 @@ export const GetSession = gql`
             recentSelectTime
             needStudyTime
             currentLevStudyTimes
-            currentLevAccuStudyTime
+            currentLevElapsedTime
+            currentLevStudyHour
             totalStudyTimes
             totalExamTimes
             recentStayHour

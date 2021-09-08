@@ -119,7 +119,7 @@ const GetFilteredIndexButton = ({
           onChangeAFButtonClick();
         }}
       >
-        고급필터 적용하기
+        카드 개수 재계산
       </Button>
     </>
   );

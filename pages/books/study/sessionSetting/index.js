@@ -56,10 +56,14 @@ const SessionSetting = () => {
   });
 
   const submitCreateSessionConfigToServer = async (_sessionConfig, _mode) => {
-    const keysArray = Object.keys(checkedKeys);
+    const keysArray = isAdvancedFilteredCardListShowed
+      ? Object.keys(advancedFilteredCheckedIndexes)
+      : Object.keys(checkedKeys);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
-      index_ids: checkedKeys[item],
+      index_ids: isAdvancedFilteredCardListShowed
+        ? advancedFilteredCheckedIndexes[item]
+        : checkedKeys[item],
     }));
     const selectedMode = _sessionConfig[_mode];
     try {
@@ -229,7 +233,7 @@ const SessionSetting = () => {
         >
           확인
         </button>
-        <Row>
+        <Row style={{ maxWidth: '1440px' }}>
           <StyledCol xs={24} sm={24} md={24} lg={7} xl={6} xxl={5}>
             {bookList.length > 0 && (
               <SessionConfig
@@ -297,21 +301,6 @@ const SessionSetting = () => {
             </Card>
           </StyledColForTable>
         </Row>
-        <button
-          onClick={() => {
-            console.log('advancedFilteredCardsList', advancedFilteredCardsList);
-            console.log(
-              'isAdvancedFilteredCardListShowed',
-              isAdvancedFilteredCardListShowed
-            );
-            console.log(
-              'advancedFilteredCheckedIndexes',
-              advancedFilteredCheckedIndexes
-            );
-          }}
-        >
-          체크된 아이디 확인
-        </button>
       </Layout>
     );
   }

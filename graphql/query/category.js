@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GetCategory = gql`
   query {
@@ -19,7 +19,10 @@ export const GetCategory = gql`
 
 export const CreateNewCategory = gql`
   mutation CreateNewCategory($name: String!, $current_mybookcate_id: String!) {
-    mybookcate_create(name: $name, current_mybookcate_id: $current_mybookcate_id) {
+    mybookcate_create(
+      name: $name
+      current_mybookcate_id: $current_mybookcate_id
+    ) {
       status
       msg
       mybookcates {
@@ -27,21 +30,6 @@ export const CreateNewCategory = gql`
         mybookcate_info {
           name
           seq
-        }
-      }
-      mybooks {
-        _id
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          hide_or_show
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
         }
       }
     }
@@ -59,21 +47,6 @@ export const DeleteCategory = gql`
           seq
         }
       }
-      mybooks {
-        _id
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          hide_or_show
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
-        }
-      }
     }
   }
 `;
@@ -89,27 +62,15 @@ export const UpdateCategory = gql`
           seq
         }
       }
-      mybooks {
-        _id
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          hide_or_show
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
-        }
-      }
     }
   }
 `;
 export const PositioningCategory = gql`
   mutation PositioningCategory($direction: String, $mybookcate_id: String!) {
-    mybookcate_changeorder(direction: $direction, mybookcate_id: $mybookcate_id) {
+    mybookcate_changeorder(
+      direction: $direction
+      mybookcate_id: $mybookcate_id
+    ) {
       status
       msg
       mybookcates {

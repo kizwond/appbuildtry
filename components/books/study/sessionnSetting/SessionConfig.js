@@ -206,12 +206,6 @@ const SessionConfig = ({
           >
             시험모드
           </Button>
-          <Button
-            type={mode === 'exam' ? 'primary' : 'default'}
-            onClick={() => console.log(sessionConfig)}
-          >
-            스테이트 확인용
-          </Button>
         </div>
 
         <div
@@ -382,7 +376,7 @@ const SessionConfig = ({
           </Row>
           {selectedStudyStatus?.includes('ing') && (
             <>
-              <Row align="top" gutter={8}>
+              <Row align="top" justify="center" gutter={8}>
                 <Col span={menuTitleColSize}>
                   <span style={{ fontSize: '12px', fontWeight: '700' }}></span>
                 </Col>

@@ -114,7 +114,6 @@ const IndexTree = ({
           columns={columns}
           dataSource={treeData}
           rowSelection={{ ...rowSelection, checkStrictly: true }}
-          bordered
           size="small"
           pagination={false}
           title={() => (

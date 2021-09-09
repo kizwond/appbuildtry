@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {
   Radio,
   Switch,
@@ -15,7 +15,6 @@ import {
 import { GET_SESSTION_CONFIG } from '../../../../graphql/query/studySessionSetting';
 import ColFormItem from './ColFormItem';
 import produce from 'immer';
-import { onChangeArrayValuesForSwitch } from './functionTool';
 import SwichComponent from './SwichComponent';
 import { Space, Tag } from '../../../../node_modules/antd/lib/index';
 import moment from '../../../../node_modules/moment/moment';
@@ -37,32 +36,22 @@ const SessionConfig = ({
 }) => {
   const [counterForButtonClick, setCounterForButtonClick] = useState(0);
 
-  const [mode, setMode] = useState('flip');
+  const [mode, setMode] = useState('exam');
   const [sessionConfig, setSessionConfig] = useState({});
-  const [loadConfigData, { loading, error, data, variables }] = useLazyQuery(
-    GET_SESSTION_CONFIG,
-    {
-      variables: {
-        mybook_ids: book_ids,
-      },
-      onCompleted: (received_data) => {
-        console.log(received_data);
-        setMode(
-          received_data.session_getSessionConfig.sessionConfigs[0].studyMode
-        );
-        setSessionConfig(
-          received_data.session_getSessionConfig.sessionConfigs[0]
-        );
-      },
-    }
-  );
-
-  useEffect(() => {
-    if (firstFetch) {
-      loadConfigData();
-      console.log('서버에 컴피그 요청보냄');
-    }
-  }, [firstFetch, loadConfigData]);
+  const { loading, error, data, variables } = useQuery(GET_SESSTION_CONFIG, {
+    variables: {
+      mybook_ids: book_ids,
+    },
+    onCompleted: (received_data) => {
+      console.log(received_data);
+      setMode(
+        received_data.session_getSessionConfig.sessionConfigs[0].studyMode
+      );
+      setSessionConfig(
+        received_data.session_getSessionConfig.sessionConfigs[0]
+      );
+    },
+  });
 
   const onChangeValue = useCallback(
     (...args) => {

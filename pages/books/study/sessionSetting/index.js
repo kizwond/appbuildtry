@@ -18,7 +18,6 @@ const SessionSetting = () => {
   const [checkedKeys, setCheckedKeys] = useState([]);
   const [counter, setCounter] = useState(0);
   const [bookList, setBookList] = useState([]);
-  const [firstFetch, setFirstFetch] = useState();
 
   const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState(
     []
@@ -57,7 +56,7 @@ const SessionSetting = () => {
 
   const submitCreateSessionConfigToServer = async (_sessionConfig, _mode) => {
     const keysArray = Object.keys(checkedKeys);
-    console.log("keysArray",keysArray)
+    console.log('keysArray', keysArray);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
       index_ids: isAdvancedFilteredCardListShowed
@@ -146,12 +145,6 @@ const SessionSetting = () => {
           setCounter((prev) => prev + 1);
         }
 
-        if (counter == 0) {
-          setFirstFetch(true);
-        } else {
-          setFirstFetch(false);
-        }
-
         console.log('카테고리설정');
         setCardsList([...cardsList, received_data]);
         console.log(received_data);
@@ -234,7 +227,7 @@ const SessionSetting = () => {
         </button>
         <Row style={{ maxWidth: '1440px' }}>
           <StyledCol xs={24} sm={24} md={24} lg={7} xl={6} xxl={5}>
-            {bookList.length > 0 && (
+            {bookList.length - 1 === counter && (
               <SessionConfig
                 submitCreateSessionConfigToServer={
                   submitCreateSessionConfigToServer
@@ -243,7 +236,6 @@ const SessionSetting = () => {
                 onChangeAFCardList={onChangeAFCardList}
                 AFCardList={advancedFilteredCardsList}
                 book_ids={bookList.map((book) => book.book_id)}
-                firstFetch={firstFetch}
                 advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
                 onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
               />

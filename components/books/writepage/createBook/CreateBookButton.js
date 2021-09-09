@@ -1,8 +1,8 @@
 import { Button } from 'antd';
 import React, { useCallback, useState } from 'react';
-import ModalForm from './ModalForm';
+import CreateBookModal from './CreateBookModal';
 
-const CreateBookComponent = ({ category }) => {
+const CreateBookButton = ({ category }) => {
   const [visible, setVisible] = useState(false);
 
   const onToggleVisible = useCallback((_boolean) => {
@@ -11,11 +11,12 @@ const CreateBookComponent = ({ category }) => {
 
   return (
     <>
-      <Button type="primary" onClick={() => onToggleVisible(true)}>
+      {console.log('CreateBookButton 랜더링')}
+      <Button size="small" type="primary" onClick={() => onToggleVisible(true)}>
         새 책 만들기
       </Button>
 
-      <ModalForm
+      <CreateBookModal
         visible={visible}
         onToggleVisible={onToggleVisible}
         category={category}
@@ -24,4 +25,4 @@ const CreateBookComponent = ({ category }) => {
   );
 };
 
-export default CreateBookComponent;
+export default CreateBookButton;

@@ -1,26 +1,43 @@
-import React, { useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import { GetCategory } from '../../../graphql/query/writemain';
-import CreateBookComponent from '../../../components/books/writepage/CreateBookComponent';
+// 할 수 있는 한 graphQL에서 받은 data로만 코드를 짜보자!!!!
+import { useQuery } from '@apollo/client';
+import { GET_CATEGORY_AND_BOOKS_INFO } from '../../../graphql/query/writePage';
+import styled from 'styled-components';
+
+import { Space } from '../../../node_modules/antd/lib/index';
+import Layout from '../../../components/layout/Layout';
+import CreateBookButton from '../../../components/books/writepage/createBook/CreateBookButton';
+import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
 
 const Writeanother = () => {
-  const [category, setCategory] = useState();
-
-  const { loading, error, data } = useQuery(GetCategory, {
+  const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
     onCompleted: (received_data) => {
-      console.log(received_data);
-      setCategory(received_data.mybookcate_get.mybookcates);
+      console.log('received_data', received_data);
     },
   });
-  if (loading) <div>loading..</div>;
-  if (error) <div>loading..</div>;
+
+  if (loading) {
+    return <div>loading..</div>;
+  }
+  if (error) {
+    return <div>Error..</div>;
+  }
+
   return (
-    <>
+    <Layout>
       {data && (
-        <CreateBookComponent category={data?.mybookcate_get?.mybookcates} />
+        <StyledSpace>
+          <CreateBookButton category={data.mybookcate_get.mybookcates} />
+          <CategorySettingButton category={data.mybookcate_get.mybookcates} />
+        </StyledSpace>
       )}
-    </>
+    </Layout>
   );
 };
 
 export default Writeanother;
+
+const StyledSpace = styled(Space)`
+  & * {
+    font-size: 0.8rem;
+  }
+`;

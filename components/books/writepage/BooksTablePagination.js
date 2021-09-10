@@ -3,10 +3,11 @@ import { CHANGE_POSITION_OF_BOOK } from '../../../graphql/query/writePage';
 import { useRouter } from 'next/router';
 
 import { Button, Table } from '../../../node_modules/antd/lib/index';
+import BookOrderButton from './BookOrderButton';
 
 // todo 버튼 만들어서 useMutation부분 옮겨보자
 
-const BooksTable = ({ category, myBook, handleToGetMyBook }) => {
+const BooksTablePagination = ({ category, myBook, handleToGetMyBook }) => {
   const router = useRouter();
   const [rePosition, { loading }] = useMutation(CHANGE_POSITION_OF_BOOK, {
     onCompleted: (received_data) => {
@@ -66,15 +67,34 @@ const BooksTable = ({ category, myBook, handleToGetMyBook }) => {
     {
       title: '카테고리',
       key: 'category',
+      className: 'category-top',
       dataIndex: 'category',
-
       render: (_txt, _record, _index) => {
         const obj = {
-          children: _txt,
+          children: <div> {_txt} </div>,
           props: {},
         };
-        if (_record.seq_in_category === 0) {
+        const startNum = _index - _record.seq_in_category;
+        const lastNum = startNum + _record.cateLength - 1;
+        const tenDigitOfStart = parseInt(startNum / 10);
+        const tenDigitOfLast = parseInt(lastNum / 10);
+        const tenDigitOf_index = parseInt(_index / 10);
+        const gapStartLast = tenDigitOfLast - tenDigitOfStart;
+        const gapIndexLast = tenDigitOfLast - tenDigitOf_index;
+        const lengthInPage =
+          gapStartLast > 0 ? 10 - (startNum % 10) : _record.cateLength;
+        if (
+          _index === 0 &&
+          tenDigitOfStart < tenDigitOf_index &&
+          tenDigitOf_index < tenDigitOfLast
+        ) {
+          obj.props.rowSpan = 10;
+        } else if (_record.seq_in_category === 0 && gapStartLast > 0) {
+          obj.props.rowSpan = 10 - (startNum % 10);
+        } else if (_record.seq_in_category === 0 && gapStartLast === 0) {
           obj.props.rowSpan = _record.cateLength;
+        } else if (_index === 0 && gapIndexLast === 0) {
+          obj.props.rowSpan = lastNum % 10;
         } else {
           obj.props.rowSpan = 0;
         }
@@ -92,32 +112,11 @@ const BooksTable = ({ category, myBook, handleToGetMyBook }) => {
       key: 'seq_in_category',
       dataIndex: 'seq_in_category',
       // eslint-disable-next-line react/display-name
-      render: (txt, _record, index) => (
-        <>
-          <Button
-            onClick={() => {
-              positionBooks('up', _record._id);
-              console.log(index);
-            }}
-            disabled={_record.seq_in_category === 0}
-            size="small"
-            shape="circle"
-            loading={loading}
-          >
-            상
-          </Button>
-          <Button
-            onClick={() => {
-              positionBooks('down', _record._id);
-            }}
-            disabled={_record.seq_in_category + 1 === _record.cateLength}
-            size="small"
-            shape="circle"
-            loading={loading}
-          >
-            하
-          </Button>
-        </>
+      render: (txt, _record) => (
+        <BookOrderButton
+          handleToGetMyBook={handleToGetMyBook}
+          _record={_record}
+        />
       ),
     },
     {
@@ -132,9 +131,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook }) => {
       dataSource={sortingByCate}
       columns={columns}
       size="small"
-      pagination={false}
+      // pagination={false}
     />
   );
 };
 
-export default BooksTable;
+export default BooksTablePagination;

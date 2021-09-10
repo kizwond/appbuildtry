@@ -3,11 +3,12 @@ import { useQuery } from '@apollo/client';
 import { GET_CATEGORY_AND_BOOKS_INFO } from '../../../graphql/query/writePage';
 import styled from 'styled-components';
 
-import { Row, Space, Col } from '../../../node_modules/antd/lib/index';
+import { Row, Space, Col, Divider } from '../../../node_modules/antd/lib/index';
 import Layout from '../../../components/layout/Layout';
 import CreateBookButton from '../../../components/books/writepage/createBook/CreateBookButton';
 import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
 import BooksTable from '../../../components/books/writepage/BooksTable';
+import BooksTablePagination from '../../../components/books/writepage/BooksTablePagination';
 
 const Writeanother = () => {
   const [isReceivedData, setIsReceivedData] = useState(false);
@@ -40,13 +41,30 @@ const Writeanother = () => {
     <Layout>
       {category.length >= 1 && (
         <StyledSpace>
-          <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
+          <CreateBookButton
+            category={category}
+            handleToGetMyBook={handleToGetMyBook}
+          />
           <CategorySettingButton category={category} />
         </StyledSpace>
       )}
       <Row>
+        <StyledCol>
+          <BooksTablePagination
+            category={category}
+            myBook={myBook}
+            handleToGetMyBook={handleToGetMyBook}
+          />
+        </StyledCol>
+      </Row>
+      <Divider />
+      <Row>
         <Col>
-          <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} />
+          <BooksTable
+            category={category}
+            myBook={myBook}
+            handleToGetMyBook={handleToGetMyBook}
+          />
         </Col>
       </Row>
     </Layout>
@@ -58,5 +76,15 @@ export default Writeanother;
 const StyledSpace = styled(Space)`
   & * {
     font-size: 0.8rem;
+  }
+`;
+const StyledCol = styled(Col)`
+  & .ant-table.ant-table-small .ant-table-title,
+  .ant-table.ant-table-small .ant-table-footer,
+  .ant-table.ant-table-small .ant-table-thead > tr > th,
+  .ant-table.ant-table-small .ant-table-tbody > tr > td,
+  .ant-table.ant-table-small tfoot > tr > th,
+  .ant-table.ant-table-small tfoot > tr > td {
+    vertical-align: top;
   }
 `;

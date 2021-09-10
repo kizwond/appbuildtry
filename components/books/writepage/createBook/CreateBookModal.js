@@ -3,14 +3,24 @@ import { CREATE_MY_BOOK } from '../../../../graphql/query/writePage';
 import { Modal, Form, Input, Select } from 'antd';
 import { memo } from 'react';
 
-const CreateBookModal = ({ category, visible, onToggleVisible }) => {
+const CreateBookModal = ({
+  category,
+  visible,
+  changeVisible,
+  handleToGetMyBook,
+}) => {
   const [form] = Form.useForm();
   const { resetFields } = form;
 
   const [mybook_create, { data, loading, error }] = useMutation(
     CREATE_MY_BOOK,
     {
-      onCompleted: (_data) => console.log('receivedData', _data),
+      onCompleted: (_data) => {
+        if (_data.mybook_create.msg == '책 생성 성공적!') {
+          handleToGetMyBook(_data.mybook_create.mybooks);
+          console.log('receivedData', _data);
+        }
+      },
     }
   );
 
@@ -37,7 +47,7 @@ const CreateBookModal = ({ category, visible, onToggleVisible }) => {
         visible={visible}
         title="새 책 만들기"
         cancelText="취소"
-        onCancel={() => onToggleVisible(false)}
+        onCancel={() => changeVisible(false)}
         okButtonProps={{
           form: 'category-editor-form',
           key: 'submit',
@@ -57,7 +67,7 @@ const CreateBookModal = ({ category, visible, onToggleVisible }) => {
             )[0]._id,
           }}
           onFinish={(values) => {
-            onToggleVisible(false);
+            changeVisible(false);
             postNewMyBook(values.book_title, values.category);
             resetFields();
           }}

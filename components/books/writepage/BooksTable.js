@@ -4,6 +4,12 @@ import { useRouter } from 'next/router';
 
 import { Button, Table } from '../../../node_modules/antd/lib/index';
 
+// todo 버튼 만들어서 useMutation부분 옮겨보자
+
+
+
+
+
 const BooksTable = ({ category, myBook, handleToGetMyBook }) => {
   const router = useRouter();
   const [rePosition, { loading }] = useMutation(CHANGE_POSITION_OF_BOOK, {

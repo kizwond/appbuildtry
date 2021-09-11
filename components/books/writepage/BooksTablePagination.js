@@ -75,7 +75,7 @@ const BooksTablePagination = ({ category, myBook, handleToGetMyBook }) => {
           props: {},
         };
         const startNum = _index - _record.seq_in_category;
-        const lastNum = startNum + _record.cateLength - 1;
+        const lastNum = startNum + _record.cateLength;
         const tenDigitOfStart = parseInt(startNum / 10);
         const tenDigitOfLast = parseInt(lastNum / 10);
         const tenDigitOf_index = parseInt(_index / 10);
@@ -88,14 +88,36 @@ const BooksTablePagination = ({ category, myBook, handleToGetMyBook }) => {
           tenDigitOfStart < tenDigitOf_index &&
           tenDigitOf_index < tenDigitOfLast
         ) {
+          console.log(
+            `${_index}번호 1번째 조건 ${
+              _index === 0 &&
+              tenDigitOfStart < tenDigitOf_index &&
+              tenDigitOf_index < tenDigitOfLast
+            }`
+          );
+
           obj.props.rowSpan = 10;
         } else if (_record.seq_in_category === 0 && gapStartLast > 0) {
+          console.log(
+            `${_index}번호 2번째 조건, seq: ${_record.seq_in_category}, 시작-끝: ${gapStartLast} `
+          );
+
           obj.props.rowSpan = 10 - (startNum % 10);
         } else if (_record.seq_in_category === 0 && gapStartLast === 0) {
+          console.log(
+            `${_index}번호 3번째 조건 seq: ${_record.seq_in_category}, 시작-끝: ${gapStartLast} `
+          );
+
           obj.props.rowSpan = _record.cateLength;
         } else if (_index === 0 && gapIndexLast === 0) {
+          console.log(
+            `${_index}번호 4번째 조건, 인덱스: ${_index}, 인덱스-마지막: ${lastNum} `
+          );
+
           obj.props.rowSpan = lastNum % 10;
         } else {
+          console.log(`${_index}번호 마지막 조건  `);
+
           obj.props.rowSpan = 0;
         }
 

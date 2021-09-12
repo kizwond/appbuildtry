@@ -15,6 +15,8 @@ const Writeanother = () => {
   const [category, setCategory] = useState([]);
   const [myBook, setMyBook] = useState([]);
 
+  const [isPopupSomething, setisPopupSomething] = useState(false);
+
   const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
     onCompleted: (received_data) => {
       console.log('received_data', received_data);
@@ -26,6 +28,10 @@ const Writeanother = () => {
 
   const handleToGetMyBook = useCallback((books) => {
     setMyBook(books);
+  }, []);
+
+  const chagePopup = useCallback((_boolean) => {
+    setisPopupSomething(_boolean);
   }, []);
 
   if (!isReceivedData) {
@@ -41,10 +47,7 @@ const Writeanother = () => {
     <Layout>
       {category.length >= 1 && (
         <StyledSpace>
-          <CreateBookButton
-            category={category}
-            handleToGetMyBook={handleToGetMyBook}
-          />
+          <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
           <CategorySettingButton category={category} />
         </StyledSpace>
       )}
@@ -54,17 +57,15 @@ const Writeanother = () => {
             category={category}
             myBook={myBook}
             handleToGetMyBook={handleToGetMyBook}
+            isPopupSomething={isPopupSomething}
+            chagePopup={chagePopup}
           />
         </StyledCol>
       </Row>
       <Divider />
       <Row>
         <Col>
-          <BooksTable
-            category={category}
-            myBook={myBook}
-            handleToGetMyBook={handleToGetMyBook}
-          />
+          <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} />
         </Col>
       </Row>
     </Layout>

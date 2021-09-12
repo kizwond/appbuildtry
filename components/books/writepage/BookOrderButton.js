@@ -44,7 +44,6 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
         disabled={_record.seq_in_category === 0}
         size="small"
         shape="circle"
-        loading={loading}
       >
         상
       </Button>
@@ -55,7 +54,6 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
         disabled={_record.seq_in_category + 1 === _record.cateLength}
         size="small"
         shape="circle"
-        loading={loading}
       >
         하
       </Button>

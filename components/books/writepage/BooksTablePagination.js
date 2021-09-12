@@ -1,48 +1,20 @@
+/* eslint-disable react/display-name */
 import { useMutation } from '@apollo/client';
 import { CHANGE_POSITION_OF_BOOK } from '../../../graphql/query/writePage';
 import { useRouter } from 'next/router';
 
-import { Button, Table } from '../../../node_modules/antd/lib/index';
+import { Table, Popconfirm } from 'antd';
 import BookOrderButton from './BookOrderButton';
+import BookTitleChange from './BookTitleChange';
+import { useState } from 'react';
 
 // todo 버튼 만들어서 useMutation부분 옮겨보자
 
-const BooksTablePagination = ({ category, myBook, handleToGetMyBook }) => {
-  const router = useRouter();
-  const [rePosition, { loading }] = useMutation(CHANGE_POSITION_OF_BOOK, {
-    onCompleted: (received_data) => {
-      console.log('received_data', received_data);
-      if (received_data.mybook_changeorder.status === '200') {
-        handleToGetMyBook(received_data.mybook_changeorder.mybooks);
-      } else if (received_data.mybook_changeorder.status === '401') {
-        router.push('/account/login');
-      } else {
-        console.log('어떤 문제가 발생함');
-      }
-    },
-  });
-
-  async function positionBooks(direction, id) {
-    try {
-      await rePosition({
-        variables: {
-          direction: direction,
-          mybook_id: id,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
+const BooksTablePagination = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup }) => {
   const booksArr = myBook.map((book) => {
-    const cate = category.filter(
-      (_cate) => _cate._id === book.mybook_info.mybookcate_id
-    )[0];
+    const cate = category.filter((_cate) => _cate._id === book.mybook_info.mybookcate_id)[0];
 
-    const cateLength = myBook.filter(
-      (_book) => _book.mybook_info.mybookcate_id === cate._id
-    ).length;
+    const cateLength = myBook.filter((_book) => _book.mybook_info.mybookcate_id === cate._id).length;
 
     const cateInfo = cate.mybookcate_info;
     return {
@@ -55,13 +27,9 @@ const BooksTablePagination = ({ category, myBook, handleToGetMyBook }) => {
     };
   });
 
-  const sortingBySeq = booksArr.sort(
-    (_cateA, _cateB) => _cateA.seq_in_category - _cateB.seq_in_category
-  );
+  const sortingBySeq = booksArr.sort((_cateA, _cateB) => _cateA.seq_in_category - _cateB.seq_in_category);
 
-  const sortingByCate = sortingBySeq.sort(
-    (_cateA, _cateB) => _cateA.categorySeq - _cateB.categorySeq
-  );
+  const sortingByCate = sortingBySeq.sort((_cateA, _cateB) => _cateA.categorySeq - _cateB.categorySeq);
 
   const columns = [
     {
@@ -71,7 +39,7 @@ const BooksTablePagination = ({ category, myBook, handleToGetMyBook }) => {
       dataIndex: 'category',
       render: (_txt, _record, _index) => {
         const obj = {
-          children: <div> {_txt} </div>,
+          children: _txt,
           props: {},
         };
         const startNum = _index - _record.seq_in_category;
@@ -81,43 +49,15 @@ const BooksTablePagination = ({ category, myBook, handleToGetMyBook }) => {
         const tenDigitOf_index = parseInt(_index / 10);
         const gapStartLast = tenDigitOfLast - tenDigitOfStart;
         const gapIndexLast = tenDigitOfLast - tenDigitOf_index;
-        const lengthInPage =
-          gapStartLast > 0 ? 10 - (startNum % 10) : _record.cateLength;
-        if (
-          _index === 0 &&
-          tenDigitOfStart < tenDigitOf_index &&
-          tenDigitOf_index < tenDigitOfLast
-        ) {
-          console.log(
-            `${_index}번호 1번째 조건 ${
-              _index === 0 &&
-              tenDigitOfStart < tenDigitOf_index &&
-              tenDigitOf_index < tenDigitOfLast
-            }`
-          );
-
+        if (_index === 0 && tenDigitOfStart < tenDigitOf_index && tenDigitOf_index < tenDigitOfLast) {
           obj.props.rowSpan = 10;
         } else if (_record.seq_in_category === 0 && gapStartLast > 0) {
-          console.log(
-            `${_index}번호 2번째 조건, seq: ${_record.seq_in_category}, 시작-끝: ${gapStartLast} `
-          );
-
           obj.props.rowSpan = 10 - (startNum % 10);
         } else if (_record.seq_in_category === 0 && gapStartLast === 0) {
-          console.log(
-            `${_index}번호 3번째 조건 seq: ${_record.seq_in_category}, 시작-끝: ${gapStartLast} `
-          );
-
           obj.props.rowSpan = _record.cateLength;
         } else if (_index === 0 && gapIndexLast === 0) {
-          console.log(
-            `${_index}번호 4번째 조건, 인덱스: ${_index}, 인덱스-마지막: ${lastNum} `
-          );
-
           obj.props.rowSpan = lastNum % 10;
         } else {
-          console.log(`${_index}번호 마지막 조건  `);
-
           obj.props.rowSpan = 0;
         }
 
@@ -130,16 +70,23 @@ const BooksTablePagination = ({ category, myBook, handleToGetMyBook }) => {
       dataIndex: 'title',
     },
     {
-      title: '책순서',
-      key: 'seq_in_category',
-      dataIndex: 'seq_in_category',
-      // eslint-disable-next-line react/display-name
-      render: (txt, _record) => (
-        <BookOrderButton
+      title: '제목 변경',
+      key: 'title',
+      dataIndex: 'title',
+      render: (_title, _record) => (
+        <BookTitleChange
+          mybook_id={_record._id}
+          title={_title}
+          hide_or_show={_record.hide_or_show}
+          isPopupSomething={isPopupSomething}
+          chagePopup={chagePopup}
           handleToGetMyBook={handleToGetMyBook}
-          _record={_record}
         />
       ),
+    },
+    {
+      title: '책순서',
+      render: (txt, _record) => <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} />,
     },
     {
       title: '책순서',

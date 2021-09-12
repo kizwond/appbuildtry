@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_CATEGORY_AND_BOOKS_INFO } from '../../../graphql/query/writePage';
+import { useRouter } from 'next/router';
+
 import styled from 'styled-components';
 
 import { Row, Space, Col } from '../../../node_modules/antd/lib/index';
@@ -10,6 +12,8 @@ import CategorySettingButton from '../../../components/books/writepage/categoryS
 import BooksTable from '../../../components/books/writepage/BooksTable';
 
 const Writeanother = () => {
+  const router = useRouter();
+
   const [isReceivedData, setIsReceivedData] = useState(false);
   const [category, setCategory] = useState([]);
   const [myBook, setMyBook] = useState([]);
@@ -17,9 +21,15 @@ const Writeanother = () => {
   const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
     onCompleted: (received_data) => {
       console.log('received_data', received_data);
-      setCategory(received_data.mybookcate_get.mybookcates);
-      setMyBook(received_data.mybook_getAllMybook.mybooks);
-      setIsReceivedData(true);
+      if (received_data.mybookcate_get.status === '200') {
+        setMyBook(received_data.mybook_getAllMybook.mybooks);
+        setCategory(received_data.mybookcate_get.mybookcates);
+        setIsReceivedData(true);
+      } else if (received_data.mybookcate_get.status === '401') {
+        router.push('/account/login');
+      } else {
+        console.log('어떤 문제가 발생함');
+      }
     },
   });
 

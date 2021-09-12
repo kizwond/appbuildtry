@@ -6,10 +6,6 @@ import { Button, Table } from '../../../node_modules/antd/lib/index';
 
 // todo 버튼 만들어서 useMutation부분 옮겨보자
 
-
-
-
-
 const BooksTable = ({ category, myBook, handleToGetMyBook }) => {
   const router = useRouter();
   const [rePosition, { loading }] = useMutation(CHANGE_POSITION_OF_BOOK, {
@@ -39,9 +35,13 @@ const BooksTable = ({ category, myBook, handleToGetMyBook }) => {
   }
 
   const booksArr = myBook.map((book) => {
-    const cate = category.filter((_cate) => _cate._id === book.mybook_info.mybookcate_id)[0];
+    const cate = category.filter(
+      (_cate) => _cate._id === book.mybook_info.mybookcate_id
+    )[0];
 
-    const cateLength = myBook.filter((_book) => _book.mybook_info.mybookcate_id === cate._id).length;
+    const cateLength = myBook.filter(
+      (_book) => _book.mybook_info.mybookcate_id === cate._id
+    ).length;
 
     const cateInfo = cate.mybookcate_info;
     return {
@@ -54,9 +54,13 @@ const BooksTable = ({ category, myBook, handleToGetMyBook }) => {
     };
   });
 
-  const sortingBySeq = booksArr.sort((_cateA, _cateB) => _cateA.seq_in_category - _cateB.seq_in_category);
+  const sortingBySeq = booksArr.sort(
+    (_cateA, _cateB) => _cateA.seq_in_category - _cateB.seq_in_category
+  );
 
-  const sortingByCate = sortingBySeq.sort((_cateA, _cateB) => _cateA.categorySeq - _cateB.categorySeq);
+  const sortingByCate = sortingBySeq.sort(
+    (_cateA, _cateB) => _cateA.categorySeq - _cateB.categorySeq
+  );
 
   const columns = [
     {
@@ -123,7 +127,14 @@ const BooksTable = ({ category, myBook, handleToGetMyBook }) => {
     },
   ];
 
-  return <Table dataSource={sortingByCate} columns={columns} size="small" pagination={false} />;
+  return (
+    <Table
+      dataSource={sortingByCate}
+      columns={columns}
+      size="small"
+      pagination={false}
+    />
+  );
 };
 
 export default BooksTable;

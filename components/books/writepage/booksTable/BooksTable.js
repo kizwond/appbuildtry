@@ -38,11 +38,13 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
     {
       title: '카테고리',
       key: 'category',
+      className: 'categoryCol',
       dataIndex: 'category',
 
-      render: (_txt, _record, _index) => {
+      render: (txt, record, index) => {
+        return record.seq_in_category == 0 ? txt : null;
         // 부모 자식 컴포로 접기 펼치기 구현 하면 될듯 !!!! 그리고 부모 rowCol은 자식 갯수만큼
-        // 자식 rowCol은 모두 0처리하면 될듯!!!!
+        // 자식 rowCol은 모두 0처리하면 될듯!!!! 자식인지 판단하는 것은 seq_in_cate > 0 으로 판단하면 될듯
 
         // const obj = {
         //   children: (
@@ -86,8 +88,6 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         // }
 
         // return obj;
-
-        return _txt;
       },
     },
     {
@@ -129,6 +129,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       pagination={false}
       // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
       // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
+      rowClassName={(record, index) => (record.cateLength - record.seq_in_category - 1 == 0 ? 'lastBook' : 'Books')}
       rowSelection={{ order: 2 }}
     />
   );

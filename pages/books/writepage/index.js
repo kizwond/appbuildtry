@@ -98,4 +98,13 @@ const StyledCol = styled(Col)`
   .ant-table.ant-table-small tfoot > tr > td {
     vertical-align: top;
   }
+  & .Books > .categoryCol {
+    border: none;
+    border-right: 1px solid #f0f0f0;
+    border-left: 1px solid #f0f0f0;
+  }
+  & .categoryCol {
+    border-right: 1px solid #f0f0f0;
+    border-left: 1px solid #f0f0f0;
+  }
 `;

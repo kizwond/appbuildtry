@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { memo } from 'react';
 import { useRouter } from 'next/router';
-import { CHANGE_POSITION_OF_BOOK } from '../../../../../graphql/query/writePage';
+import { CHANGE_POSITION_OF_BOOK } from '../../../../graphql/query/writePage';
 
 import { Button } from 'antd';
 

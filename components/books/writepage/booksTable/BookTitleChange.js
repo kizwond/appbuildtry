@@ -1,7 +1,7 @@
 import React, { useState, memo } from 'react';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { UPDATE_BOOK_TITLE_AND_HIDE } from '../../../../../graphql/query/writePage';
+import { UPDATE_BOOK_TITLE_AND_HIDE } from '../../../../graphql/query/writePage';
 
 import { Popconfirm, Tooltip, Button, Form, Input } from 'antd';
 import { EditFilled } from '@ant-design/icons';

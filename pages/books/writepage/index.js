@@ -9,8 +9,8 @@ import { Row, Space, Col, Divider } from '../../../node_modules/antd/lib/index';
 import Layout from '../../../components/layout/Layout';
 import CreateBookButton from '../../../components/books/writepage/createBook/CreateBookButton';
 import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
-import BooksTable from '../../../components/books/writepage/categorySetting/booksTable/BooksTable';
-import BooksTablePagination from '../../../components/books/writepage/categorySetting/booksTable/BooksTablePagination';
+import BooksTable from '../../../components/books/writepage/booksTable/BooksTable';
+import BooksTablePagination from '../../../components/books/writepage/booksTable/BooksTablePagination';
 
 const Writeanother = () => {
   const router = useRouter();

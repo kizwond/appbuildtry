@@ -9,8 +9,8 @@ import { Row, Space, Col, Divider } from '../../../node_modules/antd/lib/index';
 import Layout from '../../../components/layout/Layout';
 import CreateBookButton from '../../../components/books/writepage/createBook/CreateBookButton';
 import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
-import BooksTable from '../../../components/books/writepage/BooksTable';
-import BooksTablePagination from '../../../components/books/writepage/BooksTablePagination';
+import BooksTable from '../../../components/books/writepage/categorySetting/booksTable/BooksTable';
+import BooksTablePagination from '../../../components/books/writepage/categorySetting/booksTable/BooksTablePagination';
 
 const Writeanother = () => {
   const router = useRouter();
@@ -61,7 +61,7 @@ const Writeanother = () => {
           <CategorySettingButton category={category} />
         </StyledSpace>
       )}
-      <Row>
+      {/* <Row>
         <StyledCol>
           <BooksTablePagination
             category={category}
@@ -72,11 +72,11 @@ const Writeanother = () => {
           />
         </StyledCol>
       </Row>
-      <Divider />
+      <Divider /> */}
       <Row>
-        <Col>
-          <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} />
-        </Col>
+        <StyledCol>
+          <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+        </StyledCol>
       </Row>
     </Layout>
   );

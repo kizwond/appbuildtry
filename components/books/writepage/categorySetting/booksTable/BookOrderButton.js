@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client';
-import { CHANGE_POSITION_OF_BOOK } from '../../../graphql/query/writePage';
-import { useRouter } from 'next/router';
-
-import { Button } from '../../../node_modules/antd/lib/index';
 import { memo } from 'react';
+import { useRouter } from 'next/router';
+import { CHANGE_POSITION_OF_BOOK } from '../../../../../graphql/query/writePage';
+
+import { Button } from 'antd';
 
 // todo 버튼 만들어서 useMutation부분 옮겨보자
 

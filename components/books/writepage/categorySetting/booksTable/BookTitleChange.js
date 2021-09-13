@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { UPDATE_BOOK_TITLE_AND_HIDE } from '../../../graphql/query/writePage';
+import { UPDATE_BOOK_TITLE_AND_HIDE } from '../../../../../graphql/query/writePage';
 
 import { Popconfirm, Tooltip, Button, Form, Input } from 'antd';
 import { EditFilled } from '@ant-design/icons';
 
 const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybook_id, title, hide_or_show }) => {
   const [buttonType, setButtonType] = useState('ghost');
+  const [visible, setVisible] = useState(false);
 
   const [form] = Form.useForm();
   const { resetFields } = form;
 
   const router = useRouter();
-  const [updateBookTitle, { loading, variables }] = useMutation(UPDATE_BOOK_TITLE_AND_HIDE, {
+  const [updateBookTitle, { variables }] = useMutation(UPDATE_BOOK_TITLE_AND_HIDE, {
     onCompleted: (received_data) => {
       console.log('received_data', received_data);
       if (received_data.mybook_update.status === '200') {
@@ -42,21 +43,23 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
 
   return (
     <Popconfirm
+      icon={<EditFilled style={{ color: '#1890ff' }} />}
+      visible={visible}
       title={
         <Form
           colon={false}
           form={form}
           id={mybook_id}
-          scrollToFirstError={true}
           onFinish={(values) => {
-            console.log('onfinish', values.book_title);
             updateBook(values.book_title);
           }}
           onFinishFailed={(values, errorFields, outOfDate) => {
             console.log('values', values);
-            console.log('errorFields', errorFields);
-            console.log('outOfDate', outOfDate);
+            setVisible(true);
+            chagePopup(true);
+            setButtonType('primary');
           }}
+          requiredMark={false}
         >
           <Form.Item
             name="book_title"
@@ -68,7 +71,7 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
               },
             ]}
           >
-            <Input placeholder="책 제목" />
+            <Input placeholder={title} />
           </Form.Item>
         </Form>
       }
@@ -78,11 +81,13 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
         if (!visible) {
           chagePopup(false);
           setButtonType('default');
+          setVisible(visible);
         }
         if (visible) {
           resetFields();
           chagePopup(true);
           setButtonType('primary');
+          setVisible(visible);
         }
       }}
       okButtonProps={{
@@ -109,4 +114,4 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
   );
 };
 
-export default BookTitleChange;
+export default memo(BookTitleChange);

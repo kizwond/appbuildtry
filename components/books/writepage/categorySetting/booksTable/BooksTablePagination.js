@@ -1,14 +1,7 @@
 /* eslint-disable react/display-name */
-import { useMutation } from '@apollo/client';
-import { CHANGE_POSITION_OF_BOOK } from '../../../graphql/query/writePage';
-import { useRouter } from 'next/router';
-
-import { Table, Popconfirm } from 'antd';
+import { Table } from 'antd';
 import BookOrderButton from './BookOrderButton';
 import BookTitleChange from './BookTitleChange';
-import { useState } from 'react';
-
-// todo 버튼 만들어서 useMutation부분 옮겨보자
 
 const BooksTablePagination = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup }) => {
   const booksArr = myBook.map((book) => {
@@ -31,6 +24,7 @@ const BooksTablePagination = ({ category, myBook, handleToGetMyBook, isPopupSome
 
   const sortingByCate = sortingBySeq.sort((_cateA, _cateB) => _cateA.categorySeq - _cateB.categorySeq);
 
+  const pageSize = 15;
   const columns = [
     {
       title: '카테고리',
@@ -44,19 +38,19 @@ const BooksTablePagination = ({ category, myBook, handleToGetMyBook, isPopupSome
         };
         const startNum = _index - _record.seq_in_category;
         const lastNum = startNum + _record.cateLength;
-        const tenDigitOfStart = parseInt(startNum / 10);
-        const tenDigitOfLast = parseInt(lastNum / 10);
-        const tenDigitOf_index = parseInt(_index / 10);
+        const tenDigitOfStart = parseInt(startNum / pageSize);
+        const tenDigitOfLast = parseInt(lastNum / pageSize);
+        const tenDigitOf_index = parseInt(_index / pageSize);
         const gapStartLast = tenDigitOfLast - tenDigitOfStart;
         const gapIndexLast = tenDigitOfLast - tenDigitOf_index;
         if (_index === 0 && tenDigitOfStart < tenDigitOf_index && tenDigitOf_index < tenDigitOfLast) {
-          obj.props.rowSpan = 10;
+          obj.props.rowSpan = pageSize;
         } else if (_record.seq_in_category === 0 && gapStartLast > 0) {
-          obj.props.rowSpan = 10 - (startNum % 10);
+          obj.props.rowSpan = pageSize - (startNum % pageSize);
         } else if (_record.seq_in_category === 0 && gapStartLast === 0) {
           obj.props.rowSpan = _record.cateLength;
         } else if (_index === 0 && gapIndexLast === 0) {
-          obj.props.rowSpan = lastNum % 10;
+          obj.props.rowSpan = lastNum % pageSize;
         } else {
           obj.props.rowSpan = 0;
         }
@@ -95,14 +89,7 @@ const BooksTablePagination = ({ category, myBook, handleToGetMyBook, isPopupSome
     },
   ];
 
-  return (
-    <Table
-      dataSource={sortingByCate}
-      columns={columns}
-      size="small"
-      // pagination={false}
-    />
-  );
+  return <Table dataSource={sortingByCate} columns={columns} size="small" pagination={{ pageSize: pageSize }} />;
 };
 
 export default BooksTablePagination;

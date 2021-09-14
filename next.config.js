@@ -2,11 +2,13 @@
 //   reactStrictMode: true,
 // }
 
-export async function rewrites() {
-  [
-    {
-      destination: 'http://localhost:5000/:path*',
-      source: '/:path*',
-    },
+module.exports = {
+  async rewrites() {
+    [
+      {
+        destination: 'http://localhost:5000/:path*',
+        source: '/:path*',
+      },
   ];
+  },
 }

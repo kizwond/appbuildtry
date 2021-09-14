@@ -43,7 +43,7 @@ class ImportModal extends Component {
         console.log(this.props.cardSetId)
         console.log(this.props.indexSetId)
         console.log(data)
-        axios.post('http://localhost:5000/cardset_inspectExcelFileToImport', data)
+        axios.post('/cardset_inspectExcelFileToImport', data)
           .then(res => {alert(res.data.msg); 
             this.setState({
             file:''

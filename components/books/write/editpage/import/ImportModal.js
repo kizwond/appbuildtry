@@ -30,7 +30,7 @@ class ImportModal extends Component {
         })
     };
     uplodeFile = event =>{
-        const mybook_id = sessionStorage.getItem("book_id")
+        const mybook_id = localStorage.getItem("book_id")
         console.log(this.state.file)
         const data = new FormData();
         data.append("file", this.state.file)
@@ -38,6 +38,10 @@ class ImportModal extends Component {
         data.append("index_id", this.props.indexChanged)
         data.append("cardset_id", this.props.cardSetId)
         data.append("indexset_id", this.props.indexSetId)
+        console.log(mybook_id)
+        console.log(this.props.indexChanged)
+        console.log(this.props.cardSetId)
+        console.log(this.props.indexSetId)
         console.log(data)
         axios.post('http://localhost:5000/cardset_inspectExcelFileToImport', data)
           .then(res => {alert(res.data.msg); 

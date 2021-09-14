@@ -107,4 +107,9 @@ const StyledCol = styled(Col)`
     border-right: 1px solid #f0f0f0;
     border-left: 1px solid #f0f0f0;
   }
+  & .foldedCategory {
+    border-bottom: 1px solid #f0f0f0;
+    border-left: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+  }
 `;

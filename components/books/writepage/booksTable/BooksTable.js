@@ -1,37 +1,44 @@
 /* eslint-disable react/display-name */
-import { useEffect, useState } from 'react';
 import { Table } from 'antd';
-import { CaretRightOutlined, CaretDownOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 import BookOrderButton from './BookOrderButton';
 import BookTitleChange from './BookTitleChange';
 
-// todo 버튼 만들어서 useMutation부분 옮겨보자
-
 const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup }) => {
-  const [foldedCategory, setFoldedCatgegory] = useState([]);
-  const [dataSource, setDataSource] = useState([]);
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+
+  const firstBooks = myBook.filter((book) => book.mybook_info.seq_in_category === 0);
+
+  const newArry = firstBooks.map((firstbook) => {
+    const filteredBooks = myBook.filter((_book) => _book.mybook_info.mybookcate_id === firstbook.mybook_info.mybookcate_id);
+    const childrenBooks = filteredBooks.filter((_book) => _book.mybook_info.seq_in_category !== 0);
+    const mybookcate = category.find((cate) => cate._id === firstbook.mybook_info.mybookcate_id).mybookcate_info;
+    const { name, seq } = mybookcate;
+
+    const children = childrenBooks.map((_book, _index) => ({
+      ..._book.mybook_info,
+      category: name,
+      categorySeq: seq,
+      lastChild: childrenBooks.length === _index + 1,
+      key: _book._id,
+      _id: _book._id,
+    }));
+
+    return {
+      ...firstbook.mybook_info,
+      category: name,
+      categorySeq: seq,
+      lastChild: filteredBooks.length === 1 ? true : false,
+      _id: firstbook._id,
+      key: firstbook._id,
+      children: children,
+    };
+  });
 
   useEffect(() => {
-    const booksArr = myBook.map((book) => {
-      const cate = category.filter((_cate) => _cate._id === book.mybook_info.mybookcate_id)[0];
-
-      const cateLength = myBook.filter((_book) => _book.mybook_info.mybookcate_id === cate._id).length;
-
-      const cateInfo = cate.mybookcate_info;
-      return {
-        ...book.mybook_info,
-        category: cateInfo.name,
-        categorySeq: cateInfo.seq,
-        cateLength: cateLength,
-        _id: book._id,
-        key: book._id,
-      };
-    });
-
-    const sortingBySeq = booksArr.sort((_cateA, _cateB) => _cateA.seq_in_category - _cateB.seq_in_category);
-
-    const sortingByCate = sortingBySeq.sort((_cateA, _cateB) => _cateA.categorySeq - _cateB.categorySeq);
-    setDataSource(sortingByCate);
+    if (myBook.length > 0) {
+      setExpandedRowKeys(newArry.map((book) => book._id));
+    }
   }, [myBook]);
 
   const columns = [
@@ -40,55 +47,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       key: 'category',
       className: 'categoryCol',
       dataIndex: 'category',
-
-      render: (txt, record, index) => {
-        return record.seq_in_category == 0 ? txt : null;
-        // 부모 자식 컴포로 접기 펼치기 구현 하면 될듯 !!!! 그리고 부모 rowCol은 자식 갯수만큼
-        // 자식 rowCol은 모두 0처리하면 될듯!!!! 자식인지 판단하는 것은 seq_in_cate > 0 으로 판단하면 될듯
-
-        // const obj = {
-        //   children: (
-        //     <>
-        //       <div
-        //         style={{ cursor: 'pointer' }}
-        //         onClick={() => {
-        //           if (foldedCategory.includes(_record.mybookcate_id)) {
-        //             setFoldedCatgegory(foldedCategory.filter((cate_id) => cate_id != _record.mybookcate_id));
-        //             // myBook에서 해당 카테고리 책만 불러서 dataSource같은 형식의 배열로 만든다.
-        //             // dataSource에서 해당카테고리를 제외한 데이터를 만든다.
-        //             // 위에 두개의 데이터를 합친다
-        //             // 정렬을 다시한다
-        //             // 끝
-        //             console.log(newArr);
-        //           } else {
-        //             const newCate = [...foldedCategory, _record.mybookcate_id];
-        //             setFoldedCatgegory(newCate);
-        //             const booksIdsInThisCate = dataSource
-        //               .filter((_book) => _book.mybookcate_id == _record.mybookcate_id && _book.seq_in_category !== 0)
-        //               .map((book) => book._id);
-        //             const newDataSso = dataSource.filter((book) => !booksIdsInThisCate.includes(book._id));
-
-        //             setDataSource(newDataSso);
-        //           }
-        //         }}
-        //       >
-        //         <CaretDownOutlined rotate={foldedCategory.includes(_record.mybookcate_id) ? 270 : 0} />
-        //         {_txt}
-        //       </div>
-        //     </>
-        //   ),
-        //   props: {},
-        // };
-        // if (foldedCategory.includes(_record.mybookcate_id)) {
-        //   obj.props.rowSpan = 1;
-        // } else if (_record.seq_in_category === 0) {
-        //   obj.props.rowSpan = _record.cateLength;
-        // } else {
-        //   obj.props.rowSpan = 0;
-        // }
-
-        // return obj;
-      },
+      render: (txt, record) => (record.seq_in_category == 0 ? txt : null),
     },
     {
       title: '책 제목',
@@ -123,14 +82,30 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
 
   return (
     <Table
-      dataSource={dataSource.length > 0 ? dataSource : undefined}
+      dataSource={newArry}
       columns={columns}
       size="small"
+      rowKey={(record) => record._id}
       pagination={false}
       // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
       // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
-      rowClassName={(record, index) => (record.cateLength - record.seq_in_category - 1 == 0 ? 'lastBook' : 'Books')}
-      rowSelection={{ order: 2 }}
+      rowClassName={(record, index) =>
+        !expandedRowKeys.includes(record._id) && record.seq_in_category === 0 ? 'foldedCategory' : record.lastChild ? 'lastBook' : 'Books'
+      }
+      rowSelection={{}}
+      expandable={{
+        expandedRowKeys,
+        indentSize: 0,
+        expandedRowClassName: (record, index, indent) => '',
+        onExpand: (ex, re) => {
+          if (!ex) {
+            setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re._id));
+          }
+          if (ex) {
+            setExpandedRowKeys([...expandedRowKeys, re._id]);
+          }
+        },
+      }}
     />
   );
 };

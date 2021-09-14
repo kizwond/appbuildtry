@@ -51,7 +51,7 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
         onClick={() => {
           positionBooks('down', _record._id);
         }}
-        disabled={_record.seq_in_category + 1 === _record.cateLength}
+        disabled={_record.lastChild}
         size="small"
         shape="circle"
       >

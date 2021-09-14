@@ -1,75 +1,99 @@
-import React, { Component } from 'react';
-import { Modal,Button } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
-import axios from 'axios'
+import React, { Component, useState } from "react";
+import { Modal, Button } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { UploadExcelFile } from "../../../../../graphql/query/excelUpload";
+import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 
-class ImportModal extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { 
-            visiable:false,
-            file:''
-         }
-    }
+const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId }) => {
+  const [file, setFile] = useState(null);
+  const [visiable, setVisiable] = useState(null);
+  const [cardset_inspectExcelFileToImport, { loading }] = useMutation(UploadExcelFile, { onCompleted: showdata });
 
-    showModal = () => {
-        this.setState({
-            visiable:true
-        })
-    };
-    
-    handleOk = () => {
-        this.setState({
-            visiable:false
-        })
-    };
-    
-    handleCancel = () => {
-        this.setState({
-            visiable:false
-        })
-    };
-    uplodeFile = event =>{
-        const mybook_id = localStorage.getItem("book_id")
-        console.log(this.state.file)
-        const data = new FormData();
-        data.append("file", this.state.file)
-        data.append("mybook_id", mybook_id)
-        data.append("index_id", this.props.indexChanged)
-        data.append("cardset_id", this.props.cardSetId)
-        data.append("indexset_id", this.props.indexSetId)
-        console.log(mybook_id)
-        console.log(this.props.indexChanged)
-        console.log(this.props.cardSetId)
-        console.log(this.props.indexSetId)
-        console.log(data)
-        axios.post('/api/cardset_inspectExcelFileToImport', data)
-          .then(res => {alert(res.data.msg); 
-            this.setState({
-            file:''
-          })})
-          .catch(err => console.log(err))
-      }
-    render() { 
-        return ( 
-            <>
-            <Button type="default" size="small" onClick={this.showModal}>
-                import <DownloadOutlined />
-            </Button>
-            <Modal footer={null} title="Basic Modal" width={800} visible={this.state.visiable} onOk={this.handleOk} onCancel={this.handleCancel}>
-                <form action="#">
-                    <input type="file" name="import_file" onChange={(event)=>{
-                    const file = event.target.files[0];
-                        this.setState({
-                            file:file
-                        })
-                    }}/>
-                </form>
-              <Button size='small' onClick={this.uplodeFile}>파일업로드</Button>
-            </Modal>
-          </>
-         );
+  const showModal = () => {
+    setVisiable(true);
+  };
+
+  const handleOk = () => {
+    setVisiable(false);
+  };
+
+  const handleCancel = () => {
+    setVisiable(false);
+  };
+
+  function showdata(data) {
+    console.log("response after file upload :", data);
+  }
+
+  async function uploadfile(data, mybook_id, indexChanged, cardSetId, indexSetId) {
+    console.log(file);
+    try {
+      await cardset_inspectExcelFileToImport({
+        variables:{
+          forInspectExcelFile: {
+            mybook_id: mybook_id,
+            indexset_id: indexSetId,
+            index_id: indexChanged,
+            cardset_id: cardSetId,
+            file: file,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
     }
-}
- 
+  }
+
+  const uplodeFile = (event) => {
+    const mybook_id = localStorage.getItem("book_id");
+    console.log(file);
+    const data = new FormData();
+    data.append("0", file);
+    data.append("mybook_id", mybook_id);
+    // data.append("index_id", indexChanged);
+    // data.append("cardset_id", cardSetId);
+    // data.append("indexset_id", indexSetId);
+    console.log(mybook_id);
+    console.log(indexChanged);
+    console.log(cardSetId);
+    console.log(indexSetId);
+    console.log(data);
+    uploadfile(data, mybook_id, indexChanged, cardSetId, indexSetId);
+
+    // axios
+    //   .post("/api/cardset_inspectExcelFileToImport", data)
+    //   .then((res) => {
+    //     alert(res.data.msg);
+    //     this.setState({
+    //       file: "",
+    //     });
+    //   })
+    //   .catch((err) => console.log(err));
+  };
+
+  return (
+    <>
+      <Button type="default" size="small" onClick={showModal}>
+        import <DownloadOutlined />
+      </Button>
+      <Modal footer={null} title="Basic Modal" width={800} visible={visiable} onOk={handleOk} onCancel={handleCancel}>
+        <form action="#">
+          <input
+            type="file"
+            name="map"
+            onChange={(event) => {
+              const file = event.target.files[0];
+              setFile(file);
+            }}
+          />
+        </form>
+        <Button size="small" onClick={uplodeFile}>
+          파일업로드
+        </Button>
+      </Modal>
+    </>
+  );
+};
+
 export default ImportModal;

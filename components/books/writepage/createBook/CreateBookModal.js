@@ -3,16 +3,18 @@ import { CREATE_MY_BOOK } from '../../../../graphql/query/writePage';
 import { Modal, Form, Input, Select } from 'antd';
 import { memo } from 'react';
 
-const CreateBookModal = ({ category, visible, onToggleVisible }) => {
+const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }) => {
   const [form] = Form.useForm();
   const { resetFields } = form;
 
-  const [mybook_create, { data, loading, error }] = useMutation(
-    CREATE_MY_BOOK,
-    {
-      onCompleted: (_data) => console.log('receivedData', _data),
-    }
-  );
+  const [mybook_create, { data, loading, error }] = useMutation(CREATE_MY_BOOK, {
+    onCompleted: (_data) => {
+      if (_data.mybook_create.msg == '책 생성 성공적!') {
+        handleToGetMyBook(_data.mybook_create.mybooks);
+        console.log('receivedData', _data);
+      }
+    },
+  });
 
   const onCompleted = () => {};
 
@@ -37,27 +39,25 @@ const CreateBookModal = ({ category, visible, onToggleVisible }) => {
         visible={visible}
         title="새 책 만들기"
         cancelText="취소"
-        onCancel={() => onToggleVisible(false)}
+        onCancel={() => changeVisible(false)}
         okButtonProps={{
           form: 'category-editor-form',
           key: 'submit',
           htmlType: 'submit',
         }}
-        // mask={false} // 모달 바깥 전체화면 덮기 기능
+        mask={false} // 모달 바깥 전체화면 덮기 기능
         okText="새 책 만들기 완료"
         confirmLoading={loading}
       >
         <Form
           form={form}
           id="category-editor-form"
-          scrollToFirstError={true}
+          requiredMark={false}
           initialValues={{
-            category: category.filter(
-              (cate) => cate.mybookcate_info.name === '(미지정)'
-            )[0]._id,
+            category: category.filter((cate) => cate.mybookcate_info.name === '(미지정)')[0]._id,
           }}
           onFinish={(values) => {
-            onToggleVisible(false);
+            changeVisible(false);
             postNewMyBook(values.book_title, values.category);
             resetFields();
           }}

@@ -5,7 +5,7 @@ import FloatingMenu from "./sidemenu/FloatingMenu";
 import { Input, Form, Button } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
 
-const WriteContainer = ({ indexChanged }) => {
+const WriteContainer = ({ indexChanged, indexSetId }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
@@ -132,6 +132,7 @@ const WriteContainer = ({ indexChanged }) => {
 
   const onFinish = (values) => {
     console.log(values);
+    const mybook_id = localStorage.getItem("book_id")
 
     const face1_contents_temp = [];
     for (var i = 0; i < 5; i++) {
@@ -155,7 +156,7 @@ const WriteContainer = ({ indexChanged }) => {
     }
     const cardtype = cardTypeInfos.cardtype;
     const cardtype_id = cardTypes[0]._id;
-    addcard(cardtype, cardtype_id,current_position_card_id, face1_contents, face2_contents);
+    addcard(mybook_id,cardtype, cardtype_id,current_position_card_id, face1_contents, face2_contents);
   };
 
   const [cardset_addcard] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
@@ -179,7 +180,7 @@ const WriteContainer = ({ indexChanged }) => {
   //   }
   // }, [data1, indexChanged]);
 
-  async function addcard(cardtype, cardtype_id,current_position_card_id, face1_contents, face2_contents) {
+  async function addcard(mybook_id, cardtype, cardtype_id,current_position_card_id, face1_contents, face2_contents) {
     try {
       await cardset_addcard({
         variables: {
@@ -187,6 +188,7 @@ const WriteContainer = ({ indexChanged }) => {
             cardset_id: cardSetId,
             current_position_card_id: current_position_card_id,
             card_info: {
+              mybook_id:mybook_id,
               cardtypeset_id: cardTypeSetId,
               cardtype_id,
               cardtype,
@@ -252,7 +254,7 @@ const WriteContainer = ({ indexChanged }) => {
   }
   return (
     <div className="editor_panel" id="editor_panel" style={{ ...a4Page, position: "relative" }}>
-      <FloatingMenu cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} />
+      <FloatingMenu cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId}/>
       <div className="a4">
         {contents}
         <h1>selected index id : {first_index}</h1>

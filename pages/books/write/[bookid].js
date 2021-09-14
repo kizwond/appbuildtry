@@ -23,6 +23,7 @@ const Book = () => {
   } 
   
   const [indexChanged, setIndexChanged] = useState()
+  const [indexSetId, setIndexSetId] = useState()
   const { loading, error, data } = useQuery(GetIndex, {
     variables: { mybook_id: book_id },
   });
@@ -33,8 +34,11 @@ const Book = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data)
       localStorage.removeItem("first_index")
       localStorage.setItem("first_index", data.indexset_getbymybookid.indexsets[0].indexes[0]._id)
+      setIndexChanged(data.indexset_getbymybookid.indexsets[0].indexes[0]._id)
+      setIndexSetId(data.indexset_getbymybookid.indexsets[0]._id)
     }
   }, [data,indexChanged]);
   
@@ -42,7 +46,7 @@ const Book = () => {
     <Layout>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <LeftDrawer index_changed={index_changed} indexChanged={indexChanged} book_id={book_id} />
-        <WriteContainer indexChanged={indexChanged} book_id={book_id} />
+        <WriteContainer indexChanged={indexChanged} indexSetId={indexSetId}/>
         <RightDrawer book_id={book_id} />
       </div>
     </Layout>

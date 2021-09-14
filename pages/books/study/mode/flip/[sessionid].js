@@ -39,7 +39,7 @@ const FlipMode = () => {
   }
 
   console.log('here');
-  console.log(window);
+
   return (
     <Layout>
       <CardContainer

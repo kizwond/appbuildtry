@@ -1,64 +1,104 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { Component, useState, useEffect, useCallback, useRef } from "react";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { GetContents } from "../../../../../graphql/query/getContents";
 import { GetLevelConfig, UpdateResults } from "../../../../../graphql/query/session";
 import Timer from "./Timer";
 
-const CardContainer = ({ cardListStudying, sessionScope }) => {
-  //timer related
-  const [timer, setTimer] = useState(0);
-  const [timerTotal, setTimerTotal] = useState(0);
-
-  const [isActive, setIsActive] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const [isActiveTotal, setIsActiveTotal] = useState(false);
-  const [isPausedTotal, setIsPausedTotal] = useState(false);
-
-  const increment = useRef(null);
-  const incrementTotal = useRef(null);
-
-  const handleStart = useCallback(async () => {
-    setIsActive(true);
-    setIsPaused(true);
-    increment.current = setInterval(() => {
-      setTimer((timer) => timer + 1);
-    }, 1000);
-    incrementTotal.current = setInterval(() => {
-      setTimerTotal((timerTotal) => timerTotal + 1);
-    }, 1000);
-  }, []);
-
-  const handlePause = useCallback(async () => {
-    clearInterval(increment.current);
-    clearInterval(incrementTotal.current);
-    setIsPaused(false);
-  }, []);
-
-  const handleResume = useCallback(async () => {
-    setIsPaused(true);
-    handleStart();
-  }, [handleStart]);
-
-  const formatTime = () => {
-    const getSeconds = `0${timer % 60}`.slice(-2);
-    const minutes = `${Math.floor(timer / 60)}`;
-    const getMinutes = `0${minutes % 60}`.slice(-2);
-    const getHours = `0${Math.floor(timer / 3600)}`.slice(-2);
-
-    return `${getHours} : ${getMinutes} : ${getSeconds}`;
+class Container extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      time: 0,
+      start: 0,
+      time_total: 0,
+      isOn_total: false,
+      start_total: 0,
+      average_completed: 0,
+      clickCount: 0,
+      flag: "white",
+      pageStatus: "normal",
+      cardlist_studying: [],
+      contents: [],
+      backContents: [],
+      contentsList: [],
+      getKnowTime: "",
+      confirmOn: "ask",
+    };
+    this.keyCount = 0;
+    this.getKey = this.getKey.bind(this);
+  }
+  getKey() {
+    return this.keyCount++;
+  }
+  startTimer = () => {
+    this.setState({
+      isOn: true,
+      time: this.state.time,
+      start: Date.now() - this.state.time,
+    });
+    this.timer = setInterval(
+      () =>
+        this.setState({
+          time: Date.now() - this.state.start,
+        }),
+      1
+    );
   };
 
-  const formatTimeTotal = () => {
-    const getSeconds = `0${timerTotal % 60}`.slice(-2);
-    const minutes = `${Math.floor(timerTotal / 60)}`;
-    const getMinutes = `0${minutes % 60}`.slice(-2);
-    const getHours = `0${Math.floor(timerTotal / 3600)}`.slice(-2);
-
-    return `${getHours} : ${getMinutes} : ${getSeconds}`;
+  startTimerTotal = () => {
+    this.setState({
+      isOn_total: true,
+      time_total: this.state.time_total,
+      start_total: Date.now() - this.state.time_total,
+    });
+    this.timer_total = setInterval(
+      () =>
+        this.setState({
+          time_total: Date.now() - this.state.start_total,
+        }),
+      1
+    );
   };
-  //timer related END!!!
+  stopTimerTotal = () => {
+    this.setState({ isOn_total: false });
+    clearInterval(this.timer_total);
+    clearInterval(this.timer);
+  };
 
+  startTimerResume = () => {
+    this.startTimer();
+    this.startTimerTotal();
+  };
+
+  resetTimer = () => {
+    this.setState({ time: 0, start: 0 }, function () {
+      this.startTimer();
+      this.startTimerTotal();
+    });
+  };
+
+  render() {
+    return (
+      <>
+        <Timer
+          startTimer={this.startTimer}
+          startTimerTotal={this.startTimerTotal}
+          stopTimerTotal={this.stopTimerTotal}
+          startTimerResume={this.startTimerResume}
+          time={this.state.time}
+          isOn={this.state.isOn}
+          start={this.state.start}
+          time_total={this.state.time_total}
+          isOn_total={this.state.isOn_total}
+          start_total={this.state.start_total}
+        />
+        <CardContainer timer={this.state.time} cardListStudying={this.props.cardListStudying} sessionScope={this.props.sessionScope} />
+      </>
+    );
+  }
+}
+
+const CardContainer = ({ timer, cardListStudying, sessionScope }) => {
   const [cards, setCards] = useState();
   const [levelconfigs, setLevelconfigs] = useState();
   const [diffis, setDiffis] = useState();
@@ -111,8 +151,6 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
   const cardShow = useCallback(async () => {
     if (cards) {
       const card_seq = sessionStorage.getItem("card_seq");
-      console.log(card_seq);
-      console.log(cards);
       const current_card = cards[card_seq];
 
       const face1 = current_card.face1.map((item) => (
@@ -132,12 +170,8 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
     }
     if (levelconfigs) {
       const card_seq = sessionStorage.getItem("card_seq");
-      console.log("sssssssssssssssssssssss", cards);
       const current_card_book_id = cardListStudying[card_seq].card_info.mybook_id;
       const current_card_id = cardListStudying[card_seq].contents.mycontents_id;
-      console.log("current_card_book_id------------->", current_card_book_id);
-      console.log("levelconfigs", levelconfigs);
-      console.log(levelconfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id));
       const current_card_levelconfig = levelconfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
       const levelconfig_option = current_card_levelconfig[0].restudy.option;
       const diffi1 = levelconfig_option.diffi1;
@@ -147,26 +181,25 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
       const diffi5 = levelconfig_option.diffi5;
       const diffi = [];
       diffi.push(diffi1, diffi2, diffi3, diffi4, diffi5);
-      console.log("diffi", diffi);
       const useDiffi = diffi.filter((item) => item.on_off === "on");
-      console.log(useDiffi);
       const diffiButtons = useDiffi.map((item) => (
         <>
-          <button onClick={() => onDiffClickHandler(item.period, item.name, current_card_id)}>{item.nick}</button>
+          <button onClick={() => onDiffClickHandler(item.period, item.name, current_card_id, timer)}>{item.nick}</button>
         </>
       ));
       setDiffis(diffiButtons);
     }
-  }, [cards, levelconfigs, cardListStudying, onDiffClickHandler]);
+  }, [cards, levelconfigs, cardListStudying, onDiffClickHandler,timer]);
 
   const milliseconds = (h, m, s) => (h * 60 * 60 + m * 60 + s) * 1000;
 
   const onDiffClickHandler = useCallback(
-    async (interval, diffi, current_card_id) => {
+    async (interval, diffi, current_card_id,timer) => {
       if (diffi === "diffi5") {
-        handlePause()
-        sessionKnowHandler(interval, diffi, current_card_id);
+        console.log(timer);
+        sessionKnowHandler(interval, diffi, current_card_id,timer);
       } else {
+        console.log(timer)
         const now = new Date();
         const now_mili_convert = Date.parse(now);
         const result = milliseconds(0, interval, 0);
@@ -259,14 +292,14 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
           console.log(card_details_session.length - 1, "======", Number(card_seq));
           console.log("아직 안끝");
           cardShow();
-          setTimer(0);
+          // setTimer(0);
         }
       }
     },
-    [cardShow, timer]
+    [cardShow,finishStudy,sessionKnowHandler]
   );
 
-  const finishStudy = async () => {
+  const finishStudy = useCallback(async () => {
     alert("학습할 카드가 없습니다. 학습결과 화면으로 이동합니다.");
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
     if (cardlist_to_send) {
@@ -292,14 +325,11 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
     } else {
       console.log("공부끝");
     }
-  };
+  },[sessionupdateresults]);
+
   useEffect(() => {
     cardShow();
   }, [cardShow]);
-
-  useEffect(() => {
-    handleStart();
-  }, [handleStart]);
 
   const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataposition });
 
@@ -307,7 +337,7 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
     console.log("data", data);
   }
 
-  async function sessionupdateresults(cardlist_to_send, sessionId) {
+  const sessionupdateresults = useCallback(async(cardlist_to_send, sessionId) => {
     try {
       await session_updateResults({
         variables: {
@@ -320,7 +350,7 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
     } catch (error) {
       console.log(error);
     }
-  }
+  },[session_updateResults])
 
   const updateResults = () => {
     console.log("update results fired!!");
@@ -328,9 +358,14 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
     // sessionupdateresults(result);
   };
 
-  const sessionKnowHandler = (interval, diffi, current_card_id) => {
+  const sessionKnowHandler = useCallback((interval, diffi, current_card_id,timer) => {
     console.log("diffi5 clicked!!!");
-    console.log("timer:",timer)
+    console.log("timer:", timer);
+    if(timer > 10000){
+      timer = timer / 1000
+    } else {
+      timer = 10000 / 1000
+    }
     const now = new Date();
     const now_mili_convert = Date.parse(now);
     // const result = milliseconds(0, interval, 0);
@@ -341,23 +376,20 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
     sessionStorage.setItem("card_seq", Number(card_seq) + 1);
     const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
     console.log("card_details_session", card_details_session);
-    
 
     const current_card_info_index = card_details_session.findIndex((item) => item.contents.mycontents_id === current_card_id);
     console.log(current_card_info_index);
 
-
     const current_card_book_id = card_details_session[current_card_info_index].card_info.mybook_id;
     const current_card_levelconfig = levelconfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
-
 
     card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime =
       (now_mili_convert - Date.parse(card_details_session[current_card_info_index].studyStatus.recentKnowTime)) / 1000;
     card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour + timer;
     card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
 
-    if(card_details_session[current_card_info_index].studyStatus.recentKnowTime === null){
-      //첫 know 처리 
+    if (card_details_session[current_card_info_index].studyStatus.recentKnowTime === null) {
+      //첫 know 처리
       const a_r = -0.275;
       const b_r = 1.1242;
       const n_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes;
@@ -366,18 +398,18 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
       const s = current_card_levelconfig[0].restudy.levelchangeSensitivity;
       const l_prev = card_details_session[current_card_info_index].studyStatus.levelCurrent;
       const r_restudy = current_card_levelconfig[0].restudy.restudyRatio;
-      const r_0 = a_r*Math.log(n_s * Math.log(h_s)) + b_r;
+      const r_0 = a_r * Math.log(n_s * Math.log(h_s)) + b_r;
       const w_firstknow = 20;
-      const t_now =  Date.parse(now)/1000;
+      const t_now = Date.parse(now) / 1000;
       // const l_theo = Math.log((Math.log(0.8) * h_e) / (5400 * Math.log(r_0))) / Math.log(2) + 1;
-      console.log(timer, n_s, h_s)
-      var l_apply = s*w_firstknow*(1/(n_s*Math.log(h_s)))
+      console.log(timer, n_s, h_s);
+      var l_apply = s * w_firstknow * (1 / (n_s * Math.log(h_s)));
       var t_next = t_now + ((5400 * Math.pow(2, l_apply - 1)) / Math.log(0.8)) * Math.log(r_restudy);
-      var t_next_to_date = new Date(t_next*1000);
-      console.log(l_apply)
-      console.log("첫 know 처리 ",t_next_to_date);
-      //첫 know 처리 
-    } else{
+      var t_next_to_date = new Date(t_next * 1000);
+      console.log(l_apply);
+      console.log("첫 know 처리 ", t_next_to_date);
+      //첫 know 처리
+    } else {
       //복습주기 로직
       const a_r = -0.275;
       const b_r = 1.1242;
@@ -387,20 +419,18 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
       const s = current_card_levelconfig[0].restudy.levelchangeSensitivity;
       const l_prev = card_details_session[current_card_info_index].studyStatus.levelCurrent;
       const r_restudy = current_card_levelconfig[0].restudy.restudyRatio;
-      const t_now =  Date.parse(now)/1000;
-      const r_0 = a_r*Math.log(n_s * Math.log(h_s)) + b_r;
+      const t_now = Date.parse(now) / 1000;
+      const r_0 = a_r * Math.log(n_s * Math.log(h_s)) + b_r;
       const l_theo = Math.log((Math.log(0.8) * h_e) / (5400 * Math.log(r_0))) / Math.log(2) + 1;
-      var l_apply = l_prev + s*(l_theo - l_prev);
+      var l_apply = l_prev + s * (l_theo - l_prev);
       var t_next = t_now + ((5400 * Math.pow(2, l_apply - 1)) / Math.log(0.8)) * Math.log(r_restudy);
-      console.log("복습주기 로직",t_next);
+      console.log("복습주기 로직", t_next);
       //복습주기 로직
     }
-    
-
 
     card_details_session[current_card_info_index].studyStatus.levelOriginal = card_details_session[current_card_info_index].studyStatus.levelCurrent;
     card_details_session[current_card_info_index].studyStatus.levelCurrent = l_apply;
-    card_details_session[current_card_info_index].studyStatus.needStudyTime = new Date(t_next*1000);
+    card_details_session[current_card_info_index].studyStatus.needStudyTime = new Date(t_next * 1000);
     // card_details_session[current_card_info_index].studyStatus.recentExamResult =
     // card_details_session[current_card_info_index].studyStatus.recentExamTime =
     card_details_session[current_card_info_index].studyStatus.recentKnowTime = now;
@@ -433,23 +463,14 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
     console.log("cardlist_to_send", cardlist_to_send);
     //업데이트된 학습정보 세션스토리지에 다시 저장
-    card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = null
-    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null
-    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 0
+    card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = null;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 0;
     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
-  };
+  },[levelconfigs]);
 
   return (
     <>
-      <Timer
-        isActive={isActive}
-        isPaused={isPaused}
-        formatTime={formatTime}
-        formatTimeTotal={formatTimeTotal}
-        handleStart={handleStart}
-        handlePause={handlePause}
-        handleResume={handleResume}
-      />
       <div style={{ marginTop: "50px", margin: "auto", width: "600px", height: "500px", border: "1px solid grey" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
           <div style={{ display: "flex", flexDirection: "column", height: "80%", alignItems: "center", justifyContent: "center" }}>
@@ -463,4 +484,4 @@ const CardContainer = ({ cardListStudying, sessionScope }) => {
   );
 };
 
-export default CardContainer;
+export default Container;

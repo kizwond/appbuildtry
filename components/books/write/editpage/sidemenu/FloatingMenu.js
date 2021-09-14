@@ -1,3 +1,5 @@
+import ImportModal from "../import/ImportModal";
+
 const FloatingMenu = ({ cardTypes, cardTypeInfo }) => {
   if (cardTypes) {
     var cardTypeList = cardTypes.map((cardType) => {
@@ -42,6 +44,7 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo }) => {
       >
           {cardTypeList}
       </ul>
+      <ImportModal />
     </div>
   );
 };

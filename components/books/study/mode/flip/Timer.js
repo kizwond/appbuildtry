@@ -1,92 +1,45 @@
-import React, { useState, useRef } from 'react';
+import React, { Component } from 'react';
+import {Button} from "antd"
+// import ms from "pretty-ms"
+const ms = require('pretty-ms')
 
-const Timer = ({formatTime, formatTimeTotal, handleStart, handlePause, handleResume,isActive,isPaused}) => {
-//   const [timer, setTimer] = useState(0)
-//   const [timerTotal, setTimerTotal] = useState(0)
+class Timer extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      
+    }
+  }
 
-//   const [isActive, setIsActive] = useState(false)
-//   const [isPaused, setIsPaused] = useState(false)
+  componentDidMount(){
+    this.props.startTimer()
+    this.props.startTimerTotal()
+  }
+  
+  render() {
 
-//   const [isActiveTotal, setIsActiveTotal] = useState(false)
-//   const [isPausedTotal, setIsPausedTotal] = useState(false)
+    let stop_total = (this.props.time_total  === 0 || !this.props.isOn_total ) ?
+      null :
+      <Button onClick={this.props.stopTimerTotal} type="primary" danger style={{ width:"80px", borderRadius:"10px"}}>일시정지</Button>
 
-//   const increment = useRef(null)
-//   const incrementTotal = useRef(null)
+    let resume_total = (this.props.time_total  === 0 || this.props.isOn_total ) ?
+      null :
+      <Button onClick={this.props.startTimerResume} type="primary" style={{ width:"80px", borderRadius:"10px", backgroundColor:"#1ce400", border:"none"}}>재개</Button>
 
-//   const handleStart = () => {
-//     setIsActive(true)
-//     setIsPaused(true)
-//     increment.current = setInterval(() => {
-//       setTimer((timer) => timer + 1)
-//     }, 1000)
-//     incrementTotal.current = setInterval(() => {
-//         setTimerTotal((timer) => timer + 1)
-//     }, 1000)
-//   }
-
-//   const handlePause = () => {
-//       console.log(timer)
-//       console.log(timerTotal)
-//     clearInterval(increment.current)
-//     clearInterval(incrementTotal.current)
-//     setIsPaused(false)
-//   }
-
-//   const handleResume = () => {
-//     setIsPaused(true)
-//     increment.current = setInterval(() => {
-//       setTimer((timer) => timer + 1)
-//     }, 1000)
-//     increment.current = setInterval(() => {
-//         setTimerTotal((timer) => timer + 1)
-//     }, 1000)
-//   }
-
-//   const handleReset = () => {
-//     clearInterval(increment.current)
-//     setIsActive(false)
-//     setIsPaused(false)
-//     setTimer(0)
-//   }
-
-//   const formatTime = () => {
-//     const getSeconds = `0${(timer % 60)}`.slice(-2)
-//     const minutes = `${Math.floor(timer / 60)}`
-//     const getMinutes = `0${minutes % 60}`.slice(-2)
-//     const getHours = `0${Math.floor(timer / 3600)}`.slice(-2)
-
-//     return `${getHours} : ${getMinutes} : ${getSeconds}`
-//   }
-
-//   const formatTimeTotal = () => {
-//     const getSeconds = `0${(timerTotal % 60)}`.slice(-2)
-//     const minutes = `${Math.floor(timerTotal / 60)}`
-//     const getMinutes = `0${minutes % 60}`.slice(-2)
-//     const getHours = `0${Math.floor(timerTotal / 3600)}`.slice(-2)
-
-//     return `${getHours} : ${getMinutes} : ${getSeconds}`
-//   }
-
-  return (
-    <div className="app">
-      <h3>React Stopwatch</h3>
-      <div className='stopwatch-card'>
-        <p>해당카드학습시간 : {formatTime()}</p>
-        <p>전체학습시간 : {formatTimeTotal()}</p>
-        <div className='buttons'>
-          {
-            !isActive && !isPaused ?
-              <button onClick={handleStart}>Start</button>
-              : (
-                isPaused ? <button onClick={handlePause}>Pause</button> :
-                  <button onClick={handleResume}>Resume</button>
-              )
-          }
-          {/* <button onClick={handleReset} disabled={!isActive}>Reset</button> */}
+    return(
+      <>
+        <div style={{display:"flex", flexDirection:"column",justifyContent:"space-between"}}>
+          <div style={{marginBottom:"0px"}}>현재카드 학습시간</div>
+          <h3 style={{width:'100px',fontFamily: 'Mina, sans-serif',fontSize:"20px"}}>{ms(this.props.time,{compact: true, colonNotation: true})}</h3>
         </div>
-      </div>
-    </div>
-  );
+        <div style={{display:"flex", flexDirection:"column",justifyContent:"space-between"}}>
+          <div style={{marginBottom:"0px"}}>총 경과시간</div>
+          <h3 style={{width:'100px',fontFamily: 'Mina, sans-serif',fontSize:"20px"}}>{ms(this.props.time_total ,{compact: true, colonNotation: true})}</h3>
+        </div>
+        {stop_total}
+        {resume_total}
+      </>
+    )
+  }
 }
-
-export default Timer;
+export default Timer

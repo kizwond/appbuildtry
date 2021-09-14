@@ -3,7 +3,7 @@ import '../styles/globals.css';
 import { useState, useEffect } from 'react';
 import wrapper from '../redux/store/configureStore';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink, gql } from "@apollo/client";
-
+import { createUploadLink } from 'apollo-upload-client'
 import { useUserAgent } from "next-useragent";
 
 import { useWindowSize } from "react-use";
@@ -31,7 +31,7 @@ const App = ({ Component, pageProps }) => {
   console.log(from)
  
   
-  const link = createHttpLink({
+  const link = createUploadLink({
     uri: "http://localhost:5000/graphql",
     credentials: "include",
     headers: { from:from,

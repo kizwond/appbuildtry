@@ -39,9 +39,11 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
     <>
       <Button
         onClick={() => {
+          console.log(_record);
+
           positionBooks('up', _record._id);
         }}
-        disabled={_record.seq_in_category === 0}
+        disabled={_record.relationship === 'parent'}
         size="small"
         shape="circle"
       >
@@ -49,9 +51,11 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
       </Button>
       <Button
         onClick={() => {
+          console.log(_record);
+
           positionBooks('down', _record._id);
         }}
-        disabled={_record.lastChild}
+        disabled={_record.markedShowLastChild}
         size="small"
         shape="circle"
       >

@@ -90,14 +90,6 @@ const StyledSpace = styled(Space)`
   }
 `;
 const StyledCol = styled(Col)`
-  & .ant-table.ant-table-small .ant-table-title,
-  .ant-table.ant-table-small .ant-table-footer,
-  .ant-table.ant-table-small .ant-table-thead > tr > th,
-  .ant-table.ant-table-small .ant-table-tbody > tr > td,
-  .ant-table.ant-table-small tfoot > tr > th,
-  .ant-table.ant-table-small tfoot > tr > td {
-    vertical-align: top;
-  }
   & .Books > .categoryCol {
     border: none;
     border-right: 1px solid #f0f0f0;
@@ -109,7 +101,5 @@ const StyledCol = styled(Col)`
   }
   & .foldedCategory {
     border-bottom: 1px solid #f0f0f0;
-    border-left: 1px solid #f0f0f0;
-    border-right: 1px solid #f0f0f0;
   }
 `;

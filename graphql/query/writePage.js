@@ -19,6 +19,19 @@ export const GET_CATEGORY_AND_BOOKS_INFO = gql`
       msg
       mybooks {
         _id
+        stats {
+          recent {
+            timeStudy
+            timeModify
+          }
+          numCards {
+            total
+            read
+            flip
+          }
+          progress
+          numSession
+        }
         mybook_info {
           title
           type
@@ -43,6 +56,19 @@ export const GET_MY_BOOKS_INFO = gql`
       msg
       mybooks {
         _id
+        stats {
+          recent {
+            timeStudy
+            timeModify
+          }
+          numCards {
+            total
+            read
+            flip
+          }
+          progress
+          numSession
+        }
         mybook_info {
           title
           type
@@ -67,6 +93,19 @@ export const CREATE_MY_BOOK = gql`
       msg
       mybooks {
         _id
+        stats {
+          recent {
+            timeStudy
+            timeModify
+          }
+          numCards {
+            total
+            read
+            flip
+          }
+          progress
+          numSession
+        }
         mybook_info {
           title
           type
@@ -91,6 +130,19 @@ export const UPDATE_BOOK_TITLE_AND_HIDE = gql`
       msg
       mybooks {
         _id
+        stats {
+          recent {
+            timeStudy
+            timeModify
+          }
+          numCards {
+            total
+            read
+            flip
+          }
+          progress
+          numSession
+        }
         mybook_info {
           title
           type
@@ -115,6 +167,19 @@ export const CHANGE_POSITION_OF_BOOK = gql`
       msg
       mybooks {
         _id
+        stats {
+          recent {
+            timeStudy
+            timeModify
+          }
+          numCards {
+            total
+            read
+            flip
+          }
+          progress
+          numSession
+        }
         mybook_info {
           title
           type

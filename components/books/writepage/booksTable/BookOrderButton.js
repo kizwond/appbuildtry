@@ -43,7 +43,7 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
 
           positionBooks('up', _record._id);
         }}
-        disabled={_record.firstChild}
+        disabled={_record.relationship === 'parent'}
         size="small"
         shape="circle"
       >

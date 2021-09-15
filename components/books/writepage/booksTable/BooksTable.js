@@ -10,21 +10,13 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState(false);
 
-
-
-
-
-
-
-
-
   const rowDataForFoldedCategory2 = category.map((_cate) => {
     const { name, seq } = _cate.mybookcate_info;
     const markedShowList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id && _book.mybook_info.hide_or_show == 'show');
     const markedHideList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id && _book.mybook_info.hide_or_show == 'hide');
 
     const showedList = isShowedHiddenBook ? [...markedShowList, ...markedHideList] : markedShowList;
-    const childrenBooks = showedList.filter((_, _index) => _index !== 0)
+    const childrenBooks = showedList.filter((_, _index) => _index !== 0);
     const children = childrenBooks.map((_book, _index) => ({
       ..._book.mybook_info,
       ..._book.stats.numCards,
@@ -34,114 +26,35 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       relationship: 'child',
       categoryOrder: seq,
       categoryName: name,
-      key: _book._id,
-      lastChild: !isShowedHiddenBook ? markedShowList.length === _index + 1 : showedList.length === _index + 1,
-      markedShowLastChild: markedShowList.length === _index + 1,
+      key: `KEY:${_cate._id}INDEX:${_index + 1}`,
+      _id: _book._id,
+      lastChild: !isShowedHiddenBook ? markedShowList.length === _index + 2 : showedList.length === _index + 2,
+      markedShowLastChild: markedShowList.length === _index + 2,
     }));
 
-    const parentBooks = showedList.filter((_, _index) => _index === 0)
-    const parent = parentBooks.length > 0 ? parentBooks.map((_book, _index) => ({
-      ..._book.mybook_info,
-      ..._book.stats.numCards,
-      ..._book.stats.recent,
-      numSession: _book.stats.numSession,
-      progress: _book.stats.progress,
-      relationship: 'parent',
-      categoryOrder: seq,
-      categoryName: name,
-      key: _book._id,
-      markedShowLastChild: markedShowList.length === _index + 1,
-      showedListLength: showedList.length,
-      children
-    })) : null;
+    const parentBooks = showedList.filter((_, _index) => _index === 0);
+    const parent =
+      parentBooks.length > 0
+        ? {
+            ...parentBooks[0].mybook_info,
+            ...parentBooks[0].stats.numCards,
+            ...parentBooks[0].stats.recent,
+            numSession: parentBooks[0].stats.numSession,
+            progress: parentBooks[0].stats.progress,
+            relationship: 'parent',
+            categoryOrder: seq,
+            categoryName: name,
+            key: `KEY:${_cate._id}INDEX:0`,
+            _id: parentBooks[0]._id,
+            showedListLength: showedList.length,
+            markedShowLastChild: children.length === 0,
+            children,
+          }
+        : null;
 
-    return parent
+    return parent;
   });
   const dataForFoldedCategory2 = rowDataForFoldedCategory2.filter((_cate) => _cate !== null);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const rowDataForFoldedCategory = category.map((_cate) => {
-    const { name, seq } = _cate.mybookcate_info;
-    const markedShowList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id && _book.mybook_info.hide_or_show == 'show');
-    const markedHideList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id && _book.mybook_info.hide_or_show == 'hide');
-
-    const showedList = isShowedHiddenBook ? [...markedShowList, ...markedHideList] : markedShowList;
-    const childrenBooks = showedList.map((_book, _index) => ({
-      ..._book.mybook_info,
-      ..._book.stats.numCards,
-      ..._book.stats.recent,
-      numSession: _book.stats.numSession,
-      progress: _book.stats.progress,
-      relationship: 'child',
-      categoryOrder: seq,
-      categoryName: name,
-      key: _book._id,
-      _id: _book._id,
-      firstChild: _index === 0,
-      lastChild: !isShowedHiddenBook ? markedShowList.length === _index + 1 : showedList.length === _index + 1,
-      markedShowLastChild: markedShowList.length === _index + 1,
-    }));
-
-    const dataSourceWithAllCategory = {
-      relationship: 'parent',
-      categoryOrder: seq,
-      categoryName: name,
-      key: _cate._id,
-      _id: _cate._id,
-      children: childrenBooks,
-    };
-    return dataSourceWithAllCategory
-  });
-  const dataForFoldedCategory = rowDataForFoldedCategory.filter((_cate) => _cate.children.length > 0);
-
-  useEffect(() => {
-    if (myBook.length > 0) {
-      setExpandedRowKeys(dataForFoldedCategory.map((_cate) => _cate._id));
-    }
-  }, [myBook]);
 
   const columns = [
     {
@@ -157,10 +70,10 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       dataIndex: 'title',
       render: (value, _record, index) => {
         const obj = {
-          children: value,
+          children: !expandedRowKeys.includes(_record.key) && _record.relationship === 'parent' ? `카테고리내  책 수량: ${_record.showedListLength}` : value,
           props: {},
         };
-        if (_record.relationship === 'parent') {
+        if (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') {
           obj.props.colSpan = columns.length - 1;
         } else {
           obj.props.colSpan = 1;
@@ -189,7 +102,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
             rowSpan: 1,
           },
         };
-        if (_record.relationship === 'parent') {
+        if (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') {
           obj.props.colSpan = 0;
         } else {
           obj.props.colSpan = 1;
@@ -204,7 +117,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
           children: _record.hide_or_show === 'hide' ? null : <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} />,
           props: {},
         };
-        if (_record.relationship === 'parent') {
+        if (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') {
           obj.props.colSpan = 0;
         } else {
           obj.props.colSpan = 1;
@@ -221,7 +134,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
           children: value,
           props: {},
         };
-        if (_record.relationship === 'parent') {
+        if (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') {
           obj.props.colSpan = 0;
         } else {
           obj.props.colSpan = 1;
@@ -250,7 +163,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
           children: <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />,
           props: {},
         };
-        if (_record.relationship === 'parent') {
+        if (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') {
           obj.props.colSpan = 0;
         } else {
           obj.props.colSpan = 1;
@@ -262,15 +175,15 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
 
   return (
     <Table
-      dataSource={isShowedHiddenBook ? dataForFoldedCategory : dataForFoldedCategory}
+      dataSource={dataForFoldedCategory2}
       columns={columns}
       size="small"
-      rowKey={(record) => record._id}
+      rowKey={(record) => record.key}
       pagination={false}
       // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
       // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
       rowClassName={(record, index) =>
-        !expandedRowKeys.includes(record._id) && record.relationship === 'parent' ? 'foldedCategory' : record.lastChild ? 'lastBook' : 'Books'
+        !expandedRowKeys.includes(record.key) && record.relationship === 'parent' ? 'foldedCategory' : record.lastChild ? 'lastBook' : 'Books'
       }
       rowSelection={{
         hideSelectAll: true,
@@ -285,10 +198,10 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         onExpand: (ex, re) => {
           console.log({ expandedRowKeys });
           if (!ex) {
-            setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re._id));
+            setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re.key));
           }
           if (ex) {
-            setExpandedRowKeys([...expandedRowKeys, re._id]);
+            setExpandedRowKeys([...expandedRowKeys, re.key]);
           }
         },
       }}

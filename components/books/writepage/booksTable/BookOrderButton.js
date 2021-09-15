@@ -43,7 +43,7 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
 
           positionBooks('up', _record._id);
         }}
-        disabled={_record.seq_in_category === 0}
+        disabled={_record.firstChild}
         size="small"
         shape="circle"
       >
@@ -55,7 +55,7 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
 
           positionBooks('down', _record._id);
         }}
-        disabled={_record.lastChild}
+        disabled={_record.markedShowLastChild}
         size="small"
         shape="circle"
       >

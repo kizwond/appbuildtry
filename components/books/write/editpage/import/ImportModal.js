@@ -2,7 +2,7 @@ import React, { Component, useState } from "react";
 import { Modal, Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { UploadExcelFile, ImportExcelFile } from "../../../../../graphql/query/excelUpload";
+import { UploadExcelFile, ImportExcelFile, CancelImport } from "../../../../../graphql/query/excelUpload";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import ResultTable from "./ResultTable";
 
@@ -15,7 +15,8 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
   const [inspectResultFlagError, setInspectResultFlagError] = useState();
 
   const [cardset_inspectExcelFileToImport, { loading, data }] = useMutation(UploadExcelFile, { onCompleted: showdata });
-  const [cardset_importExcelFile, { loading: loading2, data:data1 }] = useMutation(ImportExcelFile, { onCompleted: showdata2 });
+  const [cardset_importExcelFile, { loading: loading2, data:data2 }] = useMutation(ImportExcelFile, { onCompleted: showdata2 });
+  const [cardset_cancelImportExcelFile, { loading: loading3, data:data3 }] = useMutation(CancelImport, { onCompleted: showdata3 });
 
   const showModal = () => {
     setVisiable(true);
@@ -37,7 +38,7 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
     setInspectResultFlagError(data.cardset_inspectExcelFileToImport.inspectionResult.makerflagErr);
   }
 
-  async function uploadfile(mybook_id, indexChanged, cardSetId, indexSetId) {
+  async function uploadfile(mybook_id) {
     console.log(file);
     try {
       await cardset_inspectExcelFileToImport({
@@ -55,11 +56,11 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
 
   const uplodeFile = (event) => {
     const mybook_id = localStorage.getItem("book_id");
-    uploadfile(mybook_id, indexChanged, cardSetId, indexSetId);
+    uploadfile(mybook_id);
   };
 
-  function showdata2(data1) {
-    console.log("response after file upload :", data1);
+  function showdata2(data2) {
+    console.log("response after file upload :", data2);
     setFile('')
     setNewFileName(null)
     setInspectResultNormal('');
@@ -91,6 +92,35 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
     importfile(mybook_id, cardSetId);
   };
 
+
+
+  function showdata3(data3) {
+    console.log("cancel import :", data3);
+    setFile('')
+    setNewFileName(null)
+    setInspectResultNormal('');
+    setInspectResultTypeError('');
+    setInspectResultFlagError('');
+    alert("업로드 취소")
+    setVisiable(false)
+  }
+
+  async function cancelimport() {
+    try {
+      await cardset_cancelImportExcelFile({
+        variables: {
+          filename: newFileName
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const cancelImport = (event) => {
+    cancelimport();
+  };
+
   return (
     <>
       <Button type="default" size="small" onClick={showModal}>
@@ -114,6 +144,9 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
           <div>파일검토결과</div>
           <Button size="small" onClick={importFile}>
             최종업로드
+          </Button>
+          <Button size="small" onClick={cancelImport}>
+            업로드취소
           </Button>
           <div>
             <ResultTable inspectResultNormal={inspectResultNormal} inspectResultTypeError={inspectResultTypeError} inspectResultFlagError={inspectResultFlagError} />

@@ -59,7 +59,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
   });
 
   useEffect(() => {
-    console.log("카드타입셋을 불러옴");
+    console.log("카드타입셋을 불러옴",first_index);
     if (data1) {
       console.log("--->", data1);
       setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
@@ -70,7 +70,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     } else {
       console.log("why here?");
     }
-  }, [data1, indexChanged]);
+  }, [data1, indexChanged,first_index]);
 
   const cardTypeInfo = (cardtype_info) => {
     setcardTypeInfos(cardtype_info);

@@ -4,6 +4,8 @@ import { GetSession } from '../../../../../graphql/query/session';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
+import StudyNav from '../../../../../components/books/study/mode/StudyNav';
+
 const FlipMode = () => {
   const { query } = useRouter();
   console.log(query.sessionid);
@@ -42,6 +44,7 @@ const FlipMode = () => {
 
   return (
     <Layout>
+      <StudyNav sessionScope={sessionScope}/>
       <CardContainer
         cardListStudying={cardListStudying}
         sessionScope={sessionScope}

@@ -3,6 +3,9 @@ import { useMutation, useLazyQuery } from "@apollo/client";
 import { GetContents } from "../../../../../graphql/query/getContents";
 import { GetLevelConfig, UpdateResults } from "../../../../../graphql/query/session";
 import Timer from "./Timer";
+import { Avatar, Menu, Dropdown, Modal, Popover, Select, Button } from "antd";
+import { UserOutlined, DownOutlined, FlagFilled, SettingOutlined, LeftSquareOutlined, RightSquareOutlined } from "@ant-design/icons";
+import ProgressBar from "./ProgressBar";
 
 class Container extends Component {
   constructor(props) {
@@ -80,7 +83,7 @@ class Container extends Component {
   render() {
     return (
       <>
-        <Timer
+        <CardContainer
           startTimer={this.startTimer}
           startTimerTotal={this.startTimerTotal}
           stopTimerTotal={this.stopTimerTotal}
@@ -91,14 +94,30 @@ class Container extends Component {
           time_total={this.state.time_total}
           isOn_total={this.state.isOn_total}
           start_total={this.state.start_total}
+          timer={this.state.time}
+          cardListStudying={this.props.cardListStudying}
+          sessionScope={this.props.sessionScope}
         />
-        <CardContainer timer={this.state.time} cardListStudying={this.props.cardListStudying} sessionScope={this.props.sessionScope} />
       </>
     );
   }
 }
 
-const CardContainer = ({ timer, cardListStudying, sessionScope }) => {
+const CardContainer = ({
+  start_total,
+  isOn_total,
+  time_total,
+  start,
+  isOn,
+  startTimer,
+  startTimerTotal,
+  stopTimerTotal,
+  startTimerResume,
+  time,
+  timer,
+  cardListStudying,
+  sessionScope,
+}) => {
   const [cards, setCards] = useState();
   const [levelconfigs, setLevelconfigs] = useState();
   const [diffis, setDiffis] = useState();
@@ -155,7 +174,7 @@ const CardContainer = ({ timer, cardListStudying, sessionScope }) => {
 
       const face1 = current_card.face1.map((item) => (
         <>
-          <div>{item}</div>
+          <div id="face1">{item}</div>
         </>
       ));
       const face2 = current_card.face2.map((item) => (
@@ -189,17 +208,17 @@ const CardContainer = ({ timer, cardListStudying, sessionScope }) => {
       ));
       setDiffis(diffiButtons);
     }
-  }, [cards, levelconfigs, cardListStudying, onDiffClickHandler,timer]);
+  }, [cards, levelconfigs, cardListStudying, onDiffClickHandler, timer]);
 
   const milliseconds = (h, m, s) => (h * 60 * 60 + m * 60 + s) * 1000;
 
   const onDiffClickHandler = useCallback(
-    async (interval, diffi, current_card_id,timer) => {
+    async (interval, diffi, current_card_id, timer) => {
       if (diffi === "diffi5") {
         console.log(timer);
-        sessionKnowHandler(interval, diffi, current_card_id,timer);
+        sessionKnowHandler(interval, diffi, current_card_id, timer);
       } else {
-        console.log(timer)
+        console.log(timer);
         const now = new Date();
         const now_mili_convert = Date.parse(now);
         const result = milliseconds(0, interval, 0);
@@ -296,7 +315,7 @@ const CardContainer = ({ timer, cardListStudying, sessionScope }) => {
         }
       }
     },
-    [cardShow,finishStudy,sessionKnowHandler]
+    [cardShow, finishStudy, sessionKnowHandler]
   );
 
   const finishStudy = useCallback(async () => {
@@ -325,7 +344,7 @@ const CardContainer = ({ timer, cardListStudying, sessionScope }) => {
     } else {
       console.log("공부끝");
     }
-  },[sessionupdateresults]);
+  }, [sessionupdateresults]);
 
   useEffect(() => {
     cardShow();
@@ -337,20 +356,23 @@ const CardContainer = ({ timer, cardListStudying, sessionScope }) => {
     console.log("data", data);
   }
 
-  const sessionupdateresults = useCallback(async(cardlist_to_send, sessionId) => {
-    try {
-      await session_updateResults({
-        variables: {
-          forUpdateResults: {
-            session_id: sessionId,
-            studyResults: cardlist_to_send,
+  const sessionupdateresults = useCallback(
+    async (cardlist_to_send, sessionId) => {
+      try {
+        await session_updateResults({
+          variables: {
+            forUpdateResults: {
+              session_id: sessionId,
+              studyResults: cardlist_to_send,
+            },
           },
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  },[session_updateResults])
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [session_updateResults]
+  );
 
   const updateResults = () => {
     console.log("update results fired!!");
@@ -358,126 +380,237 @@ const CardContainer = ({ timer, cardListStudying, sessionScope }) => {
     // sessionupdateresults(result);
   };
 
-  const sessionKnowHandler = useCallback((interval, diffi, current_card_id,timer) => {
-    console.log("diffi5 clicked!!!");
-    console.log("timer:", timer);
-    if(timer > 10000){
-      timer = timer / 1000
-    } else {
-      timer = 10000 / 1000
+  const sessionKnowHandler = useCallback(
+    (interval, diffi, current_card_id, timer) => {
+      console.log("diffi5 clicked!!!");
+      console.log("timer:", timer);
+      if (timer > 10000) {
+        timer = timer / 1000;
+      } else {
+        timer = 10000 / 1000;
+      }
+      const now = new Date();
+      const now_mili_convert = Date.parse(now);
+      // const result = milliseconds(0, interval, 0);
+      // const need_review_time = now_mili_convert + result;
+      // const review_date = new Date(need_review_time);
+      // console.log(interval);
+      const card_seq = sessionStorage.getItem("card_seq");
+      sessionStorage.setItem("card_seq", Number(card_seq) + 1);
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      console.log("card_details_session", card_details_session);
+
+      const current_card_info_index = card_details_session.findIndex((item) => item.contents.mycontents_id === current_card_id);
+      console.log(current_card_info_index);
+
+      const current_card_book_id = card_details_session[current_card_info_index].card_info.mybook_id;
+      const current_card_levelconfig = levelconfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
+
+      card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime =
+        (now_mili_convert - Date.parse(card_details_session[current_card_info_index].studyStatus.recentKnowTime)) / 1000;
+      card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour + timer;
+      card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
+
+      if (card_details_session[current_card_info_index].studyStatus.recentKnowTime === null) {
+        //첫 know 처리
+        const a_r = -0.275;
+        const b_r = 1.1242;
+        const n_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes;
+        const h_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour;
+        const h_e = card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime;
+        const s = current_card_levelconfig[0].restudy.levelchangeSensitivity;
+        const l_prev = card_details_session[current_card_info_index].studyStatus.levelCurrent;
+        const r_restudy = current_card_levelconfig[0].restudy.restudyRatio;
+        const r_0 = a_r * Math.log(n_s * Math.log(h_s)) + b_r;
+        const w_firstknow = 20;
+        const t_now = Date.parse(now) / 1000;
+        // const l_theo = Math.log((Math.log(0.8) * h_e) / (5400 * Math.log(r_0))) / Math.log(2) + 1;
+        console.log(timer, n_s, h_s);
+        var l_apply = s * w_firstknow * (1 / (n_s * Math.log(h_s)));
+        var t_next = t_now + ((5400 * Math.pow(2, l_apply - 1)) / Math.log(0.8)) * Math.log(r_restudy);
+        var t_next_to_date = new Date(t_next * 1000);
+        console.log(l_apply);
+        console.log("첫 know 처리 ", t_next_to_date);
+        //첫 know 처리
+      } else {
+        //복습주기 로직
+        const a_r = -0.275;
+        const b_r = 1.1242;
+        const n_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes;
+        const h_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour;
+        const h_e = card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime;
+        const s = current_card_levelconfig[0].restudy.levelchangeSensitivity;
+        const l_prev = card_details_session[current_card_info_index].studyStatus.levelCurrent;
+        const r_restudy = current_card_levelconfig[0].restudy.restudyRatio;
+        const t_now = Date.parse(now) / 1000;
+        const r_0 = a_r * Math.log(n_s * Math.log(h_s)) + b_r;
+        const l_theo = Math.log((Math.log(0.8) * h_e) / (5400 * Math.log(r_0))) / Math.log(2) + 1;
+        var l_apply = l_prev + s * (l_theo - l_prev);
+        var t_next = t_now + ((5400 * Math.pow(2, l_apply - 1)) / Math.log(0.8)) * Math.log(r_restudy);
+        console.log("복습주기 로직", t_next);
+        //복습주기 로직
+      }
+
+      card_details_session[current_card_info_index].studyStatus.levelOriginal = card_details_session[current_card_info_index].studyStatus.levelCurrent;
+      card_details_session[current_card_info_index].studyStatus.levelCurrent = l_apply;
+      card_details_session[current_card_info_index].studyStatus.needStudyTime = new Date(t_next * 1000);
+      // card_details_session[current_card_info_index].studyStatus.recentExamResult =
+      // card_details_session[current_card_info_index].studyStatus.recentExamTime =
+      card_details_session[current_card_info_index].studyStatus.recentKnowTime = now;
+      card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
+      card_details_session[current_card_info_index].studyStatus.recentSelection = diffi;
+      card_details_session[current_card_info_index].studyStatus.recentStayHour = String(timer);
+      card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi;
+      card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
+      // card_details_session[current_card_info_index].studyStatus.retentionRate =
+      card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing";
+      // card_details_session[current_card_info_index].studyStatus.statusOriginal =
+      // card_details_session[current_card_info_index].studyStatus.statusPrev =
+      card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1;
+      // card_details_session[current_card_info_index].studyStatus.totalExamTimes =
+      card_details_session[current_card_info_index].studyStatus.totalStayHour = String(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
+      card_details_session[current_card_info_index].studyStatus.totalStudyTimes = card_details_session[current_card_info_index].studyStatus.totalStudyTimes + 1;
+
+      console.log(card_details_session);
+
+      //서버에 보내기 위한 학습정보 리스트 생성
+      const updateThis = card_details_session[current_card_info_index];
+      const getUpdateThis = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+
+      if (getUpdateThis) {
+        var finalUpdate = getUpdateThis.concat(updateThis);
+      } else {
+        finalUpdate = [updateThis];
+      }
+      sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
+      const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+      console.log("cardlist_to_send", cardlist_to_send);
+      //업데이트된 학습정보 세션스토리지에 다시 저장
+      card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = null;
+      card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
+      card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 0;
+      sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
+    },
+    [levelconfigs]
+  );
+  const speakText = () => {
+    if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+      alert("이 브라우저는 음성 합성을 지원하지 않습니다.");
+      return;
     }
-    const now = new Date();
-    const now_mili_convert = Date.parse(now);
-    // const result = milliseconds(0, interval, 0);
-    // const need_review_time = now_mili_convert + result;
-    // const review_date = new Date(need_review_time);
-    // console.log(interval);
-    const card_seq = sessionStorage.getItem("card_seq");
-    sessionStorage.setItem("card_seq", Number(card_seq) + 1);
-    const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    console.log("card_details_session", card_details_session);
 
-    const current_card_info_index = card_details_session.findIndex((item) => item.contents.mycontents_id === current_card_id);
-    console.log(current_card_info_index);
+    window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
 
-    const current_card_book_id = card_details_session[current_card_info_index].card_info.mybook_id;
-    const current_card_levelconfig = levelconfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
+    const text = document.getElementById("face1");
+    console.log(text);
+    const speechMsg = new SpeechSynthesisUtterance();
+    speechMsg.rate = 1; // 속도: 0.1 ~ 10
+    speechMsg.pitch = 1; // 음높이: 0 ~ 2
+    speechMsg.lang = "en";
+    speechMsg.text = text.innerHTML;
 
-    card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime =
-      (now_mili_convert - Date.parse(card_details_session[current_card_info_index].studyStatus.recentKnowTime)) / 1000;
-    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour + timer;
-    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
-
-    if (card_details_session[current_card_info_index].studyStatus.recentKnowTime === null) {
-      //첫 know 처리
-      const a_r = -0.275;
-      const b_r = 1.1242;
-      const n_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes;
-      const h_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour;
-      const h_e = card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime;
-      const s = current_card_levelconfig[0].restudy.levelchangeSensitivity;
-      const l_prev = card_details_session[current_card_info_index].studyStatus.levelCurrent;
-      const r_restudy = current_card_levelconfig[0].restudy.restudyRatio;
-      const r_0 = a_r * Math.log(n_s * Math.log(h_s)) + b_r;
-      const w_firstknow = 20;
-      const t_now = Date.parse(now) / 1000;
-      // const l_theo = Math.log((Math.log(0.8) * h_e) / (5400 * Math.log(r_0))) / Math.log(2) + 1;
-      console.log(timer, n_s, h_s);
-      var l_apply = s * w_firstknow * (1 / (n_s * Math.log(h_s)));
-      var t_next = t_now + ((5400 * Math.pow(2, l_apply - 1)) / Math.log(0.8)) * Math.log(r_restudy);
-      var t_next_to_date = new Date(t_next * 1000);
-      console.log(l_apply);
-      console.log("첫 know 처리 ", t_next_to_date);
-      //첫 know 처리
-    } else {
-      //복습주기 로직
-      const a_r = -0.275;
-      const b_r = 1.1242;
-      const n_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes;
-      const h_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour;
-      const h_e = card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime;
-      const s = current_card_levelconfig[0].restudy.levelchangeSensitivity;
-      const l_prev = card_details_session[current_card_info_index].studyStatus.levelCurrent;
-      const r_restudy = current_card_levelconfig[0].restudy.restudyRatio;
-      const t_now = Date.parse(now) / 1000;
-      const r_0 = a_r * Math.log(n_s * Math.log(h_s)) + b_r;
-      const l_theo = Math.log((Math.log(0.8) * h_e) / (5400 * Math.log(r_0))) / Math.log(2) + 1;
-      var l_apply = l_prev + s * (l_theo - l_prev);
-      var t_next = t_now + ((5400 * Math.pow(2, l_apply - 1)) / Math.log(0.8)) * Math.log(r_restudy);
-      console.log("복습주기 로직", t_next);
-      //복습주기 로직
-    }
-
-    card_details_session[current_card_info_index].studyStatus.levelOriginal = card_details_session[current_card_info_index].studyStatus.levelCurrent;
-    card_details_session[current_card_info_index].studyStatus.levelCurrent = l_apply;
-    card_details_session[current_card_info_index].studyStatus.needStudyTime = new Date(t_next * 1000);
-    // card_details_session[current_card_info_index].studyStatus.recentExamResult =
-    // card_details_session[current_card_info_index].studyStatus.recentExamTime =
-    card_details_session[current_card_info_index].studyStatus.recentKnowTime = now;
-    card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
-    card_details_session[current_card_info_index].studyStatus.recentSelection = diffi;
-    card_details_session[current_card_info_index].studyStatus.recentStayHour = String(timer);
-    card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi;
-    card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
-    // card_details_session[current_card_info_index].studyStatus.retentionRate =
-    card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing";
-    // card_details_session[current_card_info_index].studyStatus.statusOriginal =
-    // card_details_session[current_card_info_index].studyStatus.statusPrev =
-    card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1;
-    // card_details_session[current_card_info_index].studyStatus.totalExamTimes =
-    card_details_session[current_card_info_index].studyStatus.totalStayHour = String(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
-    card_details_session[current_card_info_index].studyStatus.totalStudyTimes = card_details_session[current_card_info_index].studyStatus.totalStudyTimes + 1;
-
-    console.log(card_details_session);
-
-    //서버에 보내기 위한 학습정보 리스트 생성
-    const updateThis = card_details_session[current_card_info_index];
-    const getUpdateThis = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
-
-    if (getUpdateThis) {
-      var finalUpdate = getUpdateThis.concat(updateThis);
-    } else {
-      finalUpdate = [updateThis];
-    }
-    sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
-    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
-    console.log("cardlist_to_send", cardlist_to_send);
-    //업데이트된 학습정보 세션스토리지에 다시 저장
-    card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = null;
-    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
-    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 0;
-    sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
-  },[levelconfigs]);
-
+    // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
+    window.speechSynthesis.speak(speechMsg);
+  };
   return (
     <>
-      <div style={{ marginTop: "50px", margin: "auto", width: "600px", height: "500px", border: "1px solid grey" }}>
+      {/* <div style={{ marginTop: "50px", margin: "auto", width: "600px", height: "500px", border: "1px solid grey" }}>
         <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
           <div style={{ display: "flex", flexDirection: "column", height: "80%", alignItems: "center", justifyContent: "center" }}>
             <div>face1: {face1Contents}</div>
             <div>face2: {face2Contents}</div>
           </div>
+          <button onClick={speakText}>재생</button>
           <div style={{ padding: 10, display: "flex", alignItems: "center", justifyContent: "space-around" }}>{diffis}</div>
+        </div>
+      </div> */}
+      <div style={style_study_layout_container}>
+        <div style={style_study_layout_top}>
+          <ul style={style_study_layout_top_left}>
+            <li style={{ marginRight: "10px" }}>
+              <Avatar size="large" icon={<UserOutlined />} />
+            </li>
+            
+                <li style={{ width:"320px", display: "flex", alignItems: "center", marginBottom: "3px" }}>
+                  <span style={{ marginRight: "10px", width: "40px", fontSize: "11px" }}>완료율</span>
+                  <ProgressBar bgcolor={"#32c41e"} completed={100} />
+                </li>
+          
+            <li>
+              <Button onClick={() => console.log("카드추가 click!!")} style={{ height: "45px", borderRadius: "10px" }}>
+                학습카드추가
+              </Button>
+            </li>
+          </ul>
+          <div style={clickCount}>click count 자리</div>
+          <div style={style_study_layout_top_right}>
+            <Timer
+              startTimer={startTimer}
+              startTimerTotal={startTimerTotal}
+              stopTimerTotal={stopTimerTotal}
+              startTimerResume={startTimerResume}
+              time={time}
+              isOn={isOn}
+              start={start}
+              time_total={time_total}
+              isOn_total={isOn_total}
+              start_total={start_total}
+            />
+          </div>
+        </div>
+        <div style={style_study_layout_bottom}>
+          <div style={{ width: "200px", textAlign: "right", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+            <div></div>
+            <div
+              // onMouseOver={this.onMouseOver}
+              // onMouseOut={this.onMouseOut}
+              style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "30px", height: "672px", textAlign: "center" }}
+            >
+              <FlagFilled style={{ cursor: "pointer", fontSize: "15px", color: `white`, marginBottom: "20px" }} />
+              <div
+                id="user_flag"
+                style={{ visibility: "hidden", display: "flex", flexDirection: "column", width: "30px", height: "100%", textAlign: "center", border: "1px dashed lightgrey" }}
+              >
+                {/* <FlagFilled onClick={() => this.userFlagChange("flag_1")} style={{ cursor: "pointer", fontSize: "15px", color: "red" }} />
+                <FlagFilled onClick={() => this.userFlagChange("flag_2")} style={{ cursor: "pointer", fontSize: "15px", color: "orange" }} />
+                <FlagFilled onClick={() => this.userFlagChange("flag_3")} style={{ cursor: "pointer", fontSize: "15px", color: "yellow" }} />
+                <FlagFilled onClick={() => this.userFlagChange("flag_4")} style={{ cursor: "pointer", fontSize: "15px", color: "green" }} />
+                <FlagFilled onClick={() => this.userFlagChange("flag_5")} style={{ cursor: "pointer", fontSize: "15px", color: "blue" }} /> */}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ width: "1000px", border: "1px solid lightgrey", borderRadius: "10px" }}>
+            <div style={contentsDisplay}>
+              <div style={{ position: "relative", height: "50%", width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>{face1Contents}</div>
+              </div>
+              <div style={{ position: "relative", height: "50%", width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>{face2Contents}</div>
+              </div>
+            </div>
+            <button onClick={speakText}>재생</button>
+            <div style={buttonDiv}>
+              {/* <Button width="35px" onClick={() => this.onClickInterval("back", 0)} style={{ ...buttonDefault, padding: 0, lineHeight: "13px" }}>
+                이전
+                <br />
+                카드
+              </Button> */}
+              <div style={{ padding: 10, display: "flex", alignItems: "center", justifyContent: "space-between" }}>{diffis}</div>
+              {/* <Popover placement="bottomLeft" content={content} trigger="click">
+                  <Button size="small" width="35px" style={{ ...buttonDefault, height: "32px" }}>
+                    ...
+                  </Button>
+                </Popover> */}
+              {/* <Button size="small" width="35px" onClick={this.shuffleCards} style={{ ...buttonDefault, height: "32px", lineHeight: "13px" }}>
+                  카드
+                  <br />
+                  섞기
+                </Button> */}
+            </div>
+          </div>
+
+          <div style={{ width: "200px" }}>사이드 영역</div>
         </div>
       </div>
     </>
@@ -485,3 +618,79 @@ const CardContainer = ({ timer, cardListStudying, sessionScope }) => {
 };
 
 export default Container;
+
+const buttonDefault = {
+  boxShadow: "1px 1px 1px 0px rgba(128,128,128,1)",
+  borderRadius: "5px",
+};
+const style_study_layout_container = {
+  display: "flex",
+  flexDirection: "column",
+  height: "45px",
+};
+const style_study_layout_top = {
+  display: "flex",
+  flexDirection: "row",
+  width: "1000px",
+  margin: "auto",
+};
+const style_study_layout_top_left = {
+  display: "flex",
+  flexDirection: "row",
+  width: "50%",
+  alignItems: "center",
+  justifyContent: "space-between",
+  marginRight: "15px",
+  listStyle:"none"
+};
+const style_study_layout_top_right = {
+  display: "flex",
+  flexDirection: "row",
+  width: "40%",
+  justifyContent: "space-between",
+  border: "1px solid lightgrey",
+  borderRadius: "10px",
+  backgroundColor: "white",
+  padding: 5,
+  paddingBottom: 0,
+  fontSize: "12px",
+};
+const style_study_layout_bottom = {
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  width: "100%",
+  margin: "auto",
+  marginTop: "10px",
+};
+const clickCount = {
+  flex: 1,
+  border: "1px solid lightgrey",
+  marginRight: "10px",
+  borderRadius: "10px",
+  lineHeight: "45px",
+  textAlign: "center",
+  // fontSize: "30px",
+  backgroundColor: "white",
+};
+const contentsDisplay = {
+  height: "600px",
+  backgroundColor: "white",
+  padding: "10px",
+  borderRadius: "10px 10px 0 0",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  alignItems: "center",
+};
+const buttonDiv = {
+  // width: "100%",
+  // display: "flex",
+  // flexDirection: "row",
+  // justifyContent: "space-between",
+  height: "70px",
+  alignItems: "center",
+  backgroundColor: "#e9e9e9",
+  padding: "10px 60px",
+  borderRadius: "0 0 10px 10px",
+};

@@ -2,13 +2,20 @@ import React, { Component, useState } from "react";
 import { Modal, Button } from "antd";
 import { DownloadOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { UploadExcelFile } from "../../../../../graphql/query/excelUpload";
+import { UploadExcelFile, ImportExcelFile } from "../../../../../graphql/query/excelUpload";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
+import ResultTable from "./ResultTable";
 
 const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId }) => {
   const [file, setFile] = useState(null);
   const [visiable, setVisiable] = useState(null);
-  const [cardset_inspectExcelFileToImport, { loading }] = useMutation(UploadExcelFile, { onCompleted: showdata });
+  const [newFileName, setNewFileName] = useState(null);
+  const [inspectResultNormal, setInspectResultNormal] = useState();
+  const [inspectResultTypeError, setInspectResultTypeError] = useState();
+  const [inspectResultFlagError, setInspectResultFlagError] = useState();
+
+  const [cardset_inspectExcelFileToImport, { loading, data }] = useMutation(UploadExcelFile, { onCompleted: showdata });
+  const [cardset_importExcelFile, { loading: loading2, data:data1 }] = useMutation(ImportExcelFile, { onCompleted: showdata2 });
 
   const showModal = () => {
     setVisiable(true);
@@ -24,18 +31,19 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
 
   function showdata(data) {
     console.log("response after file upload :", data);
+    setNewFileName(data.cardset_inspectExcelFileToImport.filename);
+    setInspectResultNormal(data.cardset_inspectExcelFileToImport.inspectionResult.normal);
+    setInspectResultTypeError(data.cardset_inspectExcelFileToImport.inspectionResult.cardtypeErr);
+    setInspectResultFlagError(data.cardset_inspectExcelFileToImport.inspectionResult.makerflagErr);
   }
 
-  async function uploadfile(data, mybook_id, indexChanged, cardSetId, indexSetId) {
+  async function uploadfile(mybook_id, indexChanged, cardSetId, indexSetId) {
     console.log(file);
     try {
       await cardset_inspectExcelFileToImport({
-        variables:{
+        variables: {
           forInspectExcelFile: {
             mybook_id: mybook_id,
-            indexset_id: indexSetId,
-            index_id: indexChanged,
-            cardset_id: cardSetId,
             file: file,
           },
         },
@@ -47,29 +55,40 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
 
   const uplodeFile = (event) => {
     const mybook_id = localStorage.getItem("book_id");
-    console.log(file);
-    const data = new FormData();
-    data.append("0", file);
-    data.append("mybook_id", mybook_id);
-    // data.append("index_id", indexChanged);
-    // data.append("cardset_id", cardSetId);
-    // data.append("indexset_id", indexSetId);
-    console.log(mybook_id);
-    console.log(indexChanged);
-    console.log(cardSetId);
-    console.log(indexSetId);
-    console.log(data);
-    uploadfile(data, mybook_id, indexChanged, cardSetId, indexSetId);
+    uploadfile(mybook_id, indexChanged, cardSetId, indexSetId);
+  };
 
-    // axios
-    //   .post("/api/cardset_inspectExcelFileToImport", data)
-    //   .then((res) => {
-    //     alert(res.data.msg);
-    //     this.setState({
-    //       file: "",
-    //     });
-    //   })
-    //   .catch((err) => console.log(err));
+  function showdata2(data1) {
+    console.log("response after file upload :", data1);
+    setFile('')
+    setNewFileName(null)
+    setInspectResultNormal('');
+    setInspectResultTypeError('');
+    setInspectResultFlagError('');
+    alert("업로드 완료")
+    setVisiable(false)
+  }
+
+  async function importfile(mybook_id, cardSetId) {
+    console.log(file);
+    try {
+      await cardset_importExcelFile({
+        variables: {
+          forImportExcelFile: {
+            mybook_id: mybook_id,
+            cardset_id: cardSetId,
+            filename: newFileName,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const importFile = (event) => {
+    const mybook_id = localStorage.getItem("book_id");
+    importfile(mybook_id, cardSetId);
   };
 
   return (
@@ -91,6 +110,15 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
         <Button size="small" onClick={uplodeFile}>
           파일업로드
         </Button>
+        <div>
+          <div>파일검토결과</div>
+          <Button size="small" onClick={importFile}>
+            최종업로드
+          </Button>
+          <div>
+            <ResultTable inspectResultNormal={inspectResultNormal} inspectResultTypeError={inspectResultTypeError} inspectResultFlagError={inspectResultFlagError} />
+          </div>
+        </div>
       </Modal>
     </>
   );

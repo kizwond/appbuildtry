@@ -44,7 +44,7 @@ const FlipMode = () => {
 
   return (
     <Layout>
-      <StudyNav/>
+      <StudyNav sessionScope={sessionScope}/>
       <CardContainer
         cardListStudying={cardListStudying}
         sessionScope={sessionScope}

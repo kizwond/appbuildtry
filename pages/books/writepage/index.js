@@ -61,18 +61,7 @@ const Writeanother = () => {
           <CategorySettingButton category={category} />
         </StyledSpace>
       )}
-      {/* <Row>
-        <StyledCol>
-          <BooksTablePagination
-            category={category}
-            myBook={myBook}
-            handleToGetMyBook={handleToGetMyBook}
-            isPopupSomething={isPopupSomething}
-            chagePopup={chagePopup}
-          />
-        </StyledCol>
-      </Row>
-      <Divider /> */}
+
       <Row>
         <StyledCol>
           <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
@@ -90,16 +79,52 @@ const StyledSpace = styled(Space)`
   }
 `;
 const StyledCol = styled(Col)`
-  & .Books > .categoryCol {
-    border: none;
-    border-right: 1px solid #f0f0f0;
-    border-left: 1px solid #f0f0f0;
-  }
   & .categoryCol {
-    border-right: 1px solid #f0f0f0;
-    border-left: 1px solid #f0f0f0;
+    /* border: none; */
+    border-bottom: none;
+    /* border-right: 1px solid #f0f0f0; */
   }
-  & .foldedCategory {
+
+  & .foldedCategory > .categoryCol,
+  & .NoBooksCategory > .categoryCol,
+  & .LastHiddenBar > .categoryCol,
+  & .lastBook {
+    border-bottom: 2px solid #7609f1 !important;
+  }
+
+  & .NoBooksCategory > .categoryCol,
+  & .NoBooksCategory > .categoryCol {
+    /* border-bottom: 1px solid #f0f0f0; */
+  }
+  & .MiddleHiddenBar > .normal,
+  & .LastHiddenBar > .normal,
+  & .NoBooksCategory > .normal,
+  & .foldedCategory > .normal {
+    background-color: #bfbfbf;
+    border: 2px solid white;
+  }
+  & .LastHiddenBar > .normal,
+  & .NoBooksCategory > .normal,
+  & .foldedCategory > .normal {
+    background-color: #bfbfbf;
+    border: 2px solid white;
+    border-bottom: 2px solid #7609f1 !important;
+  }
+  & .EvenNumberRow > .normal {
+    background-color: #f5f5f5;
+  }
+
+  & .LastHiddenBar > .categoryCol {
+    /* border-bottom: 1px solid #f0f0f0; */
+  }
+  & .ant-table-thead .categoryCol::before {
+    display: none;
+  }
+  & .ant-table-thead .categoryCol {
     border-bottom: 1px solid #f0f0f0;
+  }
+
+  & .ant-table-tbody > tr > td {
+    border-bottom: none;
   }
 `;

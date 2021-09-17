@@ -12,16 +12,35 @@ import produce from 'immer';
 const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
+  const [mounted, setMounted] = useState(false);
+  console.log('마운트 윗 코드');
+
+  console.log({ expandedRowKeys });
+  useEffect(() => {
+    setExpandedRowKeys(category.filter((_cate) => _cate._id));
+    setMounted(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
+  console.log('마운트 아래 코드');
+  console.log({ expandedRowKeys });
 
   const dataSource = category.map((_cate, _categoryIndex) => {
     const { name, seq } = _cate.mybookcate_info;
     const categoryBooksList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id);
+    const categoryBooksLength = categoryBooksList.length;
     const markedShowList = categoryBooksList.filter((_book) => _book.mybook_info.hide_or_show == 'show');
     const markedShowListLength = markedShowList.length;
     const markedHideList = categoryBooksList.filter((_book) => _book.mybook_info.hide_or_show == 'hide');
     const markedHideListLength = markedHideList.length;
 
     const isShowedAllBooks = isShowedHiddenBook.includes(_cate._id);
+    const parentKey = `KEY:${_cate._id}INDEX:0`;
+    const isUnfoldedCategory = expandedRowKeys.includes(parentKey);
 
     const showedList = isShowedAllBooks ? [...markedShowList, ...markedHideList] : markedShowList;
 
@@ -78,7 +97,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       withHiddenBar.splice(markedShowListLength - 1, 0, hiddenBar);
     }
     if (markedShowListLength === 0) {
-      withHiddenBar.push(hiddenBar);
+      withHiddenBar.splice(0, 0, hiddenBar);
     }
     const children = markedHideListLength > 0 ? withHiddenBar : childrenArray;
 
@@ -137,16 +156,13 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
             categoryName: name,
             key: `KEY:${_cate._id}INDEX:0`,
             type: 'empty-category',
+            isLastCategory: _categoryIndex + 1 == category.length,
           };
 
     return parent;
   });
 
   console.log(dataSource);
-  useEffect(() => {
-    setExpandedRowKeys(dataSource.filter((i) => i.type !== 'empty-category').map((i) => i.key));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const columns = [
     {
@@ -323,13 +339,23 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
       // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
       rowClassName={(record, index) =>
-        record.type === 'empty-category' && !record.isLastCategory
+        (record.type === 'empty-category' && !record.isLastCategory) || record.type === 'all-hidden-books'
           ? 'NoBooksCategory'
           : !expandedRowKeys.includes(record.key) && record.relationship === 'parent' && !record.isLastCategory
           ? 'foldedCategory'
           : record.relationship === 'hiddenBar' && record.lastChild && !record.isLastCategory
           ? 'LastHiddenBar'
           : record.relationship === 'hiddenBar' && !record.lastChild && !record.isLastCategory
+          ? 'MiddleHiddenBar'
+          : record.lastChild
+          ? 'lastBook'
+          : (record.type === 'empty-category' && record.isLastCategory) || (record.type === 'all-hidden-books' && record.isLastCategory)
+          ? 'Middle'
+          : !expandedRowKeys.includes(record.key) && record.relationship === 'parent' && record.isLastCategory
+          ? 'foldedCategory'
+          : record.relationship === 'hiddenBar' && record.lastChild && record.isLastCategory
+          ? 'LastHiddenBar'
+          : record.relationship === 'hiddenBar' && !record.lastChild && record.isLastCategory
           ? 'MiddleHiddenBar'
           : record.isEvenNumber
           ? 'EvenNumberRow'

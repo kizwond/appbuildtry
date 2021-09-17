@@ -88,7 +88,7 @@ const StyledCol = styled(Col)`
   & .foldedCategory > .categoryCol,
   & .NoBooksCategory > .categoryCol,
   & .LastHiddenBar > .categoryCol,
-  & .lastBook {
+  & .lastBook > .categoryCol {
     border-bottom: 2px solid #7609f1 !important;
   }
 
@@ -101,14 +101,17 @@ const StyledCol = styled(Col)`
   & .NoBooksCategory > .normal,
   & .foldedCategory > .normal {
     background-color: #bfbfbf;
-    border: 2px solid white;
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
   }
   & .LastHiddenBar > .normal,
   & .NoBooksCategory > .normal,
-  & .foldedCategory > .normal {
-    background-color: #bfbfbf;
-    border: 2px solid white;
-    border-bottom: 2px solid #7609f1 !important;
+  & .foldedCategory > .normal,
+  & .lastBook > .normal {
+    border-bottom: 2px solid #7609f1;
+    border-radius: 10px;
+    padding: 5px !important;
+    margin: 10px;
   }
   & .EvenNumberRow > .normal {
     background-color: #f5f5f5;

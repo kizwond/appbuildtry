@@ -13,9 +13,9 @@ const DeleteBookButton = ({ handleToGetMyBook, isPopupSomething, chagePopup, myb
   const [deleteBook, { variables }] = useMutation(DELETE_A_BOOK, {
     onCompleted: (received_data) => {
       console.log('received_data', received_data);
-      if (received_data.mybook_update.status === '200') {
-        handleToGetMyBook(received_data.mybook_update.mybooks);
-      } else if (received_data.mybook_update.status === '401') {
+      if (received_data.mybook_delete.status === '200') {
+        handleToGetMyBook(received_data.mybook_delete.mybooks);
+      } else if (received_data.mybook_delete.status === '401') {
         router.push('/account/login');
       } else {
         console.log('어떤 문제가 발생함');

@@ -41,8 +41,45 @@ export const ImportExcelFile = gql`
     cardset_importExcelFile(forImportExcelFile: $forImportExcelFile) {
       status
       msg
-      cardsets{
+      cardsets {
         _id
+        cardset_info {
+          user_id
+          mybook_id
+          indexset_id
+          index_id
+        }
+        cards {
+          _id
+          card_info {
+            cardtype_id
+            cardtype
+            time_created
+            hasParent
+            parent_card_id
+          }
+          contents {
+            user_flag
+            maker_flag
+            location
+            mycontents_id {
+              _id
+              face1
+              selection
+              face2
+              annotation
+              memo
+            }
+            buycontents_id {
+              _id
+              face1
+              selection
+              face2
+              annotation
+              memo
+            }
+          }
+        }
       }
     }
   }
@@ -58,43 +95,4 @@ export const CancelImport = gql`
 `;
 
 
-// cardsets {
-//   _id
-//   cardset_info {
-//     user_id
-//     mybook_id
-//     indexset_id
-//     index_id
-//   }
-//   cards {
-//     _id
-//     card_info {
-//       cardtype_id
-//       cardtype
-//       time_created
-//       hasParent
-//       parent_card_id
-//     }
-//     constents {
-//       user_flag
-//       maker_flag
-//       location
-//       mycontents_id {
-//         _id
-//         face1
-//         selection
-//         face2
-//         annotation
-//         memo
-//       }
-//       buycontents_id {
-//         _id
-//         face1
-//         selection
-//         face2
-//         annotation
-//         memo
-//       }
-//     }
-//   }
-// }
+

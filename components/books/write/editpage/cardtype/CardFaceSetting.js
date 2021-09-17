@@ -132,10 +132,10 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const borderLeftThicknessHandler = (e) => set_border_left_thickness(e);
   const borderRightThicknessHandler = (e) => set_border_right_thickness(e);
 
-  const borderTopColorHandler = (e) => set_border_top_color(e);
-  const borderBottomColorHandler = (e) => set_border_bottom_color(e);
-  const borderLeftColorHandler = (e) => set_border_left_color(e);
-  const borderRightColorHandler = (e) => set_border_right_color(e);
+  const borderTopColorHandler = (e) => set_border_top_color(e.target.value);
+  const borderBottomColorHandler = (e) => set_border_bottom_color(e.target.value);
+  const borderLeftColorHandler = (e) => set_border_left_color(e.target.value);
+  const borderRightColorHandler = (e) => set_border_right_color(e.target.value);
 
   const handleSubmit = () => updatefacestyle();
 
@@ -196,7 +196,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
         </li>
         <li>
           <div>면배경색</div>
-          <input type="color" id="head" name="background_color" value={background_color} onChange={backgroundColorHandler}></input>
+          <input type="color" name="background_color" value={background_color} onChange={backgroundColorHandler}></input>
         </li>
         <li>
           <div>면테두리바깥쪽여백</div>
@@ -245,7 +245,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               <Option value="dashed">dashed</Option>
               <Option value="dotted">dotted</Option>
             </Select>
-            <input type="color" id="head" name="background_color" value={border_top_color} onChange={borderTopColorHandler}></input>
+            <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input>
             <InputNumber value={border_top_thickness} onChange={borderTopThicknessHandler} />
           </div>
           <div>
@@ -255,7 +255,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               <Option value="dashed">dashed</Option>
               <Option value="dotted">dotted</Option>
             </Select>
-            <input type="color" id="head" name="background_color" value={border_bottom_color} onChange={borderBottomColorHandler}></input>
+            <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input>
             <InputNumber value={border_bottom_thickness} onChange={borderBottomThicknessHandler} />
           </div>
           <div>
@@ -265,7 +265,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               <Option value="dashed">dashed</Option>
               <Option value="dotted">dotted</Option>
             </Select>
-            <input type="color" id="head" name="background_color" value={border_left_color} onChange={borderLeftColorHandler}></input>
+            <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input>
             <InputNumber value={border_left_thickness} onChange={borderLeftThicknessHandler} />
           </div>
           <div>
@@ -275,7 +275,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               <Option value="dashed">dashed</Option>
               <Option value="dotted">dotted</Option>
             </Select>
-            <input type="color" id="head" name="background_color" value={border_right_color} onChange={borderRightColorHandler}></input>
+            <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input>
             <InputNumber value={border_right_thickness} onChange={borderRightThicknessHandler} />
           </div>
         </li>

@@ -6,6 +6,7 @@ import Timer from "./Timer";
 import { Avatar, Menu, Dropdown, Modal, Popover, Select, Button } from "antd";
 import { UserOutlined, DownOutlined, FlagFilled, SettingOutlined, LeftSquareOutlined, RightSquareOutlined } from "@ant-design/icons";
 import ProgressBar from "./ProgressBar";
+import { GetCardTypeSetByMybookIds } from "../../../../../graphql/query/cardtype";
 
 class Container extends Component {
   constructor(props) {
@@ -123,6 +124,7 @@ const CardContainer = ({
   const [diffis, setDiffis] = useState();
   const [face1Contents, setFace1Contents] = useState("");
   const [face2Contents, setFace2Contents] = useState("");
+  const [cardTypes, setCardTypes] = useState();
   const [getData, { loading, error, data }] = useLazyQuery(GetContents, {
     onCompleted: onCompletedGetContents,
   });
@@ -130,6 +132,22 @@ const CardContainer = ({
   const [getLevelConfig, { loading: loading1, error: error1, data: data1 }] = useLazyQuery(GetLevelConfig, {
     onCompleted: onCompletedGetLevelConfig,
   });
+
+  const [cardtypeset_getbymybookids, { loading: loading2, error: error2, data: data2 }] = useLazyQuery(GetCardTypeSetByMybookIds, {
+    onCompleted: onCompletedGetCardSet,
+  });
+
+  function onCompletedGetCardSet() {
+    const cardTypes_temp = data2.cardtypeset_getbymybookids.cardtypesets.map((item) => {
+      return item.cardtypes;
+    });
+    const array_final = []
+    cardTypes_temp.map((item) => {
+      item.map((cardtype) => array_final.push(cardtype));
+    });
+    console.log(array_final);
+    setCardTypes(array_final)
+  }
 
   useEffect(() => {
     console.log("here---------------------------------------------------");
@@ -155,8 +173,9 @@ const CardContainer = ({
       console.log(value);
 
       getLevelConfig({ variables: { mybook_ids: value } });
+      cardtypeset_getbymybookids({ variables: { mybook_ids: value } });
     }
-  }, [cardListStudying, getData, sessionScope, getLevelConfig]);
+  }, [cardListStudying, getData, sessionScope, getLevelConfig, cardtypeset_getbymybookids]);
 
   function onCompletedGetContents() {
     console.log(data);
@@ -170,7 +189,39 @@ const CardContainer = ({
   const cardShow = useCallback(async () => {
     if (cards) {
       const card_seq = sessionStorage.getItem("card_seq");
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      
       const current_card = cards[card_seq];
+      // console.log(current_card)
+      const current_card_id = cards[card_seq]._id
+      const current_card_info = card_details_session.filter(item=>item.contents.mycontents_id === current_card_id)
+      // console.log(current_card_info)
+      const current_card_cardtype_id = current_card_info[0].card_info.cardtype_id;
+      // console.log(current_card_cardtype_id)
+      if(cardTypes) {
+        const current_card_style = cardTypes.filter(item=> item._id === current_card_cardtype_id)
+        // console.log(current_card_style)
+  
+        const face_style = current_card_style[0].face_style
+  
+        var face_background_color = face_style[0].background_color;
+  
+        var face_border_top_bordertype = face_style[0].border.top.bordertype;
+        var face_border_top_color = face_style[0].border.top.color;
+        var face_border_top_thickness = face_style[0].border.top.thickness;
+  
+        const face_inner_padding_top = face_style[0].inner_padding.top;
+        const face_inner_padding_bottom = face_style[0].inner_padding.bottom;
+        const face_inner_padding_left = face_style[0].inner_padding.left;
+        const face_inner_padding_right = face_style[0].inner_padding.right;
+  
+        const face_outer_margin_top = face_style[0].outer_margin.top;
+        const face_outer_margin_bottom = face_style[0].outer_margin.bottom;
+        const face_outer_margin_left = face_style[0].outer_margin.left;
+        const face_outer_margin_right = face_style[0].outer_margin.right;
+        // console.log("here111111111111111111111111")
+      }
+      
 
       const face1 = current_card.face1.map((item) => (
         <>
@@ -182,7 +233,7 @@ const CardContainer = ({
           <div>{item}</div>
         </>
       ));
-      var face1_contents = <div>{face1}</div>;
+      var face1_contents = <div style={{backgroundColor:face_background_color, border:`${face_border_top_thickness}px ${face_border_top_bordertype} ${face_border_top_color}`}}>{face1}</div>;
       var face2_contents = <div>{face2}</div>;
       setFace1Contents(face1_contents);
       setFace2Contents(face2_contents);
@@ -232,34 +283,6 @@ const CardContainer = ({
 
         const current_card_info_index = card_details_session.findIndex((item) => item.contents.mycontents_id === current_card_id);
         console.log(current_card_info_index);
-        //여기에 세션스토리지에 학습결과 저장하는 코드 들어가야함.
-
-        // currentLevElapsedTime; // 지금시간 - recent know time(null이면 null로) recentStudyResult === diffi5 => reset
-        // currentLevStudyHour //해당카드 누적 학습시간(diffi5 시 리셋) recentStudyResult === diffi5 => reset
-        // currentLevStudyTimes // + 1 recentStudyResult === diffi5 => reset
-        // levelCurrent //
-        // levelOriginal //
-        // needStudyTime //
-        // recentExamResult //
-        // recentExamTime //
-        // recentKnowTime //
-        // recentSelectTime // 현재시각
-        // recentSelection // diffi
-        // recentStayHour // timer
-        // recentStudyResult // diffi
-        // recentStudyTime //현재시각
-        // retentionRate //
-        // statusCurrent  // yet => ing
-        // statusOriginal  //
-        // statusPrev  // ing => hold => ing
-        // studyTimesInSession // +1
-        // totalExamTimes //
-        // totalStayHour // 누적
-        // totalStudyTimes // +1
-        // userFlagOriginal //
-        // userFlagPrev //
-
-        //여기에 세션스토리지에 학습결과 저장하는 코드 들어가야함.
 
         //학습정보 업데이트
         card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = "";
@@ -514,28 +537,18 @@ const CardContainer = ({
   };
   return (
     <>
-      {/* <div style={{ marginTop: "50px", margin: "auto", width: "600px", height: "500px", border: "1px solid grey" }}>
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
-          <div style={{ display: "flex", flexDirection: "column", height: "80%", alignItems: "center", justifyContent: "center" }}>
-            <div>face1: {face1Contents}</div>
-            <div>face2: {face2Contents}</div>
-          </div>
-          <button onClick={speakText}>재생</button>
-          <div style={{ padding: 10, display: "flex", alignItems: "center", justifyContent: "space-around" }}>{diffis}</div>
-        </div>
-      </div> */}
       <div style={style_study_layout_container}>
         <div style={style_study_layout_top}>
           <ul style={style_study_layout_top_left}>
             <li style={{ marginRight: "10px" }}>
               <Avatar size="large" icon={<UserOutlined />} />
             </li>
-            
-                <li style={{ width:"320px", display: "flex", alignItems: "center", marginBottom: "3px" }}>
-                  <span style={{ marginRight: "10px", width: "40px", fontSize: "11px" }}>완료율</span>
-                  <ProgressBar bgcolor={"#32c41e"} completed={100} />
-                </li>
-          
+
+            <li style={{ width: "320px", display: "flex", alignItems: "center", marginBottom: "3px" }}>
+              <span style={{ marginRight: "10px", width: "40px", fontSize: "11px" }}>완료율</span>
+              <ProgressBar bgcolor={"#32c41e"} completed={100} />
+            </li>
+
             <li>
               <Button onClick={() => console.log("카드추가 click!!")} style={{ height: "45px", borderRadius: "10px" }}>
                 학습카드추가
@@ -641,7 +654,7 @@ const style_study_layout_top_left = {
   alignItems: "center",
   justifyContent: "space-between",
   marginRight: "15px",
-  listStyle:"none"
+  listStyle: "none",
 };
 const style_study_layout_top_right = {
   display: "flex",

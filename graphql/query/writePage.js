@@ -160,6 +160,43 @@ export const UPDATE_BOOK_TITLE_AND_HIDE = gql`
   }
 `;
 
+export const DELETE_A_BOOK = gql`
+  mutation BookDeleteMutation($mybook_id: String!) {
+    mybook_delete(mybook_id: $mybook_id) {
+      status
+      msg
+      mybooks {
+        _id
+        stats {
+          recent {
+            timeStudy
+            timeModify
+          }
+          numCards {
+            total
+            read
+            flip
+          }
+          progress
+          numSession
+        }
+        mybook_info {
+          title
+          type
+          user_id
+          mybookcate_id
+          seq_in_category
+          hide_or_show
+          studylike
+          writelike
+          seq_in_studylike
+          seq_in_writelike
+        }
+      }
+    }
+  }
+`;
+
 export const CHANGE_POSITION_OF_BOOK = gql`
   mutation PositioningBookMutation($direction: String, $mybook_id: String!) {
     mybook_changeorder(direction: $direction, mybook_id: $mybook_id) {

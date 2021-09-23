@@ -55,7 +55,7 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
 
           positionBooks('down', _record._id);
         }}
-        disabled={_record.markedShowLastChild}
+        disabled={_record.isLastBookInShowList}
         size="small"
         shape="circle"
       >

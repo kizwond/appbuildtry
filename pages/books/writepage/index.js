@@ -64,7 +64,13 @@ const Writeanother = () => {
 
       <Row>
         <StyledCol>
-          <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+          <BooksTable
+            category={category}
+            myBook={myBook}
+            handleToGetMyBook={handleToGetMyBook}
+            isPopupSomething={isPopupSomething}
+            chagePopup={chagePopup}
+          />
         </StyledCol>
       </Row>
     </Layout>
@@ -79,6 +85,9 @@ const StyledSpace = styled(Space)`
   }
 `;
 const StyledCol = styled(Col)`
+  & * {
+    font-size: 0.8rem;
+  }
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 1px 0;
   }
@@ -87,8 +96,6 @@ const StyledCol = styled(Col)`
     border-collapse: collapse;
   }
 
-  & .MiddleHiddenBar > .Row-First-Left > div,
-  & .LastHiddenBar > .Row-First-Left > div,
   & .foldedCategory > .Row-First-Left > div {
     background: rgb(191, 191, 191);
     border-radius: 8px;
@@ -97,6 +104,22 @@ const StyledCol = styled(Col)`
     padding-bottom: 4px;
     padding-left: 15px;
     height: 30px;
+    display: flex;
+    align-items: center;
+  }
+  & .MiddleHiddenBar > .Row-First-Left > div,
+  & .LastHiddenBar > .Row-First-Left > div {
+    background: rgb(191, 191, 191);
+    border-radius: 8px;
+    margin: 3px 0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 15px;
+    height: 30px;
+    font-size: 0.7rem;
+  }
+  & .HandleOnOffShow > span {
+    font-size: 0.7rem;
   }
 
   & .NoBooksCategory > .Row-First-Left > div {
@@ -107,6 +130,8 @@ const StyledCol = styled(Col)`
     padding-bottom: 4px;
     padding-left: 15px;
     height: 30px;
+    display: flex;
+    align-items: center;
   }
 
   & .categoryCol {
@@ -132,7 +157,7 @@ const StyledCol = styled(Col)`
   & .lastEvenBook > .Row-Last-One {
     border-bottom: 0.5px solid #b3b2b2;
   }
-  & .lastEvenBook > .Row-First-Left > div,
+
   & .lastEvenBook > .normal > div,
   & .lastEvenBook > .Row-Last-One > div {
     background-color: #f5f5f5;
@@ -140,10 +165,23 @@ const StyledCol = styled(Col)`
     padding-top: 4px;
     padding-bottom: 4px;
     margin-bottom: 3px;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  & .lastEvenBook > .Row-First-Left > div {
+    background-color: #f5f5f5;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
   }
 
-  & .lastEvenBook > .normal > div {
-    background-color: #f5f5f5;
+  & .lastEvenBook > .normal > div.BookOrder {
     color: #f5f5f5;
   }
 
@@ -162,14 +200,32 @@ const StyledCol = styled(Col)`
   & .lastOddBook > .Row-Last-One {
     border-bottom: 0.5px solid #b3b2b2;
   }
-  & .lastOddBook > .Row-First-Left > div,
+
   & .lastOddBook > .normal > div,
   & .lastOddBook > .Row-Last-One > div {
-    background-color: white;
+    background-color: #fff;
     height: 34px;
     padding-top: 4px;
     padding-bottom: 4px;
     margin-bottom: 3px;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  & .lastOddBook > .Row-First-Left > div {
+    background-color: #fff;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+  }
+
+  & .lastOddBook > .normal > div.BookOrder {
+    color: #fff;
   }
 
   & .lastOddBook > .Row-First-Left > div {
@@ -182,14 +238,28 @@ const StyledCol = styled(Col)`
     border-bottom-right-radius: 10px;
   }
 
-  & .EvenNumberRow > .Row-First-Left > div,
   & .EvenNumberRow > .normal > div,
   & .EvenNumberRow > .Row-Last-One > div {
     background-color: #f5f5f5;
     height: 34px;
     padding-top: 4px;
     padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
+  & .EvenNumberRow > .Row-First-Left > div {
+    background-color: #f5f5f5;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+  }
+  & .EvenNumberRow > .normal > div.BookOrder {
+    color: #f5f5f5;
+  }
+
   & .EvenNumberRow > .Row-First-Left > div {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -200,13 +270,26 @@ const StyledCol = styled(Col)`
     border-bottom-right-radius: 10px;
   }
 
-  & .OddNumberRow > .Row-First-Left > div,
   & .OddNumberRow > .normal > div,
   & .OddNumberRow > .Row-Last-One > div {
     background-color: #fff;
     height: 34px;
     padding-top: 4px;
     padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  & .OddNumberRow > .Row-First-Left > div {
+    background-color: #fff;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+  }
+  & .OddNumberRow > .normal > div.BookOrder {
+    color: #fff;
   }
   & .OddNumberRow > .Row-First-Left > div {
     border-top-left-radius: 10px;

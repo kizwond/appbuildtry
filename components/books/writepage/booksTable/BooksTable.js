@@ -1,10 +1,11 @@
 /* eslint-disable react/display-name */
-import { Table, Button, Card } from 'antd';
+import { Table, Button, Card, Tooltip, Row, Col, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import BookOrderButton from './BookOrderButton';
 import BookTitleChange from './BookTitleChange';
 import HideOrShowButton from './HideOrShowButton';
 import DeleteBookButton from './DeleteBookButton';
+import { VerticalAlignBottomOutlined } from '@ant-design/icons';
 
 const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -95,22 +96,36 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       key: `KEY:${_cate._id}HIDDENBAR`,
       classType: 'hiddenBar',
       title: (
-        <div>
-          {`${markedHideListLength} 숨겨진 책이 있습니다.`}
-          <Button
-            size="small"
-            onClick={() => {
-              if (isShowedAllBooks) {
-                setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== _cate._id));
-              }
-              if (!isShowedAllBooks) {
-                setIsShowedHiddenBook([...isShowedHiddenBook, _cate._id]);
-              }
-            }}
-          >
-            {!isShowedAllBooks ? '숨긴책도 보기' : '숨긴책은 접기'}
-          </Button>
-        </div>
+        <>
+          <Row align="middle">
+            <Col span={8}>{`${markedHideListLength} 숨겨진 책이 있습니다.`}</Col>
+            <Col>
+              <Tooltip
+                title={isShowedAllBooks ? '숨긴 책 감추기' : '숨긴 책 표시'}
+                color="rgba(7, 164, 237, 0.522)"
+                overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
+                overlayStyle={{ alignSelf: 'middle' }}
+              >
+                <Tag
+                  className="HandleOnOffShow"
+                  size="small"
+                  color={isShowedAllBooks ? 'geekblue' : 'lime'}
+                  icon={<VerticalAlignBottomOutlined rotate={isShowedAllBooks ? 180 : 0} />}
+                  onClick={() => {
+                    if (isShowedAllBooks) {
+                      setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== _cate._id));
+                    }
+                    if (!isShowedAllBooks) {
+                      setIsShowedHiddenBook([...isShowedHiddenBook, _cate._id]);
+                    }
+                  }}
+                >
+                  {isShowedAllBooks ? '접기' : '보기'}
+                </Tag>
+              </Tooltip>
+            </Col>
+          </Row>
+        </>
       ),
     };
 
@@ -135,7 +150,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       }
       // 숨긴 책과 표시 책 각각 1권 이상일 때
       else if (markedShowListLength >= 1 && markedHideListLength >= 1) {
-        showedList = !isShowedAllBooks ? [...showList, { ...hiddenBar }] : [...showList, { ...hiddenBar, classType: 'middle-hiddenBar' }, ...hiddenList];
+        showedList = !isShowedAllBooks
+          ? [...showList, { ...hiddenBar }]
+          : [...showList, { ...hiddenBar, classType: 'middle-hiddenBar' }, ...hiddenList];
       }
       // 표시 책이 0권 일때
       else if (markedShowListLength === 0) {
@@ -266,7 +283,11 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       width: 80,
       render: (_value, _record) => {
         const obj = {
-          children: <div>{_record.hide_or_show === 'hide' ? '.' : <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} />}</div>,
+          children: (
+            <div className="BookOrder">
+              {_record.hide_or_show === 'hide' ? '.' : <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} />}
+            </div>
+          ),
           props: {},
         };
         if (

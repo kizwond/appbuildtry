@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { CHANGE_POSITION_OF_BOOK } from '../../../../graphql/query/writePage';
 
 import { Button } from 'antd';
+import { Space } from '../../../../node_modules/antd/lib/index';
 
 // todo 버튼 만들어서 useMutation부분 옮겨보자
 
@@ -36,7 +37,7 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
   }
 
   return (
-    <>
+    <Space>
       <Button
         onClick={() => {
           console.log(_record);
@@ -61,7 +62,7 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
       >
         하
       </Button>
-    </>
+    </Space>
   );
 };
 

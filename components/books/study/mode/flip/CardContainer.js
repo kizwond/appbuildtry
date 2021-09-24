@@ -98,6 +98,7 @@ class Container extends Component {
           timer={this.state.time}
           cardListStudying={this.props.cardListStudying}
           sessionScope={this.props.sessionScope}
+          ttsFields={this.props.ttsFields}
         />
       </>
     );
@@ -118,6 +119,7 @@ const CardContainer = ({
   timer,
   cardListStudying,
   sessionScope,
+  ttsFields
 }) => {
   const [cards, setCards] = useState();
   const [levelconfigs, setLevelconfigs] = useState();
@@ -125,6 +127,7 @@ const CardContainer = ({
   const [face1Contents, setFace1Contents] = useState("");
   const [face2Contents, setFace2Contents] = useState("");
   const [cardTypes, setCardTypes] = useState();
+  const [render, setRender] = useState("yet");
   const [getData, { loading, error, data }] = useLazyQuery(GetContents, {
     onCompleted: onCompletedGetContents,
   });
@@ -223,14 +226,14 @@ const CardContainer = ({
       }
       
 
-      const face1 = current_card.face1.map((item) => (
+      const face1 = current_card.face1.map((item, index) => (
         <>
-          <div id="face1">{item}</div>
+          <div id={`face1_row${index+1}`}>{item}</div>
         </>
       ));
-      const face2 = current_card.face2.map((item) => (
+      const face2 = current_card.face2.map((item, index) => (
         <>
-          <div>{item}</div>
+          <div id={`face2_row${index+1}`}>{item}</div>
         </>
       ));
       var face1_contents = <div style={{backgroundColor:face_background_color, border:`${face_border_top_thickness}px ${face_border_top_bordertype} ${face_border_top_color}`}}>{face1}</div>;
@@ -258,8 +261,10 @@ const CardContainer = ({
         </>
       ));
       setDiffis(diffiButtons);
+      setRender("finished")
     }
-  }, [cards, levelconfigs, cardListStudying, onDiffClickHandler, timer]);
+    
+  }, [cardTypes,cards, levelconfigs, cardListStudying, onDiffClickHandler, timer]);
 
   const milliseconds = (h, m, s) => (h * 60 * 60 + m * 60 + s) * 1000;
 
@@ -372,6 +377,13 @@ const CardContainer = ({
   useEffect(() => {
     cardShow();
   }, [cardShow]);
+
+  useEffect(() => {
+    
+    if(render === "finished"){
+      speakText()
+    }
+  }, [render]);
 
   const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataposition });
 
@@ -524,8 +536,7 @@ const CardContainer = ({
 
     window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
 
-    const text = document.getElementById("face1");
-    console.log(text);
+    const text = document.getElementById("face2_row1");
     const speechMsg = new SpeechSynthesisUtterance();
     speechMsg.rate = 1; // 속도: 0.1 ~ 10
     speechMsg.pitch = 1; // 음높이: 0 ~ 2
@@ -534,6 +545,7 @@ const CardContainer = ({
 
     // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
     window.speechSynthesis.speak(speechMsg);
+    setRender("yet")
   };
   return (
     <>

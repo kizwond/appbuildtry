@@ -5,7 +5,7 @@ import TtsSettingModal from "./TtsSettingModal";
 
 const { SubMenu } = Menu;
 
-const StudyNav = ({sessionScope}) => {
+const StudyNav = ({sessionScope, onChangeTTS}) => {
   const [current, setCurrent] = useState("mail");
   const handleClick = (e) => {
     console.log("click ", e);
@@ -35,7 +35,7 @@ const StudyNav = ({sessionScope}) => {
         <Menu.Divider />
         <Menu.Item>보이기/순기기 설정</Menu.Item>
         <Menu.Divider />
-        <Menu.Item><TtsSettingModal sessionScope={sessionScope} /></Menu.Item>
+        <Menu.Item><TtsSettingModal onChangeTTS={onChangeTTS} sessionScope={sessionScope} /></Menu.Item>
       </Menu.ItemGroup>
     </Menu>
   );

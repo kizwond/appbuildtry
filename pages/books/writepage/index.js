@@ -79,6 +79,36 @@ const StyledSpace = styled(Space)`
   }
 `;
 const StyledCol = styled(Col)`
+  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
+    padding: 1px 0;
+  }
+
+  & .ant-table table {
+    border-collapse: collapse;
+  }
+
+  & .MiddleHiddenBar > .Row-First-Left > div,
+  & .LastHiddenBar > .Row-First-Left > div,
+  & .foldedCategory > .Row-First-Left > div {
+    background: rgb(191, 191, 191);
+    border-radius: 8px;
+    margin: 3px 0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 15px;
+    height: 30px;
+  }
+
+  & .NoBooksCategory > .Row-First-Left > div {
+    background: rgb(228, 224, 224);
+    border-radius: 8px;
+    margin: 3px 0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 15px;
+    height: 30px;
+  }
+
   & .categoryCol {
     border-bottom: none;
   }
@@ -88,54 +118,109 @@ const StyledCol = styled(Col)`
   & .LastHiddenBar > .categoryCol,
   & .lastEvenBook > .categoryCol,
   & .lastOddBook > .categoryCol {
-    border-bottom: 2px solid #7609f1 !important;
+    border-bottom: 0.5px solid #b3b2b2;
   }
 
-  & .NoBooksCategory > .categoryCol,
-  & .NoBooksCategory > .categoryCol {
-    /* border-bottom: 1px solid #f0f0f0; */
-  }
-  & .MiddleHiddenBar > .normal,
-  & .LastHiddenBar > .normal,
-  & .NoBooksCategory > .normal,
-  & .foldedCategory > .normal {
-    background-color: #bfbfbf;
-    border-top: 2px solid white;
-    border-bottom: 2px solid white;
-  }
-  & .LastHiddenBar > .normal,
-  & .NoBooksCategory > .normal,
-  & .foldedCategory > .normal {
-    border-bottom: 2px solid #7609f1;
-    border-radius: 10px;
-    padding: 5px !important;
-    margin: 10px;
+  & .LastHiddenBar > .Row-First-Left,
+  & .NoBooksCategory > .Row-First-Left,
+  & .foldedCategory > .Row-First-Left {
+    border-bottom: 0.5px solid #b3b2b2;
   }
 
-  & .lastEvenBook > .normal {
-    border-bottom: 2px solid #7609f1;
-    border-radius: 10px;
-    padding: 5px !important;
-    margin: 10px;
+  & .lastEvenBook > .Row-First-Left,
+  & .lastEvenBook > .normal,
+  & .lastEvenBook > .Row-Last-One {
+    border-bottom: 0.5px solid #b3b2b2;
+  }
+  & .lastEvenBook > .Row-First-Left > div,
+  & .lastEvenBook > .normal > div,
+  & .lastEvenBook > .Row-Last-One > div {
     background-color: #f5f5f5;
-  }
-  & .lastOddBook > .normal {
-    border-bottom: 2px solid #7609f1;
-    border-radius: 10px;
-    padding: 5px !important;
-    margin: 10px;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
   }
 
-  & .EvenNumberRow > .normal {
+  & .lastEvenBook > .normal > div {
     background-color: #f5f5f5;
+    color: #f5f5f5;
   }
 
-  & .LastHiddenBar > .categoryCol {
-    /* border-bottom: 1px solid #f0f0f0; */
+  & .lastEvenBook > .Row-First-Left > div {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding-left: 15px;
   }
-  & .ant-table-thead .categoryCol::before {
+  & .lastEvenBook > .Row-Last-One > div {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  & .lastOddBook > .Row-First-Left,
+  & .lastOddBook > .normal,
+  & .lastOddBook > .Row-Last-One {
+    border-bottom: 0.5px solid #b3b2b2;
+  }
+  & .lastOddBook > .Row-First-Left > div,
+  & .lastOddBook > .normal > div,
+  & .lastOddBook > .Row-Last-One > div {
+    background-color: white;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
+  }
+
+  & .lastOddBook > .Row-First-Left > div {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding-left: 15px;
+  }
+  & .lastOddBook > .Row-Last-One > div {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  & .EvenNumberRow > .Row-First-Left > div,
+  & .EvenNumberRow > .normal > div,
+  & .EvenNumberRow > .Row-Last-One > div {
+    background-color: #f5f5f5;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  & .EvenNumberRow > .Row-First-Left > div {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding-left: 15px;
+  }
+  & .EvenNumberRow > .Row-Last-One > div {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  & .OddNumberRow > .Row-First-Left > div,
+  & .OddNumberRow > .normal > div,
+  & .OddNumberRow > .Row-Last-One > div {
+    background-color: #fff;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  & .OddNumberRow > .Row-First-Left > div {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding-left: 15px;
+  }
+  & .OddNumberRow > .Row-Last-One > div {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  /* & .ant-table-thead .categoryCol::before {
     display: none;
-  }
+  } */
   & .ant-table-thead .categoryCol {
     border-bottom: 1px solid #f0f0f0;
   }

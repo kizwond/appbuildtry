@@ -80,15 +80,14 @@ const StyledSpace = styled(Space)`
 `;
 const StyledCol = styled(Col)`
   & .categoryCol {
-    /* border: none; */
     border-bottom: none;
-    /* border-right: 1px solid #f0f0f0; */
   }
 
   & .foldedCategory > .categoryCol,
   & .NoBooksCategory > .categoryCol,
   & .LastHiddenBar > .categoryCol,
-  & .lastBook > .categoryCol {
+  & .lastEvenBook > .categoryCol,
+  & .lastOddBook > .categoryCol {
     border-bottom: 2px solid #7609f1 !important;
   }
 
@@ -106,13 +105,27 @@ const StyledCol = styled(Col)`
   }
   & .LastHiddenBar > .normal,
   & .NoBooksCategory > .normal,
-  & .foldedCategory > .normal,
-  & .lastBook > .normal {
+  & .foldedCategory > .normal {
     border-bottom: 2px solid #7609f1;
     border-radius: 10px;
     padding: 5px !important;
     margin: 10px;
   }
+
+  & .lastEvenBook > .normal {
+    border-bottom: 2px solid #7609f1;
+    border-radius: 10px;
+    padding: 5px !important;
+    margin: 10px;
+    background-color: #f5f5f5;
+  }
+  & .lastOddBook > .normal {
+    border-bottom: 2px solid #7609f1;
+    border-radius: 10px;
+    padding: 5px !important;
+    margin: 10px;
+  }
+
   & .EvenNumberRow > .normal {
     background-color: #f5f5f5;
   }

@@ -33,6 +33,17 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
     const { name, seq } = _cate.mybookcate_info;
     const categoryBooksList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id);
     const categoryBooksLength = categoryBooksList.length;
+    if (categoryBooksLength === 0) {
+      return {
+        relationship: 'parent',
+        classType: 'empty-category',
+        categoryOrder: seq,
+        categoryName: name,
+        key: `KEY:${_cate._id}INDEX:0`,
+        // children: [],
+      };
+    }
+
     const markedShowList = categoryBooksList.filter((_book) => _book.mybook_info.hide_or_show == 'show');
     const markedShowListLength = markedShowList.length;
     const markedHideList = categoryBooksList.filter((_book) => _book.mybook_info.hide_or_show == 'hide');
@@ -42,36 +53,50 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
     const parentKey = `KEY:${_cate._id}INDEX:0`;
     const isUnfoldedCategory = expandedRowKeys.includes(parentKey);
 
-    const showedList = isShowedAllBooks ? [...markedShowList, ...markedHideList] : markedShowList;
-
-    const childrenBooks = showedList.filter((_, _index) => _index !== 0);
-    const childrenArray = childrenBooks.map((_book, _index) => ({
+    const showList = markedShowList.map((_book, _index) => ({
       ..._book.mybook_info,
       ..._book.stats?.numCards,
       ..._book.stats?.recent,
       numSession: _book.stats?.numSession,
       progress: _book.stats?.progress,
-      relationship: 'child',
+      classType:
+        markedHideListLength === 0 && markedShowListLength > 0 && markedShowListLength === _index + 1 && _index % 2 !== 0
+          ? 'last-even-book'
+          : markedHideListLength === 0 && markedShowListLength > 0 && markedShowListLength === _index + 1 && _index % 2 === 0
+          ? 'last-odd-book'
+          : _index % 2 !== 0
+          ? 'even-book'
+          : 'odd-book',
       categoryOrder: seq,
+      isLastBookInShowList: markedShowListLength === _index + 1,
       categoryName: name,
-      isEvenNumber: markedShowListLength > _index + 1 ? _index % 2 === 0 : (_index - markedShowListLength) % 2 === 0,
       key: `KEY:${_cate._id}INDEX:${_index + 1}`,
       _id: _book._id,
-      isLastCategory: _categoryIndex + 1 == category.length,
-      lastChild:
-        markedShowListLength === 0
-          ? false
-          : markedHideListLength === 0
-          ? Boolean(showedList.length === _index + 2)
-          : isShowedAllBooks
-          ? Boolean(showedList.length === _index + 2)
-          : false,
-      markedShowLastChild: markedShowListLength === _index + 2,
+    }));
+
+    const hiddenList = markedHideList.map((_book, _index) => ({
+      ..._book.mybook_info,
+      ..._book.stats?.numCards,
+      ..._book.stats?.recent,
+      numSession: _book.stats?.numSession,
+      progress: _book.stats?.progress,
+      classType:
+        markedHideListLength > 0 && isShowedAllBooks && markedHideListLength === _index + 1 && _index % 2 !== 0
+          ? 'last-even-book'
+          : markedHideListLength > 0 && isShowedAllBooks && markedHideListLength === _index + 1 && _index % 2 === 0
+          ? 'last-odd-book'
+          : _index % 2 !== 0
+          ? 'even-book'
+          : 'odd-book',
+      categoryOrder: seq,
+      categoryName: name,
+      key: `KEY:${_cate._id}INDEX_HIDDEN:${_index}`,
+      _id: _book._id,
     }));
 
     const hiddenBar = {
       key: `KEY:${_cate._id}HIDDENBAR`,
-      relationship: 'hiddenBar',
+      classType: 'hiddenBar',
       title: (
         <div>
           {`${markedHideListLength} 숨겨진 책이 있습니다.`}
@@ -90,74 +115,49 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
           </Button>
         </div>
       ),
-      lastChild: markedShowListLength === 0 ? true : isShowedAllBooks ? false : true,
     };
-    const withHiddenBar = childrenArray.map((i) => i);
-    if (markedShowListLength > 0) {
-      withHiddenBar.splice(markedShowListLength - 1, 0, hiddenBar);
-    }
-    if (markedShowListLength === 0) {
-      withHiddenBar.splice(0, 0, hiddenBar);
-    }
-    const children = markedHideListLength > 0 ? withHiddenBar : childrenArray;
 
-    const parentBooks = showedList.filter((_, _index) => _index === 0);
-    const parent =
-      parentBooks.length > 0
-        ? {
-            ...parentBooks[0].mybook_info,
-            ...parentBooks[0].stats.numCards,
-            ...parentBooks[0].stats.recent,
-            numSession: parentBooks[0].stats.numSession,
-            progress: parentBooks[0].stats.progress,
-            relationship: 'parent',
-            categoryOrder: seq,
-            categoryName: name,
-            isEvenNumber: false,
-            key: `KEY:${_cate._id}INDEX:0`,
-            _id: parentBooks[0]._id,
-            showedListLength: markedShowListLength + markedHideListLength,
-            hiddenBook: markedHideListLength,
-            markedShowLastChild: markedHideListLength > 0 ? children.length === 1 : children.length === 0,
-            children,
-            isLastCategory: _categoryIndex + 1 == category.length,
-          }
-        : categoryBooksList.length > 0
-        ? {
-            key: `KEY:${_cate._id}INDEX:0`,
-            relationship: 'parent',
-            categoryOrder: seq,
-            categoryName: name,
-            type: 'all-hidden-books',
-            title: (
-              <div>
-                {`${markedHideListLength} 숨겨진 책이 있습니다.`}
-                <Button
-                  size="small"
-                  onClick={() => {
-                    if (isShowedAllBooks) {
-                      setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== _cate._id));
-                    }
-                    if (!isShowedAllBooks) {
-                      setIsShowedHiddenBook([...isShowedHiddenBook, _cate._id]);
-                    }
-                  }}
-                >
-                  {!isShowedAllBooks ? '숨긴책도 보기' : '숨긴책은 접기'}
-                </Button>
-              </div>
-            ),
-            lastChild: markedShowListLength === 0 ? true : isShowedAllBooks ? false : true,
-            isLastCategory: _categoryIndex + 1 == category.length,
-          }
-        : {
-            relationship: 'parent',
-            categoryOrder: seq,
-            categoryName: name,
-            key: `KEY:${_cate._id}INDEX:0`,
-            type: 'empty-category',
-            isLastCategory: _categoryIndex + 1 == category.length,
-          };
+    let showedList;
+
+    // 전체 책이 1권
+    if (categoryBooksLength === 1) {
+      //숨긴 책이 0권 일때
+      if (markedHideListLength === 0) {
+        showedList = [...showList];
+      }
+      // 숨긴 책이 1권 일때 (표시 책 0권)
+      else if (markedHideListLength === 1) {
+        showedList = !isShowedAllBooks ? [{ ...hiddenBar }] : [{ ...hiddenBar, classType: 'middle-hiddenBar' }, ...hiddenList];
+      }
+    }
+    // 전체 책이 2권 이상
+    else if (categoryBooksLength >= 2) {
+      // 숨긴 책이 0권이며, 표시 책이 2권 이상일 때
+      if (markedHideListLength === 0) {
+        showedList = [...showList];
+      }
+      // 숨긴 책과 표시 책 각각 1권 이상일 때
+      else if (markedShowListLength >= 1 && markedHideListLength >= 1) {
+        showedList = !isShowedAllBooks ? [...showList, { ...hiddenBar }] : [...showList, { ...hiddenBar, classType: 'middle-hiddenBar' }, ...hiddenList];
+      }
+      // 표시 책이 0권 일때
+      else if (markedShowListLength === 0) {
+        showedList = !isShowedAllBooks ? [{ ...hiddenBar }] : [{ ...hiddenBar, classType: 'middle-hiddenBar' }, ...hiddenList];
+      }
+    }
+
+    const parentBooks = showedList[0];
+    const childrenBooks = showedList.filter((_, _index) => _index !== 0);
+    const parent = {
+      ...parentBooks,
+      key: `KEY:${_cate._id}INDEX:0`,
+      categoryOrder: seq,
+      categoryName: name,
+      relationship: 'parent',
+      children: childrenBooks,
+      totalBooksNum: categoryBooksLength,
+      totalHiddenBooksNum: markedHideListLength,
+    };
 
     return parent;
   });
@@ -181,17 +181,18 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       render: (value, _record, index) => {
         const obj = {
           children:
-            _record.type === 'empty-category'
+            _record.classType === 'empty-category'
               ? '빈 칸테고리'
-              : !expandedRowKeys.includes(_record.key) && _record.relationship === 'parent'
-              ? `카테고리내 책 수량: ${_record.showedListLength}(숨긴책: ${_record.hiddenBook})`
+              : _record.relationship === 'parent' && !expandedRowKeys.includes(_record.key)
+              ? `카테고리내 책 수량: ${_record.totalBooksNum}(숨긴책: ${_record.totalHiddenBooksNum})`
               : value,
           props: {},
         };
         if (
           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.relationship === 'hiddenBar' ||
-          _record.type === 'all-hidden-books'
+          _record.classType === 'hiddenBar' ||
+          _record.classType === 'middle-hiddenBar' ||
+          _record.classType === 'empty-category'
         ) {
           obj.props.colSpan = columns.length - 1;
         } else {
@@ -224,8 +225,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         };
         if (
           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.relationship === 'hiddenBar' ||
-          _record.type === 'all-hidden-books'
+          _record.classType === 'hiddenBar' ||
+          _record.classType === 'middle-hiddenBar' ||
+          _record.classType === 'empty-category'
         ) {
           obj.props.colSpan = 0;
         } else {
@@ -244,8 +246,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         };
         if (
           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.relationship === 'hiddenBar' ||
-          _record.type === 'all-hidden-books'
+          _record.classType === 'hiddenBar' ||
+          _record.classType === 'middle-hiddenBar' ||
+          _record.classType === 'empty-category'
         ) {
           obj.props.colSpan = 0;
         } else {
@@ -266,8 +269,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         };
         if (
           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.relationship === 'hiddenBar' ||
-          _record.type === 'all-hidden-books'
+          _record.classType === 'hiddenBar' ||
+          _record.classType === 'middle-hiddenBar' ||
+          _record.classType === 'empty-category'
         ) {
           obj.props.colSpan = 0;
         } else {
@@ -288,8 +292,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         };
         if (
           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.relationship === 'hiddenBar' ||
-          _record.type === 'all-hidden-books'
+          _record.classType === 'hiddenBar' ||
+          _record.classType === 'middle-hiddenBar' ||
+          _record.classType === 'empty-category'
         ) {
           obj.props.colSpan = 0;
         } else {
@@ -316,8 +321,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         };
         if (
           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.relationship === 'hiddenBar' ||
-          _record.type === 'all-hidden-books'
+          _record.classType === 'hiddenBar' ||
+          _record.classType === 'middle-hiddenBar' ||
+          _record.classType === 'empty-category'
         ) {
           obj.props.colSpan = 0;
         } else {
@@ -339,25 +345,19 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
       // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
       rowClassName={(record, index) =>
-        (record.type === 'empty-category' && !record.isLastCategory) || record.type === 'all-hidden-books'
+        record.classType === 'empty-category'
           ? 'NoBooksCategory'
-          : !expandedRowKeys.includes(record.key) && record.relationship === 'parent' && !record.isLastCategory
+          : !expandedRowKeys.includes(record.key) && record.relationship === 'parent'
           ? 'foldedCategory'
-          : record.relationship === 'hiddenBar' && record.lastChild && !record.isLastCategory
+          : record.classType === 'hiddenBar'
           ? 'LastHiddenBar'
-          : record.relationship === 'hiddenBar' && !record.lastChild && !record.isLastCategory
+          : record.classType === 'middle-hiddenBar'
           ? 'MiddleHiddenBar'
-          : record.lastChild
-          ? 'lastBook'
-          : (record.type === 'empty-category' && record.isLastCategory) || (record.type === 'all-hidden-books' && record.isLastCategory)
-          ? 'Middle'
-          : !expandedRowKeys.includes(record.key) && record.relationship === 'parent' && record.isLastCategory
-          ? 'foldedCategory'
-          : record.relationship === 'hiddenBar' && record.lastChild && record.isLastCategory
-          ? 'LastHiddenBar'
-          : record.relationship === 'hiddenBar' && !record.lastChild && record.isLastCategory
-          ? 'MiddleHiddenBar'
-          : record.isEvenNumber
+          : record.classType === 'last-even-book'
+          ? 'lastEvenBook'
+          : record.classType === 'last-odd-book'
+          ? 'lastOddBook'
+          : record.classType === 'even-book'
           ? 'EvenNumberRow'
           : 'Books'
       }

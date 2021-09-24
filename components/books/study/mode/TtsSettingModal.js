@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "antd";
-import { GetCardTypeSet } from "../../../../graphql/query/cardtype";
-import { useMutation, useLazyQuery } from "@apollo/client";
+import { GetCardTypeSets } from "../../../../graphql/query/cardtype";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { Checkbox } from 'antd';
 
-const TtsSettingModal = ({ sessionScope }) => {
+const TtsSettingModal = ({ sessionScope, onChangeTTS }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [bookIds, setBookIds] = useState();
 
   const [counter, setCounter] = useState(0);
   const [isOnProcessing, setIsOnProcessing] = useState(true);
   const [cardTypeSets, setCardTypeSets] = useState();
+  const [rows, setRows] = useState();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -23,34 +25,37 @@ const TtsSettingModal = ({ sessionScope }) => {
     setIsModalVisible(false);
   };
 
-  const [cardtypeset_getbymybookid, { loading, error, data }] = useLazyQuery(GetCardTypeSet, {
+  const { loading, error, data } = useQuery(GetCardTypeSets, {
+    variables: { mybook_ids: bookIds },
     onCompleted: onCompletedGetCardSet,
   });
 
   function onCompletedGetCardSet() {
-    console.log("onCompletedGetCardSet", data);
-
-    if (counter == 0) {
-        console.log("0000000000000000")
-    //   setCardTypeSets(data.cardtypeset_getbymybookid.cardtypesets[0]);
-      console.log("11111111111111111")
-    } else {
-        console.log("2222222222222222222222")
-        // setCardTypeSets([...cardTypeSets, data.cardtypeset_getbymybookid.cardtypesets[0]]);
-    }
-    console.log(counter)
-    console.log(bookIds.length-1)
-    if (counter < bookIds.length - 1) {
-      console.log("카운터설정");
-      console.log(counter)
-      setCounter((prev) => prev + 1);
-    } else{
-        console.log("after")
-        setIsOnProcessing(false);
-        setCounter(0);
-        console.log("end")
-    }
-    // console.log(cardTypeSets);
+    console.log("onCompletedGetCardSet", data.cardtypeset_getbymybookids.cardtypesets);
+    let cardtypes = []
+    data.cardtypeset_getbymybookids.cardtypesets.map(item=>{
+      item.cardtypes.map(type=>{
+        cardtypes.push(type.cardtype_info.num_of_row)
+      })
+    })
+    console.log(cardtypes)
+    let array = [{face1: 0, face2:0}]
+    cardtypes.map(item=>{
+      if(item.face1 === array[0].face1){
+        console.log("1")
+      } else if(item.face1 > array[0].face1){
+        console.log("2")
+        array[0].face1 = item.face1
+      }
+      if(item.face2 === array[0].face2){
+        console.log("3")
+      } else if(item.face2 > array[0].face2){
+        console.log("4")
+        array[0].face2 = item.face2
+      }
+    })
+    console.log(array)
+    setRows(array)
   }
   useEffect(() => {
     console.log("===================ttsModal Page=====================");
@@ -62,38 +67,38 @@ const TtsSettingModal = ({ sessionScope }) => {
         return item.mybook_id;
       });
       console.log(value);
-      console.log('counter:',counter)
-      console.log(value.length -1)
-      if(counter == 0 && isOnProcessing === true){
-        cardtypeset_getbymybookid({ variables: { mybook_id: value[counter] } });
-        console.log("1")
-      } else if(value.length - 1 > counter > 0 && isOnProcessing === true) {
-        cardtypeset_getbymybookid({ variables: { mybook_id: value[counter] } });
-        console.log("2")
-      } else if(value.length - 1 == counter && isOnProcessing === true){
-          console.log("here")
-        cardtypeset_getbymybookid({ variables: { mybook_id: value[counter] } });
-        console.log("3")
-      } else if(value.length - 1 < counter){
-        console.log("끝")
-        return
-      }
-      
+
       setBookIds(value);
     }
-  }, [sessionScope,cardtypeset_getbymybookid,counter,isOnProcessing]);
+  }, [sessionScope]);
+  if(rows){
+    var face1_rows = []
+    for (var i = 0; i < rows[0].face1 ; i++) {
+      console.log(i)
+      const face1_row = (<Checkbox onChange={onChangeTTS} value={`face1_row${i+1}`}>face1 row{i+1}</Checkbox> )
+      face1_rows.push(face1_row)
+    }
+    var rows1 = face1_rows.map(item=>item)
 
+    var face2_rows = []
+    for (var i = 0; i < rows[0].face2 ; i++) {
+      console.log(i)
+      const face2_row = (<Checkbox onChange={onChangeTTS} value={`face2_row${i+1}`}>face2 row{i+1}</Checkbox> )
+      face2_rows.push(face2_row)
+    }
+    var rows2 = face2_rows.map(item=>item)
 
-
+  }
+  
   return (
     <>
       <Button type="primary" onClick={showModal}>
         읽어주기설정
       </Button>
-      <Modal title="Basic Modal" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <p>Some contents...</p>
-        <p>Some contentsㄹㄹㄹㄹㄹㄹ...</p>
-        <p>Some contents...</p>
+      <Modal title="읽어주기 설정" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+        {rows1}
+        {rows2}
+        <button>적용하기</button>
       </Modal>
     </>
   );

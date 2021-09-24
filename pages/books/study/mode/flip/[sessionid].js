@@ -12,6 +12,7 @@ const FlipMode = () => {
 
   const [cardListStudying, setCardListStudying] = useState();
   const [sessionScope, setSessionScope] = useState();
+  const [ttsFields, setTtsFields] = useState([]);
 
   const ISSERVER = typeof window === 'undefined';
   if (!ISSERVER) {
@@ -42,12 +43,29 @@ const FlipMode = () => {
 
   console.log('here');
 
+  function onChangeTTS(e) {
+    console.log(`checked = ${e.target.checked}`);
+    console.log(`value = ${e.target.value}`);
+    if(e.target.checked === true){
+      const newvalue = ttsFields.concat(e.target.value)
+      setTtsFields(newvalue)
+      console.log(newvalue)
+    } else {
+      const newvalue = ttsFields;
+      const idx = newvalue.indexOf(e.target.value) 
+      if (idx > -1) newvalue.splice(idx, 1)
+      setTtsFields(newvalue)
+      console.log(newvalue)
+    }
+  }
+
   return (
     <Layout>
-      <StudyNav sessionScope={sessionScope}/>
+      <StudyNav onChangeTTS={onChangeTTS} sessionScope={sessionScope}/>
       <CardContainer
         cardListStudying={cardListStudying}
         sessionScope={sessionScope}
+        ttsFields={ttsFields}
       />
     </Layout>
   );

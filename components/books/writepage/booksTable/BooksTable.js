@@ -27,7 +27,10 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
   console.log('마운트 아래 코드');
   console.log({ expandedRowKeys });
 
-  const dataSource = category.map((_cate, _categoryIndex) => {
+  const noCategoryId = category.filter((_cate) => _cate.mybookcate_info.name == '(미지정)')[0]._id;
+  const noCategoryBooksLength = myBook.filter((_book) => _book.mybook_info.mybookcate_id === noCategoryId).length;
+  const filteredCategory = noCategoryBooksLength > 0 ? category : category.filter((_cate) => _cate.mybookcate_info.name !== '(미지정)');
+  const dataSource = filteredCategory.map((_cate, _categoryIndex) => {
     const { name, seq } = _cate.mybookcate_info;
     const categoryBooksList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id);
     const categoryBooksLength = categoryBooksList.length;

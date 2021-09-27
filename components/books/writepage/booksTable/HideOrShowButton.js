@@ -54,16 +54,14 @@ const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePo
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
-          <Button
+          <EyeOutlined
             onMouseEnter={() => {
               setVisible(true);
             }}
             onMouseLeave={() => {
               setVisible(false);
             }}
-            shape="circle"
             size="small"
-            icon={<EyeOutlined />}
             onClick={() => {
               updateBook('hide');
               setVisible(false);
@@ -78,16 +76,14 @@ const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePo
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
-          <Button
+          <EyeInvisibleOutlined
             onMouseEnter={() => {
               setVisible(true);
             }}
             onMouseLeave={() => {
               setVisible(false);
             }}
-            shape="circle"
             size="small"
-            icon={<EyeInvisibleOutlined />}
             onClick={() => {
               updateBook('show');
               setVisible(false);

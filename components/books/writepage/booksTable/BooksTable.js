@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 import BookOrderButton from './BookOrderButton';
 import BookTitleChange from './BookTitleChange';
 import HideOrShowButton from './HideOrShowButton';
-import DeleteBookButton from './DeleteBookButton';
+import MoveToBookSetting from './MoveToBookSetting';
 import FavoriteBook from './FavoriteBook';
-import { VerticalAlignBottomOutlined, RadarChartOutlined, BarChartOutlined, DollarCircleFilled } from '@ant-design/icons';
-import BookCategoryChange from './BookCategoryChange';
+import { VerticalAlignBottomOutlined, BarChartOutlined, DollarCircleFilled } from '@ant-design/icons';
 
 const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -390,43 +389,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       },
     },
     {
-      title: '카이',
-      align: 'center',
-      className: 'normal',
-      width: 20,
-      render: (value, _record, index) => {
-        const obj = {
-          children: (
-            <div>
-              <BookCategoryChange
-                mybook_id={_record._id}
-                category={category}
-                mybookcate_id={_record.mybookcate_id}
-                title={value}
-                hide_or_show={_record.hide_or_show}
-                isPopupSomething={isPopupSomething}
-                chagePopup={chagePopup}
-                handleToGetMyBook={handleToGetMyBook}
-              />
-            </div>
-          ),
-          props: {},
-        };
-        if (
-          (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.classType === 'hiddenBar' ||
-          _record.classType === 'middle-hiddenBar' ||
-          _record.classType === 'empty-category'
-        ) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
-    {
-      title: '삭제',
+      title: '상설',
       align: 'center',
       className: 'Row-Last-One',
       width: 20,
@@ -434,7 +397,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         const obj = {
           children: (
             <div>
-              <DeleteBookButton
+              <MoveToBookSetting
                 mybook_id={_record._id}
                 title={_record.title}
                 isPopupSomething={isPopupSomething}

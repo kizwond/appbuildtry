@@ -96,8 +96,10 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
         htmlType: 'submit',
       }}
     >
-      {isPopupSomething ? (
-        <Button type={buttonType} shape="circle" size="small" icon={<EditFilled />} />
+      {isPopupSomething && !visible ? (
+        <Button type="text" shape="circle" size="small" icon={<EditFilled />} />
+      ) : isPopupSomething && visible ? (
+        <Button type="primary" shape="circle" size="small" icon={<EditFilled />} />
       ) : (
         <Tooltip
           mouseEnterDelay={0.5}
@@ -107,7 +109,7 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
-          <Button shape="circle" size="small" icon={<EditFilled />} />
+          <Button shape="circle" type="text" size="small" icon={<EditFilled />} />
         </Tooltip>
       )}
     </Popconfirm>

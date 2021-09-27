@@ -101,7 +101,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       title: (
         <>
           <Row align="middle">
-            <Col span={8}>{`${markedHideListLength} 숨겨진 책이 있습니다.`}</Col>
+            <Col span={8} style={{ fontSize: '0.7rem' }}>{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</Col>
             <Col>
               <Tooltip
                 title={isShowedAllBooks ? '숨긴 책 감추기' : '숨긴 책 표시'}
@@ -112,7 +112,8 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                 <Tag
                   className="HandleOnOffShow"
                   size="small"
-                  color={isShowedAllBooks ? 'geekblue' : 'lime'}
+                  style={{ fontSize: '0.7rem' }}
+                  color={isShowedAllBooks ? '#cec8c8' : '#a9a7a7'}
                   icon={<VerticalAlignBottomOutlined rotate={isShowedAllBooks ? 180 : 0} />}
                   onClick={() => {
                     if (isShowedAllBooks) {
@@ -153,9 +154,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       }
       // 숨긴 책과 표시 책 각각 1권 이상일 때
       else if (markedShowListLength >= 1 && markedHideListLength >= 1) {
-        showedList = !isShowedAllBooks
-          ? [...showList, { ...hiddenBar }]
-          : [...showList, { ...hiddenBar, classType: 'middle-hiddenBar' }, ...hiddenList];
+        showedList = !isShowedAllBooks ? [...showList, { ...hiddenBar }] : [...showList, { ...hiddenBar, classType: 'middle-hiddenBar' }, ...hiddenList];
       }
       // 표시 책이 0권 일때
       else if (markedShowListLength === 0) {
@@ -187,7 +186,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       key: 'categoryName',
       className: 'categoryCol',
       ellipsis: true,
-      width: 120,
+      width: 80,
       dataIndex: 'categoryName',
       render: (_value, _record) => (_record.relationship === 'parent' ? _value : null),
     },
@@ -204,25 +203,35 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       key: 'title',
       dataIndex: 'title',
       className: 'Row-First-Left',
-      width: 168,
+      width: 120,
       render: (value, _record, index) => {
         const obj = {
           children:
             _record.classType === 'empty-category' ? (
               <div>빈 칸테고리</div>
             ) : _record.relationship === 'parent' && !expandedRowKeys.includes(_record.key) ? (
-              <div>
-                `카테고리내 책 수량: ${_record.totalBooksNum}(숨긴책: ${_record.totalHiddenBooksNum})`
-              </div>
+              <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : (
-              <div
-                style={{
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {value}
+              <div>
+                <div
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {value}
+                </div>
+                <div>
+                  <BookTitleChange
+                    mybook_id={_record._id}
+                    title={value}
+                    hide_or_show={_record.hide_or_show}
+                    isPopupSomething={isPopupSomething}
+                    chagePopup={chagePopup}
+                    handleToGetMyBook={handleToGetMyBook}
+                  />
+                </div>
               </div>
             ),
           props: {},
@@ -243,7 +252,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
     {
       title: '제목 변경',
       key: 'title',
-      align: 'center',
+      align: 'right',
       dataIndex: 'title',
       className: 'normal',
       width: 80,
@@ -283,7 +292,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       title: '책순서',
       className: 'normal',
       align: 'center',
-      width: 80,
+      width: 50,
       render: (_value, _record) => {
         const obj = {
           children: (
@@ -307,11 +316,11 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       },
     },
     {
-      title: '책순서',
+      title: '즐겨찾기',
       key: 'seq_in_category',
       dataIndex: 'seq_in_category',
       className: 'normal',
-      width: 80,
+      width: 40,
       render: (value, _record, index) => {
         const obj = {
           children: <div>{value}</div>,
@@ -336,7 +345,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       align: 'center',
       dataIndex: 'hide_or_show',
       className: 'normal',
-      width: 80,
+      width: 40,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -363,7 +372,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       title: '삭제',
       align: 'center',
       className: 'Row-Last-One',
-      width: 80,
+      width: 40,
       render: (value, _record, index) => {
         const obj = {
           children: (

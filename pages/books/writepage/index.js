@@ -321,4 +321,34 @@ const StyledCol = styled(Col)`
   & .ant-table-tbody > tr > td {
     border-bottom: none;
   }
+
+  & .singleBar {
+    width: 25%;
+    float: left;
+    margin-left: 6%;
+    margin-right: 6%;
+  }
+  & .graphBar {
+    position: relative;
+    height: 26px;
+    background: #c3c4bea2;
+    overflow: hidden;
+  }
+
+  & .AchivedCard {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #4489c9;
+    color: #ffffff;
+  }
+
+  & .CardCounter {
+    position: absolute;
+    font-size: 0.6rem;
+    bottom: 0;
+    text-align: left;
+    left: 2px;
+    text-align: center;
+  }
 `;

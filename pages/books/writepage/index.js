@@ -82,6 +82,10 @@ const StyledCol = styled(Col)`
   & * {
     font-size: 0.8rem;
   }
+
+  & .anticon-star > svg {
+    font-size: 1.2rem;
+  }
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 1px 0;
   }

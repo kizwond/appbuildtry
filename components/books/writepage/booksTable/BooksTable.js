@@ -1,11 +1,13 @@
 /* eslint-disable react/display-name */
-import { Table, Button, Card, Tooltip, Row, Col, Tag } from 'antd';
+import { Table, Button, Card, Tooltip, Row, Col, Tag, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import BookOrderButton from './BookOrderButton';
 import BookTitleChange from './BookTitleChange';
 import HideOrShowButton from './HideOrShowButton';
 import DeleteBookButton from './DeleteBookButton';
-import { VerticalAlignBottomOutlined } from '@ant-design/icons';
+import FavoriteBook from './FavoriteBook';
+import { VerticalAlignBottomOutlined, RadarChartOutlined, BarChartOutlined, DollarCircleFilled } from '@ant-design/icons';
+import BookCategoryChange from './BookCategoryChange';
 
 const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -101,7 +103,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       title: (
         <>
           <Row align="middle">
-            <Col span={8} style={{ fontSize: '0.7rem' }}>{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</Col>
+            <Col span={9} style={{ fontSize: '0.7rem' }}>{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</Col>
             <Col>
               <Tooltip
                 title={isShowedAllBooks ? '숨긴 책 감추기' : '숨긴 책 표시'}
@@ -186,7 +188,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       key: 'categoryName',
       className: 'categoryCol',
       ellipsis: true,
-      width: 80,
+      width: 65,
       dataIndex: 'categoryName',
       render: (_value, _record) => (_record.relationship === 'parent' ? _value : null),
     },
@@ -203,7 +205,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       key: 'title',
       dataIndex: 'title',
       className: 'Row-First-Left',
-      width: 120,
+      width: 130,
       render: (value, _record, index) => {
         const obj = {
           children:
@@ -211,6 +213,16 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
               <div>빈 칸테고리</div>
             ) : _record.relationship === 'parent' && !expandedRowKeys.includes(_record.key) ? (
               <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
+            ) : _record.classType === 'middle-hiddenBar' || _record.classType === 'hiddenBar' ? (
+              <div
+                style={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {value}
+              </div>
             ) : (
               <div>
                 <div
@@ -220,17 +232,21 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                     whiteSpace: 'nowrap',
                   }}
                 >
+                  <DollarCircleFilled style={{ marginRight: '4px', color: 'aqua' }} />
                   {value}
                 </div>
                 <div>
-                  <BookTitleChange
-                    mybook_id={_record._id}
-                    title={value}
-                    hide_or_show={_record.hide_or_show}
-                    isPopupSomething={isPopupSomething}
-                    chagePopup={chagePopup}
-                    handleToGetMyBook={handleToGetMyBook}
-                  />
+                  <Space>
+                    <BookTitleChange
+                      mybook_id={_record._id}
+                      title={value}
+                      hide_or_show={_record.hide_or_show}
+                      isPopupSomething={isPopupSomething}
+                      chagePopup={chagePopup}
+                      handleToGetMyBook={handleToGetMyBook}
+                    />
+                    <BarChartOutlined />
+                  </Space>
                 </div>
               </div>
             ),
@@ -250,9 +266,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       },
     },
     {
-      title: '제목 변경',
+      title: '카드 정보',
       key: 'title',
-      align: 'right',
+      align: 'center',
       dataIndex: 'title',
       className: 'normal',
       width: 80,
@@ -260,14 +276,14 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         const obj = {
           children: (
             <div>
-              <BookTitleChange
+              {/* <BookTitleChange
                 mybook_id={_record._id}
                 title={_value}
                 hide_or_show={_record.hide_or_show}
                 isPopupSomething={isPopupSomething}
                 chagePopup={chagePopup}
                 handleToGetMyBook={handleToGetMyBook}
-              />
+              /> */}
             </div>
           ),
           props: {
@@ -292,7 +308,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       title: '책순서',
       className: 'normal',
       align: 'center',
-      width: 50,
+      width: 40,
       render: (_value, _record) => {
         const obj = {
           children: (
@@ -316,14 +332,19 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       },
     },
     {
-      title: '즐겨찾기',
+      title: '즐찾',
       key: 'seq_in_category',
       dataIndex: 'seq_in_category',
       className: 'normal',
-      width: 40,
+      align: 'center',
+      width: 20,
       render: (value, _record, index) => {
         const obj = {
-          children: <div>{value}</div>,
+          children: (
+            <div>
+              <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+            </div>
+          ),
           props: {},
         };
         if (
@@ -345,7 +366,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       align: 'center',
       dataIndex: 'hide_or_show',
       className: 'normal',
-      width: 40,
+      width: 20,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -369,10 +390,46 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       },
     },
     {
+      title: '카이',
+      align: 'center',
+      className: 'normal',
+      width: 20,
+      render: (value, _record, index) => {
+        const obj = {
+          children: (
+            <div>
+              <BookCategoryChange
+                mybook_id={_record._id}
+                category={category}
+                mybookcate_id={_record.mybookcate_id}
+                title={value}
+                hide_or_show={_record.hide_or_show}
+                isPopupSomething={isPopupSomething}
+                chagePopup={chagePopup}
+                handleToGetMyBook={handleToGetMyBook}
+              />
+            </div>
+          ),
+          props: {},
+        };
+        if (
+          (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
+          _record.classType === 'hiddenBar' ||
+          _record.classType === 'middle-hiddenBar' ||
+          _record.classType === 'empty-category'
+        ) {
+          obj.props.colSpan = 0;
+        } else {
+          obj.props.colSpan = 1;
+        }
+        return obj;
+      },
+    },
+    {
       title: '삭제',
       align: 'center',
       className: 'Row-Last-One',
-      width: 40,
+      width: 20,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -431,9 +488,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
             ? 'EvenNumberRow'
             : 'OddNumberRow'
         }
-        rowSelection={{
-          hideSelectAll: true,
-        }}
+        // rowSelection={{
+        //   hideSelectAll: true,
+        // }}
         // scroll={{
         //   y: 370,
         // }}

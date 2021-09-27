@@ -7,7 +7,7 @@ import { Popconfirm, Tooltip, Button } from 'antd';
 import { DeleteFilled, DeleteOutlined } from '@ant-design/icons';
 
 const DeleteBookButton = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybook_id, title }) => {
-  const [buttonType, setButtonType] = useState('default');
+  const [visible, setVisible] = useState(false);
 
   const router = useRouter();
   const [deleteBook, { variables }] = useMutation(DELETE_A_BOOK, {
@@ -41,22 +41,25 @@ const DeleteBookButton = ({ handleToGetMyBook, isPopupSomething, chagePopup, myb
       title={`${title}을 삭제하시겠습니까?`}
       okText="삭제"
       cancelText="취소"
+      placement="topRight"
       onVisibleChange={(visible) => {
         if (!visible) {
           chagePopup(false);
-          setButtonType('default');
+          setVisible(false);
         }
         if (visible) {
           chagePopup(true);
-          setButtonType('primary');
+          setVisible(true);
         }
       }}
       onConfirm={() => {
         handleDeleteBook();
       }}
     >
-      {isPopupSomething ? (
-        <Button type={buttonType} shape="circle" size="small" icon={<DeleteOutlined />} />
+      {isPopupSomething && !visible ? (
+        <Button type="text" shape="circle" size="small" icon={<DeleteOutlined />} />
+      ) : isPopupSomething && visible ? (
+        <Button type="primary" shape="circle" size="small" icon={<DeleteOutlined />} />
       ) : (
         <Tooltip
           mouseEnterDelay={0.5}
@@ -66,7 +69,7 @@ const DeleteBookButton = ({ handleToGetMyBook, isPopupSomething, chagePopup, myb
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
-          <Button shape="circle" size="small" icon={<DeleteOutlined />} />
+          <Button shape="circle" type="text" size="small" icon={<DeleteOutlined />} />
         </Tooltip>
       )}
     </Popconfirm>

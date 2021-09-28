@@ -5,6 +5,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
 import StudyNav from '../../../../../components/books/study/mode/StudyNav';
+import { date } from 'faker';
 
 const FlipMode = () => {
   const { query } = useRouter();
@@ -39,6 +40,8 @@ const FlipMode = () => {
     setSessionScope(data.session_getSession.sessions[0].sessionScope)
     sessionStorage.setItem("card_seq", 0)
     sessionStorage.removeItem("cardlist_to_send")
+    const now = new Date();
+    sessionStorage.setItem("started", now)
   }
 
   console.log('here');

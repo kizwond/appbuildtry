@@ -13,3 +13,12 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.fr-basic{
+  width:90%;
+}
+
+.fr-box.editor_try.fr-ltr.gray-theme.fr-basic .fr-element{
+  padding:0;
+  min-height: 0;
+}

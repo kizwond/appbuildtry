@@ -4,7 +4,18 @@ import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FloatingMenu from "./sidemenu/FloatingMenu";
 import { Input, Form, Button } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
-import Editor from "./Editor";
+
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+// import "froala-editor/js/froala_editor.pkgd.min.js";
+import "froala-editor/css/froala_style.min.css";
+import "froala-editor/css/froala_editor.pkgd.min.css";
+import "froala-editor/css/plugins.pkgd.min.css";
+import "froala-editor/js/plugins.pkgd.min.js";
+import "froala-editor/js/languages/ko";
+import "froala-editor//css/themes/gray.css";
+
+import FroalaEditorComponent from 'react-froala-wysiwyg';
 
 const WriteContainer = ({ indexChanged, indexSetId }) => {
   const ISSERVER = typeof window === "undefined";
@@ -39,7 +50,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
   const [editorOn, setEditorOn] = useState();
   const [cardId, setCardId] = useState();
 
-  const [face1_input1, set_face1_input1] = useState();
+  const [face1_input1, set_face1_input1] = useState("");
   const [face1_input2, set_face1_input2] = useState();
   const [face1_input3, set_face1_input3] = useState();
   const [face1_input4, set_face1_input4] = useState();
@@ -60,7 +71,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
   });
 
   useEffect(() => {
-    console.log("카드타입셋을 불러옴", first_index);
+    console.log("카드타입셋을 불러옴",first_index);
     if (data1) {
       console.log("--->", data1);
       setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
@@ -71,38 +82,8 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     } else {
       console.log("why here?");
     }
-  }, [data1, indexChanged, first_index]);
+  }, [data1, indexChanged,first_index]);
 
-
-  const onFinish = (values) => {
-    console.log(values);
-    // const mybook_id = localStorage.getItem("book_id");
-
-    // const face1_contents_temp = [];
-    // for (var i = 0; i < 5; i++) {
-    //   face1_contents_temp.push(values[`face1_input${i}`]);
-    // }
-    // var face1_contents = face1_contents_temp.filter(function (el) {
-    //   return el != null;
-    // });
-
-    // const face2_contents_temp = [];
-    // for (var i = 0; i < 5; i++) {
-    //   face2_contents_temp.push(values[`face2_input${i}`]);
-    // }
-    // var face2_contents = face2_contents_temp.filter(function (el) {
-    //   return el != null;
-    // });
-    // if (cardId) {
-    //   var current_position_card_id = cardId;
-    // } else {
-    //   current_position_card_id = null;
-    // }
-    // const cardtype = cardTypeInfos.cardtype;
-    // const cardtype_id = cardTypes[0]._id;
-    // addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, face1_contents, face2_contents);
-  };
-  
   const cardTypeInfo = (cardtype_info) => {
     setcardTypeInfos(cardtype_info);
     console.log(cardtype_info);
@@ -116,13 +97,11 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     const nick_selection = cardtype_info.nick_of_row.selection;
     const nick_annotation = cardtype_info.nick_of_row.annotation;
 
-    const nicks = []
     const face1 = [];
     const face1Nick = [];
     for (var i = 0; i < num_face1; i++) {
       face1.push(i);
       face1Nick.push(nick_face1[i]);
-      nicks.push(nick_face1[i])
     }
 
     const face2 = [];
@@ -130,29 +109,128 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     for (var i = 0; i < num_face2; i++) {
       face2.push(i);
       face2Nick.push(nick_face2[i]);
-      nicks.push(nick_face2[i])
     }
+    
+const test = () => {
+  console.log("test clicked!!!")
+  console.log(face1_input1)
+}
+const modelChange = () => {
+  console.log("model change")
+  set_face1_input1(face1_input1)
+}
+    const face1Editor = face1.map((item, index) => {
+      const config = {
+        editorClass: "editor_try",
+        quickInsertEnabled: false,
+        imageUploadURL: "api/card/upload_image",
+        saveParam: "content",
+        width: "auto",
+        theme: "gray",
+        tabSpaces: 0,
+        toolbarContainer: "#toolbarContainer",
+        attribution: false,
+        charCounterCount: false,
+        language: "ko",
+        toolbarButtons: [
+          "fullscreen",
+          "bold",
+          "italic",
+          "underline",
+          "subscript",
+          "superscript",
+          "fontFamily",
+          "fontSize",
+          "color",
+          "textColor",
+          "align",
+          "formatOL",
+          "formatUL",
+          "outdent",
+          "indent",
+          "insertLink",
+          "insertImage",
+          "insertVideo",
+          "insertFile",
+          "insertTable",
+          "emoticons",
+          "specialCharacters",
+          "insertHR",
+          "selectAll",
+          "clearFormatting",
+          "help",
+          "html",
+          "undo",
+          "redo",
+        ],
+      };
+      return (
+        <>
+          {face1Nick[index]}
+          {/* <Form.Item name={[`face1_input${index}`]} rules={[{ required: true }]}>
+            <Input />
+          </Form.Item> */}
+          <FroalaEditorComponent
+            tag="textarea"
+            config={config}
+            model={face1_input1}
+            onModelChange={modelChange}
+            width={100}
+          />
+          <button onClick={test}>플로라 입력</button>
+        </>
+      );
+    });
+    const face2Editor = face2.map((item, index) => (
+      <>
+        {face2Nick[index]}
+        <Form.Item name={[`face2_input${index}`]} rules={[{ required: true }]}>
+          <Input placeholder="" />
+        </Form.Item>
+      </>
+    ));
     const editor = (
       <>
-        <Editor nicks={nicks} onFinish={onFinish}/>
+        {face1Editor}
+        {face2Editor}
+        <Form.Item>
+          <Button type="primary" htmlType="submit">
+            완료
+          </Button>
+        </Form.Item>
       </>
     );
-
-    // const editor = (
-    //   <>
-    //     {face1Editor}
-    //     {face2.length > 0 && face2Editor}
-    //   </>
-    // );
-    
-      setEditorOn(editor);
-    
-  };
-  const submitNewCard = () => {
-    console.log("submit card!!!!!!!!!!!!!!!!!!");
+    setEditorOn(editor);
   };
 
-  
+  const onFinish = (values) => {
+    console.log(values);
+    const mybook_id = localStorage.getItem("book_id")
+
+    const face1_contents_temp = [];
+    for (var i = 0; i < 5; i++) {
+      face1_contents_temp.push(values[`face1_input${i}`]);
+    }
+    var face1_contents = face1_contents_temp.filter(function (el) {
+      return el != null;
+    });
+
+    const face2_contents_temp = [];
+    for (var i = 0; i < 5; i++) {
+      face2_contents_temp.push(values[`face2_input${i}`]);
+    }
+    var face2_contents = face2_contents_temp.filter(function (el) {
+      return el != null;
+    });
+    if(cardId){
+      var current_position_card_id = cardId
+    } else {
+      current_position_card_id = null
+    }
+    const cardtype = cardTypeInfos.cardtype;
+    const cardtype_id = cardTypes[0]._id;
+    addcard(mybook_id,cardtype, cardtype_id,current_position_card_id, face1_contents, face2_contents);
+  };
 
   const [cardset_addcard] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 
@@ -161,7 +239,21 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     setCards(data.cardset_addcard.cardsets[0].cards);
   }
 
-  async function addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, face1_contents, face2_contents) {
+  // useEffect(() => {
+  //   console.log("카드타입셋을 불러옴");
+  //   if (data1) {
+  //     console.log("--->", data1);
+  //     setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
+  //     setCardTypes(data1.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
+  //     setIndexId(data1.indexset_getbymybookid.indexsets[0].indexes[0]._id);
+  //     setCardSetId(data1.cardset_getbyindexid.cardsets[0]._id);
+  //     setCards(data1.cardset_getbyindexid.cardsets[0].cards);
+  //   } else {
+  //     console.log("why here?");
+  //   }
+  // }, [data1, indexChanged]);
+
+  async function addcard(mybook_id, cardtype, cardtype_id,current_position_card_id, face1_contents, face2_contents) {
     try {
       await cardset_addcard({
         variables: {
@@ -169,7 +261,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
             cardset_id: cardSetId,
             current_position_card_id: current_position_card_id,
             card_info: {
-              mybook_id: mybook_id,
+              mybook_id:mybook_id,
               cardtypeset_id: cardTypeSetId,
               cardtype_id,
               cardtype,
@@ -197,7 +289,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
       return (
         <>
           {content.card_info.cardtype === "read" && (
-            <div onClick={() => onClickCard(content._id)} style={{ border: "1px solid grey", marginBottom: "5px" }}>
+            <div onClick={()=>onClickCard(content._id)} style={{ border: "1px solid grey", marginBottom: "5px" }}>
               <div>
                 {content.contents.mycontents_id.face1.map((item) => (
                   <>
@@ -209,7 +301,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
           )}
 
           {content.card_info.cardtype === "flip" && (
-            <div onClick={() => onClickCard(content._id)} style={{ border: "1px solid grey", marginBottom: "5px" }}>
+            <div onClick={()=>onClickCard(content._id)} style={{ border: "1px solid grey", marginBottom: "5px" }}>
               <div>
                 {content.contents.mycontents_id.face1.map((item) => (
                   <>
@@ -228,14 +320,14 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
       );
     });
   }
-  const onClickCard = (card_id) => {
-    console.log("cardClicked!!!!!");
-    console.log(card_id);
-    setCardId(card_id);
-  };
+  const onClickCard = (card_id) =>{
+    console.log("cardClicked!!!!!")
+    console.log(card_id)
+    setCardId(card_id)
+  }
   return (
     <div className="editor_panel" id="editor_panel" style={{ ...a4Page, position: "relative" }}>
-      <FloatingMenu cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
+      <FloatingMenu cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId}/>
       <div className="a4">
         {contents}
         <h1>selected index id : {first_index}</h1>
@@ -246,7 +338,13 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
         <div>5. 촤측 목차 클릭시 해당 하는 카드들만 불러서 뿌려주고</div>
       </div>
       <div></div>
-      <div>{editorOn}</div>
+      <div>
+        <div id="toolbarContainer"></div>
+        <Form size="small" onFinish={onFinish}>
+         
+        </Form>
+        {editorOn}
+      </div>
     </div>
   );
 };

@@ -1,38 +1,36 @@
 import React, { useState, memo } from 'react';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { UPDATE_BOOK_TITLE_AND_HIDE } from '../../../../graphql/query/writePage';
+import { BOOK_CATEGORY_CHANGE_MUTATION, UPDATE_BOOK_TITLE_AND_HIDE } from '../../../../graphql/query/writePage';
 
-import { Popconfirm, Tooltip, Button, Form, Input } from 'antd';
-import { EditFilled } from '@ant-design/icons';
+import { Popconfirm, Tooltip, Button, Form, Input, Select } from 'antd';
+import { BarsOutlined } from '@ant-design/icons';
 
-const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybook_id, title, hide_or_show }) => {
-  const [buttonType, setButtonType] = useState('ghost');
+const BookCategoryChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybook_id, title, category, mybookcate_id }) => {
   const [visible, setVisible] = useState(false);
 
   const [form] = Form.useForm();
   const { resetFields } = form;
 
   const router = useRouter();
-  const [updateBookTitle, { variables }] = useMutation(UPDATE_BOOK_TITLE_AND_HIDE, {
+  const [chnageCategory, { variables }] = useMutation(BOOK_CATEGORY_CHANGE_MUTATION, {
     onCompleted: (received_data) => {
       console.log('received_data', received_data);
-      if (received_data.mybook_update.status === '200') {
-        handleToGetMyBook(received_data.mybook_update.mybooks);
-      } else if (received_data.mybook_update.status === '401') {
+      if (received_data.mybook_movetoothercate.status === '200') {
+        handleToGetMyBook(received_data.mybook_movetoothercate.mybooks);
+      } else if (received_data.mybook_movetoothercate.status === '401') {
         router.push('/account/login');
       } else {
         console.log('어떤 문제가 발생함');
       }
     },
   });
-  async function updateBook(_title) {
+  async function updateBook(_cate_id) {
     try {
-      await updateBookTitle({
+      await chnageCategory({
         variables: {
           mybook_id,
-          title: _title,
-          hide_or_show,
+          target_mybookcate_id: _cate_id,
         },
       });
     } catch (error) {
@@ -43,7 +41,8 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
 
   return (
     <Popconfirm
-      icon={<EditFilled style={{ color: '#1890ff' }} />}
+      placement="topRight"
+      icon={<BarsOutlined style={{ color: '#1890ff' }} />}
       visible={visible}
       title={
         <Form
@@ -51,19 +50,21 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
           form={form}
           id={mybook_id}
           onFinish={(values) => {
-            updateBook(values.book_title);
+            if (values.book_category !== 'info') {
+              updateBook(values.book_category);
+            }
           }}
           onFinishFailed={(values, errorFields, outOfDate) => {
             console.log('values', values);
             setVisible(true);
             chagePopup(true);
-            setButtonType('primary');
           }}
           requiredMark={false}
         >
           <Form.Item
-            name="book_title"
-            label="책제목"
+            initialValue={mybookcate_id}
+            name="book_category"
+            label="카테고리 이동"
             rules={[
               {
                 required: true,
@@ -71,7 +72,10 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
               },
             ]}
           >
-            <Input placeholder={title} />
+            <Select style={{ width: 120 }} getPopupContainer={(node) => node.parentNode}>
+              <Select.Option value="info">선택</Select.Option>
+              {category && category.map((_category) => <Select.Option key={_category._id}>{_category.mybookcate_info.name}</Select.Option>)}
+            </Select>
           </Form.Item>
         </Form>
       }
@@ -80,13 +84,11 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
       onVisibleChange={(visible) => {
         if (!visible) {
           chagePopup(false);
-          setButtonType('default');
           setVisible(visible);
         }
         if (visible) {
           resetFields();
           chagePopup(true);
-          setButtonType('primary');
           setVisible(visible);
         }
       }}
@@ -97,9 +99,9 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
       }}
     >
       {isPopupSomething && !visible ? (
-        <Button type="text" shape="circle" size="small" icon={<EditFilled />} />
+        <Button type="text" shape="circle" size="small" icon={<BarsOutlined />} />
       ) : isPopupSomething && visible ? (
-        <Button type="primary" shape="circle" size="small" icon={<EditFilled />} />
+        <Button type="primary" shape="circle" size="small" icon={<BarsOutlined />} />
       ) : (
         <Tooltip
           mouseEnterDelay={0.5}
@@ -109,11 +111,11 @@ const BookTitleChange = ({ handleToGetMyBook, isPopupSomething, chagePopup, mybo
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
-          <Button shape="circle" type="text" size="small" icon={<EditFilled />} />
+          <Button shape="circle" type="text" size="small" icon={<BarsOutlined />} />
         </Tooltip>
       )}
     </Popconfirm>
   );
 };
 
-export default memo(BookTitleChange);
+export default memo(BookCategoryChange);

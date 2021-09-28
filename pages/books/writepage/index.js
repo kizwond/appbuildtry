@@ -79,6 +79,74 @@ const StyledSpace = styled(Space)`
   }
 `;
 const StyledCol = styled(Col)`
+  & * {
+    font-size: 0.8rem;
+  }
+
+  & .anticon-star > svg {
+    font-size: 1.2rem;
+  }
+  & .anticon-eye > svg {
+    font-size: 1.2rem;
+    color: #a3a3a3;
+  }
+  & .anticon-eye-invisible > svg {
+    font-size: 1.2rem;
+    color: #a3a3a3;
+  }
+  & .anticon-setting > svg {
+    font-size: 1.1rem;
+    color: #a3a3a3;
+  }
+
+  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
+    padding: 1px 0;
+  }
+
+  & .ant-table table {
+    border-collapse: collapse;
+  }
+
+  & .foldedCategory > .Row-First-Left > div {
+    background: #e0e2f4;
+    border-radius: 8px;
+    margin: 3px 0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 15px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    font-size: 0.7rem;
+  }
+  & .MiddleHiddenBar > .Row-First-Left > div,
+  & .LastHiddenBar > .Row-First-Left > div {
+    background: #e0e2f4;
+    border-radius: 8px;
+    margin: 3px 0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 15px;
+    height: 30px;
+    font-size: 0.7rem;
+  }
+  & .HandleOnOffShow > span {
+    font-size: 0.7rem;
+  }
+
+  & .NoBooksCategory > .Row-First-Left > div {
+    background: rgb(228, 224, 224);
+    border-radius: 8px;
+    margin: 3px 0px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 15px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    font-size: 0.7rem;
+  }
+
   & .categoryCol {
     border-bottom: none;
   }
@@ -88,59 +156,199 @@ const StyledCol = styled(Col)`
   & .LastHiddenBar > .categoryCol,
   & .lastEvenBook > .categoryCol,
   & .lastOddBook > .categoryCol {
-    border-bottom: 2px solid #7609f1 !important;
+    border-bottom: 0.5px solid #b3b2b2;
   }
 
-  & .NoBooksCategory > .categoryCol,
-  & .NoBooksCategory > .categoryCol {
-    /* border-bottom: 1px solid #f0f0f0; */
-  }
-  & .MiddleHiddenBar > .normal,
-  & .LastHiddenBar > .normal,
-  & .NoBooksCategory > .normal,
-  & .foldedCategory > .normal {
-    background-color: #bfbfbf;
-    border-top: 2px solid white;
-    border-bottom: 2px solid white;
-  }
-  & .LastHiddenBar > .normal,
-  & .NoBooksCategory > .normal,
-  & .foldedCategory > .normal {
-    border-bottom: 2px solid #7609f1;
-    border-radius: 10px;
-    padding: 5px !important;
-    margin: 10px;
+  & .LastHiddenBar > .Row-First-Left,
+  & .NoBooksCategory > .Row-First-Left,
+  & .foldedCategory > .Row-First-Left {
+    border-bottom: 0.5px solid #b3b2b2;
   }
 
-  & .lastEvenBook > .normal {
-    border-bottom: 2px solid #7609f1;
-    border-radius: 10px;
-    padding: 5px !important;
-    margin: 10px;
+  & .lastEvenBook > .Row-First-Left,
+  & .lastEvenBook > .normal,
+  & .lastEvenBook > .Row-Last-One {
+    border-bottom: 0.5px solid #b3b2b2;
+  }
+
+  & .lastEvenBook > .normal > div,
+  & .lastEvenBook > .Row-Last-One > div {
     background-color: #f5f5f5;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  & .lastOddBook > .normal {
-    border-bottom: 2px solid #7609f1;
-    border-radius: 10px;
-    padding: 5px !important;
-    margin: 10px;
-  }
-
-  & .EvenNumberRow > .normal {
+  & .lastEvenBook > .Row-First-Left > div {
     background-color: #f5f5f5;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding-left: 15px;
   }
 
-  & .LastHiddenBar > .categoryCol {
-    /* border-bottom: 1px solid #f0f0f0; */
+  & .lastEvenBook > .normal > div.BookOrder {
+    color: #f5f5f5;
   }
-  & .ant-table-thead .categoryCol::before {
+
+  & .lastEvenBook > .Row-Last-One > div {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  & .lastOddBook > .Row-First-Left,
+  & .lastOddBook > .normal,
+  & .lastOddBook > .Row-Last-One {
+    border-bottom: 0.5px solid #b3b2b2;
+  }
+
+  & .lastOddBook > .normal > div,
+  & .lastOddBook > .Row-Last-One > div {
+    background-color: #fff;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  & .lastOddBook > .Row-First-Left > div {
+    background-color: #fff;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding-left: 15px;
+  }
+
+  & .lastOddBook > .normal > div.BookOrder {
+    color: #fff;
+  }
+
+  & .lastOddBook > .Row-Last-One > div {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  & .EvenNumberRow > .normal > div,
+  & .EvenNumberRow > .Row-Last-One > div {
+    background-color: #f5f5f5;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  & .EvenNumberRow > .Row-First-Left > div {
+    background-color: #f5f5f5;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding-left: 15px;
+  }
+  & .EvenNumberRow > .normal > div.BookOrder {
+    color: #f5f5f5;
+  }
+
+  & .EvenNumberRow > .Row-Last-One > div {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  & .OddNumberRow > .normal > div,
+  & .OddNumberRow > .Row-Last-One > div {
+    background-color: #fff;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  & .OddNumberRow > .Row-First-Left > div {
+    background-color: #fff;
+    height: 34px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    padding-left: 15px;
+  }
+  & .OddNumberRow > .normal > div.BookOrder {
+    color: #fff;
+  }
+
+  & .OddNumberRow > .Row-Last-One > div {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+
+  /* & .ant-table-thead .categoryCol::before {
     display: none;
-  }
+  } */
   & .ant-table-thead .categoryCol {
     border-bottom: 1px solid #f0f0f0;
   }
 
   & .ant-table-tbody > tr > td {
     border-bottom: none;
+  }
+
+  & .singleBar {
+    width: 25%;
+    float: left;
+    margin-left: 6%;
+    margin-right: 6%;
+  }
+  & .graphBar {
+    position: relative;
+    height: 26px;
+    background: #c3c4bea2;
+    overflow: hidden;
+  }
+
+  & .AchivedCard {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #4489c9;
+    color: #ffffff;
+  }
+
+  & .CardCounter {
+    position: absolute;
+    font-size: 0.6rem;
+    bottom: 0;
+    text-align: left;
+    left: 2px;
+    text-align: center;
   }
 `;

@@ -1,13 +1,13 @@
 /* eslint-disable react/display-name */
-import { Table } from 'antd';
+import { Table, Button, Card, Tooltip, Row, Col, Tag, Space, Progress } from 'antd';
 import { useEffect, useState } from 'react';
 import BookOrderButton from './BookOrderButton';
 import BookTitleChange from './BookTitleChange';
 import HideOrShowButton from './HideOrShowButton';
-import DeleteBookButton from './DeleteBookButton';
-import { Switch } from 'antd';
-import { Button } from '../../../../node_modules/antd/lib/index';
-import produce from 'immer';
+import MoveToBookSetting from './MoveToBookSetting';
+import FavoriteBook from './FavoriteBook';
+import { VerticalAlignBottomOutlined, BarChartOutlined, DollarCircleFilled } from '@ant-design/icons';
+import moment from '../../../../node_modules/moment/moment';
 
 const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -17,7 +17,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
 
   console.log({ expandedRowKeys });
   useEffect(() => {
-    setExpandedRowKeys(category.filter((_cate) => _cate._id));
+    setExpandedRowKeys(category.map((_cate) => `KEY:${_cate._id}INDEX:0`));
     setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -29,7 +29,10 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
   console.log('마운트 아래 코드');
   console.log({ expandedRowKeys });
 
-  const dataSource = category.map((_cate, _categoryIndex) => {
+  const noCategoryId = category.filter((_cate) => _cate.mybookcate_info.name == '(미지정)')[0]._id;
+  const noCategoryBooksLength = myBook.filter((_book) => _book.mybook_info.mybookcate_id === noCategoryId).length;
+  const filteredCategory = noCategoryBooksLength > 0 ? category : category.filter((_cate) => _cate.mybookcate_info.name !== '(미지정)');
+  const dataSource = filteredCategory.map((_cate, _categoryIndex) => {
     const { name, seq } = _cate.mybookcate_info;
     const categoryBooksList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id);
     const categoryBooksLength = categoryBooksList.length;
@@ -98,22 +101,37 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       key: `KEY:${_cate._id}HIDDENBAR`,
       classType: 'hiddenBar',
       title: (
-        <div>
-          {`${markedHideListLength} 숨겨진 책이 있습니다.`}
-          <Button
-            size="small"
-            onClick={() => {
-              if (isShowedAllBooks) {
-                setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== _cate._id));
-              }
-              if (!isShowedAllBooks) {
-                setIsShowedHiddenBook([...isShowedHiddenBook, _cate._id]);
-              }
-            }}
-          >
-            {!isShowedAllBooks ? '숨긴책도 보기' : '숨긴책은 접기'}
-          </Button>
-        </div>
+        <>
+          <Row align="middle">
+            <Col span={9} style={{ fontSize: '0.7rem' }}>{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</Col>
+            <Col>
+              <Tooltip
+                title={isShowedAllBooks ? '숨긴 책 감추기' : '숨긴 책 표시'}
+                color="rgba(7, 164, 237, 0.522)"
+                overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
+                overlayStyle={{ alignSelf: 'middle' }}
+              >
+                <Tag
+                  className="HandleOnOffShow"
+                  size="small"
+                  style={{ fontSize: '0.7rem' }}
+                  color={isShowedAllBooks ? '#cec8c8' : '#a9a7a7'}
+                  icon={<VerticalAlignBottomOutlined rotate={isShowedAllBooks ? 180 : 0} />}
+                  onClick={() => {
+                    if (isShowedAllBooks) {
+                      setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== _cate._id));
+                    }
+                    if (!isShowedAllBooks) {
+                      setIsShowedHiddenBook([...isShowedHiddenBook, _cate._id]);
+                    }
+                  }}
+                >
+                  {isShowedAllBooks ? '접기' : '보기'}
+                </Tag>
+              </Tooltip>
+            </Col>
+          </Row>
+        </>
       ),
     };
 
@@ -169,23 +187,69 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       title: '카테고리',
       key: 'categoryName',
       className: 'categoryCol',
+      ellipsis: true,
+      width: 65,
       dataIndex: 'categoryName',
       render: (_value, _record) => (_record.relationship === 'parent' ? _value : null),
     },
     {
-      title: '책 제목',
+      title: (
+        <div
+          style={{
+            paddingLeft: '5px',
+          }}
+        >
+          책 제목
+        </div>
+      ),
       key: 'title',
       dataIndex: 'title',
-      className: 'normal',
-      ellipsis: true,
+      className: 'Row-First-Left',
+      width: 130,
       render: (value, _record, index) => {
         const obj = {
           children:
-            _record.classType === 'empty-category'
-              ? '빈 칸테고리'
-              : _record.relationship === 'parent' && !expandedRowKeys.includes(_record.key)
-              ? `카테고리내 책 수량: ${_record.totalBooksNum}(숨긴책: ${_record.totalHiddenBooksNum})`
-              : value,
+            _record.classType === 'empty-category' ? (
+              <div>빈 칸테고리</div>
+            ) : _record.relationship === 'parent' && !expandedRowKeys.includes(_record.key) ? (
+              <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
+            ) : _record.classType === 'middle-hiddenBar' || _record.classType === 'hiddenBar' ? (
+              <div
+                style={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {value}
+              </div>
+            ) : (
+              <div>
+                <div
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <DollarCircleFilled style={{ marginRight: '4px', color: 'aqua' }} />
+                  {value}
+                </div>
+                <div>
+                  <Space>
+                    <BookTitleChange
+                      mybook_id={_record._id}
+                      title={value}
+                      hide_or_show={_record.hide_or_show}
+                      isPopupSomething={isPopupSomething}
+                      chagePopup={chagePopup}
+                      handleToGetMyBook={handleToGetMyBook}
+                    />
+                    <BarChartOutlined />
+                  </Space>
+                </div>
+              </div>
+            ),
           props: {},
         };
         if (
@@ -202,22 +266,20 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       },
     },
     {
-      title: '제목 변경',
-      key: 'title',
-      dataIndex: 'title',
+      title: (
+        <>
+          <div>카드 수</div>
+          <div>(읽기/뒤집기)</div>
+        </>
+      ),
+      key: 'total',
+      align: 'center',
+      dataIndex: 'total',
       className: 'normal',
+      width: 80,
       render: (_value, _record) => {
         const obj = {
-          children: (
-            <BookTitleChange
-              mybook_id={_record._id}
-              title={_value}
-              hide_or_show={_record.hide_or_show}
-              isPopupSomething={isPopupSomething}
-              chagePopup={chagePopup}
-              handleToGetMyBook={handleToGetMyBook}
-            />
-          ),
+          children: <div>{`(${_record.read} / ${_record.flip})`}</div>,
           props: {
             colSpan: 1,
             rowSpan: 1,
@@ -237,87 +299,84 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       },
     },
     {
-      title: '책순서',
+      title: '수정일',
+      key: 'timeModify',
+      align: 'center',
+      dataIndex: 'timeModify',
       className: 'normal',
+      width: 40,
+      render: (_value, _record) => {
+        const newDate = new Date(Number(_value));
+        const DateString = moment(newDate).format('YY-MM-DD');
+        const obj = {
+          children: <div>{_value === null ? '수정 전' : DateString}</div>,
+          props: {
+            colSpan: 1,
+            rowSpan: 1,
+          },
+        };
+        if (
+          (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
+          _record.classType === 'hiddenBar' ||
+          _record.classType === 'middle-hiddenBar' ||
+          _record.classType === 'empty-category'
+        ) {
+          obj.props.colSpan = 0;
+        } else {
+          obj.props.colSpan = 1;
+        }
+        return obj;
+      },
+    },
+    {
+      title: (
+        <>
+          <div>최근 3일간</div>
+          <div>카드생성실적</div>
+        </>
+      ),
+      key: 'timeModify',
+      align: 'center',
+      dataIndex: 'timeModify',
+      className: 'Row-Last-One',
+      width: 70,
       render: (_value, _record) => {
         const obj = {
-          children: _record.hide_or_show === 'hide' ? null : <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} />,
-          props: {},
-        };
-        if (
-          (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.classType === 'hiddenBar' ||
-          _record.classType === 'middle-hiddenBar' ||
-          _record.classType === 'empty-category'
-        ) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
-    {
-      title: '책순서',
-      key: 'seq_in_category',
-      dataIndex: 'seq_in_category',
-      className: 'normal',
-      render: (value, _record, index) => {
-        const obj = {
-          children: value,
-          props: {},
-        };
-        if (
-          (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.classType === 'hiddenBar' ||
-          _record.classType === 'middle-hiddenBar' ||
-          _record.classType === 'empty-category'
-        ) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
-    {
-      title: '숨김',
-      key: 'hide_or_show',
-      dataIndex: 'hide_or_show',
-      className: 'normal',
-      render: (value, _record, index) => {
-        const obj = {
-          children: <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />,
-          props: {},
-        };
-        if (
-          (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-          _record.classType === 'hiddenBar' ||
-          _record.classType === 'middle-hiddenBar' ||
-          _record.classType === 'empty-category'
-        ) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
-    {
-      title: '삭제',
-      className: 'normal',
-      render: (value, _record, index) => {
-        const obj = {
           children: (
-            <DeleteBookButton
-              mybook_id={_record._id}
-              title={_record.title}
-              isPopupSomething={isPopupSomething}
-              chagePopup={chagePopup}
-              handleToGetMyBook={handleToGetMyBook}
-            />
+            <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>
+              <div className="singleBar">
+                <div className="graphBar">
+                  <div className="AchivedCard" style={{ height: '100%' }}>
+                    <span className="CardCounter" style={{ display: 'inline' }}>
+                      100
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="singleBar">
+                <div className="graphBar">
+                  <div className="AchivedCard" style={{ height: '40%' }}>
+                    <span className="CardCounter" style={{ display: 'inline' }}>
+                      40
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="singleBar">
+                <div className="graphBar">
+                  <div className="AchivedCard" style={{ height: '20%' }}>
+                    <span className="CardCounter" style={{ display: 'inline' }}>
+                      20
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           ),
-          props: {},
+          props: {
+            colSpan: 1,
+            rowSpan: 1,
+          },
         };
         if (
           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
@@ -332,56 +391,176 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         return obj;
       },
     },
+    // {
+    //   title: '책순서',
+    //   className: 'normal',
+    //   align: 'center',
+    //   width: 40,
+    //   render: (_value, _record) => {
+    //     const obj = {
+    //       children: (
+    //         <div className="BookOrder">
+    //           {_record.hide_or_show === 'hide' ? '.' : <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} />}
+    //         </div>
+    //       ),
+    //       props: {},
+    //     };
+    //     if (
+    //       (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
+    //       _record.classType === 'hiddenBar' ||
+    //       _record.classType === 'middle-hiddenBar' ||
+    //       _record.classType === 'empty-category'
+    //     ) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
+    // {
+    //   title: '즐찾',
+    //   key: 'seq_in_category',
+    //   dataIndex: 'seq_in_category',
+    //   className: 'normal',
+    //   align: 'center',
+    //   width: 20,
+    //   render: (value, _record, index) => {
+    //     const obj = {
+    //       children: (
+    //         <div>
+    //           <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+    //         </div>
+    //       ),
+    //       props: {},
+    //     };
+    //     if (
+    //       (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
+    //       _record.classType === 'hiddenBar' ||
+    //       _record.classType === 'middle-hiddenBar' ||
+    //       _record.classType === 'empty-category'
+    //     ) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
+    // {
+    //   title: '숨김',
+    //   key: 'hide_or_show',
+    //   align: 'center',
+    //   dataIndex: 'hide_or_show',
+    //   className: 'normal',
+    //   width: 20,
+    //   render: (value, _record, index) => {
+    //     const obj = {
+    //       children: (
+    //         <div>
+    //           <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+    //         </div>
+    //       ),
+    //       props: {},
+    //     };
+    //     if (
+    //       (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
+    //       _record.classType === 'hiddenBar' ||
+    //       _record.classType === 'middle-hiddenBar' ||
+    //       _record.classType === 'empty-category'
+    //     ) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
+    // {
+    //   title: '상설',
+    //   align: 'center',
+    //   className: 'Row-Last-One',
+    //   width: 20,
+    //   render: (value, _record, index) => {
+    //     const obj = {
+    //       children: (
+    //         <div>
+    //           <MoveToBookSetting
+    //             mybook_id={_record._id}
+    //             title={_record.title}
+    //             isPopupSomething={isPopupSomething}
+    //             chagePopup={chagePopup}
+    //             handleToGetMyBook={handleToGetMyBook}
+    //           />
+    //         </div>
+    //       ),
+    //       props: {},
+    //     };
+    //     if (
+    //       (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
+    //       _record.classType === 'hiddenBar' ||
+    //       _record.classType === 'middle-hiddenBar' ||
+    //       _record.classType === 'empty-category'
+    //     ) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
   ];
 
   return (
-    <Table
-      dataSource={dataSource}
-      columns={columns}
-      size="small"
-      rowKey={(record) => record.key}
-      pagination={false}
-      // bordered
-      // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
-      // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
-      rowClassName={(record, index) =>
-        record.classType === 'empty-category'
-          ? 'NoBooksCategory'
-          : !expandedRowKeys.includes(record.key) && record.relationship === 'parent'
-          ? 'foldedCategory'
-          : record.classType === 'hiddenBar'
-          ? 'LastHiddenBar'
-          : record.classType === 'middle-hiddenBar'
-          ? 'MiddleHiddenBar'
-          : record.classType === 'last-even-book'
-          ? 'lastEvenBook'
-          : record.classType === 'last-odd-book'
-          ? 'lastOddBook'
-          : record.classType === 'even-book'
-          ? 'EvenNumberRow'
-          : 'Books'
-      }
-      rowSelection={{
-        hideSelectAll: true,
-      }}
-      // scroll={{
-      //   y: 370,
-      // }}
-      expandable={{
-        expandedRowKeys,
-        // 아래 클래스이름 지정하는 것은 나중에 selected checkbox css 할 때 해보자
-        expandedRowClassName: (record, index, indent) => '',
-        onExpand: (ex, re) => {
-          console.log({ expandedRowKeys });
-          if (!ex) {
-            setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re.key));
-          }
-          if (ex) {
-            setExpandedRowKeys([...expandedRowKeys, re.key]);
-          }
-        },
-      }}
-    />
+    <Card>
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        size="small"
+        rowKey={(record) => record.key}
+        pagination={false}
+        // bordered
+        // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
+        // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
+        rowClassName={(record, index) =>
+          record.classType === 'empty-category'
+            ? 'NoBooksCategory'
+            : !expandedRowKeys.includes(record.key) && record.relationship === 'parent'
+            ? 'foldedCategory'
+            : record.classType === 'hiddenBar'
+            ? 'LastHiddenBar'
+            : record.classType === 'middle-hiddenBar'
+            ? 'MiddleHiddenBar'
+            : record.classType === 'last-even-book'
+            ? 'lastEvenBook'
+            : record.classType === 'last-odd-book'
+            ? 'lastOddBook'
+            : record.classType === 'even-book'
+            ? 'EvenNumberRow'
+            : 'OddNumberRow'
+        }
+        // rowSelection={{
+        //   hideSelectAll: true,
+        // }}
+        // scroll={{
+        //   y: 370,
+        // }}
+        expandable={{
+          expandedRowKeys,
+          // 아래 클래스이름 지정하는 것은 나중에 selected checkbox css 할 때 해보자
+          expandedRowClassName: (record, index, indent) => '',
+          onExpand: (ex, re) => {
+            console.log({ expandedRowKeys });
+            if (!ex) {
+              setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re.key));
+            }
+            if (ex) {
+              setExpandedRowKeys([...expandedRowKeys, re.key]);
+            }
+          },
+        }}
+      />
+    </Card>
   );
 };
 

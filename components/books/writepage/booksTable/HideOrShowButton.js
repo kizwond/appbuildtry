@@ -54,19 +54,30 @@ const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePo
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
-          <EyeOutlined
+          <div
+            className="customCircleButton"
+            style={{
+              width: '34px',
+              height: '24px',
+              borderRadius: '12px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
             onMouseEnter={() => {
               setVisible(true);
             }}
             onMouseLeave={() => {
               setVisible(false);
             }}
-            size="small"
             onClick={() => {
               updateBook('hide');
               setVisible(false);
             }}
-          />
+          >
+            <EyeOutlined />
+          </div>
         </Tooltip>
       ) : (
         <Tooltip
@@ -76,19 +87,31 @@ const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePo
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
-          <EyeInvisibleOutlined
+          <div
+            className="customCircleButton"
+            style={{
+              width: '34px',
+              height: '24px',
+              borderRadius: '12px',
+              // background: 'yellow',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
             onMouseEnter={() => {
               setVisible(true);
             }}
             onMouseLeave={() => {
               setVisible(false);
             }}
-            size="small"
             onClick={() => {
               updateBook('show');
               setVisible(false);
             }}
-          />
+          >
+            <EyeInvisibleOutlined />
+          </div>
         </Tooltip>
       )}
     </>

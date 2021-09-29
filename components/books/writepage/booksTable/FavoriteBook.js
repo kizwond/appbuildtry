@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { CHANGE_WRITE_LIKE, UPDATE_BOOK_TITLE_AND_HIDE } from '../../../../graphql/query/writePage';
 
 import { Tooltip } from 'antd';
-import { StarFilled, StarOutlined } from '@ant-design/icons';
+import { StarFilled, StarOutlined, StarTwoTone } from '@ant-design/icons';
 
 const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup }) => {
   const [visible, setVisible] = useState(false);
@@ -49,49 +49,65 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
         <Tooltip
           visible={visible}
           title="즐겨찾기 해제"
-          color="rgba(0, 0, 0, 0.522)"
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
-          <StarFilled
-            style={{ color: '#faad14' }}
+          <div
+            className="customCircleButton"
+            style={{
+              width: '34px',
+              height: '24px',
+              borderRadius: '12px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
             onMouseEnter={() => {
               setVisible(true);
             }}
             onMouseLeave={() => {
               setVisible(false);
             }}
-            shape="circle"
-            size="small"
             onClick={() => {
               updateBook(false);
               setVisible(false);
             }}
-          />
+          >
+            <StarFilled className="writeLiked" style={{ color: '#fca311' }} />
+          </div>
         </Tooltip>
       ) : (
         <Tooltip
           visible={visible}
           title="즐겨찾기 등록"
-          color="rgb(250, 173, 20, 0.722)"
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
-          <StarOutlined
-            style={{ color: '#a3a3a3' }}
+          <div
+            className="customCircleButton"
+            style={{
+              width: '34px',
+              height: '24px',
+              borderRadius: '12px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
             onMouseEnter={() => {
               setVisible(true);
             }}
             onMouseLeave={() => {
               setVisible(false);
             }}
-            shape="circle"
-            size="small"
             onClick={() => {
               updateBook(true);
               setVisible(false);
             }}
-          />
+          >
+            <StarOutlined className="writeUnliked" style={{ color: '#DEE2E6' }} />
+          </div>
         </Tooltip>
       )}
     </>

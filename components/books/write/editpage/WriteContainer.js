@@ -74,34 +74,6 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
   }, [data1, indexChanged, first_index]);
 
 
-  const onFinish = (values) => {
-    console.log(values);
-    // const mybook_id = localStorage.getItem("book_id");
-
-    // const face1_contents_temp = [];
-    // for (var i = 0; i < 5; i++) {
-    //   face1_contents_temp.push(values[`face1_input${i}`]);
-    // }
-    // var face1_contents = face1_contents_temp.filter(function (el) {
-    //   return el != null;
-    // });
-
-    // const face2_contents_temp = [];
-    // for (var i = 0; i < 5; i++) {
-    //   face2_contents_temp.push(values[`face2_input${i}`]);
-    // }
-    // var face2_contents = face2_contents_temp.filter(function (el) {
-    //   return el != null;
-    // });
-    // if (cardId) {
-    //   var current_position_card_id = cardId;
-    // } else {
-    //   current_position_card_id = null;
-    // }
-    // const cardtype = cardTypeInfos.cardtype;
-    // const cardtype_id = cardTypes[0]._id;
-    // addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, face1_contents, face2_contents);
-  };
   
   const cardTypeInfo = (cardtype_info) => {
     setcardTypeInfos(cardtype_info);
@@ -134,7 +106,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     }
     const editor = (
       <>
-        <Editor nicks={nicks} onFinish={onFinish}/>
+        <Editor nicks={nicks} onFinish={onFinish} cardtype_info={cardtype_info}/>
       </>
     );
 
@@ -148,11 +120,37 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
       setEditorOn(editor);
     
   };
-  const submitNewCard = () => {
-    console.log("submit card!!!!!!!!!!!!!!!!!!");
+
+  const onFinish = (values) => {
+    console.log(values);
+    const mybook_id = localStorage.getItem("book_id");
+
+    // const face1_contents_temp = [];
+    // for (var i = 0; i < 5; i++) {
+    //   face1_contents_temp.push(values[`face1_input${i}`]);
+    // }
+    // var face1_contents = face1_contents_temp.filter(function (el) {
+    //   return el != null;
+    // });
+
+    // const face2_contents_temp = [];
+    // for (var i = 0; i < 5; i++) {
+    //   face2_contents_temp.push(values[`face2_input${i}`]);
+    // }
+    // var face2_contents = face2_contents_temp.filter(function (el) {
+    //   return el != null;
+    // });
+    if (cardId) {
+      var current_position_card_id = cardId;
+    } else {
+      current_position_card_id = null;
+    }
+    console.log(cardTypeInfos)
+    const cardtype = cardTypeInfos.cardtype;
+    const cardtype_id = cardTypes[0]._id;
+    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2);
   };
 
-  
 
   const [cardset_addcard] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 

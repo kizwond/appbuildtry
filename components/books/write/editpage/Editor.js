@@ -147,16 +147,48 @@ export class Editor extends Component {
   };
 
   handleSubmit = () => {
-    console.log("onClick handleSubmit!!!!!")
+    console.log("onClick handleSubmit!!!!!");
     // console.log(this.state.editor1)
-    this.props.onFinish(this.state.editor1)
+    // this.props.onFinish(this.state.editor1);
+    const num_face1 = this.props.cardtype_info.num_of_row.face1;
+    const num_face2 = this.props.cardtype_info.num_of_row.face2;
+    console.log(num_face1);
+    console.log(num_face2);
+    const face1_array = [];
+    const selection_array = [];
+    const face2_array = [];
+    const annotation_array = [];
+
+    //읽기카드만 있을때
+    if (num_face1 > 0 && num_face2 === 0) {
+      for (var i = 1; i < num_face1 + 1; i++) {
+        face1_array.push(this.state["editor" + i]);
+      }
+    }
+
+    //뒤집기카드만 있을때
+    if (num_face1 > 0 && num_face2 > 0) {
+      for (i = 1; i < num_face1 + 1; i++) {
+        face1_array.push(this.state["editor" + i]);
+      }
+      if (num_face2 > 0) {
+        for (i = num_face1 + 1; i < num_face1 + num_face2 + 1; i++) {
+          face2_array.push(this.state["editor" + i]);
+        }
+      }
+    }
+    console.log(face1_array);
+    console.log(face2_array);
+    const values = { face1: face1_array, face2: face2_array };
+    this.props.onFinish(values);
   };
 
   render() {
     const config = {
       editorClass: "editor_try",
       quickInsertEnabled: false,
-    //   imageUploadURL: "api/card/upload_image",
+      imageUploadURL: "/api/cardset/imageUpload",
+      fileUploadURL: "/api/cardset/fileUpload",
       saveParam: "content",
       width: "auto",
       theme: "gray",
@@ -199,35 +231,31 @@ export class Editor extends Component {
     };
 
     const editorList = this.props.nicks.map((item, index) => {
-        return (
-            <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center" }}>
-              <label className="editor_label" style={{ width: "80px" }}>
-                {item}
-              </label>
-              <FroalaEditorComponent
-                tag="textarea"
-                config={config}
-                model={this.state["editor" + (index + 1).toString()]}
-                onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-                width={100}
-              />
-            </div>
-          );
-     
+      return (
+        <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center" }}>
+          <label className="editor_label" style={{ width: "80px" }}>
+            {item}
+          </label>
+          <FroalaEditorComponent
+            tag="textarea"
+            config={config}
+            model={this.state["editor" + (index + 1).toString()]}
+            onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+            width={100}
+          />
+        </div>
+      );
     });
-
 
     return (
       <>
         <div id="editor" style={{ border: "1px solid black", borderRadius: "10px" }}>
           <div id="toolbarContainer"></div>
-          <div style={{ padding: "10px" }}>
-            {editorList}
-          </div>
+          <div style={{ padding: "10px" }}>{editorList}</div>
           <button onClick={this.handleSubmit} id="saveButton">
             저장
           </button>
-          <button onClick={()=> console.log("cancel clicked!!!")} id="cancelButton">
+          <button onClick={() => console.log("cancel clicked!!!")} id="cancelButton">
             취소
           </button>
         </div>

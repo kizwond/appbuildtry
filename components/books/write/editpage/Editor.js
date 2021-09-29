@@ -165,7 +165,6 @@ export class Editor extends Component {
         face1_array.push(this.state["editor" + i]);
       }
     }
-    
 
     //뒤집기카드만 있을때
     if (num_face1 > 0 && num_face2 > 0) {
@@ -174,21 +173,22 @@ export class Editor extends Component {
       }
       if (num_face2 > 0) {
         for (i = num_face1 + 1; i < num_face1 + num_face2 + 1; i++) {
-            face2_array.push(this.state["editor" + i]);
-          }
+          face2_array.push(this.state["editor" + i]);
+        }
       }
     }
     console.log(face1_array);
     console.log(face2_array);
-    const values = {face1: face1_array, face2:face2_array}
-    this.props.onFinish(values)
+    const values = { face1: face1_array, face2: face2_array };
+    this.props.onFinish(values);
   };
 
   render() {
     const config = {
       editorClass: "editor_try",
       quickInsertEnabled: false,
-      //   imageUploadURL: "api/card/upload_image",
+      imageUploadURL: "/api/cardset/imageUpload",
+      fileUploadURL: "/api/cardset/fileUpload",
       saveParam: "content",
       width: "auto",
       theme: "gray",

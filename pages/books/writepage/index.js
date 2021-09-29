@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_CATEGORY_AND_BOOKS_INFO } from '../../../graphql/query/writePage';
@@ -54,20 +55,26 @@ const Writeanother = () => {
     return <div>Error..</div>;
   }
   return (
-    <Layout>
-      {category.length >= 1 && (
-        <StyledSpace>
-          <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
-          <CategorySettingButton category={category} />
-        </StyledSpace>
-      )}
+    <>
+      <Head>
+        <title>Write - CogBook</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
+      <Layout>
+        {category.length >= 1 && (
+          <StyledSpace>
+            <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
+            <CategorySettingButton category={category} />
+          </StyledSpace>
+        )}
 
-      <Row>
-        <StyledCol>
-          <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-        </StyledCol>
-      </Row>
-    </Layout>
+        <Row>
+          <StyledCol>
+            <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+          </StyledCol>
+        </Row>
+      </Layout>
+    </>
   );
 };
 
@@ -78,9 +85,14 @@ const StyledSpace = styled(Space)`
     font-size: 0.8rem;
   }
 `;
+
 const StyledCol = styled(Col)`
   & * {
     font-size: 0.8rem;
+  }
+
+  & .ant-table-row-indent + .ant-table-row-expand-icon {
+    margin-right: 2px;
   }
 
   & .anticon-star > svg {
@@ -118,6 +130,12 @@ const StyledCol = styled(Col)`
     display: flex;
     align-items: center;
     font-size: 0.7rem;
+    @media screen and (min-width: 577px) and (max-width: 768px) {
+      padding-left: 8px;
+    }
+    @media screen and (min-width: 100px) and (max-width: 576px) {
+      padding-left: 4px;
+    }
   }
   & .MiddleHiddenBar > .Row-First-Left > div,
   & .LastHiddenBar > .Row-First-Left > div {
@@ -129,6 +147,12 @@ const StyledCol = styled(Col)`
     padding-left: 15px;
     height: 30px;
     font-size: 0.7rem;
+    @media screen and (min-width: 577px) and (max-width: 768px) {
+      padding-left: 8px;
+    }
+    @media screen and (min-width: 100px) and (max-width: 576px) {
+      padding-left: 4px;
+    }
   }
   & .HandleOnOffShow > span {
     font-size: 0.7rem;
@@ -145,6 +169,12 @@ const StyledCol = styled(Col)`
     display: flex;
     align-items: center;
     font-size: 0.7rem;
+    @media screen and (min-width: 577px) and (max-width: 768px) {
+      padding-left: 8px;
+    }
+    @media screen and (min-width: 100px) and (max-width: 576px) {
+      padding-left: 4px;
+    }
   }
 
   & .categoryCol {
@@ -192,10 +222,15 @@ const StyledCol = styled(Col)`
     margin-top: 3px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     padding-left: 15px;
+    @media screen and (min-width: 577px) and (max-width: 768px) {
+      padding-left: 8px;
+    }
+    @media screen and (min-width: 100px) and (max-width: 576px) {
+      padding-left: 4px;
+    }
   }
 
   & .lastEvenBook > .normal > div.BookOrder {
@@ -234,10 +269,15 @@ const StyledCol = styled(Col)`
     margin-top: 3px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     padding-left: 15px;
+    @media screen and (min-width: 577px) and (max-width: 768px) {
+      padding-left: 8px;
+    }
+    @media screen and (min-width: 100px) and (max-width: 576px) {
+      padding-left: 4px;
+    }
   }
 
   & .lastOddBook > .normal > div.BookOrder {
@@ -266,10 +306,15 @@ const StyledCol = styled(Col)`
     padding-bottom: 4px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     padding-left: 15px;
+    @media screen and (min-width: 577px) and (max-width: 768px) {
+      padding-left: 8px;
+    }
+    @media screen and (min-width: 100px) and (max-width: 576px) {
+      padding-left: 4px;
+    }
   }
   & .EvenNumberRow > .normal > div.BookOrder {
     color: #f5f5f5;
@@ -297,10 +342,15 @@ const StyledCol = styled(Col)`
     padding-bottom: 4px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     padding-left: 15px;
+    @media screen and (min-width: 577px) and (max-width: 768px) {
+      padding-left: 8px;
+    }
+    @media screen and (min-width: 100px) and (max-width: 576px) {
+      padding-left: 4px;
+    }
   }
   & .OddNumberRow > .normal > div.BookOrder {
     color: #fff;
@@ -323,32 +373,29 @@ const StyledCol = styled(Col)`
   }
 
   & .singleBar {
-    width: 25%;
-    float: left;
-    margin-left: 6%;
-    margin-right: 6%;
+    width: 18px;
+    margin-left: 3px;
+    margin-right: 3px;
   }
   & .graphBar {
     position: relative;
-    height: 26px;
-    background: #c3c4bea2;
-    overflow: hidden;
+    height: 20px;
+    background: rgba(237, 238, 233, 0);
   }
 
   & .AchivedCard {
     position: absolute;
     bottom: 0;
-    width: 100%;
-    background: #4489c9;
-    color: #ffffff;
+    width: 18px;
+    background: #c5c6c7;
+    display: flex;
+    justify-content: center;
   }
 
   & .CardCounter {
     position: absolute;
     font-size: 0.6rem;
-    bottom: 0;
-    text-align: left;
-    left: 2px;
-    text-align: center;
+    bottom: 3px;
+    display: block;
   }
 `;

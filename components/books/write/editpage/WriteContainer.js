@@ -5,6 +5,7 @@ import FloatingMenu from "./sidemenu/FloatingMenu";
 import { Input, Form, Button } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
 import Editor from "./Editor";
+import axios from 'axios'
 
 const WriteContainer = ({ indexChanged, indexSetId }) => {
   const ISSERVER = typeof window === "undefined";
@@ -231,6 +232,19 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     console.log(card_id);
     setCardId(card_id);
   };
+
+  const onClickTest = () => {
+    console.log("click")
+    axios.post('/api/cardset/imageUpload', {
+      test:"hello"
+    })
+    .then(res => {
+      console.log(res)
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  }
   return (
     <div className="editor_panel" id="editor_panel" style={{ ...a4Page, position: "relative" }}>
       <FloatingMenu cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
@@ -245,6 +259,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
       </div>
       <div></div>
       <div>{editorOn}</div>
+      <button onClick={onClickTest}>test</button>
     </div>
   );
 };

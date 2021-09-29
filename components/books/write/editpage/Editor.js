@@ -188,7 +188,7 @@ export class Editor extends Component {
       editorClass: "editor_try",
       quickInsertEnabled: false,
       imageUploadURL: "/api/cardset/imageUpload",
-      fileUploadURL: "/api/cardset/fileUpload",
+    //   fileUploadURL: "/api/cardset/fileUpload/",
       saveParam: "content",
       width: "auto",
       theme: "gray",

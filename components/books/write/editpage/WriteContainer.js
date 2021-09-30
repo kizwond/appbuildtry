@@ -6,6 +6,7 @@ import { Input, Form, Button } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
 import Editor from "./Editor";
 import axios from 'axios'
+import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
 
 const WriteContainer = ({ indexChanged, indexSetId }) => {
   const ISSERVER = typeof window === "undefined";
@@ -125,6 +126,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
   const onFinish = (values) => {
     console.log(values);
     const mybook_id = localStorage.getItem("book_id");
+    const cardtype = sessionStorage.getItem("cardtype")
 
     // const face1_contents_temp = [];
     // for (var i = 0; i < 5; i++) {
@@ -147,7 +149,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
       current_position_card_id = null;
     }
     console.log(cardTypeInfos)
-    const cardtype = cardTypeInfos.cardtype;
+    // const cardtype = cardTypeInfos.cardtype;
     const cardtype_id = cardTypes[0]._id;
     addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2);
   };
@@ -200,7 +202,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
               <div>
                 {content.contents.mycontents_id.face1.map((item) => (
                   <>
-                    <div>{item}</div>
+                    <div><FroalaEditorView model={item} /></div>
                   </>
                 ))}
               </div>
@@ -212,12 +214,12 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
               <div>
                 {content.contents.mycontents_id.face1.map((item) => (
                   <>
-                    <div>{item}</div>
+                    <div><FroalaEditorView model={item} /></div>
                   </>
                 ))}
                 {content.contents.mycontents_id.face2.map((item) => (
                   <>
-                    <div>{item}</div>
+                    <div><FroalaEditorView model={item} /></div>
                   </>
                 ))}
               </div>

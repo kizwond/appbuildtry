@@ -87,6 +87,23 @@ const StyledSpace = styled(Space)`
 `;
 
 const StyledCol = styled(Col)`
+  & .ant-drawer-content {
+    overflow: hidden;
+    background-color: #6c757d;
+    background-clip: padding-box;
+    border: 0;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+  }
+  & .customCircleButton:hover {
+    background-color: #495057;
+  }
+  & .PushCustomCircleButton:hover {
+    background-color: #fff;
+  }
+  & .PullCustomCircleButton:hover {
+    background-color: #fff;
+  }
   & * {
     font-size: 0.8rem;
   }
@@ -95,36 +112,86 @@ const StyledCol = styled(Col)`
     margin-right: 2px;
   }
 
+  & .anticon-double-right > svg {
+    font-size: 18px;
+    color: #dee2e6;
+  }
+  & .anticon-double-left > svg {
+    font-size: 18px;
+    color: #495057;
+  }
+  & .anticon-arrow-down > svg {
+    font-size: 16px;
+    color: #dee2e6;
+  }
+  & .customCircleButton:hover > .anticon-arrow-down > svg {
+    color: #fff;
+  }
+
+  & .anticon-arrow-up > svg {
+    font-size: 16px;
+    color: #dee2e6;
+  }
+  & .customCircleButton:hover > .anticon-arrow-up > svg {
+    color: #fff;
+  }
+
   & .anticon-star > svg {
-    font-size: 1.2rem;
+    font-size: 16px;
   }
+  & .customCircleButton:hover > .anticon-star.writeUnliked > svg {
+    color: #fff;
+  }
+  & .customCircleButton:hover > .anticon-star.writeLiked > svg {
+    color: #fcc725;
+  }
+
   & .anticon-eye > svg {
-    font-size: 1.2rem;
-    color: #a3a3a3;
+    font-size: 16px;
+    color: #dee2e6;
   }
+  & .customCircleButton:hover > .anticon-eye > svg {
+    color: #fff;
+  }
+
   & .anticon-eye-invisible > svg {
-    font-size: 1.2rem;
-    color: #a3a3a3;
+    font-size: 16px;
+    color: #dee2e6;
   }
+  & .customCircleButton:hover > .anticon-eye-invisible > svg {
+    color: #fff;
+  }
+
   & .anticon-setting > svg {
-    font-size: 1.1rem;
+    font-size: 16px;
     color: #a3a3a3;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
-    padding: 1px 0;
+    padding: 0;
   }
 
   & .ant-table table {
     border-collapse: collapse;
+    background-color: white;
+    overflow: hidden;
+  }
+
+  & .categoryCol {
+    border-bottom: none;
+  }
+
+  & .Row-Last-One {
+    position: relative;
+    z-index: 3;
+    background-color: white;
   }
 
   & .foldedCategory > .Row-First-Left > div {
     background: #e0e2f4;
     border-radius: 8px;
     margin: 3px 0px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
     padding-left: 15px;
     height: 30px;
     display: flex;
@@ -142,8 +209,7 @@ const StyledCol = styled(Col)`
     background: #e0e2f4;
     border-radius: 8px;
     margin: 3px 0px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
     padding-left: 15px;
     height: 30px;
     font-size: 0.7rem;
@@ -162,8 +228,7 @@ const StyledCol = styled(Col)`
     background: rgb(228, 224, 224);
     border-radius: 8px;
     margin: 3px 0px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
     padding-left: 15px;
     height: 30px;
     display: flex;
@@ -175,10 +240,6 @@ const StyledCol = styled(Col)`
     @media screen and (min-width: 100px) and (max-width: 576px) {
       padding-left: 4px;
     }
-  }
-
-  & .categoryCol {
-    border-bottom: none;
   }
 
   & .foldedCategory > .categoryCol,
@@ -205,10 +266,7 @@ const StyledCol = styled(Col)`
   & .lastEvenBook > .Row-Last-One > div {
     background-color: #f5f5f5;
     height: 34px;
-    padding-top: 4px;
-    padding-bottom: 4px;
     margin-bottom: 3px;
-    margin-top: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,10 +274,7 @@ const StyledCol = styled(Col)`
   & .lastEvenBook > .Row-First-Left > div {
     background-color: #f5f5f5;
     height: 34px;
-    padding-top: 4px;
-    padding-bottom: 4px;
     margin-bottom: 3px;
-    margin-top: 3px;
     display: flex;
     align-items: center;
     border-top-left-radius: 10px;
@@ -252,10 +307,7 @@ const StyledCol = styled(Col)`
   & .lastOddBook > .Row-Last-One > div {
     background-color: #fff;
     height: 34px;
-    padding-top: 4px;
-    padding-bottom: 4px;
     margin-bottom: 3px;
-    margin-top: 3px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -263,10 +315,8 @@ const StyledCol = styled(Col)`
   & .lastOddBook > .Row-First-Left > div {
     background-color: #fff;
     height: 34px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
     margin-bottom: 3px;
-    margin-top: 3px;
     display: flex;
     align-items: center;
     border-top-left-radius: 10px;
@@ -293,8 +343,7 @@ const StyledCol = styled(Col)`
   & .EvenNumberRow > .Row-Last-One > div {
     background-color: #f5f5f5;
     height: 34px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -302,8 +351,7 @@ const StyledCol = styled(Col)`
   & .EvenNumberRow > .Row-First-Left > div {
     background-color: #f5f5f5;
     height: 34px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
     display: flex;
     align-items: center;
     border-top-left-radius: 10px;
@@ -329,8 +377,7 @@ const StyledCol = styled(Col)`
   & .OddNumberRow > .Row-Last-One > div {
     background-color: #fff;
     height: 34px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -338,8 +385,7 @@ const StyledCol = styled(Col)`
   & .OddNumberRow > .Row-First-Left > div {
     background-color: #fff;
     height: 34px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+
     display: flex;
     align-items: center;
     border-top-left-radius: 10px;

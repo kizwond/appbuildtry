@@ -3,8 +3,8 @@ import { memo } from 'react';
 import { useRouter } from 'next/router';
 import { CHANGE_POSITION_OF_BOOK } from '../../../../graphql/query/writePage';
 
-import { Button } from 'antd';
-import { Space } from '../../../../node_modules/antd/lib/index';
+import { Space } from 'antd';
+import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 
 // todo 버튼 만들어서 useMutation부분 옮겨보자
 
@@ -37,31 +37,43 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
   }
 
   return (
-    <Space>
-      <Button
+    <Space size={2}>
+      <div
+        className="customCircleButton"
+        style={{
+          width: '34px',
+          height: '24px',
+          borderRadius: '12px',
+          // background: 'yellow',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          cursor: 'pointer',
+        }}
         onClick={() => {
-          console.log(_record);
-
           positionBooks('up', _record._id);
         }}
-        disabled={_record.relationship === 'parent'}
-        size="small"
-        shape="circle"
       >
-        상
-      </Button>
-      <Button
+        <ArrowUpOutlined />
+      </div>
+      <div
+        className="customCircleButton"
+        style={{
+          width: '34px',
+          height: '24px',
+          borderRadius: '12px',
+          // background: 'yellow',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          cursor: 'pointer',
+        }}
         onClick={() => {
-          console.log(_record);
-
           positionBooks('down', _record._id);
         }}
-        disabled={_record.isLastBookInShowList}
-        size="small"
-        shape="circle"
       >
-        하
-      </Button>
+        <ArrowDownOutlined />
+      </div>
     </Space>
   );
 };

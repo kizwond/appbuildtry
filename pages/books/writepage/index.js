@@ -62,17 +62,19 @@ const Writeanother = () => {
       </Head>
       <Layout>
         {category.length >= 1 && (
-          <StyledSpace>
-            <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
-            <CategorySettingButton category={category} />
-          </StyledSpace>
+          <StyledRow>
+            <StyledSpace>
+              <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
+              <CategorySettingButton category={category} />
+            </StyledSpace>
+          </StyledRow>
         )}
 
-        <Row>
+        <StyledRow>
           <StyledCol>
             <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
           </StyledCol>
-        </Row>
+        </StyledRow>
       </Layout>
     </>
   );
@@ -86,7 +88,13 @@ const StyledSpace = styled(Space)`
   }
 `;
 
+const StyledRow = styled(Row)`
+  max-width: 1440px;
+  margin: 0 auto;
+`;
+
 const StyledCol = styled(Col)`
+  /* 개별 책 설정 버튼 및 펼침 css */
   & .ant-drawer-content {
     overflow: hidden;
     background-color: #6c757d;
@@ -98,28 +106,49 @@ const StyledCol = styled(Col)`
   & .customCircleButton:hover {
     background-color: #495057;
   }
+  & .PushCustomCircleButton {
+    background-color: #212529;
+  }
   & .PushCustomCircleButton:hover {
-    background-color: #fff;
+    background-color: #a9a9a9;
   }
   & .PullCustomCircleButton:hover {
-    background-color: #fff;
+    background-color: #a9a9a9;
   }
+
+  & .FirstBookCustom > .anticon-arrow-up > svg,
+  & .LastBookCustom > .anticon-arrow-down > svg {
+    color: #4d4d4d;
+  }
+
+  /* 모든 폰트 사이즈 */
   & * {
     font-size: 0.8rem;
   }
 
+  /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
   & .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;
   }
 
+  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
   & .anticon-double-right > svg {
     font-size: 18px;
-    color: #dee2e6;
+    color: #a3a3a3;
   }
+  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
+    font-size: 18px;
+    color: #fff;
+  }
+
   & .anticon-double-left > svg {
     font-size: 18px;
-    color: #495057;
+    color: #a3a3a3;
   }
+  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
+    color: #fff;
+  }
+
   & .anticon-arrow-down > svg {
     font-size: 16px;
     color: #dee2e6;
@@ -209,7 +238,8 @@ const StyledCol = styled(Col)`
     background: #e0e2f4;
     border-radius: 8px;
     margin: 3px 0px;
-
+    display: flex;
+    align-items: center;
     padding-left: 15px;
     height: 30px;
     font-size: 0.7rem;

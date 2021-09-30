@@ -20,6 +20,11 @@ export const GET_CATEGORY_AND_BOOKS_INFO = gql`
       mybooks {
         _id
         stats {
+          overall {
+            accuLevel
+            studyHour
+            numSession
+          }
           recent {
             timeStudy
             timeModify
@@ -29,8 +34,15 @@ export const GET_CATEGORY_AND_BOOKS_INFO = gql`
             read
             flip
           }
-          progress
-          numSession
+          writeHistory {
+            date
+            numCreatedCards
+          }
+          studyHistory {
+            date
+            level
+            studyHour
+          }
         }
         mybook_info {
           title
@@ -57,6 +69,11 @@ export const GET_MY_BOOKS_INFO = gql`
       mybooks {
         _id
         stats {
+          overall {
+            accuLevel
+            studyHour
+            numSession
+          }
           recent {
             timeStudy
             timeModify
@@ -66,8 +83,15 @@ export const GET_MY_BOOKS_INFO = gql`
             read
             flip
           }
-          progress
-          numSession
+          writeHistory {
+            date
+            numCreatedCards
+          }
+          studyHistory {
+            date
+            level
+            studyHour
+          }
         }
         mybook_info {
           title
@@ -94,6 +118,11 @@ export const CREATE_MY_BOOK = gql`
       mybooks {
         _id
         stats {
+          overall {
+            accuLevel
+            studyHour
+            numSession
+          }
           recent {
             timeStudy
             timeModify
@@ -103,8 +132,15 @@ export const CREATE_MY_BOOK = gql`
             read
             flip
           }
-          progress
-          numSession
+          writeHistory {
+            date
+            numCreatedCards
+          }
+          studyHistory {
+            date
+            level
+            studyHour
+          }
         }
         mybook_info {
           title
@@ -131,6 +167,11 @@ export const UPDATE_BOOK_TITLE_AND_HIDE = gql`
       mybooks {
         _id
         stats {
+          overall {
+            accuLevel
+            studyHour
+            numSession
+          }
           recent {
             timeStudy
             timeModify
@@ -140,8 +181,15 @@ export const UPDATE_BOOK_TITLE_AND_HIDE = gql`
             read
             flip
           }
-          progress
-          numSession
+          writeHistory {
+            date
+            numCreatedCards
+          }
+          studyHistory {
+            date
+            level
+            studyHour
+          }
         }
         mybook_info {
           title
@@ -168,6 +216,11 @@ export const CHANGE_WRITE_LIKE = gql`
       mybooks {
         _id
         stats {
+          overall {
+            accuLevel
+            studyHour
+            numSession
+          }
           recent {
             timeStudy
             timeModify
@@ -177,8 +230,15 @@ export const CHANGE_WRITE_LIKE = gql`
             read
             flip
           }
-          progress
-          numSession
+          writeHistory {
+            date
+            numCreatedCards
+          }
+          studyHistory {
+            date
+            level
+            studyHour
+          }
         }
         mybook_info {
           title
@@ -205,6 +265,11 @@ export const DELETE_A_BOOK = gql`
       mybooks {
         _id
         stats {
+          overall {
+            accuLevel
+            studyHour
+            numSession
+          }
           recent {
             timeStudy
             timeModify
@@ -214,8 +279,15 @@ export const DELETE_A_BOOK = gql`
             read
             flip
           }
-          progress
-          numSession
+          writeHistory {
+            date
+            numCreatedCards
+          }
+          studyHistory {
+            date
+            level
+            studyHour
+          }
         }
         mybook_info {
           title
@@ -242,6 +314,11 @@ export const CHANGE_POSITION_OF_BOOK = gql`
       mybooks {
         _id
         stats {
+          overall {
+            accuLevel
+            studyHour
+            numSession
+          }
           recent {
             timeStudy
             timeModify
@@ -251,8 +328,15 @@ export const CHANGE_POSITION_OF_BOOK = gql`
             read
             flip
           }
-          progress
-          numSession
+          writeHistory {
+            date
+            numCreatedCards
+          }
+          studyHistory {
+            date
+            level
+            studyHour
+          }
         }
         mybook_info {
           title
@@ -279,6 +363,11 @@ export const BOOK_CATEGORY_CHANGE_MUTATION = gql`
       mybooks {
         _id
         stats {
+          overall {
+            accuLevel
+            studyHour
+            numSession
+          }
           recent {
             timeStudy
             timeModify
@@ -288,8 +377,15 @@ export const BOOK_CATEGORY_CHANGE_MUTATION = gql`
             read
             flip
           }
-          progress
-          numSession
+          writeHistory {
+            date
+            numCreatedCards
+          }
+          studyHistory {
+            date
+            level
+            studyHour
+          }
         }
         mybook_info {
           title

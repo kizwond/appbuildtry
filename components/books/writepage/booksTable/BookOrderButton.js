@@ -1,12 +1,10 @@
 import { useMutation } from '@apollo/client';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { useRouter } from 'next/router';
 import { CHANGE_POSITION_OF_BOOK } from '../../../../graphql/query/writePage';
 
-import { Space } from 'antd';
+import { Space, Tooltip } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
-
-// todo 버튼 만들어서 useMutation부분 옮겨보자
 
 const BookOrderButton = ({ _record, handleToGetMyBook }) => {
   const router = useRouter();
@@ -38,42 +36,104 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
 
   return (
     <Space size={2}>
-      <div
-        className="customCircleButton"
-        style={{
-          width: '34px',
-          height: '24px',
-          borderRadius: '12px',
-          // background: 'yellow',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          cursor: 'pointer',
-        }}
-        onClick={() => {
-          positionBooks('up', _record._id);
-        }}
-      >
-        <ArrowUpOutlined />
-      </div>
-      <div
-        className="customCircleButton"
-        style={{
-          width: '34px',
-          height: '24px',
-          borderRadius: '12px',
-          // background: 'yellow',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          cursor: 'pointer',
-        }}
-        onClick={() => {
-          positionBooks('down', _record._id);
-        }}
-      >
-        <ArrowDownOutlined />
-      </div>
+      {_record.isFirstBook ? (
+        <Tooltip
+          mouseEnterDelay={0.5}
+          mouseLeaveDelay={0}
+          color="#4d4d4d"
+          title="첫번째 책"
+          overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
+          overlayStyle={{ alignSelf: 'middle' }}
+        >
+          <div
+            className="FirstBookCustom"
+            style={{
+              width: '34px',
+              height: '24px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <ArrowUpOutlined />
+          </div>
+        </Tooltip>
+      ) : (
+        <Tooltip
+          mouseEnterDelay={0.3}
+          mouseLeaveDelay={0}
+          title="위로 이동"
+          overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
+          overlayStyle={{ alignSelf: 'middle' }}
+        >
+          <div
+            className="customCircleButton"
+            style={{
+              width: '34px',
+              height: '24px',
+              borderRadius: '12px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              positionBooks('up', _record._id);
+            }}
+          >
+            <ArrowUpOutlined />
+          </div>
+        </Tooltip>
+      )}
+      {_record.isLastBook ? (
+        <Tooltip
+          mouseEnterDelay={0.5}
+          mouseLeaveDelay={0}
+          color="#4d4d4d"
+          title="마지막 책"
+          overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
+          overlayStyle={{ alignSelf: 'middle' }}
+        >
+          <div
+            className="LastBookCustom"
+            style={{
+              width: '34px',
+              height: '24px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <ArrowDownOutlined />
+          </div>
+        </Tooltip>
+      ) : (
+        <Tooltip
+          mouseEnterDelay={0.3}
+          mouseLeaveDelay={0}
+          title="아래로 이동"
+          overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
+          overlayStyle={{ alignSelf: 'middle' }}
+        >
+          <div
+            className="customCircleButton"
+            style={{
+              width: '34px',
+              height: '24px',
+              borderRadius: '12px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              cursor: 'pointer',
+            }}
+            onClick={() => {
+              positionBooks('down', _record._id);
+            }}
+          >
+            <ArrowDownOutlined />
+          </div>
+        </Tooltip>
+      )}
     </Space>
   );
 };

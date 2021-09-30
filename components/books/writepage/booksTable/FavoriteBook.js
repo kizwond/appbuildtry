@@ -47,7 +47,8 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
     <>
       {writelike ? (
         <Tooltip
-          visible={visible}
+          mouseEnterDelay={0.3}
+          mouseLeaveDelay={0}
           title="즐겨찾기 해제"
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
@@ -63,15 +64,8 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
               alignItems: 'center',
               cursor: 'pointer',
             }}
-            onMouseEnter={() => {
-              setVisible(true);
-            }}
-            onMouseLeave={() => {
-              setVisible(false);
-            }}
             onClick={() => {
               updateBook(false);
-              setVisible(false);
             }}
           >
             <StarFilled className="writeLiked" style={{ color: '#fca311' }} />
@@ -79,7 +73,8 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
         </Tooltip>
       ) : (
         <Tooltip
-          visible={visible}
+          mouseEnterDelay={0.3}
+          mouseLeaveDelay={0}
           title="즐겨찾기 등록"
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
@@ -95,15 +90,8 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
               alignItems: 'center',
               cursor: 'pointer',
             }}
-            onMouseEnter={() => {
-              setVisible(true);
-            }}
-            onMouseLeave={() => {
-              setVisible(false);
-            }}
             onClick={() => {
               updateBook(true);
-              setVisible(false);
             }}
           >
             <StarOutlined className="writeUnliked" style={{ color: '#DEE2E6' }} />

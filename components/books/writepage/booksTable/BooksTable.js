@@ -61,8 +61,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       ..._book.mybook_info,
       ..._book.stats?.numCards,
       ..._book.stats?.recent,
-      numSession: _book.stats?.numSession,
-      progress: _book.stats?.progress,
+      ..._book.stats?.overall,
+      numSession: _book.stats?.studyHistory,
+      progress: _book.stats?.writeHistory,
       classType:
         markedHideListLength === 0 && markedShowListLength > 0 && markedShowListLength === _index + 1 && _index % 2 !== 0
           ? 'last-even-book'
@@ -72,8 +73,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
           ? 'even-book'
           : 'odd-book',
       categoryOrder: seq,
-      isLastBookInShowList: markedShowListLength === _index + 1,
       categoryName: name,
+      isFirstBook: _index === 0,
+      isLastBook: markedShowListLength === _index + 1,
       key: `KEY:${_cate._id}INDEX:${_index + 1}`,
       _id: _book._id,
     }));
@@ -82,8 +84,9 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       ..._book.mybook_info,
       ..._book.stats?.numCards,
       ..._book.stats?.recent,
-      numSession: _book.stats?.numSession,
-      progress: _book.stats?.progress,
+      ..._book.stats?.overall,
+      numSession: _book.stats?.studyHistory,
+      progress: _book.stats?.writeHistory,
       classType:
         markedHideListLength > 0 && isShowedAllBooks && markedHideListLength === _index + 1 && _index % 2 !== 0
           ? 'last-even-book'
@@ -94,6 +97,8 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
           : 'odd-book',
       categoryOrder: seq,
       categoryName: name,
+      isFirstBook: _index === 0,
+      isLastBook: markedHideListLength === _index + 1,
       key: `KEY:${_cate._id}INDEX_HIDDEN:${_index}`,
       _id: _book._id,
     }));
@@ -103,35 +108,33 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       classType: 'hiddenBar',
       title: (
         <>
-          <Row align="middle">
-            <Col span={9} style={{ fontSize: '0.7rem' }}>{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</Col>
-            <Col>
-              <Tooltip
-                title={isShowedAllBooks ? '숨긴 책 감추기' : '숨긴 책 표시'}
-                color="rgba(7, 164, 237, 0.522)"
-                overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
-                overlayStyle={{ alignSelf: 'middle' }}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ marginRight: '40px' }}>{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</div>
+            <Tooltip
+              title={isShowedAllBooks ? '숨긴 책 감추기' : '숨긴 책 표시'}
+              color="rgba(7, 164, 237, 0.522)"
+              overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
+              overlayStyle={{ alignSelf: 'middle' }}
+            >
+              <Tag
+                className="HandleOnOffShow"
+                size="small"
+                style={{ fontSize: '0.7rem' }}
+                color={isShowedAllBooks ? '#cec8c8' : '#a9a7a7'}
+                icon={<VerticalAlignBottomOutlined rotate={isShowedAllBooks ? 180 : 0} />}
+                onClick={() => {
+                  if (isShowedAllBooks) {
+                    setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== _cate._id));
+                  }
+                  if (!isShowedAllBooks) {
+                    setIsShowedHiddenBook([...isShowedHiddenBook, _cate._id]);
+                  }
+                }}
               >
-                <Tag
-                  className="HandleOnOffShow"
-                  size="small"
-                  style={{ fontSize: '0.7rem' }}
-                  color={isShowedAllBooks ? '#cec8c8' : '#a9a7a7'}
-                  icon={<VerticalAlignBottomOutlined rotate={isShowedAllBooks ? 180 : 0} />}
-                  onClick={() => {
-                    if (isShowedAllBooks) {
-                      setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== _cate._id));
-                    }
-                    if (!isShowedAllBooks) {
-                      setIsShowedHiddenBook([...isShowedHiddenBook, _cate._id]);
-                    }
-                  }}
-                >
-                  {isShowedAllBooks ? '접기' : '보기'}
-                </Tag>
-              </Tooltip>
-            </Col>
-          </Row>
+                {isShowedAllBooks ? '접기' : '보기'}
+              </Tag>
+            </Tooltip>
+          </div>
         </>
       ),
     };
@@ -410,7 +413,6 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                   style={{
                     width: '44px',
                     height: '30px',
-                    backgroundColor: 'rgba(33, 37, 41, 0)',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -421,6 +423,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
               </div>
 
               <Drawer
+                destroyOnClose={true}
                 placement="right"
                 width={'210px'}
                 closable={false}
@@ -450,7 +453,6 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                   style={{
                     width: '44px',
                     height: '30px',
-                    backgroundColor: '#212529',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -480,155 +482,6 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
         return obj;
       },
     },
-    // ];
-    // : [
-    //     {
-    //       title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카테고리</div>,
-    //       key: 'categoryName',
-    //       className: 'categoryCol',
-    //       width: 50,
-    //       dataIndex: 'categoryName',
-    //       render: (_value, _record) =>
-    //         _record.relationship === 'parent' ? <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{_value}</div> : null,
-    //     },
-    //     {
-    //       title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>책 제목</div>,
-    //       key: 'title',
-    //       dataIndex: 'title',
-    //       className: 'Row-First-Left',
-    //       width: 100,
-    //       render: (value, _record, index) => {
-    //         const obj = {
-    //           children:
-    //             _record.classType === 'empty-category' ? (
-    //               <div>빈 칸테고리</div>
-    //             ) : _record.relationship === 'parent' && !expandedRowKeys.includes(_record.key) ? (
-    //               <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
-    //             ) : _record.classType === 'middle-hiddenBar' || _record.classType === 'hiddenBar' ? (
-    //               <div
-    //                 style={{
-    //                   overflow: 'hidden',
-    //                   textOverflow: 'ellipsis',
-    //                   whiteSpace: 'nowrap',
-    //                 }}
-    //               >
-    //                 {value}
-    //               </div>
-    //             ) : (
-    //               <div>
-    //                 <div
-    //                   style={{
-    //                     overflow: 'hidden',
-    //                     textOverflow: 'ellipsis',
-    //                     whiteSpace: 'nowrap',
-    //                     width: '100%',
-    //                   }}
-    //                 >
-    //                   <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
-    //                   {value}
-    //                 </div>
-    //               </div>
-    //             ),
-    //           props: {},
-    //         };
-    //         if (
-    //           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-    //           _record.classType === 'hiddenBar' ||
-    //           _record.classType === 'middle-hiddenBar' ||
-    //           _record.classType === 'empty-category'
-    //         ) {
-    //           obj.props.colSpan = columns.length - 1;
-    //         } else {
-    //           obj.props.colSpan = 1;
-    //         }
-    //         return obj;
-    //       },
-    //     },
-    //     {
-    //       title: '책순서',
-    //       className: 'normal',
-    //       align: 'center',
-    //       width: 50,
-    //       render: (_value, _record) => {
-    //         const obj = {
-    //           children: (
-    //             <div className="BookOrder">
-    //               {_record.hide_or_show === 'hide' ? '.' : <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} />}
-    //             </div>
-    //           ),
-    //           props: {},
-    //         };
-    //         if (
-    //           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-    //           _record.classType === 'hiddenBar' ||
-    //           _record.classType === 'middle-hiddenBar' ||
-    //           _record.classType === 'empty-category'
-    //         ) {
-    //           obj.props.colSpan = 0;
-    //         } else {
-    //           obj.props.colSpan = 1;
-    //         }
-    //         return obj;
-    //       },
-    //     },
-    //     {
-    //       title: '즐찾',
-    //       key: 'seq_in_category',
-    //       dataIndex: 'seq_in_category',
-    //       className: 'normal',
-    //       align: 'center',
-    //       width: 40,
-    //       render: (value, _record, index) => {
-    //         const obj = {
-    //           children: (
-    //             <div>
-    //               <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-    //             </div>
-    //           ),
-    //           props: {},
-    //         };
-    //         if (
-    //           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-    //           _record.classType === 'hiddenBar' ||
-    //           _record.classType === 'middle-hiddenBar' ||
-    //           _record.classType === 'empty-category'
-    //         ) {
-    //           obj.props.colSpan = 0;
-    //         } else {
-    //           obj.props.colSpan = 1;
-    //         }
-    //         return obj;
-    //       },
-    //     },
-    //     {
-    //       title: '숨김',
-    //       key: 'hide_or_show',
-    //       align: 'center',
-    //       dataIndex: 'hide_or_show',
-    //       className: 'normal',
-    //       width: 40,
-    //       render: (value, _record, index) => {
-    //         const obj = {
-    //           children: (
-    //             <div>
-    //               <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-    //             </div>
-    //           ),
-    //           props: {},
-    //         };
-    //         if (
-    //           (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-    //           _record.classType === 'hiddenBar' ||
-    //           _record.classType === 'middle-hiddenBar' ||
-    //           _record.classType === 'empty-category'
-    //         ) {
-    //           obj.props.colSpan = 0;
-    //         } else {
-    //           obj.props.colSpan = 1;
-    //         }
-    //         return obj;
-    //       },
-    //     },
     {
       title: '상설',
       align: 'center',
@@ -714,7 +567,6 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
           },
         }}
       />
-      <Button onClick={() => console.log(isFoldedMenu)}>보기</Button>
     </Card>
   );
 };

@@ -7,14 +7,8 @@ import { Tooltip, Button } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 
 const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePopup }) => {
-  const [visible, setVisible] = useState(false);
   const { title, _id, hide_or_show } = record;
   const isShowed = hide_or_show === 'show';
-
-  // visible false로 설정안하면 버튼 클릭하고 빠르게 onMouseLeave 이벤트 발생해도 false로 전환 안됨
-  useEffect(() => {
-    setVisible(false);
-  }, [hide_or_show]);
 
   const router = useRouter();
   const [updateBookTitle, { variables }] = useMutation(UPDATE_BOOK_TITLE_AND_HIDE, {
@@ -48,9 +42,9 @@ const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePo
     <>
       {isShowed ? (
         <Tooltip
-          visible={visible}
+          mouseEnterDelay={0.3}
+          mouseLeaveDelay={0}
           title="숨기기"
-          color="rgba(0, 0, 0, 0.522)"
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
@@ -65,15 +59,8 @@ const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePo
               alignItems: 'center',
               cursor: 'pointer',
             }}
-            onMouseEnter={() => {
-              setVisible(true);
-            }}
-            onMouseLeave={() => {
-              setVisible(false);
-            }}
             onClick={() => {
               updateBook('hide');
-              setVisible(false);
             }}
           >
             <EyeOutlined />
@@ -81,9 +68,9 @@ const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePo
         </Tooltip>
       ) : (
         <Tooltip
-          visible={visible}
+          mouseEnterDelay={0.3}
+          mouseLeaveDelay={0}
           title="표시하기"
-          color="rgba(7, 164, 237, 0.522)"
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
         >
@@ -93,21 +80,13 @@ const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePo
               width: '34px',
               height: '24px',
               borderRadius: '12px',
-              // background: 'yellow',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
               cursor: 'pointer',
             }}
-            onMouseEnter={() => {
-              setVisible(true);
-            }}
-            onMouseLeave={() => {
-              setVisible(false);
-            }}
             onClick={() => {
               updateBook('show');
-              setVisible(false);
             }}
           >
             <EyeInvisibleOutlined />

@@ -14,6 +14,7 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexS
       console.log(cardtype_info)
       console.log("clicked!!!")
       cardTypeInfo(cardtype_info)
+      sessionStorage.setItem("cardtype", cardtype_info.cardtype)
   }
   return (
     <div

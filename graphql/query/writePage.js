@@ -11,6 +11,7 @@ export const GET_CATEGORY_AND_BOOKS_INFO = gql`
           user_id
           name
           seq
+          isFixed
         }
       }
     }

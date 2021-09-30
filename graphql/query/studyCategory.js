@@ -22,6 +22,7 @@ export const GET_My_BOOK_CATEGORY_AND_MY_BOOK_CATEGORIES = gql`
           user_id
           name
           seq
+          isFixed
         }
       }
     }
@@ -29,14 +30,8 @@ export const GET_My_BOOK_CATEGORY_AND_MY_BOOK_CATEGORIES = gql`
 `;
 
 export const BOOK_CHANGE_CATEGORY_MUTATION = gql`
-  mutation BookChangeCategoryMutation(
-    $mybook_id: String
-    $target_mybookcate_id: String
-  ) {
-    mybook_movetoothercate(
-      mybook_id: $mybook_id
-      target_mybookcate_id: $target_mybookcate_id
-    ) {
+  mutation BookChangeCategoryMutation($mybook_id: String, $target_mybookcate_id: String) {
+    mybook_movetoothercate(mybook_id: $mybook_id, target_mybookcate_id: $target_mybookcate_id) {
       status
       msg
       mybooks {

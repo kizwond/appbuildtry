@@ -12,6 +12,7 @@ import CreateBookButton from '../../../components/books/writepage/createBook/Cre
 import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
 import BooksTable from '../../../components/books/writepage/booksTable/BooksTable';
 import BooksTablePagination from '../../../components/books/writepage/booksTable/BooksTablePagination';
+import FavoriteBooksTable from '../../../components/books/writepage/booksTable/FavoriteBooksTable';
 
 const Writeanother = () => {
   const router = useRouter();
@@ -19,6 +20,8 @@ const Writeanother = () => {
   const [isReceivedData, setIsReceivedData] = useState(false);
   const [category, setCategory] = useState([]);
   const [myBook, setMyBook] = useState([]);
+
+  const [activedTable, setActivedTable] = useState();
 
   const [isPopupSomething, setisPopupSomething] = useState(false);
 
@@ -43,6 +46,9 @@ const Writeanother = () => {
 
   const chagePopup = useCallback((_boolean) => {
     setisPopupSomething(_boolean);
+  }, []);
+  const changeActivedTable = useCallback((_table) => {
+    setActivedTable(_table);
   }, []);
 
   if (!isReceivedData) {
@@ -71,8 +77,27 @@ const Writeanother = () => {
         )}
 
         <StyledRow>
-          <Col>
-            <BooksTable category={category} myBook={myBook} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+          <Col span={24}>
+            <FavoriteBooksTable
+              category={category}
+              myBook={myBook}
+              handleToGetMyBook={handleToGetMyBook}
+              isPopupSomething={isPopupSomething}
+              chagePopup={chagePopup}
+              activedTable={activedTable}
+              changeActivedTable={changeActivedTable}
+            />
+          </Col>
+          <Col span={24}>
+            <BooksTable
+              category={category}
+              myBook={myBook}
+              handleToGetMyBook={handleToGetMyBook}
+              isPopupSomething={isPopupSomething}
+              chagePopup={chagePopup}
+              activedTable={activedTable}
+              changeActivedTable={changeActivedTable}
+            />
           </Col>
         </StyledRow>
       </Layout>

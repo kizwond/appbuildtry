@@ -90,7 +90,6 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
             ]}
           >
             <Select placeholder="카테고리를 선택해 주세요.">
-              <Select.Option>카테고리선택</Select.Option>
               {category.map((category) => (
                 <Select.Option key={category._id} value={category._id}>
                   {category.mybookcate_info.name}

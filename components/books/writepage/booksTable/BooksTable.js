@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import { Table, Button, Card, Tooltip, Row, Col, Tag, Space, Drawer } from 'antd';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import BookOrderButton from './BookOrderButton';
 import BookTitleChange from './BookTitleChange';
 import HideOrShowButton from './HideOrShowButton';
@@ -10,11 +10,15 @@ import { VerticalAlignBottomOutlined, BarChartOutlined, DollarCircleFilled, Doub
 import moment from '../../../../node_modules/moment/moment';
 import styled from 'styled-components';
 
-const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup }) => {
+const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
+
+  const changeFoldedMenu = useCallback((_id) => {
+    setIsFoldedMenu(_id);
+  }, []);
   console.log('마운트 윗 코드');
 
   console.log({ expandedRowKeys });
@@ -202,7 +206,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       key: 'title',
       dataIndex: 'title',
       className: 'Row-First-Left',
-      width: 100,
+      width: 85,
       render: (value, _record, index) => {
         const obj = {
           children:
@@ -268,7 +272,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       dataIndex: 'total',
       className: 'normal',
       ellipsis: true,
-      width: 80,
+      width: 70,
       render: (_value, _record) => {
         const obj = {
           children: <div>{`(999${_record.read}/999${_record.flip})`}</div>,
@@ -296,7 +300,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       align: 'center',
       dataIndex: 'timeModify',
       className: 'normal',
-      width: 50,
+      width: 45,
       render: (_value, _record) => {
         const newDate = new Date(Number(_value));
         const DateString = moment(newDate).format('YY.MM.DD');
@@ -331,7 +335,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       align: 'center',
       dataIndex: 'timeModify',
       className: 'normal',
-      width: 80,
+      width: 75,
       render: (_value, _record) => {
         const obj = {
           children: (
@@ -388,7 +392,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       dataIndex: 'seq_in_category',
       className: 'normal',
       align: 'right',
-      width: 40,
+      width: 35,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -406,7 +410,8 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                   justifyContent: 'end',
                 }}
                 onClick={() => {
-                  setIsFoldedMenu(_record._id);
+                  changeFoldedMenu(_record._id);
+                  changeActivedTable('bookTable');
                 }}
               >
                 <div
@@ -429,7 +434,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                 width={'210px'}
                 closable={false}
                 mask={false}
-                visible={_record._id === isFoldedMenu}
+                visible={activedTable === 'bookTable' && _record._id === isFoldedMenu}
                 getContainer={false}
                 style={{ position: 'absolute', textAlign: 'initial', height: '30px', top: '2px' }}
                 contentWrapperStyle={{ boxShadow: 'unset' }}
@@ -446,7 +451,13 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
               >
                 <Space size={3}>
                   <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} /> |
-                  <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} /> |
+                  <FavoriteBook
+                    record={_record}
+                    handleToGetMyBook={handleToGetMyBook}
+                    changeActivedTable={changeActivedTable}
+                    changeFoldedMenu={changeFoldedMenu}
+                  />{' '}
+                  |
                   <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
                 </Space>
                 <div
@@ -461,6 +472,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                   }}
                   onClick={() => {
                     setIsFoldedMenu('');
+                    changeActivedTable('');
                   }}
                 >
                   <DoubleRightOutlined />
@@ -487,7 +499,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       title: '상설',
       align: 'center',
       className: 'Row-Last-One',
-      width: 40,
+      width: 35,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -519,7 +531,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
   ];
 
   return (
-    <StyledCard bordered={false} size="small">
+    <StyledCard bordered={false} size="small" title={<div style={{ fontSize: '1rem', fontWeight: 'bold' }}>나의 책</div>}>
       <Table
         dataSource={dataSource}
         tableLayout="fixed"

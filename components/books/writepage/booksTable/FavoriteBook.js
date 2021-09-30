@@ -6,7 +6,7 @@ import { CHANGE_WRITE_LIKE, UPDATE_BOOK_TITLE_AND_HIDE } from '../../../../graph
 import { Tooltip } from 'antd';
 import { StarFilled, StarOutlined, StarTwoTone } from '@ant-design/icons';
 
-const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup }) => {
+const FavoriteBook = ({ handleToGetMyBook, record, changeActivedTable, changeFoldedMenu }) => {
   const [visible, setVisible] = useState(false);
   const { title, _id, writelike } = record;
   // const isShowed = hide_or_show === 'show';
@@ -66,6 +66,8 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
             }}
             onClick={() => {
               updateBook(false);
+              changeActivedTable('');
+              changeFoldedMenu('');
             }}
           >
             <StarFilled className="writeLiked" style={{ color: '#fca311' }} />
@@ -92,6 +94,8 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
             }}
             onClick={() => {
               updateBook(true);
+              changeActivedTable('');
+              changeFoldedMenu('');
             }}
           >
             <StarOutlined className="writeUnliked" style={{ color: '#DEE2E6' }} />

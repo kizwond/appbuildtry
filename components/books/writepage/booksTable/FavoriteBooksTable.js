@@ -11,6 +11,7 @@ import { VerticalAlignBottomOutlined, BarChartOutlined, DollarCircleFilled, Doub
 import moment from '../../../../node_modules/moment/moment';
 import styled from 'styled-components';
 import { Divider } from '../../../../node_modules/antd/lib/index';
+import { data } from '../../../../node_modules/browserslist/index';
 
 const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -284,15 +285,17 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       bordered={false}
       size="small"
       title={
-        <div style={{ fontSize: '1rem', fontWeight: 'bold', width: '100%' }}>
-          <span style={{ marginRight: '30px', fontSize: '1rem' }}>즐겨찾기</span>
-          <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
-            접기
-          </Button>
+        <div>
+          <span style={{ marginRight: '30px', fontSize: '1rem', fontWeight: 'bold' }}>즐겨찾기</span>
+          {dataSource.length > 0 && (
+            <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
+              접기
+            </Button>
+          )}
         </div>
       }
     >
-      {visible && (
+      {visible && dataSource.length > 0 && (
         <Table
           dataSource={dataSource}
           tableLayout="fixed"

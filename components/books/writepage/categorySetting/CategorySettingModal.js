@@ -9,6 +9,7 @@ const CategorySettingModal = ({ category, visible, changeVisible }) => {
   const dataSource = category.map((_cate) => ({
     ..._cate.mybookcate_info,
     _id: _cate._id,
+    key: _cate._id,
   }));
 
   const columns = [

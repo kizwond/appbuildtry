@@ -2,7 +2,7 @@ import { Button } from 'antd';
 import React, { useCallback, useState } from 'react';
 import CategorySettingModal from './CategorySettingModal';
 
-const CategorySettingButton = ({ category }) => {
+const CategorySettingButton = ({ category, handleToGetMyCategory, handleToGetMyBook }) => {
   const [visible, setVisible] = useState(false);
 
   const changeVisible = useCallback((_boolean) => {
@@ -20,6 +20,8 @@ const CategorySettingButton = ({ category }) => {
         visible={visible}
         changeVisible={changeVisible}
         category={category}
+        handleToGetMyCategory={handleToGetMyCategory}
+        handleToGetMyBook={handleToGetMyBook}
       />
     </>
   );

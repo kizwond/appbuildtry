@@ -1,20 +1,24 @@
 /* eslint-disable react/display-name */
-import { Table, Button, Card, Tooltip, Row, Col, Tag, Space, Drawer } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import styled from 'styled-components';
+import moment from '../../../../node_modules/moment/moment';
+
+import { Table, Card, Tooltip, Tag, Space, Drawer } from 'antd';
+import { VerticalAlignBottomOutlined, DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
+
 import BookOrderButton from './BookOrderButton';
-import BookTitleChange from './BookTitleChange';
 import HideOrShowButton from './HideOrShowButton';
 import MoveToBookSetting from './MoveToBookSetting';
 import FavoriteBook from './FavoriteBook';
-import { VerticalAlignBottomOutlined, BarChartOutlined, DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, PauseOutlined } from '@ant-design/icons';
-import moment from '../../../../node_modules/moment/moment';
-import styled from 'styled-components';
 
 const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
+
+  const router = useRouter();
 
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
@@ -34,6 +38,12 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
 
   console.log('마운트 아래 코드');
   console.log({ expandedRowKeys });
+
+  function movepage(bookid) {
+    localStorage.removeItem('book_id');
+    localStorage.setItem('book_id', bookid);
+    router.push(`/books/write/${bookid}`);
+  }
 
   const noCategoryId = category.find((_cate) => _cate.mybookcate_info.isFixed === 'yes')._id;
   const noCategoryBooksLength = myBook.filter((_book) => _book.mybook_info.mybookcate_id === noCategoryId).length;
@@ -225,7 +235,12 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                 {value}
               </div>
             ) : (
-              <div>
+              <div
+                onClick={() => {
+                  movepage(_record._id);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
                 <div
                   style={{
                     overflow: 'hidden',
@@ -255,17 +270,10 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
     },
     {
       title: (
-        <Tooltip
-          title={
-            <>
-              <div>카드 수</div>
-              <div>(읽기/뒤집기)</div>
-            </>
-          }
-        >
+        <>
           <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카드 수</div>
           <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>(읽기/뒤집기)</div>
-        </Tooltip>
+        </>
       ),
       key: 'total',
       align: 'center',
@@ -275,7 +283,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       width: 70,
       render: (_value, _record) => {
         const obj = {
-          children: <div>{`(999${_record.read}/999${_record.flip})`}</div>,
+          children: <div>{`(${_record.read}/${_record.flip})`}</div>,
           props: {
             colSpan: 1,
             rowSpan: 1,

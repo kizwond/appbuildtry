@@ -453,3 +453,63 @@ export const CHANGE_POSITION_OF_WRITE_LIKED_BOOK = gql`
     }
   }
 `;
+
+export const CHANGE_CATEGORY_NAME_MUTATION = gql`
+  mutation ChangeCategoryName($name: String!, $mybookcate_id: String!) {
+    mybookcate_update(mybookcate_id: $mybookcate_id, name: $name) {
+      status
+      msg
+      mybookcates {
+        _id
+        mybookcate_info {
+          name
+          seq
+          user_id
+          isFixed
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_NEW_CATEGORY = gql`
+  mutation CreateNewCategory($name: String!, $current_mybookcate_id: String!) {
+    mybookcate_create(name: $name, current_mybookcate_id: $current_mybookcate_id) {
+      status
+      msg
+      mybookcates {
+        _id
+        mybookcate_info {
+          name
+          seq
+          user_id
+          isFixed
+        }
+      }
+    }
+  }
+`;
+
+export const CHANGE_CATEGORY_ORDER = gql`
+  mutation ChangeCategoryOrder($mybookcate_id: String!, $direction: String) {
+    mybookcate_changeorder(mybookcate_id: $mybookcate_id, direction: $direction) {
+      status
+      msg
+      mybookcate_info {
+        name
+        seq
+        user_id
+        isFixed
+      }
+    }
+  }
+`;
+
+export const DELETE_CATEGORY = gql`
+  mutation DeleteCategory($mybookcate_id: String!) {
+    mybookcate_delete(mybookcate_id: $mybookcate_id) {
+      status
+      msg
+    }
+  }
+`;

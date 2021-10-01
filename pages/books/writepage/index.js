@@ -43,6 +43,9 @@ const Writeanother = () => {
   const handleToGetMyBook = useCallback((books) => {
     setMyBook(books);
   }, []);
+  const handleToGetMyCategory = useCallback((_categories) => {
+    setCategory(_categories);
+  }, []);
 
   const chagePopup = useCallback((_boolean) => {
     setisPopupSomething(_boolean);
@@ -71,7 +74,7 @@ const Writeanother = () => {
           <StyledRow>
             <StyledSpace>
               <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
-              <CategorySettingButton category={category} />
+              <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
             </StyledSpace>
           </StyledRow>
         )}

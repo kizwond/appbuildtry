@@ -1,43 +1,44 @@
 /* eslint-disable react/display-name */
-import { Table, Button, Card, Tooltip, Row, Col, Tag, Space, Drawer } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import BookOrderButton from './BookOrderButton';
-import BookTitleChange from './BookTitleChange';
+import { useRouter } from 'next/router';
+import styled from 'styled-components';
+import moment from '../../../../node_modules/moment/moment';
+
+import { Table, Button, Card, Tooltip, Space, Drawer } from 'antd';
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
+
 import HideOrShowButton from './HideOrShowButton';
 import MoveToBookSetting from './MoveToBookSetting';
 import FavoriteBook from './FavoriteBook';
 import FavoriteBookOrderButton from './FavoriteBookOrderButton';
-import { VerticalAlignBottomOutlined, BarChartOutlined, DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, PauseOutlined } from '@ant-design/icons';
-import moment from '../../../../node_modules/moment/moment';
-import styled from 'styled-components';
-import { Divider } from '../../../../node_modules/antd/lib/index';
-import { data } from '../../../../node_modules/browserslist/index';
 
 const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
-  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-  const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
+
+  const router = useRouter();
 
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
   console.log('마운트 윗 코드');
 
-  console.log({ expandedRowKeys });
   useEffect(() => {
-    setExpandedRowKeys(category.map((_cate) => `KEY:${_cate._id}INDEX:0`));
     setMounted(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!mounted) {
     return null;
   }
 
+  function movepage(bookid) {
+    localStorage.removeItem('book_id');
+    localStorage.setItem('book_id', bookid);
+    router.push(`/books/write/${bookid}`);
+  }
+
   console.log('마운트 아래 코드');
-  console.log({ expandedRowKeys });
 
   const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.writelike === true);
   const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seq_in_writelike - book_B.mybook_info.seq_in_writelike);
@@ -75,7 +76,12 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       className: 'TitleCol',
       width: 85,
       render: (value, _record, index) => (
-        <div>
+        <div
+          onClick={() => {
+            movepage(_record._id);
+          }}
+          style={{ cursor: 'pointer' }}
+        >
           <div
             style={{
               overflow: 'hidden',
@@ -91,17 +97,10 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
     },
     {
       title: (
-        <Tooltip
-          title={
-            <>
-              <div>카드 수</div>
-              <div>(읽기/뒤집기)</div>
-            </>
-          }
-        >
+        <>
           <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카드 수</div>
           <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>(읽기/뒤집기)</div>
-        </Tooltip>
+        </>
       ),
       key: 'total',
       align: 'center',
@@ -109,7 +108,7 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       className: 'normal',
       ellipsis: true,
       width: 70,
-      render: (_value, _record) => <div>{`(999${_record.read}/999${_record.flip})`}</div>,
+      render: (_value, _record) => <div>{`(${_record.read}/${_record.flip})`}</div>,
     },
     {
       title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>수정일</div>,

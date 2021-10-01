@@ -6,7 +6,7 @@ import { CHANGE_WRITE_LIKE, UPDATE_BOOK_TITLE_AND_HIDE } from '../../../../graph
 import { Tooltip } from 'antd';
 import { StarFilled, StarOutlined, StarTwoTone } from '@ant-design/icons';
 
-const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup }) => {
+const FavoriteBook = ({ handleToGetMyBook, record, changeActivedTable, changeFoldedMenu }) => {
   const [visible, setVisible] = useState(false);
   const { title, _id, writelike } = record;
   // const isShowed = hide_or_show === 'show';
@@ -47,7 +47,8 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
     <>
       {writelike ? (
         <Tooltip
-          visible={visible}
+          mouseEnterDelay={0.3}
+          mouseLeaveDelay={0}
           title="즐겨찾기 해제"
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
@@ -63,15 +64,10 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
               alignItems: 'center',
               cursor: 'pointer',
             }}
-            onMouseEnter={() => {
-              setVisible(true);
-            }}
-            onMouseLeave={() => {
-              setVisible(false);
-            }}
             onClick={() => {
               updateBook(false);
-              setVisible(false);
+              changeActivedTable('');
+              changeFoldedMenu('');
             }}
           >
             <StarFilled className="writeLiked" style={{ color: '#fca311' }} />
@@ -79,7 +75,8 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
         </Tooltip>
       ) : (
         <Tooltip
-          visible={visible}
+          mouseEnterDelay={0.3}
+          mouseLeaveDelay={0}
           title="즐겨찾기 등록"
           overlayInnerStyle={{ fontSize: '0.65rem', minWidth: '0', minHeight: '0' }}
           overlayStyle={{ alignSelf: 'middle' }}
@@ -95,15 +92,10 @@ const FavoriteBook = ({ handleToGetMyBook, record, isPopupSomething, chagePopup 
               alignItems: 'center',
               cursor: 'pointer',
             }}
-            onMouseEnter={() => {
-              setVisible(true);
-            }}
-            onMouseLeave={() => {
-              setVisible(false);
-            }}
             onClick={() => {
               updateBook(true);
-              setVisible(false);
+              changeActivedTable('');
+              changeFoldedMenu('');
             }}
           >
             <StarOutlined className="writeUnliked" style={{ color: '#DEE2E6' }} />

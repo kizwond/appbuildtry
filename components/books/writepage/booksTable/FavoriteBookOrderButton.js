@@ -1,19 +1,19 @@
 import { useMutation } from '@apollo/client';
 import { memo, useState } from 'react';
 import { useRouter } from 'next/router';
-import { CHANGE_POSITION_OF_BOOK } from '../../../../graphql/query/writePage';
+import { CHANGE_POSITION_OF_BOOK, CHANGE_POSITION_OF_WRITE_LIKED_BOOK } from '../../../../graphql/query/writePage';
 
 import { Space, Tooltip } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 
-const BookOrderButton = ({ _record, handleToGetMyBook }) => {
+const FavoriteBookOrderButton = ({ _record, handleToGetMyBook }) => {
   const router = useRouter();
-  const [rePosition, { loading }] = useMutation(CHANGE_POSITION_OF_BOOK, {
+  const [rePosition, { loading }] = useMutation(CHANGE_POSITION_OF_WRITE_LIKED_BOOK, {
     onCompleted: (received_data) => {
       console.log('received_data', received_data);
-      if (received_data.mybook_changeorder.status === '200') {
-        handleToGetMyBook(received_data.mybook_changeorder.mybooks);
-      } else if (received_data.mybook_changeorder.status === '401') {
+      if (received_data.mybook_changewritelikeorder.status === '200') {
+        handleToGetMyBook(received_data.mybook_changewritelikeorder.mybooks);
+      } else if (received_data.mybook_changewritelikeorder.status === '401') {
         router.push('/account/login');
       } else {
         console.log('어떤 문제가 발생함');
@@ -138,4 +138,4 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
   );
 };
 
-export default memo(BookOrderButton);
+export default memo(FavoriteBookOrderButton);

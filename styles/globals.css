@@ -38,3 +38,15 @@ a {
   padding:0;
   min-height: 0;
 }
+.gray-theme .fr-view .fr-video{
+  height:20px;
+}
+.fr-view .fr-video>*{
+  width:80%;
+  height:20px;
+}
+
+.fr-element .fr-video>*{
+  width:50%;
+  height:20px;
+}

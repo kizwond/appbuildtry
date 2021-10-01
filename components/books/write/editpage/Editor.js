@@ -7,7 +7,6 @@ import "froala-editor/js/plugins.pkgd.min.js";
 import "froala-editor/js/languages/ko";
 import "froala-editor//css/themes/gray.css";
 // import 'froala-editor//css/themes/gray.min.css'
-
 import FroalaEditorComponent from "react-froala-wysiwyg";
 
 import axios from "axios";
@@ -189,6 +188,8 @@ export class Editor extends Component {
       quickInsertEnabled: false,
       imageUploadURL: "/api/cardset/imageUpload",
       fileUploadURL: "/api/cardset/fileUpload",
+    //   videoUploadURL: "/api/cardset/videoUpload",
+      filesManagerUploadURL:"/api/cardset/fileUpload",
       saveParam: "content",
       width: "auto",
       theme: "gray",
@@ -196,6 +197,8 @@ export class Editor extends Component {
       toolbarContainer: "#toolbarContainer",
       attribution: false,
       charCounterCount: false,
+      videoAllowedTypes: ['mp3'],
+    //   videoDefaultWidth: "90%",
       language: "ko",
       toolbarButtons: [
         "fullscreen",
@@ -217,6 +220,7 @@ export class Editor extends Component {
         "insertImage",
         "insertVideo",
         "insertFile",
+        "insertFiles",
         "insertTable",
         "emoticons",
         "specialCharacters",

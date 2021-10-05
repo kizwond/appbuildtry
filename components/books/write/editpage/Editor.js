@@ -8,6 +8,7 @@ import "froala-editor/js/languages/ko";
 import "froala-editor//css/themes/gray.css";
 // import 'froala-editor//css/themes/gray.min.css'
 import FroalaEditorComponent from "react-froala-wysiwyg";
+import FroalaEditor from "froala-editor";
 
 import axios from "axios";
 // import Button from "../../styledComponents/defaultButton";
@@ -17,6 +18,8 @@ import axios from "axios";
 export class Editor extends Component {
   constructor(props) {
     super(props);
+    FroalaEditor.DefineIcon('insertFiles', {SRC: '/image/speaker_Icon.png',ALT: 'audioIcon', template: 'image'});
+    // FroalaEditor.DefineIcon('insertFiles', {NAME: 'info', SVG_KEY: 'insertAudio'});
     this.state = {
       editor1: "",
       editor2: "",
@@ -198,6 +201,7 @@ export class Editor extends Component {
       attribution: false,
       charCounterCount: false,
       videoAllowedTypes: ['mp3'],
+      
     //   videoDefaultWidth: "90%",
       language: "ko",
       toolbarButtons: [
@@ -219,7 +223,7 @@ export class Editor extends Component {
         "insertLink",
         "insertImage",
         "insertVideo",
-        "insertFile",
+        // "insertFile",
         "insertFiles",
         "insertTable",
         "emoticons",

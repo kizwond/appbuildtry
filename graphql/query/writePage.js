@@ -495,11 +495,14 @@ export const CHANGE_CATEGORY_ORDER = gql`
     mybookcate_changeorder(mybookcate_id: $mybookcate_id, direction: $direction) {
       status
       msg
-      mybookcate_info {
-        name
-        seq
-        user_id
-        isFixed
+      mybookcates {
+        _id
+        mybookcate_info {
+          name
+          seq
+          user_id
+          isFixed
+        }
       }
     }
   }

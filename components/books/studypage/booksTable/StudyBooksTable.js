@@ -7,12 +7,12 @@ import moment from '../../../../node_modules/moment/moment';
 import { Table, Card, Tooltip, Tag, Space, Drawer } from 'antd';
 import { VerticalAlignBottomOutlined, DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 
-import BookOrderButton from './BookOrderButton';
-import HideOrShowButton from './HideOrShowButton';
+import BookOrderButton from '../../writepage/booksTable/BookOrderButton';
+import HideOrShowButton from '../../writepage/booksTable/HideOrShowButton';
 import MoveToBookSetting from './MoveToBookSetting';
-import FavoriteBook from './FavoriteBook';
+import FavoriteBook from '../../writepage/booksTable/FavoriteBook';
 
-const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
+const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -464,8 +464,8 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                     handleToGetMyBook={handleToGetMyBook}
                     changeActivedTable={changeActivedTable}
                     changeFoldedMenu={changeFoldedMenu}
-                    tableType="write"
-                  />{' '}
+                    tableType="study"
+                  />
                   |
                   <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
                 </Space>
@@ -593,7 +593,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
   );
 };
 
-export default BooksTable;
+export default StudyBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */

@@ -1,28 +1,23 @@
 import React, { useState, memo, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { CHANGE_WRITE_LIKE, UPDATE_BOOK_TITLE_AND_HIDE } from '../../../../graphql/query/writePage';
+import { CHANGE_STUDY_LIKE } from '../../../../graphql/query/studyPage';
+import { CHANGE_WRITE_LIKE } from '../../../../graphql/query/writePage';
 
 import { Tooltip } from 'antd';
-import { StarFilled, StarOutlined, StarTwoTone } from '@ant-design/icons';
+import { StarFilled, StarOutlined } from '@ant-design/icons';
 
-const FavoriteBook = ({ handleToGetMyBook, record, changeActivedTable, changeFoldedMenu }) => {
-  const [visible, setVisible] = useState(false);
-  const { title, _id, writelike } = record;
-  // const isShowed = hide_or_show === 'show';
-
-  // visible false로 설정안하면 버튼 클릭하고 빠르게 onMouseLeave 이벤트 발생해도 false로 전환 안됨
-  useEffect(() => {
-    setVisible(false);
-  }, [writelike]);
+const FavoriteBook = ({ handleToGetMyBook, record, changeActivedTable, changeFoldedMenu, tableType }) => {
+  const { _id, writelike, studylike } = record;
 
   const router = useRouter();
-  const [changeWriteLike, { variables }] = useMutation(CHANGE_WRITE_LIKE, {
+  const [changeLike] = useMutation(tableType === 'study' ? CHANGE_STUDY_LIKE : CHANGE_WRITE_LIKE, {
     onCompleted: (received_data) => {
       console.log('received_data', received_data);
-      if (received_data.mybook_changewritelike.status === '200') {
-        handleToGetMyBook(received_data.mybook_changewritelike.mybooks);
-      } else if (received_data.mybook_changewritelike.status === '401') {
+      const query = tableType === 'study' ? 'mybook_changestudylike' : 'mybook_changewritelike';
+      if (received_data[query].status === '200') {
+        handleToGetMyBook(received_data[query].mybooks);
+      } else if (received_data[query].status === '401') {
         router.push('/account/login');
       } else {
         console.log('어떤 문제가 발생함');
@@ -30,22 +25,30 @@ const FavoriteBook = ({ handleToGetMyBook, record, changeActivedTable, changeFol
     },
   });
   async function updateBook(_boolean) {
+    const variables =
+      tableType === 'study'
+        ? {
+            mybook_id: _id,
+            studylike: _boolean,
+          }
+        : {
+            mybook_id: _id,
+            writelike: _boolean,
+          };
     try {
-      await changeWriteLike({
-        variables: {
-          mybook_id: _id,
-          writelike: _boolean,
-        },
+      await changeLike({
+        variables,
       });
     } catch (error) {
       console.log(error);
-      console.log(variables);
     }
   }
 
+  const like = tableType === 'study' ? studylike : writelike;
+
   return (
     <>
-      {writelike ? (
+      {like ? (
         <Tooltip
           mouseEnterDelay={0.3}
           mouseLeaveDelay={0}

@@ -7,12 +7,12 @@ import moment from '../../../../node_modules/moment/moment';
 import { Table, Button, Card, Tooltip, Space, Drawer } from 'antd';
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 
-import HideOrShowButton from './HideOrShowButton';
+import HideOrShowButton from '../../writepage/booksTable/HideOrShowButton';
 import MoveToBookSetting from './MoveToBookSetting';
-import FavoriteBook from './FavoriteBook';
-import FavoriteBookOrderButton from './FavoriteBookOrderButton';
+import FavoriteBook from '../../writepage/booksTable/FavoriteBook';
+import FavoriteBookOrderButton from '../../writepage/booksTable/FavoriteBookOrderButton';
 
-const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
+const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
@@ -40,8 +40,8 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
 
   console.log('마운트 아래 코드');
 
-  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.writelike === true);
-  const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seq_in_writelike - book_B.mybook_info.seq_in_writelike);
+  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.studylike === true);
+  const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seq_in_studylike - book_B.mybook_info.seq_in_studylike);
   const dataSource = sortedBook.map((_book, _index) => {
     return {
       ..._book.mybook_info,
@@ -229,13 +229,14 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
             }}
           >
             <Space size={3}>
-              <FavoriteBookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} tableType="write" /> |
+              <FavoriteBookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} tableType="study" /> |
               <FavoriteBook
                 record={_record}
                 handleToGetMyBook={handleToGetMyBook}
                 changeActivedTable={changeActivedTable}
                 changeFoldedMenu={changeFoldedMenu}
-              />{' '}
+                tableType="study"
+              />
               |
               <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
             </Space>
@@ -308,7 +309,7 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
   );
 };
 
-export default FavoriteBooksTable;
+export default StudyFavoriteBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */

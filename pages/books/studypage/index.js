@@ -8,11 +8,9 @@ import styled from 'styled-components';
 
 import { Row, Space, Col, Divider } from '../../../node_modules/antd/lib/index';
 import Layout from '../../../components/layout/Layout';
-import CreateBookButton from '../../../components/books/writepage/createBook/CreateBookButton';
 import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
-import BooksTable from '../../../components/books/writepage/booksTable/BooksTable';
-import BooksTablePagination from '../../../components/books/writepage/booksTable/BooksTablePagination';
-import FavoriteBooksTable from '../../../components/books/writepage/booksTable/FavoriteBooksTable';
+import StudyBooksTable from '../../../components/books/studypage/booksTable/StudyBooksTable';
+import StudyFavoriteBooksTable from '../../../components/books/studypage/booksTable/StudyFavoriteBooksTable';
 
 const Writeanother = () => {
   const router = useRouter();
@@ -73,7 +71,6 @@ const Writeanother = () => {
         {category.length >= 1 && (
           <StyledRow>
             <StyledSpace>
-              <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
               <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
             </StyledSpace>
           </StyledRow>
@@ -81,7 +78,7 @@ const Writeanother = () => {
 
         <StyledRow>
           <Col span={24}>
-            <FavoriteBooksTable
+            <StudyFavoriteBooksTable
               category={category}
               myBook={myBook}
               handleToGetMyBook={handleToGetMyBook}
@@ -92,7 +89,7 @@ const Writeanother = () => {
             />
           </Col>
           <Col span={24}>
-            <BooksTable
+            <StudyBooksTable
               category={category}
               myBook={myBook}
               handleToGetMyBook={handleToGetMyBook}

@@ -145,6 +145,7 @@ const CategorySettingModal = ({ category, visible, changeVisible, handleToGetMyC
       title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카테고리 이름</div>,
       key: 'name',
       dataIndex: 'name',
+      width: 200,
       render: (_value, _record) => {
         return (
           <div
@@ -202,28 +203,13 @@ const CategorySettingModal = ({ category, visible, changeVisible, handleToGetMyC
         );
       },
     },
-    {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>순서</div>,
-      key: 'deleteCategory',
-      dataIndex: 'deleteCategory',
-      render: (_value, _record) => {
-        return (
-          <Button
-            size="small"
-            type="text"
-            icon={<DeleteOutlined />}
-            disabled={_record.isFixed === 'yes'}
-            onClick={() => {
-              deleteACategory({ mybookcate_id: _record._id });
-            }}
-          />
-        );
-      },
-    },
+
     {
       title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>순서변경</div>,
       key: 'seq',
       dataIndex: 'seq',
+      width: 90,
+      align: 'center',
       render: (_value, _record, _index) => {
         return (
           <Space>
@@ -249,6 +235,27 @@ const CategorySettingModal = ({ category, visible, changeVisible, handleToGetMyC
         );
       },
     },
+
+    {
+      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>삭제</div>,
+      key: 'deleteCategory',
+      dataIndex: 'deleteCategory',
+      width: 50,
+      align: 'center',
+      render: (_value, _record) => {
+        return (
+          <Button
+            size="small"
+            type="text"
+            icon={<DeleteOutlined />}
+            disabled={_record.isFixed === 'yes'}
+            onClick={() => {
+              deleteACategory({ mybookcate_id: _record._id });
+            }}
+          />
+        );
+      },
+    },
   ];
 
   return (
@@ -256,7 +263,7 @@ const CategorySettingModal = ({ category, visible, changeVisible, handleToGetMyC
       {console.log('CategorySettingModal 랜더링')}
       <StyledModal
         visible={visible}
-        title="카테고리 관리"
+        title={<div style={{ fontSize: '1rem', fontWeight: 'bold' }}>카테고리 관리</div>}
         onCancel={() => changeVisible(false)}
         mask={false} // 모달 바깥 전체화면 덮기 기능
         footer={[

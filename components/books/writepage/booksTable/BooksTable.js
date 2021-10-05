@@ -345,6 +345,20 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       className: 'normal',
       width: 75,
       render: (_value, _record) => {
+        const now = new Date();
+
+        const today = moment(now).format('YYYYMMDD');
+        const todayCards = _record.writeHistory?.filter((_arr) => _arr.date === today)[0];
+        const todayCreatedCards = todayCards ? todayCards.numCreatedCards : 0;
+
+        const yesterday = moment(now).subtract(1, 'days').format('YYYYMMDD');
+        const yesterdayCards = _record.writeHistory?.filter((_arr) => _arr.date === yesterday)[0];
+        const yesterdayCreatedCards = yesterdayCards ? yesterdayCards.numCreatedCards : 0;
+
+        const theDayBeforeYesterday = moment(now).subtract(1, 'days').format('YYYYMMDD');
+        const theDayBeforeYesterdayCards = _record.writeHistory?.filter((_arr) => _arr.date === theDayBeforeYesterday)[0];
+        const theDayBeforeYesterdayCreatedCards = theDayBeforeYesterdayCards ? theDayBeforeYesterdayCards.numCreatedCards : 0;
+
         const obj = {
           children: (
             <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>
@@ -352,22 +366,25 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
                 <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                   <div className="singleBar">
                     <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: 32 >= 100 ? '100%' : `${2}%` }}>
-                        <span className="CardCounter">3</span>
+                      <div
+                        className="AchivedCard"
+                        style={{ height: theDayBeforeYesterdayCreatedCards >= 100 ? '100%' : `${theDayBeforeYesterdayCreatedCards}%` }}
+                      >
+                        <span className="CardCounter">{theDayBeforeYesterdayCreatedCards}</span>
                       </div>
                     </div>
                   </div>
                   <div className="singleBar">
                     <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: 40 >= 100 ? '100%' : `${40}%` }}>
-                        <span className="CardCounter">40</span>
+                      <div className="AchivedCard" style={{ height: yesterdayCreatedCards >= 100 ? '100%' : `${yesterdayCreatedCards}%` }}>
+                        <span className="CardCounter">{yesterdayCreatedCards}</span>
                       </div>
                     </div>
                   </div>
                   <div className="singleBar">
                     <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: 123 >= 100 ? '100%' : `${2}%` }}>
-                        <span className="CardCounter">123</span>
+                      <div className="AchivedCard" style={{ height: todayCreatedCards >= 100 ? '100%' : `${todayCreatedCards}%` }}>
+                        <span className="CardCounter">{todayCreatedCards}</span>
                       </div>
                     </div>
                   </div>

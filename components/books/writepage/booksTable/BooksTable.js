@@ -77,8 +77,8 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       ..._book.stats?.numCards,
       ..._book.stats?.recent,
       ..._book.stats?.overall,
-      numSession: _book.stats?.studyHistory,
-      progress: _book.stats?.writeHistory,
+      studyHistory: _book.stats?.studyHistory,
+      writeHistory: _book.stats?.writeHistory,
       classType:
         markedHideListLength === 0 && markedShowListLength > 0 && markedShowListLength === _index + 1 && _index % 2 !== 0
           ? 'last-even-book'
@@ -100,8 +100,8 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       ..._book.stats?.numCards,
       ..._book.stats?.recent,
       ..._book.stats?.overall,
-      numSession: _book.stats?.studyHistory,
-      progress: _book.stats?.writeHistory,
+      studyHistory: _book.stats?.studyHistory,
+      writeHistory: _book.stats?.writeHistory,
       classType:
         markedHideListLength > 0 && isShowedAllBooks && markedHideListLength === _index + 1 && _index % 2 !== 0
           ? 'last-even-book'

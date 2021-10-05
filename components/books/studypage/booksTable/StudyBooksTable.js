@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import moment from '../../../../node_modules/moment/moment';
 
-import { Table, Card, Tooltip, Tag, Space, Drawer } from 'antd';
+import { Table, Card, Tooltip, Tag, Space, Drawer, Checkbox, Progress } from 'antd';
 import { VerticalAlignBottomOutlined, DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 
 import BookOrderButton from '../../writepage/booksTable/BookOrderButton';
@@ -12,7 +12,17 @@ import HideOrShowButton from '../../writepage/booksTable/HideOrShowButton';
 import MoveToBookSetting from './MoveToBookSetting';
 import FavoriteBook from '../../writepage/booksTable/FavoriteBook';
 
-const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
+const StudyBooksTable = ({
+  category,
+  myBook,
+  handleToGetMyBook,
+  isPopupSomething,
+  chagePopup,
+  activedTable,
+  changeActivedTable,
+  selectedBooks,
+  changeSelectedBooks,
+}) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -77,8 +87,8 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
       ..._book.stats?.numCards,
       ..._book.stats?.recent,
       ..._book.stats?.overall,
-      numSession: _book.stats?.studyHistory,
-      progress: _book.stats?.writeHistory,
+      studyHistory: _book.stats?.studyHistory,
+      writeHistory: _book.stats?.writeHistory,
       classType:
         markedHideListLength === 0 && markedShowListLength > 0 && markedShowListLength === _index + 1 && _index % 2 !== 0
           ? 'last-even-book'
@@ -100,8 +110,8 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
       ..._book.stats?.numCards,
       ..._book.stats?.recent,
       ..._book.stats?.overall,
-      numSession: _book.stats?.studyHistory,
-      progress: _book.stats?.writeHistory,
+      studyHistory: _book.stats?.studyHistory,
+      writeHistory: _book.stats?.writeHistory,
       classType:
         markedHideListLength > 0 && isShowedAllBooks && markedHideListLength === _index + 1 && _index % 2 !== 0
           ? 'last-even-book'
@@ -218,6 +228,7 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
       className: 'Row-First-Left',
       width: 85,
       render: (value, _record, index) => {
+        const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
         const obj = {
           children:
             _record.classType === 'empty-category' ? (
@@ -236,21 +247,29 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
               </div>
             ) : (
               <div
-                onClick={() => {
-                  movepage(_record._id);
+                style={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
                 }}
-                style={{ cursor: 'pointer' }}
               >
-                <div
-                  style={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
-                  {value}
-                </div>
+                <Space>
+                  <Checkbox
+                    checked={isSelected}
+                    onChange={() => {
+                      if (isSelected) {
+                        changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                      }
+                      if (!isSelected) {
+                        changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                      }
+                    }}
+                  />
+                  <div>
+                    <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
+                    {value}
+                  </div>
+                </Space>
               </div>
             ),
           props: {},
@@ -303,10 +322,10 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
       },
     },
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>수정일</div>,
-      key: 'timeModify',
+      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>최근학습일</div>,
+      key: 'timeStudy',
+      dataIndex: 'timeStudy',
       align: 'center',
-      dataIndex: 'timeModify',
       className: 'normal',
       width: 45,
       render: (_value, _record) => {
@@ -335,45 +354,20 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
     {
       title: (
         <>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>최근 3일간</div>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카드생성</div>
+          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>진도율</div>
         </>
       ),
       key: 'timeModify',
-      align: 'center',
       dataIndex: 'timeModify',
+      align: 'center',
       className: 'normal',
       width: 75,
       render: (_value, _record) => {
         const obj = {
           children: (
             <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                  <div className="singleBar">
-                    <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: 32 >= 100 ? '100%' : `${2}%` }}>
-                        <span className="CardCounter">3</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="singleBar">
-                    <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: 40 >= 100 ? '100%' : `${40}%` }}>
-                        <span className="CardCounter">40</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="singleBar">
-                    <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: 123 >= 100 ? '100%' : `${2}%` }}>
-                        <span className="CardCounter">123</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div style={{ width: '100%', height: 1, borderBottom: '1px solid #c5c6c7' }}></div>
-              </div>
+              {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
+              {_record.total === 0 ? '-' : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
             </div>
           ),
           props: {
@@ -505,7 +499,7 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
       },
     },
     {
-      title: '상설',
+      title: '설정',
       align: 'center',
       className: 'Row-Last-One',
       width: 35,

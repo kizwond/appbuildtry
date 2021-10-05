@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import moment from '../../../../node_modules/moment/moment';
 
-import { Table, Button, Card, Tooltip, Space, Drawer } from 'antd';
+import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from 'antd';
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 
 import HideOrShowButton from '../../writepage/booksTable/HideOrShowButton';
@@ -12,7 +12,17 @@ import MoveToBookSetting from './MoveToBookSetting';
 import FavoriteBook from '../../writepage/booksTable/FavoriteBook';
 import FavoriteBookOrderButton from '../../writepage/booksTable/FavoriteBookOrderButton';
 
-const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
+const StudyFavoriteBooksTable = ({
+  category,
+  myBook,
+  handleToGetMyBook,
+  isPopupSomething,
+  chagePopup,
+  activedTable,
+  changeActivedTable,
+  selectedBooks,
+  changeSelectedBooks,
+}) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
@@ -48,8 +58,8 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       ..._book.stats?.numCards,
       ..._book.stats?.recent,
       ..._book.stats?.overall,
-      numSession: _book.stats?.studyHistory,
-      progress: _book.stats?.writeHistory,
+      studyHistory: _book.stats?.studyHistory,
+      writeHistory: _book.stats?.writeHistory,
       categoryName: category.find((_cate) => _cate._id === _book.mybook_info.mybookcate_id).mybookcate_info.name,
       isFirstBook: _index === 0,
       isLastBook: writeLikedBooksList.length === _index + 1,
@@ -75,13 +85,10 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       dataIndex: 'title',
       className: 'TitleCol',
       width: 85,
-      render: (value, _record, index) => (
-        <div
-          onClick={() => {
-            movepage(_record._id);
-          }}
-          style={{ cursor: 'pointer' }}
-        >
+      render: (value, _record, index) => {
+        const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
+
+        return (
           <div
             style={{
               overflow: 'hidden',
@@ -89,11 +96,26 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
               whiteSpace: 'nowrap',
             }}
           >
-            <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
-            {value}
+            <Space>
+              <Checkbox
+                checked={isSelected}
+                onChange={() => {
+                  if (isSelected) {
+                    changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                  }
+                  if (!isSelected) {
+                    changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                  }
+                }}
+              />
+              <div>
+                <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
+                {value}
+              </div>
+            </Space>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       title: (
@@ -138,32 +160,8 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       width: 75,
       render: (_value, _record) => (
         <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <div className="singleBar">
-                <div className="graphBar">
-                  <div className="AchivedCard" style={{ height: 32 >= 100 ? '100%' : `${2}%` }}>
-                    <span className="CardCounter">3</span>
-                  </div>
-                </div>
-              </div>
-              <div className="singleBar">
-                <div className="graphBar">
-                  <div className="AchivedCard" style={{ height: 40 >= 100 ? '100%' : `${40}%` }}>
-                    <span className="CardCounter">40</span>
-                  </div>
-                </div>
-              </div>
-              <div className="singleBar">
-                <div className="graphBar">
-                  <div className="AchivedCard" style={{ height: 123 >= 100 ? '100%' : `${2}%` }}>
-                    <span className="CardCounter">123</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div style={{ width: '100%', height: 1, borderBottom: '1px solid #c5c6c7' }}></div>
-          </div>
+          {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
+          {_record.total === 0 ? '-' : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
         </div>
       ),
     },
@@ -262,7 +260,7 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       ),
     },
     {
-      title: '상설',
+      title: '설정',
       align: 'center',
       className: 'Row-Last-One',
       width: 35,

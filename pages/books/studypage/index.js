@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 
 import styled from 'styled-components';
 
-import { Row, Space, Col, Divider } from '../../../node_modules/antd/lib/index';
+import { Row, Space, Col, Button } from '../../../node_modules/antd/lib/index';
 import Layout from '../../../components/layout/Layout';
 import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
 import StudyBooksTable from '../../../components/books/studypage/booksTable/StudyBooksTable';
@@ -23,6 +23,8 @@ const Writeanother = () => {
 
   const [isPopupSomething, setisPopupSomething] = useState(false);
 
+  const [selectedBooks, setSelectedBooks] = useState([]);
+
   const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
     onCompleted: (received_data) => {
       console.log('received_data', received_data);
@@ -38,6 +40,14 @@ const Writeanother = () => {
     },
   });
 
+  useEffect(() => {
+    sessionStorage.removeItem('books_selected');
+  }, []);
+
+  const sesstionStart = () => {
+    router.push('/books/study/sessionSetting');
+  };
+
   const handleToGetMyBook = useCallback((books) => {
     setMyBook(books);
   }, []);
@@ -50,6 +60,11 @@ const Writeanother = () => {
   }, []);
   const changeActivedTable = useCallback((_table) => {
     setActivedTable(_table);
+  }, []);
+
+  const changeSelectedBooks = useCallback((_booksArray) => {
+    setSelectedBooks(_booksArray);
+    sessionStorage.setItem('books_selected', JSON.stringify(_booksArray));
   }, []);
 
   if (!isReceivedData) {
@@ -72,6 +87,9 @@ const Writeanother = () => {
           <StyledRow>
             <StyledSpace>
               <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
+              <Button onClick={sesstionStart} size="small">
+                세션 시작
+              </Button>
             </StyledSpace>
           </StyledRow>
         )}
@@ -86,6 +104,8 @@ const Writeanother = () => {
               chagePopup={chagePopup}
               activedTable={activedTable}
               changeActivedTable={changeActivedTable}
+              selectedBooks={selectedBooks}
+              changeSelectedBooks={changeSelectedBooks}
             />
           </Col>
           <Col span={24}>
@@ -97,6 +117,8 @@ const Writeanother = () => {
               chagePopup={chagePopup}
               activedTable={activedTable}
               changeActivedTable={changeActivedTable}
+              selectedBooks={selectedBooks}
+              changeSelectedBooks={changeSelectedBooks}
             />
           </Col>
         </StyledRow>

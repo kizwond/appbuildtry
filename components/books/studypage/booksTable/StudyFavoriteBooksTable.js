@@ -4,15 +4,25 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import moment from '../../../../node_modules/moment/moment';
 
-import { Table, Button, Card, Tooltip, Space, Drawer } from 'antd';
+import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from 'antd';
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
 
-import HideOrShowButton from './HideOrShowButton';
+import HideOrShowButton from '../../writepage/booksTable/HideOrShowButton';
 import MoveToBookSetting from './MoveToBookSetting';
-import FavoriteBook from './FavoriteBook';
-import FavoriteBookOrderButton from './FavoriteBookOrderButton';
+import FavoriteBook from '../../writepage/booksTable/FavoriteBook';
+import FavoriteBookOrderButton from '../../writepage/booksTable/FavoriteBookOrderButton';
 
-const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
+const StudyFavoriteBooksTable = ({
+  category,
+  myBook,
+  handleToGetMyBook,
+  isPopupSomething,
+  chagePopup,
+  activedTable,
+  changeActivedTable,
+  selectedBooks,
+  changeSelectedBooks,
+}) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
@@ -40,8 +50,8 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
 
   console.log('마운트 아래 코드');
 
-  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.writelike === true);
-  const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seq_in_writelike - book_B.mybook_info.seq_in_writelike);
+  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.studylike === true);
+  const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seq_in_studylike - book_B.mybook_info.seq_in_studylike);
   const dataSource = sortedBook.map((_book, _index) => {
     return {
       ..._book.mybook_info,
@@ -75,13 +85,10 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       dataIndex: 'title',
       className: 'TitleCol',
       width: 85,
-      render: (value, _record, index) => (
-        <div
-          onClick={() => {
-            movepage(_record._id);
-          }}
-          style={{ cursor: 'pointer' }}
-        >
+      render: (value, _record, index) => {
+        const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
+
+        return (
           <div
             style={{
               overflow: 'hidden',
@@ -89,11 +96,26 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
               whiteSpace: 'nowrap',
             }}
           >
-            <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
-            {value}
+            <Space>
+              <Checkbox
+                checked={isSelected}
+                onChange={() => {
+                  if (isSelected) {
+                    changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                  }
+                  if (!isSelected) {
+                    changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                  }
+                }}
+              />
+              <div>
+                <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
+                {value}
+              </div>
+            </Space>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       title: (
@@ -138,32 +160,8 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       width: 75,
       render: (_value, _record) => (
         <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <div className="singleBar">
-                <div className="graphBar">
-                  <div className="AchivedCard" style={{ height: 32 >= 100 ? '100%' : `${2}%` }}>
-                    <span className="CardCounter">3</span>
-                  </div>
-                </div>
-              </div>
-              <div className="singleBar">
-                <div className="graphBar">
-                  <div className="AchivedCard" style={{ height: 40 >= 100 ? '100%' : `${40}%` }}>
-                    <span className="CardCounter">40</span>
-                  </div>
-                </div>
-              </div>
-              <div className="singleBar">
-                <div className="graphBar">
-                  <div className="AchivedCard" style={{ height: 123 >= 100 ? '100%' : `${2}%` }}>
-                    <span className="CardCounter">123</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div style={{ width: '100%', height: 1, borderBottom: '1px solid #c5c6c7' }}></div>
-          </div>
+          {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
+          {_record.total === 0 ? '-' : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
         </div>
       ),
     },
@@ -229,13 +227,14 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
             }}
           >
             <Space size={3}>
-              <FavoriteBookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} tableType="write" /> |
+              <FavoriteBookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} tableType="study" /> |
               <FavoriteBook
                 record={_record}
                 handleToGetMyBook={handleToGetMyBook}
                 changeActivedTable={changeActivedTable}
                 changeFoldedMenu={changeFoldedMenu}
-              />{' '}
+                tableType="study"
+              />
               |
               <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
             </Space>
@@ -261,7 +260,7 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       ),
     },
     {
-      title: '상설',
+      title: '설정',
       align: 'center',
       className: 'Row-Last-One',
       width: 35,
@@ -308,7 +307,7 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
   );
 };
 
-export default FavoriteBooksTable;
+export default StudyFavoriteBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */

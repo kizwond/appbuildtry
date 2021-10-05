@@ -6,13 +6,11 @@ import { useRouter } from 'next/router';
 
 import styled from 'styled-components';
 
-import { Row, Space, Col, Divider } from '../../../node_modules/antd/lib/index';
+import { Row, Space, Col, Button } from '../../../node_modules/antd/lib/index';
 import Layout from '../../../components/layout/Layout';
-import CreateBookButton from '../../../components/books/writepage/createBook/CreateBookButton';
 import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
-import BooksTable from '../../../components/books/writepage/booksTable/BooksTable';
-import BooksTablePagination from '../../../components/books/writepage/booksTable/BooksTablePagination';
-import FavoriteBooksTable from '../../../components/books/writepage/booksTable/FavoriteBooksTable';
+import StudyBooksTable from '../../../components/books/studypage/booksTable/StudyBooksTable';
+import StudyFavoriteBooksTable from '../../../components/books/studypage/booksTable/StudyFavoriteBooksTable';
 
 const Writeanother = () => {
   const router = useRouter();
@@ -24,6 +22,8 @@ const Writeanother = () => {
   const [activedTable, setActivedTable] = useState();
 
   const [isPopupSomething, setisPopupSomething] = useState(false);
+
+  const [selectedBooks, setSelectedBooks] = useState([]);
 
   const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
     onCompleted: (received_data) => {
@@ -40,6 +40,14 @@ const Writeanother = () => {
     },
   });
 
+  useEffect(() => {
+    sessionStorage.removeItem('books_selected');
+  }, []);
+
+  const sesstionStart = () => {
+    router.push('/books/study/sessionSetting');
+  };
+
   const handleToGetMyBook = useCallback((books) => {
     setMyBook(books);
   }, []);
@@ -52,6 +60,11 @@ const Writeanother = () => {
   }, []);
   const changeActivedTable = useCallback((_table) => {
     setActivedTable(_table);
+  }, []);
+
+  const changeSelectedBooks = useCallback((_booksArray) => {
+    setSelectedBooks(_booksArray);
+    sessionStorage.setItem('books_selected', JSON.stringify(_booksArray));
   }, []);
 
   if (!isReceivedData) {
@@ -73,15 +86,17 @@ const Writeanother = () => {
         {category.length >= 1 && (
           <StyledRow>
             <StyledSpace>
-              <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
               <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
+              <Button onClick={sesstionStart} size="small">
+                세션 시작
+              </Button>
             </StyledSpace>
           </StyledRow>
         )}
 
         <StyledRow>
           <Col span={24}>
-            <FavoriteBooksTable
+            <StudyFavoriteBooksTable
               category={category}
               myBook={myBook}
               handleToGetMyBook={handleToGetMyBook}
@@ -89,10 +104,12 @@ const Writeanother = () => {
               chagePopup={chagePopup}
               activedTable={activedTable}
               changeActivedTable={changeActivedTable}
+              selectedBooks={selectedBooks}
+              changeSelectedBooks={changeSelectedBooks}
             />
           </Col>
           <Col span={24}>
-            <BooksTable
+            <StudyBooksTable
               category={category}
               myBook={myBook}
               handleToGetMyBook={handleToGetMyBook}
@@ -100,6 +117,8 @@ const Writeanother = () => {
               chagePopup={chagePopup}
               activedTable={activedTable}
               changeActivedTable={changeActivedTable}
+              selectedBooks={selectedBooks}
+              changeSelectedBooks={changeSelectedBooks}
             />
           </Col>
         </StyledRow>

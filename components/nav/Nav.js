@@ -122,13 +122,13 @@ const Nav = () => {
                     }}
                   >
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <Link href="/books/study">
+                      <Link href="/books/studypage">
                         <a style={linkStyle}>
                           <ReadOutlined style={{ marginRight: 10 }} />
                           학습
                         </a>
                       </Link>
-                      <Link href="/books/write">
+                      <Link href="/books/writepage">
                         <a style={linkStyle}>
                           <FormOutlined style={{ marginRight: 10 }} />
                           만들기
@@ -150,9 +150,7 @@ const Nav = () => {
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {isLogged && (
                         <>
-                          <button onClick={() => onClickLogout()}>
-                            로그아웃
-                          </button>
+                          <button onClick={() => onClickLogout()}>로그아웃</button>
                         </>
                       )}
                       {!isLogged && (
@@ -251,13 +249,13 @@ const Nav = () => {
                     }}
                   >
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <Link href="/books/study">
+                      <Link href="/books/studypage">
                         <a style={linkStyle}>
                           <ReadOutlined style={{ marginRight: 10 }} />
                           학습
                         </a>
                       </Link>
-                      <Link href="/books/write">
+                      <Link href="/books/writepage">
                         <a style={linkStyle}>
                           <FormOutlined style={{ marginRight: 10 }} />
                           만들기
@@ -279,9 +277,7 @@ const Nav = () => {
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {isLogged && (
                         <>
-                          <button onClick={() => onClickLogout()}>
-                            로그아웃
-                          </button>
+                          <button onClick={() => onClickLogout()}>로그아웃</button>
                         </>
                       )}
                       {!isLogged && (
@@ -344,12 +340,7 @@ const Nav = () => {
             >
               <Link href="/">
                 <a style={{ marginRight: '30px' }}>
-                  <Image
-                    src={profilePic}
-                    width="100px"
-                    height="50px"
-                    alt="logo"
-                  />
+                  <Image src={profilePic} width="100px" height="50px" alt="logo" />
                 </a>
               </Link>
               <div
@@ -360,10 +351,10 @@ const Nav = () => {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Link href="/books/study">
+                  <Link href="/books/studypage">
                     <a style={linkStyle}>학습</a>
                   </Link>
-                  <Link href="/books/write">
+                  <Link href="/books/writepage">
                     <a style={linkStyle}>만들기</a>
                   </Link>
                   <Link href="/mentoring">
@@ -426,12 +417,7 @@ const Nav = () => {
             >
               <Link href="/">
                 <a style={{ marginRight: '30px' }}>
-                  <Image
-                    src={profilePic}
-                    width="100px"
-                    height="50px"
-                    alt="logo"
-                  />
+                  <Image src={profilePic} width="100px" height="50px" alt="logo" />
                 </a>
               </Link>
               <div
@@ -442,10 +428,10 @@ const Nav = () => {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Link href="/books/study">
+                  <Link href="/books/studypage">
                     <a style={linkStyle}>학습</a>
                   </Link>
-                  <Link href="/books/write">
+                  <Link href="/books/writepage">
                     <a style={linkStyle}>만들기</a>
                   </Link>
                   <Link href="/mentoring">

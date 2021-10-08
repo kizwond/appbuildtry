@@ -1,62 +1,36 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useQuery } from '@apollo/client';
-import {
-  Radio,
-  Switch,
-  Form,
-  InputNumber,
-  DatePicker,
-  Card,
-  Col,
-  Row,
-  Button,
-  Typography,
-} from 'antd';
-import { GET_SESSTION_CONFIG } from '../../../../graphql/query/studySessionSetting';
-import ColFormItem from './ColFormItem';
-import produce from 'immer';
-import SwichComponent from './SwichComponent';
-import { Space, Tag } from '../../../../node_modules/antd/lib/index';
-import moment from '../../../../node_modules/moment/moment';
-import GetFilteredIndexButton from './GetFilteredIndexButton';
+import React, { useState, useCallback } from "react";
+import { useQuery } from "@apollo/client";
+import { Radio, Switch, InputNumber, DatePicker, Card, Col, Row, Button, Typography } from "antd";
+import { GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
+import ColFormItem from "./ColFormItem";
+import produce from "immer";
+import SwichComponent from "./SwichComponent";
+import { Space, Tag } from "../../../../node_modules/antd/lib/index";
+import moment from "../../../../node_modules/moment/moment";
+import GetFilteredIndexButton from "./GetFilteredIndexButton";
 
 const menuTitleColSize = 3;
 const menuColSize = 21;
 const menuColDivider = 6;
 
-const SessionConfig = ({
-  submitCreateSessionConfigToServer,
-  book_ids,
-  firstFetch,
-  onToggleIsAFilter,
-  onChangeAFCardList,
-  AFCardList,
-  advancedFilteredCheckedIndexes,
-  onChangeIndexesOfAFCardList,
-}) => {
+const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIsAFilter, onChangeAFCardList, AFCardList, advancedFilteredCheckedIndexes, onChangeIndexesOfAFCardList }) => {
   const [counterForButtonClick, setCounterForButtonClick] = useState(0);
 
-  const [mode, setMode] = useState('exam');
+  const [mode, setMode] = useState("exam");
   const [sessionConfig, setSessionConfig] = useState({});
-  const { loading, error, data, variables } = useQuery(GET_SESSTION_CONFIG, {
+  const { loading, error } = useQuery(GET_SESSTION_CONFIG, {
     variables: {
       mybook_ids: book_ids,
     },
     onCompleted: (received_data) => {
-      console.log(received_data);
-      setMode(
-        received_data.session_getSessionConfig.sessionConfigs[0].studyMode
-      );
-      setSessionConfig(
-        received_data.session_getSessionConfig.sessionConfigs[0]
-      );
+      setMode(received_data.session_getSessionConfig.sessionConfigs[0].studyMode);
+      setSessionConfig(received_data.session_getSessionConfig.sessionConfigs[0]);
     },
   });
 
   const onChangeValue = useCallback(
     (...args) => {
       const length = args.length;
-      console.log(args);
       if (length == 4) {
         const newData = produce(sessionConfig, (draft) => {
           draft[mode][args[1]][args[2]][args[3]] = args[0];
@@ -81,7 +55,6 @@ const SessionConfig = ({
   // 아래 손봐야함 => 그냥 args[1]을 sessionConfig로 지정해야겠음 어차피 sessionConfig쓰는데
   const onChangeValueAnother = (...args) => {
     const length = args.length;
-    console.log(args);
     if (length == 5) {
       const newData = produce(args[1], (draft) => {
         draft[args[2]][args[3]][args[4]] = args[0];
@@ -109,21 +82,13 @@ const SessionConfig = ({
       const newData = produce(sessionConfig, (draft) => {
         draft.advancedFilter[name].value.push(value);
       });
-      console.log(
-        `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
-        newData.advancedFilter[name].value
-      );
+      console.log(`현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`, newData.advancedFilter[name].value);
       setSessionConfig(newData);
     } else if (!checked) {
       const newData = produce(sessionConfig, (draft) => {
-        draft.advancedFilter[name].value = draft.advancedFilter[
-          name
-        ].value.filter((item) => item != value);
+        draft.advancedFilter[name].value = draft.advancedFilter[name].value.filter((item) => item != value);
       });
-      console.log(
-        `현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`,
-        newData.advancedFilter[name].value
-      );
+      console.log(`현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`, newData.advancedFilter[name].value);
       setSessionConfig(newData);
     }
   };
@@ -131,19 +96,15 @@ const SessionConfig = ({
   const onChangeAFButtonClick = () => {
     setCounterForButtonClick((prev) => prev + 1);
   };
-  const isOnNumStartCards = sessionConfig[mode]?.numStartCards?.onOff == 'on';
-  const isOnAdvancedFilter = sessionConfig?.advancedFilter?.onOff == 'on';
-  const isOnUserFlag = sessionConfig?.advancedFilter?.userFlag.onOff == 'on';
-  const isOnMakerFlag = sessionConfig?.advancedFilter?.makerFlag.onOff == 'on';
-  const isOnRecentStudyTime =
-    sessionConfig?.advancedFilter?.recentStudyTime.onOff == 'on';
-  const isOnLevelFilter = sessionConfig?.advancedFilter?.level.onOff == 'on';
-  const isOnStudyTimesFilter =
-    sessionConfig?.advancedFilter?.studyTimes.onOff == 'on';
-  const isOnRecentDifficultyFilter =
-    sessionConfig?.advancedFilter?.recentDifficulty.onOff == 'on';
-  const isOnExamResultFilter =
-    sessionConfig?.advancedFilter?.examResult.onOff == 'on';
+  const isOnNumStartCards = sessionConfig[mode]?.numStartCards?.onOff == "on";
+  const isOnAdvancedFilter = sessionConfig?.advancedFilter?.onOff == "on";
+  const isOnUserFlag = sessionConfig?.advancedFilter?.userFlag.onOff == "on";
+  const isOnMakerFlag = sessionConfig?.advancedFilter?.makerFlag.onOff == "on";
+  const isOnRecentStudyTime = sessionConfig?.advancedFilter?.recentStudyTime.onOff == "on";
+  const isOnLevelFilter = sessionConfig?.advancedFilter?.level.onOff == "on";
+  const isOnStudyTimesFilter = sessionConfig?.advancedFilter?.studyTimes.onOff == "on";
+  const isOnRecentDifficultyFilter = sessionConfig?.advancedFilter?.recentDifficulty.onOff == "on";
+  const isOnExamResultFilter = sessionConfig?.advancedFilter?.examResult.onOff == "on";
   const selectedStudyStatus = sessionConfig[mode]?.useStatus;
   if (!error && !loading) {
     return (
@@ -156,15 +117,13 @@ const SessionConfig = ({
             <Button
               block
               style={{
-                background: 'green',
-                minWidth: '100px',
-                color: 'white',
-                fontSize: '13px',
-                fontWeight: '700',
+                background: "green",
+                minWidth: "100px",
+                color: "white",
+                fontSize: "13px",
+                fontWeight: "700",
               }}
-              onClick={() =>
-                submitCreateSessionConfigToServer(sessionConfig, mode)
-              }
+              onClick={() => submitCreateSessionConfigToServer(sessionConfig, mode)}
             >
               세션 시작
             </Button>
@@ -172,59 +131,37 @@ const SessionConfig = ({
         </Row>
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            marginBottom: '1rem',
+            display: "flex",
+            justifyContent: "space-around",
+            marginBottom: "1rem",
           }}
         >
-          <Button
-            type={mode === 'read' ? 'primary' : 'default'}
-            onClick={() => setMode('read')}
-          >
+          <Button type={mode === "read" ? "primary" : "default"} onClick={() => setMode("read")}>
             읽기모드
           </Button>
-          <Button
-            type={mode === 'flip' ? 'primary' : 'default'}
-            onClick={() => setMode('flip')}
-          >
+          <Button type={mode === "flip" ? "primary" : "default"} onClick={() => setMode("flip")}>
             뒤집기모드
           </Button>
-          <Button
-            type={mode === 'exam' ? 'primary' : 'default'}
-            onClick={() => setMode('exam')}
-          >
+          <Button type={mode === "exam" ? "primary" : "default"} onClick={() => setMode("exam")}>
             시험모드
           </Button>
         </div>
 
         <div
           style={{
-            border: '1px solid lightgrey',
-            marginBottom: '10px',
-            background: 'white',
-            borderRadius: '5px',
-            padding: '5px',
+            border: "1px solid lightgrey",
+            marginBottom: "10px",
+            background: "white",
+            borderRadius: "5px",
+            padding: "5px",
           }}
         >
           <Row align="top" gutter={8}>
-            <Col
-              xs={8}
-              sm={menuTitleColSize}
-              md={menuTitleColSize}
-              lg={24}
-              xl={24}
-              xxl={24}
-            >
-              <span style={{ fontSize: '12px', fontWeight: '700' }}>
-                보기 순서
-              </span>
+            <Col xs={8} sm={menuTitleColSize} md={menuTitleColSize} lg={24} xl={24} xxl={24}>
+              <span style={{ fontSize: "12px", fontWeight: "700" }}>보기 순서</span>
             </Col>
             <Col span={menuColSize}>
-              <Radio.Group
-                name="sortOption"
-                onChange={(e) => onChangeValue(e.target.value, e.target.name)}
-                value={sessionConfig[mode]?.sortOption}
-              >
+              <Radio.Group name="sortOption" onChange={(e) => onChangeValue(e.target.value, e.target.name)} value={sessionConfig[mode]?.sortOption}>
                 <Row align="top" gutter={8}>
                   <ColFormItem menuColDivider={menuColDivider}>
                     <Radio value="standard" size="small">
@@ -248,40 +185,24 @@ const SessionConfig = ({
         </div>
         <div
           style={{
-            border: '1px solid lightgrey',
-            background: 'white',
-            borderRadius: '5px',
-            padding: '5px 5px 5px 5px',
-            marginBottom: '10px',
+            border: "1px solid lightgrey",
+            background: "white",
+            borderRadius: "5px",
+            padding: "5px 5px 5px 5px",
+            marginBottom: "10px",
           }}
         >
           <Row align="top" gutter={8}>
             <Col span={menuTitleColSize}>
-              <span style={{ fontSize: '12px', fontWeight: '700' }}>
-                카드종류
-              </span>
+              <span style={{ fontSize: "12px", fontWeight: "700" }}>카드종류</span>
             </Col>
             <Col span={menuColSize}>
               <Row align="top" gutter={8}>
                 <ColFormItem menuColDivider={menuColDivider} title="읽기카드">
-                  <SwichComponent
-                    funct={onChangeValueAnother}
-                    switchArrayValue="read"
-                    bigGrandParent={sessionConfig}
-                    grandParent={mode}
-                    parent="useCardtype"
-                    target={sessionConfig[mode]?.useCardtype}
-                  />
+                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="read" bigGrandParent={sessionConfig} grandParent={mode} parent="useCardtype" target={sessionConfig[mode]?.useCardtype} />
                 </ColFormItem>
                 <ColFormItem menuColDivider={menuColDivider} title="뒤집기카드">
-                  <SwichComponent
-                    funct={onChangeValueAnother}
-                    switchArrayValue="flip"
-                    bigGrandParent={sessionConfig}
-                    grandParent={mode}
-                    parent="useCardtype"
-                    target={sessionConfig[mode]?.useCardtype}
-                  />
+                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="flip" bigGrandParent={sessionConfig} grandParent={mode} parent="useCardtype" target={sessionConfig[mode]?.useCardtype} />
                 </ColFormItem>
               </Row>
             </Col>
@@ -290,18 +211,16 @@ const SessionConfig = ({
 
         <div
           style={{
-            border: '1px solid lightgrey',
-            background: 'white',
-            borderRadius: '5px',
-            padding: '5px',
-            marginBottom: isOnAdvancedFilter ? '10px' : '0px',
+            border: "1px solid lightgrey",
+            background: "white",
+            borderRadius: "5px",
+            padding: "5px",
+            marginBottom: isOnAdvancedFilter ? "10px" : "0px",
           }}
         >
           <Row align="top" gutter={8}>
             <Col span={menuTitleColSize}>
-              <span style={{ fontSize: '12px', fontWeight: '700' }}>
-                카드상태
-              </span>
+              <span style={{ fontSize: "12px", fontWeight: "700" }}>카드상태</span>
             </Col>
             <Col span={menuColSize}>
               <Row align="top" gutter={8}>
@@ -309,85 +228,44 @@ const SessionConfig = ({
                   menuColDivider={menuColDivider}
                   title="학습중"
                   style={{
-                    background: selectedStudyStatus?.includes('ing')
-                      ? '#e6f7ff'
-                      : 'white',
-                    borderTopLeftRadius: selectedStudyStatus?.includes('ing')
-                      ? '5px'
-                      : 0,
-                    borderTopRightRadius: selectedStudyStatus?.includes('ing')
-                      ? '5px'
-                      : 0,
-                    paddingBottom: '5px',
+                    background: selectedStudyStatus?.includes("ing") ? "#e6f7ff" : "white",
+                    borderTopLeftRadius: selectedStudyStatus?.includes("ing") ? "5px" : 0,
+                    borderTopRightRadius: selectedStudyStatus?.includes("ing") ? "5px" : 0,
+                    paddingBottom: "5px",
                   }}
                 >
-                  <SwichComponent
-                    funct={onChangeValueAnother}
-                    switchArrayValue="ing"
-                    bigGrandParent={sessionConfig}
-                    grandParent={mode}
-                    parent="useStatus"
-                    target={sessionConfig[mode]?.useStatus}
-                  />
+                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="ing" bigGrandParent={sessionConfig} grandParent={mode} parent="useStatus" target={sessionConfig[mode]?.useStatus} />
                 </ColFormItem>
                 <ColFormItem menuColDivider={menuColDivider} title="미학습">
-                  <SwichComponent
-                    funct={onChangeValueAnother}
-                    switchArrayValue="yet"
-                    bigGrandParent={sessionConfig}
-                    grandParent={mode}
-                    parent="useStatus"
-                    target={sessionConfig[mode]?.useStatus}
-                  />
+                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="yet" bigGrandParent={sessionConfig} grandParent={mode} parent="useStatus" target={sessionConfig[mode]?.useStatus} />
                 </ColFormItem>
                 <ColFormItem menuColDivider={menuColDivider} title="학습완료">
-                  <SwichComponent
-                    funct={onChangeValueAnother}
-                    switchArrayValue="completed"
-                    bigGrandParent={sessionConfig}
-                    grandParent={mode}
-                    parent="useStatus"
-                    target={sessionConfig[mode]?.useStatus}
-                  />
+                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="completed" bigGrandParent={sessionConfig} grandParent={mode} parent="useStatus" target={sessionConfig[mode]?.useStatus} />
                 </ColFormItem>
                 <ColFormItem menuColDivider={menuColDivider} title="학습보류">
-                  <SwichComponent
-                    funct={onChangeValueAnother}
-                    switchArrayValue="hold"
-                    bigGrandParent={sessionConfig}
-                    grandParent={mode}
-                    parent="useStatus"
-                    target={sessionConfig[mode]?.useStatus}
-                  />
+                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="hold" bigGrandParent={sessionConfig} grandParent={mode} parent="useStatus" target={sessionConfig[mode]?.useStatus} />
                 </ColFormItem>
               </Row>
             </Col>
           </Row>
-          {selectedStudyStatus?.includes('ing') && (
+          {selectedStudyStatus?.includes("ing") && (
             <>
               <Row align="top" justify="center" gutter={8}>
                 <Col span={menuTitleColSize}>
-                  <span style={{ fontSize: '12px', fontWeight: '700' }}></span>
+                  <span style={{ fontSize: "12px", fontWeight: "700" }}></span>
                 </Col>
                 <Col
                   span={menuColSize}
                   style={{
-                    background: '#e6f7ff',
-                    paddingTop: '5px',
-                    paddingBottom: '5px',
-                    borderTopRightRadius: '5px',
-                    borderBottomLeftRadius: '5px',
-                    borderBottomRightRadius: '5px',
+                    background: "#e6f7ff",
+                    paddingTop: "5px",
+                    paddingBottom: "5px",
+                    borderTopRightRadius: "5px",
+                    borderBottomLeftRadius: "5px",
+                    borderBottomRightRadius: "5px",
                   }}
                 >
-                  <Radio.Group
-                    name="needStudyTimeCondition"
-                    onChange={(e) =>
-                      onChangeValue(e.target.value, e.target.name)
-                    }
-                    value={sessionConfig[mode]?.needStudyTimeCondition}
-                    size="small"
-                  >
+                  <Radio.Group name="needStudyTimeCondition" onChange={(e) => onChangeValue(e.target.value, e.target.name)} value={sessionConfig[mode]?.needStudyTimeCondition} size="small">
                     <Row align="top" gutter={8}>
                       <ColFormItem menuColDivider={menuColDivider}>
                         <Radio value="all">전체</Radio>
@@ -400,37 +278,23 @@ const SessionConfig = ({
                       </ColFormItem>
                       <ColFormItem menuColDivider={menuColDivider}>
                         <Radio value="custom">직접입력</Radio>
-                        {sessionConfig[mode]?.needStudyTimeCondition ==
-                          'custom' && (
+                        {sessionConfig[mode]?.needStudyTimeCondition == "custom" && (
                           <DatePicker.RangePicker
                             format="MM-DD"
-                            placeholder={['시작', '종료']}
+                            placeholder={["시작", "종료"]}
                             onChange={(date, dateString) => {
                               const now = new Date();
                               const year = now.getFullYear();
                               const month = now.getMonth() + 1;
                               const day = now.getDate();
-                              const today = moment(
-                                `${year}-${month}-${day}`,
-                                'YYYY-MM-DD'
-                              );
+                              const today = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
                               // console.log(today);
                               const startYear = date[0]._d.getFullYear();
-                              const startDate = moment(
-                                `${startYear}-${dateString[0]}`,
-                                'YYYY-MM-DD'
-                              );
+                              const startDate = moment(`${startYear}-${dateString[0]}`, "YYYY-MM-DD");
                               const endYear = date[0]._d.getFullYear();
-                              const endDate = moment(
-                                `${endYear}-${dateString[1]}`,
-                                'YYYY-MM-DD'
-                              );
-                              const dif_from_startDate = moment
-                                .duration(startDate.diff(today))
-                                .asDays();
-                              const dif_from_endDate = moment
-                                .duration(endDate.diff(today))
-                                .asDays();
+                              const endDate = moment(`${endYear}-${dateString[1]}`, "YYYY-MM-DD");
+                              const dif_from_startDate = moment.duration(startDate.diff(today)).asDays();
+                              const dif_from_endDate = moment.duration(endDate.diff(today)).asDays();
                               console.log(dif_from_endDate);
                             }}
                             size="small"
@@ -444,15 +308,15 @@ const SessionConfig = ({
             </>
           )}
 
-          <Row align="top" gutter={8} style={{ marginTop: '10px' }}>
+          <Row align="top" gutter={8} style={{ marginTop: "10px" }}>
             <Col span={menuTitleColSize}>
               <Row>
                 <Col xs={24} sm={24} md={15} lg={14} xl={15} xxl={16}>
                   <span
                     style={{
-                      fontSize: '12px',
-                      fontWeight: '700',
-                      color: isOnNumStartCards ? 'black' : '#0000003f',
+                      fontSize: "12px",
+                      fontWeight: "700",
+                      color: isOnNumStartCards ? "black" : "#0000003f",
                     }}
                   >
                     학습량
@@ -464,9 +328,9 @@ const SessionConfig = ({
                     checked={isOnNumStartCards}
                     onChange={(checked) => {
                       if (checked) {
-                        onChangeValue('on', 'numStartCards', 'onOff');
+                        onChangeValue("on", "numStartCards", "onOff");
                       } else {
-                        onChangeValue('off', 'numStartCards', 'onOff');
+                        onChangeValue("off", "numStartCards", "onOff");
                       }
                     }}
                   />
@@ -480,7 +344,7 @@ const SessionConfig = ({
                   title={
                     <span
                       style={{
-                        color: isOnNumStartCards ? 'black' : '#0000003f',
+                        color: isOnNumStartCards ? "black" : "#0000003f",
                       }}
                     >
                       미학습
@@ -492,7 +356,7 @@ const SessionConfig = ({
                     size="small"
                     value={sessionConfig[mode]?.numStartCards.yet}
                     onChange={(value) => {
-                      onChangeValue(value, 'numStartCards', 'yet');
+                      onChangeValue(value, "numStartCards", "yet");
                     }}
                   />
                 </ColFormItem>
@@ -501,7 +365,7 @@ const SessionConfig = ({
                   title={
                     <span
                       style={{
-                        color: isOnNumStartCards ? 'black' : '#0000003f',
+                        color: isOnNumStartCards ? "black" : "#0000003f",
                       }}
                     >
                       학습중
@@ -513,7 +377,7 @@ const SessionConfig = ({
                     size="small"
                     value={sessionConfig[mode]?.numStartCards.ing}
                     onChange={(value) => {
-                      onChangeValue(value, 'numStartCards', 'ing');
+                      onChangeValue(value, "numStartCards", "ing");
                     }}
                   />
                 </ColFormItem>
@@ -522,7 +386,7 @@ const SessionConfig = ({
                   title={
                     <span
                       style={{
-                        color: isOnNumStartCards ? 'black' : '#0000003f',
+                        color: isOnNumStartCards ? "black" : "#0000003f",
                       }}
                     >
                       학습완료
@@ -534,7 +398,7 @@ const SessionConfig = ({
                     size="small"
                     value={sessionConfig[mode]?.numStartCards.completed}
                     onChange={(value) => {
-                      onChangeValue(value, 'numStartCards', 'completed');
+                      onChangeValue(value, "numStartCards", "completed");
                     }}
                   />
                 </ColFormItem>
@@ -543,7 +407,7 @@ const SessionConfig = ({
                   title={
                     <span
                       style={{
-                        color: isOnNumStartCards ? 'black' : '#0000003f',
+                        color: isOnNumStartCards ? "black" : "#0000003f",
                       }}
                     >
                       학습보류
@@ -555,7 +419,7 @@ const SessionConfig = ({
                     size="small"
                     value={sessionConfig[mode]?.numStartCards.hold}
                     onChange={(value) => {
-                      onChangeValue(value, 'numStartCards', 'hold');
+                      onChangeValue(value, "numStartCards", "hold");
                     }}
                   />
                 </ColFormItem>
@@ -565,19 +429,19 @@ const SessionConfig = ({
         </div>
         <div
           style={{
-            border: isOnAdvancedFilter ? '1px solid lightgrey' : 'none',
-            backgroundColor: isOnAdvancedFilter ? '#FFE4D3' : '#FFF',
-            borderRadius: '5px',
-            padding: '5px',
+            border: isOnAdvancedFilter ? "1px solid lightgrey" : "none",
+            backgroundColor: isOnAdvancedFilter ? "#FFE4D3" : "#FFF",
+            borderRadius: "5px",
+            padding: "5px",
           }}
         >
-          <Row align="top" gutter={8} style={{ marginBottom: '4px' }}>
+          <Row align="top" gutter={8} style={{ marginBottom: "4px" }}>
             <Col span={menuTitleColSize}>
               <span
                 style={{
-                  fontSize: '12px',
-                  fontWeight: isOnAdvancedFilter ? '700' : '400',
-                  color: isOnAdvancedFilter ? 'black' : '#0000003f',
+                  fontSize: "12px",
+                  fontWeight: isOnAdvancedFilter ? "700" : "400",
+                  color: isOnAdvancedFilter ? "black" : "#0000003f",
                 }}
               >
                 고급필터
@@ -589,22 +453,12 @@ const SessionConfig = ({
                 checked={isOnAdvancedFilter}
                 onChange={(checked) => {
                   if (checked) {
-                    onChangeValueAnother(
-                      'on',
-                      sessionConfig,
-                      'advancedFilter',
-                      'onOff'
-                    );
+                    onChangeValueAnother("on", sessionConfig, "advancedFilter", "onOff");
                     if (counterForButtonClick > 0) {
                       onToggleIsAFilter(true);
                     }
                   } else {
-                    onChangeValueAnother(
-                      'off',
-                      sessionConfig,
-                      'advancedFilter',
-                      'onOff'
-                    );
+                    onChangeValueAnother("off", sessionConfig, "advancedFilter", "onOff");
                     onToggleIsAFilter(false);
                   }
                 }}
@@ -618,9 +472,7 @@ const SessionConfig = ({
                   onChangeAFCardList={onChangeAFCardList}
                   AFCardList={AFCardList}
                   onToggleIsAFilter={onToggleIsAFilter}
-                  advancedFilteredCheckedIndexes={
-                    advancedFilteredCheckedIndexes
-                  }
+                  advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
                   onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
                   onChangeAFButtonClick={onChangeAFButtonClick}
                 />
@@ -634,8 +486,8 @@ const SessionConfig = ({
                   <Col span={4}>
                     <span
                       style={{
-                        fontSize: '11px',
-                        fontWeight: '600',
+                        fontSize: "11px",
+                        fontWeight: "600",
                       }}
                     >
                       사용자 플래그 필터
@@ -649,21 +501,9 @@ const SessionConfig = ({
                           checked={isOnUserFlag}
                           onChange={(checked) => {
                             if (checked) {
-                              onChangeValueAnother(
-                                'on',
-                                sessionConfig,
-                                'advancedFilter',
-                                'userFlag',
-                                'onOff'
-                              );
+                              onChangeValueAnother("on", sessionConfig, "advancedFilter", "userFlag", "onOff");
                             } else {
-                              onChangeValueAnother(
-                                'off',
-                                sessionConfig,
-                                'advancedFilter',
-                                'userFlag',
-                                'onOff'
-                              );
+                              onChangeValueAnother("off", sessionConfig, "advancedFilter", "userFlag", "onOff");
                             }
                           }}
                         />
@@ -674,90 +514,54 @@ const SessionConfig = ({
                           {isOnUserFlag ? (
                             <>
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.userFlag.value.includes(
-                                  0
-                                )}
+                                checked={sessionConfig.advancedFilter.userFlag.value.includes(0)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'userFlag',
-                                    0
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "userFlag", 0);
                                 }}
                               >
                                 플래그 없음
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.userFlag.value.includes(
-                                  1
-                                )}
+                                checked={sessionConfig.advancedFilter.userFlag.value.includes(1)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'userFlag',
-                                    1
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "userFlag", 1);
                                 }}
                               >
                                 플래그1
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.userFlag.value.includes(
-                                  2
-                                )}
+                                checked={sessionConfig.advancedFilter.userFlag.value.includes(2)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'userFlag',
-                                    2
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "userFlag", 2);
                                 }}
                               >
                                 플래그2
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.userFlag.value.includes(
-                                  3
-                                )}
+                                checked={sessionConfig.advancedFilter.userFlag.value.includes(3)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'userFlag',
-                                    3
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "userFlag", 3);
                                 }}
                               >
                                 플래그3
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.userFlag.value.includes(
-                                  4
-                                )}
+                                checked={sessionConfig.advancedFilter.userFlag.value.includes(4)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'userFlag',
-                                    4
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "userFlag", 4);
                                 }}
                               >
                                 플래그4
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.userFlag.value.includes(
-                                  5
-                                )}
+                                checked={sessionConfig.advancedFilter.userFlag.value.includes(5)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'userFlag',
-                                    5
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "userFlag", 5);
                                 }}
                               >
                                 플래그5
@@ -766,96 +570,60 @@ const SessionConfig = ({
                           ) : (
                             <>
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.userFlag.value.includes(
-                                    0
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.userFlag.value.includes(0) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그 없음
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.userFlag.value.includes(
-                                    1
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.userFlag.value.includes(1) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그1
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.userFlag.value.includes(
-                                    2
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.userFlag.value.includes(2) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그2
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.userFlag.value.includes(
-                                    3
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.userFlag.value.includes(3) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그3
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.userFlag.value.includes(
-                                    4
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.userFlag.value.includes(4) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그4
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.userFlag.value.includes(
-                                    5
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.userFlag.value.includes(5) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그5
@@ -874,8 +642,8 @@ const SessionConfig = ({
                   <Col span={4}>
                     <span
                       style={{
-                        fontSize: '11px',
-                        fontWeight: '600',
+                        fontSize: "11px",
+                        fontWeight: "600",
                       }}
                     >
                       제작자 플래그 필터
@@ -893,21 +661,9 @@ const SessionConfig = ({
                               //   draft.advancedFilter.userFlag.onOff = 'on';
                               // });
                               // onChangeValue(newData);
-                              onChangeValueAnother(
-                                'on',
-                                sessionConfig,
-                                'advancedFilter',
-                                'makerFlag',
-                                'onOff'
-                              );
+                              onChangeValueAnother("on", sessionConfig, "advancedFilter", "makerFlag", "onOff");
                             } else {
-                              onChangeValueAnother(
-                                'off',
-                                sessionConfig,
-                                'advancedFilter',
-                                'makerFlag',
-                                'onOff'
-                              );
+                              onChangeValueAnother("off", sessionConfig, "advancedFilter", "makerFlag", "onOff");
                             }
                           }}
                         />
@@ -918,90 +674,54 @@ const SessionConfig = ({
                           {isOnMakerFlag ? (
                             <>
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(
-                                  0
-                                )}
+                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(0)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'makerFlag',
-                                    0
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "makerFlag", 0);
                                 }}
                               >
                                 플래그 없음
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(
-                                  1
-                                )}
+                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(1)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'makerFlag',
-                                    1
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "makerFlag", 1);
                                 }}
                               >
                                 플래그1
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(
-                                  2
-                                )}
+                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(2)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'makerFlag',
-                                    2
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "makerFlag", 2);
                                 }}
                               >
                                 플래그2
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(
-                                  3
-                                )}
+                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(3)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'makerFlag',
-                                    3
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "makerFlag", 3);
                                 }}
                               >
                                 플래그3
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(
-                                  4
-                                )}
+                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(4)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'makerFlag',
-                                    4
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "makerFlag", 4);
                                 }}
                               >
                                 플래그4
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(
-                                  5
-                                )}
+                                checked={sessionConfig.advancedFilter.makerFlag.value.includes(5)}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'makerFlag',
-                                    5
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "makerFlag", 5);
                                 }}
                               >
                                 플래그5
@@ -1010,96 +730,60 @@ const SessionConfig = ({
                           ) : (
                             <>
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.makerFlag.value.includes(
-                                    0
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.makerFlag.value.includes(0) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그 없음
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.makerFlag.value.includes(
-                                    1
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.makerFlag.value.includes(1) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그1
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.makerFlag.value.includes(
-                                    2
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.makerFlag.value.includes(2) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그2
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.makerFlag.value.includes(
-                                    3
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.makerFlag.value.includes(3) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그3
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.makerFlag.value.includes(
-                                    4
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.makerFlag.value.includes(4) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그4
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.makerFlag.value.includes(
-                                    5
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.makerFlag.value.includes(5) ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 플래그5
@@ -1118,8 +802,8 @@ const SessionConfig = ({
                   <Col span={4}>
                     <span
                       style={{
-                        fontSize: '11px',
-                        fontWeight: '600',
+                        fontSize: "11px",
+                        fontWeight: "600",
                       }}
                     >
                       최근 학습 시점 필터
@@ -1133,21 +817,9 @@ const SessionConfig = ({
                           checked={isOnRecentStudyTime}
                           onChange={(checked) => {
                             if (checked) {
-                              onChangeValueAnother(
-                                'on',
-                                sessionConfig,
-                                'advancedFilter',
-                                'recentStudyTime',
-                                'onOff'
-                              );
+                              onChangeValueAnother("on", sessionConfig, "advancedFilter", "recentStudyTime", "onOff");
                             } else {
-                              onChangeValueAnother(
-                                'off',
-                                sessionConfig,
-                                'advancedFilter',
-                                'recentStudyTime',
-                                'onOff'
-                              );
+                              onChangeValueAnother("off", sessionConfig, "advancedFilter", "recentStudyTime", "onOff");
                             }
                           }}
                         />
@@ -1158,29 +830,14 @@ const SessionConfig = ({
                           <DatePicker.RangePicker
                             disabled={!isOnRecentStudyTime}
                             format="MM-DD"
-                            placeholder={['시작', '종료']}
+                            placeholder={["시작", "종료"]}
                             value={
-                              sessionConfig?.advancedFilter?.recentStudyTime
-                                ?.value == null
+                              sessionConfig?.advancedFilter?.recentStudyTime?.value == null
                                 ? null
                                 : [
-                                    sessionConfig?.advancedFilter
-                                      ?.recentStudyTime?.value[0] == 0
-                                      ? moment()
-                                      : moment().add(
-                                          sessionConfig?.advancedFilter
-                                            ?.recentStudyTime?.value[0],
-                                          'days'
-                                        ),
+                                    sessionConfig?.advancedFilter?.recentStudyTime?.value[0] == 0 ? moment() : moment().add(sessionConfig?.advancedFilter?.recentStudyTime?.value[0], "days"),
 
-                                    sessionConfig?.advancedFilter
-                                      ?.recentStudyTime?.value[1] == 0
-                                      ? moment()
-                                      : moment().add(
-                                          sessionConfig?.advancedFilter
-                                            ?.recentStudyTime?.value[1],
-                                          'days'
-                                        ),
+                                    sessionConfig?.advancedFilter?.recentStudyTime?.value[1] == 0 ? moment() : moment().add(sessionConfig?.advancedFilter?.recentStudyTime?.value[1], "days"),
                                   ]
                             }
                             onChange={(date, dateString) => {
@@ -1190,44 +847,19 @@ const SessionConfig = ({
                                 const year = now.getFullYear();
                                 const month = now.getMonth() + 1;
                                 const day = now.getDate();
-                                const today = moment(
-                                  `${year}-${month}-${day}`,
-                                  'YYYY-MM-DD'
-                                );
+                                const today = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
                                 // console.log(today);
                                 const startYear = date[0]._d.getFullYear();
-                                const startDate = moment(
-                                  `${startYear}-${dateString[0]}`,
-                                  'YYYY-MM-DD'
-                                );
+                                const startDate = moment(`${startYear}-${dateString[0]}`, "YYYY-MM-DD");
                                 const endYear = date[0]._d.getFullYear();
-                                const endDate = moment(
-                                  `${endYear}-${dateString[1]}`,
-                                  'YYYY-MM-DD'
-                                );
-                                const dif_from_startDate = moment
-                                  .duration(startDate.diff(today))
-                                  .asDays();
-                                const dif_from_endDate = moment
-                                  .duration(endDate.diff(today))
-                                  .asDays();
+                                const endDate = moment(`${endYear}-${dateString[1]}`, "YYYY-MM-DD");
+                                const dif_from_startDate = moment.duration(startDate.diff(today)).asDays();
+                                const dif_from_endDate = moment.duration(endDate.diff(today)).asDays();
 
-                                onChangeValueAnother(
-                                  [dif_from_startDate, dif_from_endDate],
-                                  sessionConfig,
-                                  'advancedFilter',
-                                  'recentStudyTime',
-                                  'value'
-                                );
+                                onChangeValueAnother([dif_from_startDate, dif_from_endDate], sessionConfig, "advancedFilter", "recentStudyTime", "value");
                               }
                               if (date == null) {
-                                onChangeValueAnother(
-                                  null,
-                                  sessionConfig,
-                                  'advancedFilter',
-                                  'recentStudyTime',
-                                  'value'
-                                );
+                                onChangeValueAnother(null, sessionConfig, "advancedFilter", "recentStudyTime", "value");
                               }
                             }}
                             size="small"
@@ -1244,8 +876,8 @@ const SessionConfig = ({
                   <Col span={4}>
                     <span
                       style={{
-                        fontSize: '11px',
-                        fontWeight: '600',
+                        fontSize: "11px",
+                        fontWeight: "600",
                       }}
                     >
                       카드 레벨 필터
@@ -1259,21 +891,9 @@ const SessionConfig = ({
                           checked={isOnLevelFilter}
                           onChange={(checked) => {
                             if (checked) {
-                              onChangeValueAnother(
-                                'on',
-                                sessionConfig,
-                                'advancedFilter',
-                                'level',
-                                'onOff'
-                              );
+                              onChangeValueAnother("on", sessionConfig, "advancedFilter", "level", "onOff");
                             } else {
-                              onChangeValueAnother(
-                                'off',
-                                sessionConfig,
-                                'advancedFilter',
-                                'level',
-                                'onOff'
-                              );
+                              onChangeValueAnother("off", sessionConfig, "advancedFilter", "level", "onOff");
                             }
                           }}
                         />
@@ -1286,61 +906,27 @@ const SessionConfig = ({
                               disabled={!isOnLevelFilter}
                               size="small"
                               min={1}
-                              max={
-                                sessionConfig.advancedFilter.level.value[1] ==
-                                null
-                                  ? null
-                                  : sessionConfig.advancedFilter.level
-                                      .value[1] - 1
-                              }
-                              value={
-                                sessionConfig.advancedFilter.level.value[0]
-                              }
+                              max={sessionConfig.advancedFilter.level.value[1] == null ? null : sessionConfig.advancedFilter.level.value[1] - 1}
+                              value={sessionConfig.advancedFilter.level.value[0]}
                               formatter={(value) => `${value} level`}
-                              parser={(value) => value.replace(' level', '')}
+                              parser={(value) => value.replace(" level", "")}
                               onChange={(value) => {
-                                const newRange = [
-                                  value,
-                                  sessionConfig.advancedFilter.level.value[1],
-                                ];
-                                onChangeValueAnother(
-                                  newRange,
-                                  sessionConfig,
-                                  'advancedFilter',
-                                  'level',
-                                  'value'
-                                );
+                                const newRange = [value, sessionConfig.advancedFilter.level.value[1]];
+                                onChangeValueAnother(newRange, sessionConfig, "advancedFilter", "level", "value");
                               }}
                             />
                             ~
                             <InputNumber
                               disabled={!isOnLevelFilter}
                               size="small"
-                              min={
-                                sessionConfig.advancedFilter.level.value[0] ==
-                                null
-                                  ? null
-                                  : sessionConfig.advancedFilter.level
-                                      .value[0] + 1
-                              }
+                              min={sessionConfig.advancedFilter.level.value[0] == null ? null : sessionConfig.advancedFilter.level.value[0] + 1}
                               max={10}
-                              value={
-                                sessionConfig.advancedFilter.level.value[1]
-                              }
+                              value={sessionConfig.advancedFilter.level.value[1]}
                               formatter={(value) => `${value} level`}
-                              parser={(value) => value.replace(' level', '')}
+                              parser={(value) => value.replace(" level", "")}
                               onChange={(value) => {
-                                const newRange = [
-                                  sessionConfig.advancedFilter.level.value[0],
-                                  value,
-                                ];
-                                onChangeValueAnother(
-                                  newRange,
-                                  sessionConfig,
-                                  'advancedFilter',
-                                  'level',
-                                  'value'
-                                );
+                                const newRange = [sessionConfig.advancedFilter.level.value[0], value];
+                                onChangeValueAnother(newRange, sessionConfig, "advancedFilter", "level", "value");
                               }}
                             />
                           </Space>
@@ -1355,8 +941,8 @@ const SessionConfig = ({
                   <Col span={4}>
                     <span
                       style={{
-                        fontSize: '11px',
-                        fontWeight: '600',
+                        fontSize: "11px",
+                        fontWeight: "600",
                       }}
                     >
                       학습 횟수 필터
@@ -1370,21 +956,9 @@ const SessionConfig = ({
                           checked={isOnStudyTimesFilter}
                           onChange={(checked) => {
                             if (checked) {
-                              onChangeValueAnother(
-                                'on',
-                                sessionConfig,
-                                'advancedFilter',
-                                'studyTimes',
-                                'onOff'
-                              );
+                              onChangeValueAnother("on", sessionConfig, "advancedFilter", "studyTimes", "onOff");
                             } else {
-                              onChangeValueAnother(
-                                'off',
-                                sessionConfig,
-                                'advancedFilter',
-                                'studyTimes',
-                                'onOff'
-                              );
+                              onChangeValueAnother("off", sessionConfig, "advancedFilter", "studyTimes", "onOff");
                             }
                           }}
                         />
@@ -1397,63 +971,27 @@ const SessionConfig = ({
                               disabled={!isOnStudyTimesFilter}
                               size="small"
                               min={0}
-                              max={
-                                sessionConfig.advancedFilter.studyTimes
-                                  .value[1] == null
-                                  ? 99
-                                  : sessionConfig.advancedFilter.studyTimes
-                                      .value[1] - 1
-                              }
-                              value={
-                                sessionConfig.advancedFilter.studyTimes.value[0]
-                              }
+                              max={sessionConfig.advancedFilter.studyTimes.value[1] == null ? 99 : sessionConfig.advancedFilter.studyTimes.value[1] - 1}
+                              value={sessionConfig.advancedFilter.studyTimes.value[0]}
                               formatter={(value) => `${value} 회`}
-                              parser={(value) => value.replace(' 회', '')}
+                              parser={(value) => value.replace(" 회", "")}
                               onChange={(value) => {
-                                const newRange = [
-                                  value,
-                                  sessionConfig.advancedFilter.studyTimes
-                                    .value[1],
-                                ];
-                                onChangeValueAnother(
-                                  newRange,
-                                  sessionConfig,
-                                  'advancedFilter',
-                                  'studyTimes',
-                                  'value'
-                                );
+                                const newRange = [value, sessionConfig.advancedFilter.studyTimes.value[1]];
+                                onChangeValueAnother(newRange, sessionConfig, "advancedFilter", "studyTimes", "value");
                               }}
                             />
                             ~
                             <InputNumber
                               disabled={!isOnStudyTimesFilter}
                               size="small"
-                              min={
-                                sessionConfig.advancedFilter.studyTimes
-                                  .value[1] == null
-                                  ? 2
-                                  : sessionConfig.advancedFilter.studyTimes
-                                      .value[0] + 1
-                              }
+                              min={sessionConfig.advancedFilter.studyTimes.value[1] == null ? 2 : sessionConfig.advancedFilter.studyTimes.value[0] + 1}
                               max={100}
-                              value={
-                                sessionConfig.advancedFilter.studyTimes.value[1]
-                              }
+                              value={sessionConfig.advancedFilter.studyTimes.value[1]}
                               formatter={(value) => `${value} 회`}
-                              parser={(value) => value.replace(' 회', '')}
+                              parser={(value) => value.replace(" 회", "")}
                               onChange={(value) => {
-                                const newRange = [
-                                  sessionConfig.advancedFilter.studyTimes
-                                    .value[0],
-                                  value,
-                                ];
-                                onChangeValueAnother(
-                                  newRange,
-                                  sessionConfig,
-                                  'advancedFilter',
-                                  'studyTimes',
-                                  'value'
-                                );
+                                const newRange = [sessionConfig.advancedFilter.studyTimes.value[0], value];
+                                onChangeValueAnother(newRange, sessionConfig, "advancedFilter", "studyTimes", "value");
                               }}
                             />
                           </Space>
@@ -1469,8 +1007,8 @@ const SessionConfig = ({
                   <Col span={4}>
                     <span
                       style={{
-                        fontSize: '11px',
-                        fontWeight: '600',
+                        fontSize: "11px",
+                        fontWeight: "600",
                       }}
                     >
                       최근 선택한 난이도 필터
@@ -1488,21 +1026,9 @@ const SessionConfig = ({
                               //   draft.advancedFilter.userFlag.onOff = 'on';
                               // });
                               // onChangeValue(newData);
-                              onChangeValueAnother(
-                                'on',
-                                sessionConfig,
-                                'advancedFilter',
-                                'recentDifficulty',
-                                'onOff'
-                              );
+                              onChangeValueAnother("on", sessionConfig, "advancedFilter", "recentDifficulty", "onOff");
                             } else {
-                              onChangeValueAnother(
-                                'off',
-                                sessionConfig,
-                                'advancedFilter',
-                                'recentDifficulty',
-                                'onOff'
-                              );
+                              onChangeValueAnother("off", sessionConfig, "advancedFilter", "recentDifficulty", "onOff");
                             }
                           }}
                         />
@@ -1513,120 +1039,60 @@ const SessionConfig = ({
                           {isOnRecentDifficultyFilter ? (
                             <>
                               <Tag.CheckableTag
-                                color={
-                                  isOnRecentDifficultyFilter
-                                    ? '#f5f5f5'
-                                    : '#1890ff'
-                                }
-                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                  'none'
-                                )}
+                                color={isOnRecentDifficultyFilter ? "#f5f5f5" : "#1890ff"}
+                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes("none")}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'recentDifficulty',
-                                    'none'
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "recentDifficulty", "none");
                                 }}
                               >
                                 결과 없음
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                color={
-                                  isOnRecentDifficultyFilter
-                                    ? '#f5f5f5'
-                                    : '#1890ff'
-                                }
-                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                  'diffi1'
-                                )}
+                                color={isOnRecentDifficultyFilter ? "#f5f5f5" : "#1890ff"}
+                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi1")}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'recentDifficulty',
-                                    'diffi1'
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "recentDifficulty", "diffi1");
                                 }}
                               >
                                 모름
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                color={
-                                  isOnRecentDifficultyFilter
-                                    ? '#f5f5f5'
-                                    : '#1890ff'
-                                }
-                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                  'diffi2'
-                                )}
+                                color={isOnRecentDifficultyFilter ? "#f5f5f5" : "#1890ff"}
+                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi2")}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'recentDifficulty',
-                                    'diffi2'
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "recentDifficulty", "diffi2");
                                 }}
                               >
                                 어려움
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                color={
-                                  isOnRecentDifficultyFilter
-                                    ? '#f5f5f5'
-                                    : '#1890ff'
-                                }
-                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                  'diffi3'
-                                )}
+                                color={isOnRecentDifficultyFilter ? "#f5f5f5" : "#1890ff"}
+                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi3")}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'recentDifficulty',
-                                    'diffi3'
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "recentDifficulty", "diffi3");
                                 }}
                               >
                                 애매함
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                color={
-                                  !isOnRecentDifficultyFilter
-                                    ? '#f5f5f5'
-                                    : '#1890ff'
-                                }
-                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                  'diffi4'
-                                )}
+                                color={!isOnRecentDifficultyFilter ? "#f5f5f5" : "#1890ff"}
+                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi4")}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'recentDifficulty',
-                                    'diffi4'
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "recentDifficulty", "diffi4");
                                 }}
                               >
                                 쉬움
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                color={
-                                  isOnRecentDifficultyFilter
-                                    ? '#f5f5f5'
-                                    : '#1890ff'
-                                }
-                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                  'diffi5'
-                                )}
+                                color={isOnRecentDifficultyFilter ? "#f5f5f5" : "#1890ff"}
+                                checked={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi5")}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'recentDifficulty',
-                                    'diffi5'
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "recentDifficulty", "diffi5");
                                 }}
                               >
                                 알고있음
@@ -1635,91 +1101,55 @@ const SessionConfig = ({
                           ) : (
                             <>
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                    'none'
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.recentDifficulty.value.includes("none") ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 결과 없음
                               </Tag>
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                    'diffi1'
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi1") ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 모름
                               </Tag>
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                    'diffi2'
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi2") ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 어려움
                               </Tag>
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                    'diffi3'
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi3") ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 애매함
                               </Tag>
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                    'diffi4'
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi4") ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 쉬움
                               </Tag>
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.recentDifficulty.value.includes(
-                                    'diffi5'
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.recentDifficulty.value.includes("diffi5") ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 알고있음
@@ -1738,8 +1168,8 @@ const SessionConfig = ({
                   <Col span={4}>
                     <span
                       style={{
-                        fontSize: '11px',
-                        fontWeight: '600',
+                        fontSize: "11px",
+                        fontWeight: "600",
                       }}
                     >
                       최근 시험 결과 필터
@@ -1757,21 +1187,9 @@ const SessionConfig = ({
                               //   draft.advancedFilter.userFlag.onOff = 'on';
                               // });
                               // onChangeValue(newData);
-                              onChangeValueAnother(
-                                'on',
-                                sessionConfig,
-                                'advancedFilter',
-                                'examResult',
-                                'onOff'
-                              );
+                              onChangeValueAnother("on", sessionConfig, "advancedFilter", "examResult", "onOff");
                             } else {
-                              onChangeValueAnother(
-                                'off',
-                                sessionConfig,
-                                'advancedFilter',
-                                'examResult',
-                                'onOff'
-                              );
+                              onChangeValueAnother("off", sessionConfig, "advancedFilter", "examResult", "onOff");
                             }
                           }}
                         />
@@ -1782,45 +1200,27 @@ const SessionConfig = ({
                           {isOnExamResultFilter ? (
                             <>
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.examResult.value.includes(
-                                  'none'
-                                )}
+                                checked={sessionConfig.advancedFilter.examResult.value.includes("none")}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'examResult',
-                                    'none'
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "examResult", "none");
                                 }}
                               >
                                 결과 없음
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.examResult.value.includes(
-                                  'right'
-                                )}
+                                checked={sessionConfig.advancedFilter.examResult.value.includes("right")}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'examResult',
-                                    'right'
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "examResult", "right");
                                 }}
                               >
                                 맞춘카드
                               </Tag.CheckableTag>
 
                               <Tag.CheckableTag
-                                checked={sessionConfig.advancedFilter.examResult.value.includes(
-                                  'wrong'
-                                )}
+                                checked={sessionConfig.advancedFilter.examResult.value.includes("wrong")}
                                 onChange={(checked) => {
-                                  onChangeArrayValueForAdvancedFilter(
-                                    checked,
-                                    'examResult',
-                                    'wrong'
-                                  );
+                                  onChangeArrayValueForAdvancedFilter(checked, "examResult", "wrong");
                                 }}
                               >
                                 틀린카드
@@ -1829,48 +1229,30 @@ const SessionConfig = ({
                           ) : (
                             <>
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.examResult.value.includes(
-                                    'none'
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.examResult.value.includes("none") ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 결과 없음
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.examResult.value.includes(
-                                    'right'
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.examResult.value.includes("right") ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 맞춘카드
                               </Tag>
 
                               <Tag
-                                color={
-                                  sessionConfig.advancedFilter.examResult.value.includes(
-                                    'wrong'
-                                  )
-                                    ? '#f5f5f5'
-                                    : '#FFF'
-                                }
+                                color={sessionConfig.advancedFilter.examResult.value.includes("wrong") ? "#f5f5f5" : "#FFF"}
                                 style={{
-                                  color: 'rgba(0, 0, 0, 0.447)',
-                                  border: '1px solid #d9d9d9',
+                                  color: "rgba(0, 0, 0, 0.447)",
+                                  border: "1px solid #d9d9d9",
                                 }}
                               >
                                 틀린카드

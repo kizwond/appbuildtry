@@ -1,16 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import {
-  GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
-  SESSION_CREATE_SESSION,
-} from '../../../../graphql/query/studySessionSetting';
-import Layout from '../../../../components/layout/Layout';
-import Footer from '../../../../components/index/Footer';
-import IndexTree from '../../../../components/books/study/sessionnSetting/IndexTree';
-import { Card, Col, Row, Tabs } from 'antd';
-import styled from 'styled-components';
-import { useRouter } from 'next/router';
-import SessionConfig from '../../../../components/books/study/sessionnSetting/SessionConfig';
+import React, { useEffect, useState, useRef } from "react";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION } from "../../../../graphql/query/studySessionSetting";
+import Layout from "../../../../components/layout/Layout";
+import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
+import { Card, Col, Tabs } from "antd";
+import styled from "styled-components";
+import { useRouter } from "next/router";
+import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
+import { StyledRowMaxWidth } from "../../../../components/common/styledComponent/page";
 
 const SessionSetting = () => {
   const router = useRouter();
@@ -19,19 +16,12 @@ const SessionSetting = () => {
   const [counter, setCounter] = useState(0);
   const [bookList, setBookList] = useState([]);
 
-  const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState(
-    []
-  );
-  const [advancedFilteredCheckedIndexes, setAdvancedFilteredCheckedIndexes] =
-    useState([]);
-  const [
-    isAdvancedFilteredCardListShowed,
-    setIsAdvancedFilteredCardListShowed,
-  ] = useState(false);
+  const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState([]);
+  const [advancedFilteredCheckedIndexes, setAdvancedFilteredCheckedIndexes] = useState([]);
+  const [isAdvancedFilteredCardListShowed, setIsAdvancedFilteredCardListShowed] = useState(false);
 
   useEffect(() => {
-    const booklist = JSON.parse(sessionStorage.getItem('books_selected'));
-    console.log('북아이디리스트 설정 - 유즈 이펙트');
+    const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
 
     const book_list = booklist.map((book, index) => ({
       book_id: book.book_id,
@@ -43,25 +33,16 @@ const SessionSetting = () => {
 
   const [session_createSession] = useMutation(SESSION_CREATE_SESSION, {
     onCompleted: (data) => {
-      sessionStorage.setItem(
-        'session_Id',
-        data.session_createSession.sessions[0]._id
-      );
-      console.log(data);
-      router.push(
-        `/books/study/mode/flip/${data.session_createSession.sessions[0]._id}`
-      );
+      sessionStorage.setItem("session_Id", data.session_createSession.sessions[0]._id);
+      router.push(`/books/study/mode/flip/${data.session_createSession.sessions[0]._id}`);
     },
   });
 
   const submitCreateSessionConfigToServer = async (_sessionConfig, _mode) => {
     const keysArray = Object.keys(checkedKeys);
-    console.log('keysArray', keysArray);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
-      index_ids: isAdvancedFilteredCardListShowed
-        ? advancedFilteredCheckedIndexes[item]
-        : checkedKeys[item],
+      index_ids: isAdvancedFilteredCardListShowed ? advancedFilteredCheckedIndexes[item] : checkedKeys[item],
     }));
     const selectedMode = _sessionConfig[_mode];
     try {
@@ -129,40 +110,29 @@ const SessionSetting = () => {
     }
   };
 
-  const [loadData, { loading, error, data, variables }] = useLazyQuery(
-    GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
-    {
-      variables: {
-        forGetNumCardsbyIndex: {
-          mybook_id: bookList[counter]?.book_id,
-          advancedFilter: null,
-        },
+  const [loadData, { loading, error, data, variables }] = useLazyQuery(GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, {
+    variables: {
+      forGetNumCardsbyIndex: {
+        mybook_id: bookList[counter]?.book_id,
+        advancedFilter: null,
       },
-      onCompleted: (received_data) => {
-        console.log('통신완료 후 onCompleted 코드 시작');
-        if (counter < bookList.length - 1) {
-          console.log('카운터설정');
-          setCounter((prev) => prev + 1);
-        }
+    },
+    onCompleted: (received_data) => {
+      if (counter < bookList.length - 1) {
+        console.log("카운터설정");
+        setCounter((prev) => prev + 1);
+      }
 
-        console.log('카테고리설정');
-        setCardsList([...cardsList, received_data]);
-        console.log(received_data);
-        console.log('통신완료 후 onCopleted 코드 종료');
-      },
-    }
-  );
+      setCardsList([...cardsList, received_data]);
+    },
+  });
 
   useEffect(() => {
     if (data?.session_getNumCardsbyIndex?.indexsets[0]) {
-      const bookIndexIdsList =
-        data.session_getNumCardsbyIndex.indexsets[0].indexes.map(
-          (item) => item._id
-        );
+      const bookIndexIdsList = data.session_getNumCardsbyIndex.indexsets[0].indexes.map((item) => item._id);
       setCheckedKeys({
         ...checkedKeys,
-        [data.session_getNumCardsbyIndex.indexsets[0].indexset_info.mybook_id]:
-          bookIndexIdsList,
+        [data.session_getNumCardsbyIndex.indexsets[0].indexset_info.mybook_id]: bookIndexIdsList,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -170,35 +140,25 @@ const SessionSetting = () => {
 
   useEffect(() => {
     if (bookList.length > 0) {
-      if (counter < bookList.length - 1) {
+      if (counter < bookList.length - 1 && counter >= 0) {
         loadData();
-        console.log('서버에 인덱스 요청보냄');
-      } else if (counter == 0) {
-        loadData();
-        console.log('서버에 인덱스 요청보냄');
       }
     }
   }, [bookList, loadData, counter]);
 
   if (error) {
-    console.log('에러', error);
+    console.log("에러", error);
     console.log(variables);
     return <div>에러발생</div>;
   }
 
-  const onCheckIndexesCheckedKeys = (
-    checkedKeysValueOfBook,
-    selectedBookId
-  ) => {
+  const onCheckIndexesCheckedKeys = (checkedKeysValueOfBook, selectedBookId) => {
     setCheckedKeys({
       ...checkedKeys,
       [selectedBookId]: checkedKeysValueOfBook,
     });
   };
-  const onAdvancedFilteredCheckIndexesCheckedKeys = (
-    checkedKeysValueOfBook,
-    selectedBookId
-  ) => {
+  const onAdvancedFilteredCheckIndexesCheckedKeys = (checkedKeysValueOfBook, selectedBookId) => {
     setAdvancedFilteredCheckedIndexes({
       ...advancedFilteredCheckedIndexes,
       [selectedBookId]: checkedKeysValueOfBook,
@@ -225,13 +185,11 @@ const SessionSetting = () => {
         >
           확인
         </button>
-        <Row style={{ maxWidth: '1440px' }}>
+        <StyledRowMaxWidth>
           <StyledCol xs={24} sm={24} md={24} lg={7} xl={6} xxl={5}>
             {bookList.length - 1 === counter && (
               <SessionConfig
-                submitCreateSessionConfigToServer={
-                  submitCreateSessionConfigToServer
-                }
+                submitCreateSessionConfigToServer={submitCreateSessionConfigToServer}
                 onToggleIsAFilter={onToggleIsAFilter}
                 onChangeAFCardList={onChangeAFCardList}
                 AFCardList={advancedFilteredCardsList}
@@ -248,15 +206,9 @@ const SessionSetting = () => {
                   cardsList[0] &&
                   bookList.map((book, index) => (
                     <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <Card
-                        size="small"
-                        style={{ background: 'yellow', marginTop: '0px' }}
-                      >
+                      <Card size="small" style={{ background: "yellow", marginTop: "0px" }}>
                         <IndexTree
-                          bookIndexInfo={
-                            cardsList[index]?.session_getNumCardsbyIndex
-                              ?.indexsets[0]?.indexes
-                          }
+                          bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
                           checkedKeys={checkedKeys[book.book_id]}
                           selectedbookId={book.book_id}
                           onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
@@ -267,23 +219,12 @@ const SessionSetting = () => {
                 {isAdvancedFilteredCardListShowed &&
                   bookList.map((book, index) => (
                     <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <Card
-                        size="small"
-                        style={{ background: 'yellow', marginTop: '0px' }}
-                      >
+                      <Card size="small" style={{ background: "yellow", marginTop: "0px" }}>
                         <IndexTree
-                          bookIndexInfo={
-                            advancedFilteredCardsList[index]
-                              ?.session_getNumCardsbyIndex?.indexsets[0]
-                              ?.indexes
-                          }
-                          checkedKeys={
-                            advancedFilteredCheckedIndexes[book.book_id]
-                          }
+                          bookIndexInfo={advancedFilteredCardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
+                          checkedKeys={advancedFilteredCheckedIndexes[book.book_id]}
                           selectedbookId={book.book_id}
-                          onCheckIndexesCheckedKeys={
-                            onAdvancedFilteredCheckIndexesCheckedKeys
-                          }
+                          onCheckIndexesCheckedKeys={onAdvancedFilteredCheckIndexesCheckedKeys}
                         />
                       </Card>
                     </Tabs.TabPane>
@@ -291,7 +232,7 @@ const SessionSetting = () => {
               </Tabs>
             </Card>
           </StyledColForTable>
-        </Row>
+        </StyledRowMaxWidth>
       </Layout>
     );
   }

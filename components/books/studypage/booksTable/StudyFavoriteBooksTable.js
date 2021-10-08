@@ -1,28 +1,18 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
-import moment from '../../../../node_modules/moment/moment';
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import styled from "styled-components";
+import moment from "../../../../node_modules/moment/moment";
 
-import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from 'antd';
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
+import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from "antd";
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
-import HideOrShowButton from '../../writepage/booksTable/HideOrShowButton';
-import MoveToBookSetting from './MoveToBookSetting';
-import FavoriteBook from '../../writepage/booksTable/FavoriteBook';
-import FavoriteBookOrderButton from '../../writepage/booksTable/FavoriteBookOrderButton';
+import HideOrShowButton from "../../common/HideOrShowButton";
+import MoveToBookSetting from "./MoveToBookSetting";
+import FavoriteBook from "../../common/FavoriteBook";
+import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 
-const StudyFavoriteBooksTable = ({
-  category,
-  myBook,
-  handleToGetMyBook,
-  isPopupSomething,
-  chagePopup,
-  activedTable,
-  changeActivedTable,
-  selectedBooks,
-  changeSelectedBooks,
-}) => {
+const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
@@ -32,7 +22,7 @@ const StudyFavoriteBooksTable = ({
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
-  console.log('마운트 윗 코드');
+  console.log("마운트 윗 코드");
 
   useEffect(() => {
     setMounted(true);
@@ -43,12 +33,12 @@ const StudyFavoriteBooksTable = ({
   }
 
   function movepage(bookid) {
-    localStorage.removeItem('book_id');
-    localStorage.setItem('book_id', bookid);
+    localStorage.removeItem("book_id");
+    localStorage.setItem("book_id", bookid);
     router.push(`/books/write/${bookid}`);
   }
 
-  console.log('마운트 아래 코드');
+  console.log("마운트 아래 코드");
 
   const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.studylike === true);
   const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seq_in_studylike - book_B.mybook_info.seq_in_studylike);
@@ -72,18 +62,18 @@ const StudyFavoriteBooksTable = ({
 
   const columns = [
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카테고리</div>,
-      key: 'categoryName',
-      className: 'Row-First-Left',
+      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리</div>,
+      key: "categoryName",
+      className: "Row-First-Left",
       width: 50,
-      dataIndex: 'categoryName',
-      render: (_value, _record) => <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{_value}</div>,
+      dataIndex: "categoryName",
+      render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
     },
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>책 제목</div>,
-      key: 'title',
-      dataIndex: 'title',
-      className: 'TitleCol',
+      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>책 제목</div>,
+      key: "title",
+      dataIndex: "title",
+      className: "TitleCol",
       width: 85,
       render: (value, _record, index) => {
         const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
@@ -91,9 +81,9 @@ const StudyFavoriteBooksTable = ({
         return (
           <div
             style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             <Space>
@@ -109,7 +99,7 @@ const StudyFavoriteBooksTable = ({
                 }}
               />
               <div>
-                <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
+                <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
                 {value}
               </div>
             </Space>
@@ -120,85 +110,85 @@ const StudyFavoriteBooksTable = ({
     {
       title: (
         <>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카드 수</div>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>(읽기/뒤집기)</div>
+          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드 수</div>
+          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>(읽기/뒤집기)</div>
         </>
       ),
-      key: 'total',
-      align: 'center',
-      dataIndex: 'total',
-      className: 'normal',
+      key: "total",
+      align: "center",
+      dataIndex: "total",
+      className: "normal",
       ellipsis: true,
       width: 70,
       render: (_value, _record) => <div>{`(${_record.read}/${_record.flip})`}</div>,
     },
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>수정일</div>,
-      key: 'timeModify',
-      align: 'center',
-      dataIndex: 'timeModify',
-      className: 'normal',
+      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>수정일</div>,
+      key: "timeModify",
+      align: "center",
+      dataIndex: "timeModify",
+      className: "normal",
       width: 45,
       render: (_value, _record) => {
         const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format('YY.MM.DD');
+        const DateString = moment(newDate).format("YY.MM.DD");
 
-        return <div>{_value === null ? '-' : DateString}</div>;
+        return <div>{_value === null ? "-" : DateString}</div>;
       },
     },
     {
       title: (
         <>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>최근 3일간</div>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카드생성</div>
+          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>최근 3일간</div>
+          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드생성</div>
         </>
       ),
-      key: 'timeModify',
-      align: 'center',
-      dataIndex: 'timeModify',
-      className: 'normal',
+      key: "timeModify",
+      align: "center",
+      dataIndex: "timeModify",
+      className: "normal",
       width: 75,
       render: (_value, _record) => (
-        <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>
+        <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
           {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-          {_record.total === 0 ? '-' : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
+          {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
         </div>
       ),
     },
     {
-      title: '이동',
-      key: 'seq_in_category',
-      dataIndex: 'seq_in_category',
-      className: 'normal',
-      align: 'right',
+      title: "이동",
+      key: "seq_in_category",
+      dataIndex: "seq_in_category",
+      className: "normal",
+      align: "right",
       width: 35,
       render: (value, _record, index) => (
         <div
           style={{
-            position: 'relative',
+            position: "relative",
             zIndex: 2,
           }}
         >
           <div
             style={{
-              width: '100%',
-              cursor: 'pointer',
-              display: 'flex',
-              justifyContent: 'end',
+              width: "100%",
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "end",
             }}
             onClick={() => {
               changeFoldedMenu(_record._id);
-              changeActivedTable('favoriteTable');
+              changeActivedTable("favoriteTable");
             }}
           >
             <div
               className="PullCustomCircleButton"
               style={{
-                width: '44px',
-                height: '30px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                width: "44px",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
               <DoubleLeftOutlined />
@@ -208,49 +198,35 @@ const StudyFavoriteBooksTable = ({
           <Drawer
             destroyOnClose={true}
             placement="right"
-            width={'210px'}
+            width={"210px"}
             closable={false}
             mask={false}
-            visible={activedTable === 'favoriteTable' && _record._id === isFoldedMenu}
+            visible={activedTable === "favoriteTable" && _record._id === isFoldedMenu}
             getContainer={false}
-            style={{ position: 'absolute', textAlign: 'initial', height: '30px', top: '2px' }}
-            contentWrapperStyle={{ boxShadow: 'unset' }}
-            drawerStyle={{ display: 'block' }}
+            style={{ position: "absolute", textAlign: "initial", height: "30px", top: "2px" }}
+            contentWrapperStyle={{ boxShadow: "unset" }}
+            drawerStyle={{ display: "block" }}
             bodyStyle={{
-              padding: 'unset',
-              flexGrow: 'unset',
-              overflow: 'hidden',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              padding: "unset",
+              flexGrow: "unset",
+              overflow: "hidden",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
             <Space size={3}>
               <FavoriteBookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} tableType="study" /> |
-              <FavoriteBook
-                record={_record}
-                handleToGetMyBook={handleToGetMyBook}
-                changeActivedTable={changeActivedTable}
-                changeFoldedMenu={changeFoldedMenu}
-                tableType="study"
-              />
+              <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" />
               |
               <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
             </Space>
             <div
               className="PushCustomCircleButton"
-              style={{
-                width: '44px',
-                height: '30px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-              }}
               onClick={() => {
-                changeFoldedMenu('');
-                changeActivedTable('');
+                changeFoldedMenu("");
+                changeActivedTable("");
               }}
             >
               <DoubleRightOutlined />
@@ -260,19 +236,13 @@ const StudyFavoriteBooksTable = ({
       ),
     },
     {
-      title: '설정',
-      align: 'center',
-      className: 'Row-Last-One',
+      title: "설정",
+      align: "center",
+      className: "Row-Last-One",
       width: 35,
       render: (value, _record, index) => (
         <div>
-          <MoveToBookSetting
-            mybook_id={_record._id}
-            title={_record.title}
-            isPopupSomething={isPopupSomething}
-            chagePopup={chagePopup}
-            handleToGetMyBook={handleToGetMyBook}
-          />
+          <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} handleToGetMyBook={handleToGetMyBook} />
         </div>
       ),
     },
@@ -284,24 +254,17 @@ const StudyFavoriteBooksTable = ({
       size="small"
       title={
         <div>
-          <span style={{ marginRight: '30px', fontSize: '1rem', fontWeight: 'bold' }}>즐겨찾기</span>
+          <span style={{ marginRight: "30px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
           {dataSource.length > 0 && (
             <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
-              {visible ? '접기' : '펼치기'}
+              {visible ? "접기" : "펼치기"}
             </Button>
           )}
         </div>
       }
     >
       {visible && dataSource.length > 0 && (
-        <Table
-          dataSource={dataSource}
-          tableLayout="fixed"
-          columns={columns}
-          size="small"
-          pagination={false}
-          rowClassName={(record, index) => (index % 2 !== 0 ? 'EvenNumberRow' : 'OddNumberRow')}
-        />
+        <Table dataSource={dataSource} tableLayout="fixed" columns={columns} size="small" pagination={false} rowClassName={(record, index) => (index % 2 !== 0 ? "EvenNumberRow" : "OddNumberRow")} />
       )}
     </StyledCard>
   );
@@ -344,6 +307,12 @@ const StyledCard = styled(Card)`
     background-color: #495057;
   }
   & .PushCustomCircleButton {
+    width: 44px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
     background-color: #212529;
   }
   & .PushCustomCircleButton:hover {

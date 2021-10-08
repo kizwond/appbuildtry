@@ -2,13 +2,32 @@ import React, { useState, useEffect, useCallback } from "react";
 import { GetCardTypeSet, CardTypeCreate } from "../../../../graphql/query/cardtype";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FloatingMenu from "./sidemenu/FloatingMenu";
+import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Input, Form, Button } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
 import Editor from "./Editor";
-import axios from 'axios'
+import axios from "axios";
 import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
+import { useMediaQuery } from "react-responsive";
 
-const WriteContainer = ({ indexChanged, indexSetId }) => {
+const Desktop = ({ children }) => {
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  return isDesktop ? children : null;
+};
+const Tablet = ({ children }) => {
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  return isTablet ? children : null;
+};
+const Mobile = ({ children }) => {
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  return isMobile ? children : null;
+};
+// const Default = ({ children }) => {
+//   const isNotMobile = useMediaQuery({ minWidth: 768 });
+//   return isNotMobile ? children : null;
+// };
+
+const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
@@ -37,7 +56,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
   const [cardTypeInfos, setcardTypeInfos] = useState();
   const [indexId, setIndexId] = useState();
   const [cardSetId, setCardSetId] = useState();
-  const [cards, setCards] = useState();
+  const [cards, setCards] = useState([]);
   const [editorOn, setEditorOn] = useState();
   const [cardId, setCardId] = useState();
 
@@ -75,8 +94,6 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     }
   }, [data1, indexChanged, first_index]);
 
-
-  
   const cardTypeInfo = (cardtype_info) => {
     setcardTypeInfos(cardtype_info);
     console.log(cardtype_info);
@@ -90,13 +107,13 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     const nick_selection = cardtype_info.nick_of_row.selection;
     const nick_annotation = cardtype_info.nick_of_row.annotation;
 
-    const nicks = []
+    const nicks = [];
     const face1 = [];
     const face1Nick = [];
     for (var i = 0; i < num_face1; i++) {
       face1.push(i);
       face1Nick.push(nick_face1[i]);
-      nicks.push(nick_face1[i])
+      nicks.push(nick_face1[i]);
     }
 
     const face2 = [];
@@ -104,11 +121,11 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     for (var i = 0; i < num_face2; i++) {
       face2.push(i);
       face2Nick.push(nick_face2[i]);
-      nicks.push(nick_face2[i])
+      nicks.push(nick_face2[i]);
     }
     const editor = (
       <>
-        <Editor nicks={nicks} onFinish={onFinish} cardtype_info={cardtype_info}/>
+        <Editor nicks={nicks} onFinish={onFinish} cardtype_info={cardtype_info} />
       </>
     );
 
@@ -118,15 +135,14 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     //     {face2.length > 0 && face2Editor}
     //   </>
     // );
-    
-      setEditorOn(editor);
-    
+
+    setEditorOn(editor);
   };
 
   const onFinish = (values) => {
     console.log(values);
     const mybook_id = localStorage.getItem("book_id");
-    const cardtype = sessionStorage.getItem("cardtype")
+    const cardtype = sessionStorage.getItem("cardtype");
 
     // const face1_contents_temp = [];
     // for (var i = 0; i < 5; i++) {
@@ -148,12 +164,11 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     } else {
       current_position_card_id = null;
     }
-    console.log(cardTypeInfos)
+    console.log(cardTypeInfos);
     // const cardtype = cardTypeInfos.cardtype;
     const cardtype_id = cardTypes[0]._id;
     addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2);
   };
-
 
   const [cardset_addcard] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 
@@ -194,6 +209,9 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
     }
   }
   if (cards) {
+    console.log("????????????????????????????????????????????????????????")
+    console.log(cards)
+    console.log(first_index)
     var contents = cards.map((content) => {
       return (
         <>
@@ -202,7 +220,9 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
               <div>
                 {content.contents.mycontents_id.face1.map((item) => (
                   <>
-                    <div><FroalaEditorView model={item} /></div>
+                    <div>
+                      <FroalaEditorView model={item} />
+                    </div>
                   </>
                 ))}
               </div>
@@ -214,12 +234,16 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
               <div>
                 {content.contents.mycontents_id.face1.map((item) => (
                   <>
-                    <div><FroalaEditorView model={item} /></div>
+                    <div>
+                      <FroalaEditorView model={item} />
+                    </div>
                   </>
                 ))}
                 {content.contents.mycontents_id.face2.map((item) => (
                   <>
-                    <div><FroalaEditorView model={item} /></div>
+                    <div>
+                      <FroalaEditorView model={item} />
+                    </div>
                   </>
                 ))}
               </div>
@@ -228,7 +252,7 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
         </>
       );
     });
-  }
+  } 
   const onClickCard = (card_id) => {
     console.log("cardClicked!!!!!");
     console.log(card_id);
@@ -236,33 +260,49 @@ const WriteContainer = ({ indexChanged, indexSetId }) => {
   };
 
   const onClickTest = () => {
-    console.log("click")
-    axios.post('/api/cardset/imageUpload', {
-      test:"hello"
-    })
-    .then(res => {
-      console.log(res)
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  }
+    console.log("click");
+    axios
+      .post("/api/cardset/imageUpload", {
+        test: "hello",
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   return (
-    <div className="editor_panel" id="editor_panel" style={{ ...a4Page, position: "relative" }}>
-      <FloatingMenu cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
-      <div className="a4">
-        {contents}
-        <h1>selected index id : {first_index}</h1>
-        <div>1. 우측 카드추가 부분에 cardTypeSet를 query해서 뿌려주고</div>
-        <div>2. 카드타입 클릭시 해당 카드타입 설정에 따라 input창을 여기다가 뿌려주고</div>
-        <div>3. form submit시 mutation 해서 저장해주고.</div>
-        <div>4. mutation후 response data를 상태값으로 넣어서 위에다가 차례로 추가해주고.</div>
-        <div>5. 촤측 목차 클릭시 해당 하는 카드들만 불러서 뿌려주고</div>
-      </div>
-      <div></div>
-      <div>{editorOn}</div>
-      <button onClick={onClickTest}>test</button>
-    </div>
+    <>
+      <Desktop>
+        <div className="editor_panel" id="editor_panel" style={{ ...a4Page, position: "relative" }}>
+          <FloatingMenu cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
+          <div className="a4">
+            {contents}
+            <h1>selected index id : {first_index}</h1>
+          </div>
+          <div></div>
+          <div>{editorOn}</div>
+          <button onClick={onClickTest}>test</button>
+        </div>
+      </Desktop>
+      <Tablet>
+        <div style={{ width: "90%", margin: "auto", marginBottom: "100px" }}>
+          <div>selected index id : {first_index}</div>
+          <div>{contents}</div>
+          <div>{editorOn}</div>
+        </div>
+        <FixedBottomMenu book_id={book_id} cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
+      </Tablet>
+      <Mobile>
+        <div style={{ width: "90%", margin: "auto", marginBottom: "100px" }}>
+          <div>selected index id : {first_index}</div>
+          <div>{contents}</div>
+          <div>{editorOn}</div>
+        </div>
+        <FixedBottomMenu book_id={book_id} cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
+      </Mobile>
+    </>
   );
 };
 

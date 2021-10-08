@@ -50,3 +50,23 @@ a {
   width:50%;
   height:20px;
 }
+
+.gray-theme.fr-toolbar .fr-command.fr-btn, .gray-theme.fr-popup .fr-command.fr-btn, .gray-theme.fr-modal .fr-command.fr-btn{
+  height:20px !important;
+}
+.gray-theme.fr-toolbar .fr-command.fr-btn svg.fr-svg, .gray-theme.fr-popup .fr-command.fr-btn svg.fr-svg, .gray-theme.fr-modal .fr-command.fr-btn svg.fr-svg {
+  height: 15px !important;
+}
+
+.fr-toolbar .fr-command.fr-btn svg.fr-svg, .fr-popup .fr-command.fr-btn svg.fr-svg, .fr-modal .fr-command.fr-btn svg.fr-svg {
+  height: 20px !important;
+}
+
+.gray-theme.fr-toolbar .fr-command.fr-btn img, .gray-theme.fr-popup .fr-command.fr-btn img, .gray-theme.fr-modal .fr-command.fr-btn img {
+  margin: 0px !important;
+  width: 14px !important;
+  margin-bottom: 2.1px !important;
+}
+.gray-theme.fr-toolbar .fr-command.fr-btn i, .gray-theme.fr-toolbar .fr-command.fr-btn svg, .gray-theme.fr-popup .fr-command.fr-btn i, .gray-theme.fr-popup .fr-command.fr-btn svg, .gray-theme.fr-modal .fr-command.fr-btn i, .gray-theme.fr-modal .fr-command.fr-btn svg {
+  margin: 0 !important;
+}

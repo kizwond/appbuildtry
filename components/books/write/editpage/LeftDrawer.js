@@ -5,8 +5,22 @@ import { GetIndex, IndexCreateMutation, IndexRenameMutation, IndexLevelMutation,
 import IndexSettingModal from "../index/IndexSettingModal";
 import { UnorderedListOutlined, DoubleLeftOutlined, CarryOutOutlined } from "@ant-design/icons";
 import { GetCardSet } from "../../../../graphql/query/card_contents";
+import { useMediaQuery } from "react-responsive";
 
-const LeftDrawer = ({index_changed, indexChanged}) => {
+const Desktop = ({ children }) => {
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  return isDesktop ? children : null;
+};
+const Tablet = ({ children }) => {
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  return isTablet ? children : null;
+};
+const Mobile = ({ children }) => {
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  return isMobile ? children : null;
+};
+
+const LeftDrawer = ({ index_changed, indexChanged }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
@@ -160,12 +174,12 @@ const LeftDrawer = ({index_changed, indexChanged}) => {
   };
 
   const onSelect = (selectedKeys, info) => {
-    console.log("selected", selectedKeys, info);
+    console.log("selected---------------------->", selectedKeys, info);
     console.log(info.node.index_id);
     setSelectedIndexId(info.node.index_id);
-    localStorage.removeItem("first_index")
-    localStorage.setItem("first_index", info.node.index_id)
-    index_changed(info.node.index_id)
+    localStorage.removeItem("first_index");
+    localStorage.setItem("first_index", info.node.index_id);
+    index_changed(info.node.index_id);
   };
   const [cardset_getbyindexid, { data: data2 }] = useLazyQuery(GetCardSet);
 
@@ -487,9 +501,28 @@ const LeftDrawer = ({index_changed, indexChanged}) => {
 
   return (
     <>
-      <Button type="primary" onClick={showDrawer}>
-        목차
-      </Button>
+      <Desktop>
+        <Button type="primary" onClick={showDrawer}>
+          목차
+        </Button>
+      </Desktop>
+
+      <Tablet>
+        <div style={{ position: "fixed", top: 100, left: 0 }}>
+          <button onClick={showDrawer} style={{ border: "1px solid lightgrey", borderLeft: "none", width: "30px", borderRadius: "0 10px 10px 0" }}>
+            목차
+          </button>
+        </div>
+      </Tablet>
+
+      <Mobile>
+        <div style={{ position: "fixed", top: 100, left: 0 }}>
+          <button onClick={showDrawer} style={{ border: "1px solid lightgrey", borderLeft: "none", width: "30px", borderRadius: "0 10px 10px 0" }}>
+            목차
+          </button>
+        </div>
+      </Mobile>
+
       <Drawer title="Basic Drawer" placement="left" closable={true} onClose={onClose} visible={visible} mask={false}>
         <IndexSettingModal
           indexSetInfo={indexSetInfo}

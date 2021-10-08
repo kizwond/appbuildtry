@@ -1,16 +1,16 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
-import moment from '../../../../node_modules/moment/moment';
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import styled from "styled-components";
+import moment from "../../../../node_modules/moment/moment";
 
-import { Table, Button, Card, Tooltip, Space, Drawer } from 'antd';
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
+import { Table, Button, Card, Tooltip, Space, Drawer } from "antd";
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
-import HideOrShowButton from './HideOrShowButton';
-import MoveToBookSetting from './MoveToBookSetting';
-import FavoriteBook from './FavoriteBook';
-import FavoriteBookOrderButton from './FavoriteBookOrderButton';
+import HideOrShowButton from "../../common/HideOrShowButton";
+import MoveToBookSetting from "./MoveToBookSetting";
+import FavoriteBook from "../../common/FavoriteBook";
+import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
 
 const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
   const [mounted, setMounted] = useState(false);
@@ -22,7 +22,6 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
-  console.log('마운트 윗 코드');
 
   useEffect(() => {
     setMounted(true);
@@ -33,12 +32,10 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
   }
 
   function movepage(bookid) {
-    localStorage.removeItem('book_id');
-    localStorage.setItem('book_id', bookid);
+    localStorage.removeItem("book_id");
+    localStorage.setItem("book_id", bookid);
     router.push(`/books/write/${bookid}`);
   }
-
-  console.log('마운트 아래 코드');
 
   const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.writelike === true);
   const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seq_in_writelike - book_B.mybook_info.seq_in_writelike);
@@ -58,38 +55,36 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
     };
   });
 
-  console.log({ dataSource });
-
   const columns = [
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카테고리</div>,
-      key: 'categoryName',
-      className: 'Row-First-Left',
+      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리</div>,
+      key: "categoryName",
+      className: "Row-First-Left",
       width: 50,
-      dataIndex: 'categoryName',
-      render: (_value, _record) => <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{_value}</div>,
+      dataIndex: "categoryName",
+      render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
     },
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>책 제목</div>,
-      key: 'title',
-      dataIndex: 'title',
-      className: 'TitleCol',
+      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>책 제목</div>,
+      key: "title",
+      dataIndex: "title",
+      className: "TitleCol",
       width: 85,
       render: (value, _record, index) => (
         <div
           onClick={() => {
             movepage(_record._id);
           }}
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: "pointer" }}
         >
           <div
             style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
-            <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
+            <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
             {value}
           </div>
         </div>
@@ -98,128 +93,125 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
     {
       title: (
         <>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카드 수</div>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>(읽기/뒤집기)</div>
+          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드 수</div>
+          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>(읽기/뒤집기)</div>
         </>
       ),
-      key: 'total',
-      align: 'center',
-      dataIndex: 'total',
-      className: 'normal',
+      key: "total",
+      align: "center",
+      dataIndex: "total",
+      className: "normal",
       ellipsis: true,
       width: 70,
       render: (_value, _record) => <div>{`(${_record.read}/${_record.flip})`}</div>,
     },
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>수정일</div>,
-      key: 'timeModify',
-      align: 'center',
-      dataIndex: 'timeModify',
-      className: 'normal',
+      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>수정일</div>,
+      key: "timeModify",
+      align: "center",
+      dataIndex: "timeModify",
+      className: "normal",
       width: 45,
       render: (_value, _record) => {
         const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format('YY.MM.DD');
+        const DateString = moment(newDate).format("YY.MM.DD");
 
-        return <div>{_value === null ? '-' : DateString}</div>;
+        return <div>{_value === null ? "-" : DateString}</div>;
       },
     },
     {
       title: (
         <>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>최근 3일간</div>
-          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카드생성</div>
+          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>최근 3일간</div>
+          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드생성</div>
         </>
       ),
-      key: 'timeModify',
-      align: 'center',
-      dataIndex: 'timeModify',
-      className: 'normal',
+      key: "timeModify",
+      align: "center",
+      dataIndex: "timeModify",
+      className: "normal",
       width: 75,
       render: (_value, _record) => {
         const now = new Date();
 
-        const today = moment(now).format('YYYYMMDD');
+        const today = moment(now).format("YYYYMMDD");
         const todayCards = _record.writeHistory?.filter((_arr) => _arr.date === today)[0];
         const todayCreatedCards = todayCards ? todayCards.numCreatedCards : 0;
 
-        const yesterday = moment(now).subtract(1, 'days').format('YYYYMMDD');
+        const yesterday = moment(now).subtract(1, "days").format("YYYYMMDD");
         const yesterdayCards = _record.writeHistory?.filter((_arr) => _arr.date === yesterday)[0];
         const yesterdayCreatedCards = yesterdayCards ? yesterdayCards.numCreatedCards : 0;
 
-        const theDayBeforeYesterday = moment(now).subtract(1, 'days').format('YYYYMMDD');
+        const theDayBeforeYesterday = moment(now).subtract(1, "days").format("YYYYMMDD");
         const theDayBeforeYesterdayCards = _record.writeHistory?.filter((_arr) => _arr.date === theDayBeforeYesterday)[0];
         const theDayBeforeYesterdayCreatedCards = theDayBeforeYesterdayCards ? theDayBeforeYesterdayCards.numCreatedCards : 0;
 
         return (
-          <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>
+          <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <div style={{ display: "flex", justifyContent: "space-around" }}>
                 <div className="singleBar">
                   <div className="graphBar">
-                    <div
-                      className="AchivedCard"
-                      style={{ height: theDayBeforeYesterdayCreatedCards >= 100 ? '100%' : `${theDayBeforeYesterdayCreatedCards}%` }}
-                    >
+                    <div className="AchivedCard" style={{ height: theDayBeforeYesterdayCreatedCards >= 100 ? "100%" : `${theDayBeforeYesterdayCreatedCards}%` }}>
                       <span className="CardCounter">{theDayBeforeYesterdayCreatedCards}</span>
                     </div>
                   </div>
                 </div>
                 <div className="singleBar">
                   <div className="graphBar">
-                    <div className="AchivedCard" style={{ height: yesterdayCreatedCards >= 100 ? '100%' : `${yesterdayCreatedCards}%` }}>
+                    <div className="AchivedCard" style={{ height: yesterdayCreatedCards >= 100 ? "100%" : `${yesterdayCreatedCards}%` }}>
                       <span className="CardCounter">{yesterdayCreatedCards}</span>
                     </div>
                   </div>
                 </div>
                 <div className="singleBar">
                   <div className="graphBar">
-                    <div className="AchivedCard" style={{ height: todayCreatedCards >= 100 ? '100%' : `${todayCreatedCards}%` }}>
+                    <div className="AchivedCard" style={{ height: todayCreatedCards >= 100 ? "100%" : `${todayCreatedCards}%` }}>
                       <span className="CardCounter">{todayCreatedCards}</span>
                     </div>
                   </div>
                 </div>
               </div>
-              <div style={{ width: '100%', height: 1, borderBottom: '1px solid #c5c6c7' }}></div>
+              <div style={{ width: "100%", height: 1, borderBottom: "1px solid #c5c6c7" }}></div>
             </div>
           </div>
         );
       },
     },
     {
-      title: '이동',
-      key: 'seq_in_category',
-      dataIndex: 'seq_in_category',
-      className: 'normal',
-      align: 'right',
+      title: "이동",
+      key: "seq_in_category",
+      dataIndex: "seq_in_category",
+      className: "normal",
+      align: "right",
       width: 35,
       render: (value, _record, index) => (
         <div
           style={{
-            position: 'relative',
+            position: "relative",
             zIndex: 2,
           }}
         >
           <div
             style={{
-              width: '100%',
-              cursor: 'pointer',
-              display: 'flex',
-              justifyContent: 'end',
+              width: "100%",
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "end",
             }}
             onClick={() => {
               changeFoldedMenu(_record._id);
-              changeActivedTable('favoriteTable');
+              changeActivedTable("favoriteTable");
             }}
           >
             <div
               className="PullCustomCircleButton"
               style={{
-                width: '44px',
-                height: '30px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                width: "44px",
+                height: "30px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
               }}
             >
               <DoubleLeftOutlined />
@@ -229,48 +221,34 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
           <Drawer
             destroyOnClose={true}
             placement="right"
-            width={'210px'}
+            width={"210px"}
             closable={false}
             mask={false}
-            visible={activedTable === 'favoriteTable' && _record._id === isFoldedMenu}
+            visible={activedTable === "favoriteTable" && _record._id === isFoldedMenu}
             getContainer={false}
-            style={{ position: 'absolute', textAlign: 'initial', height: '30px', top: '2px' }}
-            contentWrapperStyle={{ boxShadow: 'unset' }}
-            drawerStyle={{ display: 'block' }}
+            style={{ position: "absolute", textAlign: "initial", height: "30px", top: "2px" }}
+            contentWrapperStyle={{ boxShadow: "unset" }}
+            drawerStyle={{ display: "block" }}
             bodyStyle={{
-              padding: 'unset',
-              flexGrow: 'unset',
-              overflow: 'hidden',
-              height: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              padding: "unset",
+              flexGrow: "unset",
+              overflow: "hidden",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
             <Space size={3}>
               <FavoriteBookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} tableType="write" /> |
-              <FavoriteBook
-                record={_record}
-                handleToGetMyBook={handleToGetMyBook}
-                changeActivedTable={changeActivedTable}
-                changeFoldedMenu={changeFoldedMenu}
-              />{' '}
-              |
+              <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} /> |
               <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
             </Space>
             <div
               className="PushCustomCircleButton"
-              style={{
-                width: '44px',
-                height: '30px',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                cursor: 'pointer',
-              }}
               onClick={() => {
-                changeFoldedMenu('');
-                changeActivedTable('');
+                changeFoldedMenu("");
+                changeActivedTable("");
               }}
             >
               <DoubleRightOutlined />
@@ -280,19 +258,13 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       ),
     },
     {
-      title: '상설',
-      align: 'center',
-      className: 'Row-Last-One',
+      title: "상설",
+      align: "center",
+      className: "Row-Last-One",
       width: 35,
       render: (value, _record, index) => (
         <div>
-          <MoveToBookSetting
-            mybook_id={_record._id}
-            title={_record.title}
-            isPopupSomething={isPopupSomething}
-            chagePopup={chagePopup}
-            handleToGetMyBook={handleToGetMyBook}
-          />
+          <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} handleToGetMyBook={handleToGetMyBook} />
         </div>
       ),
     },
@@ -304,24 +276,17 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       size="small"
       title={
         <div>
-          <span style={{ marginRight: '30px', fontSize: '1rem', fontWeight: 'bold' }}>즐겨찾기</span>
+          <span style={{ marginRight: "30px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
           {dataSource.length > 0 && (
             <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
-              {visible ? '접기' : '펼치기'}
+              {visible ? "접기" : "펼치기"}
             </Button>
           )}
         </div>
       }
     >
       {visible && dataSource.length > 0 && (
-        <Table
-          dataSource={dataSource}
-          tableLayout="fixed"
-          columns={columns}
-          size="small"
-          pagination={false}
-          rowClassName={(record, index) => (index % 2 !== 0 ? 'EvenNumberRow' : 'OddNumberRow')}
-        />
+        <Table dataSource={dataSource} tableLayout="fixed" columns={columns} size="small" pagination={false} rowClassName={(record, index) => (index % 2 !== 0 ? "EvenNumberRow" : "OddNumberRow")} />
       )}
     </StyledCard>
   );
@@ -335,9 +300,6 @@ const StyledCard = styled(Card)`
     font-size: 0.8rem;
   }
 
-  /* & .ant-table-thead .categoryCol::before {
-    display: none;
-  } */
   & .ant-table-thead .categoryCol {
     border-bottom: 1px solid #f0f0f0;
   }
@@ -364,6 +326,12 @@ const StyledCard = styled(Card)`
     background-color: #495057;
   }
   & .PushCustomCircleButton {
+    width: 44px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
     background-color: #212529;
   }
   & .PushCustomCircleButton:hover {

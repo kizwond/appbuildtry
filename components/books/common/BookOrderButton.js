@@ -1,21 +1,19 @@
+import { memo } from "react";
 import { useMutation } from "@apollo/client";
-import { memo, useState } from "react";
 import { useRouter } from "next/router";
-import { CHANGE_POSITION_OF_BOOK, CHANGE_POSITION_OF_WRITE_LIKED_BOOK } from "../../../../graphql/query/writePage";
+import { CHANGE_POSITION_OF_BOOK } from "../../../graphql/query/writePage";
 
 import { Space, Tooltip } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
-import { CHANGE_POSITION_OF_STUDY_LIKED_BOOK } from "../../../../graphql/query/studyPage";
 
-const FavoriteBookOrderButton = ({ _record, handleToGetMyBook, tableType }) => {
+const BookOrderButton = ({ _record, handleToGetMyBook }) => {
   const router = useRouter();
-  const [rePosition, { loading }] = useMutation(tableType === "study" ? CHANGE_POSITION_OF_STUDY_LIKED_BOOK : CHANGE_POSITION_OF_WRITE_LIKED_BOOK, {
+  const [rePosition, { loading }] = useMutation(CHANGE_POSITION_OF_BOOK, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
-      const query = tableType === "study" ? "mybook_changestudylikeorder" : "mybook_changewritelikeorder";
-      if (received_data[query].status === "200") {
-        handleToGetMyBook(received_data[query].mybooks);
-      } else if (received_data[query].status === "401") {
+      if (received_data.mybook_changeorder.status === "200") {
+        handleToGetMyBook(received_data.mybook_changeorder.mybooks);
+      } else if (received_data.mybook_changeorder.status === "401") {
         router.push("/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -114,4 +112,4 @@ const FavoriteBookOrderButton = ({ _record, handleToGetMyBook, tableType }) => {
   );
 };
 
-export default memo(FavoriteBookOrderButton);
+export default memo(BookOrderButton);

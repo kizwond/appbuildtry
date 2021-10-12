@@ -76,3 +76,10 @@ a {
 .ant-form-item-label > label{
   font-size: 0.8rem;
 }
+
+.gray-theme .fr-second-toolbar{
+  border-radius:0 !important;
+}
+.gray-theme.fr-toolbar.fr-top{
+  border-radius: 0 !important;
+}

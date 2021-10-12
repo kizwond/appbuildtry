@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../../components/layout/Layout";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import Footer from "../../components/index/Footer";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -22,13 +22,27 @@ const Mobile = ({ children }) => {
 };
 
 const LoginComponent = () => {
+  const key = "updatable";
+  const openMessage = async () => {
+    message.loading({
+      content: "로그인...",
+      key,
+      style: {
+        marginTop: "20vh",
+      },
+    });
+  };
+  const error = () => {
+    message.error("뭔가 잘못되었네요. 다시 해봐요.");
+  };
+
   const [login] = useMutation(SignInMutation, { onCompleted: showdata });
 
   function showdata(data) {
     console.log("data", data);
     if (data.login.msg === "로그인 성공") {
-      alert("로그인성공!!! 메인화면으로 이동합니다.");
-      // Router.push("/");
+      openMessage();
+
       if (data.login.token !== null) {
         localStorage.setItem("accessToken", data.login.token.accessToken);
         localStorage.setItem("refreshToken", data.login.token.refreshToken);
@@ -36,7 +50,7 @@ const LoginComponent = () => {
 
       window.location.href = "/";
     } else {
-      alert("뭔가 잘못되었네요. 다시 해봐요.");
+      error();
     }
   }
 

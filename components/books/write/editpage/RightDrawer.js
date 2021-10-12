@@ -92,7 +92,7 @@ const RightDrawer = () => {
         </Button>
       </Desktop>
       <Tablet>
-        <SettingOutlined onClick={showDrawer}/>
+        <SettingOutlined onClick={showDrawer} style={{fontSize:"1rem"}}/>
       </Tablet>
       <Mobile>
         <SettingOutlined onClick={showDrawer}/>

@@ -9,7 +9,7 @@ import "froala-editor//css/themes/gray.css";
 // import 'froala-editor//css/themes/gray.min.css'
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
-
+import { Form, Input, Button, message } from "antd";
 import axios from "axios";
 // import Button from "../../styledComponents/defaultButton";
 
@@ -18,7 +18,7 @@ import axios from "axios";
 export class Editor extends Component {
   constructor(props) {
     super(props);
-    FroalaEditor.DefineIcon('insertFiles', {SRC: '/image/speaker_Icon.png',ALT: 'audioIcon', template: 'image'});
+    FroalaEditor.DefineIcon("insertFiles", { SRC: "/image/speaker_Icon.png", ALT: "audioIcon", template: "image" });
     // FroalaEditor.DefineIcon('insertFiles', {NAME: 'info', SVG_KEY: 'insertAudio'});
     this.state = {
       editor1: "",
@@ -191,8 +191,8 @@ export class Editor extends Component {
       quickInsertEnabled: false,
       imageUploadURL: "/api/cardset/imageUpload",
       fileUploadURL: "/api/cardset/fileUpload",
-    //   videoUploadURL: "/api/cardset/videoUpload",
-      filesManagerUploadURL:"/api/cardset/fileUpload",
+      //   videoUploadURL: "/api/cardset/videoUpload",
+      filesManagerUploadURL: "/api/cardset/fileUpload",
       saveParam: "content",
       width: "auto",
       theme: "gray",
@@ -200,9 +200,9 @@ export class Editor extends Component {
       toolbarContainer: "#toolbarContainer",
       attribution: false,
       charCounterCount: false,
-      videoAllowedTypes: ['mp3'],
-      
-    //   videoDefaultWidth: "90%",
+      videoAllowedTypes: ["mp3"],
+
+      //   videoDefaultWidth: "90%",
       language: "ko",
       toolbarButtons: [
         "fullscreen",
@@ -240,8 +240,8 @@ export class Editor extends Component {
 
     const editorList = this.props.nicks.map((item, index) => {
       return (
-        <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center" }}>
-          <label className="editor_label" style={{ width: "80px" }}>
+        <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
+          <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
             {item}
           </label>
           <FroalaEditorComponent
@@ -249,7 +249,6 @@ export class Editor extends Component {
             config={config}
             model={this.state["editor" + (index + 1).toString()]}
             onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-            width={100}
           />
         </div>
       );
@@ -257,15 +256,21 @@ export class Editor extends Component {
 
     return (
       <>
-        <div id="editor" style={{ border: "1px solid black", borderRadius: "10px" }}>
+        <div id="editor">
           <div id="toolbarContainer"></div>
-          <div style={{ padding: "10px" }}>{editorList}</div>
-          <button onClick={this.handleSubmit} id="saveButton">
-            저장
-          </button>
-          <button onClick={() => console.log("cancel clicked!!!")} id="cancelButton">
-            취소
-          </button>
+          <div style={{ padding: "10px", border: "1px solid lightgrey" }}>
+            <div style={{marginBottom:"10px"}}>
+            {editorList}
+            </div>
+            <div style={{textAlign:"right"}}>
+              <Button size="small" onClick={this.handleSubmit} id="saveButton" style={{ fontSize: "0.8rem", marginRight:"5px" }}>
+                저장
+              </Button>
+              <Button size="small" onClick={() => console.log("cancel clicked!!!")} id="cancelButton" style={{ fontSize: "0.8rem" }}>
+                취소
+              </Button>
+            </div>
+          </div>
         </div>
       </>
     );

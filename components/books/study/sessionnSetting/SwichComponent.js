@@ -1,6 +1,6 @@
-import React from 'react';
-import { Switch } from 'antd';
-import { onChangeArrayValuesForSwitch } from './functionTool';
+import React from "react";
+import { Switch } from "antd";
+import { onChangeArrayValuesForSwitch } from "./functionTool";
 const SwichComponent = (props) => {
   let switchCom = null;
   if (Object.keys(props).length == 6) {
@@ -9,19 +9,10 @@ const SwichComponent = (props) => {
         size="small"
         checked={props.target?.includes(props.switchArrayValue)}
         onClick={(checked) => {
-          onChangeArrayValuesForSwitch(
-            checked,
-            props.funct,
-            props.switchArrayValue,
-            props.bigGrandParent,
-            props.grandParent,
-            props.parent
-          );
+          onChangeArrayValuesForSwitch(checked, props.funct, props.switchArrayValue, props.bigGrandParent, props.grandParent, props.parent);
         }}
       />
     );
-  }
-  if (Object.keys(props).length == 4) {
   }
 
   return <>{switchCom}</>;

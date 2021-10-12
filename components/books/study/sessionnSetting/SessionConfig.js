@@ -8,25 +8,198 @@ import SwichComponent from "./SwichComponent";
 import { Space, Tag } from "../../../../node_modules/antd/lib/index";
 import moment from "../../../../node_modules/moment/moment";
 import GetFilteredIndexButton from "./GetFilteredIndexButton";
+import styled from "styled-components";
+import { onChangeArrayValuesForSwitch } from "./functionTool";
+import SortOptionTag from "./session-config/SortOptionTag";
+import UseCardTypesTag from "./session-config/UseCardTypesTag";
+import UseStatusTag from "./session-config/UseStatusTag";
+import StudyTimeCondtion from "./session-config/StudyTimeCondtion";
 
 const menuTitleColSize = 3;
 const menuColSize = 21;
 const menuColDivider = 6;
+
+const breakPoint = {
+  menuTitleCol: {
+    xs: 24,
+    sm: 4,
+    md: 3,
+    lg: 24,
+    xl: 24,
+    xxl: 24,
+  },
+  menuCol: {
+    xs: 24,
+    sm: 20,
+    md: 21,
+    lg: 24,
+    xl: 24,
+    xxl: 24,
+  },
+};
 
 const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIsAFilter, onChangeAFCardList, AFCardList, advancedFilteredCheckedIndexes, onChangeIndexesOfAFCardList }) => {
   const [counterForButtonClick, setCounterForButtonClick] = useState(0);
 
   const [mode, setMode] = useState("exam");
   const [sessionConfig, setSessionConfig] = useState({});
-  const { loading, error } = useQuery(GET_SESSTION_CONFIG, {
+
+  // flip 모드설정
+  const [flipNeedStudyTimeCondition, setFlipNeedStudyTimeCondition] = useState("");
+  const [flipNeedStudyTimeRange, setFlipNeedStudyTimeRange] = useState([]);
+  const [flipNumStartCards, setFlipNumStartCards] = useState([]);
+  const [flipSortOption, setFlipSortOption] = useState("");
+  const [flipUseCardType, setFlipUseCardType] = useState([]);
+  const [flipUseStatus, setFlipUseStatus] = useState([]);
+  // read 모드설정
+  const [readNeedStudyTimeCondition, setReadNeedStudyTimeCondition] = useState("");
+  const [readNeedStudyTimeRange, setReadNeedStudyTimeRange] = useState([]);
+  const [readNumStartCards, setReadNumStartCards] = useState([]);
+  const [readSortOption, setReadSortOption] = useState("");
+  const [readUseCardType, setReadUseCardType] = useState([]);
+  const [readUseStatus, setReadUseStatus] = useState([]);
+  // exam 모드설정
+  const [examNeedStudyTimeCondition, setExamNeedStudyTimeCondition] = useState("");
+  const [examNeedStudyTimeRange, setExamNeedStudyTimeRange] = useState([]);
+  const [examNumStartCards, setExamNumStartCards] = useState([]);
+  const [examSortOption, setExamSortOption] = useState("");
+  const [examUseCardType, setExamUseCardType] = useState([]);
+  const [examUseStatus, setExamUseStatus] = useState([]);
+
+  const { data, loading, error } = useQuery(GET_SESSTION_CONFIG, {
     variables: {
       mybook_ids: book_ids,
     },
     onCompleted: (received_data) => {
-      setMode(received_data.session_getSessionConfig.sessionConfigs[0].studyMode);
-      setSessionConfig(received_data.session_getSessionConfig.sessionConfigs[0]);
+      if (received_data.session_getSessionConfig.status === "200") {
+        const sessionconfigs = received_data.session_getSessionConfig.sessionConfigs[0];
+        console.log(received_data);
+        setMode(received_data.session_getSessionConfig.sessionConfigs[0].studyMode);
+        setSessionConfig(received_data.session_getSessionConfig.sessionConfigs[0]);
+
+        // 아래부터 state 쪼개기 작업 중
+
+        if (sessionconfigs.flip) {
+          const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.flip;
+          const copyNumStartCards = { ...numStartCards };
+          delete copyNumStartCards.__typename;
+          setFlipNeedStudyTimeCondition(needStudyTimeCondition);
+          setFlipNeedStudyTimeRange(needStudyTimeRange);
+          setFlipNumStartCards(copyNumStartCards);
+          setFlipSortOption(sortOption);
+          setFlipUseCardType(useCardtype);
+          setFlipUseStatus(useStatus);
+        }
+        if (sessionconfigs.read) {
+          const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.read;
+          const copyNumStartCards = { ...numStartCards };
+          delete copyNumStartCards.__typename;
+          setReadNeedStudyTimeCondition(needStudyTimeCondition);
+          setReadNeedStudyTimeRange(needStudyTimeRange);
+          setReadNumStartCards(copyNumStartCards);
+          setReadSortOption(sortOption);
+          setReadUseCardType(useCardtype);
+          setReadUseStatus(useStatus);
+        }
+        if (sessionconfigs.exam) {
+          const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.exam;
+          const copyNumStartCards = { ...numStartCards };
+          delete copyNumStartCards.__typename;
+          setExamNeedStudyTimeCondition(needStudyTimeCondition);
+          setExamNeedStudyTimeRange(needStudyTimeRange);
+          setExamNumStartCards(copyNumStartCards);
+          setExamSortOption(sortOption);
+          setExamUseCardType(useCardtype);
+          setExamUseStatus(useStatus);
+        }
+      } else if (received_data.session_getSessionConfig.status === "401") {
+        router.push("/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
     },
   });
+
+  const changeNeedStudyTimeCondition = useCallback((mode, condition) => {
+    switch (mode) {
+      case "read":
+        setReadNeedStudyTimeCondition(condition);
+        break;
+      case "flip":
+        setFlipNeedStudyTimeCondition(condition);
+        break;
+      case "exam":
+        setExamNeedStudyTimeCondition(condition);
+        break;
+      default:
+        console.log("NeedStudyCondition Error");
+        break;
+    }
+  }, []);
+  const changeNeedStudyTimeRange = useCallback((mode, range) => {
+    switch (mode) {
+      case "read":
+        setReadNeedStudyTimeRange(range);
+        break;
+      case "flip":
+        setFlipNeedStudyTimeRange(range);
+        break;
+      case "exam":
+        setExamNeedStudyTimeRange(range);
+        break;
+      default:
+        console.log("NeedStudyTimeRange Error");
+        break;
+    }
+  }, []);
+  const changeSortOption = useCallback((mode, sortOption) => {
+    switch (mode) {
+      case "read":
+        setReadSortOption(sortOption);
+        break;
+      case "flip":
+        setFlipSortOption(sortOption);
+        break;
+      case "exam":
+        setExamSortOption(sortOption);
+        break;
+      default:
+        console.log("SortOption Error");
+        break;
+    }
+  }, []);
+  const changeUseCardType = useCallback((mode, useCardType) => {
+    switch (mode) {
+      case "read":
+        setReadUseCardType(useCardType);
+        break;
+      case "flip":
+        setFlipUseCardType(useCardType);
+        break;
+      case "exam":
+        setExamUseCardType(useCardType);
+        break;
+      default:
+        console.log("UseCardType Error");
+        break;
+    }
+  }, []);
+  const changeUseStatus = useCallback((mode, useStatus) => {
+    switch (mode) {
+      case "read":
+        setReadUseStatus(useStatus);
+        break;
+      case "flip":
+        setFlipUseStatus(useStatus);
+        break;
+      case "exam":
+        setExamUseStatus(useStatus);
+        break;
+      default:
+        console.log("UseCardType Error");
+        break;
+    }
+  }, []);
 
   const onChangeValue = useCallback(
     (...args) => {
@@ -52,7 +225,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
     },
     [sessionConfig, mode]
   );
-  // 아래 손봐야함 => 그냥 args[1]을 sessionConfig로 지정해야겠음 어차피 sessionConfig쓰는데
+
   const onChangeValueAnother = (...args) => {
     const length = args.length;
     if (length == 5) {
@@ -108,7 +281,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
   const selectedStudyStatus = sessionConfig[mode]?.useStatus;
   if (!error && !loading) {
     return (
-      <Card>
+      <Card size="small" bordered={false}>
         <Row>
           <Col span={12}>
             <Typography.Title level={4}>세션 설정</Typography.Title>
@@ -157,29 +330,11 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
           }}
         >
           <Row align="top" gutter={8}>
-            <Col xs={8} sm={menuTitleColSize} md={menuTitleColSize} lg={24} xl={24} xxl={24}>
-              <span style={{ fontSize: "12px", fontWeight: "700" }}>보기 순서</span>
+            <Col {...breakPoint.menuTitleCol}>
+              <StyledSpanMenuTitle>보기 순서</StyledSpanMenuTitle>
             </Col>
-            <Col span={menuColSize}>
-              <Radio.Group name="sortOption" onChange={(e) => onChangeValue(e.target.value, e.target.name)} value={sessionConfig[mode]?.sortOption}>
-                <Row align="top" gutter={8}>
-                  <ColFormItem menuColDivider={menuColDivider}>
-                    <Radio value="standard" size="small">
-                      원본 그대로
-                    </Radio>
-                  </ColFormItem>
-                  <ColFormItem menuColDivider={menuColDivider}>
-                    <Radio value="time" size="small">
-                      복습 시점 빠른 순
-                    </Radio>
-                  </ColFormItem>
-                  <ColFormItem menuColDivider={menuColDivider}>
-                    <Radio value="random" size="small">
-                      랜덤
-                    </Radio>
-                  </ColFormItem>
-                </Row>
-              </Radio.Group>
+            <Col {...breakPoint.menuCol}>
+              <SortOptionTag mode={mode} changeSortOption={changeSortOption} selected={[readSortOption, flipSortOption, examSortOption]} />
             </Col>
           </Row>
         </div>
@@ -193,18 +348,11 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
           }}
         >
           <Row align="top" gutter={8}>
-            <Col span={menuTitleColSize}>
-              <span style={{ fontSize: "12px", fontWeight: "700" }}>카드종류</span>
+            <Col {...breakPoint.menuTitleCol}>
+              <StyledSpanMenuTitle>카드종류</StyledSpanMenuTitle>
             </Col>
-            <Col span={menuColSize}>
-              <Row align="top" gutter={8}>
-                <ColFormItem menuColDivider={menuColDivider} title="읽기카드">
-                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="read" bigGrandParent={sessionConfig} grandParent={mode} parent="useCardtype" target={sessionConfig[mode]?.useCardtype} />
-                </ColFormItem>
-                <ColFormItem menuColDivider={menuColDivider} title="뒤집기카드">
-                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="flip" bigGrandParent={sessionConfig} grandParent={mode} parent="useCardtype" target={sessionConfig[mode]?.useCardtype} />
-                </ColFormItem>
-              </Row>
+            <Col {...breakPoint.menuCol}>
+              <UseCardTypesTag mode={mode} changeUseCardType={changeUseCardType} selected={[readUseCardType, flipUseCardType, examUseCardType]} />
             </Col>
           </Row>
         </div>
@@ -219,43 +367,21 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
           }}
         >
           <Row align="top" gutter={8}>
-            <Col span={menuTitleColSize}>
-              <span style={{ fontSize: "12px", fontWeight: "700" }}>카드상태</span>
+            <Col {...breakPoint.menuTitleCol}>
+              <StyledSpanMenuTitle>카드상태</StyledSpanMenuTitle>
             </Col>
-            <Col span={menuColSize}>
-              <Row align="top" gutter={8}>
-                <ColFormItem
-                  menuColDivider={menuColDivider}
-                  title="학습중"
-                  style={{
-                    background: selectedStudyStatus?.includes("ing") ? "#e6f7ff" : "white",
-                    borderTopLeftRadius: selectedStudyStatus?.includes("ing") ? "5px" : 0,
-                    borderTopRightRadius: selectedStudyStatus?.includes("ing") ? "5px" : 0,
-                    paddingBottom: "5px",
-                  }}
-                >
-                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="ing" bigGrandParent={sessionConfig} grandParent={mode} parent="useStatus" target={sessionConfig[mode]?.useStatus} />
-                </ColFormItem>
-                <ColFormItem menuColDivider={menuColDivider} title="미학습">
-                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="yet" bigGrandParent={sessionConfig} grandParent={mode} parent="useStatus" target={sessionConfig[mode]?.useStatus} />
-                </ColFormItem>
-                <ColFormItem menuColDivider={menuColDivider} title="학습완료">
-                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="completed" bigGrandParent={sessionConfig} grandParent={mode} parent="useStatus" target={sessionConfig[mode]?.useStatus} />
-                </ColFormItem>
-                <ColFormItem menuColDivider={menuColDivider} title="학습보류">
-                  <SwichComponent funct={onChangeValueAnother} switchArrayValue="hold" bigGrandParent={sessionConfig} grandParent={mode} parent="useStatus" target={sessionConfig[mode]?.useStatus} />
-                </ColFormItem>
-              </Row>
+            <Col {...breakPoint.menuCol}>
+              <UseStatusTag mode={mode} changeUseStatus={changeUseStatus} selected={[readUseStatus, flipUseStatus, examUseStatus]} />
             </Col>
           </Row>
-          {selectedStudyStatus?.includes("ing") && (
+          {(mode === "read" ? readUseStatus.includes("ing") : mode === "flip" ? flipUseStatus.includes("ing") : mode === "exam" ? examUseStatus.includes("ing") : null) && (
             <>
               <Row align="top" justify="center" gutter={8}>
-                <Col span={menuTitleColSize}>
-                  <span style={{ fontSize: "12px", fontWeight: "700" }}></span>
+                <Col {...breakPoint.menuTitleCol}>
+                  <StyledSpanMenuTitle></StyledSpanMenuTitle>
                 </Col>
                 <Col
-                  span={menuColSize}
+                  {...breakPoint.menuCol}
                   style={{
                     background: "#e6f7ff",
                     paddingTop: "5px",
@@ -265,18 +391,25 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                     borderBottomRightRadius: "5px",
                   }}
                 >
-                  <Radio.Group name="needStudyTimeCondition" onChange={(e) => onChangeValue(e.target.value, e.target.name)} value={sessionConfig[mode]?.needStudyTimeCondition} size="small">
-                    <Row align="top" gutter={8}>
-                      <ColFormItem menuColDivider={menuColDivider}>
+                  <StudyTimeCondtion
+                    mode={mode}
+                    selected={[readNeedStudyTimeCondition, flipNeedStudyTimeCondition, examNeedStudyTimeCondition]}
+                    changeNeedStudyTimeCondition={changeNeedStudyTimeCondition}
+                    changeNeedStudyTimeRange={changeNeedStudyTimeRange}
+                    selectedRange={[readNeedStudyTimeRange, flipNeedStudyTimeRange, examNeedStudyTimeRange]}
+                  />
+                  {/* <Radio.Group name="needStudyTimeCondition" onChange={(e) => onChangeValue(e.target.value, e.target.name)} value={sessionConfig[mode]?.needStudyTimeCondition} size="small">
+                    <Row gutter={1} wrap={false}>
+                      <Col span={4}>
                         <Radio value="all">전체</Radio>
-                      </ColFormItem>
-                      <ColFormItem menuColDivider={menuColDivider}>
+                      </Col>
+                      <Col span={6}>
                         <Radio value="untilNow">현재 이전</Radio>
-                      </ColFormItem>
-                      <ColFormItem menuColDivider={menuColDivider}>
+                      </Col>
+                      <Col span={6}>
                         <Radio value="untilToday">오늘 이전</Radio>
-                      </ColFormItem>
-                      <ColFormItem menuColDivider={menuColDivider}>
+                      </Col>
+                      <Col span={8}>
                         <Radio value="custom">직접입력</Radio>
                         {sessionConfig[mode]?.needStudyTimeCondition == "custom" && (
                           <DatePicker.RangePicker
@@ -300,9 +433,9 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                             size="small"
                           />
                         )}
-                      </ColFormItem>
+                      </Col>
                     </Row>
-                  </Radio.Group>
+                  </Radio.Group> */}
                 </Col>
               </Row>
             </>
@@ -827,7 +960,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
 
                       <Col span={22}>
                         <Row gutter={[8, 10]}>
-                          <DatePicker.RangePicker
+                          <StyledDatePicker
                             disabled={!isOnRecentStudyTime}
                             format="MM-DD"
                             placeholder={["시작", "종료"]}
@@ -1275,3 +1408,23 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
 };
 
 export default SessionConfig;
+
+const StyledTag = styled(Tag.CheckableTag)`
+  border: ${(props) => (props.checked ? "transparent" : "1px solid #d9d9d9")};
+`;
+
+const StyledSpanMenuTitle = styled.span`
+  font-size: 0.9rem !important;
+  font-weight: 700;
+`;
+
+const StyledDatePicker = styled(DatePicker.RangePicker)`
+  @media (max-width: 480px) {
+    & .ant-calendar-range {
+      width: 320px;
+    }
+    & .ant-calendar-range-part {
+      width: 100%;
+    }
+  }
+`;

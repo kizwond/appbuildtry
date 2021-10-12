@@ -5,6 +5,20 @@ import Footer from "../../components/index/Footer";
 import Router from "next/router";
 import { useMutation } from "@apollo/client";
 import { SignUpMutation } from "../../graphql/query/account";
+import { useMediaQuery } from "react-responsive";
+
+const Desktop = ({ children }) => {
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  return isDesktop ? children : null;
+};
+const Tablet = ({ children }) => {
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  return isTablet ? children : null;
+};
+const Mobile = ({ children }) => {
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  return isMobile ? children : null;
+};
 
 const LoginComponent = () => {
   const [signup] = useMutation(SignUpMutation, { onCompleted: showdata });
@@ -49,6 +63,7 @@ const LoginComponent = () => {
           prefix: "82",
         }}
         scrollToFirstError
+        style={{fontSize:"0.8rem"}}
       >
         <Form.Item
           name="user_id"
@@ -59,6 +74,7 @@ const LoginComponent = () => {
               message: "사용할 아이디를 입력해주세요.",
             },
           ]}
+          style={{fontSize:"0.8rem"}}
         >
           <Input />
         </Form.Item>
@@ -98,7 +114,7 @@ const LoginComponent = () => {
           <Input.Password />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" style={{fontSize:"0.8rem"}}>
             회원가입
           </Button>
         </Form.Item>
@@ -110,8 +126,28 @@ const LoginComponent = () => {
 const Register = () => {
   return (
     <Layout>
-      <LoginComponent />
-      <Footer />
+      <Desktop>
+        <LoginComponent />
+        <Footer />
+      </Desktop>
+
+      <Tablet>
+        <div style={{ marginBottom: "150px" }}>
+          <LoginComponent />
+          <div style={{ position: "fixed", bottom: 0, zIndex: 3, width: "100%" }}>
+            <Footer />
+          </div>
+        </div>
+      </Tablet>
+
+      <Mobile>
+        <div style={{ marginBottom: "150px" }}>
+          <LoginComponent />
+          <div style={{ position: "fixed", bottom: 0, zIndex: 3, width: "100%" }}>
+            <Footer />
+          </div>
+        </div>
+      </Mobile>
     </Layout>
   );
 };
@@ -122,6 +158,7 @@ const register_container = {
   textAlign: "center",
   marginTop: "100px",
   marginBottom: "100px",
+  fontSize:"0.8rem"
 };
 
 export default Register;

@@ -6,6 +6,20 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { useMutation } from "@apollo/client";
 import { SignInMutation } from "../../graphql/query/account";
+import { useMediaQuery } from "react-responsive";
+
+const Desktop = ({ children }) => {
+  const isDesktop = useMediaQuery({ minWidth: 992 });
+  return isDesktop ? children : null;
+};
+const Tablet = ({ children }) => {
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
+  return isTablet ? children : null;
+};
+const Mobile = ({ children }) => {
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  return isMobile ? children : null;
+};
 
 const LoginComponent = () => {
   const [login] = useMutation(SignInMutation, { onCompleted: showdata });
@@ -15,11 +29,11 @@ const LoginComponent = () => {
     if (data.login.msg === "로그인 성공") {
       alert("로그인성공!!! 메인화면으로 이동합니다.");
       // Router.push("/");
-      if(data.login.token !== null){
+      if (data.login.token !== null) {
         localStorage.setItem("accessToken", data.login.token.accessToken);
-        localStorage.setItem("refreshToken",  data.login.token.refreshToken);
+        localStorage.setItem("refreshToken", data.login.token.refreshToken);
       }
-      
+
       window.location.href = "/";
     } else {
       alert("뭔가 잘못되었네요. 다시 해봐요.");
@@ -53,11 +67,11 @@ const LoginComponent = () => {
           <Input prefix={<LockOutlined />} type="password" placeholder="비밀번호" />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+          <Button type="primary" htmlType="submit" style={{ width: "100%", fontSize: "0.8rem" }}>
             로그인
           </Button>
         </Form.Item>
-        <div>
+        <div style={{ fontSize: "0.8rem" }}>
           <Link href="/account/find/userid">
             <a>아이디 찾기 / </a>
           </Link>
@@ -76,8 +90,28 @@ const LoginComponent = () => {
 const Login = () => {
   return (
     <Layout>
-      <LoginComponent />
-      <Footer />
+      <Desktop>
+        <LoginComponent />
+        <Footer />
+      </Desktop>
+
+      <Tablet>
+        <div style={{ marginBottom: "150px" }}>
+          <LoginComponent />
+          <div style={{ position: "fixed", bottom: 0, zIndex: 3, width: "100%" }}>
+            <Footer />
+          </div>
+        </div>
+      </Tablet>
+
+      <Mobile>
+        <div style={{ marginBottom: "150px" }}>
+          <LoginComponent />
+          <div style={{ position: "fixed", bottom: 0, zIndex: 3, width: "100%" }}>
+            <Footer />
+          </div>
+        </div>
+      </Mobile>
     </Layout>
   );
 };
@@ -88,6 +122,7 @@ const login_container = {
   textAlign: "center",
   marginTop: "100px",
   marginBottom: "100px",
+  fontSize: "0.8rem",
 };
 
 export default Login;

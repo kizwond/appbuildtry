@@ -1,18 +1,18 @@
 import Nav from "../nav/Nav";
-import {useWindowSize} from 'react-use';
+import { useWindowSize } from "react-use";
 
 const Layout = ({ children }) => {
-    const {width, height} = useWindowSize();
-    return (
-      <>
-      <div>
+  // const {width, height} = useWindowSize();
+  return (
+    <>
+      {/* <div>
       <div>width: {width}</div>
       <div>height: {height}</div>
-    </div>
-       <Nav />
-        {children}
-      </>
-    );
-  };
+    </div> */}
+      <Nav />
+      {children}
+    </>
+  );
+};
 
-  export default Layout;
+export default Layout;

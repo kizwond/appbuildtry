@@ -32,9 +32,9 @@ const NewBooks = () => {
           <div style={{ marginBottom: 10 }}>
             <Link href="/">
               <a>
-                <strong style={{ fontSize: "1rem", color: "black" }}>
+                <span style={{ fontSize: "0.8rem", color: "grey" }}>
                   콕북 신간 <RightOutlined />
-                </strong>
+                </span>
               </a>
             </Link>
           </div>

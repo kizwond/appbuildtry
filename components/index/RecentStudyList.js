@@ -31,9 +31,9 @@ const RecentStudyList = () => {
           <div style={{ marginBottom: 10 }}>
             <Link href="/">
               <a>
-                <strong style={{ fontSize: "1rem", color: "black" }}>
+                <span style={{ fontSize: "0.8rem", color: "grey" }}>
                   나의 최근학습 <RightOutlined />
-                </strong>
+                </span>
               </a>
             </Link>
           </div>

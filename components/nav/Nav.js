@@ -1,27 +1,17 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import profilePic from '../../public/image/logo2.png';
-import {
-  ShoppingCartOutlined,
-  BellOutlined,
-  UserOutlined,
-  MenuOutlined,
-  ReadOutlined,
-  FormOutlined,
-  TeamOutlined,
-  ShopOutlined,
-  FileTextOutlined,
-} from '@ant-design/icons';
-import { Input, Avatar } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { Drawer } from 'antd';
+import Link from "next/link";
+import Image from "next/image";
+import profilePic from "../../public/image/logo2.png";
+import { ShoppingCartOutlined, BellOutlined, UserOutlined, MenuOutlined, ReadOutlined, FormOutlined, TeamOutlined, ShopOutlined, FileTextOutlined } from "@ant-design/icons";
+import { Input, Avatar } from "antd";
+import React, { useEffect, useState } from "react";
+import { Drawer,Button } from "antd";
 
 // import useWindowSize from "../../utils/useWindowSize";
-import { useWindowSize } from 'react-use';
-import { useMutation } from '@apollo/client';
+import { useWindowSize } from "react-use";
+import { useMutation } from "@apollo/client";
 
-import { useSelector, useDispatch } from 'react-redux';
-import { LOGOUT } from '../../graphql/query/account';
+import { useSelector, useDispatch } from "react-redux";
+import { LOGOUT } from "../../graphql/query/account";
 
 const Nav = () => {
   const isLogged = useSelector((state) => state.isLogged);
@@ -60,25 +50,25 @@ const Nav = () => {
     desktop = false;
   }
   var setCookie = function (name) {
-    document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+    document.cookie = name + "=; expires=Thu, 01 Jan 1999 00:00:10 GMT;";
   };
 
   const onClickLogout = () => {
     logout();
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    console.log('here');
-    window.location.href = '/';
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    console.log("here");
+    window.location.href = "/";
   };
-
+  const burgerSize = "1rem";
   return (
     <>
       {windowWith < 426 && (
         <>
           <div
             style={{
-              position: 'relative',
-              width: '100%',
+              position: "relative",
+              width: "100%",
               paddingRight: 10,
               paddingLeft: 10,
               height: 40,
@@ -86,13 +76,13 @@ const Nav = () => {
           >
             <div
               style={{
-                display: 'inline-block',
-                position: 'absolute',
-                top: '50%',
-                transform: 'translate(0,-50%)',
+                display: "inline-block",
+                position: "absolute",
+                top: "50%",
+                transform: "translate(0,-50%)",
               }}
             >
-              <MenuOutlined style={{ fontSize: '25px' }} onClick={showDrawer} />
+              <MenuOutlined style={{ fontSize: burgerSize }} onClick={showDrawer} />
               <Drawer
                 title={
                   <>
@@ -107,21 +97,21 @@ const Nav = () => {
               >
                 <div
                   style={{
-                    width: '100%',
+                    width: "100%",
                     height: 50,
-                    display: 'flex',
-                    margin: 'auto',
+                    display: "flex",
+                    margin: "auto",
                   }}
                 >
                   <div
                     style={{
-                      display: 'flex',
-                      width: '100%',
-                      justifyContent: 'space-between',
-                      flexDirection: 'column',
+                      display: "flex",
+                      width: "100%",
+                      justifyContent: "space-between",
+                      flexDirection: "column",
                     }}
                   >
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
                       <Link href="/books/studypage">
                         <a style={linkStyle}>
                           <ReadOutlined style={{ marginRight: 10 }} />
@@ -147,7 +137,7 @@ const Nav = () => {
                         </a>
                       </Link>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
                       {isLogged && (
                         <>
                           <button onClick={() => onClickLogout()}>로그아웃</button>
@@ -189,9 +179,9 @@ const Nav = () => {
             <Link href="/">
               <a
                 style={{
-                  position: 'absolute',
-                  left: '50%',
-                  transform: 'translate(-50%)',
+                  position: "absolute",
+                  left: "50%",
+                  transform: "translate(-50%)",
                 }}
               >
                 <Image src={profilePic} width="80px" height="40px" alt="logo" />
@@ -204,22 +194,26 @@ const Nav = () => {
         <>
           <div
             style={{
-              position: 'relative',
-              width: '100%',
-              paddingRight: 10,
-              paddingLeft: 10,
+              position: "relative",
+              width: "100%",
               height: 40,
+              padding:10,
+              display:"flex",
+              justifyContent:"space-between",
+              alignItems:"center",
+              boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px"
             }}
           >
             <div
               style={{
-                display: 'inline-block',
-                position: 'absolute',
-                top: '50%',
-                transform: 'translate(0,-50%)',
+                // display: "inline-block",
+                // position: "absolute",
+                // top: "50%",
+                // transform: "translate(0,-50%)",
+                flexBasis: "33%",
               }}
             >
-              <MenuOutlined style={{ fontSize: '25px' }} onClick={showDrawer} />
+              <MenuOutlined style={{ fontSize: burgerSize }} onClick={showDrawer} />
               <Drawer
                 title={
                   <>
@@ -234,21 +228,21 @@ const Nav = () => {
               >
                 <div
                   style={{
-                    width: '100%',
+                    width: "100%",
                     height: 50,
-                    display: 'flex',
-                    margin: 'auto',
+                    display: "flex",
+                    margin: "auto",
                   }}
                 >
                   <div
                     style={{
-                      display: 'flex',
-                      width: '100%',
-                      justifyContent: 'space-between',
-                      flexDirection: 'column',
+                      display: "flex",
+                      width: "100%",
+                      justifyContent: "space-between",
+                      flexDirection: "column",
                     }}
                   >
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
                       <Link href="/books/studypage">
                         <a style={linkStyle}>
                           <ReadOutlined style={{ marginRight: 10 }} />
@@ -274,28 +268,7 @@ const Nav = () => {
                         </a>
                       </Link>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {isLogged && (
-                        <>
-                          <button onClick={() => onClickLogout()}>로그아웃</button>
-                        </>
-                      )}
-                      {!isLogged && (
-                        <>
-                          <Link href="/account/login">
-                            <a style={linkStyle}>
-                              <UserOutlined style={{ marginRight: 10 }} />
-                              로그인
-                            </a>
-                          </Link>
-                        </>
-                      )}
-                      <Link href="/account/register">
-                        <a style={linkStyle}>
-                          <FileTextOutlined style={{ marginRight: 10 }} />
-                          회원가입
-                        </a>
-                      </Link>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
                       <Link href="/cart">
                         <a style={linkStyle}>
                           <ShoppingCartOutlined style={{ marginRight: 10 }} />
@@ -316,41 +289,71 @@ const Nav = () => {
             <Link href="/">
               <a
                 style={{
-                  position: 'absolute',
-                  left: '50%',
-                  transform: 'translate(-50%)',
+                  // position: "absolute",
+                  // left: "50%",
+                  // transform: "translate(-50%)",
+                  flexBasis: "33%",
+                  textAlign:"center",
+                  fontFamily: `Architects Daughter, cursive`,
+                  fontWeight: 900,
+                  color:"#686868",
+                  // textShadow: "rgb(189 189 189 / 73%) 3px 2px 5px",
                 }}
               >
-                <Image src={profilePic} width="80px" height="40px" alt="logo" />
+                {/* <Image src={profilePic} width="80px" height="40px" alt="logo" /> */}
+                CogBook
               </a>
             </Link>
+            <div style={{flexBasis: "33%", textAlign:"right", fontSize:"0.75rem"}}>
+              {isLogged && (
+                <div>
+                  <Button size="small" shape="round" style={{fontSize:"0.75rem"}}onClick={() => onClickLogout()}>로그아웃</Button>
+                </div>
+              )}
+              {!isLogged && (
+                <div>
+                  <Link href="/account/login">
+                    <a style={linkStyle}>
+                      <UserOutlined style={{ marginRight: 5 }} />
+                      로그인
+                    </a>
+                  </Link>
+                  <Link href="/account/register">
+                    <a style={linkStyle}>
+                      <FileTextOutlined style={{ marginRight: 5 }} />
+                      회원가입
+                    </a>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </>
       )}
       {laptop && (
         <>
-          <div style={{ borderBottom: '1px solid lightgrey' }}>
+          <div style={{ borderBottom: "1px solid lightgrey" }}>
             <div
               style={{
-                width: '100%',
+                width: "100%",
                 height: 50,
-                display: 'flex',
-                margin: 'auto',
+                display: "flex",
+                margin: "auto",
               }}
             >
               <Link href="/">
-                <a style={{ marginRight: '30px' }}>
+                <a style={{ marginRight: "30px" }}>
                   <Image src={profilePic} width="100px" height="50px" alt="logo" />
                 </a>
               </Link>
               <div
                 style={{
-                  display: 'flex',
-                  width: '100%',
-                  justifyContent: 'space-between',
+                  display: "flex",
+                  width: "100%",
+                  justifyContent: "space-between",
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <Link href="/books/studypage">
                     <a style={linkStyle}>학습</a>
                   </Link>
@@ -364,7 +367,7 @@ const Nav = () => {
                     <a style={linkStyle}>서점</a>
                   </Link>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   {isLogged && (
                     <>
                       <button onClick={() => onClickLogout()}>로그아웃</button>
@@ -406,28 +409,28 @@ const Nav = () => {
       )}
       {desktop && (
         <>
-          <div style={{ borderBottom: '1px solid lightgrey' }}>
+          <div style={{ borderBottom: "1px solid lightgrey" }}>
             <div
               style={{
                 width: 1200,
                 height: 50,
-                display: 'flex',
-                margin: 'auto',
+                display: "flex",
+                margin: "auto",
               }}
             >
               <Link href="/">
-                <a style={{ marginRight: '30px' }}>
+                <a style={{ marginRight: "30px" }}>
                   <Image src={profilePic} width="100px" height="50px" alt="logo" />
                 </a>
               </Link>
               <div
                 style={{
-                  display: 'flex',
-                  width: '100%',
-                  justifyContent: 'space-between',
+                  display: "flex",
+                  width: "100%",
+                  justifyContent: "space-between",
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <Link href="/books/studypage">
                     <a style={linkStyle}>학습</a>
                   </Link>
@@ -441,7 +444,7 @@ const Nav = () => {
                     <a style={linkStyle}>서점</a>
                   </Link>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: "flex", alignItems: "center" }}>
                   {isLogged && (
                     <>
                       <button onClick={() => onClickLogout()}>로그아웃</button>
@@ -488,7 +491,7 @@ const Nav = () => {
 export default Nav;
 
 const linkStyle = {
-  color: 'black',
+  color: "black",
   padding: 10,
-  fontSize: '1rem',
+  fontSize: "0.8rem",
 };

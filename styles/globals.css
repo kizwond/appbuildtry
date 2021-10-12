@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
 html,
 body {
   padding: 0;
@@ -69,4 +71,8 @@ a {
 }
 .gray-theme.fr-toolbar .fr-command.fr-btn i, .gray-theme.fr-toolbar .fr-command.fr-btn svg, .gray-theme.fr-popup .fr-command.fr-btn i, .gray-theme.fr-popup .fr-command.fr-btn svg, .gray-theme.fr-modal .fr-command.fr-btn i, .gray-theme.fr-modal .fr-command.fr-btn svg {
   margin: 0 !important;
+}
+
+.ant-form-item-label > label{
+  font-size: 0.8rem;
 }

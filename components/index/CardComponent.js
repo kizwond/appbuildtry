@@ -7,7 +7,7 @@ const CardComponent = ({width}) => {
     value = "49%"
   }
   return (
-    <div style={{ display: "flex", width:value, border: "1px solid lightgrey",fontSize:"1rem" }}>
+    <div style={{ display: "flex", width:value, border: "1px solid lightgrey",fontSize:"0.8rem" }}>
       <Image src={"/image/2.png"} width="100px" height="100px" alt="logo" />
       <div style={{display:'flex', width:"100%", flexDirection:'column', padding:5}}>
         <h3>2020.12.25</h3>

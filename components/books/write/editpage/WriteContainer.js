@@ -216,7 +216,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
       return (
         <>
           {content.card_info.cardtype === "read" && (
-            <div onClick={() => onClickCard(content._id)} style={{ border: "1px solid grey", marginBottom: "5px" }}>
+            <div onClick={() => onClickCard(content._id)} style={{ border: "1px solid lightgrey", marginBottom: "5px" }}>
               <div>
                 {content.contents.mycontents_id.face1.map((item) => (
                   <>
@@ -230,7 +230,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
           )}
 
           {content.card_info.cardtype === "flip" && (
-            <div onClick={() => onClickCard(content._id)} style={{ border: "1px solid grey", marginBottom: "5px" }}>
+            <div onClick={() => onClickCard(content._id)} style={{ border: "1px solid lightgrey", marginBottom: "5px" }}>
               <div>
                 {content.contents.mycontents_id.face1.map((item) => (
                   <>
@@ -287,7 +287,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
         </div>
       </Desktop>
       <Tablet>
-        <div style={{ width: "90%", margin: "auto", marginBottom: "100px" }}>
+        <div style={{ width: "90%", margin: "auto", marginBottom: "100px", marginTop:"50px" }}>
           <div>selected index id : {first_index}</div>
           <div>{contents}</div>
           <div>{editorOn}</div>

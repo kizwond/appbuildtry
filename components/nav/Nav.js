@@ -195,13 +195,17 @@ const Nav = () => {
           <div
             style={{
               position: "relative",
+              background:"white",
               width: "100%",
               height: 40,
               padding:10,
               display:"flex",
               justifyContent:"space-between",
               alignItems:"center",
-              boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px"
+              boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+              position:"fixed",
+              top:"0",
+              zIndex:3,
             }}
           >
             <div

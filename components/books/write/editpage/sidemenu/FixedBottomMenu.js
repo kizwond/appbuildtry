@@ -7,8 +7,8 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexS
     var cardTypeList = cardTypes.map((cardType) => {
       return (
         <>
-          <span>
-            <Button size="small" onCspanck={() => selectCardType(cardType.cardtype_info)} style={{ fontSize: "0.8rem" }}>
+          <span style={{marginLeft:"5px"}}>
+            <Button size="small" onClick={() => selectCardType(cardType.cardtype_info)} style={{ fontSize: "0.8rem" }}>
               {cardType.cardtype_info.name}
             </Button>
           </span>
@@ -48,8 +48,10 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexS
             alignItems: "center",
           }}
         >
-          <span>카드타입 : </span>
+          <span>타입선택 : </span>
+          <div style={{backgroundColor:"#e7e7e7", border:"1px solid lightgrey", boxShadow:"#9d9d9d80 1px 1px 3px inset", padding:"5px", width:"120px", overflow:"scroll", display:"flex", flexDirection:"row"}}>
           {cardTypeList}
+          </div>
         </div>
         <div style={{display:"flex", justifyContent:"space-between", flexBasis:"100px", alignItems:"center"}}>
           <ImportModal cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />

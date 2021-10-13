@@ -7,6 +7,10 @@ import { UnorderedListOutlined, DoubleLeftOutlined, CarryOutOutlined } from "@an
 import { GetCardSet } from "../../../../graphql/query/card_contents";
 import { useMediaQuery } from "react-responsive";
 
+const backgroundColor = "black";
+const buttonColor = "white";
+const fontColor = "white";
+
 const Desktop = ({ children }) => {
   const isDesktop = useMediaQuery({ minWidth: 992 });
   return isDesktop ? children : null;
@@ -502,14 +506,14 @@ const LeftDrawer = ({ index_changed, indexChanged }) => {
   return (
     <>
       <Desktop>
-        <Button type="primary" onClick={showDrawer}>
+        <Button type="primary" onClick={showDrawer} style={{fontSize:"0.8rem"}}>
           목차
         </Button>
       </Desktop>
 
       <Tablet>
         <div style={{ position: "fixed", top: 100, left: 0 }}>
-          <button onClick={showDrawer} style={{ border: "1px solid lightgrey", borderLeft: "none", width: "30px", borderRadius: "0 10px 10px 0" }}>
+          <button onClick={showDrawer} style={{ color:fontColor, background:backgroundColor,fontSize:"0.8rem", border: "1px solid lightgrey", borderLeft: "none", width: "25px", borderRadius: "0 10px 10px 0" }}>
             목차
           </button>
         </div>
@@ -517,7 +521,7 @@ const LeftDrawer = ({ index_changed, indexChanged }) => {
 
       <Mobile>
         <div style={{ position: "fixed", top: 100, left: 0 }}>
-          <button onClick={showDrawer} style={{ border: "1px solid lightgrey", borderLeft: "none", width: "30px", borderRadius: "0 10px 10px 0" }}>
+          <button onClick={showDrawer} style={{ color:fontColor, fontSize:"0.8rem", border: "1px solid lightgrey", borderLeft: "none", width: "25px", borderRadius: "0 10px 10px 0" }}>
             목차
           </button>
         </div>

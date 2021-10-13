@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "../../components/layout/Layout";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import Footer from "../../components/index/Footer";
 import Router from "next/router";
 import { useMutation } from "@apollo/client";
@@ -20,16 +20,36 @@ const Mobile = ({ children }) => {
   return isMobile ? children : null;
 };
 
+function routerToLogin() {
+  Router.push("/account/login")
+}
+
 const LoginComponent = () => {
+  const key = "updatable";
+  const openMessage = async () => {
+    message.success({
+      content: "로그인 페이지로 이동합니다.",
+      key,
+      style: {
+        marginTop: "20vh",
+      },
+      duration: 1,
+    });
+  };
+  const error = () => {
+    message.error("ID 중복이네요. 다른 아이디를 사용해주세요");
+  };
+
   const [signup] = useMutation(SignUpMutation, { onCompleted: showdata });
 
   function showdata(data) {
     console.log(data);
-    if (data.signup.msg === "ID 중복") {
-      alert("동일 아이디가 이미 사용중임 다시 ㄱㄱ");
+    if (data.signup.msg === "ID 중복이네요. 다른 아이디를 사용해주세요") {
+      error();
     } else {
-      alert("회원가입완료!!! 로그인페이지로 이동합니다!!!");
-      Router.push("/account/login");
+      openMessage();
+      setTimeout(routerToLogin, 2000);
+      // Router.push("/account/login");
     }
   }
 

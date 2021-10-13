@@ -123,8 +123,8 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
 
   return (
     <>
-      <Button type="default" size="small" onClick={showModal}>
-        import <DownloadOutlined />
+      <Button type="default" size="small" onClick={showModal} >
+        <span style={{fontSize:"0.8rem"}}>import</span><DownloadOutlined />
       </Button>
       <Modal footer={null} title="Basic Modal" width={800} visible={visiable} onOk={handleOk} onCancel={handleCancel}>
         <form action="#">

@@ -42,7 +42,7 @@ const Nav = () => {
     tablet = false;
   }
 
-  if (windowWith < 1025 && windowWith > 769) {
+  if (windowWith < 1025 && windowWith > 768) {
     var laptop = true;
   } else {
     laptop = false;

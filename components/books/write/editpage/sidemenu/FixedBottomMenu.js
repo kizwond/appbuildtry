@@ -2,6 +2,10 @@ import ImportModal from "../import/ImportModal";
 import RightDrawer from "../RightDrawer";
 import { Button } from "antd";
 
+const backgroundColor = "black";
+const buttonColor = "white";
+const fontColor = "white"
+
 const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId, book_id }) => {
   if (cardTypes) {
     var cardTypeList = cardTypes.map((cardType) => {
@@ -27,7 +31,7 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexS
       <div
         style={{
           margin: "auto",
-          background: "white",
+          background:backgroundColor,
           borderRadius: "5px 5px 0 0",
           borderBottom: "none",
           width: "90%",
@@ -37,6 +41,7 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexS
           padding: 10,
           boxShadow: "0px -1px 6px -1px #999999",
           alignItems: "center",
+          color:fontColor
         }}
       >
         <div
@@ -48,8 +53,8 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexS
             alignItems: "center",
           }}
         >
-          <span>타입선택 : </span>
-          <div style={{backgroundColor:"#e7e7e7", border:"1px solid lightgrey", boxShadow:"#9d9d9d80 1px 1px 3px inset", padding:"5px", width:"120px", overflow:"scroll", display:"flex", flexDirection:"row"}}>
+          <span style={{marginRight:"10px"}}>타입선택 : </span>
+          <div style={{backgroundColor:"#e7e7e7", borderRadius:"5px", border:"1px solid lightgrey", boxShadow:"#9d9d9d80 1px 1px 3px inset", padding:"5px", width:"120px", overflow:"scroll", display:"flex", flexDirection:"row"}}>
           {cardTypeList}
           </div>
         </div>

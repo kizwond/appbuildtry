@@ -178,15 +178,8 @@ const SessionSetting = () => {
   if (!error && !loading) {
     return (
       <Layout>
-        <button
-          onClick={() => {
-            loadFilteredData();
-          }}
-        >
-          확인
-        </button>
-        <StyledRowMaxWidth>
-          <StyledCol xs={24} sm={24} md={24} lg={7} xl={6} xxl={5}>
+        <StyledDiv>
+          <StyledDivFirst isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}>
             {bookList.length - 1 === counter && (
               <SessionConfig
                 submitCreateSessionConfigToServer={submitCreateSessionConfigToServer}
@@ -198,9 +191,9 @@ const SessionSetting = () => {
                 onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
               />
             )}
-          </StyledCol>
-          <StyledColForTable xs={24} sm={24} md={24} lg={17} xl={18} xxl={19}>
-            <Card size="small">
+          </StyledDivFirst>
+          <StyledDivSecond>
+            <Card size="small" bordered={false}>
               <Tabs type="card" tabPosition="top">
                 {!isAdvancedFilteredCardListShowed &&
                   cardsList[0] &&
@@ -231,8 +224,8 @@ const SessionSetting = () => {
                   ))}
               </Tabs>
             </Card>
-          </StyledColForTable>
-        </StyledRowMaxWidth>
+          </StyledDivSecond>
+        </StyledDiv>
       </Layout>
     );
   }
@@ -241,7 +234,28 @@ const SessionSetting = () => {
 };
 export default SessionSetting;
 
-const StyledCol = styled(Col)`
+const StyledDiv = styled.div`
+  /* 스크롤바 숨김 */
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  margin: 0 auto;
+  max-width: 1440px;
+  display: flex;
+  @media screen and (min-width: 992px) {
+    flex-direction: row;
+  }
+  @media screen and (min-width: 100px) and (max-width: 991px) {
+    flex-direction: column;
+  }
+`;
+const StyledDivFirst = styled.div`
+  min-width: 320px;
   & * {
     font-size: 0.7rem;
   }
@@ -252,11 +266,26 @@ const StyledCol = styled(Col)`
     display: block;
   }
   & .ant-input-number-sm {
-    width: 55px;
     font-size: 0.7rem;
+    width: 46px;
+  }
+  & .ant-input-number-sm input {
+    height: 16px;
+    padding: 0 3px;
+  }
+  & .ant-input-number-handler-wrap {
+    width: 15px;
+  }
+  @media screen and (min-width: 992px) {
+    max-width: 350px;
+    min-height: 94vh;
+    border-right: 1px solid lightgray;
+  }
+  @media screen and (min-width: 100px) and (max-width: 991px) {
   }
 `;
-const StyledColForTable = styled(Col)`
+const StyledDivSecond = styled.div`
+  min-width: 320px;
   & * {
     font-size: 0.7rem;
   }
@@ -277,5 +306,11 @@ const StyledColForTable = styled(Col)`
 
   & .ant-tabs-top > .ant-tabs-nav {
     margin: 0;
+  }
+  @media screen and (min-width: 992px) {
+    flex: auto;
+  }
+  @media screen and (min-width: 100px) and (max-width: 991px) {
+    flex: auto;
   }
 `;

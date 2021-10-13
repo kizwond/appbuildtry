@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from "react";
 import { useQuery } from "@apollo/client";
-import { Radio, Switch, InputNumber, DatePicker, Card, Col, Row, Button, Typography } from "antd";
+import { Switch, InputNumber, Card, Col, Row, Button, Typography } from "antd";
 import { GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
 import ColFormItem from "./ColFormItem";
 import produce from "immer";
 import SwichComponent from "./SwichComponent";
-import { Space, Tag } from "../../../../node_modules/antd/lib/index";
+import { Input, Space, Tag } from "../../../../node_modules/antd/lib/index";
 import moment from "../../../../node_modules/moment/moment";
 import GetFilteredIndexButton from "./GetFilteredIndexButton";
 import styled from "styled-components";
@@ -13,7 +13,8 @@ import { onChangeArrayValuesForSwitch } from "./functionTool";
 import SortOptionTag from "./session-config/SortOptionTag";
 import UseCardTypesTag from "./session-config/UseCardTypesTag";
 import UseStatusTag from "./session-config/UseStatusTag";
-import StudyTimeCondtion from "./session-config/StudyTimeCondtion";
+import StudyTimeCondition from "./session-config/StudyTimeCondition";
+import StyledDatePicker from "./session-config/StyledDatePicker";
 
 const menuTitleColSize = 3;
 const menuColSize = 21;
@@ -73,12 +74,11 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
     onCompleted: (received_data) => {
       if (received_data.session_getSessionConfig.status === "200") {
         const sessionconfigs = received_data.session_getSessionConfig.sessionConfigs[0];
-        console.log(received_data);
+        console.log({ received_data });
         setMode(received_data.session_getSessionConfig.sessionConfigs[0].studyMode);
         setSessionConfig(received_data.session_getSessionConfig.sessionConfigs[0]);
 
-        // 아래부터 state 쪼개기 작업 중
-
+        // 아래부터 state 쪼개기 작업
         if (sessionconfigs.flip) {
           const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.flip;
           const copyNumStartCards = { ...numStartCards };
@@ -320,246 +320,133 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
           </Button>
         </div>
 
-        <div
-          style={{
-            border: "1px solid lightgrey",
-            marginBottom: "10px",
-            background: "white",
-            borderRadius: "5px",
-            padding: "5px",
-          }}
-        >
-          <Row align="top" gutter={8}>
-            <Col {...breakPoint.menuTitleCol}>
-              <StyledSpanMenuTitle>보기 순서</StyledSpanMenuTitle>
-            </Col>
-            <Col {...breakPoint.menuCol}>
+        <StyledDivConfigWrapper>
+          <StyledDivConfigRow>
+            <StyledDivConfigCol>
+              <span className="ConifgTitle">보기 순서</span>
+            </StyledDivConfigCol>
+            <StyledDivConfigCol>
               <SortOptionTag mode={mode} changeSortOption={changeSortOption} selected={[readSortOption, flipSortOption, examSortOption]} />
-            </Col>
-          </Row>
-        </div>
-        <div
-          style={{
-            border: "1px solid lightgrey",
-            background: "white",
-            borderRadius: "5px",
-            padding: "5px 5px 5px 5px",
-            marginBottom: "10px",
-          }}
-        >
-          <Row align="top" gutter={8}>
-            <Col {...breakPoint.menuTitleCol}>
-              <StyledSpanMenuTitle>카드종류</StyledSpanMenuTitle>
-            </Col>
-            <Col {...breakPoint.menuCol}>
+            </StyledDivConfigCol>
+          </StyledDivConfigRow>
+
+          <StyledDivConfigRow>
+            <StyledDivConfigCol>
+              <span className="ConifgTitle">카드종류</span>
+            </StyledDivConfigCol>
+            <StyledDivConfigCol>
               <UseCardTypesTag mode={mode} changeUseCardType={changeUseCardType} selected={[readUseCardType, flipUseCardType, examUseCardType]} />
-            </Col>
-          </Row>
-        </div>
+            </StyledDivConfigCol>
+          </StyledDivConfigRow>
 
-        <div
-          style={{
-            border: "1px solid lightgrey",
-            background: "white",
-            borderRadius: "5px",
-            padding: "5px",
-            marginBottom: isOnAdvancedFilter ? "10px" : "0px",
-          }}
-        >
-          <Row align="top" gutter={8}>
-            <Col {...breakPoint.menuTitleCol}>
-              <StyledSpanMenuTitle>카드상태</StyledSpanMenuTitle>
-            </Col>
-            <Col {...breakPoint.menuCol}>
-              <UseStatusTag mode={mode} changeUseStatus={changeUseStatus} selected={[readUseStatus, flipUseStatus, examUseStatus]} />
-            </Col>
-          </Row>
-          {(mode === "read" ? readUseStatus.includes("ing") : mode === "flip" ? flipUseStatus.includes("ing") : mode === "exam" ? examUseStatus.includes("ing") : null) && (
-            <>
-              <Row align="top" justify="center" gutter={8}>
-                <Col {...breakPoint.menuTitleCol}>
-                  <StyledSpanMenuTitle></StyledSpanMenuTitle>
-                </Col>
-                <Col
-                  {...breakPoint.menuCol}
-                  style={{
-                    background: "#e6f7ff",
-                    paddingTop: "5px",
-                    paddingBottom: "5px",
-                    borderTopRightRadius: "5px",
-                    borderBottomLeftRadius: "5px",
-                    borderBottomRightRadius: "5px",
-                  }}
-                >
-                  <StudyTimeCondtion
-                    mode={mode}
-                    selected={[readNeedStudyTimeCondition, flipNeedStudyTimeCondition, examNeedStudyTimeCondition]}
-                    changeNeedStudyTimeCondition={changeNeedStudyTimeCondition}
-                    changeNeedStudyTimeRange={changeNeedStudyTimeRange}
-                    selectedRange={[readNeedStudyTimeRange, flipNeedStudyTimeRange, examNeedStudyTimeRange]}
-                  />
-                  {/* <Radio.Group name="needStudyTimeCondition" onChange={(e) => onChangeValue(e.target.value, e.target.name)} value={sessionConfig[mode]?.needStudyTimeCondition} size="small">
-                    <Row gutter={1} wrap={false}>
-                      <Col span={4}>
-                        <Radio value="all">전체</Radio>
-                      </Col>
-                      <Col span={6}>
-                        <Radio value="untilNow">현재 이전</Radio>
-                      </Col>
-                      <Col span={6}>
-                        <Radio value="untilToday">오늘 이전</Radio>
-                      </Col>
-                      <Col span={8}>
-                        <Radio value="custom">직접입력</Radio>
-                        {sessionConfig[mode]?.needStudyTimeCondition == "custom" && (
-                          <DatePicker.RangePicker
-                            format="MM-DD"
-                            placeholder={["시작", "종료"]}
-                            onChange={(date, dateString) => {
-                              const now = new Date();
-                              const year = now.getFullYear();
-                              const month = now.getMonth() + 1;
-                              const day = now.getDate();
-                              const today = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
-                              // console.log(today);
-                              const startYear = date[0]._d.getFullYear();
-                              const startDate = moment(`${startYear}-${dateString[0]}`, "YYYY-MM-DD");
-                              const endYear = date[0]._d.getFullYear();
-                              const endDate = moment(`${endYear}-${dateString[1]}`, "YYYY-MM-DD");
-                              const dif_from_startDate = moment.duration(startDate.diff(today)).asDays();
-                              const dif_from_endDate = moment.duration(endDate.diff(today)).asDays();
-                              console.log(dif_from_endDate);
-                            }}
-                            size="small"
-                          />
-                        )}
-                      </Col>
-                    </Row>
-                  </Radio.Group> */}
-                </Col>
-              </Row>
-            </>
-          )}
-
-          <Row align="top" gutter={8} style={{ marginTop: "10px" }}>
-            <Col span={menuTitleColSize}>
-              <Row>
-                <Col xs={24} sm={24} md={15} lg={14} xl={15} xxl={16}>
-                  <span
+          <StyledDivConfigRow>
+            <StyledDivConfigCol>
+              <span className="ConifgTitle">카드상태</span>
+            </StyledDivConfigCol>
+            <StyledDivConfigCol>
+              <div>
+                <UseStatusTag mode={mode} changeUseStatus={changeUseStatus} selected={[readUseStatus, flipUseStatus, examUseStatus]} />
+              </div>
+              {(mode === "read" ? readUseStatus.includes("ing") : mode === "flip" ? flipUseStatus.includes("ing") : mode === "exam" ? examUseStatus.includes("ing") : null) && (
+                <>
+                  <div
                     style={{
-                      fontSize: "12px",
-                      fontWeight: "700",
-                      color: isOnNumStartCards ? "black" : "#0000003f",
+                      background: "#e6f7ff",
+                      paddingTop: "5px",
+                      paddingBottom: "5px",
+                      paddingLeft: "5px",
+                      paddingRight: "5px",
+                      borderTopRightRadius: "5px",
+                      borderBottomLeftRadius: "5px",
+                      borderBottomRightRadius: "5px",
                     }}
                   >
-                    학습량
-                  </span>
-                </Col>
-                <Col xs={24} sm={24} md={9} lg={10} xl={9} xxl={8}>
-                  <Switch
-                    size="small"
-                    checked={isOnNumStartCards}
-                    onChange={(checked) => {
-                      if (checked) {
-                        onChangeValue("on", "numStartCards", "onOff");
-                      } else {
-                        onChangeValue("off", "numStartCards", "onOff");
-                      }
-                    }}
-                  />
-                </Col>
-              </Row>
+                    <StudyTimeCondition
+                      mode={mode}
+                      selected={[readNeedStudyTimeCondition, flipNeedStudyTimeCondition, examNeedStudyTimeCondition]}
+                      changeNeedStudyTimeCondition={changeNeedStudyTimeCondition}
+                      changeNeedStudyTimeRange={changeNeedStudyTimeRange}
+                      selectedRange={[readNeedStudyTimeRange, flipNeedStudyTimeRange, examNeedStudyTimeRange]}
+                    />
+                  </div>
+                </>
+              )}
+            </StyledDivConfigCol>
+          </StyledDivConfigRow>
+
+          <Row align="top" gutter={8}>
+            <Col {...breakPoint.menuTitleCol}>
+              <StyledSpanMenuTitle
+                style={{
+                  color: isOnNumStartCards ? "black" : "#0000003f",
+                  marginRight: "10px",
+                }}
+              >
+                학습량
+              </StyledSpanMenuTitle>
+
+              <Switch
+                size="small"
+                checked={isOnNumStartCards}
+                onChange={(checked) => {
+                  if (checked) {
+                    onChangeValue("on", "numStartCards", "onOff");
+                  } else {
+                    onChangeValue("off", "numStartCards", "onOff");
+                  }
+                }}
+              />
             </Col>
-            <Col span={menuColSize}>
-              <Row align="top" gutter={8}>
-                <ColFormItem
-                  menuColDivider={menuColDivider}
-                  title={
-                    <span
-                      style={{
-                        color: isOnNumStartCards ? "black" : "#0000003f",
-                      }}
-                    >
-                      미학습
-                    </span>
-                  }
-                >
-                  <InputNumber
-                    disabled={!isOnNumStartCards}
-                    size="small"
-                    value={sessionConfig[mode]?.numStartCards.yet}
-                    onChange={(value) => {
-                      onChangeValue(value, "numStartCards", "yet");
-                    }}
-                  />
-                </ColFormItem>
-                <ColFormItem
-                  menuColDivider={menuColDivider}
-                  title={
-                    <span
-                      style={{
-                        color: isOnNumStartCards ? "black" : "#0000003f",
-                      }}
-                    >
-                      학습중
-                    </span>
-                  }
-                >
-                  <InputNumber
-                    disabled={!isOnNumStartCards}
-                    size="small"
-                    value={sessionConfig[mode]?.numStartCards.ing}
-                    onChange={(value) => {
-                      onChangeValue(value, "numStartCards", "ing");
-                    }}
-                  />
-                </ColFormItem>
-                <ColFormItem
-                  menuColDivider={menuColDivider}
-                  title={
-                    <span
-                      style={{
-                        color: isOnNumStartCards ? "black" : "#0000003f",
-                      }}
-                    >
-                      학습완료
-                    </span>
-                  }
-                >
-                  <InputNumber
-                    disabled={!isOnNumStartCards}
-                    size="small"
-                    value={sessionConfig[mode]?.numStartCards.completed}
-                    onChange={(value) => {
-                      onChangeValue(value, "numStartCards", "completed");
-                    }}
-                  />
-                </ColFormItem>
-                <ColFormItem
-                  menuColDivider={menuColDivider}
-                  title={
-                    <span
-                      style={{
-                        color: isOnNumStartCards ? "black" : "#0000003f",
-                      }}
-                    >
-                      학습보류
-                    </span>
-                  }
-                >
-                  <InputNumber
-                    disabled={!isOnNumStartCards}
-                    size="small"
-                    value={sessionConfig[mode]?.numStartCards.hold}
-                    onChange={(value) => {
-                      onChangeValue(value, "numStartCards", "hold");
-                    }}
-                  />
-                </ColFormItem>
-              </Row>
+            <Col {...breakPoint.menuCol}>
+              <Tag.CheckableTag checked size="small">
+                <span style={{ marginRight: "4px" }}>미학습</span>
+                <InputNumber
+                  disabled={!isOnNumStartCards}
+                  min={0}
+                  size="small"
+                  value={sessionConfig[mode]?.numStartCards.yet}
+                  onChange={(value) => {
+                    onChangeValue(value, "numStartCards", "yet");
+                  }}
+                />
+              </Tag.CheckableTag>
+              <Tag.CheckableTag checked>
+                학습중
+                <InputNumber
+                  disabled={!isOnNumStartCards}
+                  size="small"
+                  value={sessionConfig[mode]?.numStartCards.ing}
+                  onChange={(value) => {
+                    onChangeValue(value, "numStartCards", "ing");
+                  }}
+                />
+              </Tag.CheckableTag>
+
+              <Tag.CheckableTag checked>
+                학습완료
+                <InputNumber
+                  disabled={!isOnNumStartCards}
+                  size="small"
+                  value={sessionConfig[mode]?.numStartCards.completed}
+                  onChange={(value) => {
+                    onChangeValue(value, "numStartCards", "completed");
+                  }}
+                />
+              </Tag.CheckableTag>
+              <Tag.CheckableTag checked>
+                학습보류
+                <InputNumber
+                  disabled={!isOnNumStartCards}
+                  size="small"
+                  value={sessionConfig[mode]?.numStartCards.hold}
+                  onChange={(value) => {
+                    onChangeValue(value, "numStartCards", "hold");
+                  }}
+                />
+              </Tag.CheckableTag>
             </Col>
           </Row>
-        </div>
+        </StyledDivConfigWrapper>
         <div
           style={{
             border: isOnAdvancedFilter ? "1px solid lightgrey" : "none",
@@ -1409,22 +1296,61 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
 
 export default SessionConfig;
 
-const StyledTag = styled(Tag.CheckableTag)`
-  border: ${(props) => (props.checked ? "transparent" : "1px solid #d9d9d9")};
+const StyledDivConfigWrapper = styled.div`
+  border: 1px solid lightgray;
+  padding: 5px;
+  margin-top: 10px;
+  background-color: white;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  & > div {
+    margin-bottom: 5px;
+  }
+  & > div:last-child {
+    margin-bottom: 0px;
+  }
+  & .ant-tag {
+    margin-right: 4px;
+    margin-left: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+`;
+const StyledDivConfigRow = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  & > div:nth-child(1) {
+    flex: 0 160px;
+  }
+  & > div {
+    width: 100%;
+  }
+
+  @media screen and (min-width: 992px) {
+    flex-direction: column;
+    & > div:nth-child(1) {
+      flex: auto;
+    }
+  }
+  @media screen and (max-width: 575px) {
+    flex-direction: column;
+    & > div:nth-child(1) {
+      flex: auto;
+    }
+  }
+`;
+const StyledDivConfigCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  & .ConifgTitle {
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
 `;
 
 const StyledSpanMenuTitle = styled.span`
-  font-size: 0.9rem !important;
+  font-size: 0.8rem !important;
   font-weight: 700;
-`;
-
-const StyledDatePicker = styled(DatePicker.RangePicker)`
-  @media (max-width: 480px) {
-    & .ant-calendar-range {
-      width: 320px;
-    }
-    & .ant-calendar-range-part {
-      width: 100%;
-    }
-  }
 `;

@@ -12,32 +12,37 @@ const UseStatusTag = ({ mode, selected, changeUseStatus }) => {
     { option: "hold", title: "학습보류" },
   ];
   return (
-    <>
+    <div>
       {tags.map((tag) => (
-        <StyledTag
-          key={tag.option}
-          checked={selectedUseStatus.includes(tag.option)}
-          option={tag.option}
-          onChange={(checked) => {
-            if (checked) {
-              const newArr = [...selectedUseStatus, tag.option];
-              changeUseStatus(mode, newArr);
-            }
-            if (!checked) {
-              const newArr = selectedUseStatus.filter((type) => type !== tag.option);
-              changeUseStatus(mode, newArr);
-            }
-          }}
-        >
-          {tag.title}
+        <StyledTag key={tag.option} checked={selectedUseStatus.includes(tag.option)} option={tag.option}>
+          <Tag.CheckableTag
+            checked={selectedUseStatus.includes(tag.option)}
+            onChange={(checked) => {
+              if (checked) {
+                const newArr = [...selectedUseStatus, tag.option];
+                changeUseStatus(mode, newArr);
+              }
+              if (!checked) {
+                const newArr = selectedUseStatus.filter((type) => type !== tag.option);
+                changeUseStatus(mode, newArr);
+              }
+            }}
+          >
+            {tag.title}
+          </Tag.CheckableTag>
         </StyledTag>
       ))}
-    </>
+    </div>
   );
 };
 
 export default memo(UseStatusTag);
 
-const StyledTag = styled(Tag.CheckableTag)`
-  border: ${(props) => (props.checked && props.option === "ing" ? "6px solid #e6f7ff" : props.checked ? "1px solid #1890ff" : "1px solid #d9d9d9")};
+const StyledTag = styled.div`
+  display: inline-block;
+  background-color: ${(props) => (props.checked && props.option === "ing" ? "#e6f7ff" : "#fff")};
+
+  & > span {
+    border: ${(props) => (props.checked ? "1px solid #1890ff" : "1px solid #d9d9d9")};
+  }
 `;

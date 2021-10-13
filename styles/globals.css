@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap");
 
 html,
 body {
@@ -7,17 +7,27 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
-@media screen and (min-width: 769px) and (max-width: 1440px) {
+@media screen and (min-width: 992px) and (max-width: 1440px) {
   html {
     font-size: 16px;
   }
 }
-@media screen and (min-width: 577px) and (max-width: 768px) {
+@media screen and (min-width: 769px) and (max-width: 991px) {
+  html {
+    font-size: 15px;
+  }
+}
+@media screen and (min-width: 621px) and (max-width: 768px) {
   html {
     font-size: 14px;
   }
 }
-@media screen and (min-width: 100px) and (max-width: 576px) {
+@media screen and (min-width: 576px) and (max-width: 620px) {
+  html {
+    font-size: 13px;
+  }
+}
+@media screen and (min-width: 100px) and (max-width: 575px) {
   html {
     font-size: 12px;
   }
@@ -32,47 +42,60 @@ a {
   box-sizing: border-box;
 }
 
-.fr-basic{
-  width:90%;
+.fr-basic {
+  width: 90%;
 }
 
-.fr-box.editor_try.fr-ltr.gray-theme.fr-basic .fr-element{
-  padding:0;
+.fr-box.editor_try.fr-ltr.gray-theme.fr-basic .fr-element {
+  padding: 0;
   min-height: 0;
 }
-.gray-theme .fr-view .fr-video{
-  height:20px;
+.gray-theme .fr-view .fr-video {
+  height: 20px;
 }
-.fr-view .fr-video>*{
-  width:80%;
-  height:20px;
-}
-
-.fr-element .fr-video>*{
-  width:50%;
-  height:20px;
+.fr-view .fr-video > * {
+  width: 80%;
+  height: 20px;
 }
 
-.gray-theme.fr-toolbar .fr-command.fr-btn, .gray-theme.fr-popup .fr-command.fr-btn, .gray-theme.fr-modal .fr-command.fr-btn{
-  height:20px !important;
+.fr-element .fr-video > * {
+  width: 50%;
+  height: 20px;
 }
-.gray-theme.fr-toolbar .fr-command.fr-btn svg.fr-svg, .gray-theme.fr-popup .fr-command.fr-btn svg.fr-svg, .gray-theme.fr-modal .fr-command.fr-btn svg.fr-svg {
+
+.gray-theme.fr-toolbar .fr-command.fr-btn,
+.gray-theme.fr-popup .fr-command.fr-btn,
+.gray-theme.fr-modal .fr-command.fr-btn {
+  height: 20px !important;
+}
+.gray-theme.fr-toolbar .fr-command.fr-btn svg.fr-svg,
+.gray-theme.fr-popup .fr-command.fr-btn svg.fr-svg,
+.gray-theme.fr-modal .fr-command.fr-btn svg.fr-svg {
   height: 15px !important;
 }
 
-.fr-toolbar .fr-command.fr-btn svg.fr-svg, .fr-popup .fr-command.fr-btn svg.fr-svg, .fr-modal .fr-command.fr-btn svg.fr-svg {
+.fr-toolbar .fr-command.fr-btn svg.fr-svg,
+.fr-popup .fr-command.fr-btn svg.fr-svg,
+.fr-modal .fr-command.fr-btn svg.fr-svg {
   height: 20px !important;
 }
 
-.gray-theme.fr-toolbar .fr-command.fr-btn img, .gray-theme.fr-popup .fr-command.fr-btn img, .gray-theme.fr-modal .fr-command.fr-btn img {
+.gray-theme.fr-toolbar .fr-command.fr-btn img,
+.gray-theme.fr-popup .fr-command.fr-btn img,
+.gray-theme.fr-modal .fr-command.fr-btn img {
   margin: 0px !important;
   width: 14px !important;
   margin-bottom: 2.1px !important;
 }
-.gray-theme.fr-toolbar .fr-command.fr-btn i, .gray-theme.fr-toolbar .fr-command.fr-btn svg, .gray-theme.fr-popup .fr-command.fr-btn i, .gray-theme.fr-popup .fr-command.fr-btn svg, .gray-theme.fr-modal .fr-command.fr-btn i, .gray-theme.fr-modal .fr-command.fr-btn svg {
+.gray-theme.fr-toolbar .fr-command.fr-btn i,
+.gray-theme.fr-toolbar .fr-command.fr-btn svg,
+.gray-theme.fr-popup .fr-command.fr-btn i,
+.gray-theme.fr-popup .fr-command.fr-btn svg,
+.gray-theme.fr-modal .fr-command.fr-btn i,
+.gray-theme.fr-modal .fr-command.fr-btn svg {
   margin: 0 !important;
 }
 
-.ant-form-item-label > label{
+.ant-form-item-label > label {
   font-size: 0.8rem;
 }

@@ -2,7 +2,6 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "../../../components/layout/Layout";
-
 import LeftDrawer from "../../../components/books/write/editpage/LeftDrawer";
 import RightDrawer from "../../../components/books/write/editpage/RightDrawer";
 import { GetIndex } from "../../../graphql/query/bookIndex";

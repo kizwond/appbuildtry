@@ -6,20 +6,23 @@ import "froala-editor/css/plugins.pkgd.min.css";
 import "froala-editor/js/plugins.pkgd.min.js";
 import "froala-editor/js/languages/ko";
 import "froala-editor//css/themes/gray.css";
-// import 'froala-editor//css/themes/gray.min.css'
-import FroalaEditorComponent from "react-froala-wysiwyg";
+
+// import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Form, Input, Button, message } from "antd";
-import axios from "axios";
-// import Button from "../../styledComponents/defaultButton";
+import dynamic from 'next/dynamic';
 
-// import { InputNumber } from 'antd'
+const FroalaEditorComponent = dynamic(import('react-froala-wysiwyg'), {
+  ssr: false
+});
+// const Feditor = dynamic(import('froala-editor'), {
+//   ssr: false
+// });
 
-export class Editor extends Component {
+class Editor extends Component {
   constructor(props) {
     super(props);
     FroalaEditor.DefineIcon("insertFiles", { SRC: "/image/speaker_Icon.png", ALT: "audioIcon", template: "image" });
-    // FroalaEditor.DefineIcon('insertFiles', {NAME: 'info', SVG_KEY: 'insertAudio'});
     this.state = {
       editor1: "",
       editor2: "",
@@ -37,6 +40,57 @@ export class Editor extends Component {
       editor14: "",
       editor15: "",
       editor16: "",
+    }
+    this.config = {
+      editorClass: "editor_try",
+      quickInsertEnabled: false,
+      imageUploadURL: "/api/cardset/imageUpload",
+      fileUploadURL: "/api/cardset/fileUpload",
+      //   videoUploadURL: "/api/cardset/videoUpload",
+      filesManagerUploadURL: "/api/cardset/fileUpload",
+      saveParam: "content",
+      width: "auto",
+      theme: "gray",
+      tabSpaces: 0,
+      toolbarContainer: "#toolbarContainer",
+      attribution: false,
+      charCounterCount: false,
+      videoAllowedTypes: ["mp3"],
+
+      //   videoDefaultWidth: "90%",
+      language: "ko",
+      toolbarButtons: [
+        "fullscreen",
+        "bold",
+        "italic",
+        "underline",
+        "subscript",
+        "superscript",
+        "fontFamily",
+        "fontSize",
+        "color",
+        "textColor",
+        "align",
+        "formatOL",
+        "formatUL",
+        "outdent",
+        "indent",
+        "insertLink",
+        "insertImage",
+        "insertVideo",
+        // "insertFile",
+        "insertFiles",
+        "insertTable",
+        "emoticons",
+        "specialCharacters",
+        "insertHR",
+        "selectAll",
+        "clearFormatting",
+        "help",
+        "html",
+        "undo",
+        "redo",
+      ],
     };
   }
 
@@ -183,60 +237,12 @@ export class Editor extends Component {
     console.log(face2_array);
     const values = { face1: face1_array, face2: face2_array };
     this.props.onFinish(values);
+
+    this.props.setEditorOn('')
   };
 
   render() {
-    const config = {
-      editorClass: "editor_try",
-      quickInsertEnabled: false,
-      imageUploadURL: "/api/cardset/imageUpload",
-      fileUploadURL: "/api/cardset/fileUpload",
-      //   videoUploadURL: "/api/cardset/videoUpload",
-      filesManagerUploadURL: "/api/cardset/fileUpload",
-      saveParam: "content",
-      width: "auto",
-      theme: "gray",
-      tabSpaces: 0,
-      toolbarContainer: "#toolbarContainer",
-      attribution: false,
-      charCounterCount: false,
-      videoAllowedTypes: ["mp3"],
-
-      //   videoDefaultWidth: "90%",
-      language: "ko",
-      toolbarButtons: [
-        "fullscreen",
-        "bold",
-        "italic",
-        "underline",
-        "subscript",
-        "superscript",
-        "fontFamily",
-        "fontSize",
-        "color",
-        "textColor",
-        "align",
-        "formatOL",
-        "formatUL",
-        "outdent",
-        "indent",
-        "insertLink",
-        "insertImage",
-        "insertVideo",
-        // "insertFile",
-        "insertFiles",
-        "insertTable",
-        "emoticons",
-        "specialCharacters",
-        "insertHR",
-        "selectAll",
-        "clearFormatting",
-        "help",
-        "html",
-        "undo",
-        "redo",
-      ],
-    };
+    
 
     const editorList = this.props.nicks.map((item, index) => {
       return (
@@ -246,7 +252,7 @@ export class Editor extends Component {
           </label>
           <FroalaEditorComponent
             tag="textarea"
-            config={config}
+            config={this.config}
             model={this.state["editor" + (index + 1).toString()]}
             onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
           />
@@ -266,7 +272,7 @@ export class Editor extends Component {
               <Button size="small" onClick={this.handleSubmit} id="saveButton" style={{ fontSize: "0.8rem", marginRight:"5px" }}>
                 저장
               </Button>
-              <Button size="small" onClick={() => console.log("cancel clicked!!!")} id="cancelButton" style={{ fontSize: "0.8rem" }}>
+              <Button size="small" onClick={() => this.props.setEditorOn('')} id="cancelButton" style={{ fontSize: "0.8rem" }}>
                 취소
               </Button>
             </div>

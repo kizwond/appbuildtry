@@ -125,7 +125,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
     }
     const editor = (
       <>
-        <Editor nicks={nicks} onFinish={onFinish} cardtype_info={cardtype_info} />
+        <Editor nicks={nicks} onFinish={onFinish} setEditorOn={setEditorOn} cardtype_info={cardtype_info} />
       </>
     );
 
@@ -209,9 +209,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
     }
   }
   if (cards) {
-    console.log("????????????????????????????????????????????????????????")
-    console.log(cards)
-    console.log(first_index)
+    console.log("????????????????????????????????????????????????????????");
+    console.log(cards);
+    console.log(first_index);
     var contents = cards.map((content) => {
       return (
         <>
@@ -252,7 +252,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
         </>
       );
     });
-  } 
+  }
   const onClickCard = (card_id) => {
     console.log("cardClicked!!!!!");
     console.log(card_id);
@@ -272,6 +272,21 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
         console.log(error);
       });
   };
+
+
+  const handleReload = (e) => {
+    e.preventDefault();
+    e.returnValue = ""
+  }
+  useEffect(() => {
+    
+      window.addEventListener('beforeunload', handleReload);
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleReload);
+    }
+  }, [])
+
   return (
     <>
       <Desktop>
@@ -287,7 +302,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
         </div>
       </Desktop>
       <Tablet>
-        <div style={{ width: "90%", margin: "auto", marginBottom: "100px", marginTop:"50px" }}>
+        <div style={{ width: "90%", margin: "auto", marginBottom: "100px", marginTop: "50px" }}>
           <div>selected index id : {first_index}</div>
           <div>{contents}</div>
           <div>{editorOn}</div>

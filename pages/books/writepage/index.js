@@ -71,7 +71,7 @@ const Writeanother = () => {
       </Head>
       <Layout>
         {category.length >= 1 && (
-          <StyledRowMaxWidth>
+          <StyledRowMaxWidth top>
             <StyledSpace>
               <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
               <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />

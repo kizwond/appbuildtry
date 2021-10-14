@@ -11,6 +11,7 @@ import Layout from '../../../components/layout/Layout';
 import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
 import StudyBooksTable from '../../../components/books/studypage/booksTable/StudyBooksTable';
 import StudyFavoriteBooksTable from '../../../components/books/studypage/booksTable/StudyFavoriteBooksTable';
+import { StyledRowMaxWidth } from '../../../components/common/styledComponent/page';
 
 const Writeanother = () => {
   const router = useRouter();
@@ -84,17 +85,17 @@ const Writeanother = () => {
       </Head>
       <Layout>
         {category.length >= 1 && (
-          <StyledRow>
+          <StyledRowMaxWidth top>
             <StyledSpace>
               <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
               <Button onClick={sesstionStart} size="small">
                 세션 시작
               </Button>
             </StyledSpace>
-          </StyledRow>
+          </StyledRowMaxWidth>
         )}
 
-        <StyledRow>
+        <StyledRowMaxWidth>
           <Col span={24}>
             <StudyFavoriteBooksTable
               category={category}
@@ -121,7 +122,7 @@ const Writeanother = () => {
               changeSelectedBooks={changeSelectedBooks}
             />
           </Col>
-        </StyledRow>
+        </StyledRowMaxWidth>
       </Layout>
     </>
   );
@@ -134,9 +135,4 @@ const StyledSpace = styled(Space)`
     font-size: 0.8rem;
   }
   padding: 12px 12px 0 12px;
-`;
-
-const StyledRow = styled(Row)`
-  max-width: 1440px;
-  margin: 0 auto;
 `;

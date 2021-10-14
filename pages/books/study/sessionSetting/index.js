@@ -246,12 +246,17 @@ const StyledDiv = styled.div`
 
   margin: 0 auto;
   max-width: 1440px;
+
   display: flex;
-  @media screen and (min-width: 992px) {
+    @media screen and (min-width: 992px) {
     flex-direction: row;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
     flex-direction: column;
+  }
+
+  @media screen and (min-width: 100px) and (max-width: 767px) {
+    margin-top: 40px;
   }
 `;
 const StyledDivFirst = styled.div`

@@ -248,19 +248,19 @@ const StyledDiv = styled.div`
   max-width: 1440px;
 
   display: flex;
-    @media screen and (min-width: 992px) {
+  @media screen and (min-width: 992px) {
     flex-direction: row;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
     flex-direction: column;
   }
 
-  @media screen and (min-width: 100px) and (max-width: 767px) {
-    margin-top: 40px;
+  @media screen and (min-width: 100px) and (max-width: 768px) {
+    padding-top: 40px;
   }
 `;
 const StyledDivFirst = styled.div`
-  min-width: 320px;
+  min-width: 358px;
   & * {
     font-size: 0.7rem;
   }
@@ -272,17 +272,18 @@ const StyledDivFirst = styled.div`
   }
   & .ant-input-number-sm {
     font-size: 0.7rem;
-    width: 46px;
+    width: 32px;
   }
   & .ant-input-number-sm input {
     height: 16px;
     padding: 0 3px;
   }
   & .ant-input-number-handler-wrap {
-    width: 15px;
+    width: 0px;
+    visibility: hidden;
   }
   @media screen and (min-width: 992px) {
-    max-width: 350px;
+    max-width: 378px;
     min-height: 94vh;
     border-right: 1px solid lightgray;
   }
@@ -290,7 +291,7 @@ const StyledDivFirst = styled.div`
   }
 `;
 const StyledDivSecond = styled.div`
-  min-width: 320px;
+  min-width: 358px;
   & * {
     font-size: 0.7rem;
   }

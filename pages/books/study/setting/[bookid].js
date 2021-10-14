@@ -120,8 +120,8 @@ const MainWrapper = styled.div`
   padding: 10px 0 0;
   position: relative;
 
-  @media screen and (min-width: 100px) and (max-width: 767px) {
-    margin-top: 40px;
+  @media screen and (min-width: 100px) and (max-width: 768px) {
+    padding-top: 40px;
   }
 
   .main-menu > div,

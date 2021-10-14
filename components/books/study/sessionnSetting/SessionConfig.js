@@ -15,6 +15,7 @@ import UseCardTypesTag from "./session-config/UseCardTypesTag";
 import UseStatusTag from "./session-config/UseStatusTag";
 import StudyTimeCondition from "./session-config/StudyTimeCondition";
 import StyledDatePicker from "./session-config/StyledDatePicker";
+import NumStartCards from "./session-config/NumStartCards";
 
 const menuTitleColSize = 3;
 const menuColSize = 21;
@@ -66,6 +67,24 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
   const [examSortOption, setExamSortOption] = useState("");
   const [examUseCardType, setExamUseCardType] = useState([]);
   const [examUseStatus, setExamUseStatus] = useState([]);
+  // 고급필터
+  const [advancedFilterOnOff, setAdvancedFilterOnOff] = useState("");
+  const [cardMakerOnOff, setCardMakerOnOff] = useState("");
+  const [cardMaker, setCardMaker] = useState([]);
+  const [examResultOnOff, setExamResultOnOff] = useState("");
+  const [examResult, setExamResult] = useState([]);
+  const [levelOnOff, setLevelOnOff] = useState("");
+  const [level, setLevel] = useState([]);
+  const [makerFlagOnOff, setMakerFlagOnOff] = useState("");
+  const [makerFlag, setMakerFlag] = useState([]);
+  const [recentDifficultyOnOff, setRecentDifficultyOnOff] = useState("");
+  const [recentDifficulty, setRecentDifficulty] = useState([]);
+  const [recentStudyTimeOnOff, setRecentStudyTimeOnOff] = useState("");
+  const [recentStudyTime, setRecentStudyTime] = useState([]);
+  const [studyTimesOnOff, setStudyTimesOnOff] = useState("");
+  const [studyTimes, setStudyTimes] = useState([]);
+  const [userFlagOnOff, setUserFlagOnOff] = useState("");
+  const [userFlag, setUserFlag] = useState([]);
 
   const { data, loading, error } = useQuery(GET_SESSTION_CONFIG, {
     variables: {
@@ -74,9 +93,28 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
     onCompleted: (received_data) => {
       if (received_data.session_getSessionConfig.status === "200") {
         const sessionconfigs = received_data.session_getSessionConfig.sessionConfigs[0];
+        const { cardMaker, examResult, level, onOff, recentDifficulty, recentStudyTime, studyTimes, userFlag } = sessionconfigs.advancedFilter;
         console.log({ received_data });
         setMode(received_data.session_getSessionConfig.sessionConfigs[0].studyMode);
         setSessionConfig(received_data.session_getSessionConfig.sessionConfigs[0]);
+        //고급필터
+        setAdvancedFilterOnOff(onOff);
+        setCardMakerOnOff(cardMaker.onOff);
+        setCardMaker(cardMaker.value);
+        setExamResultOnOff(examResult.onOff);
+        setExamResult(examResult.value);
+        setLevelOnOff(level.onOff);
+        setLevel(level.value);
+        setMakerFlagOnOff(makerFlag.onOff);
+        setMakerFlag(makerFlag.value);
+        setRecentDifficultyOnOff(recentDifficulty.onOff);
+        setRecentDifficulty(recentDifficulty.value);
+        setRecentStudyTimeOnOff(recentStudyTime.onOff);
+        setRecentStudyTime(recentStudyTime.value);
+        setStudyTimesOnOff(studyTimes.onOff);
+        setStudyTimes(studyTimes.value);
+        setUserFlagOnOff(userFlag.onOff);
+        setUserFlag(userFlag.value);
 
         // 아래부터 state 쪼개기 작업
         if (sessionconfigs.flip) {
@@ -196,7 +234,23 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
         setExamUseStatus(useStatus);
         break;
       default:
-        console.log("UseCardType Error");
+        console.log("UseStatus Error");
+        break;
+    }
+  }, []);
+  const changeNumStartCards = useCallback((mode, NumStartCards) => {
+    switch (mode) {
+      case "read":
+        setReadNumStartCards(NumStartCards);
+        break;
+      case "flip":
+        setFlipNumStartCards(NumStartCards);
+        break;
+      case "exam":
+        setExamNumStartCards(NumStartCards);
+        break;
+      default:
+        console.log("NumStartCards Error");
         break;
     }
   }, []);
@@ -348,144 +402,74 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                 <UseStatusTag mode={mode} changeUseStatus={changeUseStatus} selected={[readUseStatus, flipUseStatus, examUseStatus]} />
               </div>
               {(mode === "read" ? readUseStatus.includes("ing") : mode === "flip" ? flipUseStatus.includes("ing") : mode === "exam" ? examUseStatus.includes("ing") : null) && (
-                <>
-                  <div
-                    style={{
-                      background: "#e6f7ff",
-                      paddingTop: "5px",
-                      paddingBottom: "5px",
-                      paddingLeft: "5px",
-                      paddingRight: "5px",
-                      borderTopRightRadius: "5px",
-                      borderBottomLeftRadius: "5px",
-                      borderBottomRightRadius: "5px",
-                    }}
-                  >
-                    <StudyTimeCondition
-                      mode={mode}
-                      selected={[readNeedStudyTimeCondition, flipNeedStudyTimeCondition, examNeedStudyTimeCondition]}
-                      changeNeedStudyTimeCondition={changeNeedStudyTimeCondition}
-                      changeNeedStudyTimeRange={changeNeedStudyTimeRange}
-                      selectedRange={[readNeedStudyTimeRange, flipNeedStudyTimeRange, examNeedStudyTimeRange]}
-                    />
-                  </div>
-                </>
+                <StyledDivToggleStudying>
+                  <StudyTimeCondition
+                    mode={mode}
+                    selected={[readNeedStudyTimeCondition, flipNeedStudyTimeCondition, examNeedStudyTimeCondition]}
+                    changeNeedStudyTimeCondition={changeNeedStudyTimeCondition}
+                    changeNeedStudyTimeRange={changeNeedStudyTimeRange}
+                    selectedRange={[readNeedStudyTimeRange, flipNeedStudyTimeRange, examNeedStudyTimeRange]}
+                  />
+                </StyledDivToggleStudying>
               )}
             </StyledDivConfigCol>
           </StyledDivConfigRow>
 
-          <Row align="top" gutter={8}>
-            <Col {...breakPoint.menuTitleCol}>
-              <StyledSpanMenuTitle
-                style={{
-                  color: isOnNumStartCards ? "black" : "#0000003f",
-                  marginRight: "10px",
-                }}
-              >
-                학습량
-              </StyledSpanMenuTitle>
-
+          <StyledDivConfigRow>
+            <StyledDivConfigColStartCards
+              onOff={mode === "read" ? readNumStartCards.onOff === "on" : mode === "flip" ? flipNumStartCards.onOff === "on" : mode === "exam" ? examNumStartCards.onOff === "on" : new Error("잘못된 모드")}
+            >
+              <span className="ConifgTitle">학습량</span>
               <Switch
+                className="TitleSwitchButton"
                 size="small"
-                checked={isOnNumStartCards}
+                checked={mode === "read" ? readNumStartCards.onOff === "on" : mode === "flip" ? flipNumStartCards.onOff === "on" : mode === "exam" ? examNumStartCards.onOff === "on" : new Error("잘못된 모드")}
                 onChange={(checked) => {
+                  const selectedNumCard = mode === "read" ? readNumStartCards : mode === "flip" ? flipNumStartCards : mode === "exam" ? examNumStartCards : new Error("잘못된 모드");
                   if (checked) {
-                    onChangeValue("on", "numStartCards", "onOff");
+                    const copyNumStartCards = { ...selectedNumCard, onOff: "on" };
+                    changeNumStartCards(mode, copyNumStartCards);
                   } else {
-                    onChangeValue("off", "numStartCards", "onOff");
+                    const copyNumStartCards = { ...selectedNumCard, onOff: "off" };
+                    changeNumStartCards(mode, copyNumStartCards);
                   }
                 }}
               />
-            </Col>
-            <Col {...breakPoint.menuCol}>
-              <Tag.CheckableTag checked size="small">
-                <span style={{ marginRight: "4px" }}>미학습</span>
-                <InputNumber
-                  disabled={!isOnNumStartCards}
-                  min={0}
-                  size="small"
-                  value={sessionConfig[mode]?.numStartCards.yet}
-                  onChange={(value) => {
-                    onChangeValue(value, "numStartCards", "yet");
-                  }}
-                />
-              </Tag.CheckableTag>
-              <Tag.CheckableTag checked>
-                학습중
-                <InputNumber
-                  disabled={!isOnNumStartCards}
-                  size="small"
-                  value={sessionConfig[mode]?.numStartCards.ing}
-                  onChange={(value) => {
-                    onChangeValue(value, "numStartCards", "ing");
-                  }}
-                />
-              </Tag.CheckableTag>
-
-              <Tag.CheckableTag checked>
-                학습완료
-                <InputNumber
-                  disabled={!isOnNumStartCards}
-                  size="small"
-                  value={sessionConfig[mode]?.numStartCards.completed}
-                  onChange={(value) => {
-                    onChangeValue(value, "numStartCards", "completed");
-                  }}
-                />
-              </Tag.CheckableTag>
-              <Tag.CheckableTag checked>
-                학습보류
-                <InputNumber
-                  disabled={!isOnNumStartCards}
-                  size="small"
-                  value={sessionConfig[mode]?.numStartCards.hold}
-                  onChange={(value) => {
-                    onChangeValue(value, "numStartCards", "hold");
-                  }}
-                />
-              </Tag.CheckableTag>
-            </Col>
-          </Row>
-        </StyledDivConfigWrapper>
-        <div
+            </StyledDivConfigColStartCards>
+            <StyledDivConfigCol>
+              <NumStartCards mode={mode} selected={[readNumStartCards, flipNumStartCards, examNumStartCards]} changeNumStartCards={changeNumStartCards} />
+            </StyledDivConfigCol>
+          </StyledDivConfigRow>
+          {/* <div
           style={{
             border: isOnAdvancedFilter ? "1px solid lightgrey" : "none",
             backgroundColor: isOnAdvancedFilter ? "#FFE4D3" : "#FFF",
             borderRadius: "5px",
             padding: "5px",
           }}
-        >
-          <Row align="top" gutter={8} style={{ marginBottom: "4px" }}>
-            <Col span={menuTitleColSize}>
-              <span
-                style={{
-                  fontSize: "12px",
-                  fontWeight: isOnAdvancedFilter ? "700" : "400",
-                  color: isOnAdvancedFilter ? "black" : "#0000003f",
-                }}
-              >
-                고급필터
-              </span>
-            </Col>
-            <Col span={3}>
+        > */}
+          <StyledDivTitleRow>
+            <StyledDivConfigColStartCards onOff={advancedFilterOnOff === "on"}>
+              <span className="ConifgTitle">고급필터</span>
               <Switch
+                className="TitleSwitchButton"
                 size="small"
-                checked={isOnAdvancedFilter}
+                checked={advancedFilterOnOff === "on" ? true : advancedFilterOnOff === "off" ? false : new Error("고급필터 스위치 에러")}
                 onChange={(checked) => {
                   if (checked) {
-                    onChangeValueAnother("on", sessionConfig, "advancedFilter", "onOff");
+                    setAdvancedFilterOnOff("on");
                     if (counterForButtonClick > 0) {
                       onToggleIsAFilter(true);
                     }
                   } else {
-                    onChangeValueAnother("off", sessionConfig, "advancedFilter", "onOff");
+                    setAdvancedFilterOnOff("off");
                     onToggleIsAFilter(false);
                   }
                 }}
               />
-            </Col>
-            {isOnAdvancedFilter && (
-              <Col>
+            </StyledDivConfigColStartCards>
+            {advancedFilterOnOff === "on" && (
+              <StyledDivConfigCol>
                 <GetFilteredIndexButton
                   book_ids={book_ids}
                   advancedFilter={sessionConfig.advancedFilter}
@@ -496,19 +480,19 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                   onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
                   onChangeAFButtonClick={onChangeAFButtonClick}
                 />
-              </Col>
+              </StyledDivConfigCol>
             )}
-          </Row>
-          {isOnAdvancedFilter && (
+          </StyledDivTitleRow>
+          {advancedFilterOnOff === "on" && (
             <>
               <Card size="small">
                 <Row>
                   <Col span={4}>
                     <span
-                      style={{
-                        fontSize: "11px",
-                        fontWeight: "600",
-                      }}
+                    // style={{
+                    //   fontSize: "11px",
+                    //   fontWeight: "600",
+                    // }}
                     >
                       사용자 플래그 필터
                     </span>
@@ -1054,7 +1038,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                         />
                       </Col>
 
-                      <Col span={22}>
+                      <Col span={24}>
                         <Row gutter={[8, 10]}>
                           {isOnRecentDifficultyFilter ? (
                             <>
@@ -1287,7 +1271,8 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
               </Card>
             </>
           )}
-        </div>
+          {/* </div> */}
+        </StyledDivConfigWrapper>
       </Card>
     );
   }
@@ -1322,35 +1307,71 @@ const StyledDivConfigRow = styled.div`
   flex-wrap: nowrap;
   align-items: center;
   & > div:nth-child(1) {
-    flex: 0 160px;
+    flex: none;
+    width: 110px;
   }
-  & > div {
-    width: 100%;
+  & > div:nth-child(2) {
+    flex: auto;
   }
 
   @media screen and (min-width: 992px) {
     flex-direction: column;
-    & > div:nth-child(1) {
+    align-items: flex-start;
+    justify-content: center;
+    & > div:nth-child(2) {
       flex: auto;
+      width: 100%;
     }
   }
-  @media screen and (max-width: 575px) {
+  @media screen and (max-width: 485px) {
     flex-direction: column;
-    & > div:nth-child(1) {
-      flex: auto;
+    align-items: flex-start;
+    justify-content: center;
+    & > div:nth-child(2) {
+      flex: none;
+      width: 100%;
     }
   }
 `;
-const StyledDivConfigCol = styled.div`
+const StyledDivTitleRow = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  & > div:nth-child(1) {
+    flex: none;
+    width: 110px;
+  }
+  & > div:nth-child(2) {
+    flex: auto;
+  }
+`;
+
+const StyledDivConfigCol = styled.div`
+  /* display: flex;
+  flex-direction: column; */
   & .ConifgTitle {
     font-size: 0.8rem;
     font-weight: 700;
   }
 `;
 
-const StyledSpanMenuTitle = styled.span`
-  font-size: 0.8rem !important;
-  font-weight: 700;
+const StyledDivConfigColStartCards = styled(StyledDivConfigCol)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  & .ConifgTitle {
+    color: ${(props) => (props.onOff ? "black" : "#0000003f")};
+    margin-right: 10px;
+  }
+  & .TitleSwitchButton {
+    right: 25px;
+  }
+`;
+
+const StyledDivToggleStudying = styled.div`
+  background-color: #e6f7ff;
+  padding: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 `;

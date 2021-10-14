@@ -4,6 +4,18 @@ import styled from "styled-components";
 import moment from "moment";
 import StyledDatePicker from "./StyledDatePicker";
 
+const breakPoint = [
+  {
+    span: 4,
+  },
+  {
+    span: 6,
+  },
+  {
+    span: 8,
+  },
+];
+
 const StudyTimeCondition = ({ mode, selected, changeNeedStudyTimeCondition, changeNeedStudyTimeRange, selectedRange }) => {
   const [read, flip, exam] = selected;
   const [readRange, flipRange, examRange] = selectedRange;
@@ -13,16 +25,16 @@ const StudyTimeCondition = ({ mode, selected, changeNeedStudyTimeCondition, chan
   return (
     <Radio.Group onChange={(e) => changeNeedStudyTimeCondition(mode, e.target.value)} value={selectedSTC} size="small">
       <StyledRow wrap={false}>
-        <Col span={4}>
+        <Col {...breakPoint[0]}>
           <StyledRadio value="all">전체</StyledRadio>
         </Col>
-        <Col span={5}>
+        <Col {...breakPoint[1]}>
           <StyledRadio value="untilNow">현재 이전</StyledRadio>
         </Col>
-        <Col span={5}>
+        <Col {...breakPoint[1]}>
           <StyledRadio value="untilToday">오늘 이전</StyledRadio>
         </Col>
-        <Col span={10}>
+        <Col {...breakPoint[2]}>
           <Row>
             <StyledRadio value="custom">직접입력</StyledRadio>
           </Row>
@@ -73,6 +85,12 @@ const StyledRow = styled(Row)`
     margin-right: 2px;
   }
   & .ant-picker-input > input {
-    font-size: 0.7rem;
+    font-size: 10px;
+  }
+  & .anticon-swap-right > svg {
+    font-size: 14px;
+  }
+  & .ant-picker.ant-picker-range.ant-picker-small {
+    max-width: 140px;
   }
 `;

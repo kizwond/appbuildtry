@@ -14,7 +14,7 @@ const NumStartCards = ({ mode, selected, changeNumStartCards }) => {
   return (
     <div>
       {tags.map((tag) => (
-        <StyledTag key={tag.option}>
+        <StyledDiv key={tag.option}>
           {`${tag.title}: `}
           <InputNumber
             disabled={selectedNum.onOff === "off"}
@@ -25,7 +25,7 @@ const NumStartCards = ({ mode, selected, changeNumStartCards }) => {
               changeNumStartCards(mode, copy);
             }}
           ></InputNumber>
-        </StyledTag>
+        </StyledDiv>
       ))}
     </div>
   );
@@ -33,7 +33,7 @@ const NumStartCards = ({ mode, selected, changeNumStartCards }) => {
 
 export default memo(NumStartCards);
 
-const StyledTag = styled.div`
+const StyledDiv = styled.div`
   display: inline-block;
   margin: 4px;
 `;

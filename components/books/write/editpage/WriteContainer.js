@@ -262,11 +262,16 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
     console.log(cards);
     console.log(first_index);
     var contents = cards.map((content) => {
+      if(content._id === cardId){
+        var borderLeft = "2px solid blue"
+      } else {
+        borderLeft = "1px solid lightgrey"
+      }
       return (
         <>
           {content.card_info.cardtype === "read" && (
             <>
-              <div style={{ border: "1px solid lightgrey", marginBottom: "5px" }}>
+              <div style={{ border: "1px solid lightgrey", marginBottom: "5px", borderLeft : borderLeft }}>
                 <div onClick={() => onClickCard(content._id)} >
                   <div>
                     {content.contents.mycontents_id.face1.map((item) => (
@@ -304,7 +309,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
 
           {content.card_info.cardtype === "flip" && (
             <>
-             <div style={{ border: "1px solid lightgrey", marginBottom: "5px" }}>
+             <div style={{ border: "1px solid lightgrey", marginBottom: "5px", borderLeft : borderLeft  }}>
               <div onClick={() => onClickCard(content._id)}>
                 <div>
                   {content.contents.mycontents_id.face1.map((item) => (
@@ -326,7 +331,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
               {content._id === cardId && (
                 <>
                   <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
-                    <Select size="small" defaultValue="default" style={{ width: 100, fontSize: "0.75rem" }} onChange={handleChange}>
+                    <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 100, fontSize: "0.75rem" }} onChange={handleChange}>
                       <Option value="default">카드타입선택</Option>
                       {cardTypeList}
                     </Select>

@@ -44,7 +44,7 @@ const StudyTimeCondition = ({ mode, selected, changeNeedStudyTimeCondition, chan
                 <StyledDatePicker
                   placeholder={["시작", "종료"]}
                   format="MM-DD"
-                  value={[selectedRg[0] == 0 ? moment() : moment().add(selectedRg[1], "days"), selectedRg[1] == 0 ? moment() : moment().add(selectedRg[1], "days")]}
+                  value={[selectedRg[0] == 0 ? moment() : moment().add(selectedRg[0], "days"), selectedRg[1] == 0 ? moment() : moment().add(selectedRg[1], "days")]}
                   onChange={(date, dateString) => {
                     const now = new Date();
                     const year = now.getFullYear();
@@ -55,8 +55,8 @@ const StudyTimeCondition = ({ mode, selected, changeNeedStudyTimeCondition, chan
                     const startYear = date[0]._d.getFullYear();
                     const selectedStartDate = moment(`${startYear}-${dateString[0]}`, "YYYY-MM-DD");
                     const differenceFromStart = moment.duration(selectedStartDate.diff(today)).asDays();
-                    const endYear = date[0]._d.getFullYear();
-                    const selectedEndDate = moment(`${endYear}-${dateString[0]}`, "YYYY-MM-DD");
+                    const endYear = date[1]._d.getFullYear();
+                    const selectedEndDate = moment(`${endYear}-${dateString[1]}`, "YYYY-MM-DD");
                     const differenceFromEnd = moment.duration(selectedEndDate.diff(today)).asDays();
 
                     changeNeedStudyTimeRange(mode, [differenceFromStart, differenceFromEnd]);

@@ -12,7 +12,7 @@ const UseCardTypeTag = ({ mode, selected, changeUseCardType }) => {
   return (
     <div>
       {tags.map((tag) => (
-        <StyledTag key={tag.option} checked={selectedUseCardType.includes(tag.option)}>
+        <StyledDiv key={tag.option} checked={selectedUseCardType.includes(tag.option)}>
           <Tag.CheckableTag
             checked={selectedUseCardType.includes(tag.option)}
             onChange={(checked) => {
@@ -28,7 +28,7 @@ const UseCardTypeTag = ({ mode, selected, changeUseCardType }) => {
           >
             {tag.title}
           </Tag.CheckableTag>
-        </StyledTag>
+        </StyledDiv>
       ))}
     </div>
   );
@@ -36,7 +36,7 @@ const UseCardTypeTag = ({ mode, selected, changeUseCardType }) => {
 
 export default memo(UseCardTypeTag);
 
-const StyledTag = styled.div`
+const StyledDiv = styled.div`
   display: inline-block;
   & > span {
     border: ${(props) => (props.checked ? "1px solid #1890ff" : "1px solid #d9d9d9")};

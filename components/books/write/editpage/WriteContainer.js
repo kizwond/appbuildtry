@@ -3,9 +3,10 @@ import { GetCardTypeSet, CardTypeCreate } from "../../../../graphql/query/cardty
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FloatingMenu from "./sidemenu/FloatingMenu";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
-import { Input, Form, Button } from "antd";
+import { Input, message, Button, Select } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
 import Editor from "./Editor";
+import EditorFromCard from "./EditorFromCard";
 import axios from "axios";
 import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
 import { useMediaQuery } from "react-responsive";
@@ -22,6 +23,8 @@ const Mobile = ({ children }) => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
   return isMobile ? children : null;
 };
+
+const { Option } = Select;
 
 const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
   const ISSERVER = typeof window === "undefined";
@@ -54,7 +57,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
   const [cardSetId, setCardSetId] = useState();
   const [cards, setCards] = useState([]);
   const [editorOn, setEditorOn] = useState();
+  const [editorOnFromCard, setEditorOnFromCard] = useState();
   const [cardId, setCardId] = useState();
+  const [selectedCardType, setSelectedCardType] = useState();
 
   const [face1_input1, set_face1_input1] = useState();
   const [face1_input2, set_face1_input2] = useState();
@@ -90,7 +95,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
     }
   }, [data1, indexChanged, first_index]);
 
-  const cardTypeInfo = (cardtype_info) => {
+  const cardTypeInfo = (cardtype_info, from) => {
     setcardTypeInfos(cardtype_info);
     console.log(cardtype_info);
     const num_face1 = cardtype_info.num_of_row.face1;
@@ -125,14 +130,23 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
       </>
     );
 
+    const editorFromCard = (
+      <>
+        <EditorFromCard nicks={nicks} onFinish={onFinish} setEditorOnFromCard={setEditorOnFromCard} cardtype_info={cardtype_info} />
+      </>
+    );
+
     // const editor = (
     //   <>
     //     {face1Editor}
     //     {face2.length > 0 && face2Editor}
     //   </>
     // );
-
-    setEditorOn(editor);
+    if (from === "normal") {
+      setEditorOn(editor);
+    } else if (from === "inCard") {
+      setEditorOnFromCard(editorFromCard);
+    }
   };
 
   const onFinish = (values) => {
@@ -204,6 +218,45 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
       console.log(error);
     }
   }
+
+  if (cardTypes) {
+    var cardTypeList = cardTypes.map((cardType) => {
+      return (
+        <>
+          <Option value={cardType.cardtype_info.name}>{cardType.cardtype_info.name}</Option>
+        </>
+      );
+    });
+  }
+
+  function handleChange(value) {
+    console.log(`selected ${value}`);
+    if(value !== "default"){
+      const hello = cardTypes.filter((item) => item.cardtype_info.name === value);
+      console.log(hello);
+      setSelectedCardType(hello[0].cardtype_info);
+    }
+  }
+
+  const warning = () => {
+    message.warning({ content: '카드타입을 선택해 주세요',  duration: 0.7 });
+  };
+
+  function onClickCardAdd() {
+    if(selectedCardType === undefined){
+      warning()
+    } else {
+      console.log("----------------------", selectedCardType);
+      cardTypeInfo(selectedCardType, "inCard");
+    }
+  }
+  if (selectedCardType) {
+    console.log(selectedCardType);
+    var selectedCardTypeOption = selectedCardType.name;
+  } else {
+    selectedCardTypeOption = "default";
+  }
+
   if (cards) {
     console.log("????????????????????????????????????????????????????????");
     console.log(cards);
@@ -212,38 +265,86 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
       return (
         <>
           {content.card_info.cardtype === "read" && (
-            <div onClick={() => onClickCard(content._id)} style={{ border: "1px solid lightgrey", marginBottom: "5px" }}>
-              <div>
-                {content.contents.mycontents_id.face1.map((item) => (
+            <>
+              <div style={{ border: "1px solid lightgrey", marginBottom: "5px" }}>
+                <div onClick={() => onClickCard(content._id)} >
+                  <div>
+                    {content.contents.mycontents_id.face1.map((item) => (
+                      <>
+                        <div>
+                          <FroalaEditorView model={item} />
+                        </div>
+                      </>
+                    ))}
+                  </div>
+                </div>
+                {content._id === cardId && (
                   <>
-                    <div>
-                      <FroalaEditorView model={item} />
+                    <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                      <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 100, fontSize: "0.75rem" }} onChange={handleChange}>
+                        <Option value="default">카드타입선택</Option>
+                        {cardTypeList}
+                      </Select>
+                      <div>
+                        <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
+                          카드추가
+                        </Button>
+                      </div>
                     </div>
                   </>
-                ))}
+                )}
               </div>
-            </div>
+              {content._id === cardId && (
+                <>
+                  <div>{editorOnFromCard}</div>
+                </>
+              )}
+            </>
           )}
 
           {content.card_info.cardtype === "flip" && (
-            <div onClick={() => onClickCard(content._id)} style={{ border: "1px solid lightgrey", marginBottom: "5px" }}>
-              <div>
-                {content.contents.mycontents_id.face1.map((item) => (
-                  <>
-                    <div>
-                      <FroalaEditorView model={item} />
-                    </div>
-                  </>
-                ))}
-                {content.contents.mycontents_id.face2.map((item) => (
-                  <>
-                    <div>
-                      <FroalaEditorView model={item} />
-                    </div>
-                  </>
-                ))}
+            <>
+             <div style={{ border: "1px solid lightgrey", marginBottom: "5px" }}>
+              <div onClick={() => onClickCard(content._id)}>
+                <div>
+                  {content.contents.mycontents_id.face1.map((item) => (
+                    <>
+                      <div>
+                        <FroalaEditorView model={item} />
+                      </div>
+                    </>
+                  ))}
+                  {content.contents.mycontents_id.face2.map((item) => (
+                    <>
+                      <div>
+                        <FroalaEditorView model={item} />
+                      </div>
+                    </>
+                  ))}
+                </div>
               </div>
-            </div>
+              {content._id === cardId && (
+                <>
+                  <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                    <Select size="small" defaultValue="default" style={{ width: 100, fontSize: "0.75rem" }} onChange={handleChange}>
+                      <Option value="default">카드타입선택</Option>
+                      {cardTypeList}
+                    </Select>
+                    <div>
+                      <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
+                        카드추가
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
+              </div>
+              {content._id === cardId && (
+                <>
+                  <div>{editorOnFromCard}</div>
+                </>
+              )}
+            </>
           )}
         </>
       );
@@ -253,6 +354,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
     console.log("cardClicked!!!!!");
     console.log(card_id);
     setCardId(card_id);
+    setEditorOnFromCard("");
+    setEditorOn("");
   };
 
   const onClickTest = () => {
@@ -269,19 +372,17 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
       });
   };
 
-
   const handleReload = (e) => {
     e.preventDefault();
-    e.returnValue = ""
-  }
+    e.returnValue = "";
+  };
   useEffect(() => {
-    
-      window.addEventListener('beforeunload', handleReload);
-    
+    window.addEventListener("beforeunload", handleReload);
+
     return () => {
-      window.removeEventListener('beforeunload', handleReload);
-    }
-  }, [])
+      window.removeEventListener("beforeunload", handleReload);
+    };
+  }, []);
 
   return (
     <>

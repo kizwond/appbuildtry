@@ -23,7 +23,7 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexS
   const selectCardType = (cardtype_info) => {
     console.log(cardtype_info);
     console.log("clicked!!!");
-    cardTypeInfo(cardtype_info);
+    cardTypeInfo(cardtype_info,"normal");
     sessionStorage.setItem("cardtype", cardtype_info.cardtype);
   };
   return (

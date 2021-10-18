@@ -38,70 +38,18 @@ const SessionSetting = () => {
     },
   });
 
-  const submitCreateSessionConfigToServer = async (_sessionConfig, _mode) => {
+  const submitCreateSessionConfigToServer = async (_sessionConfig) => {
     const keysArray = Object.keys(checkedKeys);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
       index_ids: isAdvancedFilteredCardListShowed ? advancedFilteredCheckedIndexes[item] : checkedKeys[item],
     }));
-    const selectedMode = _sessionConfig[_mode];
     try {
       await session_createSession({
         variables: {
           forCreateSession: {
             sessionScope: sessionScope,
-            sessionConfig: {
-              studyMode: _mode,
-              detailedOption: {
-                sortOption: selectedMode.sortOption,
-                useCardtype: selectedMode.useCardtype,
-                useStatus: selectedMode.useStatus,
-                needStudyTimeCondition: selectedMode.needStudyTimeCondition,
-                needStudyTimeRange: selectedMode.needStudyTimeRange,
-                numStartCards: {
-                  onOff: selectedMode.numStartCards.onOff,
-                  yet: selectedMode.numStartCards.yet,
-                  ing: selectedMode.numStartCards.ing,
-                  hold: selectedMode.numStartCards.hold,
-                  completed: selectedMode.numStartCards.completed,
-                },
-              },
-              advancedFilter: {
-                onOff: _sessionConfig.advancedFilter.onOff,
-                cardMaker: {
-                  onOff: _sessionConfig.advancedFilter.cardMaker.onOff,
-                  value: _sessionConfig.advancedFilter.cardMaker.value,
-                },
-                examResult: {
-                  onOff: _sessionConfig.advancedFilter.examResult.onOff,
-                  value: _sessionConfig.advancedFilter.examResult.value,
-                },
-                level: {
-                  onOff: _sessionConfig.advancedFilter.level.onOff,
-                  value: _sessionConfig.advancedFilter.level.value,
-                },
-                makerFlag: {
-                  onOff: _sessionConfig.advancedFilter.makerFlag.onOff,
-                  value: _sessionConfig.advancedFilter.makerFlag.value,
-                },
-                userFlag: {
-                  onOff: _sessionConfig.advancedFilter.userFlag.onOff,
-                  value: _sessionConfig.advancedFilter.userFlag.value,
-                },
-                recentDifficulty: {
-                  onOff: _sessionConfig.advancedFilter.recentDifficulty.onOff,
-                  value: _sessionConfig.advancedFilter.recentDifficulty.value,
-                },
-                recentStudyTime: {
-                  onOff: _sessionConfig.advancedFilter.recentStudyTime.onOff,
-                  value: _sessionConfig.advancedFilter.recentStudyTime.value,
-                },
-                studyTimes: {
-                  onOff: _sessionConfig.advancedFilter.studyTimes.onOff,
-                  value: _sessionConfig.advancedFilter.studyTimes.value,
-                },
-              },
-            },
+            sessionConfig: _sessionConfig,
           },
         },
       });
@@ -260,7 +208,7 @@ const StyledDiv = styled.div`
   }
 `;
 const StyledDivFirst = styled.div`
-  min-width: 358px;
+  min-width: 363px;
   & * {
     font-size: 0.7rem;
   }
@@ -291,7 +239,7 @@ const StyledDivFirst = styled.div`
   }
 `;
 const StyledDivSecond = styled.div`
-  min-width: 358px;
+  min-width: 363px;
   & * {
     font-size: 0.7rem;
   }

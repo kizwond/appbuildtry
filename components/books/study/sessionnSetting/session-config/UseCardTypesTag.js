@@ -8,7 +8,7 @@ const tags = [
 ];
 const UseCardTypeTag = ({ mode, selected, changeUseCardType }) => {
   const [read, flip, exam] = selected;
-  const selectedUseCardType = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : "오류";
+  const selectedUseCardType = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : new Error("Unhandled StudyMode");
   return (
     <div>
       {tags.map((tag) => (

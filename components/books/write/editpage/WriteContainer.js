@@ -126,12 +126,14 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
     }
     const editor = (
       <>
+      <div>여기다가 카드타입 셀렉션</div>
         <Editor nicks={nicks} onFinish={onFinish} setEditorOn={setEditorOn} cardtype_info={cardtype_info} />
       </>
     );
 
     const editorFromCard = (
       <>
+      <div>여기다가 카드타입 셀렉션</div>
         <EditorFromCard nicks={nicks} onFinish={onFinish} setEditorOnFromCard={setEditorOnFromCard} cardtype_info={cardtype_info} />
       </>
     );

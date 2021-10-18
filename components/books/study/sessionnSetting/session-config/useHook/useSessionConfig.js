@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from "react";
 
-function useSessionConfig() {
+export default function useSessionConfig() {
+  const [mode, setMode] = useState("exam");
+
   const [flipNeedStudyTimeCondition, setFlipNeedStudyTimeCondition] = useState("");
   const [flipNeedStudyTimeRange, setFlipNeedStudyTimeRange] = useState([]);
   const [flipNumStartCards, setFlipNumStartCards] = useState([]);
@@ -39,6 +41,10 @@ function useSessionConfig() {
   const [studyTimes, setStudyTimes] = useState([]);
   const [userFlagOnOff, setUserFlagOnOff] = useState("");
   const [userFlag, setUserFlag] = useState([]);
+
+  const changeMode = useCallback((mode) => {
+    setMode(mode);
+  }, []);
 
   const changeNeedStudyTimeCondition = useCallback((mode, condition) => {
     switch (mode) {
@@ -194,7 +200,78 @@ function useSessionConfig() {
     setCounterForButtonClick((prev) => prev + 1);
   };
 
+  const updateData = useCallback((received_data) => {
+    const sessionconfigs = received_data.session_getSessionConfig.sessionConfigs[0];
+    const {
+      cardMaker, //
+      examResult,
+      level,
+      onOff,
+      recentDifficulty,
+      recentStudyTime,
+      studyTimes,
+      userFlag,
+      makerFlag,
+    } = sessionconfigs.advancedFilter;
+
+    setMode(sessionconfigs.studyMode);
+    //고급필터
+    setAdvancedFilterOnOff(onOff);
+    setCardMakerOnOff(cardMaker.onOff);
+    setCardMaker(cardMaker.value);
+    setExamResultOnOff(examResult.onOff);
+    setExamResult(examResult.value);
+    setLevelOnOff(level.onOff);
+    setLevel(level.value);
+    setMakerFlagOnOff(makerFlag.onOff);
+    setMakerFlag(makerFlag.value);
+    setRecentDifficultyOnOff(recentDifficulty.onOff);
+    setRecentDifficulty(recentDifficulty.value);
+    setRecentStudyTimeOnOff(recentStudyTime.onOff);
+    setRecentStudyTime(recentStudyTime.value);
+    setStudyTimesOnOff(studyTimes.onOff);
+    setStudyTimes(studyTimes.value);
+    setUserFlagOnOff(userFlag.onOff);
+    setUserFlag(userFlag.value);
+
+    // 아래부터 state 쪼개기 작업
+    if (sessionconfigs.flip) {
+      const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.flip;
+      const copyNumStartCards = { ...numStartCards };
+      delete copyNumStartCards.__typename;
+      setFlipNeedStudyTimeCondition(needStudyTimeCondition);
+      setFlipNeedStudyTimeRange(needStudyTimeRange);
+      setFlipNumStartCards(copyNumStartCards);
+      setFlipSortOption(sortOption);
+      setFlipUseCardType(useCardtype);
+      setFlipUseStatus(useStatus);
+    }
+    if (sessionconfigs.read) {
+      const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.read;
+      const copyNumStartCards = { ...numStartCards };
+      delete copyNumStartCards.__typename;
+      setReadNeedStudyTimeCondition(needStudyTimeCondition);
+      setReadNeedStudyTimeRange(needStudyTimeRange);
+      setReadNumStartCards(copyNumStartCards);
+      setReadSortOption(sortOption);
+      setReadUseCardType(useCardtype);
+      setReadUseStatus(useStatus);
+    }
+    if (sessionconfigs.exam) {
+      const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.exam;
+      const copyNumStartCards = { ...numStartCards };
+      delete copyNumStartCards.__typename;
+      setExamNeedStudyTimeCondition(needStudyTimeCondition);
+      setExamNeedStudyTimeRange(needStudyTimeRange);
+      setExamNumStartCards(copyNumStartCards);
+      setExamSortOption(sortOption);
+      setExamUseCardType(useCardtype);
+      setExamUseStatus(useStatus);
+    }
+  }, []);
+
   return {
+    mode,
     flipNeedStudyTimeCondition,
     flipNeedStudyTimeRange,
     flipNumStartCards,
@@ -234,6 +311,7 @@ function useSessionConfig() {
     userFlagOnOff,
     userFlag,
 
+    changeMode,
     // (mode, value) => setState
     changeSortOption,
     changeNeedStudyTimeRange,
@@ -260,5 +338,6 @@ function useSessionConfig() {
     changeStudyTimes,
     changeStudyTimesOnOff,
     onChangeAFButtonClick,
+    updateData,
   };
 }

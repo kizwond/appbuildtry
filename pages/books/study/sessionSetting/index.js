@@ -66,12 +66,19 @@ const SessionSetting = () => {
       },
     },
     onCompleted: (received_data) => {
-      if (counter < bookList.length - 1) {
-        console.log("카운터설정");
-        setCounter((prev) => prev + 1);
-      }
+      if (received_data.session_getNumCardsbyIndex.status === "200") {
+        console.log({ received_data });
+        if (counter < bookList.length - 1) {
+          console.log("카운터설정");
+          setCounter((prev) => prev + 1);
+        }
 
-      setCardsList([...cardsList, received_data]);
+        setCardsList([...cardsList, received_data]);
+      } else if (received_data.session_getNumCardsbyIndex.status === "401") {
+        router.push("/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
     },
   });
 

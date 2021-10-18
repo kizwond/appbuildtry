@@ -9,6 +9,22 @@ import { useQuery } from "@apollo/client";
 import WriteContainer from "../../../components/books/write/editpage/WriteContainer";
 import { useMediaQuery } from "react-responsive";
 
+// import Editor from "../../../components/books/write/editpage/Editor";
+// import EditorFromCard from "../../../components/books/write/editpage/EditorFromCard";
+
+import dynamic from 'next/dynamic';
+
+const Editor = dynamic(() => import('../../../components/books/write/editpage/Editor'), {
+    ssr: false
+  });
+const FroalaEditorView = dynamic(() => import('react-froala-wysiwyg/FroalaEditorView'), {
+    ssr: false
+  });
+
+const EditorFromCard = dynamic(() => import('../../../components/books/write/editpage/EditorFromCard'), {
+    ssr: false
+  });
+
 const Desktop = ({ children }) => {
   const isDesktop = useMediaQuery({ minWidth: 992 });
   return isDesktop ? children : null;
@@ -61,7 +77,7 @@ const Book = () => {
         <Desktop>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <LeftDrawer index_changed={index_changed} indexChanged={indexChanged} book_id={book_id} />
-            <WriteContainer indexChanged={indexChanged} indexSetId={indexSetId} />
+            <WriteContainer indexChanged={indexChanged} indexSetId={indexSetId} Editor={Editor} EditorFromCard={EditorFromCard} FroalaEditorView={FroalaEditorView}/>
             <RightDrawer book_id={book_id} />
           </div>
         </Desktop>
@@ -69,14 +85,14 @@ const Book = () => {
         <Tablet>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <LeftDrawer index_changed={index_changed} indexChanged={indexChanged} book_id={book_id} />
-            <WriteContainer book_id={book_id} indexChanged={indexChanged} indexSetId={indexSetId} />
+            <WriteContainer book_id={book_id} indexChanged={indexChanged} indexSetId={indexSetId} Editor={Editor} EditorFromCard={EditorFromCard} FroalaEditorView={FroalaEditorView}/>
           </div>
         </Tablet>
 
         <Mobile>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <LeftDrawer index_changed={index_changed} indexChanged={indexChanged} book_id={book_id} />
-            <WriteContainer book_id={book_id} indexChanged={indexChanged} indexSetId={indexSetId} />
+            <WriteContainer book_id={book_id} indexChanged={indexChanged} indexSetId={indexSetId} Editor={Editor} EditorFromCard={EditorFromCard} FroalaEditorView={FroalaEditorView}/>
           </div>
         </Mobile>
       </Layout>

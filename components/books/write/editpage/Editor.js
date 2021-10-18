@@ -7,14 +7,14 @@ import "froala-editor/js/plugins.pkgd.min.js";
 import "froala-editor/js/languages/ko";
 import "froala-editor//css/themes/gray.css";
 
-// import FroalaEditorComponent from "react-froala-wysiwyg";
+import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Form, Input, Button, message } from "antd";
 import dynamic from 'next/dynamic';
 
-const FroalaEditorComponent = dynamic(import('react-froala-wysiwyg'), {
-  ssr: false
-});
+// const FroalaEditorComponent = dynamic(import('react-froala-wysiwyg'), {
+//   ssr: false
+// });
 // const Feditor = dynamic(import('froala-editor'), {
 //   ssr: false
 // });

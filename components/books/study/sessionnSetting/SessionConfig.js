@@ -2,29 +2,24 @@ import React, { useState, useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import { Switch, InputNumber, Card, Col, Row, Button, Typography } from "antd";
 import { GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
-import ColFormItem from "./ColFormItem";
-import produce from "immer";
-import SwichComponent from "./SwichComponent";
-import { Input, Space, Tag } from "../../../../node_modules/antd/lib/index";
-import moment from "../../../../node_modules/moment/moment";
 import GetFilteredIndexButton from "./GetFilteredIndexButton";
 import styled from "styled-components";
-import { onChangeArrayValuesForSwitch } from "./functionTool";
 import SortOptionTag from "./session-config/SortOptionTag";
 import UseCardTypesTag from "./session-config/UseCardTypesTag";
 import UseStatusTag from "./session-config/UseStatusTag";
 import StudyTimeCondition from "./session-config/StudyTimeCondition";
-import StyledDatePicker from "./session-config/StyledDatePicker";
 import NumStartCards from "./session-config/NumStartCards";
 import FlagTags from "./session-config/FlagTags";
-import SubTitleSwitch from "./session-config/common/SubTitleSwitch";
 import FilterSubMenu from "./session-config/common/FilterSubMenu";
+import RecentStudyTime from "./session-config/RecentStudyTime";
+import CardLevel from "./session-config/CardLevel";
+import StudyTimes from "./session-config/StudyTimes";
+import { StyledDivConfigRow, StyledDivConfigColStartCards, StyledSpanConfigTitle } from "./session-config/common/StyledComponent";
 
 const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIsAFilter, onChangeAFCardList, AFCardList, advancedFilteredCheckedIndexes, onChangeIndexesOfAFCardList }) => {
   const [counterForButtonClick, setCounterForButtonClick] = useState(0);
 
   const [mode, setMode] = useState("exam");
-  const [sessionConfig, setSessionConfig] = useState({});
 
   // flip 모드설정
   const [flipNeedStudyTimeCondition, setFlipNeedStudyTimeCondition] = useState("");
@@ -86,7 +81,6 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
         } = sessionconfigs.advancedFilter;
         console.log({ received_data });
         setMode(received_data.session_getSessionConfig.sessionConfigs[0].studyMode);
-        setSessionConfig(received_data.session_getSessionConfig.sessionConfigs[0]);
         //고급필터
         setAdvancedFilterOnOff(onOff);
         setCardMakerOnOff(cardMaker.onOff);
@@ -288,59 +282,83 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
     setStudyTimesOnOff(_onOff);
   }, []);
 
-  const onChangeValueAnother = (...args) => {
-    const length = args.length;
-    if (length == 5) {
-      const newData = produce(args[1], (draft) => {
-        draft[args[2]][args[3]][args[4]] = args[0];
-      });
-      setSessionConfig(newData);
-    } else if (length == 4) {
-      const newData = produce(args[1], (draft) => {
-        draft[args[2]][args[3]] = args[0];
-      });
-      setSessionConfig(newData);
-    } else if (length == 3) {
-      const newData = produce(args[1], (draft) => {
-        draft[args[2]] = args[0];
-      });
-      setSessionConfig(newData);
-    } else if (length == 2) {
-      setSessionConfig(args[0]);
-    } else if (length == 1) {
-      setSessionConfig(args[0]);
-    }
-  };
-
-  const onChangeArrayValueForAdvancedFilter = (checked, name, value) => {
-    if (checked) {
-      const newData = produce(sessionConfig, (draft) => {
-        draft.advancedFilter[name].value.push(value);
-      });
-      console.log(`현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`, newData.advancedFilter[name].value);
-      setSessionConfig(newData);
-    } else if (!checked) {
-      const newData = produce(sessionConfig, (draft) => {
-        draft.advancedFilter[name].value = draft.advancedFilter[name].value.filter((item) => item != value);
-      });
-      console.log(`현재 ${value} 스위치 ${!checked} 상태에서 다음 데이터로 변경`, newData.advancedFilter[name].value);
-      setSessionConfig(newData);
-    }
-  };
-
   const onChangeAFButtonClick = () => {
     setCounterForButtonClick((prev) => prev + 1);
   };
-  const isOnNumStartCards = sessionConfig[mode]?.numStartCards?.onOff == "on";
-  const isOnAdvancedFilter = sessionConfig?.advancedFilter?.onOff == "on";
-  const isOnUserFlag = sessionConfig?.advancedFilter?.userFlag.onOff == "on";
-  const isOnMakerFlag = sessionConfig?.advancedFilter?.makerFlag.onOff == "on";
-  const isOnRecentStudyTime = sessionConfig?.advancedFilter?.recentStudyTime.onOff == "on";
-  const isOnLevelFilter = sessionConfig?.advancedFilter?.level.onOff == "on";
-  const isOnStudyTimesFilter = sessionConfig?.advancedFilter?.studyTimes.onOff == "on";
-  const isOnRecentDifficultyFilter = sessionConfig?.advancedFilter?.recentDifficulty.onOff == "on";
-  const isOnExamResultFilter = sessionConfig?.advancedFilter?.examResult.onOff == "on";
-  const selectedStudyStatus = sessionConfig[mode]?.useStatus;
+
+  const readDetailedOption = {
+    sortOption: readSortOption,
+    useCardtype: readUseCardType,
+    useStatus: readUseStatus,
+    needStudyTimeCondition: readNeedStudyTimeCondition,
+    needStudyTimeRange: readNeedStudyTimeRange,
+    numStartCards: readNumStartCards,
+  };
+  const flipDetailedOption = {
+    sortOption: flipSortOption,
+    useCardtype: flipUseCardType,
+    useStatus: flipUseStatus,
+    needStudyTimeCondition: flipNeedStudyTimeCondition,
+    needStudyTimeRange: flipNeedStudyTimeRange,
+    numStartCards: flipNumStartCards,
+  };
+  const examDetailedOption = {
+    sortOption: examSortOption,
+    useCardtype: examUseCardType,
+    useStatus: examUseStatus,
+    needStudyTimeCondition: examNeedStudyTimeCondition,
+    needStudyTimeRange: examNeedStudyTimeRange,
+    numStartCards: examNumStartCards,
+  };
+
+  const advancedFilter = {
+    onOff: advancedFilterOnOff,
+    cardMaker: {
+      onOff: cardMakerOnOff,
+      value: cardMaker,
+    },
+    examResult: {
+      onOff: examResultOnOff,
+      value: examResult,
+    },
+    level: {
+      onOff: levelOnOff,
+      value: level,
+    },
+    makerFlag: {
+      onOff: makerFlagOnOff,
+      value: makerFlag,
+    },
+    userFlag: {
+      onOff: userFlagOnOff,
+      value: userFlag,
+    },
+    recentDifficulty: {
+      onOff: recentDifficultyOnOff,
+      value: recentDifficulty,
+    },
+    recentStudyTime: {
+      onOff: recentStudyTimeOnOff,
+      value: recentStudyTime,
+    },
+    studyTimes: {
+      onOff: studyTimesOnOff,
+      value: studyTimes,
+    },
+  };
+
+  const onSubmit = () => {
+    const sessionConfig =
+      mode === "read"
+        ? { studyMode: "read", detailedOption: readDetailedOption, advancedFilter }
+        : mode === "flip"
+        ? { studyMode: "flip", detailedOption: flipDetailedOption, advancedFilter }
+        : mode === "exam"
+        ? { studyMode: "exam", detailedOption: examDetailedOption, advancedFilter }
+        : new Error("Unhandled studyConfig Mode");
+    submitCreateSessionConfigToServer(sessionConfig);
+  };
+
   if (!error && !loading) {
     return (
       <Card size="small" bordered={false}>
@@ -358,7 +376,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                 fontSize: "13px",
                 fontWeight: "700",
               }}
-              onClick={() => submitCreateSessionConfigToServer(sessionConfig, mode)}
+              onClick={onSubmit}
             >
               세션 시작
             </Button>
@@ -384,28 +402,28 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
 
         <StyledDivConfigWrapper>
           <StyledDivConfigRow>
-            <StyledDivConfigCol>
+            <div>
               <span className="ConifgTitle">보기 순서</span>
-            </StyledDivConfigCol>
-            <StyledDivConfigCol>
+            </div>
+            <div>
               <SortOptionTag mode={mode} changeSortOption={changeSortOption} selected={[readSortOption, flipSortOption, examSortOption]} />
-            </StyledDivConfigCol>
+            </div>
           </StyledDivConfigRow>
 
           <StyledDivConfigRow>
-            <StyledDivConfigCol>
+            <div>
               <span className="ConifgTitle">카드종류</span>
-            </StyledDivConfigCol>
-            <StyledDivConfigCol>
+            </div>
+            <div>
               <UseCardTypesTag mode={mode} changeUseCardType={changeUseCardType} selected={[readUseCardType, flipUseCardType, examUseCardType]} />
-            </StyledDivConfigCol>
+            </div>
           </StyledDivConfigRow>
 
           <StyledDivConfigRow>
-            <StyledDivConfigCol>
+            <div>
               <span className="ConifgTitle">카드상태</span>
-            </StyledDivConfigCol>
-            <StyledDivConfigCol>
+            </div>
+            <div>
               <div>
                 <UseStatusTag mode={mode} changeUseStatus={changeUseStatus} selected={[readUseStatus, flipUseStatus, examUseStatus]} />
               </div>
@@ -420,14 +438,16 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                   />
                 </StyledDivToggleStudying>
               )}
-            </StyledDivConfigCol>
+            </div>
           </StyledDivConfigRow>
 
           <StyledDivConfigRow>
-            <StyledDivConfigColStartCards
-              onOff={mode === "read" ? readNumStartCards.onOff === "on" : mode === "flip" ? flipNumStartCards.onOff === "on" : mode === "exam" ? examNumStartCards.onOff === "on" : new Error("잘못된 모드")}
-            >
-              <span className="ConifgTitle">학습량</span>
+            <StyledDivConfigColStartCards>
+              <StyledSpanConfigTitle
+                onOff={mode === "read" ? readNumStartCards.onOff === "on" : mode === "flip" ? flipNumStartCards.onOff === "on" : mode === "exam" ? examNumStartCards.onOff === "on" : new Error("잘못된 모드")}
+              >
+                학습량
+              </StyledSpanConfigTitle>
               <Switch
                 className="TitleSwitchButton"
                 size="small"
@@ -444,21 +464,14 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                 }}
               />
             </StyledDivConfigColStartCards>
-            <StyledDivConfigCol>
+            <div>
               <NumStartCards mode={mode} selected={[readNumStartCards, flipNumStartCards, examNumStartCards]} changeNumStartCards={changeNumStartCards} />
-            </StyledDivConfigCol>
+            </div>
           </StyledDivConfigRow>
-          {/* <div
-          style={{
-            border: isOnAdvancedFilter ? "1px solid lightgrey" : "none",
-            backgroundColor: isOnAdvancedFilter ? "#FFE4D3" : "#FFF",
-            borderRadius: "5px",
-            padding: "5px",
-          }}
-        > */}
+
           <StyledDivTitleRow>
-            <StyledDivConfigColStartCards onOff={advancedFilterOnOff === "on"}>
-              <span className="ConifgTitle">고급필터</span>
+            <StyledDivConfigColStartCards>
+              <StyledSpanConfigTitle onOff={advancedFilterOnOff === "on"}>고급필터</StyledSpanConfigTitle>
               <Switch
                 className="TitleSwitchButton"
                 size="small"
@@ -477,10 +490,10 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
               />
             </StyledDivConfigColStartCards>
             {advancedFilterOnOff === "on" && (
-              <StyledDivConfigCol>
+              <div>
                 <GetFilteredIndexButton
                   book_ids={book_ids}
-                  advancedFilter={sessionConfig.advancedFilter}
+                  advancedFilter={advancedFilter}
                   onChangeAFCardList={onChangeAFCardList}
                   AFCardList={AFCardList}
                   onToggleIsAFilter={onToggleIsAFilter}
@@ -488,7 +501,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                   onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
                   onChangeAFButtonClick={onChangeAFButtonClick}
                 />
-              </StyledDivConfigCol>
+              </div>
             )}
           </StyledDivTitleRow>
           {advancedFilterOnOff === "on" && (
@@ -500,93 +513,13 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
                 <FlagTags menu="flags" array={makerFlag} onOff={makerFlagOnOff === "on"} setState={changeMakerFlag} />
               </FilterSubMenu>
               <FilterSubMenu title="최근 학습 시점" changeOnOff={changeRecentStudyTimeOnOff} onOff={recentStudyTimeOnOff}>
-                <StyledDatePicker
-                  disabled={recentStudyTimeOnOff === "off"}
-                  placeholder={["시작", "종료"]}
-                  format="MM-DD"
-                  value={[recentStudyTime[0] == 0 ? moment() : moment().add(recentStudyTime[0], "days"), recentStudyTime[1] == 0 ? moment() : moment().add(recentStudyTime[1], "days")]}
-                  onChange={(date, dateString) => {
-                    const now = new Date();
-                    const year = now.getFullYear();
-                    const month = now.getMonth() + 1;
-                    const day = now.getDate();
-                    const today = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
-
-                    const startYear = date[0]._d.getFullYear();
-                    const selectedStartDate = moment(`${startYear}-${dateString[0]}`, "YYYY-MM-DD");
-                    const differenceFromStart = moment.duration(selectedStartDate.diff(today)).asDays();
-                    console.log({ differenceFromStart });
-                    const endYear = date[1]._d.getFullYear();
-                    const selectedEndDate = moment(`${endYear}-${dateString[1]}`, "YYYY-MM-DD");
-                    const differenceFromEnd = moment.duration(selectedEndDate.diff(today)).asDays();
-                    console.log({ differenceFromEnd });
-
-                    changeRecentStudyTime([differenceFromStart, differenceFromEnd]);
-                  }}
-                  size="small"
-                />
+                <RecentStudyTime onOff={recentStudyTimeOnOff} recentStudyTime={recentStudyTime} changeRecentStudyTime={changeRecentStudyTime} />
               </FilterSubMenu>
               <FilterSubMenu title="카드 레벨" changeOnOff={changeLevelOnOff} onOff={levelOnOff}>
-                <Space>
-                  <InputNumber
-                    disabled={levelOnOff === "off"}
-                    size="small"
-                    min={1}
-                    max={level[1] == null ? null : level[1] - 1}
-                    value={level[0]}
-                    formatter={(value) => `${value} level`}
-                    parser={(value) => value.replace(" level", "")}
-                    onChange={(value) => {
-                      const newRange = [value, level[1]];
-                      changeLevel(newRange);
-                    }}
-                  />
-                  ~
-                  <InputNumber
-                    disabled={levelOnOff === "off"}
-                    size="small"
-                    min={level[0] == null ? null : level[0] + 1}
-                    max={10}
-                    value={level[1]}
-                    formatter={(value) => `${value} level`}
-                    parser={(value) => value.replace(" level", "")}
-                    onChange={(value) => {
-                      const newRange = [level[0], value];
-                      changeLevel(newRange);
-                    }}
-                  />
-                </Space>
+                <CardLevel onOff={levelOnOff} level={level} changeLevel={changeLevel} />
               </FilterSubMenu>
               <FilterSubMenu title="학습 횟수" changeOnOff={changeStudyTimesOnOff} onOff={studyTimesOnOff}>
-                <Space>
-                  <InputNumber
-                    disabled={studyTimesOnOff === "off"}
-                    size="small"
-                    min={0}
-                    max={studyTimes[1] == null ? 99 : studyTimes[1] - 1}
-                    value={studyTimes[0]}
-                    formatter={(value) => `${value} 회`}
-                    parser={(value) => value.replace(" 회", "")}
-                    onChange={(value) => {
-                      const newRange = [value, studyTimes[1]];
-                      changeStudyTimes(newRange);
-                    }}
-                  />
-                  ~
-                  <InputNumber
-                    disabled={studyTimesOnOff === "off"}
-                    size="small"
-                    min={studyTimes[1] == null ? 2 : studyTimes[0] + 1}
-                    max={100}
-                    value={studyTimes[1]}
-                    formatter={(value) => `${value} 회`}
-                    parser={(value) => value.replace(" 회", "")}
-                    onChange={(value) => {
-                      const newRange = [studyTimes[0], value];
-                      changeStudyTimes(newRange);
-                    }}
-                  />
-                </Space>
+                <StudyTimes onOff={studyTimesOnOff} studyTimes={studyTimes} changeStudyTimes={changeStudyTimes} />
               </FilterSubMenu>
 
               <FilterSubMenu title="최근 선택 난이도" changeOnOff={changeRecentDifficultyOnOff} onOff={recentDifficultyOnOff}>
@@ -597,7 +530,6 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
               </FilterSubMenu>
             </>
           )}
-          {/* </div> */}
         </StyledDivConfigWrapper>
       </Card>
     );
@@ -615,93 +547,26 @@ const StyledDivConfigWrapper = styled.div`
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  /* & > div {
-    margin-bottom: 5px;
-  } */
+
   & > div:last-child {
     margin-bottom: 0px;
   }
   & .ant-tag {
-    margin: 3px;
+    margin: 3px 3px 0 3px;
     line-height: 16px;
   }
 `;
-const StyledDivConfigRow = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  & > div:nth-child(1):not(.FilterSubTitleCol) {
-    flex: none;
-    width: 110px;
-  }
-  & > div.FilterSubTitleCol {
-    flex: none;
-    width: 120px;
-  }
-  & > div:nth-child(2) {
-    flex: auto;
-  }
 
-  @media screen and (min-width: 992px) {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    & > div:nth-child(2) {
-      flex: auto;
-      width: 100%;
-    }
-  }
-  @media screen and (max-width: 540px) {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    & > div:nth-child(2) {
-      flex: none;
-      width: 100%;
-    }
-  }
-`;
 const StyledDivTitleRow = styled.div`
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
   & > div:nth-child(1) {
     flex: none;
-    width: 110px;
+    width: 115px;
   }
   & > div:nth-child(2) {
     flex: auto;
-  }
-`;
-
-const StyledDivConfigCol = styled.div`
-  /* display: flex;
-  flex-direction: column; */
-  & .ConifgTitle {
-    font-size: 0.9rem;
-    font-weight: 700;
-  }
-`;
-
-const StyledDivConfigColStartCards = styled(StyledDivConfigCol)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  & .ConifgTitle {
-    color: ${(props) => (props.onOff ? "black" : "#0000003f")};
-    margin-right: 10px;
-  }
-  & .FilterSubTitle {
-    color: ${(props) => (props.onOff ? "black" : "#0000003f")};
-    margin-right: 10px;
-    font-weight: 550;
-    font-size: 0.7rem;
-  }
-  & .TitleSwitchButton {
-    right: 25px;
-  }
-  & .SubTitleSwitchButton {
-    right: 10px;
   }
 `;
 

@@ -3,7 +3,7 @@ import Layout from '../../../../../components/layout/Layout';
 import { GetSession } from '../../../../../graphql/query/session';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
+// import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
 import StudyNav from '../../../../../components/books/study/mode/StudyNav';
 import { date } from 'faker';
 
@@ -65,11 +65,11 @@ const FlipMode = () => {
   return (
     <Layout>
       <StudyNav onChangeTTS={onChangeTTS} sessionScope={sessionScope}/>
-      <CardContainer
+      {/* <CardContainer
         cardListStudying={cardListStudying}
         sessionScope={sessionScope}
         ttsFields={ttsFields}
-      />
+      /> */}
     </Layout>
   );
 };

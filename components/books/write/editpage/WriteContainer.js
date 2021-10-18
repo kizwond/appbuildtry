@@ -5,12 +5,21 @@ import FloatingMenu from "./sidemenu/FloatingMenu";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Input, message, Button, Select } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
-import Editor from "./Editor";
-import EditorFromCard from "./EditorFromCard";
+// import Editor from "./Editor";
+// import EditorFromCard from "./EditorFromCard";
 import axios from "axios";
-import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
+// import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
 import { useMediaQuery } from "react-responsive";
 
+// import dynamic from 'next/dynamic';
+
+// const Editor = dynamic(() => import('./Editor'), {
+//   ssr: false
+// });
+
+// const EditorFromCard = dynamic(() => import('./EditorFromCard'), {
+//   ssr: false
+// });
 const Desktop = ({ children }) => {
   const isDesktop = useMediaQuery({ minWidth: 992 });
   return isDesktop ? children : null;
@@ -26,7 +35,7 @@ const Mobile = ({ children }) => {
 
 const { Option } = Select;
 
-const WriteContainer = ({ indexChanged, indexSetId, book_id }) => {
+const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromCard, FroalaEditorView }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");

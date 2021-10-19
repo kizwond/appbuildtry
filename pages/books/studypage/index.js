@@ -1,17 +1,17 @@
-import Head from 'next/head';
-import { useCallback, useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { GET_CATEGORY_AND_BOOKS_INFO } from '../../../graphql/query/writePage';
-import { useRouter } from 'next/router';
+import Head from "next/head";
+import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORY_AND_BOOKS_INFO } from "../../../graphql/query/writePage";
+import { useRouter } from "next/router";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { Row, Space, Col, Button } from '../../../node_modules/antd/lib/index';
-import Layout from '../../../components/layout/Layout';
-import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
-import StudyBooksTable from '../../../components/books/studypage/booksTable/StudyBooksTable';
-import StudyFavoriteBooksTable from '../../../components/books/studypage/booksTable/StudyFavoriteBooksTable';
-import { StyledRowMaxWidth } from '../../../components/common/styledComponent/page';
+import { Row, Space, Col, Button } from "../../../node_modules/antd/lib/index";
+import Layout from "../../../components/layout/Layout";
+import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
+import StudyBooksTable from "../../../components/books/studypage/booksTable/StudyBooksTable";
+import StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/StudyFavoriteBooksTable";
+import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
 
 const Writeanother = () => {
   const router = useRouter();
@@ -28,25 +28,25 @@ const Writeanother = () => {
 
   const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
     onCompleted: (received_data) => {
-      console.log('received_data', received_data);
-      if (received_data.mybookcate_get.status === '200') {
+      console.log("received_data", received_data);
+      if (received_data.mybookcate_get.status === "200") {
         setMyBook(received_data.mybook_getAllMybook.mybooks);
         setCategory(received_data.mybookcate_get.mybookcates);
         setIsReceivedData(true);
-      } else if (received_data.mybookcate_get.status === '401') {
-        router.push('/account/login');
+      } else if (received_data.mybookcate_get.status === "401") {
+        router.push("/account/login");
       } else {
-        console.log('어떤 문제가 발생함');
+        console.log("어떤 문제가 발생함");
       }
     },
   });
 
   useEffect(() => {
-    sessionStorage.removeItem('books_selected');
+    sessionStorage.removeItem("books_selected");
   }, []);
 
   const sesstionStart = () => {
-    router.push('/books/study/sessionSetting');
+    router.push("/books/study/sessionSetting");
   };
 
   const handleToGetMyBook = useCallback((books) => {
@@ -65,7 +65,7 @@ const Writeanother = () => {
 
   const changeSelectedBooks = useCallback((_booksArray) => {
     setSelectedBooks(_booksArray);
-    sessionStorage.setItem('books_selected', JSON.stringify(_booksArray));
+    sessionStorage.setItem("books_selected", JSON.stringify(_booksArray));
   }, []);
 
   if (!isReceivedData) {
@@ -85,7 +85,7 @@ const Writeanother = () => {
       </Head>
       <Layout>
         {category.length >= 1 && (
-          <StyledRowMaxWidth top>
+          <StyledRowMaxWidth topcompo="true">
             <StyledSpace>
               <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
               <Button onClick={sesstionStart} size="small">

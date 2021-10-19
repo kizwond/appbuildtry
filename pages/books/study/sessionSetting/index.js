@@ -22,7 +22,6 @@ const SessionSetting = () => {
 
   useEffect(() => {
     const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
-
     const book_list = booklist.map((book, index) => ({
       book_id: book.book_id,
       book_title: book.book_title,
@@ -95,7 +94,7 @@ const SessionSetting = () => {
 
   useEffect(() => {
     if (bookList.length > 0) {
-      if (counter < bookList.length - 1 && counter >= 0) {
+      if (counter < bookList.length) {
         loadData();
       }
     }

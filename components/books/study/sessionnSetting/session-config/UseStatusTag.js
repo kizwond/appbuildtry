@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 const UseStatusTag = ({ mode, selected, changeUseStatus }) => {
   const [read, flip, exam] = selected;
-  const selectedUseStatus = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : new Error("UseStatus 에러");
+  const selectedUseStatus = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : new Error("Unhandled StudyMode");
   const tags = [
     { option: "yet", title: "미학습" },
     { option: "ing", title: "학습중" },

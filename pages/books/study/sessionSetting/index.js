@@ -22,7 +22,6 @@ const SessionSetting = () => {
 
   useEffect(() => {
     const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
-
     const book_list = booklist.map((book, index) => ({
       book_id: book.book_id,
       book_title: book.book_title,
@@ -38,70 +37,18 @@ const SessionSetting = () => {
     },
   });
 
-  const submitCreateSessionConfigToServer = async (_sessionConfig, _mode) => {
+  const submitCreateSessionConfigToServer = async (_sessionConfig) => {
     const keysArray = Object.keys(checkedKeys);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
       index_ids: isAdvancedFilteredCardListShowed ? advancedFilteredCheckedIndexes[item] : checkedKeys[item],
     }));
-    const selectedMode = _sessionConfig[_mode];
     try {
       await session_createSession({
         variables: {
           forCreateSession: {
             sessionScope: sessionScope,
-            sessionConfig: {
-              studyMode: _mode,
-              detailedOption: {
-                sortOption: selectedMode.sortOption,
-                useCardtype: selectedMode.useCardtype,
-                useStatus: selectedMode.useStatus,
-                needStudyTimeCondition: selectedMode.needStudyTimeCondition,
-                needStudyTimeRange: selectedMode.needStudyTimeRange,
-                numStartCards: {
-                  onOff: selectedMode.numStartCards.onOff,
-                  yet: selectedMode.numStartCards.yet,
-                  ing: selectedMode.numStartCards.ing,
-                  hold: selectedMode.numStartCards.hold,
-                  completed: selectedMode.numStartCards.completed,
-                },
-              },
-              advancedFilter: {
-                onOff: _sessionConfig.advancedFilter.onOff,
-                cardMaker: {
-                  onOff: _sessionConfig.advancedFilter.cardMaker.onOff,
-                  value: _sessionConfig.advancedFilter.cardMaker.value,
-                },
-                examResult: {
-                  onOff: _sessionConfig.advancedFilter.examResult.onOff,
-                  value: _sessionConfig.advancedFilter.examResult.value,
-                },
-                level: {
-                  onOff: _sessionConfig.advancedFilter.level.onOff,
-                  value: _sessionConfig.advancedFilter.level.value,
-                },
-                makerFlag: {
-                  onOff: _sessionConfig.advancedFilter.makerFlag.onOff,
-                  value: _sessionConfig.advancedFilter.makerFlag.value,
-                },
-                userFlag: {
-                  onOff: _sessionConfig.advancedFilter.userFlag.onOff,
-                  value: _sessionConfig.advancedFilter.userFlag.value,
-                },
-                recentDifficulty: {
-                  onOff: _sessionConfig.advancedFilter.recentDifficulty.onOff,
-                  value: _sessionConfig.advancedFilter.recentDifficulty.value,
-                },
-                recentStudyTime: {
-                  onOff: _sessionConfig.advancedFilter.recentStudyTime.onOff,
-                  value: _sessionConfig.advancedFilter.recentStudyTime.value,
-                },
-                studyTimes: {
-                  onOff: _sessionConfig.advancedFilter.studyTimes.onOff,
-                  value: _sessionConfig.advancedFilter.studyTimes.value,
-                },
-              },
-            },
+            sessionConfig: _sessionConfig,
           },
         },
       });
@@ -118,12 +65,19 @@ const SessionSetting = () => {
       },
     },
     onCompleted: (received_data) => {
-      if (counter < bookList.length - 1) {
-        console.log("카운터설정");
-        setCounter((prev) => prev + 1);
-      }
+      if (received_data.session_getNumCardsbyIndex.status === "200") {
+        console.log({ received_data });
+        if (counter < bookList.length - 1) {
+          console.log("카운터설정");
+          setCounter((prev) => prev + 1);
+        }
 
-      setCardsList([...cardsList, received_data]);
+        setCardsList([...cardsList, received_data]);
+      } else if (received_data.session_getNumCardsbyIndex.status === "401") {
+        router.push("/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
     },
   });
 
@@ -140,7 +94,7 @@ const SessionSetting = () => {
 
   useEffect(() => {
     if (bookList.length > 0) {
-      if (counter < bookList.length - 1 && counter >= 0) {
+      if (counter < bookList.length) {
         loadData();
       }
     }
@@ -194,32 +148,32 @@ const SessionSetting = () => {
           </StyledDivFirst>
           <StyledDivSecond>
             <Card size="small" bordered={false}>
-              <Tabs type="card" tabPosition="top">
+              <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
                 {!isAdvancedFilteredCardListShowed &&
                   cardsList[0] &&
                   bookList.map((book, index) => (
                     <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <Card size="small" style={{ background: "yellow", marginTop: "0px" }}>
+                      <StyledDivTabContentWrapper>
                         <IndexTree
                           bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
                           checkedKeys={checkedKeys[book.book_id]}
                           selectedbookId={book.book_id}
                           onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
                         />
-                      </Card>
+                      </StyledDivTabContentWrapper>
                     </Tabs.TabPane>
                   ))}
                 {isAdvancedFilteredCardListShowed &&
                   bookList.map((book, index) => (
                     <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <Card size="small" style={{ background: "yellow", marginTop: "0px" }}>
+                      <StyledDivTabContentWrapper>
                         <IndexTree
                           bookIndexInfo={advancedFilteredCardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
                           checkedKeys={advancedFilteredCheckedIndexes[book.book_id]}
                           selectedbookId={book.book_id}
                           onCheckIndexesCheckedKeys={onAdvancedFilteredCheckIndexesCheckedKeys}
                         />
-                      </Card>
+                      </StyledDivTabContentWrapper>
                     </Tabs.TabPane>
                   ))}
               </Tabs>
@@ -260,7 +214,7 @@ const StyledDiv = styled.div`
   }
 `;
 const StyledDivFirst = styled.div`
-  min-width: 358px;
+  min-width: 363px;
   & * {
     font-size: 0.7rem;
   }
@@ -283,7 +237,7 @@ const StyledDivFirst = styled.div`
     visibility: hidden;
   }
   @media screen and (min-width: 992px) {
-    max-width: 378px;
+    min-width: 385px;
     min-height: 94vh;
     border-right: 1px solid lightgray;
   }
@@ -291,32 +245,22 @@ const StyledDivFirst = styled.div`
   }
 `;
 const StyledDivSecond = styled.div`
-  min-width: 358px;
+  min-width: 363px;
   & * {
     font-size: 0.7rem;
   }
 
-  & .ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab-active,
-  .ant-tabs-card.ant-tabs-top > div > .ant-tabs-nav .ant-tabs-tab-active {
-    border-bottom-color: yellow;
-    top: 1px;
-    z-index: 1;
-  }
-  & .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active,
-  .ant-tabs-card > div > .ant-tabs-nav .ant-tabs-tab-active {
-    color: #1890ff;
-    font-size: 0.85rem;
-    font-weight: 600;
-    background: yellow;
-  }
-
-  & .ant-tabs-top > .ant-tabs-nav {
-    margin: 0;
-  }
   @media screen and (min-width: 992px) {
+    margin-top: 38px;
     flex: auto;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
     flex: auto;
   }
+`;
+
+const StyledDivTabContentWrapper = styled.div`
+  border: 1px solid #f0f0f0;
+  border-top: none;
+  padding: 5px;
 `;

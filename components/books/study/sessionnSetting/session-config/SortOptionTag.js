@@ -10,7 +10,7 @@ const tags = [
 
 const SortOptionTag = ({ mode, selected, changeSortOption }) => {
   const [read, flip, exam] = selected;
-  const selectedSortOption = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : "오류";
+  const selectedSortOption = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : new Error("Unhandled StudyMode");
 
   return (
     <div>

@@ -1,8 +1,8 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { Radio, DatePicker, Col, Row } from "antd";
 import styled from "styled-components";
 import moment from "moment";
-import StyledDatePicker from "./StyledDatePicker";
+import StyledDatePicker from "./common/StyledDatePicker";
 
 const breakPoint = [
   {
@@ -22,6 +22,26 @@ const StudyTimeCondition = ({ mode, selected, changeNeedStudyTimeCondition, chan
 
   const selectedSTC = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : "오류";
   const selectedRg = mode === "read" ? readRange : mode === "flip" ? flipRange : mode === "exam" ? examRange : "오류";
+
+  const onChange = useCallback(
+    (date, dateString) => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const day = now.getDate();
+      const today = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
+
+      const startYear = date[0]._d.getFullYear();
+      const selectedStartDate = moment(`${startYear}-${dateString[0]}`, "YYYY-MM-DD");
+      const differenceFromStart = moment.duration(selectedStartDate.diff(today)).asDays();
+      const endYear = date[1]._d.getFullYear();
+      const selectedEndDate = moment(`${endYear}-${dateString[1]}`, "YYYY-MM-DD");
+      const differenceFromEnd = moment.duration(selectedEndDate.diff(today)).asDays();
+
+      changeNeedStudyTimeRange(mode, [differenceFromStart, differenceFromEnd]);
+    },
+    [mode, changeNeedStudyTimeRange]
+  );
   return (
     <Radio.Group onChange={(e) => changeNeedStudyTimeCondition(mode, e.target.value)} value={selectedSTC} size="small">
       <StyledRow wrap={false}>
@@ -45,22 +65,7 @@ const StudyTimeCondition = ({ mode, selected, changeNeedStudyTimeCondition, chan
                   placeholder={["시작", "종료"]}
                   format="MM-DD"
                   value={[selectedRg[0] == 0 ? moment() : moment().add(selectedRg[0], "days"), selectedRg[1] == 0 ? moment() : moment().add(selectedRg[1], "days")]}
-                  onChange={(date, dateString) => {
-                    const now = new Date();
-                    const year = now.getFullYear();
-                    const month = now.getMonth() + 1;
-                    const day = now.getDate();
-                    const today = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
-
-                    const startYear = date[0]._d.getFullYear();
-                    const selectedStartDate = moment(`${startYear}-${dateString[0]}`, "YYYY-MM-DD");
-                    const differenceFromStart = moment.duration(selectedStartDate.diff(today)).asDays();
-                    const endYear = date[1]._d.getFullYear();
-                    const selectedEndDate = moment(`${endYear}-${dateString[1]}`, "YYYY-MM-DD");
-                    const differenceFromEnd = moment.duration(selectedEndDate.diff(today)).asDays();
-
-                    changeNeedStudyTimeRange(mode, [differenceFromStart, differenceFromEnd]);
-                  }}
+                  onChange={onChange}
                   size="small"
                 />
               </>

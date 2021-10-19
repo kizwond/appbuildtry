@@ -246,6 +246,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       const hello = cardTypes.filter((item) => item.cardtype_info.name === value);
       console.log(hello);
       setSelectedCardType(hello[0].cardtype_info);
+      sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
     }
   }
 

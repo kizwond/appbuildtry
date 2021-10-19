@@ -147,37 +147,35 @@ const SessionSetting = () => {
             )}
           </StyledDivFirst>
           <StyledDivSecond>
-            <Card size="small" bordered={false}>
-              <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
-                {!isAdvancedFilteredCardListShowed &&
-                  cardsList[0] &&
-                  bookList.map((book, index) => (
-                    <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <StyledDivTabContentWrapper>
-                        <IndexTree
-                          bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
-                          checkedKeys={checkedKeys[book.book_id]}
-                          selectedbookId={book.book_id}
-                          onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
-                        />
-                      </StyledDivTabContentWrapper>
-                    </Tabs.TabPane>
-                  ))}
-                {isAdvancedFilteredCardListShowed &&
-                  bookList.map((book, index) => (
-                    <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <StyledDivTabContentWrapper>
-                        <IndexTree
-                          bookIndexInfo={advancedFilteredCardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
-                          checkedKeys={advancedFilteredCheckedIndexes[book.book_id]}
-                          selectedbookId={book.book_id}
-                          onCheckIndexesCheckedKeys={onAdvancedFilteredCheckIndexesCheckedKeys}
-                        />
-                      </StyledDivTabContentWrapper>
-                    </Tabs.TabPane>
-                  ))}
-              </Tabs>
-            </Card>
+            <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
+              {!isAdvancedFilteredCardListShowed &&
+                cardsList[0] &&
+                bookList.map((book, index) => (
+                  <Tabs.TabPane tab={book.book_title} key={book.book_id}>
+                    <StyledDivTabContentWrapper>
+                      <IndexTree
+                        bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
+                        checkedKeys={checkedKeys[book.book_id]}
+                        selectedbookId={book.book_id}
+                        onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
+                      />
+                    </StyledDivTabContentWrapper>
+                  </Tabs.TabPane>
+                ))}
+              {isAdvancedFilteredCardListShowed &&
+                bookList.map((book, index) => (
+                  <Tabs.TabPane tab={book.book_title} key={book.book_id}>
+                    <StyledDivTabContentWrapper>
+                      <IndexTree
+                        bookIndexInfo={advancedFilteredCardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
+                        checkedKeys={advancedFilteredCheckedIndexes[book.book_id]}
+                        selectedbookId={book.book_id}
+                        onCheckIndexesCheckedKeys={onAdvancedFilteredCheckIndexesCheckedKeys}
+                      />
+                    </StyledDivTabContentWrapper>
+                  </Tabs.TabPane>
+                ))}
+            </Tabs>
           </StyledDivSecond>
         </StyledDiv>
       </Layout>
@@ -215,6 +213,7 @@ const StyledDiv = styled.div`
 `;
 const StyledDivFirst = styled.div`
   min-width: 363px;
+  padding: 8px;
   & * {
     font-size: 0.7rem;
   }
@@ -238,14 +237,13 @@ const StyledDivFirst = styled.div`
   }
   @media screen and (min-width: 992px) {
     min-width: 385px;
-    min-height: 94vh;
-    border-right: 1px solid lightgray;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
   }
 `;
 const StyledDivSecond = styled.div`
   min-width: 363px;
+  padding: 8px;
   & * {
     font-size: 0.7rem;
   }
@@ -257,10 +255,59 @@ const StyledDivSecond = styled.div`
   @media screen and (min-width: 100px) and (max-width: 991px) {
     flex: auto;
   }
+
+  & table tr td.ant-table-selection-column {
+    padding: 8px 2px !important;
+    text-align: center;
+    width: 32px;
+    min-width: 32px;
+  }
+
+  & .ant-table-cell.TableRowTitle.ant-table-cell-with-append {
+    padding: 8px 5px 8px 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .ant-table-row-indent + .ant-table-row-expand-icon {
+    margin-right: 2px;
+  }
 `;
 
 const StyledDivTabContentWrapper = styled.div`
   border: 1px solid #f0f0f0;
   border-top: none;
   padding: 5px;
+`;
+
+const StyledPointer = styled.div`
+  width: 100px;
+  height: 34px;
+  position: relative;
+  background: red;
+  color: white;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 17px solid white;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+  }
+  &:before {
+    content: "";
+    position: absolute;
+    right: -17px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 17px solid red;
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+  }
 `;

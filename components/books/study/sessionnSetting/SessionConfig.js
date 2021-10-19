@@ -317,7 +317,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
   );
   if (!error && !loading) {
     return (
-      <Card size="small" bordered={false}>
+      <div>
         <Row>
           <Col span={12}>
             <Typography.Title level={4}>세션 설정</Typography.Title>
@@ -350,7 +350,7 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
             {content}
           </Tabs.TabPane>
         </Tabs>
-      </Card>
+      </div>
     );
   }
   return <></>;

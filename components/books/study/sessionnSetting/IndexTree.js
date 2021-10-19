@@ -60,7 +60,6 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
     };
 
     const wrappUp = getIndexes();
-    console.log({ wrappUp });
     return wrappUp;
   }, [bookIndexInfo]);
 
@@ -89,12 +88,12 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
           size="small"
           pagination={false}
           title={() => (
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <StyledDivTitle>
               <div>
-                <StyledSpanTitle>목차 내 카드 정보</StyledSpanTitle>
+                <span className="TableMainTitle">목차 내 카드 정보</span>
               </div>
               <div>괄호 안 숫자는 현재 시각 기준으로 산출한 복습 필요 카드 수량입니다.</div>
-            </div>
+            </StyledDivTitle>
           )}
         />
       ) : null}
@@ -109,7 +108,9 @@ const columns = [
     title: "목차",
     dataIndex: "title",
     key: "title",
-    width: 150,
+    width: 120,
+    className: "TableRowTitle",
+    // eslint-disable-next-line react/display-name
   },
   {
     title: (
@@ -120,7 +121,7 @@ const columns = [
     ),
     dataIndex: "progress_for_total_card",
     key: "progress_for_total_card",
-    width: 150,
+    width: 120,
     // eslint-disable-next-line react/display-name
     render: () => (
       <>
@@ -216,7 +217,11 @@ const columns = [
   },
 ];
 
-const StyledSpanTitle = styled.span`
-  font-size: 0.9rem;
-  font-weight: 700;
+const StyledDivTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  & .TableMainTitle {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
 `;

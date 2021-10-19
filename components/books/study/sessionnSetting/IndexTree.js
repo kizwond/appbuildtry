@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Table } from "antd";
 import { Progress } from "../../../../node_modules/antd/lib/index";
+import styled from "styled-components";
 
 const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, selectedbookId }) => {
   const [treeData, setTreeData] = useState([]);
@@ -27,35 +28,6 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
     let data_for_tree_level_four = rawIndexes.filter((item) => item.level == 4);
     let data_for_tree_level_five = rawIndexes.filter((item) => item.level == 5);
 
-    // const generatorForChildrens = (parents, son) => {
-    //   for (let i = 0; i < parents.length; i++) {
-    //     for (let k = 0; k < son.length; k++) {
-    //       if (parents[i].index < son[k].index) {
-    //         if (i + 1 == parents.length) {
-    //           if (parents[i].children == undefined) {
-    //             parents[i].children = [son[k]];
-    //           } else {
-    //             parents[i].children = [...parents[i].children, son[k]];
-    //           }
-    //         } else if (parents[i + 1].index > son[k].index) {
-    //           if (parents[i].children == undefined) {
-    //             parents[i].children = [son[k]];
-    //           } else {
-    //             parents[i].children = [...parents[i].children, son[k]];
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // };
-
-    // const getIndexes = async () => {
-    //   await generatorForChildrens(data_for_tree_level_four, data_for_tree_level_five);
-    //   await generatorForChildrens(data_for_tree_level_three, data_for_tree_level_four);
-    //   await generatorForChildrens(data_for_tree_level_two, data_for_tree_level_three);
-    //   await generatorForChildrens(data_for_tree_level_one, data_for_tree_level_two);
-    //   setTreeData(data_for_tree_level_one);
-    // };
     const generatorForChildrens = (parents, son) => {
       for (let i = 0; i < parents.length; i++) {
         for (let k = 0; k < son.length; k++) {
@@ -119,7 +91,7 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
           title={() => (
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div>
-                <b>목차 내 카드 정보</b>
+                <StyledSpanTitle>목차 내 카드 정보</StyledSpanTitle>
               </div>
               <div>괄호 안 숫자는 현재 시각 기준으로 산출한 복습 필요 카드 수량입니다.</div>
             </div>
@@ -243,3 +215,8 @@ const columns = [
     width: 80,
   },
 ];
+
+const StyledSpanTitle = styled.span`
+  font-size: 0.9rem;
+  font-weight: 700;
+`;

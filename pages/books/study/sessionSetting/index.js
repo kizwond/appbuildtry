@@ -148,32 +148,32 @@ const SessionSetting = () => {
           </StyledDivFirst>
           <StyledDivSecond>
             <Card size="small" bordered={false}>
-              <Tabs type="card" tabPosition="top">
+              <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
                 {!isAdvancedFilteredCardListShowed &&
                   cardsList[0] &&
                   bookList.map((book, index) => (
                     <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <Card size="small" style={{ background: "yellow", marginTop: "0px" }}>
+                      <StyledDivTabContentWrapper>
                         <IndexTree
                           bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
                           checkedKeys={checkedKeys[book.book_id]}
                           selectedbookId={book.book_id}
                           onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
                         />
-                      </Card>
+                      </StyledDivTabContentWrapper>
                     </Tabs.TabPane>
                   ))}
                 {isAdvancedFilteredCardListShowed &&
                   bookList.map((book, index) => (
                     <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <Card size="small" style={{ background: "yellow", marginTop: "0px" }}>
+                      <StyledDivTabContentWrapper>
                         <IndexTree
                           bookIndexInfo={advancedFilteredCardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
                           checkedKeys={advancedFilteredCheckedIndexes[book.book_id]}
                           selectedbookId={book.book_id}
                           onCheckIndexesCheckedKeys={onAdvancedFilteredCheckIndexesCheckedKeys}
                         />
-                      </Card>
+                      </StyledDivTabContentWrapper>
                     </Tabs.TabPane>
                   ))}
               </Tabs>
@@ -237,7 +237,7 @@ const StyledDivFirst = styled.div`
     visibility: hidden;
   }
   @media screen and (min-width: 992px) {
-    max-width: 378px;
+    min-width: 385px;
     min-height: 94vh;
     border-right: 1px solid lightgray;
   }
@@ -250,27 +250,17 @@ const StyledDivSecond = styled.div`
     font-size: 0.7rem;
   }
 
-  & .ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab-active,
-  .ant-tabs-card.ant-tabs-top > div > .ant-tabs-nav .ant-tabs-tab-active {
-    border-bottom-color: yellow;
-    top: 1px;
-    z-index: 1;
-  }
-  & .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active,
-  .ant-tabs-card > div > .ant-tabs-nav .ant-tabs-tab-active {
-    color: #1890ff;
-    font-size: 0.85rem;
-    font-weight: 600;
-    background: yellow;
-  }
-
-  & .ant-tabs-top > .ant-tabs-nav {
-    margin: 0;
-  }
   @media screen and (min-width: 992px) {
+    margin-top: 38px;
     flex: auto;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
     flex: auto;
   }
+`;
+
+const StyledDivTabContentWrapper = styled.div`
+  border: 1px solid #f0f0f0;
+  border-top: none;
+  padding: 5px;
 `;

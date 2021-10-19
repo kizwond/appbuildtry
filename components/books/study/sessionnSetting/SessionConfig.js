@@ -16,6 +16,7 @@ import CardLevel from "./session-config/CardLevel";
 import StudyTimes from "./session-config/StudyTimes";
 import { StyledDivConfigRow, StyledDivConfigColStartCards, StyledSpanConfigTitle } from "./session-config/common/StyledComponent";
 import useSessionConfig from "./session-config/useHook/useSessionConfig";
+import { Tabs } from "../../../../node_modules/antd/lib/index";
 
 const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIsAFilter, onChangeAFCardList, AFCardList, advancedFilteredCheckedIndexes, onChangeIndexesOfAFCardList }) => {
   const [counterForButtonClick, setCounterForButtonClick] = useState(0);
@@ -181,6 +182,139 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
     submitCreateSessionConfigToServer(sessionConfig);
   };
 
+  const content = (
+    <StyledDivConfigWrapper>
+      <StyledDivConfigRow>
+        <div>
+          <span className="ConifgTitle">보기 순서</span>
+        </div>
+        <div>
+          <SortOptionTag mode={mode} changeSortOption={changeSortOption} selected={[readSortOption, flipSortOption, examSortOption]} />
+        </div>
+      </StyledDivConfigRow>
+
+      <StyledDivConfigRow>
+        <div>
+          <span className="ConifgTitle">카드종류</span>
+        </div>
+        <div>
+          <UseCardTypesTag mode={mode} changeUseCardType={changeUseCardType} selected={[readUseCardType, flipUseCardType, examUseCardType]} />
+        </div>
+      </StyledDivConfigRow>
+
+      <StyledDivConfigRow>
+        <div>
+          <span className="ConifgTitle">카드상태</span>
+        </div>
+        <div>
+          <div>
+            <UseStatusTag mode={mode} changeUseStatus={changeUseStatus} selected={[readUseStatus, flipUseStatus, examUseStatus]} />
+          </div>
+          {(mode === "read" ? readUseStatus.includes("ing") : mode === "flip" ? flipUseStatus.includes("ing") : mode === "exam" ? examUseStatus.includes("ing") : null) && (
+            <StyledDivToggleStudying>
+              <StudyTimeCondition
+                mode={mode}
+                selected={[readNeedStudyTimeCondition, flipNeedStudyTimeCondition, examNeedStudyTimeCondition]}
+                changeNeedStudyTimeCondition={changeNeedStudyTimeCondition}
+                changeNeedStudyTimeRange={changeNeedStudyTimeRange}
+                selectedRange={[readNeedStudyTimeRange, flipNeedStudyTimeRange, examNeedStudyTimeRange]}
+              />
+            </StyledDivToggleStudying>
+          )}
+        </div>
+      </StyledDivConfigRow>
+
+      <StyledDivConfigRow>
+        <StyledDivConfigColStartCards>
+          <StyledSpanConfigTitle
+            onOff={mode === "read" ? readNumStartCards.onOff === "on" : mode === "flip" ? flipNumStartCards.onOff === "on" : mode === "exam" ? examNumStartCards.onOff === "on" : new Error("잘못된 모드")}
+          >
+            학습량
+          </StyledSpanConfigTitle>
+          <Switch
+            className="TitleSwitchButton"
+            size="small"
+            checked={mode === "read" ? readNumStartCards.onOff === "on" : mode === "flip" ? flipNumStartCards.onOff === "on" : mode === "exam" ? examNumStartCards.onOff === "on" : new Error("잘못된 모드")}
+            onChange={(checked) => {
+              const selectedNumCard = mode === "read" ? readNumStartCards : mode === "flip" ? flipNumStartCards : mode === "exam" ? examNumStartCards : new Error("잘못된 모드");
+              if (checked) {
+                const copyNumStartCards = { ...selectedNumCard, onOff: "on" };
+                changeNumStartCards(mode, copyNumStartCards);
+              } else {
+                const copyNumStartCards = { ...selectedNumCard, onOff: "off" };
+                changeNumStartCards(mode, copyNumStartCards);
+              }
+            }}
+          />
+        </StyledDivConfigColStartCards>
+        <div>
+          <NumStartCards mode={mode} selected={[readNumStartCards, flipNumStartCards, examNumStartCards]} changeNumStartCards={changeNumStartCards} />
+        </div>
+      </StyledDivConfigRow>
+
+      <StyledDivTitleRow>
+        <StyledDivConfigColStartCards>
+          <StyledSpanConfigTitle onOff={advancedFilterOnOff === "on"}>고급필터</StyledSpanConfigTitle>
+          <Switch
+            className="TitleSwitchButton"
+            size="small"
+            checked={advancedFilterOnOff === "on" ? true : advancedFilterOnOff === "off" ? false : new Error("고급필터 스위치 에러")}
+            onChange={(checked) => {
+              if (checked) {
+                changeAdvancedFilterOnOff("on");
+                if (counterForButtonClick > 0) {
+                  onToggleIsAFilter(true);
+                }
+              } else {
+                changeAdvancedFilterOnOff("off");
+                onToggleIsAFilter(false);
+              }
+            }}
+          />
+        </StyledDivConfigColStartCards>
+        {advancedFilterOnOff === "on" && (
+          <div>
+            <GetFilteredIndexButton
+              book_ids={book_ids}
+              advancedFilter={advancedFilter}
+              onChangeAFCardList={onChangeAFCardList}
+              AFCardList={AFCardList}
+              onToggleIsAFilter={onToggleIsAFilter}
+              advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
+              onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
+              onChangeAFButtonClick={onChangeAFButtonClick}
+            />
+          </div>
+        )}
+      </StyledDivTitleRow>
+      {advancedFilterOnOff === "on" && (
+        <>
+          <FilterSubMenu title="사용자 플래그" changeOnOff={changeUserFlagOnOff} onOff={userFlagOnOff}>
+            <FlagTags menu="flags" array={userFlag} onOff={userFlagOnOff === "on"} setState={changeUserFlag} />
+          </FilterSubMenu>
+          <FilterSubMenu title="제작자 플래그" changeOnOff={changeMakerFlagOnOff} onOff={makerFlagOnOff}>
+            <FlagTags menu="flags" array={makerFlag} onOff={makerFlagOnOff === "on"} setState={changeMakerFlag} />
+          </FilterSubMenu>
+          <FilterSubMenu title="최근 학습 시점" changeOnOff={changeRecentStudyTimeOnOff} onOff={recentStudyTimeOnOff}>
+            <RecentStudyTime onOff={recentStudyTimeOnOff} recentStudyTime={recentStudyTime} changeRecentStudyTime={changeRecentStudyTime} />
+          </FilterSubMenu>
+          <FilterSubMenu title="카드 레벨" changeOnOff={changeLevelOnOff} onOff={levelOnOff}>
+            <CardLevel onOff={levelOnOff} level={level} changeLevel={changeLevel} />
+          </FilterSubMenu>
+          <FilterSubMenu title="학습 횟수" changeOnOff={changeStudyTimesOnOff} onOff={studyTimesOnOff}>
+            <StudyTimes onOff={studyTimesOnOff} studyTimes={studyTimes} changeStudyTimes={changeStudyTimes} />
+          </FilterSubMenu>
+
+          <FilterSubMenu title="최근 선택 난이도" changeOnOff={changeRecentDifficultyOnOff} onOff={recentDifficultyOnOff}>
+            <FlagTags menu="recentDifficulty" array={recentDifficulty} onOff={recentDifficultyOnOff === "on"} setState={changeRecentDifficulty} />
+          </FilterSubMenu>
+          <FilterSubMenu title="최근 시험 결과" changeOnOff={changeExamResultOnOff} onOff={examResultOnOff}>
+            <FlagTags menu="examResult" array={examResult} onOff={examResultOnOff === "on"} setState={changeExamResult} />
+          </FilterSubMenu>
+        </>
+      )}
+    </StyledDivConfigWrapper>
+  );
   if (!error && !loading) {
     return (
       <Card size="small" bordered={false}>
@@ -204,155 +338,18 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
             </Button>
           </Col>
         </Row>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-around",
-            marginBottom: "1rem",
-          }}
-        >
-          <Button type={mode === "read" ? "primary" : "default"} onClick={() => changeMode("read")}>
-            읽기모드
-          </Button>
-          <Button type={mode === "flip" ? "primary" : "default"} onClick={() => changeMode("flip")}>
-            뒤집기모드
-          </Button>
-          <Button type={mode === "exam" ? "primary" : "default"} onClick={() => changeMode("exam")}>
-            시험모드
-          </Button>
-        </div>
 
-        <StyledDivConfigWrapper>
-          <StyledDivConfigRow>
-            <div>
-              <span className="ConifgTitle">보기 순서</span>
-            </div>
-            <div>
-              <SortOptionTag mode={mode} changeSortOption={changeSortOption} selected={[readSortOption, flipSortOption, examSortOption]} />
-            </div>
-          </StyledDivConfigRow>
-
-          <StyledDivConfigRow>
-            <div>
-              <span className="ConifgTitle">카드종류</span>
-            </div>
-            <div>
-              <UseCardTypesTag mode={mode} changeUseCardType={changeUseCardType} selected={[readUseCardType, flipUseCardType, examUseCardType]} />
-            </div>
-          </StyledDivConfigRow>
-
-          <StyledDivConfigRow>
-            <div>
-              <span className="ConifgTitle">카드상태</span>
-            </div>
-            <div>
-              <div>
-                <UseStatusTag mode={mode} changeUseStatus={changeUseStatus} selected={[readUseStatus, flipUseStatus, examUseStatus]} />
-              </div>
-              {(mode === "read" ? readUseStatus.includes("ing") : mode === "flip" ? flipUseStatus.includes("ing") : mode === "exam" ? examUseStatus.includes("ing") : null) && (
-                <StyledDivToggleStudying>
-                  <StudyTimeCondition
-                    mode={mode}
-                    selected={[readNeedStudyTimeCondition, flipNeedStudyTimeCondition, examNeedStudyTimeCondition]}
-                    changeNeedStudyTimeCondition={changeNeedStudyTimeCondition}
-                    changeNeedStudyTimeRange={changeNeedStudyTimeRange}
-                    selectedRange={[readNeedStudyTimeRange, flipNeedStudyTimeRange, examNeedStudyTimeRange]}
-                  />
-                </StyledDivToggleStudying>
-              )}
-            </div>
-          </StyledDivConfigRow>
-
-          <StyledDivConfigRow>
-            <StyledDivConfigColStartCards>
-              <StyledSpanConfigTitle
-                onOff={mode === "read" ? readNumStartCards.onOff === "on" : mode === "flip" ? flipNumStartCards.onOff === "on" : mode === "exam" ? examNumStartCards.onOff === "on" : new Error("잘못된 모드")}
-              >
-                학습량
-              </StyledSpanConfigTitle>
-              <Switch
-                className="TitleSwitchButton"
-                size="small"
-                checked={mode === "read" ? readNumStartCards.onOff === "on" : mode === "flip" ? flipNumStartCards.onOff === "on" : mode === "exam" ? examNumStartCards.onOff === "on" : new Error("잘못된 모드")}
-                onChange={(checked) => {
-                  const selectedNumCard = mode === "read" ? readNumStartCards : mode === "flip" ? flipNumStartCards : mode === "exam" ? examNumStartCards : new Error("잘못된 모드");
-                  if (checked) {
-                    const copyNumStartCards = { ...selectedNumCard, onOff: "on" };
-                    changeNumStartCards(mode, copyNumStartCards);
-                  } else {
-                    const copyNumStartCards = { ...selectedNumCard, onOff: "off" };
-                    changeNumStartCards(mode, copyNumStartCards);
-                  }
-                }}
-              />
-            </StyledDivConfigColStartCards>
-            <div>
-              <NumStartCards mode={mode} selected={[readNumStartCards, flipNumStartCards, examNumStartCards]} changeNumStartCards={changeNumStartCards} />
-            </div>
-          </StyledDivConfigRow>
-
-          <StyledDivTitleRow>
-            <StyledDivConfigColStartCards>
-              <StyledSpanConfigTitle onOff={advancedFilterOnOff === "on"}>고급필터</StyledSpanConfigTitle>
-              <Switch
-                className="TitleSwitchButton"
-                size="small"
-                checked={advancedFilterOnOff === "on" ? true : advancedFilterOnOff === "off" ? false : new Error("고급필터 스위치 에러")}
-                onChange={(checked) => {
-                  if (checked) {
-                    changeAdvancedFilterOnOff("on");
-                    if (counterForButtonClick > 0) {
-                      onToggleIsAFilter(true);
-                    }
-                  } else {
-                    changeAdvancedFilterOnOff("off");
-                    onToggleIsAFilter(false);
-                  }
-                }}
-              />
-            </StyledDivConfigColStartCards>
-            {advancedFilterOnOff === "on" && (
-              <div>
-                <GetFilteredIndexButton
-                  book_ids={book_ids}
-                  advancedFilter={advancedFilter}
-                  onChangeAFCardList={onChangeAFCardList}
-                  AFCardList={AFCardList}
-                  onToggleIsAFilter={onToggleIsAFilter}
-                  advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
-                  onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
-                  onChangeAFButtonClick={onChangeAFButtonClick}
-                />
-              </div>
-            )}
-          </StyledDivTitleRow>
-          {advancedFilterOnOff === "on" && (
-            <>
-              <FilterSubMenu title="사용자 플래그" changeOnOff={changeUserFlagOnOff} onOff={userFlagOnOff}>
-                <FlagTags menu="flags" array={userFlag} onOff={userFlagOnOff === "on"} setState={changeUserFlag} />
-              </FilterSubMenu>
-              <FilterSubMenu title="제작자 플래그" changeOnOff={changeMakerFlagOnOff} onOff={makerFlagOnOff}>
-                <FlagTags menu="flags" array={makerFlag} onOff={makerFlagOnOff === "on"} setState={changeMakerFlag} />
-              </FilterSubMenu>
-              <FilterSubMenu title="최근 학습 시점" changeOnOff={changeRecentStudyTimeOnOff} onOff={recentStudyTimeOnOff}>
-                <RecentStudyTime onOff={recentStudyTimeOnOff} recentStudyTime={recentStudyTime} changeRecentStudyTime={changeRecentStudyTime} />
-              </FilterSubMenu>
-              <FilterSubMenu title="카드 레벨" changeOnOff={changeLevelOnOff} onOff={levelOnOff}>
-                <CardLevel onOff={levelOnOff} level={level} changeLevel={changeLevel} />
-              </FilterSubMenu>
-              <FilterSubMenu title="학습 횟수" changeOnOff={changeStudyTimesOnOff} onOff={studyTimesOnOff}>
-                <StudyTimes onOff={studyTimesOnOff} studyTimes={studyTimes} changeStudyTimes={changeStudyTimes} />
-              </FilterSubMenu>
-
-              <FilterSubMenu title="최근 선택 난이도" changeOnOff={changeRecentDifficultyOnOff} onOff={recentDifficultyOnOff}>
-                <FlagTags menu="recentDifficulty" array={recentDifficulty} onOff={recentDifficultyOnOff === "on"} setState={changeRecentDifficulty} />
-              </FilterSubMenu>
-              <FilterSubMenu title="최근 시험 결과" changeOnOff={changeExamResultOnOff} onOff={examResultOnOff}>
-                <FlagTags menu="examResult" array={examResult} onOff={examResultOnOff === "on"} setState={changeExamResult} />
-              </FilterSubMenu>
-            </>
-          )}
-        </StyledDivConfigWrapper>
+        <Tabs activeKey={mode} type="card" size="small" onTabClick={(key) => changeMode(key)} tabBarStyle={{ margin: 0 }}>
+          <Tabs.TabPane tab="읽기모드" key="read">
+            {content}
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="뒤집기모드" key="flip">
+            {content}
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="시험모드" key="exam">
+            {content}
+          </Tabs.TabPane>
+        </Tabs>
       </Card>
     );
   }
@@ -362,11 +359,10 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
 export default memo(SessionConfig);
 
 const StyledDivConfigWrapper = styled.div`
-  border: 1px solid lightgray;
+  border: 1px solid #f0f0f0;
+  border-top: none;
   padding: 5px;
-  margin-top: 10px;
   background-color: white;
-  border-radius: 5px;
   display: flex;
   flex-direction: column;
 

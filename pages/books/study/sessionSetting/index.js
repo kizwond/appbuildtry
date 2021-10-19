@@ -3,7 +3,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION } from "../../../../graphql/query/studySessionSetting";
 import Layout from "../../../../components/layout/Layout";
 import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
-import { Card, Col, Tabs } from "antd";
+import { Col, Tabs, Row, Typography } from "antd";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
@@ -133,20 +133,20 @@ const SessionSetting = () => {
     return (
       <Layout>
         <StyledDiv>
-          <StyledDivFirst isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}>
-            {bookList.length - 1 === counter && (
-              <SessionConfig
-                submitCreateSessionConfigToServer={submitCreateSessionConfigToServer}
-                onToggleIsAFilter={onToggleIsAFilter}
-                onChangeAFCardList={onChangeAFCardList}
-                AFCardList={advancedFilteredCardsList}
-                book_ids={bookList.map((book) => book.book_id)}
-                advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
-                onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
-              />
-            )}
-          </StyledDivFirst>
           <StyledDivSecond>
+            <Row>
+              <Col xs={0} sm={0} md={0} lg={24} xl={24} xxl={24}>
+                <Typography.Title level={4}>목차 설정</Typography.Title>
+              </Col>
+              <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
+                <div style={{ display: "flex" }}>
+                  <StyledPointer zIndex={3}>목차 설정</StyledPointer>
+                  <StyledPointer activated="on" zIndex={2} style={{ left: "8px" }}>
+                    세션 설정
+                  </StyledPointer>
+                </div>
+              </Col>
+            </Row>
             <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
               {!isAdvancedFilteredCardListShowed &&
                 cardsList[0] &&
@@ -177,6 +177,19 @@ const SessionSetting = () => {
                 ))}
             </Tabs>
           </StyledDivSecond>
+          <StyledDivFirst isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}>
+            {bookList.length - 1 === counter && (
+              <SessionConfig
+                submitCreateSessionConfigToServer={submitCreateSessionConfigToServer}
+                onToggleIsAFilter={onToggleIsAFilter}
+                onChangeAFCardList={onChangeAFCardList}
+                AFCardList={advancedFilteredCardsList}
+                book_ids={bookList.map((book) => book.book_id)}
+                advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
+                onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
+              />
+            )}
+          </StyledDivFirst>
         </StyledDiv>
       </Layout>
     );
@@ -249,11 +262,15 @@ const StyledDivSecond = styled.div`
   }
 
   @media screen and (min-width: 992px) {
-    margin-top: 38px;
     flex: auto;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
     flex: auto;
+  }
+
+  & .ant-table-tbody > tr.ant-table-row-selected > td {
+    background: initial;
+    border-color: #f0f0f0;
   }
 
   & table tr td.ant-table-selection-column {
@@ -285,8 +302,17 @@ const StyledPointer = styled.div`
   width: 100px;
   height: 34px;
   position: relative;
-  background: red;
-  color: white;
+  background: ${(props) => (props.activated === "on" ? "#efedfc" : "#322a64")};
+  color: ${(props) => (props.activated === "on" ? "black" : "white")};
+  z-index: ${(props) => props.zIndex};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  &:hover {
+    background: #dfa4a4;
+  }
 
   &:after {
     content: "";
@@ -306,7 +332,18 @@ const StyledPointer = styled.div`
     bottom: 0;
     width: 0;
     height: 0;
-    border-left: 17px solid red;
+    border-left: ${(props) => (props.activated === "on" ? "17px solid #efedfc" : "17px solid #322a64")};
+    border-top: 17px solid transparent;
+    border-bottom: 17px solid transparent;
+  }
+  &:hover:before {
+    content: "";
+    position: absolute;
+    right: -17px;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 17px solid #dfa4a4;
     border-top: 17px solid transparent;
     border-bottom: 17px solid transparent;
   }

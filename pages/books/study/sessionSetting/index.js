@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION } from "../../../../graphql/query/studySessionSetting";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION, GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
 import Layout from "../../../../components/layout/Layout";
 import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
 import { Col, Tabs, Row, Typography, Button, Space } from "antd";
@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
 import { StyledRowMaxWidth } from "../../../../components/common/styledComponent/page";
+import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 
 const SessionSetting = () => {
   const router = useRouter();
@@ -19,6 +20,98 @@ const SessionSetting = () => {
   const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState([]);
   const [advancedFilteredCheckedIndexes, setAdvancedFilteredCheckedIndexes] = useState([]);
   const [isAdvancedFilteredCardListShowed, setIsAdvancedFilteredCardListShowed] = useState(false);
+
+  const {
+    mode,
+    flipNeedStudyTimeCondition,
+    flipNeedStudyTimeRange,
+    flipNumStartCards,
+    flipSortOption,
+    flipUseCardType,
+    flipUseStatus,
+    // read 모드설정
+    readNeedStudyTimeCondition,
+    readNeedStudyTimeRange,
+    readNumStartCards,
+    readSortOption,
+    readUseCardType,
+    readUseStatus,
+    // exam 모드설정
+    examNeedStudyTimeCondition,
+    examNeedStudyTimeRange,
+    examNumStartCards,
+    examSortOption,
+    examUseCardType,
+    examUseStatus,
+    // 고급필터
+    advancedFilterOnOff,
+    cardMakerOnOff,
+    cardMaker,
+    examResultOnOff,
+    examResult,
+    levelOnOff,
+    level,
+    makerFlagOnOff,
+    makerFlag,
+    recentDifficultyOnOff,
+    recentDifficulty,
+    recentStudyTimeOnOff,
+    recentStudyTime,
+    studyTimesOnOff,
+    studyTimes,
+    userFlagOnOff,
+    userFlag,
+
+    changeMode,
+    // (mode, value) => setState
+    changeSortOption,
+    changeNeedStudyTimeRange,
+    changeNeedStudyTimeCondition,
+    changeUseCardType,
+    changeUseStatus,
+    changeNumStartCards,
+    // 고급필터 setState
+    changeAdvancedFilterOnOff,
+    changeUserFlag,
+    changeUserFlagOnOff,
+    changeCardMaker,
+    changeCardMakerOnOff,
+    changeMakerFlag,
+    changeMakerFlagOnOff,
+    changeExamResult,
+    changeExamResultOnOff,
+    changeRecentDifficulty,
+    changeRecentDifficultyOnOff,
+    changeRecentStudyTime,
+    changeRecentStudyTimeOnOff,
+    changeLevel,
+    changeLevelOnOff,
+    changeStudyTimes,
+    changeStudyTimesOnOff,
+    onChangeAFButtonClick,
+    // useMutation에서 받은 데이터 업데이트
+    updateData,
+  } = useSessionConfig();
+
+  const {
+    data: data2,
+    loading: loading2,
+    error: error2,
+  } = useQuery(GET_SESSTION_CONFIG, {
+    variables: {
+      mybook_ids: bookList.map((book) => book.book_id),
+    },
+    onCompleted: (received_data) => {
+      if (received_data.session_getSessionConfig.status === "200") {
+        console.log({ useQueryData: received_data });
+        updateData(received_data);
+      } else if (received_data.session_getSessionConfig.status === "401") {
+        router.push("/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
+  });
 
   useEffect(() => {
     const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
@@ -142,11 +235,11 @@ const SessionSetting = () => {
                 </Col>
                 <Col span={3}></Col>
                 <Col span={7} style={{ display: "flex" }}>
-                  <Button block disabled={"on" === "off"} size="small" style={{ height: "2rem", fontSize: "0.95rem", fontWeight: "600", marginLeft: "5px" }}>
-                    {"on" === "on" ? "다음" : "이전"}
+                  <Button block disabled={"on" === "off"} size="small" style={{ height: "2rem", fontSize: "0.95rem !important", fontWeight: "600", marginLeft: "5px" }}>
+                    <span style={{ fontSize: "0.95rem " }}>{"on" === "on" ? "다음" : "이전"}</span>
                   </Button>
-                  <Button block disabled={"off" === "off"} size="small" style={{ height: "2rem", fontSize: "0.95rem", fontWeight: "600", marginLeft: "5px" }}>
-                    시작
+                  <Button block disabled={"off" === "off"} size="small" style={{ height: "2rem", fontWeight: "600", marginLeft: "5px" }}>
+                    <span style={{ fontSize: "0.95rem " }}>시작</span>
                   </Button>
                 </Col>
               </Row>
@@ -194,16 +287,8 @@ const SessionSetting = () => {
                 <Typography.Title level={4}>세션 설정</Typography.Title>
               </Col>
               <Col sxs={0} sm={0} md={0} lg={6} xl={6} xxl={6}>
-                <Button
-                  block
-                  style={{
-                    background: "green",
-                    color: "white",
-                    fontWeight: "700",
-                  }}
-                  // onClick={onSubmit}
-                >
-                  시작
+                <Button block size="small" style={{ height: "2rem", fontWeight: "600", marginLeft: "5px" }}>
+                  <span style={{ fontSize: "0.95rem " }}>시작</span>
                 </Button>
               </Col>
             </Row>
@@ -238,6 +323,9 @@ const StyledDiv = styled.div`
     height: 0;
   } */
 
+  & * {
+    font-size: 0.7rem;
+  }
   margin: 0 auto;
   max-width: 1440px;
   min-width: 363px;
@@ -256,9 +344,7 @@ const StyledDiv = styled.div`
 `;
 const StyledDivFirst = styled.div`
   padding: 8px;
-  & * {
-    font-size: 0.7rem;
-  }
+
   & span.ant-radio + * {
     font-size: 0.7rem;
   }
@@ -286,9 +372,6 @@ const StyledDivFirst = styled.div`
 `;
 const StyledDivSecond = styled.div`
   padding: 8px;
-  & * {
-    font-size: 0.7rem;
-  }
 
   @media screen and (min-width: 992px) {
     flex: auto;
@@ -344,17 +427,6 @@ const StyledPointer = styled.div`
   &:hover {
     background: #dfa4a4;
   }
-  &:after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 0;
-    border-left: 1rem solid white;
-    border-top: 1rem solid transparent;
-    border-bottom: 1rem solid transparent;
-  }
 
   &:before {
     content: "";
@@ -374,14 +446,20 @@ const StyledPointer = styled.div`
   &:nth-of-type(1) {
     z-index: 2;
   }
-  &:nth-of-type(1):after {
-    border-left: ${(props) => (props.activated === "on" ? "1rem solid #efedfc" : "1rem solid #322a64")};
-  }
-  &:nth-of-type(1):hover:after {
-    border-left: 1rem solid #dfa4a4;
-  }
+
   &:nth-of-type(2) {
     z-index: 1;
     left: 5px;
+  }
+  &:nth-of-type(2):after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 1rem solid white;
+    border-top: 1rem solid transparent;
+    border-bottom: 1rem solid transparent;
   }
 `;

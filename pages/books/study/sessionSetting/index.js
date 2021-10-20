@@ -3,7 +3,7 @@ import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION } from "../../../../graphql/query/studySessionSetting";
 import Layout from "../../../../components/layout/Layout";
 import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
-import { Col, Tabs, Row, Typography } from "antd";
+import { Col, Tabs, Row, Typography, Button, Space } from "antd";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
@@ -133,18 +133,29 @@ const SessionSetting = () => {
     return (
       <Layout>
         <StyledDiv>
+          <Row style={{ padding: "8px" }}>
+            <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
+              <Row>
+                <Col span={14} style={{ display: "flex" }}>
+                  <StyledPointer activated="on">목차 설정</StyledPointer>
+                  <StyledPointer activated="off">세션 설정</StyledPointer>
+                </Col>
+                <Col span={3}></Col>
+                <Col span={7} style={{ display: "flex" }}>
+                  <Button block disabled={"on" === "off"} size="small" style={{ height: "2rem", fontSize: "0.95rem", fontWeight: "600", marginLeft: "5px" }}>
+                    {"on" === "on" ? "다음" : "이전"}
+                  </Button>
+                  <Button block disabled={"off" === "off"} size="small" style={{ height: "2rem", fontSize: "0.95rem", fontWeight: "600", marginLeft: "5px" }}>
+                    시작
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
           <StyledDivSecond>
             <Row>
               <Col xs={0} sm={0} md={0} lg={24} xl={24} xxl={24}>
                 <Typography.Title level={4}>목차 설정</Typography.Title>
-              </Col>
-              <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
-                <div style={{ display: "flex" }}>
-                  <StyledPointer zIndex={3}>목차 설정</StyledPointer>
-                  <StyledPointer activated="on" zIndex={2} style={{ left: "8px" }}>
-                    세션 설정
-                  </StyledPointer>
-                </div>
               </Col>
             </Row>
             <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
@@ -178,6 +189,24 @@ const SessionSetting = () => {
             </Tabs>
           </StyledDivSecond>
           <StyledDivFirst isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}>
+            <Row>
+              <Col xs={0} sm={0} md={0} lg={18} xl={18} xxl={18}>
+                <Typography.Title level={4}>세션 설정</Typography.Title>
+              </Col>
+              <Col sxs={0} sm={0} md={0} lg={6} xl={6} xxl={6}>
+                <Button
+                  block
+                  style={{
+                    background: "green",
+                    color: "white",
+                    fontWeight: "700",
+                  }}
+                  // onClick={onSubmit}
+                >
+                  시작
+                </Button>
+              </Col>
+            </Row>
             {bookList.length - 1 === counter && (
               <SessionConfig
                 submitCreateSessionConfigToServer={submitCreateSessionConfigToServer}
@@ -201,16 +230,17 @@ export default SessionSetting;
 
 const StyledDiv = styled.div`
   /* 스크롤바 숨김 */
-  overflow-y: scroll;
+  /* overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
-  }
+  } */
 
   margin: 0 auto;
   max-width: 1440px;
+  min-width: 363px;
 
   display: flex;
   @media screen and (min-width: 992px) {
@@ -225,7 +255,6 @@ const StyledDiv = styled.div`
   }
 `;
 const StyledDivFirst = styled.div`
-  min-width: 363px;
   padding: 8px;
   & * {
     font-size: 0.7rem;
@@ -252,10 +281,10 @@ const StyledDivFirst = styled.div`
     min-width: 385px;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
+    display: none;
   }
 `;
 const StyledDivSecond = styled.div`
-  min-width: 363px;
   padding: 8px;
   & * {
     font-size: 0.7rem;
@@ -299,8 +328,9 @@ const StyledDivTabContentWrapper = styled.div`
 `;
 
 const StyledPointer = styled.div`
-  width: 100px;
-  height: 34px;
+  width: 100%;
+  min-width: 70px;
+  height: 2rem;
   position: relative;
   background: ${(props) => (props.activated === "on" ? "#efedfc" : "#322a64")};
   color: ${(props) => (props.activated === "on" ? "black" : "white")};
@@ -308,12 +338,12 @@ const StyledPointer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
+
   &:hover {
     background: #dfa4a4;
   }
-
   &:after {
     content: "";
     position: absolute;
@@ -321,30 +351,37 @@ const StyledPointer = styled.div`
     bottom: 0;
     width: 0;
     height: 0;
-    border-left: 17px solid white;
-    border-top: 17px solid transparent;
-    border-bottom: 17px solid transparent;
+    border-left: 1rem solid white;
+    border-top: 1rem solid transparent;
+    border-bottom: 1rem solid transparent;
   }
+
   &:before {
     content: "";
     position: absolute;
-    right: -17px;
+    right: -1rem;
     bottom: 0;
     width: 0;
     height: 0;
-    border-left: ${(props) => (props.activated === "on" ? "17px solid #efedfc" : "17px solid #322a64")};
-    border-top: 17px solid transparent;
-    border-bottom: 17px solid transparent;
+    border-left: ${(props) => (props.activated === "on" ? "1rem solid #efedfc" : "1rem solid #322a64")};
+    border-top: 1rem solid transparent;
+    border-bottom: 1rem solid transparent;
   }
   &:hover:before {
-    content: "";
-    position: absolute;
-    right: -17px;
-    bottom: 0;
-    width: 0;
-    height: 0;
-    border-left: 17px solid #dfa4a4;
-    border-top: 17px solid transparent;
-    border-bottom: 17px solid transparent;
+    border-left: 1rem solid #dfa4a4;
+  }
+
+  &:nth-of-type(1) {
+    z-index: 2;
+  }
+  &:nth-of-type(1):after {
+    border-left: ${(props) => (props.activated === "on" ? "1rem solid #efedfc" : "1rem solid #322a64")};
+  }
+  &:nth-of-type(1):hover:after {
+    border-left: 1rem solid #dfa4a4;
+  }
+  &:nth-of-type(2) {
+    z-index: 1;
+    left: 5px;
   }
 `;

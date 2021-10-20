@@ -318,26 +318,24 @@ const SessionConfig = ({ submitCreateSessionConfigToServer, book_ids, onToggleIs
   if (!error && !loading) {
     return (
       <div>
-        <Row>
-          <Col span={12}>
+        {/* <Row>
+          <Col xs={0} sm={0} md={0} lg={18} xl={18} xxl={18}>
             <Typography.Title level={4}>세션 설정</Typography.Title>
           </Col>
-          <Col span={12}>
+          <Col sxs={0} sm={0} md={0} lg={6} xl={6} xxl={6}>
             <Button
               block
               style={{
                 background: "green",
-                minWidth: "100px",
                 color: "white",
-                fontSize: "13px",
                 fontWeight: "700",
               }}
               onClick={onSubmit}
             >
-              세션 시작
+              시작
             </Button>
           </Col>
-        </Row>
+        </Row> */}
 
         <Tabs activeKey={mode} type="card" size="small" onTabClick={(key) => changeMode(key)} tabBarStyle={{ margin: 0 }}>
           <Tabs.TabPane tab="읽기모드" key="read">

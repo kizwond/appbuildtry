@@ -6,23 +6,21 @@ const tags = [
   { option: "read", title: "읽기카드" },
   { option: "flip", title: "뒤집기카드" },
 ];
-const UseCardTypeTag = ({ mode, selected, changeUseCardType }) => {
-  const [read, flip, exam] = selected;
-  const selectedUseCardType = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : new Error("Unhandled StudyMode");
+const UseCardTypeTag = ({ useCardtype, changeUseCardType }) => {
   return (
     <div>
       {tags.map((tag) => (
-        <StyledDiv key={tag.option} checked={selectedUseCardType.includes(tag.option)}>
+        <StyledDiv key={tag.option} checked={useCardtype.includes(tag.option)}>
           <Tag.CheckableTag
-            checked={selectedUseCardType.includes(tag.option)}
+            checked={useCardtype.includes(tag.option)}
             onChange={(checked) => {
               if (checked) {
-                const newArr = [...selectedUseCardType, tag.option];
-                changeUseCardType(mode, newArr);
+                const newArr = [...useCardtype, tag.option];
+                changeUseCardType(newArr);
               }
               if (!checked) {
-                const newArr = selectedUseCardType.filter((type) => type !== tag.option);
-                changeUseCardType(mode, newArr);
+                const newArr = useCardtype.filter((type) => type !== tag.option);
+                changeUseCardType(newArr);
               }
             }}
           >

@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION } from "../../../../graphql/query/studySessionSetting";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION, GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
 import Layout from "../../../../components/layout/Layout";
 import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
-import { Card, Col, Tabs } from "antd";
+import { Col, Tabs, Row, Typography, Button, Space } from "antd";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
 import { StyledRowMaxWidth } from "../../../../components/common/styledComponent/page";
+import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 
 const SessionSetting = () => {
   const router = useRouter();
@@ -19,6 +20,41 @@ const SessionSetting = () => {
   const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState([]);
   const [advancedFilteredCheckedIndexes, setAdvancedFilteredCheckedIndexes] = useState([]);
   const [isAdvancedFilteredCardListShowed, setIsAdvancedFilteredCardListShowed] = useState(false);
+
+  const {
+    // 모드
+    mode,
+    changeMode,
+    // 모드 옵션
+    modeOption,
+    // 고급설정
+    advancedFilter,
+    changeAdvancedFilter,
+    // useQuery 업데이트용
+    updateData,
+    // useMutaion Variables
+    // sessionConfig,
+  } = useSessionConfig();
+
+  const {
+    data: data2,
+    loading: loading2,
+    error: error2,
+  } = useQuery(GET_SESSTION_CONFIG, {
+    variables: {
+      mybook_ids: bookList.map((book) => book.book_id),
+    },
+    onCompleted: (received_data) => {
+      if (received_data.session_getSessionConfig.status === "200") {
+        console.log({ useQueryData: received_data });
+        updateData(received_data);
+      } else if (received_data.session_getSessionConfig.status === "401") {
+        router.push("/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
+  });
 
   useEffect(() => {
     const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
@@ -133,7 +169,72 @@ const SessionSetting = () => {
     return (
       <Layout>
         <StyledDiv>
+          <Row style={{ padding: "8px" }}>
+            <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
+              <Row>
+                <Col span={14} style={{ display: "flex" }}>
+                  <StyledPointer activated="on">목차 설정</StyledPointer>
+                  <StyledPointer activated="off">세션 설정</StyledPointer>
+                </Col>
+                <Col span={3}></Col>
+                <Col span={7} style={{ display: "flex" }}>
+                  <Button block disabled={"on" === "off"} size="small" style={{ height: "2rem", fontSize: "0.95rem !important", fontWeight: "600", marginLeft: "5px" }}>
+                    <span style={{ fontSize: "0.95rem " }}>{"on" === "on" ? "다음" : "이전"}</span>
+                  </Button>
+                  <Button block disabled={"off" === "off"} size="small" style={{ height: "2rem", fontWeight: "600", marginLeft: "5px" }}>
+                    <span style={{ fontSize: "0.95rem " }}>시작</span>
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+          <StyledDivSecond>
+            <Row>
+              <Col xs={0} sm={0} md={0} lg={24} xl={24} xxl={24}>
+                <Typography.Title level={4}>목차 설정</Typography.Title>
+              </Col>
+            </Row>
+            <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
+              {!isAdvancedFilteredCardListShowed &&
+                cardsList[0] &&
+                bookList.map((book, index) => (
+                  <Tabs.TabPane tab={book.book_title} key={book.book_id}>
+                    <StyledDivTabContentWrapper>
+                      <IndexTree
+                        bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
+                        checkedKeys={checkedKeys[book.book_id]}
+                        selectedbookId={book.book_id}
+                        onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
+                      />
+                    </StyledDivTabContentWrapper>
+                  </Tabs.TabPane>
+                ))}
+              {isAdvancedFilteredCardListShowed &&
+                bookList.map((book, index) => (
+                  <Tabs.TabPane tab={book.book_title} key={book.book_id}>
+                    <StyledDivTabContentWrapper>
+                      <IndexTree
+                        bookIndexInfo={advancedFilteredCardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
+                        checkedKeys={advancedFilteredCheckedIndexes[book.book_id]}
+                        selectedbookId={book.book_id}
+                        onCheckIndexesCheckedKeys={onAdvancedFilteredCheckIndexesCheckedKeys}
+                      />
+                    </StyledDivTabContentWrapper>
+                  </Tabs.TabPane>
+                ))}
+            </Tabs>
+          </StyledDivSecond>
           <StyledDivFirst isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}>
+            <Row>
+              <Col xs={0} sm={0} md={0} lg={18} xl={18} xxl={18}>
+                <Typography.Title level={4}>세션 설정</Typography.Title>
+              </Col>
+              <Col sxs={0} sm={0} md={0} lg={6} xl={6} xxl={6}>
+                <Button block size="small" style={{ height: "2rem", fontWeight: "600", marginLeft: "5px" }}>
+                  <span style={{ fontSize: "0.95rem " }}>시작</span>
+                </Button>
+              </Col>
+            </Row>
             {bookList.length - 1 === counter && (
               <SessionConfig
                 submitCreateSessionConfigToServer={submitCreateSessionConfigToServer}
@@ -143,42 +244,14 @@ const SessionSetting = () => {
                 book_ids={bookList.map((book) => book.book_id)}
                 advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
                 onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
+                mode={mode}
+                changeMode={changeMode}
+                modeOption={modeOption}
+                advancedFilter={advancedFilter}
+                changeAdvancedFilter={changeAdvancedFilter}
               />
             )}
           </StyledDivFirst>
-          <StyledDivSecond>
-            <Card size="small" bordered={false}>
-              <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
-                {!isAdvancedFilteredCardListShowed &&
-                  cardsList[0] &&
-                  bookList.map((book, index) => (
-                    <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <StyledDivTabContentWrapper>
-                        <IndexTree
-                          bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
-                          checkedKeys={checkedKeys[book.book_id]}
-                          selectedbookId={book.book_id}
-                          onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
-                        />
-                      </StyledDivTabContentWrapper>
-                    </Tabs.TabPane>
-                  ))}
-                {isAdvancedFilteredCardListShowed &&
-                  bookList.map((book, index) => (
-                    <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                      <StyledDivTabContentWrapper>
-                        <IndexTree
-                          bookIndexInfo={advancedFilteredCardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
-                          checkedKeys={advancedFilteredCheckedIndexes[book.book_id]}
-                          selectedbookId={book.book_id}
-                          onCheckIndexesCheckedKeys={onAdvancedFilteredCheckIndexesCheckedKeys}
-                        />
-                      </StyledDivTabContentWrapper>
-                    </Tabs.TabPane>
-                  ))}
-              </Tabs>
-            </Card>
-          </StyledDivSecond>
         </StyledDiv>
       </Layout>
     );
@@ -190,16 +263,20 @@ export default SessionSetting;
 
 const StyledDiv = styled.div`
   /* 스크롤바 숨김 */
-  overflow-y: scroll;
+  /* overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
-  }
+  } */
 
+  & * {
+    font-size: 0.7rem;
+  }
   margin: 0 auto;
   max-width: 1440px;
+  min-width: 363px;
 
   display: flex;
   @media screen and (min-width: 992px) {
@@ -214,10 +291,8 @@ const StyledDiv = styled.div`
   }
 `;
 const StyledDivFirst = styled.div`
-  min-width: 363px;
-  & * {
-    font-size: 0.7rem;
-  }
+  padding: 8px;
+
   & span.ant-radio + * {
     font-size: 0.7rem;
   }
@@ -238,24 +313,42 @@ const StyledDivFirst = styled.div`
   }
   @media screen and (min-width: 992px) {
     min-width: 385px;
-    min-height: 94vh;
-    border-right: 1px solid lightgray;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
+    display: none;
   }
 `;
 const StyledDivSecond = styled.div`
-  min-width: 363px;
-  & * {
-    font-size: 0.7rem;
-  }
+  padding: 8px;
 
   @media screen and (min-width: 992px) {
-    margin-top: 38px;
     flex: auto;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
     flex: auto;
+  }
+
+  & .ant-table-tbody > tr.ant-table-row-selected > td {
+    background: initial;
+    border-color: #f0f0f0;
+  }
+
+  & table tr td.ant-table-selection-column {
+    padding: 8px 2px !important;
+    text-align: center;
+    width: 32px;
+    min-width: 32px;
+  }
+
+  & .ant-table-cell.TableRowTitle.ant-table-cell-with-append {
+    padding: 8px 5px 8px 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .ant-table-row-indent + .ant-table-row-expand-icon {
+    margin-right: 2px;
   }
 `;
 
@@ -263,4 +356,58 @@ const StyledDivTabContentWrapper = styled.div`
   border: 1px solid #f0f0f0;
   border-top: none;
   padding: 5px;
+`;
+
+const StyledPointer = styled.div`
+  width: 100%;
+  min-width: 70px;
+  height: 2rem;
+  position: relative;
+  background: ${(props) => (props.activated === "on" ? "#efedfc" : "#322a64")};
+  color: ${(props) => (props.activated === "on" ? "black" : "white")};
+  z-index: ${(props) => props.zIndex};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+
+  &:hover {
+    background: #dfa4a4;
+  }
+
+  &:before {
+    content: "";
+    position: absolute;
+    right: -1rem;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: ${(props) => (props.activated === "on" ? "1rem solid #efedfc" : "1rem solid #322a64")};
+    border-top: 1rem solid transparent;
+    border-bottom: 1rem solid transparent;
+  }
+  &:hover:before {
+    border-left: 1rem solid #dfa4a4;
+  }
+
+  &:nth-of-type(1) {
+    z-index: 2;
+  }
+
+  &:nth-of-type(2) {
+    z-index: 1;
+    left: 5px;
+  }
+  &:nth-of-type(2):after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: 1rem solid white;
+    border-top: 1rem solid transparent;
+    border-bottom: 1rem solid transparent;
+  }
 `;

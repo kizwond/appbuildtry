@@ -16,13 +16,7 @@ const breakPoint = [
   },
 ];
 
-const StudyTimeCondition = ({ mode, selected, changeNeedStudyTimeCondition, changeNeedStudyTimeRange, selectedRange }) => {
-  const [read, flip, exam] = selected;
-  const [readRange, flipRange, examRange] = selectedRange;
-
-  const selectedSTC = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : "오류";
-  const selectedRg = mode === "read" ? readRange : mode === "flip" ? flipRange : mode === "exam" ? examRange : "오류";
-
+const StudyTimeCondition = ({ needStudyTimeCondition, changeNeedStudyTimeCondition, needStudyTimeRange, changeNeedStudyTimeRange }) => {
   const onChange = useCallback(
     (date, dateString) => {
       const now = new Date();
@@ -38,12 +32,17 @@ const StudyTimeCondition = ({ mode, selected, changeNeedStudyTimeCondition, chan
       const selectedEndDate = moment(`${endYear}-${dateString[1]}`, "YYYY-MM-DD");
       const differenceFromEnd = moment.duration(selectedEndDate.diff(today)).asDays();
 
-      changeNeedStudyTimeRange(mode, [differenceFromStart, differenceFromEnd]);
+      changeNeedStudyTimeRange([differenceFromStart, differenceFromEnd]);
     },
-    [mode, changeNeedStudyTimeRange]
+    [changeNeedStudyTimeRange]
   );
+
+  const handlerRadioChange = useCallback((e) => {
+    changeNeedStudyTimeCondition(e.target.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
-    <Radio.Group onChange={(e) => changeNeedStudyTimeCondition(mode, e.target.value)} value={selectedSTC} size="small">
+    <Radio.Group onChange={handlerRadioChange} value={needStudyTimeCondition} size="small">
       <StyledRow wrap={false}>
         <Col {...breakPoint[0]}>
           <StyledRadio value="all">전체</StyledRadio>
@@ -59,12 +58,12 @@ const StudyTimeCondition = ({ mode, selected, changeNeedStudyTimeCondition, chan
             <StyledRadio value="custom">직접입력</StyledRadio>
           </Row>
           <Row wrap={false}>
-            {selectedSTC === "custom" && (
+            {needStudyTimeCondition === "custom" && (
               <>
                 <StyledDatePicker
                   placeholder={["시작", "종료"]}
                   format="MM-DD"
-                  value={[selectedRg[0] == 0 ? moment() : moment().add(selectedRg[0], "days"), selectedRg[1] == 0 ? moment() : moment().add(selectedRg[1], "days")]}
+                  value={[needStudyTimeRange[0] == 0 ? moment() : moment().add(needStudyTimeRange[0], "days"), needStudyTimeRange[1] == 0 ? moment() : moment().add(needStudyTimeRange[1], "days")]}
                   onChange={onChange}
                   size="small"
                 />

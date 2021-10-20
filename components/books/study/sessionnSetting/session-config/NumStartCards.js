@@ -8,23 +8,21 @@ const tags = [
   { option: "completed", title: "학습완료" },
   { option: "hold", title: "학습보류" },
 ];
-const NumStartCards = ({ mode, selected, changeNumStartCards }) => {
-  const [read, flip, exam] = selected;
-  const selectedNum = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : new Error("UseStatus 에러");
+const NumStartCards = ({ numStartCards, changeNumStartCards }) => {
   return (
     <div>
       {tags.map((tag) => (
         <StyledDiv key={tag.option}>
           {`${tag.title}: `}
           <InputNumber
-            disabled={selectedNum.onOff === "off"}
+            disabled={numStartCards.onOff === "off"}
             size="small"
-            value={selectedNum[`${tag.option}`]}
+            value={numStartCards[`${tag.option}`]}
             onChange={(value) => {
-              const copy = { ...selectedNum, [`${tag.option}`]: value };
-              changeNumStartCards(mode, copy);
+              const copy = { ...numStartCards, [`${tag.option}`]: value };
+              changeNumStartCards(copy);
             }}
-          ></InputNumber>
+          />
         </StyledDiv>
       ))}
     </div>

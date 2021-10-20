@@ -4,34 +4,34 @@ import { Button } from "antd";
 
 const backgroundColor = "black";
 const buttonColor = "white";
-const fontColor = "white"
+const fontColor = "white";
 
-const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId, book_id }) => {
-  if (cardTypes) {
-    var cardTypeList = cardTypes.map((cardType) => {
-      return (
-        <>
-          <span style={{marginLeft:"5px"}}>
-            <Button size="small" onClick={() => selectCardType(cardType.cardtype_info)} style={{ fontSize: "0.8rem" }}>
-              {cardType.cardtype_info.name}
-            </Button>
-          </span>
-        </>
-      );
-    });
-  }
-  const selectCardType = (cardtype_info) => {
-    console.log(cardtype_info);
+const FloatingMenu = ({setCardId, setEditorOnFromCard,setSelectedCardType, cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId, book_id, selectedCardType }) => {
+
+  const addCard = () => {
+    setCardId("");
+    setEditorOnFromCard("");
+    if (selectedCardType) {
+      const hello = cardTypes.filter((item) => item.cardtype_info.name === selectedCardType.name);
+      console.log(hello);
+      setSelectedCardType(hello[0].cardtype_info);
+      sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
+      cardTypeInfo(hello[0].cardtype_info, "normal");
+    } else {
+      console.log("no cardtype selected!!!!!!! 그래서 그냥 첫번째 읽기 기본이 미리 선택된것임");
+      console.log(cardTypes[0].cardtype_info.cardtype);
+      setSelectedCardType(cardTypes[0].cardtype_info);
+      cardTypeInfo(cardTypes[0].cardtype_info, "normal");
+      sessionStorage.setItem("cardtype", cardTypes[0].cardtype_info.cardtype);
+    }
     console.log("clicked!!!");
-    cardTypeInfo(cardtype_info,"normal");
-    sessionStorage.setItem("cardtype", cardtype_info.cardtype);
   };
   return (
     <div style={{ width: "100%", alignItems: "center", position: "fixed", bottom: 0, zIndex: 3, fontSize: "0.8rem" }}>
       <div
         style={{
           margin: "auto",
-          background:backgroundColor,
+          background: backgroundColor,
           borderRadius: "5px 5px 0 0",
           borderBottom: "none",
           width: "90%",
@@ -41,7 +41,7 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexS
           padding: 10,
           boxShadow: "0px -1px 6px -1px #999999",
           alignItems: "center",
-          color:fontColor
+          color: fontColor,
         }}
       >
         <div
@@ -53,12 +53,13 @@ const FloatingMenu = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexS
             alignItems: "center",
           }}
         >
-          <span style={{marginRight:"10px"}}>타입선택 : </span>
-          <div style={{backgroundColor:"#e7e7e7", borderRadius:"5px", border:"1px solid lightgrey", boxShadow:"#9d9d9d80 1px 1px 3px inset", padding:"5px", width:"120px", overflow:"scroll", display:"flex", flexDirection:"row"}}>
-          {cardTypeList}
-          </div>
+          <span style={{ marginRight: "10px" }}>
+            <Button onClick={addCard} size="small" style={{ fontSize: "0.8rem" }}>
+              카드추가
+            </Button>
+          </span>
         </div>
-        <div style={{display:"flex", justifyContent:"space-between", flexBasis:"100px", alignItems:"center"}}>
+        <div style={{ display: "flex", justifyContent: "space-between", flexBasis: "100px", alignItems: "center" }}>
           <ImportModal cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
           <RightDrawer book_id={book_id} />
         </div>

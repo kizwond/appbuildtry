@@ -34,11 +34,20 @@ const SessionConfig = ({
   advancedFilter,
   changeAdvancedFilter,
 }) => {
-  const [counterForButtonClick, setCounterForButtonClick] = useState(0);
-
   const { readDetailedOption, changeReadProps, flipDetailedOption, changeFlipProps, examDetailedOption, changeExamProps } = modeOption;
 
-  const advancedFilterComponet = <AdvancedFilter changeAdvancedFilter={changeAdvancedFilter} advancedFilter={advancedFilter} />;
+  const advancedFilterComponet = (
+    <AdvancedFilter
+      book_ids={book_ids}
+      advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
+      onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
+      onChangeAFCardList={onChangeAFCardList}
+      AFCardList={AFCardList}
+      onToggleIsAFilter={onToggleIsAFilter}
+      changeAdvancedFilter={changeAdvancedFilter}
+      advancedFilter={advancedFilter}
+    />
+  );
 
   return (
     <div>

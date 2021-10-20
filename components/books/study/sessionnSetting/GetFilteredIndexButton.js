@@ -1,16 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID } from "../../../../graphql/query/studySessionSetting";
-import { Button } from "antd";
 import { CloudSyncOutlined } from "@ant-design/icons";
 
-const GetFilteredIndexButton = ({ advancedFilter, book_ids, onChangeAFCardList, AFCardList, onToggleIsAFilter, advancedFilteredCheckedIndexes, onChangeIndexesOfAFCardList, onChangeAFButtonClick }) => {
+const GetFilteredIndexButton = ({
+  advancedFilter, //
+  book_ids,
+  onChangeAFCardList,
+  AFCardList,
+  advancedFilteredCheckedIndexes,
+  onChangeIndexesOfAFCardList,
+  onChangeAFButtonClick,
+}) => {
   const [counter, setCounter] = useState(0);
   const [isOnProcessing, setIsOnProcessing] = useState(true);
 
   const [loadFilteredData, { loading, error, data }] = useLazyQuery(GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, {
     onCompleted: (received_data) => {
+      console.log("데이터받았음");
       if (counter == 0) {
+        onChangeAFButtonClick();
         onChangeAFCardList([received_data]);
         setIsOnProcessing(true);
       } else {
@@ -31,48 +40,18 @@ const GetFilteredIndexButton = ({ advancedFilter, book_ids, onChangeAFCardList, 
   const variables = {
     forGetNumCardsbyIndex: {
       mybook_id: book_ids[counter],
-      advancedFilter: {
-        onOff: advancedFilter.onOff,
-        cardMaker: {
-          onOff: advancedFilter.cardMaker.onOff,
-          value: advancedFilter.cardMaker.value,
-        },
-        examResult: {
-          onOff: advancedFilter.examResult.onOff,
-          value: advancedFilter.examResult.value,
-        },
-        level: {
-          onOff: advancedFilter.level.onOff,
-          value: advancedFilter.level.value,
-        },
-        makerFlag: {
-          onOff: advancedFilter.makerFlag.onOff,
-          value: advancedFilter.makerFlag.value,
-        },
-        userFlag: {
-          onOff: advancedFilter.userFlag.onOff,
-          value: advancedFilter.userFlag.value,
-        },
-        recentDifficulty: {
-          onOff: advancedFilter.recentDifficulty.onOff,
-          value: advancedFilter.recentDifficulty.value,
-        },
-        recentStudyTime: {
-          onOff: advancedFilter.recentStudyTime.onOff,
-          value: advancedFilter.recentStudyTime.value,
-        },
-        studyTimes: {
-          onOff: advancedFilter.studyTimes.onOff,
-          value: advancedFilter.studyTimes.value,
-        },
-      },
+      advancedFilter,
     },
   };
 
   useEffect(() => {
     if (isOnProcessing) {
+      console.log("0단게");
+
       if (counter > 0) {
+        console.log("1단게");
         if (counter < book_ids.length) {
+          console.log("2단계");
           loadFilteredData({ variables });
           console.log(`서버에 ${counter + 1}번째 요청보냄`);
         }
@@ -93,13 +72,11 @@ const GetFilteredIndexButton = ({ advancedFilter, book_ids, onChangeAFCardList, 
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, isOnProcessing]);
-
   return (
     <CloudSyncOutlined
       onClick={() => {
-        onToggleIsAFilter(true);
+        console.log(`서버에 1번째 요청보냄`);
         loadFilteredData({ variables });
-        onChangeAFButtonClick();
       }}
     />
   );

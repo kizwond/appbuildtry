@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Switch } from "antd";
 import styled from "styled-components";
 import { StyledDivConfigColStartCards, StyledSpanConfigTitle } from "./common/StyledComponent";
@@ -9,7 +9,12 @@ import RecentStudyTime from "./RecentStudyTime";
 import CardLevel from "./CardLevel";
 import StudyTimes from "./StudyTimes";
 
-const AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
+const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeIndexesOfAFCardList, onChangeAFCardList, AFCardList, onToggleIsAFilter, changeAdvancedFilter, advancedFilter }) => {
+  const [counterForButtonClick, setCounterForButtonClick] = useState(false);
+  const onChangeAFButtonClick = (_falsy) => {
+    setCounterForButtonClick(_falsy);
+  };
+
   const {
     changeAdvancedFilterOnOff,
     changeUserFlag,
@@ -44,17 +49,17 @@ const AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
             onChange={(checked) => {
               if (checked) {
                 changeAdvancedFilterOnOff("on");
-                // if (counterForButtonClick > 0) {
-                //   onToggleIsAFilter(true);
-                // }
+                if (counterForButtonClick) {
+                  onToggleIsAFilter(true);
+                }
               } else {
                 changeAdvancedFilterOnOff("off");
-                // onToggleIsAFilter(false);
+                onToggleIsAFilter(false);
               }
             }}
           />
         </StyledDivConfigColStartCards>
-        {/* {onOff === "on" && (
+        {onOff === "on" && (
           <div>
             <GetFilteredIndexButton
               book_ids={book_ids}
@@ -67,7 +72,7 @@ const AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
               onChangeAFButtonClick={onChangeAFButtonClick}
             />
           </div>
-        )} */}
+        )}
       </StyledDivTitleRow>
       {onOff === "on" && (
         <>

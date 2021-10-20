@@ -236,7 +236,7 @@ class EditorFromCard extends Component {
     console.log(face1_array);
     console.log(face2_array);
     const values = { face1: face1_array, face2: face2_array };
-    this.props.onFinish(values);
+    this.props.onFinish(values, "inCard");
 
     this.props.setEditorOnFromCard('')
   };

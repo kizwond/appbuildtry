@@ -5,21 +5,11 @@ import FloatingMenu from "./sidemenu/FloatingMenu";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Input, message, Button, Select } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
-// import Editor from "./Editor";
-// import EditorFromCard from "./EditorFromCard";
+
 import axios from "axios";
-// import FroalaEditorView from "react-froala-wysiwyg/FroalaEditorView";
+
 import { useMediaQuery } from "react-responsive";
 
-// import dynamic from 'next/dynamic';
-
-// const Editor = dynamic(() => import('./Editor'), {
-//   ssr: false
-// });
-
-// const EditorFromCard = dynamic(() => import('./EditorFromCard'), {
-//   ssr: false
-// });
 const Desktop = ({ children }) => {
   const isDesktop = useMediaQuery({ minWidth: 992 });
   return isDesktop ? children : null;
@@ -50,7 +40,6 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       var first_index = localStorage.getItem("first_index");
     }
 
-    console.log(book_id);
     if (book_id !== null) {
       localStorage.removeItem("book_id");
       localStorage.setItem("book_id", book_id);
@@ -67,7 +56,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   const [cards, setCards] = useState([]);
   const [editorOn, setEditorOn] = useState();
   const [editorOnFromCard, setEditorOnFromCard] = useState();
-  const [cardId, setCardId] = useState();
+  const [cardId, setCardId] = useState("");
   const [selectedCardType, setSelectedCardType] = useState();
 
   const [face1_input1, set_face1_input1] = useState();
@@ -91,9 +80,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   });
 
   useEffect(() => {
-    console.log("카드타입셋을 불러옴", first_index);
     if (data1) {
-      console.log("--->", data1);
       setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
       setCardTypes(data1.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
       setIndexId(data1.indexset_getbymybookid.indexsets[0].indexes[0]._id);
@@ -104,9 +91,14 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     }
   }, [data1, indexChanged, first_index]);
 
+  if (selectedCardType) {
+    var selectedCardTypeOption = selectedCardType.name;
+  } else {
+    selectedCardTypeOption = "default";
+  }
+
   const cardTypeInfo = (cardtype_info, from) => {
     setcardTypeInfos(cardtype_info);
-    console.log(cardtype_info);
     const num_face1 = cardtype_info.num_of_row.face1;
     const num_face2 = cardtype_info.num_of_row.face2;
     const num_selection = cardtype_info.num_of_row.selection;
@@ -133,60 +125,63 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       face2Nick.push(nick_face2[i]);
       nicks.push(nick_face2[i]);
     }
+
+    if (selectedCardType === undefined) {
+      var selectedCardTypeOption = cardtype_info.name;
+    } else {
+      selectedCardTypeOption = selectedCardType.name;
+    }
     const editor = (
       <>
-      <div>여기다가 카드타입 셀렉션</div>
+        <div
+          style={{ border: "1px solid lightgrey", borderBottom: "0px", padding: "5px", display: "flex", justifyContent: "space-between", fontSize: "0.8rem", alignItems: "center" }}
+        >
+          <div>카드 템플릿 선택 : </div>
+          <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 200, fontSize: "0.75rem" }} onChange={handleChange}>
+            <Option value="default" style={{fontSize:"0.8rem", color:"black", fontWeight:"700"}} disabled>카드타입선택</Option>
+            {cardTypeListNormal}
+          </Select>
+        </div>
         <Editor nicks={nicks} onFinish={onFinish} setEditorOn={setEditorOn} cardtype_info={cardtype_info} />
       </>
     );
 
     const editorFromCard = (
       <>
-      <div>여기다가 카드타입 셀렉션</div>
+        <div
+          style={{ border: "1px solid lightgrey", borderBottom: "0px", padding: "5px", display: "flex", justifyContent: "space-between", fontSize: "0.8rem", alignItems: "center" }}
+        >
+          <div>카드 템플릿 선택 : </div>
+          <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 200, fontSize: "0.75rem" }} onChange={handleChange}>
+            <Option value="default" style={{fontSize:"0.8rem", color:"black", fontWeight:"700"}} disabled>카드타입선택</Option>
+            {cardTypeListInCard}
+          </Select>
+        </div>
         <EditorFromCard nicks={nicks} onFinish={onFinish} setEditorOnFromCard={setEditorOnFromCard} cardtype_info={cardtype_info} />
       </>
     );
 
-    // const editor = (
-    //   <>
-    //     {face1Editor}
-    //     {face2.length > 0 && face2Editor}
-    //   </>
-    // );
     if (from === "normal") {
+      console.log("노멀모드로 에디터가 뿌려질것임. 여기다가 setCardId() 이걸 했는데 안먹음.")
+      console.log(cardId)
       setEditorOn(editor);
     } else if (from === "inCard") {
       setEditorOnFromCard(editorFromCard);
     }
   };
 
-  const onFinish = (values) => {
+  const onFinish = (values, from) => {
     console.log(values);
     const mybook_id = localStorage.getItem("book_id");
     const cardtype = sessionStorage.getItem("cardtype");
-
-    // const face1_contents_temp = [];
-    // for (var i = 0; i < 5; i++) {
-    //   face1_contents_temp.push(values[`face1_input${i}`]);
-    // }
-    // var face1_contents = face1_contents_temp.filter(function (el) {
-    //   return el != null;
-    // });
-
-    // const face2_contents_temp = [];
-    // for (var i = 0; i < 5; i++) {
-    //   face2_contents_temp.push(values[`face2_input${i}`]);
-    // }
-    // var face2_contents = face2_contents_temp.filter(function (el) {
-    //   return el != null;
-    // });
-    if (cardId) {
+    console.log("??????????????????????", cardId)
+    if (from === "inCard") {
       var current_position_card_id = cardId;
+      console.log("should have cardid", cardId)
     } else {
       current_position_card_id = null;
+      console.log("should be null", cardId)
     }
-    console.log(cardTypeInfos);
-    // const cardtype = cardTypeInfos.cardtype;
     const cardtype_id = cardTypes[0]._id;
     addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2);
   };
@@ -194,7 +189,6 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   const [cardset_addcard] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 
   function afteraddcardmutation(data) {
-    console.log("data", data);
     setCards(data.cardset_addcard.cardsets[0].cards);
   }
 
@@ -231,60 +225,60 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   }
 
   if (cardTypes) {
-    var cardTypeList = cardTypes.map((cardType) => {
+    var cardTypeListNormal = cardTypes.map((cardType) => {
       return (
         <>
-          <Option value={cardType.cardtype_info.name}>{cardType.cardtype_info.name}</Option>
+          <Option value={[cardType.cardtype_info.name, "normal"]} style={{fontSize:"0.8rem"}}>{cardType.cardtype_info.name}</Option>
+        </>
+      );
+    });
+    var cardTypeListInCard = cardTypes.map((cardType) => {
+      return (
+        <>
+          <Option value={[cardType.cardtype_info.name, "inCard"]} style={{fontSize:"0.8rem"}}>{cardType.cardtype_info.name}</Option>
         </>
       );
     });
   }
 
   function handleChange(value) {
-    console.log(`selected ${value}`);
-    if(value !== "default"){
-      const hello = cardTypes.filter((item) => item.cardtype_info.name === value);
-      console.log(hello);
+    console.log(`selected ${value[0]}`);
+    console.log(`selected ${value[1]}`);
+    if (value[0] !== "default") {
+      const hello = cardTypes.filter((item) => item.cardtype_info.name === value[0]);
       setSelectedCardType(hello[0].cardtype_info);
       sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
+      cardTypeInfo(hello[0].cardtype_info, value[1]);
     }
   }
-
-  const warning = () => {
-    message.warning({ content: '카드타입을 선택해 주세요',  duration: 0.7 });
-  };
 
   function onClickCardAdd() {
-    if(selectedCardType === undefined){
-      warning()
+    setEditorOn("");
+    if (selectedCardType === undefined) {
+      setSelectedCardType(cardTypes[0].cardtype_info);
+      cardTypeInfo(cardTypes[0].cardtype_info, "inCard");
+      sessionStorage.setItem("cardtype", cardTypes[0].cardtype_info.cardtype);
     } else {
-      console.log("----------------------", selectedCardType);
-      cardTypeInfo(selectedCardType, "inCard");
+      const hello = cardTypes.filter((item) => item.cardtype_info.name === selectedCardType.name);
+      setSelectedCardType(hello[0].cardtype_info);
+      sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
+      cardTypeInfo(hello[0].cardtype_info, "inCard");
     }
-  }
-  if (selectedCardType) {
-    console.log(selectedCardType);
-    var selectedCardTypeOption = selectedCardType.name;
-  } else {
-    selectedCardTypeOption = "default";
   }
 
   if (cards) {
-    console.log("????????????????????????????????????????????????????????");
-    console.log(cards);
-    console.log(first_index);
     var contents = cards.map((content) => {
-      if(content._id === cardId){
-        var borderLeft = "2px solid blue"
+      if (content._id === cardId) {
+        var borderLeft = "2px solid blue";
       } else {
-        borderLeft = "1px solid lightgrey"
+        borderLeft = "1px solid lightgrey";
       }
       return (
         <>
           {content.card_info.cardtype === "read" && (
             <>
-              <div style={{ border: "1px solid lightgrey", marginBottom: "5px", borderLeft : borderLeft }}>
-                <div onClick={() => onClickCard(content._id)} >
+              <div style={{ border: "1px solid lightgrey", marginBottom: "5px", borderLeft: borderLeft }}>
+                <div onClick={() => onClickCard(content._id)}>
                   <div>
                     {content.contents.mycontents_id.face1.map((item) => (
                       <>
@@ -298,13 +292,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                 {content._id === cardId && (
                   <>
                     <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
-                      <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 100, fontSize: "0.75rem" }} onChange={handleChange}>
-                        <Option value="default">카드타입선택</Option>
-                        {cardTypeList}
-                      </Select>
                       <div>
                         <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
-                          카드추가
+                          다음카드추가
                         </Button>
                       </div>
                     </div>
@@ -321,40 +311,36 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
           {content.card_info.cardtype === "flip" && (
             <>
-             <div style={{ border: "1px solid lightgrey", marginBottom: "5px", borderLeft : borderLeft  }}>
-              <div onClick={() => onClickCard(content._id)}>
-                <div>
-                  {content.contents.mycontents_id.face1.map((item) => (
-                    <>
-                      <div>
-                        <FroalaEditorView model={item} />
-                      </div>
-                    </>
-                  ))}
-                  {content.contents.mycontents_id.face2.map((item) => (
-                    <>
-                      <div>
-                        <FroalaEditorView model={item} />
-                      </div>
-                    </>
-                  ))}
-                </div>
-              </div>
-              {content._id === cardId && (
-                <>
-                  <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
-                    <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 100, fontSize: "0.75rem" }} onChange={handleChange}>
-                      <Option value="default">카드타입선택</Option>
-                      {cardTypeList}
-                    </Select>
-                    <div>
-                      <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
-                        카드추가
-                      </Button>
-                    </div>
+              <div style={{ border: "1px solid lightgrey", marginBottom: "5px", borderLeft: borderLeft }}>
+                <div onClick={() => onClickCard(content._id)}>
+                  <div>
+                    {content.contents.mycontents_id.face1.map((item) => (
+                      <>
+                        <div>
+                          <FroalaEditorView model={item} />
+                        </div>
+                      </>
+                    ))}
+                    {content.contents.mycontents_id.face2.map((item) => (
+                      <>
+                        <div>
+                          <FroalaEditorView model={item} />
+                        </div>
+                      </>
+                    ))}
                   </div>
-                </>
-              )}
+                </div>
+                {content._id === cardId && (
+                  <>
+                    <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                      <div>
+                        <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
+                          카드추가
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
               {content._id === cardId && (
                 <>
@@ -369,37 +355,11 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   }
   const onClickCard = (card_id) => {
     console.log("cardClicked!!!!!");
-    console.log(card_id);
+    console.log("onClickCard",card_id);
     setCardId(card_id);
     setEditorOnFromCard("");
     setEditorOn("");
   };
-
-  const onClickTest = () => {
-    console.log("click");
-    axios
-      .post("/api/cardset/imageUpload", {
-        test: "hello",
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-
-  const handleReload = (e) => {
-    e.preventDefault();
-    e.returnValue = "";
-  };
-  useEffect(() => {
-    window.addEventListener("beforeunload", handleReload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleReload);
-    };
-  }, []);
 
   return (
     <>
@@ -412,7 +372,6 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
           </div>
           <div></div>
           <div>{editorOn}</div>
-          <button onClick={onClickTest}>test</button>
         </div>
       </Desktop>
       <Tablet>
@@ -421,7 +380,18 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
           <div>{contents}</div>
           <div>{editorOn}</div>
         </div>
-        <FixedBottomMenu book_id={book_id} cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
+        <FixedBottomMenu
+          selectedCardType={selectedCardType}
+          setSelectedCardType={setSelectedCardType}
+          book_id={book_id}
+          cardTypes={cardTypes}
+          cardTypeInfo={cardTypeInfo}
+          cardSetId={cardSetId}
+          indexChanged={indexChanged}
+          indexSetId={indexSetId}
+          setEditorOnFromCard={setEditorOnFromCard}
+          setCardId={setCardId}
+        />
       </Tablet>
       <Mobile>
         <div style={{ width: "90%", margin: "auto", marginBottom: "100px" }}>
@@ -429,7 +399,18 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
           <div>{contents}</div>
           <div>{editorOn}</div>
         </div>
-        <FixedBottomMenu book_id={book_id} cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
+        <FixedBottomMenu
+          selectedCardType={selectedCardType}
+          setSelectedCardType={setSelectedCardType}
+          book_id={book_id}
+          cardTypes={cardTypes}
+          cardTypeInfo={cardTypeInfo}
+          cardSetId={cardSetId}
+          indexChanged={indexChanged}
+          indexSetId={indexSetId}
+          setEditorOnFromCard={setEditorOnFromCard}
+          setCardId={setCardId}
+        />
       </Mobile>
     </>
   );

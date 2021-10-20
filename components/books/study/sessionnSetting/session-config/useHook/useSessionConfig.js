@@ -270,6 +270,76 @@ export default function useSessionConfig() {
     }
   }, []);
 
+  const advancedFilter = {
+    onOff: advancedFilterOnOff,
+    cardMaker: {
+      onOff: cardMakerOnOff,
+      value: cardMaker,
+    },
+    examResult: {
+      onOff: examResultOnOff,
+      value: examResult,
+    },
+    level: {
+      onOff: levelOnOff,
+      value: level,
+    },
+    makerFlag: {
+      onOff: makerFlagOnOff,
+      value: makerFlag,
+    },
+    userFlag: {
+      onOff: userFlagOnOff,
+      value: userFlag,
+    },
+    recentDifficulty: {
+      onOff: recentDifficultyOnOff,
+      value: recentDifficulty,
+    },
+    recentStudyTime: {
+      onOff: recentStudyTimeOnOff,
+      value: recentStudyTime,
+    },
+    studyTimes: {
+      onOff: studyTimesOnOff,
+      value: studyTimes,
+    },
+  };
+
+  const readDetailedOption = {
+    sortOption: readSortOption,
+    useCardtype: readUseCardType,
+    useStatus: readUseStatus,
+    needStudyTimeCondition: readNeedStudyTimeCondition,
+    needStudyTimeRange: readNeedStudyTimeRange,
+    numStartCards: readNumStartCards,
+  };
+  const flipDetailedOption = {
+    sortOption: flipSortOption,
+    useCardtype: flipUseCardType,
+    useStatus: flipUseStatus,
+    needStudyTimeCondition: flipNeedStudyTimeCondition,
+    needStudyTimeRange: flipNeedStudyTimeRange,
+    numStartCards: flipNumStartCards,
+  };
+  const examDetailedOption = {
+    sortOption: examSortOption,
+    useCardtype: examUseCardType,
+    useStatus: examUseStatus,
+    needStudyTimeCondition: examNeedStudyTimeCondition,
+    needStudyTimeRange: examNeedStudyTimeRange,
+    numStartCards: examNumStartCards,
+  };
+
+  const sessionConfig =
+    mode === "read"
+      ? { studyMode: "read", detailedOption: readDetailedOption, advancedFilter }
+      : mode === "flip"
+      ? { studyMode: "flip", detailedOption: flipDetailedOption, advancedFilter }
+      : mode === "exam"
+      ? { studyMode: "exam", detailedOption: examDetailedOption, advancedFilter }
+      : new Error("Unhandled studyConfig Mode");
+
   return {
     mode,
     flipNeedStudyTimeCondition,
@@ -339,5 +409,8 @@ export default function useSessionConfig() {
     changeStudyTimesOnOff,
     onChangeAFButtonClick,
     updateData,
+    // useMutaion Variables
+    advancedFilter,
+    sessionConfig,
   };
 }

@@ -22,75 +22,18 @@ const SessionSetting = () => {
   const [isAdvancedFilteredCardListShowed, setIsAdvancedFilteredCardListShowed] = useState(false);
 
   const {
+    // 모드
     mode,
-    flipNeedStudyTimeCondition,
-    flipNeedStudyTimeRange,
-    flipNumStartCards,
-    flipSortOption,
-    flipUseCardType,
-    flipUseStatus,
-    // read 모드설정
-    readNeedStudyTimeCondition,
-    readNeedStudyTimeRange,
-    readNumStartCards,
-    readSortOption,
-    readUseCardType,
-    readUseStatus,
-    // exam 모드설정
-    examNeedStudyTimeCondition,
-    examNeedStudyTimeRange,
-    examNumStartCards,
-    examSortOption,
-    examUseCardType,
-    examUseStatus,
-    // 고급필터
-    advancedFilterOnOff,
-    cardMakerOnOff,
-    cardMaker,
-    examResultOnOff,
-    examResult,
-    levelOnOff,
-    level,
-    makerFlagOnOff,
-    makerFlag,
-    recentDifficultyOnOff,
-    recentDifficulty,
-    recentStudyTimeOnOff,
-    recentStudyTime,
-    studyTimesOnOff,
-    studyTimes,
-    userFlagOnOff,
-    userFlag,
-
     changeMode,
-    // (mode, value) => setState
-    changeSortOption,
-    changeNeedStudyTimeRange,
-    changeNeedStudyTimeCondition,
-    changeUseCardType,
-    changeUseStatus,
-    changeNumStartCards,
-    // 고급필터 setState
-    changeAdvancedFilterOnOff,
-    changeUserFlag,
-    changeUserFlagOnOff,
-    changeCardMaker,
-    changeCardMakerOnOff,
-    changeMakerFlag,
-    changeMakerFlagOnOff,
-    changeExamResult,
-    changeExamResultOnOff,
-    changeRecentDifficulty,
-    changeRecentDifficultyOnOff,
-    changeRecentStudyTime,
-    changeRecentStudyTimeOnOff,
-    changeLevel,
-    changeLevelOnOff,
-    changeStudyTimes,
-    changeStudyTimesOnOff,
-    onChangeAFButtonClick,
-    // useMutation에서 받은 데이터 업데이트
+    // 모드 옵션
+    modeOption,
+    // 고급설정
+    advancedFilter,
+    changeAdvancedFilter,
+    // useQuery 업데이트용
     updateData,
+    // useMutaion Variables
+    // sessionConfig,
   } = useSessionConfig();
 
   const {
@@ -301,6 +244,11 @@ const SessionSetting = () => {
                 book_ids={bookList.map((book) => book.book_id)}
                 advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
                 onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
+                mode={mode}
+                changeMode={changeMode}
+                modeOption={modeOption}
+                advancedFilter={advancedFilter}
+                changeAdvancedFilter={changeAdvancedFilter}
               />
             )}
           </StyledDivFirst>

@@ -8,18 +8,15 @@ const tags = [
   { option: "random", title: "랜덤" },
 ];
 
-const SortOptionTag = ({ mode, selected, changeSortOption }) => {
-  const [read, flip, exam] = selected;
-  const selectedSortOption = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : new Error("Unhandled StudyMode");
-
+const SortOptionTag = ({ sortOption, changeSortOption }) => {
   return (
     <div>
       {tags.map((tag) => (
-        <StyledTag key={tag.option} checked={selectedSortOption === tag.option}>
+        <StyledTag key={tag.option} checked={sortOption === tag.option}>
           <Tag.CheckableTag
-            checked={selectedSortOption === tag.option}
+            checked={sortOption === tag.option}
             onClick={() => {
-              changeSortOption(mode, tag.option);
+              changeSortOption(tag.option);
             }}
           >
             {tag.title}

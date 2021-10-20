@@ -2,9 +2,7 @@ import React, { memo } from "react";
 import { Tag } from "antd";
 import styled from "styled-components";
 
-const UseStatusTag = ({ mode, selected, changeUseStatus }) => {
-  const [read, flip, exam] = selected;
-  const selectedUseStatus = mode === "read" ? read : mode === "flip" ? flip : mode === "exam" ? exam : new Error("Unhandled StudyMode");
+const UseStatusTag = ({ useStatus, changeUseStatus }) => {
   const tags = [
     { option: "yet", title: "미학습" },
     { option: "ing", title: "학습중" },
@@ -14,17 +12,17 @@ const UseStatusTag = ({ mode, selected, changeUseStatus }) => {
   return (
     <div>
       {tags.map((tag) => (
-        <StyledTag key={tag.option} checked={selectedUseStatus.includes(tag.option)} option={tag.option}>
+        <StyledTag key={tag.option} checked={useStatus.includes(tag.option)} option={tag.option}>
           <Tag.CheckableTag
-            checked={selectedUseStatus.includes(tag.option)}
+            checked={useStatus.includes(tag.option)}
             onChange={(checked) => {
               if (checked) {
-                const newArr = [...selectedUseStatus, tag.option];
-                changeUseStatus(mode, newArr);
+                const newArr = [...useStatus, tag.option];
+                changeUseStatus(newArr);
               }
               if (!checked) {
-                const newArr = selectedUseStatus.filter((type) => type !== tag.option);
-                changeUseStatus(mode, newArr);
+                const newArr = useStatus.filter((type) => type !== tag.option);
+                changeUseStatus(newArr);
               }
             }}
           >

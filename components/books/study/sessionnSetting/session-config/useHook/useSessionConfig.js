@@ -46,101 +46,64 @@ export default function useSessionConfig() {
     setMode(mode);
   }, []);
 
-  const changeNeedStudyTimeCondition = useCallback((mode, condition) => {
-    switch (mode) {
-      case "read":
-        setReadNeedStudyTimeCondition(condition);
-        break;
-      case "flip":
-        setFlipNeedStudyTimeCondition(condition);
-        break;
-      case "exam":
-        setExamNeedStudyTimeCondition(condition);
-        break;
-      default:
-        console.log("NeedStudyCondition Error");
-        break;
-    }
+  const changeReadNeedStudyTimeCondition = useCallback((condition) => {
+    setReadNeedStudyTimeCondition(condition);
   }, []);
-  const changeNeedStudyTimeRange = useCallback((mode, range) => {
-    switch (mode) {
-      case "read":
-        setReadNeedStudyTimeRange(range);
-        break;
-      case "flip":
-        setFlipNeedStudyTimeRange(range);
-        break;
-      case "exam":
-        setExamNeedStudyTimeRange(range);
-        break;
-      default:
-        console.log("NeedStudyTimeRange Error");
-        break;
-    }
+  const changeFlipNeedStudyTimeCondition = useCallback((condition) => {
+    setFlipNeedStudyTimeCondition(condition);
   }, []);
-  const changeSortOption = useCallback((mode, sortOption) => {
-    switch (mode) {
-      case "read":
-        setReadSortOption(sortOption);
-        break;
-      case "flip":
-        setFlipSortOption(sortOption);
-        break;
-      case "exam":
-        setExamSortOption(sortOption);
-        break;
-      default:
-        console.log("SortOption Error");
-        break;
-    }
+  const changeExamNeedStudyTimeCondition = useCallback((condition) => {
+    setExamNeedStudyTimeCondition(condition);
   }, []);
-  const changeUseCardType = useCallback((mode, useCardType) => {
-    switch (mode) {
-      case "read":
-        setReadUseCardType(useCardType);
-        break;
-      case "flip":
-        setFlipUseCardType(useCardType);
-        break;
-      case "exam":
-        setExamUseCardType(useCardType);
-        break;
-      default:
-        console.log("UseCardType Error");
-        break;
-    }
+
+  const changeReadNeedStudyTimeRange = useCallback((range) => {
+    setReadNeedStudyTimeRange(range);
   }, []);
-  const changeUseStatus = useCallback((mode, useStatus) => {
-    switch (mode) {
-      case "read":
-        setReadUseStatus(useStatus);
-        break;
-      case "flip":
-        setFlipUseStatus(useStatus);
-        break;
-      case "exam":
-        setExamUseStatus(useStatus);
-        break;
-      default:
-        console.log("UseStatus Error");
-        break;
-    }
+  const changeFlipNeedStudyTimeRange = useCallback((range) => {
+    setFlipNeedStudyTimeRange(range);
   }, []);
-  const changeNumStartCards = useCallback((mode, NumStartCards) => {
-    switch (mode) {
-      case "read":
-        setReadNumStartCards(NumStartCards);
-        break;
-      case "flip":
-        setFlipNumStartCards(NumStartCards);
-        break;
-      case "exam":
-        setExamNumStartCards(NumStartCards);
-        break;
-      default:
-        console.log("NumStartCards Error");
-        break;
-    }
+  const changeExamNeedStudyTimeRange = useCallback((range) => {
+    setExamNeedStudyTimeRange(range);
+  }, []);
+
+  const changeReadSortOption = useCallback((sortOption) => {
+    setReadSortOption(sortOption);
+  }, []);
+  const changeFlipSortOption = useCallback((sortOption) => {
+    setFlipSortOption(sortOption);
+  }, []);
+  const changeExamSortOption = useCallback((sortOption) => {
+    setExamSortOption(sortOption);
+  }, []);
+
+  const changeReadUseCardType = useCallback((useCardType) => {
+    setReadUseCardType(useCardType);
+  }, []);
+  const changeFlipUseCardType = useCallback((useCardType) => {
+    setFlipUseCardType(useCardType);
+  }, []);
+  const changeExamUseCardType = useCallback((useCardType) => {
+    setExamUseCardType(useCardType);
+  }, []);
+
+  const changeReadUseStatus = useCallback((useStatus) => {
+    setReadUseStatus(useStatus);
+  }, []);
+  const changeFlipUseStatus = useCallback((useStatus) => {
+    setFlipUseStatus(useStatus);
+  }, []);
+  const changeExamUseStatus = useCallback((useStatus) => {
+    setExamUseStatus(useStatus);
+  }, []);
+
+  const changeReadNumStartCards = useCallback((NumStartCards) => {
+    setReadNumStartCards(NumStartCards);
+  }, []);
+  const changeFlipNumStartCards = useCallback((NumStartCards) => {
+    setFlipNumStartCards(NumStartCards);
+  }, []);
+  const changeExamNumStartCards = useCallback((NumStartCards) => {
+    setExamNumStartCards(NumStartCards);
   }, []);
 
   // 고급설정
@@ -196,9 +159,72 @@ export default function useSessionConfig() {
     setStudyTimesOnOff(_onOff);
   }, []);
 
-  const onChangeAFButtonClick = () => {
-    setCounterForButtonClick((prev) => prev + 1);
+  const readDetailedOption = {
+    sortOption: readSortOption,
+    useCardtype: readUseCardType,
+    useStatus: readUseStatus,
+    needStudyTimeCondition: readNeedStudyTimeCondition,
+    needStudyTimeRange: readNeedStudyTimeRange,
+    numStartCards: readNumStartCards,
   };
+  const changeReadProps = {
+    changeSortOption: changeReadSortOption,
+    changeNeedStudyTimeRange: changeReadNeedStudyTimeRange,
+    changeNeedStudyTimeCondition: changeReadNeedStudyTimeCondition,
+    changeUseCardType: changeReadUseCardType,
+    changeUseStatus: changeReadUseStatus,
+    changeNumStartCards: changeReadNumStartCards,
+  };
+  const flipDetailedOption = {
+    sortOption: flipSortOption,
+    useCardtype: flipUseCardType,
+    useStatus: flipUseStatus,
+    needStudyTimeCondition: flipNeedStudyTimeCondition,
+    needStudyTimeRange: flipNeedStudyTimeRange,
+    numStartCards: flipNumStartCards,
+  };
+  const changeFlipProps = {
+    changeSortOption: changeFlipSortOption,
+    changeNeedStudyTimeRange: changeFlipNeedStudyTimeRange,
+    changeNeedStudyTimeCondition: changeFlipNeedStudyTimeCondition,
+    changeUseCardType: changeFlipUseCardType,
+    changeUseStatus: changeFlipUseStatus,
+    changeNumStartCards: changeFlipNumStartCards,
+  };
+  const examDetailedOption = {
+    sortOption: examSortOption,
+    useCardtype: examUseCardType,
+    useStatus: examUseStatus,
+    needStudyTimeCondition: examNeedStudyTimeCondition,
+    needStudyTimeRange: examNeedStudyTimeRange,
+    numStartCards: examNumStartCards,
+  };
+  const changeExamProps = {
+    changeSortOption: changeExamSortOption,
+    changeNeedStudyTimeRange: changeExamNeedStudyTimeRange,
+    changeNeedStudyTimeCondition: changeExamNeedStudyTimeCondition,
+    changeUseCardType: changeExamUseCardType,
+    changeUseStatus: changeExamUseStatus,
+    changeNumStartCards: changeExamNumStartCards,
+  };
+
+  const modeOption = {
+    readDetailedOption,
+    changeReadProps,
+    flipDetailedOption,
+    changeFlipProps,
+    examDetailedOption,
+    changeExamProps,
+  };
+
+  // const sessionConfig =
+  //   mode === "read"
+  //     ? { studyMode: "read", detailedOption: readDetailedOption, advancedFilter }
+  //     : mode === "flip"
+  //     ? { studyMode: "flip", detailedOption: flipDetailedOption, advancedFilter }
+  //     : mode === "exam"
+  //     ? { studyMode: "exam", detailedOption: examDetailedOption, advancedFilter }
+  //     : new Error("Unhandled studyConfig Mode");
 
   const updateData = useCallback((received_data) => {
     const sessionconfigs = received_data.session_getSessionConfig.sessionConfigs[0];
@@ -306,90 +332,7 @@ export default function useSessionConfig() {
     },
   };
 
-  const readDetailedOption = {
-    sortOption: readSortOption,
-    useCardtype: readUseCardType,
-    useStatus: readUseStatus,
-    needStudyTimeCondition: readNeedStudyTimeCondition,
-    needStudyTimeRange: readNeedStudyTimeRange,
-    numStartCards: readNumStartCards,
-  };
-  const flipDetailedOption = {
-    sortOption: flipSortOption,
-    useCardtype: flipUseCardType,
-    useStatus: flipUseStatus,
-    needStudyTimeCondition: flipNeedStudyTimeCondition,
-    needStudyTimeRange: flipNeedStudyTimeRange,
-    numStartCards: flipNumStartCards,
-  };
-  const examDetailedOption = {
-    sortOption: examSortOption,
-    useCardtype: examUseCardType,
-    useStatus: examUseStatus,
-    needStudyTimeCondition: examNeedStudyTimeCondition,
-    needStudyTimeRange: examNeedStudyTimeRange,
-    numStartCards: examNumStartCards,
-  };
-
-  const sessionConfig =
-    mode === "read"
-      ? { studyMode: "read", detailedOption: readDetailedOption, advancedFilter }
-      : mode === "flip"
-      ? { studyMode: "flip", detailedOption: flipDetailedOption, advancedFilter }
-      : mode === "exam"
-      ? { studyMode: "exam", detailedOption: examDetailedOption, advancedFilter }
-      : new Error("Unhandled studyConfig Mode");
-
-  return {
-    mode,
-    flipNeedStudyTimeCondition,
-    flipNeedStudyTimeRange,
-    flipNumStartCards,
-    flipSortOption,
-    flipUseCardType,
-    flipUseStatus,
-    // read 모드설정
-    readNeedStudyTimeCondition,
-    readNeedStudyTimeRange,
-    readNumStartCards,
-    readSortOption,
-    readUseCardType,
-    readUseStatus,
-    // exam 모드설정
-    examNeedStudyTimeCondition,
-    examNeedStudyTimeRange,
-    examNumStartCards,
-    examSortOption,
-    examUseCardType,
-    examUseStatus,
-    // 고급필터
-    advancedFilterOnOff,
-    cardMakerOnOff,
-    cardMaker,
-    examResultOnOff,
-    examResult,
-    levelOnOff,
-    level,
-    makerFlagOnOff,
-    makerFlag,
-    recentDifficultyOnOff,
-    recentDifficulty,
-    recentStudyTimeOnOff,
-    recentStudyTime,
-    studyTimesOnOff,
-    studyTimes,
-    userFlagOnOff,
-    userFlag,
-
-    changeMode,
-    // (mode, value) => setState
-    changeSortOption,
-    changeNeedStudyTimeRange,
-    changeNeedStudyTimeCondition,
-    changeUseCardType,
-    changeUseStatus,
-    changeNumStartCards,
-    // 고급필터 setState
+  const changeAdvancedFilter = {
     changeAdvancedFilterOnOff,
     changeUserFlag,
     changeUserFlagOnOff,
@@ -407,10 +350,20 @@ export default function useSessionConfig() {
     changeLevelOnOff,
     changeStudyTimes,
     changeStudyTimesOnOff,
-    onChangeAFButtonClick,
+  };
+
+  return {
+    // 모드
+    mode,
+    changeMode,
+    // 모드 옵션
+    modeOption,
+    // 고급설정
+    advancedFilter,
+    changeAdvancedFilter,
+    // useQuery 업데이트용
     updateData,
     // useMutaion Variables
-    advancedFilter,
-    sessionConfig,
+    // sessionConfig,
   };
 }

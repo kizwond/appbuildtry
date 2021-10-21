@@ -106,3 +106,7 @@ a {
 .gray-theme.fr-toolbar.fr-top {
   border-radius: 0 !important;
 }
+
+p {
+  margin-bottom:0 !important;
+}

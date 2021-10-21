@@ -6,8 +6,6 @@ import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Input, message, Button, Select } from "antd";
 import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
 
-import axios from "axios";
-
 import { useMediaQuery } from "react-responsive";
 
 const Desktop = ({ children }) => {
@@ -49,6 +47,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   }
 
   const [cardTypeSetId, setCardTypeSetId] = useState();
+  const [cardTypeSets, setCardTypeSets] = useState();
   const [cardTypes, setCardTypes] = useState();
   const [cardTypeInfos, setcardTypeInfos] = useState();
   const [indexId, setIndexId] = useState();
@@ -81,7 +80,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
   useEffect(() => {
     if (data1) {
+      console.log("최초 로드 data : ", data1);
       setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
+      setCardTypeSets(data1.cardtypeset_getbymybookid.cardtypesets);
       setCardTypes(data1.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
       setIndexId(data1.indexset_getbymybookid.indexsets[0].indexes[0]._id);
       setCardSetId(data1.cardset_getbyindexid.cardsets[0]._id);
@@ -91,11 +92,11 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     }
   }, [data1, indexChanged, first_index]);
 
-  if (selectedCardType) {
-    var selectedCardTypeOption = selectedCardType.name;
-  } else {
-    selectedCardTypeOption = "default";
-  }
+  // if (selectedCardType) {
+  //   var selectedCardTypeOption = selectedCardType.name;
+  // } else {
+  //   selectedCardTypeOption = "default";
+  // }
 
   const cardTypeInfo = (cardtype_info, from) => {
     setcardTypeInfos(cardtype_info);
@@ -138,7 +139,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         >
           <div>카드 템플릿 선택 : </div>
           <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 200, fontSize: "0.75rem" }} onChange={handleChange}>
-            <Option value="default" style={{fontSize:"0.8rem", color:"black", fontWeight:"700"}} disabled>카드타입선택</Option>
+            <Option value="default" style={{ fontSize: "0.8rem", color: "black", fontWeight: "700" }} disabled>
+              카드타입선택
+            </Option>
             {cardTypeListNormal}
           </Select>
         </div>
@@ -153,7 +156,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         >
           <div>카드 템플릿 선택 : </div>
           <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 200, fontSize: "0.75rem" }} onChange={handleChange}>
-            <Option value="default" style={{fontSize:"0.8rem", color:"black", fontWeight:"700"}} disabled>카드타입선택</Option>
+            <Option value="default" style={{ fontSize: "0.8rem", color: "black", fontWeight: "700" }} disabled>
+              카드타입선택
+            </Option>
             {cardTypeListInCard}
           </Select>
         </div>
@@ -162,8 +167,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     );
 
     if (from === "normal") {
-      console.log("노멀모드로 에디터가 뿌려질것임. 여기다가 setCardId() 이걸 했는데 안먹음.")
-      console.log(cardId)
+      console.log("노멀모드로 에디터가 뿌려질것임. 여기다가 setCardId() 이걸 했는데 안먹음.");
+      console.log(cardId);
       setEditorOn(editor);
     } else if (from === "inCard") {
       setEditorOnFromCard(editorFromCard);
@@ -174,15 +179,17 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     console.log(values);
     const mybook_id = localStorage.getItem("book_id");
     const cardtype = sessionStorage.getItem("cardtype");
-    console.log("??????????????????????", cardId)
+    console.log("??????????????????????", cardId);
     if (from === "inCard") {
       var current_position_card_id = cardId;
-      console.log("should have cardid", cardId)
+      console.log("should have cardid", cardId);
     } else {
       current_position_card_id = null;
-      console.log("should be null", cardId)
+      console.log("should be null", cardId);
     }
-    const cardtype_id = cardTypes[0]._id;
+
+    const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
+    
     addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2);
   };
 
@@ -228,14 +235,18 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     var cardTypeListNormal = cardTypes.map((cardType) => {
       return (
         <>
-          <Option value={[cardType.cardtype_info.name, "normal"]} style={{fontSize:"0.8rem"}}>{cardType.cardtype_info.name}</Option>
+          <Option value={[cardType.cardtype_info.name, "normal"]} style={{ fontSize: "0.8rem" }}>
+            {cardType.cardtype_info.name}
+          </Option>
         </>
       );
     });
     var cardTypeListInCard = cardTypes.map((cardType) => {
       return (
         <>
-          <Option value={[cardType.cardtype_info.name, "inCard"]} style={{fontSize:"0.8rem"}}>{cardType.cardtype_info.name}</Option>
+          <Option value={[cardType.cardtype_info.name, "inCard"]} style={{ fontSize: "0.8rem" }}>
+            {cardType.cardtype_info.name}
+          </Option>
         </>
       );
     });
@@ -247,6 +258,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     if (value[0] !== "default") {
       const hello = cardTypes.filter((item) => item.cardtype_info.name === value[0]);
       setSelectedCardType(hello[0].cardtype_info);
+      sessionStorage.setItem("selectedCardTypeId", hello[0]._id);
       sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
       cardTypeInfo(hello[0].cardtype_info, value[1]);
     }
@@ -273,20 +285,83 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       } else {
         borderLeft = "1px solid lightgrey";
       }
+      console.log("해당카드 정보", content);
+      console.log("카드에 스타일 입히기 시작", cardTypeSets);
+
+      const current_card_style = cardTypeSets[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
+      console.log(current_card_style);
+
+      const face_style = current_card_style[0].face_style;
+      const card_style = current_card_style[0].card_style.details;
+      const row_style = current_card_style[0].row_style;
+      console.log(row_style)
+
       return (
         <>
           {content.card_info.cardtype === "read" && (
             <>
               <div style={{ border: "1px solid lightgrey", marginBottom: "5px", borderLeft: borderLeft }}>
                 <div onClick={() => onClickCard(content._id)}>
-                  <div>
-                    {content.contents.mycontents_id.face1.map((item) => (
-                      <>
-                        <div>
-                          <FroalaEditorView model={item} />
-                        </div>
-                      </>
-                    ))}
+                  {/*  카드스타일 영역 */}
+                  <div
+                    style={{
+                      backgroundColor: card_style[0].background_color,
+                      marginTop: card_style[0].outer_margin.top,
+                      marginBottom: card_style[0].outer_margin.bottom,
+                      marginLeft: card_style[0].outer_margin.left,
+                      marginRight: card_style[0].outer_margin.right,
+                      paddingTop: card_style[0].inner_padding.top,
+                      paddingBottom: card_style[0].inner_padding.bottom,
+                      paddingLeft: card_style[0].inner_padding.left,
+                      paddingRight: card_style[0].inner_padding.right,
+                      borderTop: `${card_style[0].border.top.thickness}px ${card_style[0].border.top.bordertype} ${card_style[0].border.top.color}`,
+                      borderBottom: `${card_style[0].border.bottom.thickness}px ${card_style[0].border.bottom.bordertype} ${card_style[0].border.bottom.color}`,
+                      borderLeft: `${card_style[0].border.left.thickness}px ${card_style[0].border.left.bordertype} ${card_style[0].border.left.color}`,
+                      borderRight: `${card_style[0].border.right.thickness}px ${card_style[0].border.right.bordertype} ${card_style[0].border.right.color}`,
+                    }}
+                  >
+                    {/* 페이스 스타일 영역 */}
+                    <div
+                      style={{
+                        backgroundColor: face_style[0].background_color,
+                        marginTop: face_style[0].outer_margin.top,
+                        marginBottom: face_style[0].outer_margin.bottom,
+                        marginLeft: face_style[0].outer_margin.left,
+                        marginRight: face_style[0].outer_margin.right,
+                        paddingTop: face_style[0].inner_padding.top,
+                        paddingBottom: face_style[0].inner_padding.bottom,
+                        paddingLeft: face_style[0].inner_padding.left,
+                        paddingRight: face_style[0].inner_padding.right,
+                        borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
+                        borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
+                        borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
+                        borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
+                      }}
+                    >
+                      {content.contents.mycontents_id.face1.map((item, index) => (
+                        <>
+                          <div
+                            style={{
+                              backgroundColor: row_style.face1[index].background_color,
+                              marginTop: row_style.face1[index].outer_margin.top,
+                              marginBottom: row_style.face1[index].outer_margin.bottom,
+                              marginLeft: row_style.face1[index].outer_margin.left,
+                              marginRight: row_style.face1[index].outer_margin.right,
+                              paddingTop: row_style.face1[index].inner_padding.top,
+                              paddingBottom: row_style.face1[index].inner_padding.bottom,
+                              paddingLeft: row_style.face1[index].inner_padding.left,
+                              paddingRight: row_style.face1[index].inner_padding.right,
+                              borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
+                              borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
+                              borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
+                              borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                            }}
+                          >
+                            <FroalaEditorView model={item} />
+                          </div>
+                        </>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 {content._id === cardId && (
@@ -313,21 +388,108 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             <>
               <div style={{ border: "1px solid lightgrey", marginBottom: "5px", borderLeft: borderLeft }}>
                 <div onClick={() => onClickCard(content._id)}>
-                  <div>
-                    {content.contents.mycontents_id.face1.map((item) => (
-                      <>
-                        <div>
-                          <FroalaEditorView model={item} />
-                        </div>
-                      </>
-                    ))}
-                    {content.contents.mycontents_id.face2.map((item) => (
-                      <>
-                        <div>
-                          <FroalaEditorView model={item} />
-                        </div>
-                      </>
-                    ))}
+                  {/* 카드스타일 영역 */}
+                  <div
+                    style={{
+                      backgroundColor: card_style[0].background_color,
+                      marginTop: card_style[0].outer_margin.top,
+                      marginBottom: card_style[0].outer_margin.bottom,
+                      marginLeft: card_style[0].outer_margin.left,
+                      marginRight: card_style[0].outer_margin.right,
+                      paddingTop: card_style[0].inner_padding.top,
+                      paddingBottom: card_style[0].inner_padding.bottom,
+                      paddingLeft: card_style[0].inner_padding.left,
+                      paddingRight: card_style[0].inner_padding.right,
+                      borderTop: `${card_style[0].border.top.thickness}px ${card_style[0].border.top.bordertype} ${card_style[0].border.top.color}`,
+                      borderBottom: `${card_style[0].border.bottom.thickness}px ${card_style[0].border.bottom.bordertype} ${card_style[0].border.bottom.color}`,
+                      borderLeft: `${card_style[0].border.left.thickness}px ${card_style[0].border.left.bordertype} ${card_style[0].border.left.color}`,
+                      borderRight: `${card_style[0].border.right.thickness}px ${card_style[0].border.right.bordertype} ${card_style[0].border.right.color}`,
+                    }}
+                  >
+                    {/* 페이스1 스타일 영역 */}
+                    <div
+                      style={{
+                        backgroundColor: face_style[0].background_color,
+                        marginTop: face_style[0].outer_margin.top,
+                        marginBottom: face_style[0].outer_margin.bottom,
+                        marginLeft: face_style[0].outer_margin.left,
+                        marginRight: face_style[0].outer_margin.right,
+                        paddingTop: face_style[0].inner_padding.top,
+                        paddingBottom: face_style[0].inner_padding.bottom,
+                        paddingLeft: face_style[0].inner_padding.left,
+                        paddingRight: face_style[0].inner_padding.right,
+                        borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
+                        borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
+                        borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
+                        borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
+                      }}
+                    >
+                      {content.contents.mycontents_id.face1.map((item, index) => (
+                        <>
+                          <div
+                            style={{
+                              backgroundColor: row_style.face1[index].background_color,
+                              marginTop: row_style.face1[index].outer_margin.top,
+                              marginBottom: row_style.face1[index].outer_margin.bottom,
+                              marginLeft: row_style.face1[index].outer_margin.left,
+                              marginRight: row_style.face1[index].outer_margin.right,
+                              paddingTop: row_style.face1[index].inner_padding.top,
+                              paddingBottom: row_style.face1[index].inner_padding.bottom,
+                              paddingLeft: row_style.face1[index].inner_padding.left,
+                              paddingRight: row_style.face1[index].inner_padding.right,
+                              borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
+                              borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
+                              borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
+                              borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                            }}
+                          >
+                            <FroalaEditorView model={item} />
+                          </div>
+                        </>
+                      ))}
+                    </div>
+                    {/* 페이스2 스타일 영역 */}
+                    <div
+                      style={{
+                        backgroundColor: face_style[1].background_color,
+                        marginTop: face_style[1].outer_margin.top,
+                        marginBottom: face_style[1].outer_margin.bottom,
+                        marginLeft: face_style[1].outer_margin.left,
+                        marginRight: face_style[1].outer_margin.right,
+                        paddingTop: face_style[1].inner_padding.top,
+                        paddingBottom: face_style[1].inner_padding.bottom,
+                        paddingLeft: face_style[1].inner_padding.left,
+                        paddingRight: face_style[1].inner_padding.right,
+                        borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
+                        borderBottom: `${face_style[1].border.bottom.thickness}px ${face_style[1].border.bottom.bordertype} ${face_style[1].border.bottom.color}`,
+                        borderLeft: `${face_style[1].border.left.thickness}px ${face_style[1].border.left.bordertype} ${face_style[1].border.left.color}`,
+                        borderRight: `${face_style[1].border.right.thickness}px ${face_style[1].border.right.bordertype} ${face_style[1].border.right.color}`,
+                      }}
+                    >
+                      {content.contents.mycontents_id.face2.map((item, index) => (
+                        <>
+                          <div
+                            style={{
+                              backgroundColor: row_style.face2[index].background_color,
+                              marginTop: row_style.face2[index].outer_margin.top,
+                              marginBottom: row_style.face2[index].outer_margin.bottom,
+                              marginLeft: row_style.face2[index].outer_margin.left,
+                              marginRight: row_style.face2[index].outer_margin.right,
+                              paddingTop: row_style.face2[index].inner_padding.top,
+                              paddingBottom: row_style.face2[index].inner_padding.bottom,
+                              paddingLeft: row_style.face2[index].inner_padding.left,
+                              paddingRight: row_style.face2[index].inner_padding.right,
+                              borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
+                              borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
+                              borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
+                              borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                            }}
+                          >
+                            <FroalaEditorView model={item} />
+                          </div>
+                        </>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 {content._id === cardId && (
@@ -355,7 +517,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   }
   const onClickCard = (card_id) => {
     console.log("cardClicked!!!!!");
-    console.log("onClickCard",card_id);
+    console.log("onClickCard", card_id);
     setCardId(card_id);
     setEditorOnFromCard("");
     setEditorOn("");

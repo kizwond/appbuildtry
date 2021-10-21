@@ -53,61 +53,27 @@ const SessionConfig = ({
     <div>
       <Tabs activeKey={mode} type="card" size="small" onTabClick={(key) => changeMode(key)} tabBarStyle={{ margin: 0 }}>
         <Tabs.TabPane tab="읽기모드" key="read">
-          <ModeSessionConfig detailedOption={readDetailedOption} changeProps={changeReadProps}>
-            {advancedFilterComponet}
-          </ModeSessionConfig>
+          <ModeSessionConfig detailedOption={readDetailedOption} changeProps={changeReadProps}></ModeSessionConfig>
         </Tabs.TabPane>
         <Tabs.TabPane tab="뒤집기모드" key="flip">
-          <ModeSessionConfig detailedOption={flipDetailedOption} changeProps={changeFlipProps}>
-            {advancedFilterComponet}
-          </ModeSessionConfig>
+          <ModeSessionConfig detailedOption={flipDetailedOption} changeProps={changeFlipProps}></ModeSessionConfig>
         </Tabs.TabPane>
         <Tabs.TabPane tab="시험모드" key="exam">
-          <ModeSessionConfig detailedOption={examDetailedOption} changeProps={changeExamProps}>
-            {advancedFilterComponet}
-          </ModeSessionConfig>
+          <ModeSessionConfig detailedOption={examDetailedOption} changeProps={changeExamProps}></ModeSessionConfig>
         </Tabs.TabPane>
       </Tabs>
+      <AdvancedFilter
+        book_ids={book_ids}
+        advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
+        onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
+        onChangeAFCardList={onChangeAFCardList}
+        AFCardList={AFCardList}
+        onToggleIsAFilter={onToggleIsAFilter}
+        changeAdvancedFilter={changeAdvancedFilter}
+        advancedFilter={advancedFilter}
+      />
     </div>
   );
 };
 
 export default memo(SessionConfig);
-
-const StyledDivConfigWrapper = styled.div`
-  border: 1px solid #f0f0f0;
-  border-top: none;
-  padding: 5px;
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-
-  & > div:last-child {
-    margin-bottom: 0px;
-  }
-  & .ant-tag {
-    margin: 3px 3px 0 3px;
-    line-height: 16px;
-  }
-`;
-
-const StyledDivTitleRow = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  & > div:nth-child(1) {
-    flex: none;
-    width: 115px;
-  }
-  & > div:nth-child(2) {
-    flex: auto;
-  }
-`;
-
-const StyledDivToggleStudying = styled.div`
-  background-color: #e6f7ff;
-  padding: 5px;
-  border-top-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
-`;

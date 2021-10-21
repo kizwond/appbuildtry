@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
 import { Switch } from "antd";
 import { StyledDivConfigColStartCards, StyledDivConfigRow, StyledSpanConfigTitle } from "./common/StyledComponent";
@@ -79,12 +79,12 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
   );
 };
 
-export default ModeSessionConfig;
+export default memo(ModeSessionConfig);
 
 const StyledDivConfigWrapper = styled.div`
-  border: 1px solid #f0f0f0;
-  border-top: none;
-  padding: 5px;
+  border-left: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+  padding: 5px 5px 0 5px;
   background-color: white;
   display: flex;
   flex-direction: column;

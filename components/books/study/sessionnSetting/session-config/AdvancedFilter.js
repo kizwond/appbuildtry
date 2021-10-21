@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { Switch } from "antd";
 import styled from "styled-components";
 import { StyledDivConfigColStartCards, StyledSpanConfigTitle } from "./common/StyledComponent";
@@ -38,7 +38,7 @@ const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeInde
   const { onOff, cardMaker, examResult, level, makerFlag, userFlag, recentDifficulty, recentStudyTime, studyTimes } = advancedFilter;
 
   return (
-    <>
+    <StyledDivWrapper>
       <StyledDivTitleRow>
         <StyledDivConfigColStartCards>
           <StyledSpanConfigTitle onOff={onOff === "on"}>고급필터</StyledSpanConfigTitle>
@@ -100,11 +100,11 @@ const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeInde
           </FilterSubMenu>
         </>
       )}
-    </>
+    </StyledDivWrapper>
   );
 };
 
-export default AdvancedFilter;
+export default memo(AdvancedFilter);
 
 const StyledDivTitleRow = styled.div`
   display: flex;
@@ -117,4 +117,12 @@ const StyledDivTitleRow = styled.div`
   & > div:nth-child(2) {
     flex: auto;
   }
+`;
+
+const StyledDivWrapper = styled.div`
+  border-left: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0 5px 5px 5px;
+  background-color: white;
 `;

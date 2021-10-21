@@ -17,12 +17,15 @@ const FloatingMenu = ({setCardId, setEditorOnFromCard,setSelectedCardType, cardT
       setSelectedCardType(hello[0].cardtype_info);
       sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
       cardTypeInfo(hello[0].cardtype_info, "normal");
+      console.log("selectedCardType이 있을때 바텀메뉴에서 로그")
     } else {
       console.log("no cardtype selected!!!!!!! 그래서 그냥 첫번째 읽기 기본이 미리 선택된것임");
       console.log(cardTypes[0].cardtype_info.cardtype);
       setSelectedCardType(cardTypes[0].cardtype_info);
+      sessionStorage.setItem("selectedCardTypeId", cardTypes[0]._id);
       cardTypeInfo(cardTypes[0].cardtype_info, "normal");
       sessionStorage.setItem("cardtype", cardTypes[0].cardtype_info.cardtype);
+      console.log("selectedCardType이 없을때 바텀메뉴에서 로그")
     }
     console.log("clicked!!!");
   };

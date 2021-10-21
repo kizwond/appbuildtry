@@ -3,14 +3,14 @@ import styled from "styled-components";
 import { Switch } from "antd";
 import { StyledDivConfigColStartCards, StyledDivConfigRow, StyledSpanConfigTitle } from "./common/StyledComponent";
 import NumStartCards from "./NumStartCards";
-import SortOptionTag from "./SortOptionTag";
 import StudyTimeCondition from "./StudyTimeCondition";
-import UseCardTypesTag from "./UseCardTypesTag";
-import UseStatusTag from "./UseStatusTag";
+import ToggleTags from "./common/ToggleTags";
+import tags from "./common/tags";
 
 const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
   const { changeSortOption, changeNeedStudyTimeRange, changeNeedStudyTimeCondition, changeUseCardType, changeUseStatus, changeNumStartCards } = changeProps;
   const { sortOption, useCardtype, useStatus, needStudyTimeCondition, needStudyTimeRange, numStartCards } = detailedOption;
+  const { sortOptionTags, useCardTypeTags, useStatusTags } = tags;
   return (
     <StyledDivConfigWrapper>
       <StyledDivConfigRow>
@@ -18,7 +18,7 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
           <span className="ConifgTitle">보기 순서</span>
         </div>
         <div>
-          <SortOptionTag changeSortOption={changeSortOption} sortOption={sortOption} />
+          <ToggleTags changeValue={changeSortOption} value={sortOption} tags={sortOptionTags} />
         </div>
       </StyledDivConfigRow>
 
@@ -27,7 +27,7 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
           <span className="ConifgTitle">카드종류</span>
         </div>
         <div>
-          <UseCardTypesTag changeUseCardType={changeUseCardType} useCardtype={useCardtype} />
+          <ToggleTags changeValue={changeUseCardType} value={useCardtype} tags={useCardTypeTags} />
         </div>
       </StyledDivConfigRow>
 
@@ -37,7 +37,9 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
         </div>
         <div>
           <div>
-            <UseStatusTag changeUseStatus={changeUseStatus} useStatus={useStatus} />
+            <ToggleTags changeValue={changeUseStatus} value={useStatus} tags={useStatusTags} tagname />
+
+            {/* <UseStatusTag changeUseStatus={changeUseStatus} useStatus={useStatus} /> */}
           </div>
           {useStatus.includes("ing") && (
             <StyledDivToggleStudying>
@@ -92,10 +94,6 @@ const StyledDivConfigWrapper = styled.div`
   & > div:last-child {
     margin-bottom: 0px;
   }
-  & .ant-tag {
-    margin: 3px 3px 0 3px;
-    line-height: 16px;
-  }
 `;
 
 const StyledDivTitleRow = styled.div`
@@ -112,9 +110,8 @@ const StyledDivTitleRow = styled.div`
 `;
 
 const StyledDivToggleStudying = styled.div`
-  background-color: #e6f7ff;
-  padding: 5px;
-  border-top-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
+  margin-left: 20px;
+  background-color: #f5cdbf;
+  padding: 3px 4px 3px 5px;
+  border-radius: 2px;
 `;

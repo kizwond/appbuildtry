@@ -33,5 +33,5 @@ export default memo(NumStartCards);
 
 const StyledDiv = styled.div`
   display: inline-block;
-  margin: 4px;
+  margin: 3px;
 `;

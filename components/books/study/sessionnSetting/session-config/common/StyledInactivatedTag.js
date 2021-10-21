@@ -10,5 +10,6 @@ export default memo(StyledInactivatedTag);
 
 const StyledTag = styled(Tag)`
   color: #00000071;
+  margin-top: 3px;
   border: 1px solid #d9d9d9;
 `;

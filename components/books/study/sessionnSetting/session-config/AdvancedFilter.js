@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo, useState } from "react";
 import { Switch } from "antd";
 import styled from "styled-components";
 import { StyledDivConfigColStartCards, StyledSpanConfigTitle } from "./common/StyledComponent";
@@ -9,7 +9,12 @@ import RecentStudyTime from "./RecentStudyTime";
 import CardLevel from "./CardLevel";
 import StudyTimes from "./StudyTimes";
 
-const AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
+const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeIndexesOfAFCardList, onChangeAFCardList, AFCardList, onToggleIsAFilter, changeAdvancedFilter, advancedFilter }) => {
+  const [counterForButtonClick, setCounterForButtonClick] = useState(false);
+  const onChangeAFButtonClick = (_falsy) => {
+    setCounterForButtonClick(_falsy);
+  };
+
   const {
     changeAdvancedFilterOnOff,
     changeUserFlag,
@@ -33,7 +38,7 @@ const AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
   const { onOff, cardMaker, examResult, level, makerFlag, userFlag, recentDifficulty, recentStudyTime, studyTimes } = advancedFilter;
 
   return (
-    <>
+    <StyledDivWrapper>
       <StyledDivTitleRow>
         <StyledDivConfigColStartCards>
           <StyledSpanConfigTitle onOff={onOff === "on"}>고급필터</StyledSpanConfigTitle>
@@ -44,17 +49,17 @@ const AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
             onChange={(checked) => {
               if (checked) {
                 changeAdvancedFilterOnOff("on");
-                // if (counterForButtonClick > 0) {
-                //   onToggleIsAFilter(true);
-                // }
+                if (counterForButtonClick) {
+                  onToggleIsAFilter(true);
+                }
               } else {
                 changeAdvancedFilterOnOff("off");
-                // onToggleIsAFilter(false);
+                onToggleIsAFilter(false);
               }
             }}
           />
         </StyledDivConfigColStartCards>
-        {/* {onOff === "on" && (
+        {onOff === "on" && (
           <div>
             <GetFilteredIndexButton
               book_ids={book_ids}
@@ -67,7 +72,7 @@ const AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
               onChangeAFButtonClick={onChangeAFButtonClick}
             />
           </div>
-        )} */}
+        )}
       </StyledDivTitleRow>
       {onOff === "on" && (
         <>
@@ -95,11 +100,11 @@ const AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
           </FilterSubMenu>
         </>
       )}
-    </>
+    </StyledDivWrapper>
   );
 };
 
-export default AdvancedFilter;
+export default memo(AdvancedFilter);
 
 const StyledDivTitleRow = styled.div`
   display: flex;
@@ -112,4 +117,12 @@ const StyledDivTitleRow = styled.div`
   & > div:nth-child(2) {
     flex: auto;
   }
+`;
+
+const StyledDivWrapper = styled.div`
+  border-left: 1px solid #f0f0f0;
+  border-right: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0 5px 5px 5px;
+  background-color: white;
 `;

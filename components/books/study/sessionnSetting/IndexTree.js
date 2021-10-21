@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, selectedbookId }) => {
   const [treeData, setTreeData] = useState([]);
+  console.log("필터인덱스트리");
 
   useEffect(() => {
     const rawIndexes = bookIndexInfo.map((item, index) => ({
@@ -60,6 +61,8 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
     };
 
     const wrappUp = getIndexes();
+    console.log("필터인덱스트리 유즈이팩트");
+
     return wrappUp;
   }, [bookIndexInfo]);
 

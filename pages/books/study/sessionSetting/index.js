@@ -315,7 +315,7 @@ const StyledDivFirst = styled.div`
     min-width: 385px;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
-    display: none;
+    /* display: none; */
   }
 `;
 const StyledDivSecond = styled.div`

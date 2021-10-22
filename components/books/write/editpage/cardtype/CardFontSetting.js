@@ -194,8 +194,9 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           <div>
             <span>폰트</span>
             <Select value={font} style={{ width: 120 }} onChange={fontHandler}>
-              <Option value="맑은고딕">맑은고딕</Option>
               <Option value="고딕">고딕</Option>
+              <Option value="명조">명조</Option>
+              <Option value="바탕">바탕</Option>
               <Option value="돋움">돋움</Option>
             </Select>
           </div>

@@ -294,7 +294,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       const face_style = current_card_style[0].face_style;
       const card_style = current_card_style[0].card_style.details;
       const row_style = current_card_style[0].row_style;
-      console.log(row_style)
+      const row_font = current_card_style[0].row_font;   
+
+      console.log(row_font)
 
       return (
         <>
@@ -355,6 +357,16 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                               borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
                               borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
                               borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                              textAlign : row_font.face1[index].align,
+                              fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
+                              color: row_font.face1[index].color,
+                              fontFamily :`${row_font.face1[index].font === "고딕" && `Nanum Gothic, sans-serif` } `,
+                              fontFamily :`${row_font.face1[index].font === "명조" && `Nanum Myeongjo, sans-serif` } `,
+                              fontFamily :`${row_font.face1[index].font === "바탕" && `Gowun Batang, sans-serif` } `,
+                              fontFamily :`${row_font.face1[index].font === "돋움" && `Gowun Dodum, sans-serif` } `,
+                              fontStyle :`${row_font.face1[index].italic === "on" ? "italic" : "normal"}`,
+                              fontSize : row_font.face1[index].size,
+                              textDecoration : `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                             }}
                           >
                             <FroalaEditorView model={item} />
@@ -441,6 +453,16 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                               borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
                               borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
                               borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                              textAlign : row_font.face1[index].align,
+                              fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
+                              color: row_font.face1[index].color,
+                              fontFamily :`${row_font.face1[index].font === "고딕" && `Nanum Gothic, sans-serif` } `,
+                              fontFamily :`${row_font.face1[index].font === "명조" && `Nanum Myeongjo, sans-serif` } `,
+                              fontFamily :`${row_font.face1[index].font === "바탕" && `Gowun Batang, sans-serif` } `,
+                              fontFamily :`${row_font.face1[index].font === "돋움" && `Gowun Dodum, sans-serif` } `,
+                              fontStyle :`${row_font.face1[index].italic === "on" ? "italic" : "normal"}`,
+                              fontSize : row_font.face1[index].size,
+                              textDecoration : `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                             }}
                           >
                             <FroalaEditorView model={item} />
@@ -483,6 +505,16 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                               borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
                               borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
                               borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                              textAlign : row_font.face2[index].align,
+                              fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
+                              color: row_font.face2[index].color,
+                              fontFamily :`${row_font.face2[index].font === "고딕" && `Nanum Gothic, sans-serif` } `,
+                              fontFamily :`${row_font.face2[index].font === "명조" && `Nanum Myeongjo, sans-serif` } `,
+                              fontFamily :`${row_font.face2[index].font === "바탕" && `Gowun Batang, sans-serif` } `,
+                              fontFamily :`${row_font.face2[index].font === "돋움" && `Gowun Dodum, sans-serif` } `,
+                              fontStyle :`${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
+                              fontSize : row_font.face2[index].size,
+                              textDecoration : `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
                             }}
                           >
                             <FroalaEditorView model={item} />

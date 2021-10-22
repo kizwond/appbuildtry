@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&display=swap");
 html,
 body {
   padding: 0;
@@ -108,5 +108,5 @@ a {
 }
 
 p {
-  margin-bottom:0 !important;
+  margin-bottom: 0 !important;
 }

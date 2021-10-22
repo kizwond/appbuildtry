@@ -3,11 +3,21 @@ import { Table } from "antd";
 import { Progress } from "../../../../node_modules/antd/lib/index";
 import styled from "styled-components";
 
-const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, selectedbookId }) => {
+const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, selectedbookId, selectedCardsInfo, changeSelectedCardsInfo }) => {
   const [treeData, setTreeData] = useState([]);
   console.log("필터인덱스트리");
 
   useEffect(() => {
+    function sumOfObjects(Obj1, Obj2) {
+      var finalObj = {};
+      Object.keys(Obj1).forEach((value) => {
+        if (Obj2.hasOwnProperty(value)) {
+          finalObj[value] = Obj1[value] + Obj2[value];
+        }
+      });
+
+      return finalObj;
+    }
     const rawIndexes = bookIndexInfo.map((item, index) => ({
       title: item.name,
       key: item._id,
@@ -22,13 +32,33 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
       from_tomorrow_on_study_cards_number_for_total_card: item.num_cards.total.ing.afterTomorrow,
       completed_cards_number_for_total_card: item.num_cards.total.completed,
       holding_cards_number_for_total_card: item.num_cards.total.hold,
+      selectedIndex: checkedKeys.includes(item._id),
     }));
+
+    const cccc = rawIndexes
+      .filter((bookIndex) => bookIndex.selectedIndex)
+      .reduce(sumOfObjects, {
+        title: 0,
+        key: 0,
+        level: 0,
+        index: 0,
+        progress_for_total_card: 0,
+        total_cards_number_for_total_card: 0,
+        yet_cards_number_for_total_card: 0,
+        total_on_study_cards_number_for_total_card: 0,
+        until_today_on_study_cards_number_for_total_card: 0,
+        until_now_on_study_cards_number_for_total_card: 0,
+        from_tomorrow_on_study_cards_number_for_total_card: 0,
+        completed_cards_number_for_total_card: 0,
+        holding_cards_number_for_total_card: 0,
+        selectedIndex: 0,
+      });
+    console.log(cccc);
     let data_for_tree_level_one = rawIndexes.filter((item) => item.level == 1);
     let data_for_tree_level_two = rawIndexes.filter((item) => item.level == 2);
     let data_for_tree_level_three = rawIndexes.filter((item) => item.level == 3);
     let data_for_tree_level_four = rawIndexes.filter((item) => item.level == 4);
     let data_for_tree_level_five = rawIndexes.filter((item) => item.level == 5);
-
     const generatorForChildrens = (parents, son) => {
       for (let i = 0; i < parents.length; i++) {
         for (let k = 0; k < son.length; k++) {
@@ -57,14 +87,16 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
       const level3 = await generatorForChildrens(data_for_tree_level_three, level4);
       const level2 = await generatorForChildrens(data_for_tree_level_two, level3);
       const level1 = await generatorForChildrens(data_for_tree_level_one, level2);
-      setTreeData(level1);
+      const summaryIndexes = { ...cccc, title: "선택된 목차", key: "selectedIndexCardsInfo", progress_for_total_card: cccc.progress_for_total_card / cccc.length };
+      changeSelectedCardsInfo({ ...selectedCardsInfo, [selectedbookId]: summaryIndexes });
+      setTreeData([summaryIndexes, ...level1]);
     };
 
     const wrappUp = getIndexes();
     console.log("필터인덱스트리 유즈이팩트");
 
     return wrappUp;
-  }, [bookIndexInfo]);
+  }, [bookIndexInfo, checkedKeys]);
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -74,6 +106,12 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
     },
     onSelect: (record, selected, selectedRows) => {
       console.log(record, selected, selectedRows);
+    },
+    // eslint-disable-next-line react/display-name
+    getCheckboxProps: (record) => {
+      return {
+        style: { display: record.key === "selectedIndexCardsInfo" ? "none" : null },
+      };
     },
     onSelectAll: (selected, selectedRows, changeRows) => {
       console.log(selected, selectedRows, changeRows);

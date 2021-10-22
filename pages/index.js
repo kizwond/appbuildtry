@@ -87,7 +87,11 @@ const Home = () => {
 
   return (
     <Layout>
-      <Desktop>
+      <Hero />
+      <RecentStudyList />
+      <NewBooks />
+      <Footer />
+      {/* <Desktop>
         <Hero />
         <RecentStudyList />
         <NewBooks />
@@ -114,7 +118,7 @@ const Home = () => {
             <Footer />
           </div>
         </div>
-      </Mobile>
+      </Mobile> */}
     </Layout>
   );
 };

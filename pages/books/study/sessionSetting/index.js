@@ -325,20 +325,29 @@ const StyledDivSecond = styled.div`
     flex: auto;
   }
 
+  
+  & .ant-table.ant-table-small .ant-table-title {
+    padding: reset;
+    padding: 0px 8px 3px 8px;
+  }
+  & .ant-table.ant-table-small .ant-table-thead > tr > th {
+    padding: 4px 8px;
+  }
   & .ant-table-tbody > tr.ant-table-row-selected > td {
     background: initial;
     border-color: #f0f0f0;
+    padding: 4px 8px;
   }
 
   & table tr td.ant-table-selection-column {
-    padding: 8px 2px !important;
+    padding: 4px 2px !important;
     text-align: center;
     width: 32px;
     min-width: 32px;
   }
 
   & .ant-table-cell.TableRowTitle.ant-table-cell-with-append {
-    padding: 8px 5px 8px 2px;
+    padding: 4px 5px 4px 2px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

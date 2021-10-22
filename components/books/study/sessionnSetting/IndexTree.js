@@ -223,6 +223,7 @@ const columns = [
 const StyledDivTitle = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   & .TableMainTitle {
     font-size: 0.9rem;
     font-weight: 700;

@@ -96,22 +96,10 @@ const StyledDivConfigWrapper = styled.div`
   }
 `;
 
-const StyledDivTitleRow = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  & > div:nth-child(1) {
-    flex: none;
-    width: 115px;
-  }
-  & > div:nth-child(2) {
-    flex: auto;
-  }
-`;
-
 const StyledDivToggleStudying = styled.div`
   margin-left: 20px;
   background-color: #f5cdbf;
-  padding: 3px 4px 3px 5px;
+  padding: 1px 6px 3px 4px;
+  margin-bottom: 3px;
   border-radius: 2px;
 `;

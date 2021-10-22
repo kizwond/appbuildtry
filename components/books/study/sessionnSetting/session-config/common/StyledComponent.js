@@ -10,7 +10,7 @@ export const StyledDivConfigRow = styled.div`
   align-items: center;
   & > div:nth-child(1):not(.FilterSubTitleCol) {
     flex: none;
-    width: 115px;
+    width: 104px;
   }
   & > div.FilterSubTitleCol {
     flex: none;
@@ -53,15 +53,6 @@ export const StyledDivConfigCol = styled.div`
     font-size: 0.8rem;
     font-weight: 700;
   }
-  & .ant-picker-input > input {
-    font-size: 10px;
-  }
-  & .anticon-swap-right > svg {
-    font-size: 14px;
-  }
-  & .ant-picker.ant-picker-range.ant-picker-small {
-    max-width: 140px;
-  }
 `;
 
 export const StyledDivConfigColStartCards = styled(StyledDivConfigCol)`
@@ -70,15 +61,15 @@ export const StyledDivConfigColStartCards = styled(StyledDivConfigCol)`
   align-items: center;
 
   & .TitleSwitchButton {
-    right: 15px;
+    right: 8px;
   }
   & .SubTitleSwitchButton {
-    right: 10px;
+    right: 8px;
   }
 `;
 
 export const StyledDivConfigMenuWrapper = styled.div`
-  margin: 3px 3px 0 3px;
+  padding: 3px 3px 3px 0;
 `;
 
 export const StyledSpanConfigTitle = styled(({ onOff, children, ...rest }) => <span {...rest}>{children}</span>)`

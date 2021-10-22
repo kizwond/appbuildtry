@@ -16,4 +16,28 @@ const tags = {
   ],
 };
 
+export const filterTags = {
+  flagTags: [
+    { option: 0, title: "No flag" },
+    { option: 1, title: "flag1" },
+    { option: 2, title: "flag2" },
+    { option: 3, title: "flag3" },
+    { option: 4, title: "flag4" },
+    { option: 5, title: "flag5" },
+  ],
+  recentDifficultyTags: [
+    { option: "none", title: "결과없음" },
+    { option: "diffi1", title: "모름" },
+    { option: "diffi2", title: "어려움" },
+    { option: "diffi3", title: "애매함" },
+    { option: "diffi4", title: "쉬움" },
+    { option: "diffi5", title: "알고있음" },
+  ],
+  examResultTags: [
+    { option: "none", title: "결과없음" },
+    { option: "right", title: "맞춘카드" },
+    { option: "wrong", title: "틀린카드" },
+  ],
+};
+
 export default tags;

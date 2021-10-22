@@ -6,10 +6,11 @@ import tags from "./common/tags";
 const { useStatusTags } = tags;
 
 const NumStartCards = ({ numStartCards, changeNumStartCards }) => {
+  const attr = (i) => i === 0 && { first: "yes" };
   return (
-    <div>
-      {useStatusTags.map((tag) => (
-        <StyledDiv key={tag.option}>
+    <RowForLevelTwo>
+      {useStatusTags.map((tag, i) => (
+        <StyledDiv key={tag.option} {...attr(i)}>
           {`${tag.title}: `}
           <InputNumber
             disabled={numStartCards.onOff === "off"}
@@ -22,7 +23,7 @@ const NumStartCards = ({ numStartCards, changeNumStartCards }) => {
           />
         </StyledDiv>
       ))}
-    </div>
+    </RowForLevelTwo>
   );
 };
 
@@ -30,5 +31,9 @@ export default memo(NumStartCards);
 
 const StyledDiv = styled.div`
   display: inline-block;
-  margin: 3px;
+  margin: ${({ first }) => (first === "yes" ? "3px 3px 3px 0" : "3px 3px 3px 3px")};
+`;
+
+const RowForLevelTwo = styled.div`
+  margin-left: 10px;
 `;

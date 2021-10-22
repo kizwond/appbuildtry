@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION, GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
 import Layout from "../../../../components/layout/Layout";
@@ -16,6 +16,11 @@ const SessionSetting = () => {
   const [checkedKeys, setCheckedKeys] = useState([]);
   const [counter, setCounter] = useState(0);
   const [bookList, setBookList] = useState([]);
+
+  const [selectedCardsInfo, setSelectedCardsInfo] = useState({});
+  const changeSelectedCardsInfo = useCallback((summary) => {
+    setSelectedCardsInfo(summary);
+  }, []);
 
   const [visualCompo, setVisualCompo] = useState("index");
 
@@ -170,20 +175,37 @@ const SessionSetting = () => {
   if (!error && !loading) {
     return (
       <Layout>
+        <button onClick={() => console.log({ selectedCardsInfo })}>확인용</button>
         <StyledDiv>
           <Row style={{ padding: "8px" }}>
             <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
               <Row>
                 <Col span={14} style={{ display: "flex" }}>
-                  <StyledPointer activated={visualCompo}>목차 설정</StyledPointer>
-                  <StyledPointer activated={visualCompo}>세션 설정</StyledPointer>
+                  <StyledPointer activated={visualCompo} style={{ cursor: "pointer" }} onClick={() => setVisualCompo("index")}>
+                    목차 설정
+                  </StyledPointer>
+                  <StyledPointer activated={visualCompo} style={{ cursor: "pointer" }} onClick={() => setVisualCompo("config")}>
+                    세션 설정
+                  </StyledPointer>
                 </Col>
                 <Col span={3}></Col>
                 <Col span={7} style={{ display: "flex" }}>
-                  <Button block disabled={"on" === "off"} size="small" style={{ height: "2rem", fontSize: "0.95rem !important", fontWeight: "600", marginLeft: "5px" }}>
-                    <span style={{ fontSize: "0.95rem " }}>{"on" === "on" ? "다음" : "이전"}</span>
+                  <Button
+                    block
+                    disabled={"on" === "off"}
+                    size="small"
+                    onClick={() => (visualCompo === "index" ? setVisualCompo("config") : setVisualCompo("index"))}
+                    style={{ height: "2rem", fontSize: "0.95rem !important", fontWeight: "600", marginLeft: "5px" }}
+                  >
+                    <span style={{ fontSize: "0.95rem " }}>{visualCompo === "index" ? "다음" : "이전"}</span>
                   </Button>
-                  <Button block disabled={"off" === "off"} size="small" style={{ height: "2rem", fontWeight: "600", marginLeft: "5px" }}>
+                  <Button
+                    block
+                    disabled={visualCompo === "index"}
+                    size="small"
+                    onClick={() => {}}
+                    style={{ height: "2rem", fontWeight: "600", marginLeft: "5px", backgroundColor: visualCompo === "config" ? "green" : null, color: visualCompo === "config" ? "white" : null }}
+                  >
                     <span style={{ fontSize: "0.95rem " }}>시작</span>
                   </Button>
                 </Col>
@@ -207,6 +229,8 @@ const SessionSetting = () => {
                         checkedKeys={checkedKeys[book.book_id]}
                         selectedbookId={book.book_id}
                         onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
+                        selectedCardsInfo={selectedCardsInfo}
+                        changeSelectedCardsInfo={changeSelectedCardsInfo}
                       />
                     </StyledDivTabContentWrapper>
                   </Tabs.TabPane>
@@ -220,6 +244,8 @@ const SessionSetting = () => {
                         checkedKeys={advancedFilteredCheckedIndexes[book.book_id]}
                         selectedbookId={book.book_id}
                         onCheckIndexesCheckedKeys={onAdvancedFilteredCheckIndexesCheckedKeys}
+                        selectedCardsInfo={selectedCardsInfo}
+                        changeSelectedCardsInfo={changeSelectedCardsInfo}
                       />
                     </StyledDivTabContentWrapper>
                   </Tabs.TabPane>
@@ -231,8 +257,18 @@ const SessionSetting = () => {
               <Col xs={0} sm={0} md={0} lg={18} xl={18} xxl={18}>
                 <Typography.Title level={4}>세션 설정</Typography.Title>
               </Col>
-              <Col sxs={0} sm={0} md={0} lg={6} xl={6} xxl={6}>
-                <Button block size="small" style={{ height: "2rem", fontWeight: "600", marginLeft: "5px" }}>
+              <Col xs={0} sm={0} md={0} lg={6} xl={6} xxl={6}>
+                <Button
+                  block
+                  size="small"
+                  style={{
+                    height: "2rem",
+                    fontWeight: "600",
+                    marginLeft: "5px",
+                    backgroundColor: "green",
+                    color: "white",
+                  }}
+                >
                   <span style={{ fontSize: "0.95rem " }}>시작</span>
                 </Button>
               </Col>
@@ -338,6 +374,8 @@ const StyledDivSecond = styled.div`
   & .ant-table-tbody > tr.ant-table-row-selected > td {
     background: initial;
     border-color: #f0f0f0;
+  }
+  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 4px 8px;
   }
 
@@ -371,8 +409,8 @@ const StyledPointer = styled.div`
   min-width: 70px;
   height: 2rem;
   position: relative;
-  background: ${(props) => (props.activated === "index" ? "#efedfc" : "#322a64")};
-  color: ${(props) => (props.activated === "index" ? "black" : "white")};
+  background: #322a64;
+  color: white;
   z-index: ${(props) => props.zIndex};
   display: flex;
   align-items: center;
@@ -391,7 +429,7 @@ const StyledPointer = styled.div`
     bottom: 0;
     width: 0;
     height: 0;
-    border-left: ${(props) => (props.activated === "index" ? "1rem solid #efedfc" : "1rem solid #322a64")};
+    border-left: 1rem solid #322a64;
     border-top: 1rem solid transparent;
     border-bottom: 1rem solid transparent;
   }
@@ -410,7 +448,12 @@ const StyledPointer = styled.div`
 
   &:nth-of-type(2) {
     z-index: 1;
+    background: ${(props) => (props.activated === "config" ? "#efedfc" : "#322a64")};
+    color: ${(props) => (props.activated === "config" ? "black" : "white")};
     left: 5px;
+  }
+  &:nth-of-type(2):before {
+    border-left: ${(props) => (props.activated === "config" ? "1rem solid #efedfc" : "1rem solid #322a64")};
   }
   &:nth-of-type(2):after {
     content: "";

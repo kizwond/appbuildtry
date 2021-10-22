@@ -104,7 +104,9 @@ const LoginComponent = () => {
 const Login = () => {
   return (
     <Layout>
-      <Desktop>
+      <LoginComponent />
+      <Footer />
+      {/* <Desktop>
         <LoginComponent />
         <Footer />
       </Desktop>
@@ -125,7 +127,7 @@ const Login = () => {
             <Footer />
           </div>
         </div>
-      </Mobile>
+      </Mobile> */}
     </Layout>
   );
 };

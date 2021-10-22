@@ -82,19 +82,12 @@ const StyledRadio = styled(Radio)`
   & span.ant-radio + * {
     padding-right: 0px;
     padding-left: 3px;
+    align-self: center;
+    font-size: xx-small;
   }
 `;
 const StyledRow = styled(Row)`
   & .ant-radio-wrapper {
     margin-right: 2px;
-  }
-  & .ant-picker-input > input {
-    font-size: 10px;
-  }
-  & .anticon-swap-right > svg {
-    font-size: 14px;
-  }
-  & .ant-picker.ant-picker-range.ant-picker-small {
-    max-width: 140px;
   }
 `;

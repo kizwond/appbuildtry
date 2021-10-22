@@ -293,9 +293,6 @@ const StyledDiv = styled.div`
 const StyledDivFirst = styled.div`
   padding: 8px;
 
-  & span.ant-radio + * {
-    font-size: 0.7rem;
-  }
   & .ant-radio-group {
     display: block;
   }
@@ -304,7 +301,7 @@ const StyledDivFirst = styled.div`
     width: 32px;
   }
   & .ant-input-number-sm input {
-    height: 16px;
+    height: 20px;
     padding: 0 3px;
   }
   & .ant-input-number-handler-wrap {

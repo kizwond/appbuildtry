@@ -31,10 +31,11 @@ const NewToggleTag = ({ children, option, index, value, changeValue, tagname }) 
   );
 };
 
-const ToggleTags = ({ value, changeValue, tagname, tags }) => {
+const ToggleTags = ({ value, changeValue, tagname, tags, af }) => {
   const makeAttrTagName = (option) => tagname && option === "ing" && { tagname };
+  const makeAttrAF = af && { forfilter: "yes" };
   return (
-    <RowForLevelTwo>
+    <RowForLevelTwo {...makeAttrAF}>
       {tags.map((tag, i) => (
         <NewToggleTag key={tag.option} option={tag.option} index={i} value={value} changeValue={changeValue} {...makeAttrTagName(tag.option)}>
           {tag.title}
@@ -47,5 +48,5 @@ const ToggleTags = ({ value, changeValue, tagname, tags }) => {
 export default memo(ToggleTags);
 
 const RowForLevelTwo = styled.div`
-  margin-left: 10px;
+  margin-left: ${({ forfilter }) => (forfilter === "yes" ? "0" : "10px")};
 `;

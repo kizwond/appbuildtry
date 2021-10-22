@@ -4,10 +4,12 @@ import styled from "styled-components";
 import { StyledDivConfigColStartCards, StyledSpanConfigTitle } from "./common/StyledComponent";
 import GetFilteredIndexButton from "../GetFilteredIndexButton";
 import FilterSubMenu from "./common/FilterSubMenu";
-import FlagTags from "./FlagTags";
 import RecentStudyTime from "./RecentStudyTime";
 import CardLevel from "./CardLevel";
 import StudyTimes from "./StudyTimes";
+import ToggleTags from "./common/ToggleTags";
+import { filterTags } from "./common/tags";
+import InactivatedTags from "./common/InactivatedTags";
 
 const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeIndexesOfAFCardList, onChangeAFCardList, AFCardList, onToggleIsAFilter, changeAdvancedFilter, advancedFilter }) => {
   const [counterForButtonClick, setCounterForButtonClick] = useState(false);
@@ -37,6 +39,7 @@ const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeInde
 
   const { onOff, cardMaker, examResult, level, makerFlag, userFlag, recentDifficulty, recentStudyTime, studyTimes } = advancedFilter;
 
+  const { flagTags, recentDifficultyTags, examResultTags } = filterTags;
   return (
     <StyledDivWrapper>
       <StyledDivTitleRow>
@@ -60,7 +63,7 @@ const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeInde
           />
         </StyledDivConfigColStartCards>
         {onOff === "on" && (
-          <div>
+          <RowForLevelTwo>
             <GetFilteredIndexButton
               book_ids={book_ids}
               advancedFilter={advancedFilter}
@@ -71,16 +74,16 @@ const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeInde
               onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
               onChangeAFButtonClick={onChangeAFButtonClick}
             />
-          </div>
+          </RowForLevelTwo>
         )}
       </StyledDivTitleRow>
       {onOff === "on" && (
         <>
           <FilterSubMenu title="사용자 플래그" changeOnOff={changeUserFlagOnOff} onOff={userFlag.onOff}>
-            <FlagTags menu="flags" array={userFlag.value} onOff={userFlag.onOff === "on"} setState={changeUserFlag} />
+            {userFlag.onOff === "on" ? <ToggleTags changeValue={changeUserFlag} value={userFlag.value} tags={flagTags} af /> : <InactivatedTags tags={flagTags} />}
           </FilterSubMenu>
           <FilterSubMenu title="제작자 플래그" changeOnOff={changeMakerFlagOnOff} onOff={makerFlag.onOff}>
-            <FlagTags menu="flags" array={makerFlag.value} onOff={makerFlag.onOff === "on"} setState={changeMakerFlag} />
+            {makerFlag.onOff === "on" ? <ToggleTags changeValue={changeMakerFlag} value={makerFlag.value} tags={flagTags} af /> : <InactivatedTags tags={flagTags} />}
           </FilterSubMenu>
           <FilterSubMenu title="최근 학습 시점" changeOnOff={changeRecentStudyTimeOnOff} onOff={recentStudyTime.onOff}>
             <RecentStudyTime onOff={recentStudyTime.onOff} recentStudyTime={recentStudyTime.value} changeRecentStudyTime={changeRecentStudyTime} />
@@ -93,10 +96,10 @@ const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeInde
           </FilterSubMenu>
 
           <FilterSubMenu title="최근 선택 난이도" changeOnOff={changeRecentDifficultyOnOff} onOff={recentDifficulty.onOff}>
-            <FlagTags menu="recentDifficulty" array={recentDifficulty.value} onOff={recentDifficulty.onOff === "on"} setState={changeRecentDifficulty} />
+            {recentDifficulty.onOff === "on" ? <ToggleTags changeValue={changeRecentDifficulty} value={recentDifficulty.value} tags={recentDifficultyTags} af /> : <InactivatedTags tags={recentDifficultyTags} />}
           </FilterSubMenu>
           <FilterSubMenu title="최근 시험 결과" changeOnOff={changeExamResultOnOff} onOff={examResult.onOff}>
-            <FlagTags menu="examResult" array={examResult.value} onOff={examResult.onOff === "on"} setState={changeExamResult} />
+            {examResult.onOff === "on" ? <ToggleTags changeValue={changeExamResult} value={examResult.value} tags={examResultTags} af /> : <InactivatedTags tags={examResultTags} />}
           </FilterSubMenu>
         </>
       )}
@@ -112,7 +115,7 @@ const StyledDivTitleRow = styled.div`
   align-items: center;
   & > div:nth-child(1) {
     flex: none;
-    width: 115px;
+    width: 104px;
   }
   & > div:nth-child(2) {
     flex: auto;
@@ -125,4 +128,8 @@ const StyledDivWrapper = styled.div`
   border-bottom: 1px solid #f0f0f0;
   padding: 0 5px 5px 5px;
   background-color: white;
+`;
+
+const RowForLevelTwo = styled.div`
+  margin-left: 10px;
 `;

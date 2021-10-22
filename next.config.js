@@ -8,8 +8,7 @@ module.exports = {
     return [
       {
         source: "/api/:path*",
-        // destination: "http://15.164.163.123:5000/api/:path*",
-        destination: "http://localhost:5000/api/:path*",
+        destination: `${process.env.NEXT_PUBLIC_ACCESS_URI}/api/:path*`,
       },
     ];
   },

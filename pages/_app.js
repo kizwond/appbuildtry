@@ -9,11 +9,7 @@ import { useUserAgent } from "next-useragent";
 import { useWindowSize } from "react-use";
 import MobileDetect from '../node_modules/mobile-detect/mobile-detect';
 
-// const refreshToken = localStorage.getItem('refreshToken')
-
-const App = ({ Component, pageProps }) => {
- 
-
+const App = ({ Component, pageProps }) => {  
   const ISSERVER = typeof window === "undefined";
   if(!ISSERVER) {
     var accessToken = localStorage.getItem('accessToken')
@@ -32,8 +28,7 @@ const App = ({ Component, pageProps }) => {
  
   
   const link = createUploadLink({
-    uri: "http://localhost:5000/graphql",
-    // uri: "http://15.164.163.123:5000/graphql",
+    uri: process.env.NEXT_PUBLIC_ACCESS_URI,
     credentials: "include",
     headers: { from:from,
       Authorization: accessToken 

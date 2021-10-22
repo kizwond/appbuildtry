@@ -1,21 +1,5 @@
-import React, { useState, useCallback, memo } from "react";
-import { useQuery } from "@apollo/client";
-import { Switch, InputNumber, Card, Col, Row, Button, Typography } from "antd";
-import { GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
-import GetFilteredIndexButton from "./GetFilteredIndexButton";
-import styled from "styled-components";
-import SortOptionTag from "./session-config/SortOptionTag";
-import UseCardTypesTag from "./session-config/UseCardTypesTag";
-import UseStatusTag from "./session-config/UseStatusTag";
-import StudyTimeCondition from "./session-config/StudyTimeCondition";
-import NumStartCards from "./session-config/NumStartCards";
-import FlagTags from "./session-config/FlagTags";
-import FilterSubMenu from "./session-config/common/FilterSubMenu";
-import RecentStudyTime from "./session-config/RecentStudyTime";
-import CardLevel from "./session-config/CardLevel";
-import StudyTimes from "./session-config/StudyTimes";
-import { StyledDivConfigRow, StyledDivConfigColStartCards, StyledSpanConfigTitle } from "./session-config/common/StyledComponent";
-import useSessionConfig from "./session-config/useHook/useSessionConfig";
+import React, { memo } from "react";
+
 import { Tabs } from "../../../../node_modules/antd/lib/index";
 import ModeSessionConfig from "./session-config/ModeSessionConfig";
 import AdvancedFilter from "./session-config/AdvancedFilter";

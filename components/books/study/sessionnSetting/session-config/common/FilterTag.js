@@ -1,9 +1,7 @@
-import { memo } from "react";
-import { Tag } from "antd";
+import { memo, useCallback, useMemo } from "react";
+import ToggleTag from "./ToggleTag";
 
 const FilterTag = ({ name, array, value, setState }) => {
-  const { CheckableTag } = Tag;
-
   const onToggleChange = (checked) => {
     if (checked) {
       setState([...array, value]);
@@ -12,10 +10,12 @@ const FilterTag = ({ name, array, value, setState }) => {
     }
   };
 
+  const changeChecked = useMemo(() => array.includes(value), [array, value]);
+
   return (
-    <CheckableTag checked={array.includes(value)} onChange={onToggleChange}>
+    <ToggleTag checked={changeChecked} onChange={onToggleChange}>
       {name}
-    </CheckableTag>
+    </ToggleTag>
   );
 };
 

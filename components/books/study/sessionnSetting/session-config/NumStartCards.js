@@ -1,17 +1,14 @@
 import React, { memo } from "react";
 import styled from "styled-components";
 import { InputNumber } from "antd";
+import tags from "./common/tags";
 
-const tags = [
-  { option: "yet", title: "미학습" },
-  { option: "ing", title: "학습중" },
-  { option: "completed", title: "학습완료" },
-  { option: "hold", title: "학습보류" },
-];
+const { useStatusTags } = tags;
+
 const NumStartCards = ({ numStartCards, changeNumStartCards }) => {
   return (
     <div>
-      {tags.map((tag) => (
+      {useStatusTags.map((tag) => (
         <StyledDiv key={tag.option}>
           {`${tag.title}: `}
           <InputNumber

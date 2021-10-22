@@ -72,21 +72,29 @@ const Nav = () => {
           <div
             style={{
               position: "relative",
+              background: backgroundColor,
               width: "100%",
-              paddingRight: 10,
-              paddingLeft: 10,
               height: 40,
+              padding: 10,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
+              position: "fixed",
+              top: "0",
+              zIndex: 3,
             }}
           >
             <div
               style={{
-                display: "inline-block",
-                position: "absolute",
-                top: "50%",
-                transform: "translate(0,-50%)",
+                // display: "inline-block",
+                // position: "absolute",
+                // top: "50%",
+                // transform: "translate(0,-50%)",
+                flexBasis: "33%",
               }}
             >
-              <MenuOutlined style={{ fontSize: burgerSize }} onClick={showDrawer} />
+              <MenuOutlined style={{ fontSize: burgerSize, color: fontColor }} onClick={showDrawer} />
               <Drawer
                 title={
                   <>
@@ -116,61 +124,63 @@ const Nav = () => {
                     }}
                   >
                     <div style={{ display: "flex", flexDirection: "column" }}>
+                      {isLogged && (
+                        <>
+                          <Button size="small" shape="round" style={{ fontSize: "0.75rem" }} onClick={() => onClickLogout()}>
+                            로그아웃
+                          </Button>
+                        </>
+                      )}
+                      {!isLogged && (
+                        <>
+                          <Link href="/account/login">
+                            <a style={linkStyleDrawer}>
+                              <UserOutlined style={{ marginRight: 5, color: "black" }} />
+                              로그인
+                            </a>
+                          </Link>
+                          <Link href="/account/register">
+                            <a style={linkStyleDrawer}>
+                              <FileTextOutlined style={{ marginRight: 5, color: "black" }} />
+                              회원가입
+                            </a>
+                          </Link>
+                        </>
+                      )}
                       <Link href="/books/studypage">
-                        <a style={linkStyle}>
+                        <a style={linkStyleDrawer}>
                           <ReadOutlined style={{ marginRight: 10 }} />
                           학습
                         </a>
                       </Link>
                       <Link href="/books/writepage">
-                        <a style={linkStyle}>
+                        <a style={linkStyleDrawer}>
                           <FormOutlined style={{ marginRight: 10 }} />
                           만들기
                         </a>
                       </Link>
                       <Link href="/mentoring">
-                        <a style={linkStyle}>
+                        <a style={linkStyleDrawer}>
                           <TeamOutlined style={{ marginRight: 10 }} />
                           멘토링
                         </a>
                       </Link>
                       <Link href="/bookstore">
-                        <a style={linkStyle}>
+                        <a style={linkStyleDrawer}>
                           <ShopOutlined style={{ marginRight: 10 }} />
                           서점
                         </a>
                       </Link>
                     </div>
                     <div style={{ display: "flex", flexDirection: "column" }}>
-                      {isLogged && (
-                        <>
-                          <button onClick={() => onClickLogout()}>로그아웃</button>
-                        </>
-                      )}
-                      {!isLogged && (
-                        <>
-                          <Link href="/account/login">
-                            <a style={linkStyle}>
-                              <UserOutlined style={{ marginRight: 10 }} />
-                              로그인
-                            </a>
-                          </Link>
-                        </>
-                      )}
-                      <Link href="/account/register">
-                        <a style={linkStyle}>
-                          <FileTextOutlined style={{ marginRight: 10 }} />
-                          회원가입
-                        </a>
-                      </Link>
                       <Link href="/cart">
-                        <a style={linkStyle}>
+                        <a style={linkStyleDrawer}>
                           <ShoppingCartOutlined style={{ marginRight: 10 }} />
                           장바구니
                         </a>
                       </Link>
                       <Link href="/notification">
-                        <a style={linkStyle}>
+                        <a style={linkStyleDrawer}>
                           <BellOutlined style={{ marginRight: 10 }} />
                           알림
                         </a>
@@ -183,14 +193,22 @@ const Nav = () => {
             <Link href="/">
               <a
                 style={{
-                  position: "absolute",
-                  left: "50%",
-                  transform: "translate(-50%)",
+                  // position: "absolute",
+                  // left: "50%",
+                  // transform: "translate(-50%)",
+                  flexBasis: "33%",
+                  textAlign: "center",
+                  fontFamily: `Architects Daughter, cursive`,
+                  fontWeight: 900,
+                  color: fontColor,
+                  // textShadow: "rgb(189 189 189 / 73%) 3px 2px 5px",
                 }}
               >
-                <Image src={profilePic} width="80px" height="40px" alt="logo" />
+                {/* <Image src={profilePic} width="80px" height="40px" alt="logo" /> */}
+                CogBook
               </a>
             </Link>
+            <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "0.75rem" }}></div>
           </div>
         </>
       )}
@@ -428,14 +446,16 @@ const Nav = () => {
             <div
               style={{
                 width: 1200,
-                // height: 50,
+                height: 50,
                 display: "flex",
                 margin: "auto",
+                alignItems:"center"
               }}
             >
               <Link href="/">
-                <a style={{ marginRight: "30px" }}>
-                  <Image src={profilePic} width="100px" height="50px" alt="logo" />
+                <a style={{ marginRight: "30px", fontFamily: `Architects Daughter, cursive`, fontWeight: 900, color: fontColor }}>
+                  {/* <Image src={profilePic} width="100px" height="50px" alt="logo" /> */}
+                  CogBook
                 </a>
               </Link>
               <div

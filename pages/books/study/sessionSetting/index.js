@@ -17,6 +17,8 @@ const SessionSetting = () => {
   const [counter, setCounter] = useState(0);
   const [bookList, setBookList] = useState([]);
 
+  const [visualCompo, setVisualCompo] = useState("index");
+
   const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState([]);
   const [advancedFilteredCheckedIndexes, setAdvancedFilteredCheckedIndexes] = useState([]);
   const [isAdvancedFilteredCardListShowed, setIsAdvancedFilteredCardListShowed] = useState(false);
@@ -173,8 +175,8 @@ const SessionSetting = () => {
             <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
               <Row>
                 <Col span={14} style={{ display: "flex" }}>
-                  <StyledPointer activated="on">목차 설정</StyledPointer>
-                  <StyledPointer activated="off">세션 설정</StyledPointer>
+                  <StyledPointer activated={visualCompo}>목차 설정</StyledPointer>
+                  <StyledPointer activated={visualCompo}>세션 설정</StyledPointer>
                 </Col>
                 <Col span={3}></Col>
                 <Col span={7} style={{ display: "flex" }}>
@@ -188,7 +190,7 @@ const SessionSetting = () => {
               </Row>
             </Col>
           </Row>
-          <StyledDivSecond>
+          <StyledDivSecond visualCompo={visualCompo}>
             <Row>
               <Col xs={0} sm={0} md={0} lg={24} xl={24} xxl={24}>
                 <Typography.Title level={4}>목차 설정</Typography.Title>
@@ -224,7 +226,7 @@ const SessionSetting = () => {
                 ))}
             </Tabs>
           </StyledDivSecond>
-          <StyledDivFirst isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}>
+          <StyledDivFirst isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed} visualCompo={visualCompo}>
             <Row>
               <Col xs={0} sm={0} md={0} lg={18} xl={18} xxl={18}>
                 <Typography.Title level={4}>세션 설정</Typography.Title>
@@ -309,10 +311,10 @@ const StyledDivFirst = styled.div`
     visibility: hidden;
   }
   @media screen and (min-width: 992px) {
-    min-width: 385px;
+    width: 385px;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
-    /* display: none; */
+    display: ${(props) => (props.visualCompo === "config" ? "block" : "none")};
   }
 `;
 const StyledDivSecond = styled.div`
@@ -323,9 +325,9 @@ const StyledDivSecond = styled.div`
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
     flex: auto;
+    display: ${(props) => (props.visualCompo === "index" ? "block" : "none")};
   }
 
-  
   & .ant-table.ant-table-small .ant-table-title {
     padding: reset;
     padding: 0px 8px 3px 8px;
@@ -369,8 +371,8 @@ const StyledPointer = styled.div`
   min-width: 70px;
   height: 2rem;
   position: relative;
-  background: ${(props) => (props.activated === "on" ? "#efedfc" : "#322a64")};
-  color: ${(props) => (props.activated === "on" ? "black" : "white")};
+  background: ${(props) => (props.activated === "index" ? "#efedfc" : "#322a64")};
+  color: ${(props) => (props.activated === "index" ? "black" : "white")};
   z-index: ${(props) => props.zIndex};
   display: flex;
   align-items: center;
@@ -389,7 +391,7 @@ const StyledPointer = styled.div`
     bottom: 0;
     width: 0;
     height: 0;
-    border-left: ${(props) => (props.activated === "on" ? "1rem solid #efedfc" : "1rem solid #322a64")};
+    border-left: ${(props) => (props.activated === "index" ? "1rem solid #efedfc" : "1rem solid #322a64")};
     border-top: 1rem solid transparent;
     border-bottom: 1rem solid transparent;
   }
@@ -399,6 +401,11 @@ const StyledPointer = styled.div`
 
   &:nth-of-type(1) {
     z-index: 2;
+    background: ${(props) => (props.activated === "index" ? "#efedfc" : "#322a64")};
+    color: ${(props) => (props.activated === "index" ? "black" : "white")};
+  }
+  &:nth-of-type(1):before {
+    border-left: ${(props) => (props.activated === "index" ? "1rem solid #efedfc" : "1rem solid #322a64")};
   }
 
   &:nth-of-type(2) {

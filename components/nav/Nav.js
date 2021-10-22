@@ -446,14 +446,16 @@ const Nav = () => {
             <div
               style={{
                 width: 1200,
-                // height: 50,
+                height: 50,
                 display: "flex",
                 margin: "auto",
+                alignItems:"center"
               }}
             >
               <Link href="/">
-                <a style={{ marginRight: "30px" }}>
-                  <Image src={profilePic} width="100px" height="50px" alt="logo" />
+                <a style={{ marginRight: "30px", fontFamily: `Architects Daughter, cursive`, fontWeight: 900, color: fontColor }}>
+                  {/* <Image src={profilePic} width="100px" height="50px" alt="logo" /> */}
+                  CogBook
                 </a>
               </Link>
               <div

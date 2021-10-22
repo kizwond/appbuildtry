@@ -32,7 +32,8 @@ const App = ({ Component, pageProps }) => {
  
   
   const link = createUploadLink({
-    uri: "http://15.164.163.123:5000/graphql",
+    uri: "http://localhost:5000/graphql",
+    // uri: "http://15.164.163.123:5000/graphql",
     credentials: "include",
     headers: { from:from,
       Authorization: accessToken 

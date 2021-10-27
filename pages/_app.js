@@ -29,7 +29,7 @@ const App = ({ Component, pageProps }) => {
   
   const link = createUploadLink({
     uri: process.env.NEXT_PUBLIC_ACCESS_URI,
-    credentials: "include",
+    credentials: true,
     headers: { from:from,
       Authorization: accessToken 
   },

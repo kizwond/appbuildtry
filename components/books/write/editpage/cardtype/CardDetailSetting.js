@@ -42,9 +42,10 @@ const CardDetailSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail,getUpdate
     console.log("카드 디테일 세팅 화면 온");
     if (cardTypeId) {
       console.log("cardTypeId", cardTypeId);
+      console.log("cardTypeDetail", cardTypeDetail)
       setCardType(cardTypeDetail[0].card_style);
-      set_card_direction(cardTypeDetail[0].card_style.card_direction);
-      set_left_face_ratio(cardTypeDetail[0].card_style.left_face_ratio);
+      set_card_direction(cardTypeDetail[0].cardtype_info.flip_option.card_direction);
+      set_left_face_ratio(cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio);
       set_background_color(cardTypeDetail[0].card_style.details[0].background_color);
 
       set_outer_margin_top(cardTypeDetail[0].card_style.details[0].outer_margin.top);

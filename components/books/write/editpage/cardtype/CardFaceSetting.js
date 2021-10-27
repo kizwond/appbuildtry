@@ -13,7 +13,8 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const [faceSelected, setFaceSelected] = useState("default");
 
   const [background_color, set_background_color] = useState();
-
+  const [card_direction, set_card_direction] = useState();
+  const [left_face_ratio, set_left_face_ratio] = useState();
   const [outer_margin_top, set_outer_margin_top] = useState();
   const [outer_margin_bottom, set_outer_margin_bottom] = useState();
   const [outer_margin_left, set_outer_margin_left] = useState();
@@ -43,7 +44,10 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     console.log("카드 디테일 세팅 화면 온");
     if (cardTypeId) {
       console.log("cardTypeId", cardTypeId);
+      console.log("cardTypeDetail", cardTypeDetail[0]);
       setCardType(cardTypeDetail[0].cardtype_info.cardtype);
+      set_card_direction(cardTypeDetail[0].cardtype_info.flip_option.card_direction);
+      set_left_face_ratio(cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio);
     }
   }, [cardTypeId, cardTypeDetail]);
 
@@ -51,56 +55,56 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
 
   function afterupdatemutation(data) {
     console.log("data", data);
-    getUpdatedCardTypeList(data.cardtypeset_updatefacestyle.cardtypesets[0].cardtypes)
+    getUpdatedCardTypeList(data.cardtypeset_updatefacestyle.cardtypesets[0].cardtypes);
   }
 
   async function updatefacestyle() {
-    console.log(faceSelected)
-    console.log(cardTypeSetId)
-    console.log(cardTypeId)
+    console.log(faceSelected);
+    console.log(cardTypeSetId);
+    console.log(cardTypeId);
     try {
       await cardtypeset_updatefacestyle({
         variables: {
           forUpdateFaceStyle: {
-            cardtypeset_id : cardTypeSetId,
-            cardtype_id : cardTypeId,
-            target_face : Number(faceSelected),
+            cardtypeset_id: cardTypeSetId,
+            cardtype_id: cardTypeId,
+            target_face: Number(faceSelected),
             face_style: {
-                background_color: background_color,
-                outer_margin: {
-                  top: outer_margin_top,
-                  bottom: outer_margin_bottom,
-                  left: outer_margin_left,
-                  right: outer_margin_right,
+              background_color: background_color,
+              outer_margin: {
+                top: outer_margin_top,
+                bottom: outer_margin_bottom,
+                left: outer_margin_left,
+                right: outer_margin_right,
+              },
+              inner_padding: {
+                top: inner_padding_top,
+                bottom: inner_padding_bottom,
+                left: inner_padding_left,
+                right: inner_padding_right,
+              },
+              border: {
+                top: {
+                  bordertype: border_top_type,
+                  thickness: border_top_thickness,
+                  color: border_top_color,
                 },
-                inner_padding: {
-                  top: inner_padding_top,
-                  bottom: inner_padding_bottom,
-                  left: inner_padding_left,
-                  right: inner_padding_right,
+                bottom: {
+                  bordertype: border_bottom_type,
+                  thickness: border_bottom_thickness,
+                  color: border_bottom_color,
                 },
-                border: {
-                  top: {
-                    bordertype: border_top_type,
-                    thickness: border_top_thickness,
-                    color: border_top_color,
-                  },
-                  bottom: {
-                    bordertype: border_bottom_type,
-                    thickness: border_bottom_thickness,
-                    color: border_bottom_color,
-                  },
-                  left: {
-                    bordertype: border_left_type,
-                    thickness: border_left_thickness,
-                    color: border_left_color,
-                  },
-                  right: {
-                    bordertype: border_right_type,
-                    thickness: border_right_thickness,
-                    color: border_right_color,
-                  },
+                left: {
+                  bordertype: border_left_type,
+                  thickness: border_left_thickness,
+                  color: border_left_color,
                 },
+                right: {
+                  bordertype: border_right_type,
+                  thickness: border_right_thickness,
+                  color: border_right_color,
+                },
+              },
             },
           },
         },
@@ -110,6 +114,8 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     }
   }
 
+  const directionHandler = (e) => set_card_direction(e);
+  const leftFaceRatioHandler = (e) => set_left_face_ratio(e);
   const backgroundColorHandler = (e) => set_background_color(e.target.value);
 
   const outerMarginTopHandler = (e) => set_outer_margin_top(e);
@@ -142,7 +148,10 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const selectFaceHandler = (e) => {
     console.log(e);
     setFaceSelected(e);
-    set_background_color(cardTypeDetail[0].face_style[e].background_color);
+    // set_card_direction(cardTypeDetail[0].cardtype_info.flip_option.card_direction);
+    // set_left_face_ratio(cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio);
+
+    set_background_color(cardTypeDetail[0].face_style[e].background.color);
 
     set_outer_margin_top(cardTypeDetail[0].face_style[e].outer_margin.top);
     set_outer_margin_bottom(cardTypeDetail[0].face_style[e].outer_margin.bottom);
@@ -168,12 +177,27 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     set_border_bottom_color(cardTypeDetail[0].face_style[e].border.bottom.color);
     set_border_left_color(cardTypeDetail[0].face_style[e].border.left.color);
     set_border_right_color(cardTypeDetail[0].face_style[e].border.right.color);
-    
   };
   return (
     <div>
       <div>면설정</div>
       <ul>
+        {cardType === "flip" && (
+          <React.Fragment>
+            <li>
+              <div>레이아웃</div>
+              <div>방향</div>
+              <Select value={card_direction} style={{ width: 120 }} onChange={directionHandler}>
+                <Option value="left-right">좌우</Option>
+                <Option value="top-bottom">위아래</Option>
+              </Select>
+              <div>1면 비율</div>
+              {card_direction === "left-right" && <InputNumber value={left_face_ratio} onChange={leftFaceRatioHandler} />}
+              {card_direction === "top-bottom" && <InputNumber value={left_face_ratio} onChange={leftFaceRatioHandler} disabled />}
+            </li>
+          </React.Fragment>
+        )}
+
         <li>
           <div>면선택</div>
           <Select value={faceSelected} style={{ width: 120 }} onChange={selectFaceHandler}>
@@ -181,15 +205,16 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             {cardType === "read" && (
               <React.Fragment>
                 <Select.Option value="0">1면</Select.Option>
-                <Select.Option value="2">주석</Select.Option>
+                <Select.Option value="1">주석</Select.Option>
               </React.Fragment>
             )}
 
             {cardType === "flip" && (
               <React.Fragment>
-                <Select.Option value="0">1면</Select.Option>
-                <Select.Option value="1">2면</Select.Option>
-                <Select.Option value="2">주석</Select.Option>
+                <Select.Option value="0">양면 [ㅁ ㅁ]</Select.Option>
+                <Select.Option value="1">1면 [ㅁ X]</Select.Option>
+                <Select.Option value="2">2면 [X ㅁ]</Select.Option>
+                <Select.Option value="3">주석</Select.Option>
               </React.Fragment>
             )}
           </Select>

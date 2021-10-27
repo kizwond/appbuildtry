@@ -1,8 +1,8 @@
-import { Button } from 'antd';
-import React, { useCallback, useState } from 'react';
-import CategorySettingModal from './CategorySettingModal';
+import { Button } from "antd";
+import React, { useCallback, useState } from "react";
+import CategorySettingModal from "./CategorySettingModal";
 
-const CategorySettingButton = ({ category, handleToGetMyCategory, handleToGetMyBook }) => {
+const CategorySettingButton = ({ category, handleToGetMyCategory, handleToGetMyBook, changeNewCateId }) => {
   const [visible, setVisible] = useState(false);
 
   const changeVisible = useCallback((_boolean) => {
@@ -11,18 +11,12 @@ const CategorySettingButton = ({ category, handleToGetMyCategory, handleToGetMyB
 
   return (
     <>
-      {console.log('CategorySettingButton 랜더링')}
+      {console.log("CategorySettingButton 랜더링")}
       <Button size="small" type="primary" onClick={() => changeVisible(true)}>
         카테고리 관리
       </Button>
 
-      <CategorySettingModal
-        visible={visible}
-        changeVisible={changeVisible}
-        category={category}
-        handleToGetMyCategory={handleToGetMyCategory}
-        handleToGetMyBook={handleToGetMyBook}
-      />
+      <CategorySettingModal visible={visible} changeVisible={changeVisible} category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} changeNewCateId={changeNewCateId} />
     </>
   );
 };

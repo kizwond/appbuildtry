@@ -15,7 +15,7 @@ import MoveToBookSetting from "./MoveToBookSetting";
 import makeDataSource from "../../common/logic";
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 
-const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
+const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -34,6 +34,11 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
       setIsShowedHiddenBook([...isShowedHiddenBook, id]);
     }
   }, []);
+
+  useEffect(() => {
+    setExpandedRowKeys([...expandedRowKeys, `KEY:${newCateId}INDEX:0`]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newCateId]);
 
   useEffect(() => {
     setExpandedRowKeys(category.map((_cate) => `KEY:${_cate._id}INDEX:0`));

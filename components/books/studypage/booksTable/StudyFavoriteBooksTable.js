@@ -188,7 +188,7 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
           </div>
 
           <Drawer
-            // destroyOnClose={true}
+            destroyOnClose={true}
             placement="right"
             width={"210px"}
             closable={false}

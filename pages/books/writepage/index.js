@@ -1,18 +1,18 @@
-import Head from "next/head";
-import { useCallback, useState } from "react";
-import { useQuery } from "@apollo/client";
-import { GET_CATEGORY_AND_BOOKS_INFO } from "../../../graphql/query/writePage";
-import { useRouter } from "next/router";
+import Head from 'next/head';
+import { useCallback, useRef, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { GET_CATEGORY_AND_BOOKS_INFO } from '../../../graphql/query/writePage';
+import { useRouter } from 'next/router';
 
-import styled from "styled-components";
+import styled from 'styled-components';
 
-import { Space, Col } from "../../../node_modules/antd/lib/index";
-import Layout from "../../../components/layout/Layout";
-import CreateBookButton from "../../../components/books/writepage/createBook/CreateBookButton";
-import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
-import BooksTable from "../../../components/books/writepage/booksTable/BooksTable";
-import FavoriteBooksTable from "../../../components/books/writepage/booksTable/FavoriteBooksTable";
-import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
+import { Space, Col } from '../../../node_modules/antd/lib/index';
+import Layout from '../../../components/layout/Layout';
+import CreateBookButton from '../../../components/books/writepage/createBook/CreateBookButton';
+import CategorySettingButton from '../../../components/books/writepage/categorySetting/CategorySettingButton';
+import BooksTable from '../../../components/books/writepage/booksTable/BooksTable';
+import FavoriteBooksTable from '../../../components/books/writepage/booksTable/FavoriteBooksTable';
+import { StyledRowMaxWidth } from '../../../components/common/styledComponent/page';
 
 const Writeanother = () => {
   const router = useRouter();
@@ -20,7 +20,7 @@ const Writeanother = () => {
   const [isReceivedData, setIsReceivedData] = useState(false);
   const [category, setCategory] = useState([]);
   const [myBook, setMyBook] = useState([]);
-  const [newCateId, setNewCateId] = useState("");
+  const newCateRef = useRef();
 
   const [activedTable, setActivedTable] = useState();
 
@@ -28,15 +28,15 @@ const Writeanother = () => {
 
   const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
     onCompleted: (received_data) => {
-      console.log("received_data", received_data);
-      if (received_data.mybookcate_get.status === "200") {
+      console.log('received_data', received_data);
+      if (received_data.mybookcate_get.status === '200') {
         setMyBook(received_data.mybook_getAllMybook.mybooks);
         setCategory(received_data.mybookcate_get.mybookcates);
         setIsReceivedData(true);
-      } else if (received_data.mybookcate_get.status === "401") {
-        router.push("/account/login");
+      } else if (received_data.mybookcate_get.status === '401') {
+        router.push('/account/login');
       } else {
-        console.log("어떤 문제가 발생함");
+        console.log('어떤 문제가 발생함');
       }
     },
   });
@@ -80,7 +80,12 @@ const Writeanother = () => {
           <StyledRowMaxWidth topcompo="true">
             <StyledSpace>
               <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
-              <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} changeNewCateId={changeNewCateId} />
+              <CategorySettingButton
+                ref={(ref) => (newCateRef.current = ref)}
+                category={category}
+                handleToGetMyCategory={handleToGetMyCategory}
+                handleToGetMyBook={handleToGetMyBook}
+              />
             </StyledSpace>
           </StyledRowMaxWidth>
         )}
@@ -98,6 +103,7 @@ const Writeanother = () => {
             />
           </Col>
           <Col span={24}>
+            {console.log(newCateRef)}
             <BooksTable
               category={category}
               myBook={myBook}
@@ -106,7 +112,7 @@ const Writeanother = () => {
               chagePopup={chagePopup}
               activedTable={activedTable}
               changeActivedTable={changeActivedTable}
-              newCateId={newCateId}
+              newCateId={newCateRef.current}
             />
           </Col>
         </StyledRowMaxWidth>

@@ -208,6 +208,18 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
                 <Select.Option value="1">주석</Select.Option>
               </React.Fragment>
             )}
+            {cardType === "subject" && (
+              <React.Fragment>
+                <Select.Option value="0">1면</Select.Option>
+                <Select.Option value="1">주석</Select.Option>
+              </React.Fragment>
+            )}
+            {cardType === "general" && (
+              <React.Fragment>
+                <Select.Option value="0">1면</Select.Option>
+                <Select.Option value="1">주석</Select.Option>
+              </React.Fragment>
+            )}
 
             {cardType === "flip" && (
               <React.Fragment>

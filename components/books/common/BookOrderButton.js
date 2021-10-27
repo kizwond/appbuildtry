@@ -65,6 +65,8 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
               cursor: "pointer",
             }}
             onClick={() => {
+              console.log("위로", { _record });
+
               positionBooks("up", _record._id);
             }}
           >
@@ -101,6 +103,7 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
               cursor: "pointer",
             }}
             onClick={() => {
+              console.log("아래로", { _record });
               positionBooks("down", _record._id);
             }}
           >

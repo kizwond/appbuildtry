@@ -20,8 +20,6 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
 
-  const router = useRouter();
-
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
@@ -43,12 +41,6 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
 
   if (!mounted) {
     return null;
-  }
-
-  function movepage(bookid) {
-    localStorage.removeItem("book_id");
-    localStorage.setItem("book_id", bookid);
-    router.push(`/books/write/${bookid}`);
   }
 
   const dataSource = makeDataSource(myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook);
@@ -242,7 +234,7 @@ const StudyBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething
               </div>
 
               <Drawer
-                destroyOnClose={true}
+                // destroyOnClose={true}
                 placement="right"
                 width={"210px"}
                 closable={false}

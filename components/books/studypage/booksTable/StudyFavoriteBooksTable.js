@@ -17,8 +17,6 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
 
-  const router = useRouter();
-
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
@@ -30,12 +28,6 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
 
   if (!mounted) {
     return null;
-  }
-
-  function movepage(bookid) {
-    localStorage.removeItem("book_id");
-    localStorage.setItem("book_id", bookid);
-    router.push(`/books/write/${bookid}`);
   }
 
   console.log("마운트 아래 코드");
@@ -196,7 +188,7 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
           </div>
 
           <Drawer
-            destroyOnClose={true}
+            // destroyOnClose={true}
             placement="right"
             width={"210px"}
             closable={false}
@@ -255,11 +247,9 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       title={
         <div>
           <span style={{ marginRight: "30px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
-          {dataSource.length > 0 && (
-            <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
-              {visible ? "접기" : "펼치기"}
-            </Button>
-          )}
+          <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
+            {visible ? "접기" : "펼치기"}
+          </Button>
         </div>
       }
     >

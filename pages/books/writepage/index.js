@@ -75,7 +75,6 @@ const Writeanother = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Layout>
-        <button onClick={() => console.log({ newCateId })}>새 생성 카테 아이디</button>
         {category.length >= 1 && (
           <StyledRowMaxWidth topcompo="true">
             <StyledSpace>

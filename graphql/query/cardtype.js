@@ -794,73 +794,27 @@ export const GetCardTypeSet = gql`
           _id
           cardtype_info {
             name
-            cardtype
-            hasSelection
+            cardtype            
             num_of_row {
-              maker_flag
               face1
-              selection
               face2
               annotation
-            }
-            excel_column {
-              maker_flag
-              face1
-              selection
-              face2
-              annotation
-            }
+            }            
             nick_of_row {
-              maker_flag
               face1
-              selection
               face2
               annotation
             }
-          }
-          card_style {
-            card_direction
-            left_face_ratio
-            details {
-              background_color
-              outer_margin {
-                top
-                bottom
-                left
-                right
-              }
-              inner_padding {
-                top
-                bottom
-                left
-                right
-              }
-              border {
-                top {
-                  bordertype
-                  thickness
-                  color
-                }
-                bottom {
-                  bordertype
-                  thickness
-                  color
-                }
-                left {
-                  bordertype
-                  thickness
-                  color
-                }
-                right {
-                  bordertype
-                  thickness
-                  color
-                }
-              }
+            flip_option{
+              card_direction
+              left_face_ratio
             }
           }
           face_style {
-            background_color
+            background{
+              color
+              opacity
+            }
             outer_margin {
               top
               bottom
@@ -897,82 +851,11 @@ export const GetCardTypeSet = gql`
             }
           }
           row_style {
-            maker_flag {
-              background_color
-              outer_margin {
-                top
-                bottom
-                left
-                right
-              }
-              inner_padding {
-                top
-                bottom
-                left
-                right
-              }
-              border {
-                top {
-                  bordertype
-                  thickness
-                  color
-                }
-                bottom {
-                  bordertype
-                  thickness
-                  color
-                }
-                left {
-                  bordertype
-                  thickness
-                  color
-                }
-                right {
-                  bordertype
-                  thickness
-                  color
-                }
-              }
-            }
             face1 {
-              background_color
-              outer_margin {
-                top
-                bottom
-                left
-                right
+              background{
+                color
+                opacity
               }
-              inner_padding {
-                top
-                bottom
-                left
-                right
-              }
-              border {
-                top {
-                  bordertype
-                  thickness
-                  color
-                }
-                bottom {
-                  bordertype
-                  thickness
-                  color
-                }
-                left {
-                  bordertype
-                  thickness
-                  color
-                }
-                right {
-                  bordertype
-                  thickness
-                  color
-                }
-              }
-            }
-            selection {
-              background_color
               outer_margin {
                 top
                 bottom
@@ -1009,7 +892,10 @@ export const GetCardTypeSet = gql`
               }
             }
             face2 {
-              background_color
+              background{
+                color
+                opacity
+              }
               outer_margin {
                 top
                 bottom
@@ -1046,7 +932,10 @@ export const GetCardTypeSet = gql`
               }
             }
             annotation {
-              background_color
+              background{
+                color
+                opacity
+              }
               outer_margin {
                 top
                 bottom
@@ -1084,25 +973,7 @@ export const GetCardTypeSet = gql`
             }
           }
           row_font {
-            maker_flag {
-              font
-              size
-              color
-              align
-              bold
-              italic
-              underline
-            }
             face1 {
-              font
-              size
-              color
-              align
-              bold
-              italic
-              underline
-            }
-            selection {
               font
               size
               color

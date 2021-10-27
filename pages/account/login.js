@@ -48,7 +48,7 @@ const LoginComponent = () => {
         localStorage.setItem("refreshToken", data.login.token.refreshToken);
       }
 
-      window.location.href = "/";
+      // window.location.href = "/";
     } else {
       error();
     }

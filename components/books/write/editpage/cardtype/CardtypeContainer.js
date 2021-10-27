@@ -6,7 +6,7 @@ import CardRowSetting from "./CardRowSetting";
 import CardFontSetting from "./CardFontSetting";
 
 const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedCardTypeList }) => {
-  const [selectedMenu, setSelectedMenu] = useState("card_setting");
+  const [selectedMenu, setSelectedMenu] = useState("face_setting");
   const [cardType, setCardType] = useState();
 
   const content = (menu_item) => {
@@ -44,7 +44,7 @@ const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdat
   return (
     <>
       <div>
-        <button onClick={() => onClickMenu("card_setting")}>카드설정</button>
+        {/* <button onClick={() => onClickMenu("card_setting")}>카드설정</button> */}
         <button onClick={() => onClickMenu("face_setting")}>면설정</button>
         <button onClick={() => onClickMenu("row_setting")}>행설정</button>
         <button onClick={() => onClickMenu("font_setting")}>폰트설정</button>

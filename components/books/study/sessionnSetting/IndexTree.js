@@ -3,7 +3,7 @@ import { Table } from "antd";
 import { Progress } from "../../../../node_modules/antd/lib/index";
 import styled from "styled-components";
 
-const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, selectedbookId, selectedCardsInfo, changeSelectedCardsInfo }) => {
+const IndexTree = ({ bookIndexInfo, summaryAll, onCheckIndexesCheckedKeys, checkedKeys, selectedbookId, selectedCardsInfo, changeSelectedCardsInfo }) => {
   const [treeData, setTreeData] = useState([]);
   console.log("필터인덱스트리");
 
@@ -26,7 +26,7 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
       progress_for_total_card: item.num_cards.total.progress,
       total_cards_number_for_total_card: item.num_cards.total.total,
       yet_cards_number_for_total_card: item.num_cards.total.yet,
-      total_on_study_cards_number_for_total_card: item.num_cards.total.ing,
+      total_on_study_cards_number_for_total_card: item.num_cards.total.ing.total,
       until_today_on_study_cards_number_for_total_card: item.num_cards.total.ing.untilToday,
       until_now_on_study_cards_number_for_total_card: item.num_cards.total.ing.untilNow,
       from_tomorrow_on_study_cards_number_for_total_card: item.num_cards.total.ing.afterTomorrow,
@@ -87,15 +87,15 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
       const level3 = await generatorForChildrens(data_for_tree_level_three, level4);
       const level2 = await generatorForChildrens(data_for_tree_level_two, level3);
       const level1 = await generatorForChildrens(data_for_tree_level_one, level2);
-      const summaryIndexes = { ...cccc, title: "선택된 목차", key: "selectedIndexCardsInfo", progress_for_total_card: cccc.progress_for_total_card / cccc.length };
+      const summaryIndexes = { ...cccc, title: "선택된 카드", key: "selectedIndexCardsInfo", progress_for_total_card: cccc.progress_for_total_card / cccc.length };
       changeSelectedCardsInfo({ ...selectedCardsInfo, [selectedbookId]: summaryIndexes });
-      setTreeData([summaryIndexes, ...level1]);
+      setTreeData([{ ...summaryAll, key: "allSummary", title: "모든 책 선택된 카드" }, summaryIndexes, ...level1]);
     };
 
     const wrappUp = getIndexes();
-    console.log("필터인덱스트리 유즈이팩트");
 
     return wrappUp;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookIndexInfo, checkedKeys]);
 
   const rowSelection = {
@@ -104,13 +104,10 @@ const IndexTree = ({ bookIndexInfo, onCheckIndexesCheckedKeys, checkedKeys, sele
       onCheckIndexesCheckedKeys(selectedRowKeys, selectedbookId);
       console.log("selectedRows: ", selectedRows);
     },
-    onSelect: (record, selected, selectedRows) => {
-      console.log(record, selected, selectedRows);
-    },
-    // eslint-disable-next-line react/display-name
+
     getCheckboxProps: (record) => {
       return {
-        style: { display: record.key === "selectedIndexCardsInfo" ? "none" : null },
+        style: { display: record.key === "selectedIndexCardsInfo" ? "none" : record.key === "allSummary" ? "none" : null },
       };
     },
     onSelectAll: (selected, selectedRows, changeRows) => {
@@ -164,9 +161,9 @@ const columns = [
     key: "progress_for_total_card",
     width: 120,
     // eslint-disable-next-line react/display-name
-    render: () => (
+    render: (text) => (
       <>
-        <Progress percent={50} strokeWidth={15} strokeLinecap="square" trailColor="darkgray" />
+        <Progress percent={text} strokeWidth={15} strokeLinecap="square" trailColor="darkgray" />
       </>
     ),
   },

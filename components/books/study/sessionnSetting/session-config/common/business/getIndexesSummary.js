@@ -1,0 +1,48 @@
+export default function summaryAll(cardsList, checkedKeys) {
+  function sumOfObjects(Obj1, Obj2) {
+    var finalObj = {};
+    Object.keys(Obj1).forEach((value) => {
+      if (Obj2.hasOwnProperty(value)) {
+        finalObj[value] = Obj1[value] + Obj2[value];
+      }
+    });
+
+    return finalObj;
+  }
+
+  const summary = cardsList
+    .map((card) =>
+      card.session_getNumCardsbyIndex.indexsets[0].indexes //
+        .filter((index) =>
+          card.session_getNumCardsbyIndex.indexsets[0].indexset_info.checkedIndex
+            ? card.session_getNumCardsbyIndex.indexsets[0].indexset_info.checkedIndex.includes(index._id)
+            : checkedKeys[card.session_getNumCardsbyIndex.indexsets[0].indexset_info.mybook_id].includes(index._id)
+        )
+    )
+    .flat()
+    .map((item) => ({
+      progress_for_total_card: item.num_cards.total.progress,
+      total_cards_number_for_total_card: item.num_cards.total.total,
+      yet_cards_number_for_total_card: item.num_cards.total.yet,
+      total_on_study_cards_number_for_total_card: item.num_cards.total.ing.total,
+      until_today_on_study_cards_number_for_total_card: item.num_cards.total.ing.untilToday,
+      until_now_on_study_cards_number_for_total_card: item.num_cards.total.ing.untilNow,
+      from_tomorrow_on_study_cards_number_for_total_card: item.num_cards.total.ing.afterTomorrow,
+      completed_cards_number_for_total_card: item.num_cards.total.completed,
+      holding_cards_number_for_total_card: item.num_cards.total.hold,
+    }))
+    .reduce(sumOfObjects, {
+      progress_for_total_card: 0,
+      total_cards_number_for_total_card: 0,
+      yet_cards_number_for_total_card: 0,
+      total_on_study_cards_number_for_total_card: 0,
+      until_today_on_study_cards_number_for_total_card: 0,
+      until_now_on_study_cards_number_for_total_card: 0,
+      from_tomorrow_on_study_cards_number_for_total_card: 0,
+      completed_cards_number_for_total_card: 0,
+      holding_cards_number_for_total_card: 0,
+    });
+
+  console.log({ summary });
+  return { ...summary, progress_for_total_card: summary.progress_for_total_card / summary.length };
+}

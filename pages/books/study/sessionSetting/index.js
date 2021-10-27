@@ -9,6 +9,9 @@ import { useRouter } from "next/router";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
 import { StyledRowMaxWidth } from "../../../../components/common/styledComponent/page";
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
+import summaryAll from "../../../../components/books/study/sessionnSetting/session-config/common/business/getIndexesSummary";
+
+const log = console.log;
 
 const SessionSetting = () => {
   const router = useRouter();
@@ -172,7 +175,21 @@ const SessionSetting = () => {
     setAdvancedFilteredCheckedIndexes(value);
   };
 
-  if (!error && !loading) {
+  if (!error && !loading && cardsList.length > 0) {
+    const summary =
+      counter === bookList.length - 1
+        ? summaryAll(cardsList, checkedKeys)
+        : {
+            progress_for_total_card: 0,
+            total_cards_number_for_total_card: 0,
+            yet_cards_number_for_total_card: 0,
+            total_on_study_cards_number_for_total_card: 0,
+            until_today_on_study_cards_number_for_total_card: 0,
+            until_now_on_study_cards_number_for_total_card: 0,
+            from_tomorrow_on_study_cards_number_for_total_card: 0,
+            completed_cards_number_for_total_card: 0,
+            holding_cards_number_for_total_card: 0,
+          };
     return (
       <Layout>
         <button onClick={() => console.log({ selectedCardsInfo })}>확인용</button>
@@ -218,15 +235,15 @@ const SessionSetting = () => {
                 <Typography.Title level={4}>목차 설정</Typography.Title>
               </Col>
             </Row>
-            <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
+            <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }} defaultActiveKey={bookList[0].book_id}>
               {!isAdvancedFilteredCardListShowed &&
-                cardsList[0] &&
                 bookList.map((book, index) => (
                   <Tabs.TabPane tab={book.book_title} key={book.book_id}>
                     <StyledDivTabContentWrapper>
                       <IndexTree
                         bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
                         checkedKeys={checkedKeys[book.book_id]}
+                        summaryAll={summary}
                         selectedbookId={book.book_id}
                         onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
                         selectedCardsInfo={selectedCardsInfo}

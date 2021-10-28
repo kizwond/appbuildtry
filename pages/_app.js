@@ -31,7 +31,6 @@ const App = ({ Component, pageProps }) => {
     uri: process.env.NEXT_PUBLIC_ACCESS_URI,
     credentials: "include",
     withCredentials : true,
-    samesite: false,
     headers: { from:from,
       Authorization: accessToken 
   },

@@ -66,7 +66,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             target_face: faceSelected,
             target_row: Number(rowSelected),
             row_style: {
-              background_color: background_color,
+              background: { color: background_color, opacity: 100 },
               outer_margin: {
                 top: outer_margin_top,
                 bottom: outer_margin_bottom,
@@ -226,7 +226,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     console.log(e);
     setRowSelected(e);
 
-    set_background_color(cardTypeDetail[0].row_style[faceSelected][e].background_color);
+    set_background_color(cardTypeDetail[0].row_style[faceSelected][e].background.color);
 
     set_outer_margin_top(cardTypeDetail[0].row_style[faceSelected][e].outer_margin.top);
     set_outer_margin_bottom(cardTypeDetail[0].row_style[faceSelected][e].outer_margin.bottom);
@@ -268,7 +268,18 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
                 <Select.Option value="annotation">주석</Select.Option>
               </React.Fragment>
             )}
-
+            {cardType === "subject" && (
+              <React.Fragment>
+                <Select.Option value="0">1면</Select.Option>
+                <Select.Option value="1">주석</Select.Option>
+              </React.Fragment>
+            )}
+            {cardType === "general" && (
+              <React.Fragment>
+                <Select.Option value="0">1면</Select.Option>
+                <Select.Option value="1">주석</Select.Option>
+              </React.Fragment>
+            )}
             {cardType === "flip" && (
               <React.Fragment>
                 <Select.Option value="face1">1면</Select.Option>

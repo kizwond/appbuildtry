@@ -1,14 +1,19 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { GetCardType } from "../../../../../graphql/query/cardtype";
 import { useQuery, useMutation } from "@apollo/client";
-import { Form, Input, Button, Radio, Select, Cascader, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
+import { Form, Input, Button, Radio, Select, Popover, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
 import { UpdateCardType, GetCardTypeSet, UpdateCardFace } from "../../../../../graphql/query/cardtype";
+import { CompactPicker  } from "react-color";
+
 const { Option } = Select;
 
 const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedCardTypeList }) => {
   const [cardType, setCardType] = useState([]);
   const [current_cardTypeId, set_current_CardTypeId] = useState();
   const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
+
+  const [backgroundColor, setBackgroundColor] = useState({r: 89, g: 93, b: 183, a: 0.42});
+  const [displayColorPicker, setDisplayColorPicker] = useState(false);
 
   const [faceSelected, setFaceSelected] = useState("default");
 
@@ -69,8 +74,9 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             cardtypeset_id: cardTypeSetId,
             cardtype_id: cardTypeId,
             target_face: Number(faceSelected),
+            flip_option: { card_direction: card_direction, left_face_ratio: Number(left_face_ratio) },
             face_style: {
-              background_color: background_color,
+              background: { color: background_color, opacity: 100 },
               outer_margin: {
                 top: outer_margin_top,
                 bottom: outer_margin_bottom,
@@ -178,6 +184,30 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     set_border_left_color(cardTypeDetail[0].face_style[e].border.left.color);
     set_border_right_color(cardTypeDetail[0].face_style[e].border.right.color);
   };
+
+  const handleClick = () => {
+    setDisplayColorPicker(!displayColorPicker);
+  };
+
+  const handleClose = () => {
+    setDisplayColorPicker(false);
+  };
+  const popover = {
+    position: "absolute",
+    zIndex: "2",
+  };
+  const cover = {
+    position: "fixed",
+    top: "0px",
+    right: "0px",
+    bottom: "0px",
+    left: "0px",
+  };
+  const handleChangeComplete = (color) => {
+    console.log(color)
+    console.log(backgroundColor)
+    setBackgroundColor(color.rgb);
+  };
   return (
     <div>
       <div>면설정</div>
@@ -233,7 +263,17 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
         </li>
         <li>
           <div>면배경색</div>
-          <input type="color" name="background_color" value={background_color} onChange={backgroundColorHandler}></input>
+          <Button size="small" onClick={handleClick} style={{background:`rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${backgroundColor.a})`}}>Pick Color</Button>
+          {displayColorPicker ? (
+            <div style={popover}>
+              <div style={cover} onClick={handleClose} />
+              <CompactPicker  color={backgroundColor} onChange={handleChangeComplete}/>
+            </div>
+          ) : null}
+          {/* <Popover content={content} title="Title">
+            <Button type="primary">Hover me</Button>
+          </Popover> */}
+          {/* <input type="color" name="background_color" value={background_color} onChange={backgroundColorHandler}></input> */}
         </li>
         <li>
           <div>면테두리바깥쪽여백</div>

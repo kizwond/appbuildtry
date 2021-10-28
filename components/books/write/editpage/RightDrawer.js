@@ -97,7 +97,7 @@ const RightDrawer = () => {
       <Mobile>
         <SettingOutlined onClick={showDrawer}/>
       </Mobile>
-      <Drawer title="카드설정" placement="right" closable={true} onClose={onClose} visible={visible} mask={false} width={400}>
+      <Drawer title="카드설정" placement="right" closable={true} onClose={onClose} visible={visible} mask={false} width={300}>
         <CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
         <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
         <CardtypeContainer cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />

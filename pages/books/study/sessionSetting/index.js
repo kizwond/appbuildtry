@@ -398,6 +398,7 @@ const StyledDivSecond = styled.div`
   }
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 4px 8px;
+    background-color: #fff;
   }
 
   & table tr td.ant-table-selection-column {

@@ -127,6 +127,7 @@ const IndexTree = ({ bookIndexInfo, summaryAll, onCheckIndexesCheckedKeys, check
           dataSource={treeData}
           rowSelection={{ ...rowSelection, checkStrictly: true }}
           size="small"
+          scroll={{ x: 500 }}
           pagination={false}
           title={() => (
             <StyledDivTitle>
@@ -151,7 +152,7 @@ const columns = [
     key: "title",
     width: 120,
     className: "TableRowTitle",
-    // eslint-disable-next-line react/display-name
+    fixed: "left",
   },
   {
     title: (

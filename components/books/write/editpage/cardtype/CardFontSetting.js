@@ -38,10 +38,10 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   }
 
   async function updaterowstyle() {
-      console.log(font)
-      console.log(size)
-      console.log(color)
-      console.log(align, bold, italic, underline)
+    console.log(font);
+    console.log(size);
+    console.log(color);
+    console.log(align, bold, italic, underline);
     try {
       await cardtypeset_updaterowfont({
         variables: {
@@ -173,7 +173,18 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
                 <Select.Option value="annotation">주석</Select.Option>
               </React.Fragment>
             )}
-
+            {cardType === "subject" && (
+              <React.Fragment>
+                <Select.Option value="0">1면</Select.Option>
+                <Select.Option value="1">주석</Select.Option>
+              </React.Fragment>
+            )}
+            {cardType === "general" && (
+              <React.Fragment>
+                <Select.Option value="0">1면</Select.Option>
+                <Select.Option value="1">주석</Select.Option>
+              </React.Fragment>
+            )}
             {cardType === "flip" && (
               <React.Fragment>
                 <Select.Option value="face1">1면</Select.Option>

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Table } from 'antd';
-import { Progress } from '../../../../node_modules/antd/lib/index';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import { Table } from "antd";
+import { Progress } from "../../../../node_modules/antd/lib/index";
+import styled from "styled-components";
 
 const IndexTree = ({ bookIndexInfo, summaryAll, onCheckIndexesCheckedKeys, checkedKeys, selectedbookId, selectedCardsInfo, changeSelectedCardsInfo }) => {
   const [treeData, setTreeData] = useState([]);
-  console.log('필터인덱스트리');
+  console.log("필터인덱스트리");
   useEffect(() => {
     function sumOfObjects(Obj1, Obj2) {
       var finalObj = {};
@@ -87,12 +87,12 @@ const IndexTree = ({ bookIndexInfo, summaryAll, onCheckIndexesCheckedKeys, check
       const level1 = await generatorForChildrens(data_for_tree_level_one, level2);
       const summaryIndexes = {
         ...cccc,
-        title: '선택된 카드',
-        key: 'selectedIndexCardsInfo',
+        title: "현재 책 기준",
+        key: "selectedIndexCardsInfo",
         progress_for_total_card: cccc.progress_for_total_card / cccc.length,
       };
       changeSelectedCardsInfo({ ...selectedCardsInfo, [selectedbookId]: summaryIndexes });
-      setTreeData([{ ...summaryAll, key: 'allSummary', title: '모든 책 선택된 카드' }, summaryIndexes, ...level1]);
+      setTreeData([{ ...summaryAll, key: "allSummary", title: "전체 책 기준" }, summaryIndexes, ...level1]);
     };
 
     const wrappUp = getIndexes();
@@ -103,14 +103,14 @@ const IndexTree = ({ bookIndexInfo, summaryAll, onCheckIndexesCheckedKeys, check
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log('selectedRowKeys: ', selectedRowKeys);
+      console.log("selectedRowKeys: ", selectedRowKeys);
       onCheckIndexesCheckedKeys(selectedRowKeys, selectedbookId);
-      console.log('selectedRows: ', selectedRows);
+      console.log("selectedRows: ", selectedRows);
     },
 
     getCheckboxProps: (record) => {
       return {
-        style: { display: record.key === 'selectedIndexCardsInfo' ? 'none' : record.key === 'allSummary' ? 'none' : null },
+        style: { display: record.key === "selectedIndexCardsInfo" ? "none" : record.key === "allSummary" ? "none" : null },
       };
     },
     onSelectAll: (selected, selectedRows, changeRows) => {
@@ -146,11 +146,11 @@ export default IndexTree;
 
 const columns = [
   {
-    title: '목차',
-    dataIndex: 'title',
-    key: 'title',
+    title: "목차",
+    dataIndex: "title",
+    key: "title",
     width: 120,
-    className: 'TableRowTitle',
+    className: "TableRowTitle",
     // eslint-disable-next-line react/display-name
   },
   {
@@ -160,8 +160,8 @@ const columns = [
         <div>완료율</div>
       </>
     ),
-    dataIndex: 'progress_for_total_card',
-    key: 'progress_for_total_card',
+    dataIndex: "progress_for_total_card",
+    key: "progress_for_total_card",
     width: 120,
     // eslint-disable-next-line react/display-name
     render: (text) => (
@@ -177,8 +177,8 @@ const columns = [
         <div>카드</div>
       </>
     ),
-    dataIndex: 'total_cards_number_for_total_card',
-    key: 'total_cards_number_for_total_card',
+    dataIndex: "total_cards_number_for_total_card",
+    key: "total_cards_number_for_total_card",
     width: 80,
   },
   {
@@ -188,12 +188,12 @@ const columns = [
         <div>카드</div>
       </>
     ),
-    dataIndex: 'yet_cards_number_for_total_card',
-    key: 'yet_cards_number_for_total_card',
+    dataIndex: "yet_cards_number_for_total_card",
+    key: "yet_cards_number_for_total_card",
     width: 80,
   },
   {
-    title: '학습 중 카드',
+    title: "학습 중 카드",
     children: [
       {
         title: (
@@ -202,8 +202,8 @@ const columns = [
             <div>학습 중 카드</div>
           </>
         ),
-        dataIndex: 'yet_cards_number_for_total_card',
-        key: 'yet_cards_number_for_total_card',
+        dataIndex: "yet_cards_number_for_total_card",
+        key: "yet_cards_number_for_total_card",
         width: 95,
       },
       {
@@ -213,8 +213,8 @@ const columns = [
             <div>복습 필요*</div>
           </>
         ),
-        dataIndex: 'until_today_on_study_cards_number_for_total_card',
-        key: 'until_today_on_study_cards_number_for_total_card',
+        dataIndex: "until_today_on_study_cards_number_for_total_card",
+        key: "until_today_on_study_cards_number_for_total_card",
         width: 95,
         // eslint-disable-next-line react/display-name
         render: (text, record) => <div>{`${text}(${record.until_now_on_study_cards_number_for_total_card})`}</div>,
@@ -226,8 +226,8 @@ const columns = [
             <div>복습 필요</div>
           </>
         ),
-        dataIndex: 'from_tomorrow_on_study_cards_number_for_total_card',
-        key: 'from_tomorrow_on_study_cards_number_for_total_card',
+        dataIndex: "from_tomorrow_on_study_cards_number_for_total_card",
+        key: "from_tomorrow_on_study_cards_number_for_total_card",
         width: 95,
       },
     ],
@@ -240,8 +240,8 @@ const columns = [
         <div>카드</div>
       </>
     ),
-    dataIndex: 'completed_cards_number_for_total_card',
-    key: 'completed_cards_number_for_total_card',
+    dataIndex: "completed_cards_number_for_total_card",
+    key: "completed_cards_number_for_total_card",
     width: 80,
   },
   {
@@ -252,8 +252,8 @@ const columns = [
         <div>카드</div>
       </>
     ),
-    dataIndex: 'holding_cards_number_for_total_card',
-    key: 'holding_cards_number_for_total_card',
+    dataIndex: "holding_cards_number_for_total_card",
+    key: "holding_cards_number_for_total_card",
     width: 80,
   },
 ];

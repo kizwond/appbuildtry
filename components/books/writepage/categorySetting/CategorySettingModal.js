@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import { useMutation, useLazyQuery } from '@apollo/client';
-import { memo, useRef, useState } from 'react';
+import { forwardRef, memo, useRef, useState } from 'react';
 import {
   CHANGE_CATEGORY_NAME_MUTATION,
   CHANGE_CATEGORY_ORDER,
@@ -14,10 +14,11 @@ import { Modal, Button, Input, Table } from 'antd';
 import { EditFilled, CloseCircleFilled, CheckCircleFilled, DeleteOutlined, ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { Space } from '../../../../node_modules/antd/lib/index';
 
-const CategorySettingModal = ({ category, visible, changeVisible, handleToGetMyCategory, handleToGetMyBook }) => {
+const CategorySettingModal = forwardRef(({ category, visible, changeVisible, handleToGetMyCategory, handleToGetMyBook }, ref) => {
   const [editingCell, setEditingCell] = useState('');
   const [cateName, setCateName] = useState('');
   const [expandedRowKeys, setExpandedRowKeys] = useState('');
+  const newIdRef = useRef();
 
   const [getBookAndCategory] = useLazyQuery(GET_CATEGORY_AND_BOOKS_INFO, {
     fetchPolicy: 'network-only',
@@ -39,6 +40,7 @@ const CategorySettingModal = ({ category, visible, changeVisible, handleToGetMyC
       console.log('received_data', received_data);
       if (received_data.mybookcate_create.status === '200') {
         handleToGetMyCategory(received_data.mybookcate_create.mybookcates);
+        ref(received_data.mybookcate_create.mybookcates[received_data.mybookcate_create.mybookcates.findIndex((i) => i._id === newIdRef.current) + 1]._id);
       } else if (received_data.mybookcate_create.status === '401') {
         router.push('/account/login');
       } else {
@@ -46,8 +48,10 @@ const CategorySettingModal = ({ category, visible, changeVisible, handleToGetMyC
       }
     },
   });
+
   async function createCategory({ current_mybookcate_id, name }) {
     try {
+      newIdRef.current = current_mybookcate_id;
       await createNewCategory({
         variables: {
           name: name,
@@ -295,6 +299,7 @@ const CategorySettingModal = ({ category, visible, changeVisible, handleToGetMyC
                   disabled={cateName.length === 0 || dataSource.map((_c) => _c.name).includes(cateName)}
                   onClick={() => {
                     createCategory({ current_mybookcate_id: _record._id, name: cateName });
+
                     setCateName('');
                     setExpandedRowKeys([]);
                   }}
@@ -327,7 +332,7 @@ const CategorySettingModal = ({ category, visible, changeVisible, handleToGetMyC
       </StyledModal>
     </>
   );
-};
+});
 
 export default memo(CategorySettingModal);
 

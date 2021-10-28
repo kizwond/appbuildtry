@@ -1,17 +1,23 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION, GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
-import Layout from "../../../../components/layout/Layout";
-import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
-import { Col, Tabs, Row, Typography, Button, Space } from "antd";
-import styled from "styled-components";
-import { useRouter } from "next/router";
-import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
-import { StyledRowMaxWidth } from "../../../../components/common/styledComponent/page";
-import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import {
+  GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
+  SESSION_CREATE_SESSION,
+  GET_SESSTION_CONFIG,
+} from '../../../../graphql/query/studySessionSetting';
+import Layout from '../../../../components/layout/Layout';
+import IndexTree from '../../../../components/books/study/sessionnSetting/IndexTree';
+import { Col, Tabs, Row, Typography, Button, Space } from 'antd';
+import styled from 'styled-components';
+import { useRouter } from 'next/router';
+import SessionConfig from '../../../../components/books/study/sessionnSetting/SessionConfig';
+import { StyledRowMaxWidth } from '../../../../components/common/styledComponent/page';
+import useSessionConfig from '../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig';
+import summaryAll from '../../../../components/books/study/sessionnSetting/session-config/common/business/getIndexesSummary';
 
 const SessionSetting = () => {
   const router = useRouter();
+
   const [cardsList, setCardsList] = useState([]);
   const [checkedKeys, setCheckedKeys] = useState([]);
   const [counter, setCounter] = useState(0);
@@ -22,7 +28,7 @@ const SessionSetting = () => {
     setSelectedCardsInfo(summary);
   }, []);
 
-  const [visualCompo, setVisualCompo] = useState("index");
+  const [visualCompo, setVisualCompo] = useState('index');
 
   const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState([]);
   const [advancedFilteredCheckedIndexes, setAdvancedFilteredCheckedIndexes] = useState([]);
@@ -52,19 +58,19 @@ const SessionSetting = () => {
       mybook_ids: bookList.map((book) => book.book_id),
     },
     onCompleted: (received_data) => {
-      if (received_data.session_getSessionConfig.status === "200") {
+      if (received_data.session_getSessionConfig.status === '200') {
         console.log({ useQueryData: received_data });
         updateData(received_data);
-      } else if (received_data.session_getSessionConfig.status === "401") {
-        router.push("/account/login");
+      } else if (received_data.session_getSessionConfig.status === '401') {
+        router.push('/account/login');
       } else {
-        console.log("어떤 문제가 발생함");
+        console.log('어떤 문제가 발생함');
       }
     },
   });
 
   useEffect(() => {
-    const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
+    const booklist = JSON.parse(sessionStorage.getItem('books_selected'));
     const book_list = booklist.map((book, index) => ({
       book_id: book.book_id,
       book_title: book.book_title,
@@ -75,7 +81,7 @@ const SessionSetting = () => {
 
   const [session_createSession] = useMutation(SESSION_CREATE_SESSION, {
     onCompleted: (data) => {
-      sessionStorage.setItem("session_Id", data.session_createSession.sessions[0]._id);
+      sessionStorage.setItem('session_Id', data.session_createSession.sessions[0]._id);
       router.push(`/books/study/mode/flip/${data.session_createSession.sessions[0]._id}`);
     },
   });
@@ -108,18 +114,18 @@ const SessionSetting = () => {
       },
     },
     onCompleted: (received_data) => {
-      if (received_data.session_getNumCardsbyIndex.status === "200") {
+      if (received_data.session_getNumCardsbyIndex.status === '200') {
         console.log({ received_data });
         if (counter < bookList.length - 1) {
-          console.log("카운터설정");
+          console.log('카운터설정');
           setCounter((prev) => prev + 1);
         }
 
         setCardsList([...cardsList, received_data]);
-      } else if (received_data.session_getNumCardsbyIndex.status === "401") {
-        router.push("/account/login");
+      } else if (received_data.session_getNumCardsbyIndex.status === '401') {
+        router.push('/account/login');
       } else {
-        console.log("어떤 문제가 발생함");
+        console.log('어떤 문제가 발생함');
       }
     },
   });
@@ -144,7 +150,7 @@ const SessionSetting = () => {
   }, [bookList, loadData, counter]);
 
   if (error) {
-    console.log("에러", error);
+    console.log('에러', error);
     console.log(variables);
     return <div>에러발생</div>;
   }
@@ -172,41 +178,61 @@ const SessionSetting = () => {
     setAdvancedFilteredCheckedIndexes(value);
   };
 
-  if (!error && !loading) {
+  if (!error && !loading && cardsList.length > 0) {
+    const summary =
+      counter === bookList.length - 1
+        ? summaryAll(cardsList, checkedKeys)
+        : {
+            progress_for_total_card: 0,
+            total_cards_number_for_total_card: 0,
+            yet_cards_number_for_total_card: 0,
+            total_on_study_cards_number_for_total_card: 0,
+            until_today_on_study_cards_number_for_total_card: 0,
+            until_now_on_study_cards_number_for_total_card: 0,
+            from_tomorrow_on_study_cards_number_for_total_card: 0,
+            completed_cards_number_for_total_card: 0,
+            holding_cards_number_for_total_card: 0,
+          };
     return (
       <Layout>
         <button onClick={() => console.log({ selectedCardsInfo })}>확인용</button>
         <StyledDiv>
-          <Row style={{ padding: "8px" }}>
+          <Row style={{ padding: '8px' }}>
             <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
               <Row>
-                <Col span={14} style={{ display: "flex" }}>
-                  <StyledPointer activated={visualCompo} style={{ cursor: "pointer" }} onClick={() => setVisualCompo("index")}>
+                <Col span={14} style={{ display: 'flex' }}>
+                  <StyledPointer activated={visualCompo} style={{ cursor: 'pointer' }} onClick={() => setVisualCompo('index')}>
                     목차 설정
                   </StyledPointer>
-                  <StyledPointer activated={visualCompo} style={{ cursor: "pointer" }} onClick={() => setVisualCompo("config")}>
+                  <StyledPointer activated={visualCompo} style={{ cursor: 'pointer' }} onClick={() => setVisualCompo('config')}>
                     세션 설정
                   </StyledPointer>
                 </Col>
                 <Col span={3}></Col>
-                <Col span={7} style={{ display: "flex" }}>
+                <Col span={7} style={{ display: 'flex' }}>
                   <Button
                     block
-                    disabled={"on" === "off"}
+                    disabled={'on' === 'off'}
                     size="small"
-                    onClick={() => (visualCompo === "index" ? setVisualCompo("config") : setVisualCompo("index"))}
-                    style={{ height: "2rem", fontSize: "0.95rem !important", fontWeight: "600", marginLeft: "5px" }}
+                    onClick={() => (visualCompo === 'index' ? setVisualCompo('config') : setVisualCompo('index'))}
+                    style={{ height: '2rem', fontSize: '0.95rem !important', fontWeight: '600', marginLeft: '5px' }}
                   >
-                    <span style={{ fontSize: "0.95rem " }}>{visualCompo === "index" ? "다음" : "이전"}</span>
+                    <span style={{ fontSize: '0.95rem ' }}>{visualCompo === 'index' ? '다음' : '이전'}</span>
                   </Button>
                   <Button
                     block
-                    disabled={visualCompo === "index"}
+                    disabled={visualCompo === 'index'}
                     size="small"
                     onClick={() => {}}
-                    style={{ height: "2rem", fontWeight: "600", marginLeft: "5px", backgroundColor: visualCompo === "config" ? "green" : null, color: visualCompo === "config" ? "white" : null }}
+                    style={{
+                      height: '2rem',
+                      fontWeight: '600',
+                      marginLeft: '5px',
+                      backgroundColor: visualCompo === 'config' ? 'green' : null,
+                      color: visualCompo === 'config' ? 'white' : null,
+                    }}
                   >
-                    <span style={{ fontSize: "0.95rem " }}>시작</span>
+                    <span style={{ fontSize: '0.95rem ' }}>시작</span>
                   </Button>
                 </Col>
               </Row>
@@ -218,15 +244,15 @@ const SessionSetting = () => {
                 <Typography.Title level={4}>목차 설정</Typography.Title>
               </Col>
             </Row>
-            <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }}>
+            <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }} defaultActiveKey={bookList[0].book_id}>
               {!isAdvancedFilteredCardListShowed &&
-                cardsList[0] &&
                 bookList.map((book, index) => (
                   <Tabs.TabPane tab={book.book_title} key={book.book_id}>
                     <StyledDivTabContentWrapper>
                       <IndexTree
                         bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
                         checkedKeys={checkedKeys[book.book_id]}
+                        summaryAll={summary}
                         selectedbookId={book.book_id}
                         onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
                         selectedCardsInfo={selectedCardsInfo}
@@ -262,14 +288,14 @@ const SessionSetting = () => {
                   block
                   size="small"
                   style={{
-                    height: "2rem",
-                    fontWeight: "600",
-                    marginLeft: "5px",
-                    backgroundColor: "green",
-                    color: "white",
+                    height: '2rem',
+                    fontWeight: '600',
+                    marginLeft: '5px',
+                    backgroundColor: 'green',
+                    color: 'white',
                   }}
                 >
-                  <span style={{ fontSize: "0.95rem " }}>시작</span>
+                  <span style={{ fontSize: '0.95rem ' }}>시작</span>
                 </Button>
               </Col>
             </Row>
@@ -350,7 +376,7 @@ const StyledDivFirst = styled.div`
     width: 385px;
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
-    display: ${(props) => (props.visualCompo === "config" ? "block" : "none")};
+    display: ${(props) => (props.visualCompo === 'config' ? 'block' : 'none')};
   }
 `;
 const StyledDivSecond = styled.div`
@@ -361,7 +387,7 @@ const StyledDivSecond = styled.div`
   }
   @media screen and (min-width: 100px) and (max-width: 991px) {
     flex: auto;
-    display: ${(props) => (props.visualCompo === "index" ? "block" : "none")};
+    display: ${(props) => (props.visualCompo === 'index' ? 'block' : 'none')};
   }
 
   & .ant-table.ant-table-small .ant-table-title {
@@ -423,7 +449,7 @@ const StyledPointer = styled.div`
   }
 
   &:before {
-    content: "";
+    content: '';
     position: absolute;
     right: -1rem;
     bottom: 0;
@@ -439,24 +465,24 @@ const StyledPointer = styled.div`
 
   &:nth-of-type(1) {
     z-index: 2;
-    background: ${(props) => (props.activated === "index" ? "#efedfc" : "#322a64")};
-    color: ${(props) => (props.activated === "index" ? "black" : "white")};
+    background: ${(props) => (props.activated === 'index' ? '#efedfc' : '#322a64')};
+    color: ${(props) => (props.activated === 'index' ? 'black' : 'white')};
   }
   &:nth-of-type(1):before {
-    border-left: ${(props) => (props.activated === "index" ? "1rem solid #efedfc" : "1rem solid #322a64")};
+    border-left: ${(props) => (props.activated === 'index' ? '1rem solid #efedfc' : '1rem solid #322a64')};
   }
 
   &:nth-of-type(2) {
     z-index: 1;
-    background: ${(props) => (props.activated === "config" ? "#efedfc" : "#322a64")};
-    color: ${(props) => (props.activated === "config" ? "black" : "white")};
+    background: ${(props) => (props.activated === 'config' ? '#efedfc' : '#322a64')};
+    color: ${(props) => (props.activated === 'config' ? 'black' : 'white')};
     left: 5px;
   }
   &:nth-of-type(2):before {
-    border-left: ${(props) => (props.activated === "config" ? "1rem solid #efedfc" : "1rem solid #322a64")};
+    border-left: ${(props) => (props.activated === 'config' ? '1rem solid #efedfc' : '1rem solid #322a64')};
   }
   &:nth-of-type(2):after {
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
     bottom: 0;

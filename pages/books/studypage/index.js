@@ -96,19 +96,22 @@ const Writeanother = () => {
         )}
 
         <StyledRowMaxWidth>
-          <Col span={24}>
-            <StudyFavoriteBooksTable
-              category={category}
-              myBook={myBook}
-              handleToGetMyBook={handleToGetMyBook}
-              isPopupSomething={isPopupSomething}
-              chagePopup={chagePopup}
-              activedTable={activedTable}
-              changeActivedTable={changeActivedTable}
-              selectedBooks={selectedBooks}
-              changeSelectedBooks={changeSelectedBooks}
-            />
-          </Col>
+          {myBook.filter((_book) => _book.mybook_info.studylike === true).length > 0 && (
+            <Col span={24}>
+              <StudyFavoriteBooksTable
+                category={category}
+                myBook={myBook}
+                handleToGetMyBook={handleToGetMyBook}
+                isPopupSomething={isPopupSomething}
+                chagePopup={chagePopup}
+                activedTable={activedTable}
+                changeActivedTable={changeActivedTable}
+                selectedBooks={selectedBooks}
+                changeSelectedBooks={changeSelectedBooks}
+              />
+            </Col>
+          )}
+
           <Col span={24}>
             <StudyBooksTable
               category={category}

@@ -13,6 +13,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
 
   const [backgroundColor, setBackgroundColor] = useState({r: 89, g: 93, b: 183, a: 0.42});
+  const [opacity, setOpacity] = useState();
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
 
   const [faceSelected, setFaceSelected] = useState("default");
@@ -76,7 +77,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             target_face: Number(faceSelected),
             flip_option: { card_direction: card_direction, left_face_ratio: Number(left_face_ratio) },
             face_style: {
-              background: { color: background_color, opacity: 100 },
+              background: { color: background_color, opacity: opacity },
               outer_margin: {
                 top: outer_margin_top,
                 bottom: outer_margin_bottom,
@@ -122,7 +123,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
 
   const directionHandler = (e) => set_card_direction(e);
   const leftFaceRatioHandler = (e) => set_left_face_ratio(e);
-  const backgroundColorHandler = (e) => set_background_color(e.target.value);
+  const backgroundColorOpacityChange = (e) => setOpacity(e);
 
   const outerMarginTopHandler = (e) => set_outer_margin_top(e);
   const outerMarginBottomHandler = (e) => set_outer_margin_bottom(e);
@@ -158,6 +159,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     // set_left_face_ratio(cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio);
 
     set_background_color(cardTypeDetail[0].face_style[e].background.color);
+    setOpacity(cardTypeDetail[0].face_style[e].background.opacity);
 
     set_outer_margin_top(cardTypeDetail[0].face_style[e].outer_margin.top);
     set_outer_margin_bottom(cardTypeDetail[0].face_style[e].outer_margin.bottom);
@@ -263,13 +265,15 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
         </li>
         <li>
           <div>면배경색</div>
-          <Button size="small" onClick={handleClick} style={{background:`rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${backgroundColor.a})`}}>Pick Color</Button>
+          <Button size="small" onClick={handleClick} style={{background:`rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${opacity/100})`}}>Pick Color</Button>
           {displayColorPicker ? (
             <div style={popover}>
               <div style={cover} onClick={handleClose} />
               <CompactPicker  color={backgroundColor} onChange={handleChangeComplete}/>
+              <span>none</span>
             </div>
           ) : null}
+          <InputNumber size="small" value={opacity} onChange={backgroundColorOpacityChange} />%
           {/* <Popover content={content} title="Title">
             <Button type="primary">Hover me</Button>
           </Popover> */}

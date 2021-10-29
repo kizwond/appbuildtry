@@ -34,15 +34,6 @@ const Home = () => {
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
-    var md = new MobileDetect(window.navigator.userAgent);
-    if(md.mobile()) {
-     window.location.href = "/m_index"
-    }
-    else {
-     console.log("pc")
-     var from = "pc"
-    }
-
     var refreshToken = localStorage.getItem("refreshToken");
     console.log(refreshToken);
   }

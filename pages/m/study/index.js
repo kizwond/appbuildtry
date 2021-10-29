@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 
 import { Row, Space, Col, Button } from "antd";
-import Layout from "../../../components/layout/Layout";
+import M_Layout from "../../../components/layout/M_Layout";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
 import StudyBooksTable from "../../../components/books/studypage/booksTable/StudyBooksTable";
 import StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/StudyFavoriteBooksTable";
@@ -83,7 +83,7 @@ const Writeanother = () => {
         <title>Write - CogBook</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <Layout>
+      <M_Layout>
         {category.length >= 1 && (
           <StyledRowMaxWidth topcompo="true">
             <StyledSpace>
@@ -126,7 +126,7 @@ const Writeanother = () => {
             />
           </Col>
         </StyledRowMaxWidth>
-      </Layout>
+      </M_Layout>
     </>
   );
 };

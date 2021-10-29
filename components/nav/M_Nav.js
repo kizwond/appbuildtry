@@ -52,19 +52,21 @@ const Nav = () => {
           zIndex: 3,
         }}
       >
-        <div style={{flexBasis: "33%"}}>
+        <div style={{ flexBasis: "33%" }}>
           <MenuOutlined style={{ fontSize: burgerSize, color: fontColor }} onClick={showDrawer} />
           <Drawer
             title={
               <>
-                <Avatar icon={<UserOutlined />} /> <span>user name</span>
-                <div>useremail@gmail.com</div>
+                <div style={{ height: "100%", padding: "0" }}>
+                  <Avatar size="small" icon={<UserOutlined />} /> <span style={{ fontSize: "0.8rem" }}>user name</span>
+                </div>
               </>
             }
             placement="left"
-            closable={true}
+            closable={false}
             onClose={onClose}
             visible={visible}
+            width={170}
           >
             <div
               style={{
@@ -83,13 +85,6 @@ const Nav = () => {
                 }}
               >
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                  {isLogged && (
-                    <>
-                      <Button size="small" shape="round" style={{ fontSize: "0.75rem" }} onClick={() => onClickLogout()}>
-                        로그아웃
-                      </Button>
-                    </>
-                  )}
                   {!isLogged && (
                     <>
                       <Link href="/account/login">
@@ -130,8 +125,6 @@ const Nav = () => {
                       서점
                     </a>
                   </Link>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
                   <Link href="/cart">
                     <a style={linkStyleDrawer}>
                       <ShoppingCartOutlined style={{ marginRight: 10 }} />
@@ -145,6 +138,13 @@ const Nav = () => {
                     </a>
                   </Link>
                 </div>
+                {isLogged && (
+                  <>
+                    <Button size="large" shape="round" style={{ fontSize: "0.8rem" }} onClick={() => onClickLogout()}>
+                      로그아웃
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </Drawer>
@@ -167,7 +167,7 @@ const Nav = () => {
             CogBook
           </a>
         </Link>
-        <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "0.75rem" }}></div>
+        <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "0.8rem" }}></div>
       </div>
     </>
   );

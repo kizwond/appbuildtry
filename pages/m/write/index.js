@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 
 import { Space, Col } from "antd";
-import Layout from "../../../components/layout/Layout";
+import M_Layout from "../../../components/layout/M_Layout";
 import CreateBookButton from "../../../components/books/writepage/createBook/CreateBookButton";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
 import BooksTable from "../../../components/books/writepage/booksTable/BooksTable";
@@ -34,7 +34,7 @@ const Writeanother = () => {
         setCategory(received_data.mybookcate_get.mybookcates);
         setIsReceivedData(true);
       } else if (received_data.mybookcate_get.status === "401") {
-        router.push("/account/login");
+        router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }
@@ -74,7 +74,7 @@ const Writeanother = () => {
         <title>Write - CogBook</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <Layout>
+      <M_Layout>
         {category.length >= 1 && (
           <StyledRowMaxWidth topcompo="true">
             <StyledSpace>
@@ -110,7 +110,7 @@ const Writeanother = () => {
             />
           </Col>
         </StyledRowMaxWidth>
-      </Layout>
+      </M_Layout>
     </>
   );
 };

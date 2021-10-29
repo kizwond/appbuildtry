@@ -46,7 +46,7 @@ const Writeanother = () => {
   }, []);
 
   const sesstionStart = () => {
-    router.push("/books/study/sessionSetting");
+    router.push("/m/study/sessionSetting");
   };
 
   const handleToGetMyBook = useCallback((books) => {

@@ -1,17 +1,16 @@
 import Head from "next/head";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORY_AND_BOOKS_INFO } from "../../../graphql/query/writePage";
 import { useRouter } from "next/router";
 
 import styled from "styled-components";
 
-import { Space, Col } from "antd";
+import { Row, Space, Col, Button } from "antd";
 import Layout from "../../../components/layout/Layout";
-import CreateBookButton from "../../../components/books/writepage/createBook/CreateBookButton";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
-import BooksTable from "../../../components/books/writepage/booksTable/BooksTable";
-import FavoriteBooksTable from "../../../components/books/writepage/booksTable/FavoriteBooksTable";
+import StudyBooksTable from "../../../components/books/studypage/booksTable/StudyBooksTable";
+import StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/StudyFavoriteBooksTable";
 import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
 
 const Writeanother = () => {
@@ -20,11 +19,12 @@ const Writeanother = () => {
   const [isReceivedData, setIsReceivedData] = useState(false);
   const [category, setCategory] = useState([]);
   const [myBook, setMyBook] = useState([]);
-  const newCateRef = useRef();
 
   const [activedTable, setActivedTable] = useState();
 
   const [isPopupSomething, setisPopupSomething] = useState(false);
+
+  const [selectedBooks, setSelectedBooks] = useState([]);
 
   const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
     onCompleted: (received_data) => {
@@ -41,9 +41,13 @@ const Writeanother = () => {
     },
   });
 
-  const changeNewCateId = useCallback((id) => {
-    setNewCateId(id);
+  useEffect(() => {
+    sessionStorage.removeItem("books_selected");
   }, []);
+
+  const sesstionStart = () => {
+    router.push("/books/study/sessionSetting");
+  };
 
   const handleToGetMyBook = useCallback((books) => {
     setMyBook(books);
@@ -57,6 +61,11 @@ const Writeanother = () => {
   }, []);
   const changeActivedTable = useCallback((_table) => {
     setActivedTable(_table);
+  }, []);
+
+  const changeSelectedBooks = useCallback((_booksArray) => {
+    setSelectedBooks(_booksArray);
+    sessionStorage.setItem("books_selected", JSON.stringify(_booksArray));
   }, []);
 
   if (!isReceivedData) {
@@ -78,15 +87,33 @@ const Writeanother = () => {
         {category.length >= 1 && (
           <StyledRowMaxWidth topcompo="true">
             <StyledSpace>
-              <CreateBookButton category={category} handleToGetMyBook={handleToGetMyBook} />
-              <CategorySettingButton ref={(ref) => (newCateRef.current = ref)} category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
+              <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
+              <Button onClick={sesstionStart} size="small">
+                세션 시작
+              </Button>
             </StyledSpace>
           </StyledRowMaxWidth>
         )}
 
         <StyledRowMaxWidth>
+          {myBook.filter((_book) => _book.mybook_info.studylike === true).length > 0 && (
+            <Col span={24}>
+              <StudyFavoriteBooksTable
+                category={category}
+                myBook={myBook}
+                handleToGetMyBook={handleToGetMyBook}
+                isPopupSomething={isPopupSomething}
+                chagePopup={chagePopup}
+                activedTable={activedTable}
+                changeActivedTable={changeActivedTable}
+                selectedBooks={selectedBooks}
+                changeSelectedBooks={changeSelectedBooks}
+              />
+            </Col>
+          )}
+
           <Col span={24}>
-            <FavoriteBooksTable
+            <StudyBooksTable
               category={category}
               myBook={myBook}
               handleToGetMyBook={handleToGetMyBook}
@@ -94,19 +121,8 @@ const Writeanother = () => {
               chagePopup={chagePopup}
               activedTable={activedTable}
               changeActivedTable={changeActivedTable}
-            />
-          </Col>
-          <Col span={24}>
-            {console.log(newCateRef)}
-            <BooksTable
-              category={category}
-              myBook={myBook}
-              handleToGetMyBook={handleToGetMyBook}
-              isPopupSomething={isPopupSomething}
-              chagePopup={chagePopup}
-              activedTable={activedTable}
-              changeActivedTable={changeActivedTable}
-              newCateId={newCateRef.current}
+              selectedBooks={selectedBooks}
+              changeSelectedBooks={changeSelectedBooks}
             />
           </Col>
         </StyledRowMaxWidth>

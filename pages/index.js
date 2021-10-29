@@ -36,7 +36,7 @@ const Home = () => {
   if (!ISSERVER) {
     var md = new MobileDetect(window.navigator.userAgent);
     if(md.mobile()) {
-     window.location.href = "/m_index"
+     window.location.href = "/m"
     }
     else {
      console.log("pc")

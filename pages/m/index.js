@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useCallback } from "react";
-import Layout from "../components/layout/Layout";
-import RecentStudyList from "../components/index/RecentStudyList";
-import Hero from "../components/index/Hero";
-import NewBooks from "../components/index/NewBooks";
-import Footer from "../components/index/Footer";
+import Layout from "../../components/layout/Layout";
+import RecentStudyList from "../../components/index/RecentStudyList";
+import Hero from "../../components/index/Hero";
+import NewBooks from "../../components/index/NewBooks";
+import Footer from "../../components/index/Footer";
 import { useSelector, useDispatch } from "react-redux";
-import { logIn } from "../redux/actions";
+import { logIn } from "../../redux/actions";
 import { useQuery, useMutation } from "@apollo/client";
-import { GET_USER, ResetToekn } from "../graphql/query/account";
+import { GET_USER, ResetToekn } from "../../graphql/query/account";
 import { useMediaQuery } from "react-responsive";
-import MobileDetect from "../node_modules/mobile-detect/mobile-detect";
+import MobileDetect from "../../node_modules/mobile-detect/mobile-detect";
 
 const Desktop = ({ children }) => {
   const isDesktop = useMediaQuery({ minWidth: 992 });

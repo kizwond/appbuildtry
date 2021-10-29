@@ -146,28 +146,8 @@ const LoginComponent = () => {
 const Register = () => {
   return (
     <Layout>
-      <Desktop>
         <LoginComponent />
         <Footer />
-      </Desktop>
-
-      <Tablet>
-        <div style={{ marginBottom: "150px" }}>
-          <LoginComponent />
-          <div style={{ position: "fixed", bottom: 0, zIndex: 3, width: "100%" }}>
-            <Footer />
-          </div>
-        </div>
-      </Tablet>
-
-      <Mobile>
-        <div style={{ marginBottom: "150px" }}>
-          <LoginComponent />
-          <div style={{ position: "fixed", bottom: 0, zIndex: 3, width: "100%" }}>
-            <Footer />
-          </div>
-        </div>
-      </Mobile>
     </Layout>
   );
 };

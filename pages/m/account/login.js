@@ -34,7 +34,7 @@ const LoginComponent = () => {
         localStorage.setItem("refreshToken", data.login.token.refreshToken);
       }
 
-      window.location.href = "/";
+      window.location.href = "/m";
     } else {
       error();
     }
@@ -72,13 +72,13 @@ const LoginComponent = () => {
           </Button>
         </Form.Item>
         <div style={{ fontSize: "0.8rem" }}>
-          <Link href="/account/find/userid">
+          <Link href="/m/account/find/userid">
             <a>아이디 찾기 / </a>
           </Link>
-          <Link href="/account/find/password">
+          <Link href="/m/account/find/password">
             <a>비밀번호 찾기 / </a>
           </Link>
-          <Link href="/account/register">
+          <Link href="/m/account/register">
             <a>회원가입 </a>
           </Link>
         </div>

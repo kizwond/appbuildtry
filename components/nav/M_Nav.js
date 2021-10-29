@@ -1,6 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
-import profilePic from "../../public/image/logo2.png";
 import { ShoppingCartOutlined, BellOutlined, UserOutlined, MenuOutlined, ReadOutlined, FormOutlined, TeamOutlined, ShopOutlined, FileTextOutlined } from "@ant-design/icons";
 import { Input, Avatar } from "antd";
 import React, { useEffect, useState } from "react";
@@ -31,7 +29,7 @@ const Nav = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     console.log("here");
-    window.location.href = "/";
+    window.location.href = "/m";
   };
   const burgerSize = "1rem";
   return (
@@ -87,13 +85,13 @@ const Nav = () => {
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   {!isLogged && (
                     <>
-                      <Link href="/account/login">
+                      <Link href="/m/account/login">
                         <a style={linkStyleDrawer}>
                           <UserOutlined style={{ marginRight: 5, color: "black" }} />
                           로그인
                         </a>
                       </Link>
-                      <Link href="/account/register">
+                      <Link href="/m/account/register">
                         <a style={linkStyleDrawer}>
                           <FileTextOutlined style={{ marginRight: 5, color: "black" }} />
                           회원가입
@@ -149,21 +147,16 @@ const Nav = () => {
             </div>
           </Drawer>
         </div>
-        <Link href="/">
+        <Link href="/m">
           <a
             style={{
-              // position: "absolute",
-              // left: "50%",
-              // transform: "translate(-50%)",
               flexBasis: "33%",
               textAlign: "center",
               fontFamily: `Architects Daughter, cursive`,
               fontWeight: 900,
               color: fontColor,
-              // textShadow: "rgb(189 189 189 / 73%) 3px 2px 5px",
             }}
           >
-            {/* <Image src={profilePic} width="80px" height="40px" alt="logo" /> */}
             CogBook
           </a>
         </Link>
@@ -174,13 +167,6 @@ const Nav = () => {
 };
 
 export default Nav;
-
-const linkStyle = {
-  color: fontColor,
-  paddingLeft: 10,
-  paddingRight: 10,
-  fontSize: "0.8rem",
-};
 
 const linkStyleDrawer = {
   color: "black",

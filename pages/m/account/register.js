@@ -1,27 +1,13 @@
 import React from "react";
-import Layout from "../../components/layout/Layout";
+import M_Layout from "../../../components/layout/M_Layout";
 import { Form, Input, Button, message } from "antd";
-import Footer from "../../components/index/Footer";
+import M_Footer from "../../../components/index/M_Footer";
 import Router from "next/router";
 import { useMutation } from "@apollo/client";
-import { SignUpMutation } from "../../graphql/query/account";
-import { useMediaQuery } from "react-responsive";
-
-const Desktop = ({ children }) => {
-  const isDesktop = useMediaQuery({ minWidth: 992 });
-  return isDesktop ? children : null;
-};
-const Tablet = ({ children }) => {
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-  return isTablet ? children : null;
-};
-const Mobile = ({ children }) => {
-  const isMobile = useMediaQuery({ maxWidth: 767 });
-  return isMobile ? children : null;
-};
+import { SignUpMutation } from "../../../graphql/query/account";
 
 function routerToLogin() {
-  Router.push("/account/login")
+  Router.push("/m/account/login")
 }
 
 const LoginComponent = () => {
@@ -49,7 +35,6 @@ const LoginComponent = () => {
     } else {
       openMessage();
       setTimeout(routerToLogin, 2000);
-      // Router.push("/account/login");
     }
   }
 
@@ -79,9 +64,6 @@ const LoginComponent = () => {
         id="register_form"
         name="register"
         onFinish={onFinish}
-        initialValues={{
-          prefix: "82",
-        }}
         scrollToFirstError
         style={{fontSize:"0.8rem"}}
       >
@@ -145,15 +127,15 @@ const LoginComponent = () => {
 
 const Register = () => {
   return (
-    <Layout>
+    <M_Layout>
         <LoginComponent />
-        <Footer />
-    </Layout>
+        <M_Footer />
+    </M_Layout>
   );
 };
 
 const register_container = {
-  width: "300px",
+  width: "200px",
   margin: "auto",
   textAlign: "center",
   marginTop: "100px",

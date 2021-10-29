@@ -1,28 +1,13 @@
 import React, { useEffect, useState, useCallback } from "react";
-import Layout from "../../components/layout/Layout";
+import M_Layout from "../../components/layout/M_Layout";
 import RecentStudyList from "../../components/index/RecentStudyList";
 import Hero from "../../components/index/Hero";
 import NewBooks from "../../components/index/NewBooks";
-import Footer from "../../components/index/Footer";
+import M_Footer from "../../components/index/M_Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { logIn } from "../../redux/actions";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER, ResetToekn } from "../../graphql/query/account";
-import { useMediaQuery } from "react-responsive";
-import MobileDetect from "../../node_modules/mobile-detect/mobile-detect";
-
-const Desktop = ({ children }) => {
-  const isDesktop = useMediaQuery({ minWidth: 992 });
-  return isDesktop ? children : null;
-};
-const Tablet = ({ children }) => {
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-  return isTablet ? children : null;
-};
-const Mobile = ({ children }) => {
-  const isMobile = useMediaQuery({ maxWidth: 767 });
-  return isMobile ? children : null;
-};
 
 const Home = () => {
   const [resetToken] = useMutation(ResetToekn, { onCompleted: showdata });
@@ -87,40 +72,12 @@ const Home = () => {
   }
 
   return (
-    <Layout>
+    <M_Layout>
       <Hero />
       <RecentStudyList />
       <NewBooks />
-      <Footer />
-      {/* <Desktop>
-        <Hero />
-        <RecentStudyList />
-        <NewBooks />
-        <Footer />
-      </Desktop>
-
-      <Tablet>
-        <div style={{ marginBottom: "150px" }}>
-          <Hero />
-          <RecentStudyList />
-          <NewBooks />
-          <div style={{ position: "fixed", bottom: 0, zIndex: 3, width: "100%" }}>
-            <Footer />
-          </div>
-        </div>
-      </Tablet>
-
-      <Mobile>
-        <div style={{ marginBottom: "150px" }}>
-          <Hero />
-          <RecentStudyList />
-          <NewBooks />
-          <div style={{ position: "fixed", bottom: 0, zIndex: 3, width: "100%" }}>
-            <Footer />
-          </div>
-        </div>
-      </Mobile> */}
-    </Layout>
+      <M_Footer />
+    </M_Layout>
   );
 };
 

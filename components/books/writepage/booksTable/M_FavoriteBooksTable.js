@@ -34,7 +34,7 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
   function movepage(bookid) {
     localStorage.removeItem("book_id");
     localStorage.setItem("book_id", bookid);
-    router.push(`/${isPc ? "books" : "m"}/write/${bookid}`);
+    router.push(`/m/write/${bookid}`);
   }
 
   const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.writelike === true);

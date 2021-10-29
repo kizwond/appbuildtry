@@ -15,7 +15,7 @@ import MoveToBookSetting from "./MoveToBookSetting";
 import makeDataSource from "../../common/logic";
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 
-const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId, isPc }) => {
+const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -49,7 +49,7 @@ const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, c
   const movepage = useCallback(function (bookid) {
     localStorage.removeItem("book_id");
     localStorage.setItem("book_id", bookid);
-    router.push(`m/write/${bookid}`);
+    router.push(`/m/write/${bookid}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

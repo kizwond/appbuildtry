@@ -15,7 +15,7 @@ import MoveToBookSetting from "./MoveToBookSetting";
 import makeDataSource from "../../common/logic";
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 
-const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId, isPc }) => {
+const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);

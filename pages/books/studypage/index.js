@@ -6,14 +6,14 @@ import { useRouter } from "next/router";
 
 import styled from "styled-components";
 
-import { Row, Space, Col, Button } from "../../../node_modules/antd/lib/index";
+import { Row, Space, Col, Button } from "antd";
 import Layout from "../../../components/layout/Layout";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
 import StudyBooksTable from "../../../components/books/studypage/booksTable/StudyBooksTable";
 import StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/StudyFavoriteBooksTable";
 import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
 
-const Writeanother = () => {
+const StudyPage = () => {
   const router = useRouter();
 
   const [isReceivedData, setIsReceivedData] = useState(false);
@@ -131,7 +131,7 @@ const Writeanother = () => {
   );
 };
 
-export default Writeanother;
+export default StudyPage;
 
 const StyledSpace = styled(Space)`
   & * {

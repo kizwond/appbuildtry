@@ -97,3 +97,88 @@ export const SEARCH_USER_INFO = gql`
     }
   }
 `;
+
+export const REQUEST_MENTORING = qql`
+  mutation RequestMentoring($forCreateMentoringReq:forCreateMentoringReq){
+    mentoring_createMentoringReq(forCreateMentoringReq:$forCreateMentoringReq){
+      status
+      msg
+      mentorings {
+        _id
+        mentoring_info {
+          user_id
+          menteeGroup {
+            _id
+            name
+            isFixed
+          }
+          mentorGroup {
+            _id
+            name
+            isFixed
+          }
+        }
+        sentReqs {
+          _id
+          menteeUser_id
+          mentorUser_id
+          menteeUsername
+          mentorUsername
+          menteeName
+          mentorName
+          menteeOrganization
+          mentorOrganization
+          mybook_id
+          mybookTitle
+          comment
+          reqDate
+        }
+        receivedReqs {
+          _id
+          menteeUser_id
+          mentorUser_id
+          menteeUsername
+          mentorUsername
+          menteeName
+          mentorName
+          menteeOrganization
+          mentorOrganization
+          mybook_id
+          mybookTitle
+          comment
+          reqDate
+        }
+        myMentors {
+          _id
+          menteeUser_id
+          mentorUser_id
+          menteeUsername
+          mentorUsername
+          menteeName
+          mentorName
+          menteeOrganization
+          mentorOrganization
+          mybook_id
+          mybookTitle
+          comment
+          reqDate
+        }
+        myMentees {
+          _id
+          menteeUser_id
+          mentorUser_id
+          menteeUsername
+          mentorUsername
+          menteeName
+          mentorName
+          menteeOrganization
+          mentorOrganization
+          mybook_id
+          mybookTitle
+          comment
+          reqDate
+        }
+      }
+    }
+  }
+`;

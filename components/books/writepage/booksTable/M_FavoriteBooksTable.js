@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "../../../../node_modules/moment/moment";
+import moment from "moment";
 
 import { Table, Button, Card, Tooltip, Space, Drawer } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
@@ -34,7 +34,7 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
   function movepage(bookid) {
     localStorage.removeItem("book_id");
     localStorage.setItem("book_id", bookid);
-    router.push(`/books/write/${bookid}`);
+    router.push(`/${isPc ? "books" : "m"}/write/${bookid}`);
   }
 
   const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.writelike === true);

@@ -87,6 +87,7 @@ const Writeanother = () => {
         <StyledRowMaxWidth>
           <Col span={24}>
             <FavoriteBooksTable
+              isPc
               category={category}
               myBook={myBook}
               handleToGetMyBook={handleToGetMyBook}
@@ -99,6 +100,7 @@ const Writeanother = () => {
           <Col span={24}>
             {console.log(newCateRef)}
             <BooksTable
+              isPc
               category={category}
               myBook={myBook}
               handleToGetMyBook={handleToGetMyBook}

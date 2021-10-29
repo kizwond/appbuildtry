@@ -98,9 +98,9 @@ export const SEARCH_USER_INFO = gql`
   }
 `;
 
-export const REQUEST_MENTORING = qql`
-  mutation RequestMentoring($forCreateMentoringReq:forCreateMentoringReq){
-    mentoring_createMentoringReq(forCreateMentoringReq:$forCreateMentoringReq){
+export const REQUEST_MENTORING = gql`
+  mutation RequestMentoring($forCreateMentoringReq: forCreateMentoringReq) {
+    mentoring_createMentoringReq(forCreateMentoringReq: $forCreateMentoringReq) {
       status
       msg
       mentorings {

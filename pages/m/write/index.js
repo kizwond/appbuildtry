@@ -10,8 +10,8 @@ import { Space, Col } from "antd";
 import M_Layout from "../../../components/layout/M_Layout";
 import CreateBookButton from "../../../components/books/writepage/createBook/CreateBookButton";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
-import BooksTable from "../../../components/books/writepage/booksTable/BooksTable";
-import FavoriteBooksTable from "../../../components/books/writepage/booksTable/FavoriteBooksTable";
+import M_BooksTable from "../../../components/books/writepage/booksTable/M_BooksTable";
+import M_FavoriteBooksTable from "../../../components/books/writepage/booksTable/M_FavoriteBooksTable";
 import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
 
 const Writeanother = () => {
@@ -86,7 +86,7 @@ const Writeanother = () => {
 
         <StyledRowMaxWidth>
           <Col span={24}>
-            <FavoriteBooksTable
+            <M_FavoriteBooksTable
               category={category}
               myBook={myBook}
               handleToGetMyBook={handleToGetMyBook}
@@ -98,7 +98,7 @@ const Writeanother = () => {
           </Col>
           <Col span={24}>
             {console.log(newCateRef)}
-            <BooksTable
+            <M_BooksTable
               category={category}
               myBook={myBook}
               handleToGetMyBook={handleToGetMyBook}

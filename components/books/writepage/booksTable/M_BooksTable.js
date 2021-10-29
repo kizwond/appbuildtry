@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "../../../../node_modules/moment/moment";
+import moment from "moment";
 
 import { Table, Card, Space, Drawer } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
@@ -15,7 +15,7 @@ import MoveToBookSetting from "./MoveToBookSetting";
 import makeDataSource from "../../common/logic";
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 
-const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId, isPc }) => {
+const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId, isPc }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -49,7 +49,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
   const movepage = useCallback(function (bookid) {
     localStorage.removeItem("book_id");
     localStorage.setItem("book_id", bookid);
-    router.push(`/books/write/${bookid}`);
+    router.push(`m/write/${bookid}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -391,7 +391,7 @@ const BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, cha
   );
 };
 
-export default BooksTable;
+export default M_BooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */

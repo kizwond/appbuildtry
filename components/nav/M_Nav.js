@@ -105,7 +105,7 @@ const Nav = () => {
                       학습
                     </a>
                   </Link>
-                  <Link href="/books/writepage">
+                  <Link href="/m/write">
                     <a style={linkStyleDrawer}>
                       <FormOutlined style={{ marginRight: 10 }} />
                       만들기

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION, GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
-import Layout from "../../../../components/layout/Layout";
+import M_Layout from "../../../../components/layout/M_Layout";
 import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
 import { Col, Tabs, Row, Typography, Button, Space } from "antd";
 import styled from "styled-components";
@@ -190,7 +190,7 @@ const SessionSetting = () => {
             holding_cards_number_for_total_card: 0,
           };
     return (
-      <Layout>
+      <M_Layout>
         <StyledDiv>
           <Row style={{ padding: "8px" }}>
             <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
@@ -312,7 +312,7 @@ const SessionSetting = () => {
             )}
           </StyledDivFirst>
         </StyledDiv>
-      </Layout>
+      </M_Layout>
     );
   }
 

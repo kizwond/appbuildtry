@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Drawer, Button } from "antd";
+import { Drawer, Button, Space, Divider } from "antd";
 import CardTypeSettingModal from "../../../../components/books/write/cardtype/CardTypeSettingModal";
 import CardTypeSetting from "./cardtype/CardTypeSetting";
 import CardtypeContainer from "../../write/editpage/cardtype/CardtypeContainer";
@@ -92,15 +92,30 @@ const RightDrawer = () => {
         </Button>
       </Desktop>
       <Tablet>
-        <SettingOutlined onClick={showDrawer} style={{fontSize:"1rem"}}/>
+        <SettingOutlined onClick={showDrawer} style={{ fontSize: "1rem" }} />
       </Tablet>
       <Mobile>
-        <SettingOutlined onClick={showDrawer}/>
+        <SettingOutlined onClick={showDrawer} />
       </Mobile>
-      <Drawer title="카드설정" placement="right" closable={true} onClose={onClose} visible={visible} mask={false} width={300}>
-        <CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
-        <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
-        <CardtypeContainer cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+      <Drawer
+        title={
+          <>
+            <span style={{ fontSize: "1rem", fontWeight: "700" }}>카드설정</span>
+          </>
+        }
+        placement="right"
+        closable={true}
+        onClose={onClose}
+        visible={visible}
+        mask={true}
+        width={250}
+      >
+        <Space direction="vertical">
+          <CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+          <Divider style={{ margin: 0 }} />
+          <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
+          <CardtypeContainer cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+        </Space>
       </Drawer>
     </>
   );

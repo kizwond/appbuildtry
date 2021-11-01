@@ -4,6 +4,7 @@ import CardDetailSetting from "./CardDetailSetting";
 import CardFaceSetting from "./CardFaceSetting";
 import CardRowSetting from "./CardRowSetting";
 import CardFontSetting from "./CardFontSetting";
+import { Form, Input, Button, Radio, Select, Cascader, DatePicker, Space, TreeSelect, Switch } from "antd";
 
 const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedCardTypeList }) => {
   const [selectedMenu, setSelectedMenu] = useState("face_setting");
@@ -12,10 +13,10 @@ const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdat
   const content = (menu_item) => {
     switch (menu_item) {
       case "card_setting":
-        return <CardDetailSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList}/>;
+        return <CardDetailSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />;
         break;
       case "face_setting":
-        return <CardFaceSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList}/>;
+        return <CardFaceSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />;
         break;
       case "row_setting":
         return <CardRowSetting cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />;
@@ -45,9 +46,17 @@ const CardTypeContainer = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdat
     <>
       <div>
         {/* <button onClick={() => onClickMenu("card_setting")}>카드설정</button> */}
-        <button onClick={() => onClickMenu("face_setting")}>면설정</button>
-        <button onClick={() => onClickMenu("row_setting")}>행설정</button>
-        <button onClick={() => onClickMenu("font_setting")}>폰트설정</button>
+        <Space direction="horizontal">
+          <Button size="small" style={{ fontSize: "0.8rem" }} onClick={() => onClickMenu("face_setting")}>
+            면설정
+          </Button>
+          <Button size="small" style={{ fontSize: "0.8rem" }} onClick={() => onClickMenu("row_setting")}>
+            행설정
+          </Button>
+          <Button size="small" style={{ fontSize: "0.8rem" }} onClick={() => onClickMenu("font_setting")}>
+            폰트설정
+          </Button>
+        </Space>
       </div>
       <div>{content(selectedMenu)}</div>
     </>

@@ -14,7 +14,7 @@ const CardSetting = ({ book_id, handleChange, cardTypes }) => {
     var cardTypesOption = cardTypes.map((cardType) => {
       return (
         <React.Fragment key={cardType._id}>
-          <Select.Option value={cardType._id}>{cardType.cardtype_info.name}</Select.Option>
+          <Select.Option value={cardType._id} style={{fontSize:"0.8rem"}}>{cardType.cardtype_info.name}</Select.Option>
         </React.Fragment>
       );
     });
@@ -32,10 +32,8 @@ const CardSetting = ({ book_id, handleChange, cardTypes }) => {
 
   return (
     <div>
-      <div>카드타입선택</div>
-
-      <Select defaultValue="default" style={{ width: 120 }} onChange={selectTypeHandeler}>
-        <Select.Option value="default">카드타입선택</Select.Option>
+      <Select defaultValue="default" size="small" style={{ width: 120,fontSize:"0.8rem" }} onChange={selectTypeHandeler}>
+        <Select.Option value="default" style={{fontSize:"0.8rem"}}>카드타입선택</Select.Option>
         {cardTypesOption}
       </Select> 
     </div>

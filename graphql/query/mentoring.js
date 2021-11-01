@@ -6,7 +6,6 @@ export const GET_MENTORING = gql`
       status
       msg
       mentorings {
-        _id
         mentoring_info {
           user_id
           menteeGroup {
@@ -21,7 +20,6 @@ export const GET_MENTORING = gql`
           }
         }
         sentReqs {
-          _id
           menteeUser_id
           mentorUser_id
           menteeUsername
@@ -33,10 +31,11 @@ export const GET_MENTORING = gql`
           mybook_id
           mybookTitle
           comment
+          reqStatus
           reqDate
+          processedDate
         }
         receivedReqs {
-          _id
           menteeUser_id
           mentorUser_id
           menteeUsername
@@ -48,10 +47,11 @@ export const GET_MENTORING = gql`
           mybook_id
           mybookTitle
           comment
+          reqStatus
           reqDate
+          processedDate
         }
         myMentors {
-          _id
           menteeUser_id
           mentorUser_id
           menteeUsername
@@ -63,10 +63,12 @@ export const GET_MENTORING = gql`
           mybook_id
           mybookTitle
           comment
-          reqDate
+          mentorGroup_id
+          mentoringStatus
+          startDate
+          finishDate
         }
         myMentees {
-          _id
           menteeUser_id
           mentorUser_id
           menteeUsername
@@ -78,7 +80,50 @@ export const GET_MENTORING = gql`
           mybook_id
           mybookTitle
           comment
-          reqDate
+          menteeGroup_id
+          mentoringStatus
+          startDate
+          finishDate
+        }
+      }
+    }
+  }
+`;
+
+export const GET_BOOKS_INFO = gql`
+  query GetBooksInfo($mybook_ids: [ID]) {
+    mybook_getManyMybookInfo(mybook_ids: $mybook_ids) {
+      status
+      msg
+      mybooks {
+        _id
+        mybook_info {
+          title
+        }
+        stats {
+          overall {
+            accuLevel
+            studyHour
+            numSession
+          }
+          recent {
+            timeStudy
+            timeModify
+          }
+          numCards {
+            total
+            read
+            flip
+          }
+          writeHistory {
+            date
+            numCreatedCards
+          }
+          studyHistory {
+            date
+            level
+            studyHour
+          }
         }
       }
     }
@@ -104,7 +149,6 @@ export const REQUEST_MENTORING = gql`
       status
       msg
       mentorings {
-        _id
         mentoring_info {
           user_id
           menteeGroup {
@@ -119,7 +163,6 @@ export const REQUEST_MENTORING = gql`
           }
         }
         sentReqs {
-          _id
           menteeUser_id
           mentorUser_id
           menteeUsername
@@ -131,10 +174,11 @@ export const REQUEST_MENTORING = gql`
           mybook_id
           mybookTitle
           comment
+          reqStatus
           reqDate
+          processedDate
         }
         receivedReqs {
-          _id
           menteeUser_id
           mentorUser_id
           menteeUsername
@@ -146,10 +190,11 @@ export const REQUEST_MENTORING = gql`
           mybook_id
           mybookTitle
           comment
+          reqStatus
           reqDate
+          processedDate
         }
         myMentors {
-          _id
           menteeUser_id
           mentorUser_id
           menteeUsername
@@ -161,10 +206,11 @@ export const REQUEST_MENTORING = gql`
           mybook_id
           mybookTitle
           comment
-          reqDate
+          mentoringStatus
+          startDate
+          finishDate
         }
         myMentees {
-          _id
           menteeUser_id
           mentorUser_id
           menteeUsername
@@ -176,7 +222,9 @@ export const REQUEST_MENTORING = gql`
           mybook_id
           mybookTitle
           comment
-          reqDate
+          mentoringStatus
+          startDate
+          finishDate
         }
       }
     }

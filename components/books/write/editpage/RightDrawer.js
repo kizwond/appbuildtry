@@ -111,10 +111,15 @@ const RightDrawer = () => {
         width={250}
       >
         <Space direction="vertical">
-          <CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
-          <Divider style={{ margin: 0 }} />
-          <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
-          <CardtypeContainer cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+          <div style={{ display: "flex", width: "250px", padding: "10px 10px 2px 10px", alignItems:"center" }}>
+            <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
+            <CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+          </div>
+          {cardTypeDetail && (
+            <>
+              <CardtypeContainer cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+            </>
+          )}
         </Space>
       </Drawer>
     </>

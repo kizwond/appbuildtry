@@ -1,9 +1,9 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { GetCardType } from "../../../../../graphql/query/cardtype";
 import { useQuery, useMutation } from "@apollo/client";
-import { Form, Input, Button, Radio, Select, Popover, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
+import { Form, Input, Button, Divider, Select, Popover, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
 import { UpdateCardType, GetCardTypeSet, UpdateCardFace } from "../../../../../graphql/query/cardtype";
-import { CompactPicker  } from "react-color";
+import { CompactPicker } from "react-color";
 
 const { Option } = Select;
 
@@ -12,9 +12,14 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const [current_cardTypeId, set_current_CardTypeId] = useState();
   const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
 
-  const [backgroundColor, setBackgroundColor] = useState({r: 89, g: 93, b: 183, a: 0.42});
+  const [backgroundColor, setBackgroundColor] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
   const [opacity, setOpacity] = useState();
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
+
+  const [displayColorPicker1, setDisplayColorPicker1] = useState(false);
+  const [displayColorPicker2, setDisplayColorPicker2] = useState(false);
+  const [displayColorPicker3, setDisplayColorPicker3] = useState(false);
+  const [displayColorPicker4, setDisplayColorPicker4] = useState(false);
 
   const [faceSelected, setFaceSelected] = useState("default");
 
@@ -41,10 +46,10 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const [border_left_thickness, set_border_left_thickness] = useState();
   const [border_right_thickness, set_border_right_thickness] = useState();
 
-  const [border_top_color, set_border_top_color] = useState();
-  const [border_bottom_color, set_border_bottom_color] = useState();
-  const [border_left_color, set_border_left_color] = useState();
-  const [border_right_color, set_border_right_color] = useState();
+  const [border_top_color, set_border_top_color] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
+  const [border_bottom_color, set_border_bottom_color] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
+  const [border_left_color, set_border_left_color] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
+  const [border_right_color, set_border_right_color] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
 
   useEffect(() => {
     console.log("카드 디테일 세팅 화면 온");
@@ -77,7 +82,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             target_face: Number(faceSelected),
             flip_option: { card_direction: card_direction, left_face_ratio: Number(left_face_ratio) },
             face_style: {
-              background: { color: background_color, opacity: opacity },
+              background: { color: backgroundColor, opacity: opacity },
               outer_margin: {
                 top: outer_margin_top,
                 bottom: outer_margin_bottom,
@@ -145,10 +150,10 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const borderLeftThicknessHandler = (e) => set_border_left_thickness(e);
   const borderRightThicknessHandler = (e) => set_border_right_thickness(e);
 
-  const borderTopColorHandler = (e) => set_border_top_color(e.target.value);
-  const borderBottomColorHandler = (e) => set_border_bottom_color(e.target.value);
-  const borderLeftColorHandler = (e) => set_border_left_color(e.target.value);
-  const borderRightColorHandler = (e) => set_border_right_color(e.target.value);
+  // const borderTopColorHandler = (e) => set_border_top_color(e.target.value);
+  // const borderBottomColorHandler = (e) => set_border_bottom_color(e.target.value);
+  // const borderLeftColorHandler = (e) => set_border_left_color(e.target.value);
+  // const borderRightColorHandler = (e) => set_border_right_color(e.target.value);
 
   const handleSubmit = () => updatefacestyle();
 
@@ -158,7 +163,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     // set_card_direction(cardTypeDetail[0].cardtype_info.flip_option.card_direction);
     // set_left_face_ratio(cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio);
 
-    set_background_color(cardTypeDetail[0].face_style[e].background.color);
+    setBackgroundColor(cardTypeDetail[0].face_style[e].background.color);
     setOpacity(cardTypeDetail[0].face_style[e].background.opacity);
 
     set_outer_margin_top(cardTypeDetail[0].face_style[e].outer_margin.top);
@@ -194,174 +199,308 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const handleClose = () => {
     setDisplayColorPicker(false);
   };
-  const popover = {
-    position: "absolute",
-    zIndex: "2",
-  };
-  const cover = {
-    position: "fixed",
-    top: "0px",
-    right: "0px",
-    bottom: "0px",
-    left: "0px",
-  };
+
   const handleChangeComplete = (color) => {
-    console.log(color)
-    console.log(backgroundColor)
     setBackgroundColor(color.rgb);
   };
+
+
+
+  const handleClick1 = () => {
+    console.log("clicked handleclick 1")
+    setDisplayColorPicker1(!displayColorPicker1);
+  };
+
+  const handleClose1 = () => {
+    setDisplayColorPicker1(false);
+  };
+
+  const borderTopColorHandler = (color) => {
+    set_border_top_color(color.rgb);
+  };
+
+
+
+  const handleClick2 = () => {
+    setDisplayColorPicker2(!displayColorPicker2);
+  };
+
+  const handleClose2 = () => {
+    setDisplayColorPicker2(false);
+  };
+
+  const borderBottomColorHandler = (color) => {
+    set_border_bottom_color(color.rgb);
+  };
+
+
+
+  const handleClick3 = () => {
+    setDisplayColorPicker3(!displayColorPicker3);
+  };
+
+  const handleClose3 = () => {
+    setDisplayColorPicker3(false);
+  };
+
+  const borderLeftColorHandler = (color) => {
+    set_border_left_color(color.rgb);
+  };
+
+
+
+  const handleClick4 = () => {
+    setDisplayColorPicker4(!displayColorPicker4);
+  };
+
+  const handleClose4 = () => {
+    setDisplayColorPicker4(false);
+  };
+
+  const borderRightColorHandler = (color) => {
+    set_border_right_color(color.rgb);
+  };
   return (
-    <div>
-      <div>면설정</div>
-      <ul>
+    <div style={{ padding: "0px 10px 10px 10px" }}>
+      <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
         {cardType === "flip" && (
           <React.Fragment>
             <li>
-              <div>레이아웃</div>
-              <div>방향</div>
-              <Select value={card_direction} style={{ width: 120 }} onChange={directionHandler}>
-                <Option value="left-right">좌우</Option>
-                <Option value="top-bottom">위아래</Option>
+              <div style={{ fontSize: "0.8rem" }}>레이아웃</div>
+              <div style={{ fontSize: "0.8rem" }}>방향</div>
+              <Select size="small" value={card_direction} style={{ width: 120, fontSize: "0.8rem" }} onChange={directionHandler}>
+                <Option value="left-right" style={{ fontSize: "0.8rem" }}>좌우</Option>
+                <Option value="top-bottom" style={{ fontSize: "0.8rem" }}>위아래</Option>
               </Select>
-              <div>1면 비율</div>
-              {card_direction === "left-right" && <InputNumber value={left_face_ratio} onChange={leftFaceRatioHandler} />}
-              {card_direction === "top-bottom" && <InputNumber value={left_face_ratio} onChange={leftFaceRatioHandler} disabled />}
+              <div style={{ fontSize: "0.8rem" }}>1면 비율</div>
+              {card_direction === "left-right" && <InputNumber size="small" value={left_face_ratio} onChange={leftFaceRatioHandler} />}
+              {card_direction === "top-bottom" && <InputNumber size="small" value={left_face_ratio} onChange={leftFaceRatioHandler} disabled />}
             </li>
+            <Divider style={{ width: "100%", margin: "0px 10px 0px 10px" }} />
           </React.Fragment>
         )}
 
-        <li>
-          <div>면선택</div>
-          <Select value={faceSelected} style={{ width: 120 }} onChange={selectFaceHandler}>
+        <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontSize: "0.8rem" }}>면선택</div>
+          <Select size="small" value={faceSelected} style={{ width: 120, fontSize: "0.8rem" }} onChange={selectFaceHandler}>
             <Option value="default">면선택</Option>
             {cardType === "read" && (
               <React.Fragment>
-                <Select.Option value="0">1면</Select.Option>
-                <Select.Option value="1">주석</Select.Option>
+                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
+                  1면
+                </Select.Option>
+                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
+                  주석
+                </Select.Option>
               </React.Fragment>
             )}
             {cardType === "subject" && (
               <React.Fragment>
-                <Select.Option value="0">1면</Select.Option>
-                <Select.Option value="1">주석</Select.Option>
+                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
+                  1면
+                </Select.Option>
+                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
+                  주석
+                </Select.Option>
               </React.Fragment>
             )}
             {cardType === "general" && (
               <React.Fragment>
-                <Select.Option value="0">1면</Select.Option>
-                <Select.Option value="1">주석</Select.Option>
+                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
+                  1면
+                </Select.Option>
+                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
+                  주석
+                </Select.Option>
               </React.Fragment>
             )}
 
             {cardType === "flip" && (
               <React.Fragment>
-                <Select.Option value="0">양면 [ㅁ ㅁ]</Select.Option>
-                <Select.Option value="1">1면 [ㅁ X]</Select.Option>
-                <Select.Option value="2">2면 [X ㅁ]</Select.Option>
-                <Select.Option value="3">주석</Select.Option>
+                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
+                  양면 [ㅁ ㅁ]
+                </Select.Option>
+                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
+                  1면 [ㅁ X]
+                </Select.Option>
+                <Select.Option value="2" style={{ fontSize: "0.8rem" }}>
+                  2면 [X ㅁ]
+                </Select.Option>
+                <Select.Option value="3" style={{ fontSize: "0.8rem" }}>
+                  주석
+                </Select.Option>
               </React.Fragment>
             )}
           </Select>
         </li>
-        <li>
-          <div>면배경색</div>
-          <Button size="small" onClick={handleClick} style={{background:`rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${opacity/100})`}}>Pick Color</Button>
+        <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+        <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontSize: "0.8rem" }}>면배경색</div>
+          <Button
+            size="small"
+            onClick={handleClick}
+            style={{ width: "80px", fontSize: "0.8rem", background: `rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${opacity / 100})` }}
+          >
+            Color
+          </Button>
           {displayColorPicker ? (
             <div style={popover}>
               <div style={cover} onClick={handleClose} />
-              <CompactPicker  color={backgroundColor} onChange={handleChangeComplete}/>
-              <span>none</span>
+              <CompactPicker color={backgroundColor} onChange={handleChangeComplete} />
+              {/* <span>none</span> */}
             </div>
           ) : null}
-          <InputNumber size="small" value={opacity} onChange={backgroundColorOpacityChange} />%
+          {/* <InputNumber size="small" value={opacity} onChange={backgroundColorOpacityChange} />% */}
           {/* <Popover content={content} title="Title">
             <Button type="primary">Hover me</Button>
           </Popover> */}
           {/* <input type="color" name="background_color" value={background_color} onChange={backgroundColorHandler}></input> */}
         </li>
-        <li>
+        <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+        <li style={{ fontSize: "0.8rem" }}>
           <div>면테두리바깥쪽여백</div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>상</span>
-            <InputNumber value={outer_margin_top} onChange={outerMarginTopHandler} />
+            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_top} onChange={outerMarginTopHandler} />
           </div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>하</span>
-            <InputNumber value={outer_margin_bottom} onChange={outerMarginBottomHandler} />
+            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_bottom} onChange={outerMarginBottomHandler} />
           </div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>좌</span>
-            <InputNumber value={outer_margin_left} onChange={outerMarginLeftHandler} />
+            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_left} onChange={outerMarginLeftHandler} />
           </div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>우</span>
-            <InputNumber value={outer_margin_right} onChange={outerMarginRightHandler} />
+            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_right} onChange={outerMarginRightHandler} />
           </div>
         </li>
-        <li>
+        <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+        <li style={{ fontSize: "0.8rem" }}>
           <div>면테두리안쪽여백</div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>상</span>
-            <InputNumber value={inner_padding_top} onChange={innerPaddingTopHandler} />
+            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_top} onChange={innerPaddingTopHandler} />
           </div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>하</span>
-            <InputNumber value={inner_padding_bottom} onChange={innerPaddingBottomHandler} />
+            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_bottom} onChange={innerPaddingBottomHandler} />
           </div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>좌</span>
-            <InputNumber value={inner_padding_left} onChange={innerPaddingLeftHandler} />
+            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_left} onChange={innerPaddingLeftHandler} />
           </div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>우</span>
-            <InputNumber value={inner_padding_right} onChange={innerPaddingRightHandler} />
+            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_right} onChange={innerPaddingRightHandler} />
           </div>
         </li>
-        <li>
+        <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+        <li style={{ fontSize: "0.8rem" }}>
           <div>면테두리</div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>상</span>
-            <Select value={border_top_type} style={{ width: 120 }} onChange={borderTopTypeHandler}>
+            <Select size="small" value={border_top_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderTopTypeHandler}>
               <Option value="solid">solid</Option>
               <Option value="dashed">dashed</Option>
               <Option value="dotted">dotted</Option>
             </Select>
-            <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input>
-            <InputNumber value={border_top_thickness} onChange={borderTopThicknessHandler} />
+            {/* <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input> */}
+            <Button
+              size="small"
+              onClick={handleClick1}
+              style={{ width: "50px", fontSize: "0.8rem", background: `rgba(${border_top_color.r},${border_top_color.g},${border_top_color.b},${opacity / 100})` }}
+            >
+              Color
+            </Button>
+            {displayColorPicker1 ? (
+              <div style={popover1}>
+                <div style={cover1} onClick={handleClose1} />
+                <CompactPicker color={border_top_color} onChange={borderTopColorHandler} />
+                {/* <span>none</span> */}
+              </div>
+            ) : null}
+            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_top_thickness} onChange={borderTopThicknessHandler} />
           </div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>하</span>
-            <Select value={border_bottom_type} style={{ width: 120 }} onChange={borderBottomTypeHandler}>
+            <Select size="small" value={border_bottom_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderBottomTypeHandler}>
               <Option value="solid">solid</Option>
               <Option value="dashed">dashed</Option>
               <Option value="dotted">dotted</Option>
             </Select>
-            <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input>
-            <InputNumber value={border_bottom_thickness} onChange={borderBottomThicknessHandler} />
+            {/* <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input> */}
+            <Button
+              size="small"
+              onClick={handleClick2}
+              style={{ width: "50px", fontSize: "0.8rem", background: `rgba(${border_bottom_color.r},${border_bottom_color.g},${border_bottom_color.b},${opacity / 100})` }}
+            >
+              Color
+            </Button>
+            {displayColorPicker2 ? (
+              <div style={popover}>
+                <div style={cover} onClick={handleClose2} />
+                <CompactPicker color={border_bottom_color} onChange={borderBottomColorHandler} />
+                {/* <span>none</span> */}
+              </div>
+            ) : null}
+            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_bottom_thickness} onChange={borderBottomThicknessHandler} />
           </div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>좌</span>
-            <Select value={border_left_type} style={{ width: 120 }} onChange={borderLeftTypeHandler}>
+            <Select size="small" value={border_left_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderLeftTypeHandler}>
               <Option value="solid">solid</Option>
               <Option value="dashed">dashed</Option>
               <Option value="dotted">dotted</Option>
             </Select>
-            <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input>
-            <InputNumber value={border_left_thickness} onChange={borderLeftThicknessHandler} />
+            {/* <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input> */}
+            <Button
+              size="small"
+              onClick={handleClick3}
+              style={{ width: "50px", fontSize: "0.8rem", background: `rgba(${border_left_color.r},${border_left_color.g},${border_left_color.b},${opacity / 100})` }}
+            >
+              Color
+            </Button>
+            {displayColorPicker3 ? (
+              <div style={popover}>
+                <div style={cover} onClick={handleClose3} />
+                <CompactPicker color={border_left_color} onChange={borderLeftColorHandler} />
+                {/* <span>none</span> */}
+              </div>
+            ) : null}
+            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_left_thickness} onChange={borderLeftThicknessHandler} />
           </div>
-          <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>우</span>
-            <Select value={border_right_type} style={{ width: 120 }} onChange={borderRightTypeHandler}>
+            <Select size="small" value={border_right_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderRightTypeHandler}>
               <Option value="solid">solid</Option>
               <Option value="dashed">dashed</Option>
               <Option value="dotted">dotted</Option>
             </Select>
-            <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input>
-            <InputNumber value={border_right_thickness} onChange={borderRightThicknessHandler} />
+            {/* <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input> */}
+            <Button
+              size="small"
+              onClick={handleClick4}
+              style={{ width: "50px", fontSize: "0.8rem", background: `rgba(${border_right_color.r},${border_right_color.g},${border_right_color.b},${opacity / 100})` }}
+            >
+              Color
+            </Button>
+            {displayColorPicker4 ? (
+              <div style={popover}>
+                <div style={cover} onClick={handleClose4} />
+                <CompactPicker color={border_right_color} onChange={borderRightColorHandler} />
+                {/* <span>none</span> */}
+              </div>
+            ) : null}
+            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_right_thickness} onChange={borderRightThicknessHandler} />
           </div>
         </li>
-        <li>
-          <button onClick={handleSubmit}>적용하기</button>
+        <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+        <li style={{ textAlign: "right" }}>
+          <Button size="small" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
+            적용하기
+          </Button>
         </li>
       </ul>
     </div>
@@ -369,3 +508,27 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
 };
 
 export default CardFaceSetting;
+
+const popover = {
+  position: "absolute",
+  zIndex: "2",
+};
+const cover = {
+  position: "fixed",
+  top: "0px",
+  right: "0px",
+  bottom: "0px",
+  left: "100px",
+};
+
+const popover1 = {
+  position: "absolute",
+  zIndex: "2",
+};
+const cover1 = {
+  position: "fixed",
+  top: "0px",
+  right: "0px",
+  bottom: "0px",
+  left: "100px",
+};

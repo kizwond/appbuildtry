@@ -5,7 +5,6 @@ import ModeSessionConfig from "./session-config/ModeSessionConfig";
 import AdvancedFilter from "./session-config/AdvancedFilter";
 
 const SessionConfig = ({
-  submitCreateSessionConfigToServer,
   book_ids,
   onToggleIsAFilter,
   onChangeAFCardList,
@@ -19,19 +18,6 @@ const SessionConfig = ({
   changeAdvancedFilter,
 }) => {
   const { readDetailedOption, changeReadProps, flipDetailedOption, changeFlipProps, examDetailedOption, changeExamProps } = modeOption;
-
-  const advancedFilterComponet = (
-    <AdvancedFilter
-      book_ids={book_ids}
-      advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
-      onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
-      onChangeAFCardList={onChangeAFCardList}
-      AFCardList={AFCardList}
-      onToggleIsAFilter={onToggleIsAFilter}
-      changeAdvancedFilter={changeAdvancedFilter}
-      advancedFilter={advancedFilter}
-    />
-  );
 
   return (
     <div>

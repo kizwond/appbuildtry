@@ -16,6 +16,10 @@ const SessionSetting = () => {
 
   const [cardsList, setCardsList] = useState([]);
   const [checkedKeys, setCheckedKeys] = useState([]);
+  const onInputCheckedKeys = useCallback((value) => {
+    setCheckedKeys(value);
+  }, []);
+
   const [counter, setCounter] = useState(0);
   const [bookList, setBookList] = useState([]);
 
@@ -27,7 +31,6 @@ const SessionSetting = () => {
   const [visualCompo, setVisualCompo] = useState("index");
 
   const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState([]);
-  const [advancedFilteredCheckedIndexes, setAdvancedFilteredCheckedIndexes] = useState([]);
   const [isAdvancedFilteredCardListShowed, setIsAdvancedFilteredCardListShowed] = useState(false);
 
   const {
@@ -42,7 +45,7 @@ const SessionSetting = () => {
     // useQuery 업데이트용
     updateData,
     // useMutaion Variables
-    // sessionConfig,
+    sessionConfig,
   } = useSessionConfig();
 
   const {
@@ -82,18 +85,18 @@ const SessionSetting = () => {
     },
   });
 
-  const submitCreateSessionConfigToServer = async (_sessionConfig) => {
+  const submitCreateSessionConfigToServer = async () => {
     const keysArray = Object.keys(checkedKeys);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
-      index_ids: isAdvancedFilteredCardListShowed ? advancedFilteredCheckedIndexes[item] : checkedKeys[item],
+      index_ids: checkedKeys[item],
     }));
     try {
       await session_createSession({
         variables: {
           forCreateSession: {
             sessionScope: sessionScope,
-            sessionConfig: _sessionConfig,
+            sessionConfig,
           },
         },
       });
@@ -157,21 +160,12 @@ const SessionSetting = () => {
       [selectedBookId]: checkedKeysValueOfBook,
     });
   };
-  const onAdvancedFilteredCheckIndexesCheckedKeys = (checkedKeysValueOfBook, selectedBookId) => {
-    setAdvancedFilteredCheckedIndexes({
-      ...advancedFilteredCheckedIndexes,
-      [selectedBookId]: checkedKeysValueOfBook,
-    });
-  };
 
   const onToggleIsAFilter = (falsy) => {
     setIsAdvancedFilteredCardListShowed(falsy);
   };
   const onChangeAFCardList = (value) => {
     setAdvancedFilteredCardsList(value);
-  };
-  const onChangeIndexesOfAFCardList = (value) => {
-    setAdvancedFilteredCheckedIndexes(value);
   };
 
   if (!error && !loading && cardsList.length > 0) {
@@ -218,7 +212,7 @@ const SessionSetting = () => {
                     block
                     disabled={visualCompo === "index"}
                     size="small"
-                    onClick={() => {}}
+                    onClick={submitCreateSessionConfigToServer}
                     style={{
                       height: "2rem",
                       fontWeight: "600",
@@ -262,9 +256,9 @@ const SessionSetting = () => {
                     <StyledDivTabContentWrapper>
                       <IndexTree
                         bookIndexInfo={advancedFilteredCardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
-                        checkedKeys={advancedFilteredCheckedIndexes[book.book_id]}
+                        checkedKeys={checkedKeys[book.book_id]}
                         selectedbookId={book.book_id}
-                        onCheckIndexesCheckedKeys={onAdvancedFilteredCheckIndexesCheckedKeys}
+                        onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
                         selectedCardsInfo={selectedCardsInfo}
                         changeSelectedCardsInfo={changeSelectedCardsInfo}
                       />
@@ -282,6 +276,7 @@ const SessionSetting = () => {
                 <Button
                   block
                   size="small"
+                  onClick={submitCreateSessionConfigToServer}
                   style={{
                     height: "2rem",
                     fontWeight: "600",
@@ -296,13 +291,12 @@ const SessionSetting = () => {
             </Row>
             {bookList.length - 1 === counter && (
               <SessionConfig
-                submitCreateSessionConfigToServer={submitCreateSessionConfigToServer}
                 onToggleIsAFilter={onToggleIsAFilter}
                 onChangeAFCardList={onChangeAFCardList}
                 AFCardList={advancedFilteredCardsList}
                 book_ids={bookList.map((book) => book.book_id)}
-                advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
-                onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
+                advancedFilteredCheckedIndexes={checkedKeys}
+                onChangeIndexesOfAFCardList={onInputCheckedKeys}
                 mode={mode}
                 changeMode={changeMode}
                 modeOption={modeOption}

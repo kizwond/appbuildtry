@@ -185,7 +185,7 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
 
   return (
     <>
-      <Button size={"small"} onClick={showModal}>
+      <Button size="small" onClick={showModal} style={{fontSize:"0.8rem"}}>
         새 카드 템플릿 추가
       </Button>
       <Modal title="새카드 템플릿" visible={visible} onOk={handleOk} onCancel={handleCancel} okText="만들기" cancelText="취소" maskClosable={false} width={700}>

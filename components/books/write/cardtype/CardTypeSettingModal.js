@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, Modal, Input, Radio, InputNumber, Space, Button } from "antd";
 import axios from "axios";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import { QuestionCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import { GetCardTypeSet, CardTypeCreate } from "../../../../graphql/query/cardtype";
 import { useMutation, useQuery } from "@apollo/client";
 
@@ -35,7 +35,7 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
       setCardTypeSetId(data.cardtypeset_getbymybookid.cardtypesets[0]._id);
       setCardTypes(data.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
     } else {
-      console.log("why here?")
+      console.log("why here?");
     }
   }, [data]);
 
@@ -185,9 +185,7 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
 
   return (
     <>
-      <Button size="small" onClick={showModal} style={{fontSize:"0.8rem"}}>
-        새 카드 템플릿 추가
-      </Button>
+      <PlusCircleOutlined onClick={showModal} style={{ marginLeft:"7px", fontSize: "1.4rem", color:"grey" }} />
       <Modal title="새카드 템플릿" visible={visible} onOk={handleOk} onCancel={handleCancel} okText="만들기" cancelText="취소" maskClosable={false} width={700}>
         <div className="new_card_templete_container" style={{ fontSize: "11px", display: "flex", alignItems: "flex-start", justifyContent: "space-evenly" }}>
           <div style={{ width: "30%" }}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { GetCardType } from "../../../../../graphql/query/cardtype";
 import { useQuery, useMutation } from "@apollo/client";
-import { Form, Input, Button, Radio, Select, Cascader, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
+import { Form, Input, Button, Radio, Select, Cascader, Divider, InputNumber, TreeSelect, Switch } from "antd";
 import { UpdateCardType, GetCardTypeSet, UpdateRowStyle, UpdateRowFont } from "../../../../../graphql/query/cardtype";
 const { Option } = Select;
 
@@ -103,7 +103,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
       const rows = nums.map((item) => (
         <>
           <React.Fragment key={item - 1}>
-            <Select.Option value={item - 1}>{item}</Select.Option>
+            <Select.Option value={item - 1} style={{ fontSize: "0.8rem" }}>{item}</Select.Option>
           </React.Fragment>
         </>
       ));
@@ -121,7 +121,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
       const rows = nums.map((item) => (
         <>
           <React.Fragment key={item - 1}>
-            <Select.Option value={item - 1}>{item}</Select.Option>
+            <Select.Option value={item - 1} style={{ fontSize: "0.8rem" }}>{item}</Select.Option>
           </React.Fragment>
         </>
       ));
@@ -139,7 +139,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
       const rows = nums.map((item) => (
         <>
           <React.Fragment key={item - 1}>
-            <Select.Option value={item - 1}>{item}</Select.Option>
+            <Select.Option value={item - 1} style={{ fontSize: "0.8rem" }}>{item}</Select.Option>
           </React.Fragment>
         </>
       ));
@@ -161,11 +161,10 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
 
   return (
     <div>
-      <div>행설정</div>
-      <ul>
-        <li>
-          <div>면선택</div>
-          <Select value={faceSelected} style={{ width: 120 }} onChange={selectFaceHandler}>
+      <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
+        <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontSize: "0.8rem" }}>면선택</div>
+          <Select size="small" value={faceSelected} style={{ width: 120, fontSize: "0.8rem" }} onChange={selectFaceHandler}>
             <Option value="default">면선택</Option>
             {cardType === "read" && (
               <React.Fragment>
@@ -194,63 +193,68 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             )}
           </Select>
         </li>
-        <li>
-          <div>행선택</div>
-          <Select value={rowSelected} style={{ width: 120 }} onChange={selectRowHandler}>
-            <Option value="default">행선택</Option>
+        <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+        <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ fontSize: "0.8rem" }}>행선택</div>
+          <Select size="small" value={rowSelected} style={{ width: 120, fontSize: "0.8rem"  }} onChange={selectRowHandler}>
+            <Option value="default" style={{ fontSize: "0.8rem" }}>행선택</Option>
             {rowOptions}
           </Select>
         </li>
+        <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li>
-          <div>
-            <span>폰트</span>
-            <Select value={font} style={{ width: 120 }} onChange={fontHandler}>
-              <Option value="고딕">고딕</Option>
-              <Option value="명조">명조</Option>
-              <Option value="바탕">바탕</Option>
-              <Option value="돋움">돋움</Option>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.8rem" }}>폰트</span>
+            <Select size="small" value={font} style={{ width: 120, fontSize: "0.8rem" }} onChange={fontHandler}>
+              <Option value="고딕" style={{ fontSize: "0.8rem" }}>고딕</Option>
+              <Option value="명조" style={{ fontSize: "0.8rem" }}>명조</Option>
+              <Option value="바탕" style={{ fontSize: "0.8rem" }}>바탕</Option>
+              <Option value="돋움" style={{ fontSize: "0.8rem" }}>돋움</Option>
             </Select>
           </div>
-          <div>
-            <span>size</span>
-            <InputNumber value={size} onChange={sizeHandler} />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.8rem" }}>size</span>
+            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={size} onChange={sizeHandler} />
           </div>
-          <div>
-            <span>색</span>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.8rem" }}>색</span>
             <input type="color" id="head" name="background_color" value={color} onChange={colorHandler}></input>
           </div>
-          <div>
-            <span>align</span>
-            <Select value={align} style={{ width: 120 }} onChange={alignHandler}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.8rem" }}>align</span>
+            <Select size="small" value={align} style={{ width: 120, fontSize: "0.8rem"  }} onChange={alignHandler}>
               <Option value="left">left</Option>
               <Option value="right">right</Option>
               <Option value="center">center</Option>
             </Select>
           </div>
-          <div>
-            <span>bold</span>
-            <Select value={bold} style={{ width: 120 }} onChange={boldHandler}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.8rem" }}>bold</span>
+            <Select size="small" value={bold} style={{ width: 120, fontSize: "0.8rem"  }} onChange={boldHandler}>
               <Option value="on">on</Option>
               <Option value="off">off</Option>
             </Select>
           </div>
-          <div>
-            <span>italic</span>
-            <Select value={italic} style={{ width: 120 }} onChange={italicHandler}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.8rem" }}>italic</span>
+            <Select size="small" value={italic} style={{ width: 120, fontSize: "0.8rem"  }} onChange={italicHandler}>
               <Option value="on">on</Option>
               <Option value="off">off</Option>
             </Select>
           </div>
-          <div>
-            <span>underline</span>
-            <Select value={underline} style={{ width: 120 }} onChange={underlineHandler}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.8rem" }}>underline</span>
+            <Select size="small" value={underline} style={{ width: 120, fontSize: "0.8rem"  }} onChange={underlineHandler}>
               <Option value="on">on</Option>
               <Option value="off">off</Option>
             </Select>
           </div>
         </li>
-        <li>
-          <button onClick={handleSubmit}>적용하기</button>
+        <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+        <li style={{ textAlign: "right" }}>
+          <Button size="small" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
+            적용하기
+          </Button>
         </li>
       </ul>
     </div>

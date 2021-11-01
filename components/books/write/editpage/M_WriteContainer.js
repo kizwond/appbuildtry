@@ -286,7 +286,6 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       console.log(current_card_style);
 
       const face_style = current_card_style[0].face_style;
-      const card_style = current_card_style[0].card_style.details;
       const row_style = current_card_style[0].row_style;
       const row_font = current_card_style[0].row_font;
 
@@ -298,28 +297,10 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             <>
               <div style={{ marginBottom: "5px", borderLeft: borderLeft }}>
                 <div onClick={() => onClickCard(content._id)}>
-                  {/*  카드스타일 영역 */}
-                  <div
-                    style={{
-                      backgroundColor: card_style[0].background_color,
-                      marginTop: card_style[0].outer_margin.top,
-                      marginBottom: card_style[0].outer_margin.bottom,
-                      marginLeft: card_style[0].outer_margin.left,
-                      marginRight: card_style[0].outer_margin.right,
-                      paddingTop: card_style[0].inner_padding.top,
-                      paddingBottom: card_style[0].inner_padding.bottom,
-                      paddingLeft: card_style[0].inner_padding.left,
-                      paddingRight: card_style[0].inner_padding.right,
-                      borderTop: `${card_style[0].border.top.thickness}px ${card_style[0].border.top.bordertype} ${card_style[0].border.top.color}`,
-                      borderBottom: `${card_style[0].border.bottom.thickness}px ${card_style[0].border.bottom.bordertype} ${card_style[0].border.bottom.color}`,
-                      borderLeft: `${card_style[0].border.left.thickness}px ${card_style[0].border.left.bordertype} ${card_style[0].border.left.color}`,
-                      borderRight: `${card_style[0].border.right.thickness}px ${card_style[0].border.right.bordertype} ${card_style[0].border.right.color}`,
-                    }}
-                  >
                     {/* 페이스 스타일 영역 */}
                     <div
                       style={{
-                        backgroundColor: face_style[0].background_color,
+                        backgroundColor: face_style[0].background.color,
                         marginTop: face_style[0].outer_margin.top,
                         marginBottom: face_style[0].outer_margin.bottom,
                         marginLeft: face_style[0].outer_margin.left,
@@ -338,7 +319,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         <>
                           <div
                             style={{
-                              backgroundColor: row_style.face1[index].background_color,
+                              backgroundColor: row_style.face1[index].background.color,
                               marginTop: row_style.face1[index].outer_margin.top,
                               marginBottom: row_style.face1[index].outer_margin.bottom,
                               marginLeft: row_style.face1[index].outer_margin.left,
@@ -365,7 +346,6 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         </>
                       ))}
                     </div>
-                  </div>
                 </div>
                 {content._id === cardId && (
                   <>
@@ -391,28 +371,10 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             <>
               <div style={{ marginBottom: "5px", borderLeft: borderLeft }}>
                 <div onClick={() => onClickCard(content._id)}>
-                  {/* 카드스타일 영역 */}
-                  <div
-                    style={{
-                      backgroundColor: card_style[0].background_color,
-                      marginTop: card_style[0].outer_margin.top,
-                      marginBottom: card_style[0].outer_margin.bottom,
-                      marginLeft: card_style[0].outer_margin.left,
-                      marginRight: card_style[0].outer_margin.right,
-                      paddingTop: card_style[0].inner_padding.top,
-                      paddingBottom: card_style[0].inner_padding.bottom,
-                      paddingLeft: card_style[0].inner_padding.left,
-                      paddingRight: card_style[0].inner_padding.right,
-                      borderTop: `${card_style[0].border.top.thickness}px ${card_style[0].border.top.bordertype} ${card_style[0].border.top.color}`,
-                      borderBottom: `${card_style[0].border.bottom.thickness}px ${card_style[0].border.bottom.bordertype} ${card_style[0].border.bottom.color}`,
-                      borderLeft: `${card_style[0].border.left.thickness}px ${card_style[0].border.left.bordertype} ${card_style[0].border.left.color}`,
-                      borderRight: `${card_style[0].border.right.thickness}px ${card_style[0].border.right.bordertype} ${card_style[0].border.right.color}`,
-                    }}
-                  >
                     {/* 페이스1 스타일 영역 */}
                     <div
                       style={{
-                        backgroundColor: face_style[0].background_color,
+                        backgroundColor: face_style[0].background.color,
                         marginTop: face_style[0].outer_margin.top,
                         marginBottom: face_style[0].outer_margin.bottom,
                         marginLeft: face_style[0].outer_margin.left,
@@ -431,7 +393,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         <>
                           <div
                             style={{
-                              backgroundColor: row_style.face1[index].background_color,
+                              backgroundColor: row_style.face1[index].background.color,
                               marginTop: row_style.face1[index].outer_margin.top,
                               marginBottom: row_style.face1[index].outer_margin.bottom,
                               marginLeft: row_style.face1[index].outer_margin.left,
@@ -460,7 +422,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                     {/* 페이스2 스타일 영역 */}
                     <div
                       style={{
-                        backgroundColor: face_style[1].background_color,
+                        backgroundColor: face_style[1].background.color,
                         marginTop: face_style[1].outer_margin.top,
                         marginBottom: face_style[1].outer_margin.bottom,
                         marginLeft: face_style[1].outer_margin.left,
@@ -479,7 +441,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         <>
                           <div
                             style={{
-                              backgroundColor: row_style.face2[index].background_color,
+                              backgroundColor: row_style.face2[index].background.color,
                               marginTop: row_style.face2[index].outer_margin.top,
                               marginBottom: row_style.face2[index].outer_margin.bottom,
                               marginLeft: row_style.face2[index].outer_margin.left,
@@ -506,7 +468,6 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         </>
                       ))}
                     </div>
-                  </div>
                 </div>
                 {content._id === cardId && (
                   <>

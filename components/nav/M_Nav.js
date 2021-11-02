@@ -99,7 +99,7 @@ const Nav = () => {
                       </Link>
                     </>
                   )}
-                  <Link href="/books/studypage">
+                  <Link href="/m/study">
                     <a style={linkStyleDrawer}>
                       <ReadOutlined style={{ marginRight: 10 }} />
                       학습
@@ -111,7 +111,7 @@ const Nav = () => {
                       만들기
                     </a>
                   </Link>
-                  <Link href="/mentoring">
+                  <Link href="/m/mentoring">
                     <a style={linkStyleDrawer}>
                       <TeamOutlined style={{ marginRight: 10 }} />
                       멘토링

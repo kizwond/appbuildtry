@@ -1,9 +1,11 @@
-import { GET_MENTORING, REQUEST_MENTORING, SEARCH_USER_INFO, GET_BOOKS_INFO } from "../../../graphql/query/mentoring";
-import _ from "lodash";
-import { useLazyQuery, useMutation } from "@apollo/client";
 import { useEffect, useState } from "react";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import _ from "lodash";
+
+import { GET_MENTORING, REQUEST_MENTORING, SEARCH_USER_INFO, GET_BOOKS_INFO } from "../../../graphql/query/mentoring";
 
 import { Badge, Button, Card, Col, Drawer, Table, Tabs, Row, Space } from "antd";
+import styled from "styled-components";
 
 const MentoringHome = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -58,8 +60,8 @@ const MentoringHome = () => {
   return (
     <div>
       {menteeBooks && mentoringData && (
-        <>
-          <Card size="small">
+        <MentoringWrapper>
+          <Card size="small" bordered={false}>
             <Tabs size="small">
               <Tabs.TabPane tab="멘티" key="멘티">
                 <Badge size="small" count={3}>
@@ -69,6 +71,7 @@ const MentoringHome = () => {
                 </Badge>
                 <Table
                   size="small"
+                  pagination={false}
                   dataSource={_(mentoringData.mentoring_getMentoring.mentorings[0].myMentees)
                     .map(({ mybookTitle, menteeGroup_id, mybook_id, menteeUsername, menteeName }) => ({
                       key: mybook_id,
@@ -88,22 +91,18 @@ const MentoringHome = () => {
                     {
                       title: "그룹",
                       dataIndex: "menteeGroupName",
-                      key: "menteeGroupName",
                     },
                     {
                       title: "책",
                       dataIndex: "mybookTitle",
-                      key: "myBookTitle",
                     },
                     {
                       title: "멘티",
                       dataIndex: "menteeName",
-                      key: "menteeName",
                     },
                     {
                       title: "학습이력",
                       dataIndex: "studyHistory",
-                      key: "studyHistory",
                     },
                   ]}
                 />
@@ -111,7 +110,7 @@ const MentoringHome = () => {
               <Tabs.TabPane tab="멘토" key="멘토"></Tabs.TabPane>
             </Tabs>
           </Card>
-          <Drawer title="멘토링 요청 수락" placement="right" width={"100%"} visible={drawerVisible} onClose={() => setDrawerVisible(false)}>
+          <DrawerWrapper title="멘토링 요청 수락" placement="right" width={"100%"} visible={drawerVisible} onClose={() => setDrawerVisible(false)}>
             <Row>
               <Col span={4}>책</Col>
               <Col span={4}>멘티이름</Col>
@@ -137,8 +136,8 @@ const MentoringHome = () => {
                 )
               )
               .value()}
-          </Drawer>
-        </>
+          </DrawerWrapper>
+        </MentoringWrapper>
       )}
     </div>
   );
@@ -146,3 +145,154 @@ const MentoringHome = () => {
 
 export default MentoringHome;
 
+const MentoringWrapper = styled.div`
+  & div,
+  & button,
+  & span,
+  & object,
+  & iframe,
+  & h1,
+  & h2,
+  & h3,
+  & h4,
+  & h5,
+  & h6,
+  & p,
+  & blockquote,
+  & pre,
+  & abbr,
+  & address,
+  & cite,
+  & code,
+  & del,
+  & dfn,
+  & em,
+  & img,
+  & ins,
+  & kbd,
+  & q,
+  & samp,
+  & small,
+  & strong,
+  & sub,
+  & sup,
+  & var,
+  & b,
+  & i,
+  & dl,
+  & dt,
+  & dd,
+  & ol,
+  & ul,
+  & li,
+  & fieldset,
+  & form,
+  & label,
+  & legend,
+  & table,
+  & caption,
+  & tbody,
+  & tfoot,
+  & thead,
+  & tr,
+  & th,
+  & td,
+  & article,
+  & aside,
+  & canvas,
+  & details,
+  & figcaption,
+  & figure,
+  & footer,
+  & header,
+  & hgroup,
+  & menu,
+  & nav,
+  & section,
+  & summary,
+  & time,
+  & mark,
+  & audio,
+  & video {
+    font-size: 0.8rem;
+  }
+  & button {
+    line-height: 1rem;
+  }
+`;
+
+const DrawerWrapper = styled(Drawer)`
+  & div,
+  & button,
+  & span,
+  & object,
+  & iframe,
+  & h1,
+  & h2,
+  & h3,
+  & h4,
+  & h5,
+  & h6,
+  & p,
+  & blockquote,
+  & pre,
+  & abbr,
+  & address,
+  & cite,
+  & code,
+  & del,
+  & dfn,
+  & em,
+  & img,
+  & ins,
+  & kbd,
+  & q,
+  & samp,
+  & small,
+  & strong,
+  & sub,
+  & sup,
+  & var,
+  & b,
+  & i,
+  & dl,
+  & dt,
+  & dd,
+  & ol,
+  & ul,
+  & li,
+  & fieldset,
+  & form,
+  & label,
+  & legend,
+  & table,
+  & caption,
+  & tbody,
+  & tfoot,
+  & thead,
+  & tr,
+  & th,
+  & td,
+  & article,
+  & aside,
+  & canvas,
+  & details,
+  & figcaption,
+  & figure,
+  & footer,
+  & header,
+  & hgroup,
+  & menu,
+  & nav,
+  & section,
+  & summary,
+  & time,
+  & mark,
+  & audio,
+  & video {
+    font-size: 0.8rem;
+  }
+  & button {
+    line-height: 1rem;
+  }
+`;

@@ -230,3 +230,90 @@ export const REQUEST_MENTORING = gql`
     }
   }
 `;
+export const ACCEPT_MENTORING_REQUEST = gql`
+  mutation AcceptMentoringRequest($forAcceptMentoringReq: forAcceptMentoringReq) {
+    mentoring_acceptMentoringReq(forAcceptMentoringReq: $forAcceptMentoringReq) {
+      status
+      msg
+      mentorings {
+        mentoring_info {
+          user_id
+          menteeGroup {
+            _id
+            name
+            isFixed
+          }
+          mentorGroup {
+            _id
+            name
+            isFixed
+          }
+        }
+        sentReqs {
+          menteeUser_id
+          mentorUser_id
+          menteeUsername
+          mentorUsername
+          menteeName
+          mentorName
+          menteeOrganization
+          mentorOrganization
+          mybook_id
+          mybookTitle
+          comment
+          reqStatus
+          reqDate
+          processedDate
+        }
+        receivedReqs {
+          menteeUser_id
+          mentorUser_id
+          menteeUsername
+          mentorUsername
+          menteeName
+          mentorName
+          menteeOrganization
+          mentorOrganization
+          mybook_id
+          mybookTitle
+          comment
+          reqStatus
+          reqDate
+          processedDate
+        }
+        myMentors {
+          menteeUser_id
+          mentorUser_id
+          menteeUsername
+          mentorUsername
+          menteeName
+          mentorName
+          menteeOrganization
+          mentorOrganization
+          mybook_id
+          mybookTitle
+          comment
+          mentoringStatus
+          startDate
+          finishDate
+        }
+        myMentees {
+          menteeUser_id
+          mentorUser_id
+          menteeUsername
+          mentorUsername
+          menteeName
+          mentorName
+          menteeOrganization
+          mentorOrganization
+          mybook_id
+          mybookTitle
+          comment
+          mentoringStatus
+          startDate
+          finishDate
+        }
+      }
+    }
+  }
+`;

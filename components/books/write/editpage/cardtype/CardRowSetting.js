@@ -22,7 +22,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const [displayColorPicker3, setDisplayColorPicker3] = useState(false);
   const [displayColorPicker4, setDisplayColorPicker4] = useState(false);
 
-  const [backgroundColor, setBackgroundColor] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
+  const [backgroundColor, setBackgroundColor] = useState();
   const [opacity, setOpacity] = useState();
 
   const [outer_margin_top, set_outer_margin_top] = useState();
@@ -45,10 +45,10 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const [border_left_thickness, set_border_left_thickness] = useState();
   const [border_right_thickness, set_border_right_thickness] = useState();
 
-  const [border_top_color, set_border_top_color] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
-  const [border_bottom_color, set_border_bottom_color] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
-  const [border_left_color, set_border_left_color] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
-  const [border_right_color, set_border_right_color] = useState({ r: 89, g: 93, b: 183, a: 0.42 });
+  const [border_top_color, set_border_top_color] = useState();
+  const [border_bottom_color, set_border_bottom_color] = useState();
+  const [border_left_color, set_border_left_color] = useState();
+  const [border_right_color, set_border_right_color] = useState();
 
   useEffect(() => {
     console.log("카드 디테일 세팅 화면 온");
@@ -273,7 +273,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   };
 
   const handleChangeComplete = (color) => {
-    setBackgroundColor(color.rgb);
+    setBackgroundColor(color.hex);
   };
 
   const handleClick1 = () => {
@@ -286,7 +286,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   };
 
   const borderTopColorHandler = (color) => {
-    set_border_top_color(color.rgb);
+    set_border_top_color(color.hex);
   };
 
   const handleClick2 = () => {
@@ -298,7 +298,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   };
 
   const borderBottomColorHandler = (color) => {
-    set_border_bottom_color(color.rgb);
+    set_border_bottom_color(color.hex);
   };
 
   const handleClick3 = () => {
@@ -310,7 +310,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   };
 
   const borderLeftColorHandler = (color) => {
-    set_border_left_color(color.rgb);
+    set_border_left_color(color.hex);
   };
 
   const handleClick4 = () => {
@@ -322,7 +322,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   };
 
   const borderRightColorHandler = (color) => {
-    set_border_right_color(color.rgb);
+    set_border_right_color(color.hex);
   };
   return (
     <div>
@@ -392,7 +392,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           <Button
             size="small"
             onClick={handleClick}
-            style={{ width: "80px", fontSize: "0.8rem", background: `rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${opacity / 100})` }}
+            style={{ width: "80px", fontSize: "0.8rem", background: backgroundColor }}
           >
             Color
           </Button>
@@ -458,7 +458,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             <Button
               size="small"
               onClick={handleClick1}
-              style={{ width: "50px", fontSize: "0.8rem", background: `rgba(${border_top_color.r},${border_top_color.g},${border_top_color.b},${opacity / 100})` }}
+              style={{ width: "50px", fontSize: "0.8rem", background:border_top_color }}
             >
               Color
             </Button>
@@ -482,7 +482,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             <Button
               size="small"
               onClick={handleClick2}
-              style={{ width: "50px", fontSize: "0.8rem", background: `rgba(${border_bottom_color.r},${border_bottom_color.g},${border_bottom_color.b},${opacity / 100})` }}
+              style={{ width: "50px", fontSize: "0.8rem", background:border_bottom_color }}
             >
               Color
             </Button>
@@ -506,7 +506,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             <Button
               size="small"
               onClick={handleClick3}
-              style={{ width: "50px", fontSize: "0.8rem", background: `rgba(${border_left_color.r},${border_left_color.g},${border_left_color.b},${opacity / 100})` }}
+              style={{ width: "50px", fontSize: "0.8rem", background:border_left_color }}
             >
               Color
             </Button>
@@ -530,7 +530,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             <Button
               size="small"
               onClick={handleClick4}
-              style={{ width: "50px", fontSize: "0.8rem", background: `rgba(${border_right_color.r},${border_right_color.g},${border_right_color.b},${opacity / 100})` }}
+              style={{ width: "50px", fontSize: "0.8rem", background:border_right_color }}
             >
               Color
             </Button>

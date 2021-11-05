@@ -133,7 +133,7 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
   return (
     <>
       <PlusCircleOutlined onClick={showModal} style={{ marginLeft: "7px", fontSize: "1.4rem", color: "grey" }} />
-      <Modal title="새카드 템플릿" visible={visible} onOk={handleOk} onCancel={handleCancel} okText="만들기" cancelText="취소" maskClosable={false} width={700}>
+      <Modal title="새카드 템플릿" visible={visible} onOk={handleOk} onCancel={handleCancel} okText="만들기" cancelText="취소" maskClosable={false} width={350}>
         <div
           className="new_card_templete_container"
           style={{ fontSize: "0.8rem", display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "space-evenly" }}

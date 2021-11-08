@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
       <div>height: {height}</div>
     </div> */}
       <Head>
-        <title>인덱스</title>
+        <title>콕북</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
       </Head>
       <M_Nav />

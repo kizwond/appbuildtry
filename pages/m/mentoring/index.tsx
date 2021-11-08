@@ -8,70 +8,15 @@ import { Badge, Button, Card, Col, Drawer, Table, Tabs, Row, Avatar, Select, Spa
 import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import moment from "moment";
+import useGetMentoringAndMenteeBooks from "../../../components/mentoring/useHooks/useGetMentoringAndMenteeBooks";
 
 const MentoringHome = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const selectorRef = useRef();
 
-  const [getBooksInfo, { data: menteeBooks, error, loading }] = useLazyQuery(GET_BOOKS_INFO, {
-    fetchPolicy: "network-only",
-    onCompleted: (data) => console.log({ 책정보: data }),
-  });
+  const [acceptMentroingRequest] = useMutation(ACCEPT_MENTORING_REQUEST, {});
 
-  const [getMentoring, { data: mentoringData, error: error1, loading: loading1 }] = useLazyQuery(GET_MENTORING, {
-    fetchPolicy: "network-only",
-    onCompleted: (data) => {
-      const mentoInfo = data.mentoring_getMentoring.mentorings[0];
-
-      const myMenteeBooksIds = _(mentoInfo.myMentees)
-        .map((mentee) => mentee.mybook_id)
-        .value();
-
-      getBooksInfo({
-        variables: {
-          mybook_ids: myMenteeBooksIds,
-        },
-      });
-    },
-  });
-
-  useEffect(() => {
-    getMentoring();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const [acceptMentroingRequest] = useMutation(ACCEPT_MENTORING_REQUEST, {
-    onCompleted: (d) => getMentoring(),
-  });
-
-  const newData = useMemo(() => {
-    return (
-      menteeBooks &&
-      mentoringData &&
-      _(mentoringData.mentoring_getMentoring.mentorings[0].myMentees)
-        .map(({ mybookTitle, menteeGroup_id, mybook_id, menteeUsername, menteeName }) => ({
-          key: mybook_id,
-          mybookTitle,
-          mybook_id,
-          menteeUsername,
-          menteeName,
-          menteeGroup_id,
-          menteeGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup, { _id: menteeGroup_id }).name,
-          studyHistory:
-            _(_.find(menteeBooks.mybook_getManyMybookInfo.mybooks, (book) => book._id === mybook_id).stats?.studyHistory)
-              .map((history) => history.studyHour)
-              .take(5)
-              .value() === []
-              ? _(_.find(menteeBooks.mybook_getManyMybookInfo.mybooks, (book) => book._id === mybook_id).stats.studyHistory)
-                  .map((history) => history.studyHour)
-                  .take(5)
-                  .value()
-              : ["0.5", "2", "0", "1", "2"],
-        }))
-        .value()
-    );
-  }, [menteeBooks, mentoringData]);
+  const { newData, mentoringData } = useGetMentoringAndMenteeBooks();
 
   const menteeGroupSelector = useMemo(() => {
     return (
@@ -83,32 +28,15 @@ const MentoringHome = () => {
                 {group.name}
               </Select.Option>
             ))}
-            {/* <Select.Option value="미지정">dk </Select.Option>
-            <Select.Option value="그룹1">그룹1 </Select.Option>
-            <Select.Option value="그룹2">그룹2 </Select.Option> */}
           </Select>
         </>
       )
     );
   }, [mentoringData]);
 
-  if (error || error1) <div>error</div>;
-  if (loading || loading1) <div>loading</div>;
-
-  if (menteeBooks) {
-    console.log({ menteeBooks });
-  }
-  if (mentoringData) {
-    console.log({ mentoringData });
-  }
-
-  if (menteeBooks && mentoringData) {
-    console.log(_.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup, { _id: "617f6ac3631f4b26a044b856" }));
-  }
-
   return (
     <div>
-      {menteeBooks && mentoringData && (
+      {newData && (
         <MentoringWrapper>
           <Card size="small" bordered={false}>
             <Tabs size="small">
@@ -246,6 +174,7 @@ const MentoringHome = () => {
                                 mybook_id,
                               },
                             },
+                            refetchQueries: [{ query: GET_MENTORING }],
                           });
                         }}
                       >

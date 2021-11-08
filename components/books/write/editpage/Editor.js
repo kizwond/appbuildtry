@@ -208,22 +208,27 @@ class Editor extends Component {
     // this.props.onFinish(this.state.editor1);
     const num_face1 = this.props.cardtype_info.num_of_row.face1;
     const num_face2 = this.props.cardtype_info.num_of_row.face2;
-    console.log(num_face1);
-    console.log(num_face2);
+    const num_annot = this.props.cardtype_info.num_of_row.annotation;
+
     const face1_array = [];
     const selection_array = [];
     const face2_array = [];
     const annotation_array = [];
 
     //읽기카드만 있을때
-    if (num_face1 > 0 && num_face2 === 0) {
+    if (num_face1 > 0 && num_face2 === 0 && num_annot > 0 ) {
       for (var i = 1; i < num_face1 + 1; i++) {
         face1_array.push(this.state["editor" + i]);
+      }
+      if (num_annot > 0) {
+        for (i = num_face1 + 1; i < num_face1 + num_annot + 1; i++) {
+          annotation_array.push(this.state["editor" + i]);
+        }
       }
     }
 
     //뒤집기카드만 있을때
-    if (num_face1 > 0 && num_face2 > 0) {
+    if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 ) {
       for (i = 1; i < num_face1 + 1; i++) {
         face1_array.push(this.state["editor" + i]);
       }
@@ -232,10 +237,14 @@ class Editor extends Component {
           face2_array.push(this.state["editor" + i]);
         }
       }
+      if (num_annot > 0) {
+        for (i = num_face1+num_face2 + 1; i <  num_face1 + num_face2 + num_annot +1; i++) {
+          annotation_array.push(this.state["editor" + i]);
+        }
+      }
     }
-    console.log(face1_array);
-    console.log(face2_array);
-    const values = { face1: face1_array, face2: face2_array };
+
+    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array };
     this.props.onFinish(values,"normal");
 
     this.props.setEditorOn('')
@@ -278,6 +287,7 @@ class Editor extends Component {
             </div>
           </div>
         </div>
+        <div style={{height:"50px"}}></div>
       </>
     );
   }

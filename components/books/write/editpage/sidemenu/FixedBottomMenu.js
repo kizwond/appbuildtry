@@ -1,5 +1,5 @@
 import ImportModal from "../import/ImportModal";
-import RightDrawer from "../RightDrawer";
+import M_RightDrawer from "../M_RightDrawer";
 import { Button } from "antd";
 
 const backgroundColor = "black";
@@ -64,7 +64,7 @@ const FloatingMenu = ({setCardId, setEditorOnFromCard,setSelectedCardType, cardT
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", flexBasis: "100px", alignItems: "center" }}>
           <ImportModal cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
-          <RightDrawer book_id={book_id} />
+          <M_RightDrawer book_id={book_id} />
         </div>
       </div>
     </div>

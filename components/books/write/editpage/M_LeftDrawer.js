@@ -521,7 +521,7 @@ const LeftDrawer = ({ index_changed, indexChanged }) => {
           목차
         </button>
       </div>
-      <Drawer title="Basic Drawer" placement="left" closable={true} onClose={onClose} visible={visible} mask={false}>
+      <Drawer width={200} title="Basic Drawer" placement="left" closable={true} onClose={onClose} visible={visible} mask={false}>
         <IndexSettingModal
           indexSetInfo={indexSetInfo}
           indexinfo={indexinfo}

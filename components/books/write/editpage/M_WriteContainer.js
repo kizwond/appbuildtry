@@ -659,7 +659,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                             } `,
                             fontSize: row_font.face1[index].size,
                             textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
-                          }}
+                          }}  
                         >
                           <FroalaEditorView model={item} />
                         </div>

@@ -244,6 +244,9 @@ class Editor extends Component {
     this.props.setEditorOn('')
   };
 
+  onClickAddSelection = () => {
+    console.log("selection add clicked!!!")
+  }
   render() {
     const editorList = this.props.nicks.map((item, index) => {
       if(this.props.cardtypeEditor === "flip" && index === 0){
@@ -258,7 +261,7 @@ class Editor extends Component {
               model={this.state["editor" + (index + 1).toString()]}
               onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
             />
-            <div><PlusCircleOutlined style={{ marginLeft: "7px", fontSize: "1.4rem", color: "grey" }} /></div>
+            <div><PlusCircleOutlined onClick={this.onClickAddSelection} style={{ marginLeft: "7px", fontSize: "1.4rem", color: "grey" }} /></div>
           </div>
         );
       } else if(this.props.cardtypeEditor === "flip" && index !== 0){

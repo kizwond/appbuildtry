@@ -79,6 +79,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
   const cardTypeInfo = (cardtype_info, from) => {
     setcardTypeInfos(cardtype_info);
+    console.log("여기다여기 : ", cardtype_info)
+    const cardtypeEditor = cardtype_info.cardtype; //에디터에서 플립모드에 셀렉션 부과하려고 필요한 정보
+
     const num_face1 = cardtype_info.num_of_row.face1;
     const num_face2 = cardtype_info.num_of_row.face2;
     const num_selection = cardtype_info.num_of_row.selection;
@@ -134,7 +137,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
           </Select>
         </div>
         <div style={{marginBottom:"100px"}}>
-        <Editor nicks={nicks} onFinish={onFinish} setEditorOn={setEditorOn} cardtype_info={cardtype_info} />
+        <Editor nicks={nicks} cardtypeEditor={cardtypeEditor} onFinish={onFinish} setEditorOn={setEditorOn} cardtype_info={cardtype_info} />
         </div>
       </>
     );
@@ -152,7 +155,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             {cardTypeListInCard}
           </Select>
         </div>
-        <EditorFromCard nicks={nicks} onFinish={onFinish} setEditorOnFromCard={setEditorOnFromCard} cardtype_info={cardtype_info} />
+        <EditorFromCard nicks={nicks} cardtypeEditor={cardtypeEditor} onFinish={onFinish} setEditorOnFromCard={setEditorOnFromCard} cardtype_info={cardtype_info} />
       </>
     );
 

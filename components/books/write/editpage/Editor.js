@@ -10,14 +10,7 @@ import "froala-editor//css/themes/gray.css";
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Form, Input, Button, message } from "antd";
-import dynamic from 'next/dynamic';
-
-// const FroalaEditorComponent = dynamic(import('react-froala-wysiwyg'), {
-//   ssr: false
-// });
-// const Feditor = dynamic(import('froala-editor'), {
-//   ssr: false
-// });
+import { QuestionCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 class Editor extends Component {
   constructor(props) {
@@ -42,6 +35,7 @@ class Editor extends Component {
       editor16: "",
     }
     this.config = {
+      key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
       editorClass: "editor_try",
       quickInsertEnabled: false,
       imageUploadURL: "/api/cardset/imageUpload",
@@ -251,22 +245,51 @@ class Editor extends Component {
   };
 
   render() {
-    
-
     const editorList = this.props.nicks.map((item, index) => {
-      return (
-        <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
-          <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
-            {item}
-          </label>
-          <FroalaEditorComponent
-            tag="textarea"
-            config={this.config}
-            model={this.state["editor" + (index + 1).toString()]}
-            onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-          />
-        </div>
-      );
+      if(this.props.cardtypeEditor === "flip" && index === 0){
+        return (
+          <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
+            <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
+              {item}
+            </label>
+            <FroalaEditorComponent
+              tag="textarea"
+              config={this.config}
+              model={this.state["editor" + (index + 1).toString()]}
+              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+            />
+            <div><PlusCircleOutlined style={{ marginLeft: "7px", fontSize: "1.4rem", color: "grey" }} /></div>
+          </div>
+        );
+      } else if(this.props.cardtypeEditor === "flip" && index !== 0){
+        return (
+          <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
+            <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
+              {item}
+            </label>
+            <FroalaEditorComponent
+              tag="textarea"
+              config={this.config}
+              model={this.state["editor" + (index + 1).toString()]}
+              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+            />
+          </div>
+        );
+      }else {
+        return (
+          <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
+            <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
+              {item}
+            </label>
+            <FroalaEditorComponent
+              tag="textarea"
+              config={this.config}
+              model={this.state["editor" + (index + 1).toString()]}
+              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+            />
+          </div>
+        );
+      }
     });
 
     return (

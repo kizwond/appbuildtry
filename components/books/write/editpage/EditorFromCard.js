@@ -42,6 +42,7 @@ class EditorFromCard extends Component {
       editor16: "",
     }
     this.config = {
+      key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
       editorClass: "editor_try",
       quickInsertEnabled: false,
       imageUploadURL: "/api/cardset/imageUpload",

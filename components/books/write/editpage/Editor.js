@@ -239,7 +239,8 @@ class Editor extends Component {
     }
 
     const values = { face1: face1_array, face2: face2_array, annotation: annotation_array };
-    this.props.onFinish(values,"normal");
+    console.log(this.props.parentId)
+    this.props.onFinish(values,"normal", this.props.parentId);
 
     this.props.setEditorOn('')
   };

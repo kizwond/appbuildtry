@@ -65,7 +65,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
   useEffect(() => {
     if (data1) {
-      console.log("최초 로드 data : ", data1);
+      // console.log("최초 로드 data : ", data1);
       setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
       setCardTypeSets(data1.cardtypeset_getbymybookid.cardtypesets);
       setCardTypes(data1.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
@@ -77,8 +77,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     }
   }, [data1, indexChanged, first_index]);
 
-  const cardTypeInfo = (cardtype_info, from) => {
+  const cardTypeInfo = (cardtype_info, from, parentId) => {
     setcardTypeInfos(cardtype_info);
+    console.log(parentId)
     console.log("여기다여기 : ", cardtype_info)
     const cardtypeEditor = cardtype_info.cardtype; //에디터에서 플립모드에 셀렉션 부과하려고 필요한 정보
 
@@ -137,7 +138,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
           </Select>
         </div>
         <div style={{marginBottom:"100px"}}>
-        <Editor nicks={nicks} cardtypeEditor={cardtypeEditor} onFinish={onFinish} setEditorOn={setEditorOn} cardtype_info={cardtype_info} />
+        <Editor parentId={parentId} nicks={nicks} cardtypeEditor={cardtypeEditor} onFinish={onFinish} setEditorOn={setEditorOn} cardtype_info={cardtype_info} />
         </div>
       </>
     );
@@ -155,7 +156,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             {cardTypeListInCard}
           </Select>
         </div>
-        <EditorFromCard nicks={nicks} cardtypeEditor={cardtypeEditor} onFinish={onFinish} setEditorOnFromCard={setEditorOnFromCard} cardtype_info={cardtype_info} />
+        <EditorFromCard parentId={parentId} nicks={nicks} cardtypeEditor={cardtypeEditor} onFinish={onFinish} setEditorOnFromCard={setEditorOnFromCard} cardtype_info={cardtype_info} />
       </>
     );
 
@@ -170,6 +171,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
   const onFinish = (values, from) => {
     console.log(values);
+    console.log(values.parentId)
     const mybook_id = localStorage.getItem("book_id");
     const cardtype = sessionStorage.getItem("cardtype");
     console.log("??????????????????????", cardId);
@@ -183,7 +185,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
     const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
 
-    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2, values.annotation);
+    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2, values.annotation, values.parentId);
   };
 
   const [cardset_addcard] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
@@ -192,7 +194,13 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     setCards(data.cardset_addcard.cardsets[0].cards);
   }
 
-  async function addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, face1_contents, face2_contents, annotation_contents) {
+  async function addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, face1_contents, face2_contents, annotation_contents,parent_card_id) {
+    console.log("부모카드아이디", parent_card_id)
+    if (parent_card_id === undefined){
+      var hasParent = "no"
+    } else {
+      hasParent = "yes"
+    }
     try {
       await cardset_addcard({
         variables: {
@@ -204,8 +212,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
               cardtypeset_id: cardTypeSetId,
               cardtype_id,
               cardtype,
-              hasParent: "no",
-              parent_card_id: null,
+              hasParent: hasParent,
+              parent_card_id: parent_card_id,
             },
             contents: {
               user_flag: null,
@@ -271,6 +279,20 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     }
   }
 
+  function onClickCardAddChild(type, parentId) {
+    setEditorOn("");
+    if (selectedCardType === undefined) {
+      setSelectedCardType(cardTypes[0].cardtype_info);
+      cardTypeInfo(cardTypes[0].cardtype_info, "inCard", parentId);
+      sessionStorage.setItem("cardtype", cardTypes[0].cardtype_info.cardtype);
+    } else {
+      const hello = cardTypes.filter((item) => item.cardtype_info.name === selectedCardType.name);
+      setSelectedCardType(hello[0].cardtype_info);
+      sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
+      cardTypeInfo(hello[0].cardtype_info, "inCard", parentId);
+    }
+  }
+
   if (cards) {
     var contents = cards.map((content) => {
       if (content._id === cardId) {
@@ -278,17 +300,17 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       } else {
         borderLeft = "none";
       }
-      console.log("해당카드 정보", content);
-      console.log("카드에 스타일 입히기 시작", cardTypeSets);
+      // console.log("해당카드 정보", content);
+      // console.log("카드에 스타일 입히기 시작", cardTypeSets);
 
       const current_card_style = cardTypeSets[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
-      console.log(current_card_style);
+      // console.log(current_card_style);
 
       const face_style = current_card_style[0].face_style;
       const row_style = current_card_style[0].row_style;
       const row_font = current_card_style[0].row_font;
 
-      console.log(row_font);
+      // console.log(row_font);
 
       return (
         <>
@@ -591,6 +613,11 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                       <div>
                         <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
                           다음카드추가
+                        </Button>
+                      </div>
+                      <div>
+                        <Button size="small" onClick={()=>onClickCardAddChild("general", content._id)} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
+                          자식카드추가
                         </Button>
                       </div>
                     </div>

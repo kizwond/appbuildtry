@@ -245,8 +245,9 @@ class EditorFromCard extends Component {
       }
     }
 
-    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array };
-    this.props.onFinish(values, "inCard");
+    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array, parentId : this.props.parentId };
+    console.log(this.props.parentId)
+    this.props.onFinish(values, "inCard", this.props.parendId);
 
     this.props.setEditorOnFromCard('')
   };

@@ -1,7 +1,7 @@
-import { useMutation } from '@apollo/client';
-import { CREATE_MY_BOOK } from '../../../../graphql/query/writePage';
-import { Modal, Form, Input, Select } from 'antd';
-import { memo } from 'react';
+import { useMutation } from "@apollo/client";
+import { CREATE_MY_BOOK } from "../../../../graphql/query/writePage";
+import { Modal, Form, Input, Select } from "antd";
+import { memo } from "react";
 
 const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }) => {
   const [form] = Form.useForm();
@@ -9,9 +9,9 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
 
   const [mybook_create, { data, loading, error }] = useMutation(CREATE_MY_BOOK, {
     onCompleted: (_data) => {
-      if (_data.mybook_create.msg == '책 생성 성공적!') {
+      if (_data.mybook_create.msg == "책 생성 성공적!") {
         handleToGetMyBook(_data.mybook_create.mybooks);
-        console.log('receivedData', _data);
+        console.log("receivedData", _data);
       }
     },
   });
@@ -33,17 +33,15 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
 
   return (
     <>
-      {console.log('CreateBookModal 랜더링')}
-
       <Modal
         visible={visible}
         title="새 책 만들기"
         cancelText="취소"
         onCancel={() => changeVisible(false)}
         okButtonProps={{
-          form: 'category-editor-form',
-          key: 'submit',
-          htmlType: 'submit',
+          form: "category-editor-form",
+          key: "submit",
+          htmlType: "submit",
         }}
         mask={false} // 모달 바깥 전체화면 덮기 기능
         okText="새 책 만들기 완료"
@@ -54,7 +52,7 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
           id="category-editor-form"
           requiredMark={false}
           initialValues={{
-            category: category.filter((cate) => cate.mybookcate_info.name === '(미지정)')[0]._id,
+            category: category.filter((cate) => cate.mybookcate_info.name === "(미지정)")[0]._id,
           }}
           onFinish={(values) => {
             changeVisible(false);
@@ -62,9 +60,9 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
             resetFields();
           }}
           onFinishFailed={(values, errorFields, outOfDate) => {
-            console.log('values', values);
-            console.log('errorFields', errorFields);
-            console.log('outOfDate', outOfDate);
+            console.log("values", values);
+            console.log("errorFields", errorFields);
+            console.log("outOfDate", outOfDate);
           }}
         >
           <Form.Item
@@ -73,7 +71,7 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
             rules={[
               {
                 required: true,
-                message: '책 제목을 입력해주세요!',
+                message: "책 제목을 입력해주세요!",
               },
             ]}
           >
@@ -85,7 +83,7 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
             rules={[
               {
                 required: true,
-                message: '책 제목을 입력해주세요!',
+                message: "책 제목을 입력해주세요!",
               },
             ]}
           >

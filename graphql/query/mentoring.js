@@ -1,90 +1,14 @@
 import { gql } from "@apollo/client";
+import { MENTORING_FRAGMENT } from "../../src/fragments";
 
 export const GET_MENTORING = gql`
+  ${MENTORING_FRAGMENT}
   query {
     mentoring_getMentoring {
       status
       msg
       mentorings {
-        mentoring_info {
-          user_id
-          menteeGroup {
-            _id
-            name
-            isFixed
-          }
-          mentorGroup {
-            _id
-            name
-            isFixed
-          }
-        }
-        sentReqs {
-          menteeUser_id
-          mentorUser_id
-          menteeUsername
-          mentorUsername
-          menteeName
-          mentorName
-          menteeOrganization
-          mentorOrganization
-          mybook_id
-          mybookTitle
-          comment
-          reqStatus
-          reqDate
-          processedDate
-        }
-        receivedReqs {
-          menteeUser_id
-          mentorUser_id
-          menteeUsername
-          mentorUsername
-          menteeName
-          mentorName
-          menteeOrganization
-          mentorOrganization
-          mybook_id
-          mybookTitle
-          comment
-          reqStatus
-          reqDate
-          processedDate
-        }
-        myMentors {
-          menteeUser_id
-          mentorUser_id
-          menteeUsername
-          mentorUsername
-          menteeName
-          mentorName
-          menteeOrganization
-          mentorOrganization
-          mybook_id
-          mybookTitle
-          comment
-          mentorGroup_id
-          mentoringStatus
-          startDate
-          finishDate
-        }
-        myMentees {
-          menteeUser_id
-          mentorUser_id
-          menteeUsername
-          mentorUsername
-          menteeName
-          mentorName
-          menteeOrganization
-          mentorOrganization
-          mybook_id
-          mybookTitle
-          comment
-          menteeGroup_id
-          mentoringStatus
-          startDate
-          finishDate
-        }
+        ...mentoringFragment
       }
     }
   }

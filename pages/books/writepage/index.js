@@ -98,7 +98,6 @@ const Writeanother = () => {
             />
           </Col>
           <Col span={24}>
-            {console.log(newCateRef)}
             <BooksTable
               isPc
               category={category}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client";
 import _, { divide } from "lodash";
+import produce from "immer";
 
 import { GET_MENTORING, REQUEST_MENTORING, SEARCH_USER_INFO, GET_BOOKS_INFO, ACCEPT_MENTORING_REQUEST } from "../../../graphql/query/mentoring";
 
@@ -17,6 +18,8 @@ const MentoringHome = () => {
   const [acceptMentroingRequest] = useMutation(ACCEPT_MENTORING_REQUEST, {});
 
   const { newData, mentoringData } = useGetMentoringAndMenteeBooks();
+
+  const client = useApolloClient();
 
   const menteeGroupSelector = useMemo(() => {
     return (
@@ -38,6 +41,7 @@ const MentoringHome = () => {
     <div>
       {newData && (
         <MentoringWrapper>
+          <button onClick={() => console.log(client)}>아폴로</button>
           <Card size="small" bordered={false}>
             <Tabs size="small">
               <Tabs.TabPane tab="멘티" key="멘티">
@@ -174,7 +178,41 @@ const MentoringHome = () => {
                                 mybook_id,
                               },
                             },
-                            refetchQueries: [{ query: GET_MENTORING }],
+                            update: (cache, data) => {
+                              const _data: any = cache.readQuery({ query: GET_MENTORING });
+                              console.log({ _data });
+                              cache.writeQuery({
+                                query: GET_MENTORING,
+                                data: {
+                                  mentoring_getMentoring: produce(_data.mentoring_getMentoring, (draft) => {
+                                    draft.mentorings[0].myMentees = [
+                                      ...draft.mentorings[0].myMentees,
+                                      {
+                                        comment,
+                                        finishDate: null,
+                                        menteeGroup_id: "61832257ee843403b8512f3e",
+                                        menteeName,
+                                        menteeOrganization,
+                                        menteeUser_id,
+                                        menteeUsername,
+                                        mentorName,
+                                        mentorOrganization,
+                                        mentorUser_id,
+                                        mentorUsername,
+                                        mentoringStatus: "onGoing",
+                                        mybookTitle,
+                                        mybook_id,
+                                        startDate: new Date().valueOf(),
+                                        __typename: "MyMenteeDetails",
+                                      },
+                                    ];
+
+                                    draft.mentorings[0].receivedReqs[indexNumber].reqStatus = "accepted";
+                                  }),
+                                },
+                              });
+                            },
+                            // refetchQueries: [{ query: GET_MENTORING }],
                           });
                         }}
                       >

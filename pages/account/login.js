@@ -48,8 +48,9 @@ const LoginComponent = () => {
         localStorage.setItem("refreshToken", data.login.token.refreshToken);
       }
 
-      // window.location.href = "/";
+      window.location.href = "/";
     } else {
+      console.log("here")
       error();
     }
   }
@@ -63,7 +64,7 @@ const LoginComponent = () => {
         },
       });
     } catch (error) {
-      console.log(error);
+      alert("회원정보가 일치하지 않아요~")
     }
   }
 

@@ -49,7 +49,8 @@ const LoginComponent = () => {
         },
       });
     } catch (error) {
-      console.log(error);
+      alert("회원정보가 일치하지 않아요~");
+      
     }
   }
 

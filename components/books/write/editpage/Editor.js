@@ -10,14 +10,7 @@ import "froala-editor//css/themes/gray.css";
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Form, Input, Button, message } from "antd";
-import dynamic from 'next/dynamic';
-
-// const FroalaEditorComponent = dynamic(import('react-froala-wysiwyg'), {
-//   ssr: false
-// });
-// const Feditor = dynamic(import('froala-editor'), {
-//   ssr: false
-// });
+import { QuestionCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 class Editor extends Component {
   constructor(props) {
@@ -42,6 +35,7 @@ class Editor extends Component {
       editor16: "",
     }
     this.config = {
+      key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
       editorClass: "editor_try",
       quickInsertEnabled: false,
       imageUploadURL: "/api/cardset/imageUpload",
@@ -208,22 +202,27 @@ class Editor extends Component {
     // this.props.onFinish(this.state.editor1);
     const num_face1 = this.props.cardtype_info.num_of_row.face1;
     const num_face2 = this.props.cardtype_info.num_of_row.face2;
-    console.log(num_face1);
-    console.log(num_face2);
+    const num_annot = this.props.cardtype_info.num_of_row.annotation;
+
     const face1_array = [];
     const selection_array = [];
     const face2_array = [];
     const annotation_array = [];
 
     //읽기카드만 있을때
-    if (num_face1 > 0 && num_face2 === 0) {
+    if (num_face1 > 0 && num_face2 === 0 && num_annot > 0 ) {
       for (var i = 1; i < num_face1 + 1; i++) {
         face1_array.push(this.state["editor" + i]);
+      }
+      if (num_annot > 0) {
+        for (i = num_face1 + 1; i < num_face1 + num_annot + 1; i++) {
+          annotation_array.push(this.state["editor" + i]);
+        }
       }
     }
 
     //뒤집기카드만 있을때
-    if (num_face1 > 0 && num_face2 > 0) {
+    if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 ) {
       for (i = 1; i < num_face1 + 1; i++) {
         face1_array.push(this.state["editor" + i]);
       }
@@ -232,32 +231,69 @@ class Editor extends Component {
           face2_array.push(this.state["editor" + i]);
         }
       }
+      if (num_annot > 0) {
+        for (i = num_face1+num_face2 + 1; i <  num_face1 + num_face2 + num_annot +1; i++) {
+          annotation_array.push(this.state["editor" + i]);
+        }
+      }
     }
-    console.log(face1_array);
-    console.log(face2_array);
-    const values = { face1: face1_array, face2: face2_array };
-    this.props.onFinish(values,"normal");
+
+    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array };
+    console.log(this.props.parentId)
+    this.props.onFinish(values,"normal", this.props.parentId);
 
     this.props.setEditorOn('')
   };
 
+  onClickAddSelection = () => {
+    console.log("selection add clicked!!!")
+  }
   render() {
-    
-
     const editorList = this.props.nicks.map((item, index) => {
-      return (
-        <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
-          <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
-            {item}
-          </label>
-          <FroalaEditorComponent
-            tag="textarea"
-            config={this.config}
-            model={this.state["editor" + (index + 1).toString()]}
-            onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-          />
-        </div>
-      );
+      if(this.props.cardtypeEditor === "flip" && index === 0){
+        return (
+          <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
+            <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
+              {item}
+            </label>
+            <FroalaEditorComponent
+              tag="textarea"
+              config={this.config}
+              model={this.state["editor" + (index + 1).toString()]}
+              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+            />
+            <div><PlusCircleOutlined onClick={this.onClickAddSelection} style={{ marginLeft: "7px", fontSize: "1.4rem", color: "grey" }} /></div>
+          </div>
+        );
+      } else if(this.props.cardtypeEditor === "flip" && index !== 0){
+        return (
+          <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
+            <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
+              {item}
+            </label>
+            <FroalaEditorComponent
+              tag="textarea"
+              config={this.config}
+              model={this.state["editor" + (index + 1).toString()]}
+              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+            />
+          </div>
+        );
+      }else {
+        return (
+          <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
+            <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
+              {item}
+            </label>
+            <FroalaEditorComponent
+              tag="textarea"
+              config={this.config}
+              model={this.state["editor" + (index + 1).toString()]}
+              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+            />
+          </div>
+        );
+      }
     });
 
     return (
@@ -278,6 +314,7 @@ class Editor extends Component {
             </div>
           </div>
         </div>
+        <div style={{height:"50px"}}></div>
       </>
     );
   }

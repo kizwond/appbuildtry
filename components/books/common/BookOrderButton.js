@@ -2,17 +2,18 @@ import { memo } from "react";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { CHANGE_POSITION_OF_BOOK } from "../../../graphql/query/writePage";
+import { GET_CATEGORY_AND_BOOKS_INFO_STUDY } from "../../../graphql/query/studyPage";
 
 import { Space, Tooltip } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
 const BookOrderButton = ({ _record, handleToGetMyBook }) => {
   const router = useRouter();
-  const [rePosition, { loading }] = useMutation(CHANGE_POSITION_OF_BOOK, {
+  const [rePosition] = useMutation(CHANGE_POSITION_OF_BOOK, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
       if (received_data.mybook_changeorder.status === "200") {
-        handleToGetMyBook(received_data.mybook_changeorder.mybooks);
+        // handleToGetMyBook(received_data.mybook_changeorder.mybooks);
       } else if (received_data.mybook_changeorder.status === "401") {
         router.push("/account/login");
       } else {
@@ -27,6 +28,16 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
         variables: {
           direction: direction,
           mybook_id: id,
+        },
+        update: (cache, data) => {
+          const queryData = cache.readQuery({ query: GET_CATEGORY_AND_BOOKS_INFO_STUDY });
+          console.log(queryData);
+          const selectedBook = queryData.mybook_getAllMybook.mybooks.find((book) => book._id === id);
+          const swichedBook = queryData.mybook_getAllMybook.mybooks.find((book) => book._id === id);
+          // cache.writeQuery({
+          //   query: GET_CATEGORY_AND_BOOKS_INFO_STUDY,
+          //   data: 1,
+          // });
         },
       });
     } catch (error) {

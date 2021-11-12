@@ -1,21 +1,20 @@
-import React, { useState, memo, useEffect } from "react";
-import { useMutation } from "@apollo/client";
+import React, { memo } from "react";
+import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
-import { UPDATE_BOOK_TITLE_AND_HIDE } from "../../../graphql/query/writePage";
+import { UPDATE_BOOK_HIDE } from "../../../graphql/query/writePage";
 
-import { Tooltip, Button } from "antd";
+import { Tooltip } from "antd";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 
-const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePopup }) => {
+const HideOrShowButton = ({ record }) => {
   const { title, _id, hide_or_show } = record;
   const isShowed = hide_or_show === "show";
 
   const router = useRouter();
-  const [updateBookTitle, { variables }] = useMutation(UPDATE_BOOK_TITLE_AND_HIDE, {
+  const [updateBookTitle, { variables }] = useMutation(UPDATE_BOOK_HIDE, {
     onCompleted: (received_data) => {
-      console.log("received_data", received_data);
+      console.log("책 수정함", received_data);
       if (received_data.mybook_update.status === "200") {
-        handleToGetMyBook(received_data.mybook_update.mybooks);
       } else if (received_data.mybook_update.status === "401") {
         router.push("/account/login");
       } else {
@@ -30,6 +29,21 @@ const HideOrShowButton = ({ handleToGetMyBook, record, isPopupSomething, chagePo
           mybook_id: _id,
           title,
           hide_or_show: hide,
+        },
+        update: (cache, { data: { mybook_update } }) => {
+          cache.writeFragment({
+            id: `Mybook:${_id}`,
+            fragment: gql`
+              fragment MyBook on Mybook {
+                mybook_info {
+                  hide_or_show
+                }
+              }
+            `,
+            data: {
+              mybook_info: { hide_or_show: hide, __typename: "Mybook_info" },
+            },
+          });
         },
       });
     } catch (error) {

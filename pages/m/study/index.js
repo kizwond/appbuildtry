@@ -1,7 +1,7 @@
 import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_CATEGORY_AND_BOOKS_INFO } from "../../../graphql/query/writePage";
+import { GET_CATEGORY_AND_BOOKS_INFO_STUDY } from "../../../graphql/query/studyPage";
 import { useRouter } from "next/router";
 
 import styled from "styled-components";
@@ -26,7 +26,7 @@ const Writeanother = () => {
 
   const [selectedBooks, setSelectedBooks] = useState([]);
 
-  const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
+  const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO_STUDY, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
       if (received_data.mybookcate_get.status === "200") {
@@ -34,12 +34,14 @@ const Writeanother = () => {
         setCategory(received_data.mybookcate_get.mybookcates);
         setIsReceivedData(true);
       } else if (received_data.mybookcate_get.status === "401") {
-        router.push("/account/login");
+        router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }
     },
   });
+
+  const myBook2 = useMemo(() => data?.mybook_getAllMybook.mybooks, [data]);
 
   useEffect(() => {
     sessionStorage.removeItem("books_selected");
@@ -96,11 +98,11 @@ const Writeanother = () => {
         )}
 
         <StyledRowMaxWidth>
-          {myBook.filter((_book) => _book.mybook_info.studylike === true).length > 0 && (
+          {myBook2.filter((_book) => _book.mybook_info.studylike === true).length > 0 && (
             <Col span={24}>
               <StudyFavoriteBooksTable
                 category={category}
-                myBook={myBook}
+                myBook={myBook2}
                 handleToGetMyBook={handleToGetMyBook}
                 isPopupSomething={isPopupSomething}
                 chagePopup={chagePopup}
@@ -115,7 +117,7 @@ const Writeanother = () => {
           <Col span={24}>
             <StudyBooksTable
               category={category}
-              myBook={myBook}
+              myBook={myBook2}
               handleToGetMyBook={handleToGetMyBook}
               isPopupSomething={isPopupSomething}
               chagePopup={chagePopup}

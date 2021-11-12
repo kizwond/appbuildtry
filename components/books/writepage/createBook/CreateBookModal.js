@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { CREATE_MY_BOOK } from "../../../../graphql/query/writePage";
+import { CREATE_MY_BOOK, GET_CATEGORY_AND_BOOKS_INFO } from "../../../../graphql/query/writePage";
 import { Modal, Form, Input, Select } from "antd";
 import { memo } from "react";
 
@@ -25,6 +25,21 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
           title: book_title,
           mybookcate_id: id,
         },
+        // update: (cache, result) => {
+        //   const _data = cache.readQuery({ query: GET_CATEGORY_AND_BOOKS_INFO });
+        //   console.log({ result });
+        //   console.log(_data);
+        //   cache.writeQuery({
+        //     query: GET_CATEGORY_AND_BOOKS_INFO,
+        //     data: {
+        //       ..._data,
+        //       mybook_getAllMybook: {
+        //         ..._data.mybook_getAllMybook,
+        //         mybooks: result.data.mybook_create.mybooks,
+        //       },
+        //     },
+        //   });
+        // },
       });
     } catch (error) {
       console.log(error);

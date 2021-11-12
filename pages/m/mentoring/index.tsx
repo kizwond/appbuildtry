@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client";
 import _, { divide } from "lodash";
 import produce from "immer";
+import Layout from "../../../components/layout/M_Layout";
 
 import { GET_MENTORING, REQUEST_MENTORING, SEARCH_USER_INFO, GET_BOOKS_INFO, ACCEPT_MENTORING_REQUEST } from "../../../graphql/query/mentoring";
 
@@ -38,7 +39,7 @@ const MentoringHome = () => {
   }, [mentoringData]);
 
   return (
-    <div>
+    <Layout>
       {newData && (
         <MentoringWrapper>
           <button onClick={() => console.log(client)}>아폴로</button>
@@ -255,7 +256,7 @@ const MentoringHome = () => {
           </DrawerWrapper>
         </MentoringWrapper>
       )}
-    </div>
+    </Layout>
   );
 };
 

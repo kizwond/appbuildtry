@@ -1,23 +1,23 @@
 import React, { useState, memo, useEffect } from "react";
-import { useMutation } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { CHANGE_STUDY_LIKE } from "../../../graphql/query/studyPage";
 import { CHANGE_WRITE_LIKE } from "../../../graphql/query/writePage";
 
 import { Tooltip } from "antd";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
+import { useMemo } from "react";
 
-const FavoriteBook = ({ handleToGetMyBook, record, changeActivedTable, changeFoldedMenu, tableType }) => {
+const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType }) => {
   const { _id, writelike, studylike } = record;
+  const isStudyTable = tableType === "study" ? "mybook_changestudylike" : "mybook_changewritelike";
 
   const router = useRouter();
   const [changeLike] = useMutation(tableType === "study" ? CHANGE_STUDY_LIKE : CHANGE_WRITE_LIKE, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
-      const query = tableType === "study" ? "mybook_changestudylike" : "mybook_changewritelike";
-      if (received_data[query].status === "200") {
-        handleToGetMyBook(received_data[query].mybooks);
-      } else if (received_data[query].status === "401") {
+      if (received_data[isStudyTable].status === "200") {
+      } else if (received_data[isStudyTable].status === "401") {
         router.push("/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -38,13 +38,36 @@ const FavoriteBook = ({ handleToGetMyBook, record, changeActivedTable, changeFol
     try {
       await changeLike({
         variables,
+        update: (cache, { data }) => {
+          if (data[isStudyTable].status === "200") {
+            cache.writeFragment({
+              id: `Mybook:${_id}`,
+              fragment: gql`
+                fragment MyBook on Mybook {
+                  mybook_info {
+                    ${tableType === "study" ? "studylike" : "writelike"}
+                  }
+                }
+              `,
+              data:
+                tableType === "study"
+                  ? {
+                      mybook_info: { studylike: _boolean, __typename: "Mybook_info" },
+                    }
+                  : {
+                      mybook_info: { writelike: _boolean, __typename: "Mybook_info" },
+                    },
+            });
+          }
+        },
       });
     } catch (error) {
       console.log(error);
     }
   }
 
-  const like = tableType === "study" ? studylike : writelike;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const like = useMemo(() => (tableType === "study" ? studylike : writelike), [tableType]);
 
   return (
     <>

@@ -300,8 +300,8 @@ const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, c
               >
                 <Space size={3}>
                   <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} /> |
-                  <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
-                  <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+                  <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
+                  <HideOrShowButton record={_record} />
                 </Space>
                 <div
                   className="PushCustomCircleButton"

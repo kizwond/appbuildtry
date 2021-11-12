@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORY_AND_BOOKS_INFO } from "../../../graphql/query/writePage";
 import { useRouter } from "next/router";
@@ -40,6 +40,9 @@ const Writeanother = () => {
       }
     },
   });
+
+  const myBook2 = useMemo(() => data?.mybook_getAllMybook.mybooks, [data]);
+  const category2 = useMemo(() => data?.mybookcate_get.mybookcates, [data]);
 
   const changeNewCateId = useCallback((id) => {
     setNewCateId(id);
@@ -88,7 +91,7 @@ const Writeanother = () => {
           <Col span={24}>
             <M_FavoriteBooksTable
               category={category}
-              myBook={myBook}
+              myBook={myBook2}
               handleToGetMyBook={handleToGetMyBook}
               isPopupSomething={isPopupSomething}
               chagePopup={chagePopup}
@@ -99,7 +102,7 @@ const Writeanother = () => {
           <Col span={24}>
             <M_BooksTable
               category={category}
-              myBook={myBook}
+              myBook={myBook2}
               handleToGetMyBook={handleToGetMyBook}
               isPopupSomething={isPopupSomething}
               chagePopup={chagePopup}

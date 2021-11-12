@@ -1,45 +1,74 @@
-import { useMutation } from "@apollo/client";
-import { CREATE_MY_BOOK, GET_CATEGORY_AND_BOOKS_INFO } from "../../../../graphql/query/writePage";
+import { gql, useMutation } from "@apollo/client";
 import { Modal, Form, Input, Select } from "antd";
+import { useRouter } from "next/router";
 import { memo } from "react";
+import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
+import { MUTATION_CREATE_MY_BOOK } from "../../../../graphql/mutation/myBook";
 
 const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }) => {
+  const router = useRouter();
   const [form] = Form.useForm();
   const { resetFields } = form;
 
-  const [mybook_create, { data, loading, error }] = useMutation(CREATE_MY_BOOK, {
+  const [mybook_create, { loading }] = useMutation(MUTATION_CREATE_MY_BOOK, {
     onCompleted: (_data) => {
-      if (_data.mybook_create.msg == "책 생성 성공적!") {
-        handleToGetMyBook(_data.mybook_create.mybooks);
+      if (_data.mybook_createMybook.msg == "책 생성 성공적!") {
         console.log("receivedData", _data);
+      } else if (_data.mybook_createMybook.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
       }
     },
   });
-
-  const onCompleted = () => {};
 
   const postNewMyBook = async (book_title, id) => {
     try {
       await mybook_create({
         variables: {
-          title: book_title,
-          mybookcate_id: id,
+          forCreateMybook: {
+            mybookcateset_id: category._id,
+            mybookcate_id: id,
+            title: book_title,
+          },
         },
-        // update: (cache, result) => {
-        //   const _data = cache.readQuery({ query: GET_CATEGORY_AND_BOOKS_INFO });
-        //   console.log({ result });
-        //   console.log(_data);
-        //   cache.writeQuery({
-        //     query: GET_CATEGORY_AND_BOOKS_INFO,
-        //     data: {
-        //       ..._data,
-        //       mybook_getAllMybook: {
-        //         ..._data.mybook_getAllMybook,
-        //         mybooks: result.data.mybook_create.mybooks,
-        //       },
-        //     },
-        //   });
-        // },
+        update: (cache, { data: { mybook_createMybook } }) => {
+          const _data = cache.readQuery({
+            query: gql`
+              ${FRAGMENT_MYBOOK}
+              query {
+                mybook_getMybookByUserID {
+                  status
+                  msg
+                  mybooks {
+                    ...MyBookFragment
+                  }
+                }
+              }
+            `,
+          });
+          cache.writeQuery({
+            query: gql`
+              ${FRAGMENT_MYBOOK}
+              query {
+                mybook_getMybookByUserID {
+                  status
+                  msg
+                  mybooks {
+                    ...MyBookFragment
+                  }
+                }
+              }
+            `,
+            data: {
+              ..._data,
+              mybook_getMybookByUserID: {
+                ..._data.mybook_getMybookByUserID,
+                mybooks: [..._data.mybook_getMybookByUserID.mybooks, ...mybook_createMybook.mybooks],
+              },
+            },
+          });
+        },
       });
     } catch (error) {
       console.log(error);
@@ -67,7 +96,7 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
           id="category-editor-form"
           requiredMark={false}
           initialValues={{
-            category: category.filter((cate) => cate.mybookcate_info.name === "(미지정)")[0]._id,
+            category: category.mybookcates.filter((cate) => cate.name === "(미지정)")[0]._id,
           }}
           onFinish={(values) => {
             changeVisible(false);
@@ -103,9 +132,9 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
             ]}
           >
             <Select placeholder="카테고리를 선택해 주세요.">
-              {category.map((category) => (
-                <Select.Option key={category._id} value={category._id}>
-                  {category.mybookcate_info.name}
+              {category.mybookcates.map((_category) => (
+                <Select.Option key={_category._id} value={_category._id}>
+                  {_category.name}
                 </Select.Option>
               ))}
             </Select>

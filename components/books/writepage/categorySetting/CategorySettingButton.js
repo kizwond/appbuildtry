@@ -3,7 +3,7 @@ import React, { forwardRef, useCallback, useState } from "react";
 import CategorySettingModal from "./CategorySettingModal";
 
 // eslint-disable-next-line react/display-name
-const CategorySettingButton = forwardRef(({ category, handleToGetMyCategory, handleToGetMyBook }, ref) => {
+const CategorySettingButton = forwardRef(({ category }, ref) => {
   const [visible, setVisible] = useState(false);
   const changeVisible = useCallback((_boolean) => {
     setVisible(_boolean);
@@ -15,7 +15,7 @@ const CategorySettingButton = forwardRef(({ category, handleToGetMyCategory, han
         카테고리 관리
       </Button>
 
-      <CategorySettingModal visible={visible} ref={ref} changeVisible={changeVisible} category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
+      <CategorySettingModal visible={visible} ref={ref} changeVisible={changeVisible} category={category} />
     </>
   );
 });

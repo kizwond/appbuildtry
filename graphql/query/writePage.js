@@ -1,31 +1,40 @@
 import { gql } from "@apollo/client";
 
-export const MYBOOK_INFO_HIDE_OR_SHOW_FRAGMENT = gql`
-  fragment MyBookFragment on Mybook_info {
-    hide_or_show
-  }
-`;
 export const GET_CATEGORY_AND_BOOKS_INFO = gql`
-  ${MYBOOK_INFO_HIDE_OR_SHOW_FRAGMENT}
   query {
-    mybookcate_get {
+    mybookcateset_getMybookcatesetByUserID {
       status
       msg
-      mybookcates {
+      mybookcatesets {
         _id
-        mybookcate_info {
-          user_id
+        mybookcateset_info {
+          use_id
+        }
+        mybookcates {
+          _id
           name
-          seq
           isFixed
         }
       }
     }
-    mybook_getAllMybook {
+    mybook_getMybookByUserID {
       status
       msg
       mybooks {
         _id
+        mybook_info {
+          title
+          type
+          user_id
+          mybookcateset_id
+          mybookcate_id
+          seqInCategory
+          hideOrShow
+          isStudyLike
+          isWriteLike
+          seqInStudyLike
+          seqInWriteLike
+        }
         stats {
           overall {
             accuLevel
@@ -50,18 +59,6 @@ export const GET_CATEGORY_AND_BOOKS_INFO = gql`
             level
             studyHour
           }
-        }
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          ...MyBookFragment
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
         }
       }
     }

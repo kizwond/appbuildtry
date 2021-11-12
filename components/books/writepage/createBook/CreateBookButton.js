@@ -2,7 +2,7 @@ import { Button } from "antd";
 import React, { useCallback, useState } from "react";
 import CreateBookModal from "./CreateBookModal";
 
-const CreateBookButton = ({ category, handleToGetMyBook }) => {
+const CreateBookButton = ({ category }) => {
   const [visible, setVisible] = useState(false);
 
   const changeVisible = useCallback((_boolean) => {
@@ -15,7 +15,7 @@ const CreateBookButton = ({ category, handleToGetMyBook }) => {
         새 책 만들기
       </Button>
 
-      <CreateBookModal visible={visible} changeVisible={changeVisible} category={category} handleToGetMyBook={handleToGetMyBook} />
+      <CreateBookModal visible={visible} changeVisible={changeVisible} category={category} />
     </>
   );
 };

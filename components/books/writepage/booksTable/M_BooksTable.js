@@ -41,7 +41,7 @@ const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, c
   }, [newCateId]);
 
   useEffect(() => {
-    setExpandedRowKeys(category.map((_cate) => `KEY:${_cate._id}INDEX:0`));
+    setExpandedRowKeys(category.mybookcates.map((_cate) => `KEY:${_cate._id}INDEX:0`));
     setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -57,7 +57,7 @@ const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, c
     return null;
   }
 
-  const dataSource = makeDataSource(myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook);
+  const dataSource = makeDataSource(myBook, category.mybookcates, isShowedHiddenBook, changeIsShowedHiddenBook);
 
   const getConditionValue = (_record) => {
     return (!expandedRowKeys.includes(_record.key) && _record.relationship === "parent") || _record.classType === "hiddenBar" || _record.classType === "middle-hiddenBar" || _record.classType === "empty-category";
@@ -300,8 +300,8 @@ const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, c
               >
                 <Space size={3}>
                   <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} /> |
-                  <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
-                  <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+                  <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
+                  <HideOrShowButton record={_record} />
                 </Space>
                 <div
                   className="PushCustomCircleButton"

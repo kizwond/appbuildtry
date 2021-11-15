@@ -1,29 +1,73 @@
-import { useMutation } from '@apollo/client';
-import { CREATE_MY_BOOK } from '../../../../graphql/query/writePage';
-import { Modal, Form, Input, Select } from 'antd';
-import { memo } from 'react';
+import { gql, useMutation } from "@apollo/client";
+import { Modal, Form, Input, Select } from "antd";
+import { useRouter } from "next/router";
+import { memo } from "react";
+import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
+import { MUTATION_CREATE_MY_BOOK } from "../../../../graphql/mutation/myBook";
 
 const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }) => {
+  const router = useRouter();
   const [form] = Form.useForm();
   const { resetFields } = form;
 
-  const [mybook_create, { data, loading, error }] = useMutation(CREATE_MY_BOOK, {
+  const [mybook_create, { loading }] = useMutation(MUTATION_CREATE_MY_BOOK, {
     onCompleted: (_data) => {
-      if (_data.mybook_create.msg == '책 생성 성공적!') {
-        handleToGetMyBook(_data.mybook_create.mybooks);
-        console.log('receivedData', _data);
+      if (_data.mybook_createMybook.msg == "책 생성 성공적!") {
+        console.log("receivedData", _data);
+      } else if (_data.mybook_createMybook.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
       }
     },
   });
-
-  const onCompleted = () => {};
 
   const postNewMyBook = async (book_title, id) => {
     try {
       await mybook_create({
         variables: {
-          title: book_title,
-          mybookcate_id: id,
+          forCreateMybook: {
+            mybookcateset_id: category._id,
+            mybookcate_id: id,
+            title: book_title,
+          },
+        },
+        update: (cache, { data: { mybook_createMybook } }) => {
+          const _data = cache.readQuery({
+            query: gql`
+              ${FRAGMENT_MYBOOK}
+              query {
+                mybook_getMybookByUserID {
+                  status
+                  msg
+                  mybooks {
+                    ...MyBookFragment
+                  }
+                }
+              }
+            `,
+          });
+          cache.writeQuery({
+            query: gql`
+              ${FRAGMENT_MYBOOK}
+              query {
+                mybook_getMybookByUserID {
+                  status
+                  msg
+                  mybooks {
+                    ...MyBookFragment
+                  }
+                }
+              }
+            `,
+            data: {
+              ..._data,
+              mybook_getMybookByUserID: {
+                ..._data.mybook_getMybookByUserID,
+                mybooks: [..._data.mybook_getMybookByUserID.mybooks, ...mybook_createMybook.mybooks],
+              },
+            },
+          });
         },
       });
     } catch (error) {
@@ -33,17 +77,15 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
 
   return (
     <>
-      {console.log('CreateBookModal 랜더링')}
-
       <Modal
         visible={visible}
         title="새 책 만들기"
         cancelText="취소"
         onCancel={() => changeVisible(false)}
         okButtonProps={{
-          form: 'category-editor-form',
-          key: 'submit',
-          htmlType: 'submit',
+          form: "category-editor-form",
+          key: "submit",
+          htmlType: "submit",
         }}
         mask={false} // 모달 바깥 전체화면 덮기 기능
         okText="새 책 만들기 완료"
@@ -54,7 +96,7 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
           id="category-editor-form"
           requiredMark={false}
           initialValues={{
-            category: category.filter((cate) => cate.mybookcate_info.name === '(미지정)')[0]._id,
+            category: category.mybookcates.filter((cate) => cate.name === "(미지정)")[0]._id,
           }}
           onFinish={(values) => {
             changeVisible(false);
@@ -62,9 +104,9 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
             resetFields();
           }}
           onFinishFailed={(values, errorFields, outOfDate) => {
-            console.log('values', values);
-            console.log('errorFields', errorFields);
-            console.log('outOfDate', outOfDate);
+            console.log("values", values);
+            console.log("errorFields", errorFields);
+            console.log("outOfDate", outOfDate);
           }}
         >
           <Form.Item
@@ -73,7 +115,7 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
             rules={[
               {
                 required: true,
-                message: '책 제목을 입력해주세요!',
+                message: "책 제목을 입력해주세요!",
               },
             ]}
           >
@@ -85,14 +127,14 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
             rules={[
               {
                 required: true,
-                message: '책 제목을 입력해주세요!',
+                message: "책 제목을 입력해주세요!",
               },
             ]}
           >
             <Select placeholder="카테고리를 선택해 주세요.">
-              {category.map((category) => (
-                <Select.Option key={category._id} value={category._id}>
-                  {category.mybookcate_info.name}
+              {category.mybookcates.map((_category) => (
+                <Select.Option key={_category._id} value={_category._id}>
+                  {_category.name}
                 </Select.Option>
               ))}
             </Select>

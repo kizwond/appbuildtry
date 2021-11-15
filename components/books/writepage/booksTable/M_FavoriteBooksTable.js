@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
-import { Table, Button, Card, Tooltip, Space, Drawer } from "antd";
+import { Table, Button, Card, Space, Drawer } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
@@ -37,8 +37,8 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
     router.push(`/m/write/${bookid}`);
   }
 
-  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.writelike === true);
-  const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seq_in_writelike - book_B.mybook_info.seq_in_writelike);
+  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.isWriteLike === true);
+  const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seqInWriteLike - book_B.mybook_info.seqInWriteLike);
   const dataSource = sortedBook.map((_book, _index) => {
     return {
       ..._book.mybook_info,
@@ -47,7 +47,7 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       ..._book.stats?.overall,
       studyHistory: _book.stats?.studyHistory,
       writeHistory: _book.stats?.writeHistory,
-      categoryName: category.find((_cate) => _cate._id === _book.mybook_info.mybookcate_id).mybookcate_info.name,
+      categoryName: category.mybookcates.find((_cate) => _cate._id === _book.mybook_info.mybookcate_id).mybookcate_info.name,
       isFirstBook: _index === 0,
       isLastBook: writeLikedBooksList.length === _index + 1,
       key: _book._id,
@@ -180,8 +180,8 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
     },
     {
       title: "이동",
-      key: "seq_in_category",
-      dataIndex: "seq_in_category",
+      key: "seqInCategory",
+      dataIndex: "seqInCategory",
       className: "normal",
       align: "right",
       width: 35,
@@ -241,8 +241,8 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
           >
             <Space size={3}>
               <FavoriteBookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} tableType="write" /> |
-              <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} /> |
-              <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+              <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} /> |
+              <HideOrShowButton record={_record} />
             </Space>
             <div
               className="PushCustomCircleButton"

@@ -1,25 +1,40 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_CATEGORY_AND_BOOKS_INFO = gql`
   query {
-    mybookcate_get {
+    mybookcateset_getMybookcatesetByUserID {
       status
       msg
-      mybookcates {
+      mybookcatesets {
         _id
-        mybookcate_info {
-          user_id
+        mybookcateset_info {
+          use_id
+        }
+        mybookcates {
+          _id
           name
-          seq
           isFixed
         }
       }
     }
-    mybook_getAllMybook {
+    mybook_getMybookByUserID {
       status
       msg
       mybooks {
         _id
+        mybook_info {
+          title
+          type
+          user_id
+          mybookcateset_id
+          mybookcate_id
+          seqInCategory
+          hideOrShow
+          isStudyLike
+          isWriteLike
+          seqInStudyLike
+          seqInWriteLike
+        }
         stats {
           overall {
             accuLevel
@@ -44,18 +59,6 @@ export const GET_CATEGORY_AND_BOOKS_INFO = gql`
             level
             studyHour
           }
-        }
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          hide_or_show
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
         }
       }
     }
@@ -203,6 +206,19 @@ export const UPDATE_BOOK_TITLE_AND_HIDE = gql`
           writelike
           seq_in_studylike
           seq_in_writelike
+        }
+      }
+    }
+  }
+`;
+export const UPDATE_BOOK_HIDE = gql`
+  mutation BookUpdateMutation($mybook_id: String!, $title: String, $hide_or_show: String) {
+    mybook_update(mybook_id: $mybook_id, title: $title, hide_or_show: $hide_or_show) {
+      status
+      msg
+      mybooks {
+        mybook_info {
+          hide_or_show
         }
       }
     }

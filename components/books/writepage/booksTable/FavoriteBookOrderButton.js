@@ -1,11 +1,11 @@
 import { useMutation } from "@apollo/client";
 import { memo, useState } from "react";
 import { useRouter } from "next/router";
-import { CHANGE_POSITION_OF_BOOK, CHANGE_POSITION_OF_WRITE_LIKED_BOOK } from "../../../../graphql/query/writePage";
+import { CHANGE_POSITION_OF_BOOK, CHANGE_POSITION_OF_WRITE_LIKED_BOOK, GET_CATEGORY_AND_BOOKS_INFO } from "../../../../graphql/query/writePage";
 
 import { Space, Tooltip } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
-import { CHANGE_POSITION_OF_STUDY_LIKED_BOOK } from "../../../../graphql/query/studyPage";
+import { CHANGE_POSITION_OF_STUDY_LIKED_BOOK, GET_CATEGORY_AND_BOOKS_INFO_STUDY } from "../../../../graphql/query/studyPage";
 
 const FavoriteBookOrderButton = ({ _record, handleToGetMyBook, tableType }) => {
   const router = useRouter();
@@ -29,6 +29,11 @@ const FavoriteBookOrderButton = ({ _record, handleToGetMyBook, tableType }) => {
         variables: {
           direction: direction,
           mybook_id: id,
+        },
+        update: (cache, data) => {
+          const queryData = cache.readQuery({ query: tableType === "study" ? GET_CATEGORY_AND_BOOKS_INFO_STUDY : GET_CATEGORY_AND_BOOKS_INFO });
+          console.log({ queryData });
+          // cache.writeQuery({ query: tableType === "study" ? GET_CATEGORY_AND_BOOKS_INFO_STUDY : GET_CATEGORY_AND_BOOKS_INFO, data: 1 });
         },
       });
     } catch (error) {

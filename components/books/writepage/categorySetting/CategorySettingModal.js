@@ -1,61 +1,43 @@
 /* eslint-disable react/display-name */
-import { useMutation, useLazyQuery } from '@apollo/client';
-import { forwardRef, memo, useRef, useState } from 'react';
-import {
-  CHANGE_CATEGORY_NAME_MUTATION,
-  CHANGE_CATEGORY_ORDER,
-  CREATE_NEW_CATEGORY,
-  DELETE_CATEGORY,
-  GET_CATEGORY_AND_BOOKS_INFO,
-} from '../../../../graphql/query/writePage';
-import styled from 'styled-components';
+import { forwardRef, memo, useRef, useState } from "react";
 
-import { Modal, Button, Input, Table } from 'antd';
-import { EditFilled, CloseCircleFilled, CheckCircleFilled, DeleteOutlined, ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
-import { Space } from '../../../../node_modules/antd/lib/index';
+import { useMutation } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { MUTATION_CREATE_MY_BOOK_CATEGORY, MUTATION_DELETE_MY_BOOK_CATEGORY, MUTATION_UPDATE_MY_BOOK_CATEGORY_NAME, MUTATION_UPDATE_MY_BOOK_CATEGORY_ORDER } from "../../../../graphql/mutation/categorySet";
+import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 
-const CategorySettingModal = forwardRef(({ category, visible, changeVisible, handleToGetMyCategory, handleToGetMyBook }, ref) => {
-  const [editingCell, setEditingCell] = useState('');
-  const [cateName, setCateName] = useState('');
-  const [expandedRowKeys, setExpandedRowKeys] = useState('');
+import styled from "styled-components";
+import { Modal, Button, Input, Table, Space } from "antd";
+import { EditFilled, CloseCircleFilled, CheckCircleFilled, DeleteOutlined, ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+
+const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, ref) => {
+  const [editingCell, setEditingCell] = useState("");
+  const [cateName, setCateName] = useState("");
+  const [expandedRowKeys, setExpandedRowKeys] = useState("");
   const newIdRef = useRef();
 
-  const [getBookAndCategory] = useLazyQuery(GET_CATEGORY_AND_BOOKS_INFO, {
-    fetchPolicy: 'network-only',
+  const [createNewCategory] = useMutation(MUTATION_CREATE_MY_BOOK_CATEGORY, {
     onCompleted: (received_data) => {
-      console.log('received_data', received_data);
-      if (received_data.mybookcate_get.status === '200') {
-        handleToGetMyBook(received_data.mybook_getAllMybook.mybooks);
-        handleToGetMyCategory(received_data.mybookcate_get.mybookcates);
-      } else if (received_data.mybookcate_get.status === '401') {
-        router.push('/account/login');
+      console.log("책생성후 받은 데이터", received_data);
+      if (received_data.mybookcateset_createMybookcate.status === "200") {
+        ref(received_data.mybookcateset_createMybookcate.mybookcatesets[0].mybookcates[newIdRef.current]._id);
+      } else if (received_data.mybookcateset_createMybookcate.status === "401") {
+        router.push("/account/login");
       } else {
-        console.log('어떤 문제가 발생함');
+        console.log("어떤 문제가 발생함");
       }
     },
   });
 
-  const [createNewCategory] = useMutation(CREATE_NEW_CATEGORY, {
-    onCompleted: (received_data) => {
-      console.log('received_data', received_data);
-      if (received_data.mybookcate_create.status === '200') {
-        handleToGetMyCategory(received_data.mybookcate_create.mybookcates);
-        ref(received_data.mybookcate_create.mybookcates[received_data.mybookcate_create.mybookcates.findIndex((i) => i._id === newIdRef.current) + 1]._id);
-      } else if (received_data.mybookcate_create.status === '401') {
-        router.push('/account/login');
-      } else {
-        console.log('어떤 문제가 발생함');
-      }
-    },
-  });
-
-  async function createCategory({ current_mybookcate_id, name }) {
+  async function createCategory({ seq, name }) {
     try {
-      newIdRef.current = current_mybookcate_id;
       await createNewCategory({
         variables: {
-          name: name,
-          current_mybookcate_id,
+          forCreateMybookcate: {
+            mybookcateset_id: category._id,
+            name,
+            seq,
+          },
         },
       });
     } catch (error) {
@@ -63,15 +45,15 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
     }
   }
 
-  const [changeCategoryName] = useMutation(CHANGE_CATEGORY_NAME_MUTATION, {
+  const [changeCategoryName] = useMutation(MUTATION_UPDATE_MY_BOOK_CATEGORY_NAME, {
     onCompleted: (received_data) => {
-      console.log('received_data', received_data);
-      if (received_data.mybookcate_update.status === '200') {
-        handleToGetMyCategory(received_data.mybookcate_update.mybookcates);
-      } else if (received_data.mybookcate_update.status === '401') {
-        router.push('/account/login');
+      console.log("received_data", received_data);
+      if (received_data.mybookcateset_updateMybookcateInfo.status === "200") {
+        // handleToGetMyCategory(received_data.mybookcateset_updateMybookcateInfo.mybookcatesets[0].mybookcates);
+      } else if (received_data.mybookcateset_updateMybookcateInfo.status === "401") {
+        router.push("/account/login");
       } else {
-        console.log('어떤 문제가 발생함');
+        console.log("어떤 문제가 발생함");
       }
     },
   });
@@ -79,8 +61,11 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
     try {
       await changeCategoryName({
         variables: {
-          mybookcate_id,
-          name,
+          forUpdateMybookcateInfo: {
+            mybookcateset_id: "618df7479bc52c0f84f85459",
+            mybookcate_id,
+            name,
+          },
         },
       });
     } catch (error) {
@@ -88,15 +73,15 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
     }
   }
 
-  const [changeCategoryOrder] = useMutation(CHANGE_CATEGORY_ORDER, {
+  const [changeCategoryOrder] = useMutation(MUTATION_UPDATE_MY_BOOK_CATEGORY_ORDER, {
     onCompleted: (received_data) => {
-      console.log('received_data', received_data);
-      if (received_data.mybookcate_changeorder.status === '200') {
-        handleToGetMyCategory(received_data.mybookcate_changeorder.mybookcates);
-      } else if (received_data.mybookcate_changeorder.status === '401') {
-        router.push('/account/login');
+      console.log("received_data", received_data);
+      if (received_data.mybookcateset_updateMybookcateOrder.status === "200") {
+        // handleToGetMyCategory(received_data.mybookcateset_updateMybookcateOrder.mybookcates);
+      } else if (received_data.mybookcateset_updateMybookcateOrder.status === "401") {
+        router.push("/account/login");
       } else {
-        console.log('어떤 문제가 발생함');
+        console.log("어떤 문제가 발생함");
       }
     },
   });
@@ -104,8 +89,11 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
     try {
       await changeCategoryOrder({
         variables: {
-          mybookcate_id,
-          direction,
+          forUpdateMybookcateOrder: {
+            mybookcateset_id: "618df7479bc52c0f84f85459",
+            mybookcate_id,
+            direction,
+          },
         },
       });
     } catch (error) {
@@ -113,16 +101,14 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
     }
   }
 
-  const [deleteCategory] = useMutation(DELETE_CATEGORY, {
+  const [deleteCategory] = useMutation(MUTATION_DELETE_MY_BOOK_CATEGORY, {
     onCompleted: (received_data) => {
-      console.log('received_data', received_data);
-      if (received_data.mybookcate_delete.status === '200') {
-        console.log('쿼리 요청함');
-        getBookAndCategory();
-      } else if (received_data.mybookcate_delete.status === '401') {
-        router.push('/account/login');
+      console.log("received_data", received_data);
+      if (received_data.mybookcateset_deleteMybookcate.status === "200") {
+      } else if (received_data.mybookcateset_deleteMybookcate.status === "401") {
+        router.push("/account/login");
       } else {
-        console.log('어떤 문제가 발생함');
+        console.log("어떤 문제가 발생함");
       }
     },
   });
@@ -130,30 +116,46 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
     try {
       await deleteCategory({
         variables: {
-          mybookcate_id,
+          forDeleteMybookcate: {
+            mybookcateset_id: "618df7479bc52c0f84f85459",
+            mybookcate_id,
+            moveToMybookcate_id: category.mybookcates.find((cate) => cate.isFixed === "yes")._id,
+          },
         },
+        refetchQueries: gql`
+          ${FRAGMENT_MYBOOK}
+          query {
+            mybook_getMybookByUserID {
+              status
+              msg
+              mybooks {
+                ...MyBookFragment
+              }
+            }
+          }
+        `,
       });
     } catch (error) {
       console.log(error);
     }
   }
 
-  const dataSource = category.map((_cate) => ({
-    ..._cate.mybookcate_info,
+  const dataSource = category.mybookcates.map((_cate) => ({
+    ..._cate,
     _id: _cate._id,
     key: _cate._id,
   }));
 
   const columns = [
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>카테고리 이름</div>,
-      key: 'name',
-      dataIndex: 'name',
+      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리 이름</div>,
+      key: "name",
+      dataIndex: "name",
       width: 200,
       render: (_value, _record) => {
         return (
           <div
-            style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}
+            style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "flex", alignItems: "center" }}
             onClick={() => {
               setExpandedRowKeys([]);
             }}
@@ -169,24 +171,26 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
                 />
                 <Button
                   size="small"
-                  type="text"
-                  icon={<CheckCircleFilled />}
+                  type="primary"
                   disabled={cateName.length === 0 || dataSource.map((_c) => _c.name).includes(cateName)}
                   onClick={() => {
                     updateCategory({ mybookcate_id: _record._id, name: cateName });
-                    setCateName('');
-                    setEditingCell('');
+                    setCateName("");
+                    setEditingCell("");
                   }}
-                />
+                >
+                  수정
+                </Button>
                 <Button
                   size="small"
-                  type="text"
-                  icon={<CloseCircleFilled />}
+                  type="primary"
                   onClick={() => {
-                    setCateName('');
-                    setEditingCell('');
+                    setCateName("");
+                    setEditingCell("");
                   }}
-                />
+                >
+                  취소
+                </Button>
               </>
             ) : (
               <>
@@ -195,7 +199,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
                   size="small"
                   type="text"
                   icon={<EditFilled />}
-                  disabled={editingCell !== '' || _record.isFixed === 'yes'}
+                  disabled={editingCell !== "" || _record.isFixed === "yes"}
                   onClick={() => {
                     setEditingCell(_record.key);
                     setCateName(_record.name);
@@ -209,11 +213,11 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
     },
 
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>순서변경</div>,
-      key: 'seq',
-      dataIndex: 'seq',
+      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>순서변경</div>,
+      key: "seq",
+      dataIndex: "seq",
       width: 90,
-      align: 'center',
+      align: "center",
       render: (_value, _record, _index) => {
         return (
           <Space>
@@ -221,18 +225,18 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
               size="small"
               type="text"
               icon={<ArrowUpOutlined />}
-              disabled={_record.isFixed === 'yes' || _index === 1}
+              disabled={_record.isFixed === "yes" || _index === 1}
               onClick={() => {
-                changeCategoryPosition({ mybookcate_id: _record._id, direction: 'up' });
+                changeCategoryPosition({ mybookcate_id: _record._id, direction: "up" });
               }}
             />
             <Button
               size="small"
               type="text"
               icon={<ArrowDownOutlined />}
-              disabled={_record.isFixed === 'yes' || _index === dataSource.length - 1}
+              disabled={_record.isFixed === "yes" || _index === dataSource.length - 1}
               onClick={() => {
-                changeCategoryPosition({ mybookcate_id: _record._id, direction: 'down' });
+                changeCategoryPosition({ mybookcate_id: _record._id, direction: "down" });
               }}
             />
           </Space>
@@ -241,18 +245,18 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
     },
 
     {
-      title: <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>삭제</div>,
-      key: 'deleteCategory',
-      dataIndex: 'deleteCategory',
+      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>삭제</div>,
+      key: "deleteCategory",
+      dataIndex: "deleteCategory",
       width: 50,
-      align: 'center',
+      align: "center",
       render: (_value, _record) => {
         return (
           <Button
             size="small"
             type="text"
             icon={<DeleteOutlined />}
-            disabled={_record.isFixed === 'yes'}
+            disabled={_record.isFixed === "yes"}
             onClick={() => {
               deleteACategory({ mybookcate_id: _record._id });
             }}
@@ -264,10 +268,9 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
 
   return (
     <>
-      {console.log('CategorySettingModal 랜더링')}
       <StyledModal
         visible={visible}
-        title={<div style={{ fontSize: '1rem', fontWeight: 'bold' }}>카테고리 관리</div>}
+        title={<div style={{ fontSize: "1rem", fontWeight: "bold" }}>카테고리 관리</div>}
         onCancel={() => changeVisible(false)}
         mask={false} // 모달 바깥 전체화면 덮기 기능
         footer={[
@@ -283,44 +286,50 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible, han
           size="small"
           expandable={{
             expandedRowKeys,
-            expandedRowRender: (_record) => (
-              <div style={{ margin: '0 10px', display: 'flex' }}>
+            expandedRowRender: (_record, _index) => (
+              <div style={{ margin: "0 10px", display: "flex" }}>
                 <Input
                   size="small"
                   value={cateName}
                   onChange={(e) => {
                     setCateName(e.target.value);
                   }}
+                  style={{ marginRight: "5px" }}
                 />
                 <Button
                   size="small"
-                  type="text"
+                  type="primary"
                   icon={<CheckCircleFilled />}
                   disabled={cateName.length === 0 || dataSource.map((_c) => _c.name).includes(cateName)}
+                  style={{ marginRight: "5px" }}
                   onClick={() => {
-                    createCategory({ current_mybookcate_id: _record._id, name: cateName });
-
-                    setCateName('');
+                    createCategory({ name: cateName, seq: _index + 1 });
+                    newIdRef.current = _index + 1;
+                    setCateName("");
                     setExpandedRowKeys([]);
                   }}
-                />
+                >
+                  생성
+                </Button>
                 <Button
                   size="small"
-                  type="text"
+                  type="primary"
                   icon={<CloseCircleFilled />}
                   onClick={() => {
-                    setCateName('');
+                    setCateName("");
                     setExpandedRowKeys([]);
                   }}
-                />
+                >
+                  취소
+                </Button>
               </div>
             ),
-            rowExpandable: (_record) => editingCell == '',
+            rowExpandable: (_record) => editingCell == "",
             onExpand: (ex, re) => {
               console.log({ expandedRowKeys });
               if (!ex) {
                 setExpandedRowKeys([]);
-                setCateName('');
+                setCateName("");
               }
               if (ex) {
                 setExpandedRowKeys([re.key]);
@@ -348,7 +357,7 @@ const StyledModal = styled(Modal)`
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: 'pointer';
+    cursor: "pointer";
   }
   & .AddNewCategory:hover {
     background-color: #a9a9a9;

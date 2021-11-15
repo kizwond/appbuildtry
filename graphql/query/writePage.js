@@ -323,55 +323,6 @@ export const DELETE_A_BOOK = gql`
   }
 `;
 
-export const CHANGE_POSITION_OF_BOOK = gql`
-  mutation PositioningBookMutation($direction: String, $mybook_id: String!) {
-    mybook_changeorder(direction: $direction, mybook_id: $mybook_id) {
-      status
-      msg
-      mybooks {
-        _id
-        stats {
-          overall {
-            accuLevel
-            studyHour
-            numSession
-          }
-          recent {
-            timeStudy
-            timeModify
-          }
-          numCards {
-            total
-            read
-            flip
-          }
-          writeHistory {
-            date
-            numCreatedCards
-          }
-          studyHistory {
-            date
-            level
-            studyHour
-          }
-        }
-        mybook_info {
-          title
-          type
-          user_id
-          mybookcate_id
-          seq_in_category
-          hide_or_show
-          studylike
-          writelike
-          seq_in_studylike
-          seq_in_writelike
-        }
-      }
-    }
-  }
-`;
-
 export const BOOK_CATEGORY_CHANGE_MUTATION = gql`
   mutation BookChangeCategoryMutation($mybook_id: String, $target_mybookcate_id: String) {
     mybook_movetoothercate(mybook_id: $mybook_id, target_mybookcate_id: $target_mybookcate_id) {

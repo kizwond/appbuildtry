@@ -1,20 +1,19 @@
 import { memo } from "react";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
-import { CHANGE_POSITION_OF_BOOK } from "../../../graphql/query/writePage";
-import { GET_CATEGORY_AND_BOOKS_INFO_STUDY } from "../../../graphql/query/studyPage";
+import { MUTATION_CHANGE_BOOK_ORDER } from "../../../graphql/mutation/myBook";
 
 import { Space, Tooltip } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
-const BookOrderButton = ({ _record, handleToGetMyBook }) => {
+const BookOrderButton = ({ _record }) => {
   const router = useRouter();
-  const [rePosition] = useMutation(CHANGE_POSITION_OF_BOOK, {
+  const [rePosition] = useMutation(MUTATION_CHANGE_BOOK_ORDER, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
-      if (received_data.mybook_changeorder.status === "200") {
-        // handleToGetMyBook(received_data.mybook_changeorder.mybooks);
-      } else if (received_data.mybook_changeorder.status === "401") {
+      if (received_data.mybook_modifySeq.status === "200") {
+        // handleToGetMyBook(received_data.mybook_modifySeq.mybooks);
+      } else if (received_data.mybook_modifySeq.status === "401") {
         router.push("/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -22,18 +21,17 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
     },
   });
 
-  async function positionBooks(direction, id) {
+  async function positionBooks(forModifySeq) {
     try {
       await rePosition({
         variables: {
-          direction: direction,
-          mybook_id: id,
+          forModifySeq: forModifySeq,
         },
         update: (cache, data) => {
-          const queryData = cache.readQuery({ query: GET_CATEGORY_AND_BOOKS_INFO_STUDY });
-          console.log(queryData);
-          const selectedBook = queryData.mybook_getAllMybook.mybooks.find((book) => book._id === id);
-          const swichedBook = queryData.mybook_getAllMybook.mybooks.find((book) => book._id === id);
+          // const queryData = cache.readQuery({ query: GET_CATEGORY_AND_BOOKS_INFO_STUDY });
+          // console.log(queryData);
+          // const selectedBook = queryData.mybook_getAllMybook.mybooks.find((book) => book._id === id);
+          // const swichedBook = queryData.mybook_getAllMybook.mybooks.find((book) => book._id === id);
           // cache.writeQuery({
           //   query: GET_CATEGORY_AND_BOOKS_INFO_STUDY,
           //   data: 1,
@@ -76,9 +74,20 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
               cursor: "pointer",
             }}
             onClick={() => {
-              console.log("위로", { _record });
-
-              positionBooks("up", _record._id);
+              console.log(_record);
+              const forModifySeq = [
+                {
+                  mybook_id: _record.aboveAndBelowBooks.aboveBook.mybook_id,
+                  seqType: "Category",
+                  seq: _record.seqInCategory,
+                },
+                {
+                  mybook_id: _record.mybook_id,
+                  seqType: "Category",
+                  seq: _record.aboveAndBelowBooks.aboveBook.seqInCategory,
+                },
+              ];
+              positionBooks(forModifySeq);
             }}
           >
             <ArrowUpOutlined />
@@ -114,8 +123,19 @@ const BookOrderButton = ({ _record, handleToGetMyBook }) => {
               cursor: "pointer",
             }}
             onClick={() => {
-              console.log("아래로", { _record });
-              positionBooks("down", _record._id);
+              const forModifySeq = [
+                {
+                  mybook_id: _record.aboveAndBelowBooks.belowBook.mybook_id,
+                  seqType: "Category",
+                  seq: _record.seqInCategory,
+                },
+                {
+                  mybook_id: _record._id,
+                  seqType: "Category",
+                  seq: _record.aboveAndBelowBooks.belowBook.seqInCategory,
+                },
+              ];
+              positionBooks(forModifySeq);
             }}
           >
             <ArrowDownOutlined />

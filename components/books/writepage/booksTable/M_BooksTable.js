@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
@@ -46,6 +46,8 @@ const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, c
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const dataSource = useMemo(() => makeDataSource(myBook, category.mybookcates, isShowedHiddenBook, changeIsShowedHiddenBook), [myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook]);
+
   const movepage = useCallback(function (bookid) {
     localStorage.removeItem("book_id");
     localStorage.setItem("book_id", bookid);
@@ -56,8 +58,6 @@ const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, c
   if (!mounted) {
     return null;
   }
-
-  const dataSource = makeDataSource(myBook, category.mybookcates, isShowedHiddenBook, changeIsShowedHiddenBook);
 
   const getConditionValue = (_record) => {
     return (!expandedRowKeys.includes(_record.key) && _record.relationship === "parent") || _record.classType === "hiddenBar" || _record.classType === "middle-hiddenBar" || _record.classType === "empty-category";
@@ -299,7 +299,7 @@ const M_BooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, c
                 }}
               >
                 <Space size={3}>
-                  <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} /> |
+                  <BookOrderButton _record={_record} /> |
                   <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
                   <HideOrShowButton record={_record} />
                 </Space>

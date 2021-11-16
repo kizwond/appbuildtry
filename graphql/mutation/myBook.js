@@ -13,3 +13,16 @@ export const MUTATION_CREATE_MY_BOOK = gql`
     }
   }
 `;
+
+export const MUTATION_CHANGE_BOOK_ORDER = gql`
+  ${FRAGMENT_MYBOOK}
+  mutation changeBookOrder($forModifySeq: [forModifySeq]) {
+    mybook_modifySeq(forModifySeq: $forModifySeq) {
+      status
+      msg
+      mybooks {
+        ...MyBookFragment
+      }
+    }
+  }
+`;

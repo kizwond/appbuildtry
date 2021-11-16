@@ -8,7 +8,8 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
 
   const dataSource = filteredCategory.map((_cate, _categoryIndex) => {
     const { name, seq } = _cate;
-    const categoryBooksList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id);
+    const _categoryBooksList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id);
+    const categoryBooksList = _categoryBooksList.sort((a, b) => a.mybook_info.seqInCategory - b.mybook_info.seqInCategory);
     const categoryBooksLength = categoryBooksList.length;
     if (categoryBooksLength === 0) {
       return {
@@ -48,6 +49,16 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       isLastBook: markedShowListLength === _index + 1,
       key: `KEY:${_cate._id}INDEX:${_index + 1}`,
       _id: _book._id,
+      aboveAndBelowBooks: {
+        aboveBook: {
+          mybook_id: markedShowList[_index - 1] && markedShowList[_index - 1]._id,
+          seqInCategory: markedShowList[_index - 1] && markedShowList[_index - 1].mybook_info.seqInCategory,
+        },
+        belowBook: {
+          mybook_id: markedShowList[_index + 1] && markedShowList[_index + 1]._id,
+          seqInCategory: markedShowList[_index + 1] && markedShowList[_index + 1].mybook_info.seqInCategory,
+        },
+      },
     }));
 
     const hiddenList = markedHideList.map((_book, _index) => ({

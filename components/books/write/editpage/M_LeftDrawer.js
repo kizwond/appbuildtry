@@ -14,7 +14,6 @@ const LeftDrawer = ({ index_changed }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
-    console.log(book_id);
     if (book_id !== null) {
       localStorage.removeItem("book_id");
       localStorage.setItem("book_id", book_id);
@@ -27,24 +26,15 @@ const LeftDrawer = ({ index_changed }) => {
   const { loading, error, data } = useQuery(GetIndex, {
     variables: { mybook_ids: [book_id] },
   });
-  const [indexinfo, setIndexInfo] = useState();
-  const [indexSetInfo, setIndexSetInfo] = useState();
 
-  useEffect(() => {
-    if (data) {
-      console.log(data);
-      setIndexInfo(data.indexset_getByMybookids.indexsets[0].indexes);
-      setIndexSetInfo(data.indexset_getByMybookids.indexsets[0]);
-    }
-  }, [data]);
-  
+  var indexinfo = data.indexset_getByMybookids.indexsets[0].indexes;
+  var indexSetInfo = data.indexset_getByMybookids.indexsets[0];
   //새 목차 추가
   const [indexset_addIndex] = useMutation(IndexCreateMutation, { onCompleted: showindexdata });
 
   function showindexdata(data) {
-    console.log("data", data);
-    setIndexInfo(data.indexset_addIndex.indexsets[0].indexes);
-    setIndexSetInfo(data.indexset_addIndex.indexsets[0]);
+    indexinfo = data.indexset_addIndex.indexsets[0].indexes;
+    indexSetInfo = data.indexset_addIndex.indexsets[0];
   }
 
   async function postindex(name, current_index_id, indexset_id) {
@@ -54,7 +44,7 @@ const LeftDrawer = ({ index_changed }) => {
           forAddIndex: {
             indexset_id: indexset_id,
             name: name,
-            current_position_index_id: current_index_id,
+            currentPositionIndex_id: current_index_id,
           },
         },
       });
@@ -63,7 +53,6 @@ const LeftDrawer = ({ index_changed }) => {
     }
   }
   const onFinish = (values) => {
-    console.log(values);
     postindex(values.name, values.current_index_id, values.indexset_id);
   };
 
@@ -71,9 +60,8 @@ const LeftDrawer = ({ index_changed }) => {
   const [indexset_updateIndexName] = useMutation(IndexRenameMutation, { onCompleted: showindexdatarename });
 
   function showindexdatarename(data) {
-    console.log("data", data);
-    setIndexInfo(data.indexset_updateIndexName.indexsets[0].indexes);
-    setIndexSetInfo(data.indexset_updateIndexName.indexsets[0]);
+    indexinfo = data.indexset_updateIndexName.indexsets[0].indexes;
+    indexSetInfo = data.indexset_updateIndexName.indexsets[0];
   }
 
   async function postindexrename(name, current_index_id, indexset_id) {
@@ -92,7 +80,6 @@ const LeftDrawer = ({ index_changed }) => {
     }
   }
   const onFinishRename = (values) => {
-    console.log(values);
     postindexrename(values.name, values.current_index_id, values.indexset_id);
   };
 
@@ -100,9 +87,8 @@ const LeftDrawer = ({ index_changed }) => {
   const [indexset_updateIndexLevel] = useMutation(IndexLevelMutation, { onCompleted: showindexdatarelevel });
 
   function showindexdatarelevel(data) {
-    console.log("data", data);
-    setIndexInfo(data.indexset_updateIndexLevel.indexsets[0].indexes);
-    setIndexSetInfo(data.indexset_updateIndexLevel.indexsets[0]);
+    indexinfo = data.indexset_updateIndexLevel.indexsets[0].indexes;
+    indexSetInfo = data.indexset_updateIndexLevel.indexsets[0];
   }
 
   async function postindexrelevel(direction, current_index_id, indexset_id) {
@@ -128,9 +114,8 @@ const LeftDrawer = ({ index_changed }) => {
   const [indexset_deleteindex] = useMutation(IndexDeleteMutation, { onCompleted: showindexdatadelete });
 
   function showindexdatadelete(data) {
-    console.log("data", data);
-    setIndexInfo(data.indexset_deleteindex.indexsets[0].indexes);
-    setIndexSetInfo(data.indexset_deleteindex.indexsets[0]);
+    indexinfo = data.indexset_deleteindex.indexsets[0].indexes;
+    indexSetInfo = data.indexset_deleteindex.indexsets[0];
   }
 
   async function postindexdelete(moveto_index_id, current_index_id, indexset_id) {
@@ -139,8 +124,8 @@ const LeftDrawer = ({ index_changed }) => {
         variables: {
           forDeleteIndex: {
             indexset_id: indexset_id,
-            moveto_index_id: moveto_index_id,
-            delete_index_id: current_index_id,
+            moveToIndex_id: moveto_index_id,
+            deleteIndex_id: current_index_id,
           },
         },
       });
@@ -149,7 +134,6 @@ const LeftDrawer = ({ index_changed }) => {
     }
   }
   const onFinishIndexDelete = (values) => {
-    console.log(values);
     postindexdelete(values.moveto_index_id, values.current_index_id, values.indexset_id);
   };
 
@@ -163,15 +147,12 @@ const LeftDrawer = ({ index_changed }) => {
   };
 
   const onSelect = (selectedKeys, info) => {
-    console.log("selected---------------------->", selectedKeys, info);
-    console.log(info.node.index_id);
     localStorage.removeItem("first_index");
     localStorage.setItem("first_index", info.node.index_id);
     index_changed(info.node.index_id);
   };
 
   if (indexinfo) {
-    console.log(indexinfo);
     let level_all = [];
     indexinfo.forEach((table, index) => {
       if (table) {
@@ -181,7 +162,7 @@ const LeftDrawer = ({ index_changed }) => {
             index_id: table._id,
             key: table._id,
             level: 1,
-            icon: <CarryOutOutlined />,
+            // icon: <CarryOutOutlined />,
             children: [],
           };
           level_all.push(level);
@@ -191,7 +172,7 @@ const LeftDrawer = ({ index_changed }) => {
             index_id: table._id,
             key: table._id,
             level: 2,
-            icon: <CarryOutOutlined />,
+            // icon: <CarryOutOutlined />,
             children: [],
           };
           level_all.push(level);
@@ -201,7 +182,7 @@ const LeftDrawer = ({ index_changed }) => {
             index_id: table._id,
             key: table._id,
             level: 3,
-            icon: <CarryOutOutlined />,
+            // icon: <CarryOutOutlined />,
             children: [],
           };
           level_all.push(level);
@@ -211,7 +192,7 @@ const LeftDrawer = ({ index_changed }) => {
             index_id: table._id,
             key: table._id,
             level: 4,
-            icon: <CarryOutOutlined />,
+            // icon: <CarryOutOutlined />,
             children: [],
           };
           level_all.push(level);
@@ -221,14 +202,13 @@ const LeftDrawer = ({ index_changed }) => {
             index_id: table._id,
             key: table._id,
             level: 5,
-            icon: <CarryOutOutlined />,
+            // icon: <CarryOutOutlined />,
             children: [],
           };
           level_all.push(level);
         }
       }
     });
-    console.log(level_all);
 
     const level_5 = (obj) => obj.level === 5;
     const level_4 = (obj) => obj.level === 4;
@@ -453,7 +433,6 @@ const LeftDrawer = ({ index_changed }) => {
             }
           }
         }
-        console.log("result:", level_all);
         //level_2 exist
       } else if (level_2_exist === true) {
         let temp_data_1 = [];
@@ -498,23 +477,41 @@ const LeftDrawer = ({ index_changed }) => {
             border: "1px solid lightgrey",
             borderLeft: "none",
             width: "25px",
-            borderRadius: "0 10px 10px 0",
+            borderRadius: "0 5px 5px 0",
           }}
         >
           목차
         </button>
       </div>
-      <Drawer width={200} title="Basic Drawer" placement="left" closable={true} onClose={onClose} visible={visible} mask={false}>
-        <IndexSettingModal
-          indexSetInfo={indexSetInfo}
-          indexinfo={indexinfo}
-          onFinish={onFinish}
-          onFinishRename={onFinishRename}
-          onFinishChangeLevel={onFinishChangeLevel}
-          onFinishIndexDelete={onFinishIndexDelete}
-        />
-        <Tree showLine={true} showIcon={true} defaultExpandAll={true} onSelect={onSelect} treeData={treeData} />
-      </Drawer>
+      {indexinfo && (
+        <>
+          <Drawer
+            width={200}
+            title={
+              <>
+                <div style={{display:"flex", alignItems:"center"}}>
+                  <span style={{ fontSize: "1rem", marginRight:"5px" }}>목차</span>
+                  <IndexSettingModal
+                    indexSetInfo={indexSetInfo}
+                    indexinfo={indexinfo}
+                    onFinish={onFinish}
+                    onFinishRename={onFinishRename}
+                    onFinishChangeLevel={onFinishChangeLevel}
+                    onFinishIndexDelete={onFinishIndexDelete}
+                  />
+                </div>
+              </>
+            }
+            placement="left"
+            closable={false}
+            onClose={onClose}
+            visible={visible}
+            mask={true}
+          >
+            <Tree showLine={true} showIcon={false} defaultExpandAll={true} onSelect={onSelect} treeData={treeData} />
+          </Drawer>
+        </>
+      )}
     </>
   );
 };

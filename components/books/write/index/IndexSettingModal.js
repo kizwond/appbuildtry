@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Popover, Form, Input, Space, Select } from "antd";
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql, useMutation } from "@apollo/client";
-import { IndexCreateMutation } from "../../../../graphql/query/writemain";
-import { SettingOutlined, PlusOutlined, ArrowUpOutlined, ArrowDownOutlined, EditOutlined } from "@ant-design/icons";
+import { PlusOutlined, SettingOutlined } from "@ant-design/icons";
 
 const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, onFinishChangeLevel, onFinishIndexDelete }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -20,8 +18,6 @@ const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, 
   };
 
   if (indexinfo) {
-    console.log(indexinfo);
-    console.log(indexSetInfo);
     var indexList = indexinfo.map((item) => (
       <>
         <IndexList
@@ -39,9 +35,7 @@ const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, 
 
   return (
     <>
-      <Button size="small" onClick={showModal} style={{fontSize:"0.8rem"}}>
-        목차설정
-      </Button>
+      <SettingOutlined size="small" onClick={showModal} style={{fontSize:"1rem"}} />
       <Modal title="목차설정" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <ul style={{ display: "flex", listStyle: "none", justifyContent: "space-between", fontSize:"0.8rem", paddingLeft:"0" }}>
           <li></li>
@@ -134,7 +128,6 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
   );
 
   if (indexinfo) {
-    console.log(indexinfo);
     var optionList = indexinfo.map((item) => {
       if (item._id === index._id) {
         return null;
@@ -185,10 +178,8 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
   );
   const levelChange = (direction, current_level) => {
     const prevItemIndex = indexinfo.findIndex((item) => item._id === index._id) - 1;
-    console.log(prevItemIndex);
     if (prevItemIndex !== -1) {
       const prevItemLevel = indexinfo[prevItemIndex].level;
-      console.log(prevItemLevel);
       if (current_level === 1 && direction === "up") {
         alert("1레벨짜리를 왜 0으로 만들라그랴");
       } else if (current_level === prevItemLevel + 1 && direction === "down") {

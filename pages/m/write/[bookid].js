@@ -30,10 +30,11 @@ const Book = () => {
     } else {
       book_id = query.bookid;
     }
-  }
+  } 
 
   const [indexChanged, setIndexChanged] = useState();
   const [indexSetId, setIndexSetId] = useState();
+
   const { loading, error, data } = useQuery(GetIndex, {
     variables: { mybook_ids: [book_id] },
   });
@@ -41,7 +42,7 @@ const Book = () => {
     console.log("index changed!!!!----------------------->", value);
     setIndexChanged(value);
   };
-
+  
   useEffect(() => {
     if (data) {
       console.log(data);
@@ -54,10 +55,21 @@ const Book = () => {
 
   return (
     <>
-      <M_Layout>
-        <M_LeftDrawer index_changed={index_changed} book_id={book_id} />
-        <M_WriteContainer book_id={book_id} indexChanged={indexChanged} indexSetId={indexSetId} Editor={Editor} EditorFromCard={EditorFromCard} FroalaEditorView={FroalaEditorView} />
-      </M_Layout>
+      {indexSetId && (
+        <>
+          <M_Layout>
+            <M_LeftDrawer index_changed={index_changed} book_id={book_id} />
+            <M_WriteContainer
+              book_id={book_id}
+              indexChanged={indexChanged}
+              indexSetId={indexSetId}
+              Editor={Editor}
+              EditorFromCard={EditorFromCard}
+              FroalaEditorView={FroalaEditorView}
+            />
+          </M_Layout>
+        </>
+      )}
     </>
   );
 };

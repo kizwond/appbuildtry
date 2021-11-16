@@ -20,7 +20,6 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
-  console.log("마운트 윗 코드");
 
   useEffect(() => {
     setMounted(true);
@@ -29,8 +28,6 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
   if (!mounted) {
     return null;
   }
-
-  console.log("마운트 아래 코드");
 
   const likedBooksList = myBook.filter((_book) => _book.mybook_info.isStudyLike);
   const sortedBook = likedBooksList.sort((book_A, book_B) => book_A.mybook_info.seqInStudyLike - book_B.mybook_info.seqInStudyLike);
@@ -65,6 +62,7 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리</div>,
       key: "categoryName",
       className: "Row-First-Left",
+      align: "center",
       width: 50,
       dataIndex: "categoryName",
       render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
@@ -73,6 +71,7 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>책 제목</div>,
       key: "title",
       dataIndex: "title",
+      align: "center",
       className: "TitleCol",
       width: 85,
       render: (value, _record, index) => {
@@ -108,41 +107,31 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       },
     },
     {
-      title: (
-        <>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드 수</div>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>(읽기/뒤집기)</div>
-        </>
-      ),
+      title: "카드수",
       key: "total",
       align: "center",
       dataIndex: "total",
       className: "normal",
       ellipsis: true,
-      width: 70,
-      render: (_value, _record) => <div>{`(${_record.read}/${_record.flip})`}</div>,
+      width: 40,
+      render: (_value, _record) => <div>{_value}</div>,
     },
-    {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>수정일</div>,
-      key: "timeModify",
-      align: "center",
-      dataIndex: "timeModify",
-      className: "normal",
-      width: 45,
-      render: (_value, _record) => {
-        const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format("YY.MM.DD");
+    // {
+    //   title: "최근학습일",
+    //   key: "timeModify",
+    //   align: "center",
+    //   dataIndex: "timeModify",
+    //   className: "normal",
+    //   width: 47,
+    //   render: (_value, _record) => {
+    //     const newDate = new Date(Number(_value));
+    //     const DateString = moment(newDate).format("YY.MM.DD");
 
-        return <div>{_value === null ? "-" : DateString}</div>;
-      },
-    },
+    //     return <div>{_value === null ? "-" : DateString}</div>;
+    //   },
+    // },
     {
-      title: (
-        <>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>최근 3일간</div>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드생성</div>
-        </>
-      ),
+      title: "최근생성이력",
       key: "timeModify",
       align: "center",
       dataIndex: "timeModify",
@@ -156,12 +145,12 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       ),
     },
     {
-      title: "이동",
+      // title: "이동",
       key: "seq_in_category",
       dataIndex: "seq_in_category",
       className: "normal",
       align: "right",
-      width: 35,
+      width: 25,
       render: (value, _record, index) => (
         <div
           style={{
@@ -236,10 +225,10 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       ),
     },
     {
-      title: "설정",
+      // title: "설정",
       align: "center",
       className: "Row-Last-One",
-      width: 35,
+      width: 25,
       render: (value, _record, index) => (
         <div>
           <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />

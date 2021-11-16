@@ -5,7 +5,7 @@ import styled from "styled-components";
 import moment from "moment";
 
 import { Table, Card, Space, Drawer, Checkbox, Progress } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, FileProtectOutlined, MinusCircleTwoTone, PlusCircleTwoTone, PlusSquareFilled } from "@ant-design/icons";
 
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 import BookOrderButton from "../../common/BookOrderButton";
@@ -54,14 +54,32 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       title: <StyledDivEllipsis>카테고리</StyledDivEllipsis>,
       key: "categoryName",
       className: "categoryCol",
+      align: "center",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => (_record.relationship === "parent" ? <StyledDivEllipsis>{_value}</StyledDivEllipsis> : null),
+      render: (_value, _record) =>
+        _record.relationship === "parent" ? (
+          <div
+            style={{ display: "flex", alignItems: "center", height: "30px" }}
+            onClick={() => {
+              if (expandedRowKeys.includes(_record.key)) {
+                setExpandedRowKeys(expandedRowKeys.filter((key) => key !== _record.key));
+              }
+              if (!expandedRowKeys.includes(_record.key)) {
+                setExpandedRowKeys([...expandedRowKeys, _record.key]);
+              }
+            }}
+          >
+            {expandedRowKeys.includes(_record.key) ? <MinusCircleTwoTone /> : <PlusCircleTwoTone />}
+            <StyledDivEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledDivEllipsis>
+          </div>
+        ) : null,
     },
     {
       title: <StyledDivEllipsis>책 제목</StyledDivEllipsis>,
       key: "title",
       dataIndex: "title",
+      align: "center",
       className: "Row-First-Left",
       width: 85,
       render: (value, _record, index) => {
@@ -71,28 +89,36 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
             _record.classType === "empty-category" ? (
               <div>빈 칸테고리</div>
             ) : _record.relationship === "parent" && !expandedRowKeys.includes(_record.key) ? (
-              <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
+              <div
+                onClick={() => {
+                  if (expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys(expandedRowKeys.filter((key) => key !== _record.key));
+                  }
+                  if (!expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys([...expandedRowKeys, _record.key]);
+                  }
+                }}
+              >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
               <StyledDivEllipsis>{value}</StyledDivEllipsis>
             ) : (
               <StyledDivEllipsis>
-                <Space>
-                  <Checkbox
-                    checked={isSelected}
-                    onChange={() => {
-                      if (isSelected) {
-                        changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
-                      }
-                      if (!isSelected) {
-                        changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
-                      }
-                    }}
-                  />
-                  <div>
-                    <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
-                    {value}
-                  </div>
-                </Space>
+                <Checkbox
+                  checked={isSelected}
+                  onChange={() => {
+                    if (isSelected) {
+                      changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                    }
+                    if (!isSelected) {
+                      changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                    }
+                  }}
+                  style={{ marginRight: "4px" }}
+                />
+                <StyledDivEllipsis>
+                  <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
+                  {value}
+                </StyledDivEllipsis>
               </StyledDivEllipsis>
             ),
           props: {},
@@ -106,21 +132,23 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       },
     },
     {
-      title: (
-        <>
-          <StyledDivEllipsis>카드 수</StyledDivEllipsis>
-          <StyledDivEllipsis>(읽기/뒤집기)</StyledDivEllipsis>
-        </>
-      ),
+      title: "카드수",
       key: "total",
       align: "center",
       dataIndex: "total",
       className: "normal",
       ellipsis: true,
-      width: 70,
+      width: 40,
       render: (_value, _record) => {
         const obj = {
-          children: <div>{`(${_record.read}/${_record.flip})`}</div>,
+          children: (
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer" }} onClick={()=>{
+              console.log('책 카드 상세 보기 페이지로 전환해야 함')
+            }}>
+              <div style={{ lineHeight: 1, marginRight: "3px" }}>{_value}</div>
+              <FileProtectOutlined />
+            </div>
+          ),
           props: {
             colSpan: 1,
             rowSpan: 1,
@@ -134,37 +162,33 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
         return obj;
       },
     },
+    // {
+    //   title: "최근학습일",
+    //   key: "timeStudy",
+    //   dataIndex: "timeStudy",
+    //   align: "center",
+    //   className: "normal",
+    //   width: 47,
+    //   render: (_value, _record) => {
+    //     const newDate = new Date(Number(_value));
+    //     const DateString = moment(newDate).format("YY.MM.DD");
+    //     const obj = {
+    //       children: <div>{_value === null ? "-" : DateString}</div>,
+    //       props: {
+    //         colSpan: 1,
+    //         rowSpan: 1,
+    //       },
+    //     };
+    //     if (getConditionValue(_record)) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
     {
-      title: <StyledDivEllipsis>최근학습일</StyledDivEllipsis>,
-      key: "timeStudy",
-      dataIndex: "timeStudy",
-      align: "center",
-      className: "normal",
-      width: 45,
-      render: (_value, _record) => {
-        const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format("YY.MM.DD");
-        const obj = {
-          children: <div>{_value === null ? "-" : DateString}</div>,
-          props: {
-            colSpan: 1,
-            rowSpan: 1,
-          },
-        };
-        if (getConditionValue(_record)) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
-    {
-      title: (
-        <>
-          <StyledDivEllipsis>진도율</StyledDivEllipsis>
-        </>
-      ),
+      title: "진도율",
       key: "timeModify",
       dataIndex: "timeModify",
       align: "center",
@@ -192,12 +216,12 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       },
     },
     {
-      title: "이동",
+      // title: "이동",
       key: "seq_in_category",
       dataIndex: "seq_in_category",
       className: "normal",
       align: "right",
-      width: 35,
+      width: 25,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -282,10 +306,10 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       },
     },
     {
-      title: "설정",
+      // title: "설정",
       align: "center",
       className: "Row-Last-One",
-      width: 35,
+      width: 25,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -342,16 +366,8 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
         // }}
         expandable={{
           expandedRowKeys,
-          // 아래 클래스이름 지정하는 것은 나중에 selected checkbox css 할 때 해보자
-          expandedRowClassName: (record, index, indent) => "",
-          onExpand: (ex, re) => {
-            if (!ex) {
-              setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re.key));
-            }
-            if (ex) {
-              setExpandedRowKeys([...expandedRowKeys, re.key]);
-            }
-          },
+
+          expandIcon: () => null,
         }}
       />
     </StyledCard>

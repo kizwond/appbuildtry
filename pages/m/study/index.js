@@ -9,7 +9,6 @@ import styled from "styled-components";
 import { Space, Col, Button } from "antd";
 import M_Layout from "../../../components/layout/M_Layout";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
-import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
 import M_StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/M_StudyFavoriteBooksTable";
 import M_StudyBooksTable from "../../../components/books/studypage/booksTable/M_StudyBooksTable";
 
@@ -34,8 +33,8 @@ const Writeanother = () => {
     },
   });
 
-  const myBook2 = data?.mybook_getMybookByUserID.mybooks;
-  const category2 = data?.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0];
+  const myBook2 = useMemo(() => data && data.mybook_getMybookByUserID.mybooks, [data]);
+  const category2 = useMemo(() => data && data.mybookcateset_getMybookcatesetByUserID?.mybookcatesets[0], [data]);
 
   useEffect(() => {
     sessionStorage.removeItem("books_selected");
@@ -120,4 +119,26 @@ const StyledSpace = styled(Space)`
     font-size: 0.8rem;
   }
   padding: 12px 12px 0 12px;
+`;
+
+const StyledRowMaxWidth = styled.div`
+  margin: 0 auto;
+  margin-top: 40px;
+
+  & .ant-table.ant-table-small .ant-table-thead > tr > th {
+    padding: 8px 0px;
+  }
+
+  & .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+    display: none;
+  }
+
+  & .ant-checkbox-inner {
+    width: 12px;
+    height: 12px;
+  }
+  & .ant-checkbox-inner::after {
+    width: 4px;
+    height: 7px;
+  }
 `;

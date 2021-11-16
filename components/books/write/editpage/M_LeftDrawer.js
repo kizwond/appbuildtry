@@ -111,16 +111,19 @@ const LeftDrawer = ({ index_changed }) => {
   };
 
   //목차 삭제
-  const [indexset_deleteindex] = useMutation(IndexDeleteMutation, { onCompleted: showindexdatadelete });
+  const [indexset_deleteIndex] = useMutation(IndexDeleteMutation, { onCompleted: showindexdatadelete });
 
   function showindexdatadelete(data) {
-    indexinfo = data.indexset_deleteindex.indexsets[0].indexes;
-    indexSetInfo = data.indexset_deleteindex.indexsets[0];
+    console.log(data)
+    indexinfo = data.indexset_deleteIndex.indexsets[0].indexes;
+    indexSetInfo = data.indexset_deleteIndex.indexsets[0];
+    console.log(indexinfo)
+    console.log(indexSetInfo)
   }
 
   async function postindexdelete(moveto_index_id, current_index_id, indexset_id) {
     try {
-      await indexset_deleteindex({
+      await indexset_deleteIndex({
         variables: {
           forDeleteIndex: {
             indexset_id: indexset_id,

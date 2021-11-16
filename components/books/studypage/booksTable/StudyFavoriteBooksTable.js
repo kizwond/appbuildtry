@@ -32,8 +32,8 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
 
   console.log("마운트 아래 코드");
 
-  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.studylike === true);
-  const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seq_in_studylike - book_B.mybook_info.seq_in_studylike);
+  const studyLikedBooksList = myBook.filter((_book) => _book.mybook_info.isStudyLike);
+  const sortedBook = studyLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seqInStudyLike - book_B.mybook_info.seqInStudyLike);
   const dataSource = sortedBook.map((_book, _index) => {
     return {
       ..._book.mybook_info,
@@ -42,15 +42,23 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       ..._book.stats?.overall,
       studyHistory: _book.stats?.studyHistory,
       writeHistory: _book.stats?.writeHistory,
-      categoryName: category.find((_cate) => _cate._id === _book.mybook_info.mybookcate_id).mybookcate_info.name,
+      categoryName: category.mybookcates.find((_cate) => _cate._id === _book.mybook_info.mybookcate_id).name,
       isFirstBook: _index === 0,
-      isLastBook: writeLikedBooksList.length === _index + 1,
+      isLastBook: studyLikedBooksList.length === _index + 1,
       key: _book._id,
       _id: _book._id,
+      aboveAndBelowBooks: {
+        aboveBook: {
+          mybook_id: sortedBook[_index - 1] && sortedBook[_index - 1]._id,
+          seqInStudyLike: sortedBook[_index - 1] && sortedBook[_index - 1].mybook_info.seqInStudyLike,
+        },
+        belowBook: {
+          mybook_id: sortedBook[_index + 1] && sortedBook[_index + 1]._id,
+          seqInStudyLike: sortedBook[_index + 1] && sortedBook[_index + 1].mybook_info.seqInStudyLike,
+        },
+      },
     };
   });
-
-  console.log({ dataSource });
 
   const columns = [
     {
@@ -209,10 +217,10 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
             }}
           >
             <Space size={3}>
-              <FavoriteBookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} tableType="study" /> |
-              <FavoriteBook record={_record} handleToGetMyBook={handleToGetMyBook} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" />
+              <FavoriteBookOrderButton _record={_record} tableType="study" /> |
+              <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" />
               |
-              <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+              <HideOrShowButton record={_record} />
             </Space>
             <div
               className="PushCustomCircleButton"
@@ -234,7 +242,7 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       width: 35,
       render: (value, _record, index) => (
         <div>
-          <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} handleToGetMyBook={handleToGetMyBook} />
+          <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
         </div>
       ),
     },

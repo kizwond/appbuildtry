@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
+import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
 
 import styled from "styled-components";
 
@@ -12,14 +13,10 @@ import CategorySettingButton from "../../../components/books/writepage/categoryS
 import M_BooksTable from "../../../components/books/writepage/booksTable/M_BooksTable";
 import M_FavoriteBooksTable from "../../../components/books/writepage/booksTable/M_FavoriteBooksTable";
 import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
-import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
 
-const Writeanother = () => {
+const M_WriteMain = () => {
   const router = useRouter();
 
-  const [isReceivedData, setIsReceivedData] = useState(false);
-  const [category, setCategory] = useState([]);
-  const [myBook, setMyBook] = useState([]);
   const newCateRef = useRef();
 
   const [activedTable, setActivedTable] = useState();
@@ -30,9 +27,6 @@ const Writeanother = () => {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
       if (received_data.mybookcateset_getMybookcatesetByUserID.status === "200") {
-        setMyBook(received_data.mybook_getMybookByUserID.mybooks);
-        setCategory(received_data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0].mybookcates);
-        setIsReceivedData(true);
       } else if (received_data.mybookcateset_getMybookcatesetByUserID.status === "401") {
         router.push("/m/account/login");
       } else {
@@ -43,10 +37,6 @@ const Writeanother = () => {
 
   const myBook2 = useMemo(() => data?.mybook_getMybookByUserID.mybooks, [data]);
   const category2 = useMemo(() => data?.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0], [data]);
-
-  const handleToGetMyBook = useCallback((books) => {
-    setMyBook(books);
-  }, []);
 
   const chagePopup = useCallback((_boolean) => {
     setisPopupSomething(_boolean);
@@ -80,21 +70,12 @@ const Writeanother = () => {
 
           <StyledRowMaxWidth>
             <Col span={24}>
-              <M_FavoriteBooksTable
-                category={category2}
-                myBook={myBook2}
-                handleToGetMyBook={handleToGetMyBook}
-                isPopupSomething={isPopupSomething}
-                chagePopup={chagePopup}
-                activedTable={activedTable}
-                changeActivedTable={changeActivedTable}
-              />
+              <M_FavoriteBooksTable category={category2} myBook={myBook2} isPopupSomething={isPopupSomething} chagePopup={chagePopup} activedTable={activedTable} changeActivedTable={changeActivedTable} />
             </Col>
             <Col span={24}>
               <M_BooksTable
                 category={category2}
                 myBook={myBook2}
-                handleToGetMyBook={handleToGetMyBook}
                 isPopupSomething={isPopupSomething}
                 chagePopup={chagePopup}
                 activedTable={activedTable}
@@ -109,7 +90,7 @@ const Writeanother = () => {
   );
 };
 
-export default Writeanother;
+export default M_WriteMain;
 
 const StyledSpace = styled(Space)`
   & * {

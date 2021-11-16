@@ -1,21 +1,18 @@
 import { useMutation } from "@apollo/client";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { useRouter } from "next/router";
-import { CHANGE_POSITION_OF_BOOK, CHANGE_POSITION_OF_WRITE_LIKED_BOOK, GET_CATEGORY_AND_BOOKS_INFO } from "../../../../graphql/query/writePage";
+import { MUTATION_CHANGE_BOOK_ORDER } from "../../../../graphql/mutation/myBook";
 
 import { Space, Tooltip } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
-import { CHANGE_POSITION_OF_STUDY_LIKED_BOOK, GET_CATEGORY_AND_BOOKS_INFO_STUDY } from "../../../../graphql/query/studyPage";
 
-const FavoriteBookOrderButton = ({ _record, handleToGetMyBook, tableType }) => {
+const FavoriteBookOrderButton = ({ _record, tableType }) => {
   const router = useRouter();
-  const [rePosition, { loading }] = useMutation(tableType === "study" ? CHANGE_POSITION_OF_STUDY_LIKED_BOOK : CHANGE_POSITION_OF_WRITE_LIKED_BOOK, {
+  const [rePosition, { loading }] = useMutation(MUTATION_CHANGE_BOOK_ORDER, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
-      const query = tableType === "study" ? "mybook_changestudylikeorder" : "mybook_changewritelikeorder";
-      if (received_data[query].status === "200") {
-        handleToGetMyBook(received_data[query].mybooks);
-      } else if (received_data[query].status === "401") {
+      if (received_data.mybook_modifySeq.status === "200") {
+      } else if (received_data.mybook_modifySeq.status === "401") {
         router.push("/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -23,17 +20,11 @@ const FavoriteBookOrderButton = ({ _record, handleToGetMyBook, tableType }) => {
     },
   });
 
-  async function positionBooks(direction, id) {
+  async function positionBooks(forModifySeq) {
     try {
       await rePosition({
         variables: {
-          direction: direction,
-          mybook_id: id,
-        },
-        update: (cache, data) => {
-          const queryData = cache.readQuery({ query: tableType === "study" ? GET_CATEGORY_AND_BOOKS_INFO_STUDY : GET_CATEGORY_AND_BOOKS_INFO });
-          console.log({ queryData });
-          // cache.writeQuery({ query: tableType === "study" ? GET_CATEGORY_AND_BOOKS_INFO_STUDY : GET_CATEGORY_AND_BOOKS_INFO, data: 1 });
+          forModifySeq: forModifySeq,
         },
       });
     } catch (error) {
@@ -72,7 +63,19 @@ const FavoriteBookOrderButton = ({ _record, handleToGetMyBook, tableType }) => {
               cursor: "pointer",
             }}
             onClick={() => {
-              positionBooks("up", _record._id);
+              const forModifySeq = [
+                {
+                  mybook_id: _record.aboveAndBelowBooks.aboveBook.mybook_id,
+                  seqType: tableType === "study" ? "StudyLike" : "WriteLike",
+                  seq: tableType === "study" ? _record.seqInStudyLike : _record.seqInWriteLike,
+                },
+                {
+                  mybook_id: _record._id,
+                  seqType: tableType === "study" ? "StudyLike" : "WriteLike",
+                  seq: tableType === "study" ? _record.aboveAndBelowBooks.aboveBook.seqInStudyLike : _record.aboveAndBelowBooks.aboveBook.seqInWriteLike,
+                },
+              ];
+              positionBooks(forModifySeq);
             }}
           >
             <ArrowUpOutlined />
@@ -108,7 +111,19 @@ const FavoriteBookOrderButton = ({ _record, handleToGetMyBook, tableType }) => {
               cursor: "pointer",
             }}
             onClick={() => {
-              positionBooks("down", _record._id);
+              const forModifySeq = [
+                {
+                  mybook_id: _record.aboveAndBelowBooks.belowBook.mybook_id,
+                  seqType: tableType === "study" ? "StudyLike" : "WriteLike",
+                  seq: tableType === "study" ? _record.seqInStudyLike : _record.seqInWriteLike,
+                },
+                {
+                  mybook_id: _record._id,
+                  seqType: tableType === "study" ? "StudyLike" : "WriteLike",
+                  seq: tableType === "study" ? _record.aboveAndBelowBooks.belowBook.seqInStudyLike : _record.aboveAndBelowBooks.belowBook.seqInWriteLike,
+                },
+              ];
+              positionBooks(forModifySeq);
             }}
           >
             <ArrowDownOutlined />

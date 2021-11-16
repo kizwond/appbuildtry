@@ -1,24 +1,20 @@
 import Head from "next/head";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_CATEGORY_AND_BOOKS_INFO_STUDY } from "../../../graphql/query/studyPage";
+import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
 import { useRouter } from "next/router";
 
 import styled from "styled-components";
 
-import { Row, Space, Col, Button } from "antd";
+import { Space, Col, Button } from "antd";
 import M_Layout from "../../../components/layout/M_Layout";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
-import StudyBooksTable from "../../../components/books/studypage/booksTable/StudyBooksTable";
-import StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/StudyFavoriteBooksTable";
 import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
+import M_StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/M_StudyFavoriteBooksTable";
+import M_StudyBooksTable from "../../../components/books/studypage/booksTable/M_StudyBooksTable";
 
 const Writeanother = () => {
   const router = useRouter();
-
-  const [isReceivedData, setIsReceivedData] = useState(false);
-  const [category, setCategory] = useState([]);
-  const [myBook, setMyBook] = useState([]);
 
   const [activedTable, setActivedTable] = useState();
 
@@ -26,14 +22,11 @@ const Writeanother = () => {
 
   const [selectedBooks, setSelectedBooks] = useState([]);
 
-  const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO_STUDY, {
+  const { loading, error, data } = useQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
-      if (received_data.mybookcate_get.status === "200") {
-        setMyBook(received_data.mybook_getAllMybook.mybooks);
-        setCategory(received_data.mybookcate_get.mybookcates);
-        setIsReceivedData(true);
-      } else if (received_data.mybookcate_get.status === "401") {
+      if (received_data.mybookcateset_getMybookcatesetByUserID.status === "200") {
+      } else if (received_data.mybookcateset_getMybookcatesetByUserID.status === "401") {
         router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -41,7 +34,8 @@ const Writeanother = () => {
     },
   });
 
-  const myBook2 = useMemo(() => data?.mybook_getAllMybook.mybooks, [data]);
+  const myBook2 = data?.mybook_getMybookByUserID.mybooks;
+  const category2 = data?.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0];
 
   useEffect(() => {
     sessionStorage.removeItem("books_selected");
@@ -50,13 +44,6 @@ const Writeanother = () => {
   const sesstionStart = () => {
     router.push("/m/study/sessionSetting");
   };
-
-  const handleToGetMyBook = useCallback((books) => {
-    setMyBook(books);
-  }, []);
-  const handleToGetMyCategory = useCallback((_categories) => {
-    setCategory(_categories);
-  }, []);
 
   const chagePopup = useCallback((_boolean) => {
     setisPopupSomething(_boolean);
@@ -70,9 +57,6 @@ const Writeanother = () => {
     sessionStorage.setItem("books_selected", JSON.stringify(_booksArray));
   }, []);
 
-  if (!isReceivedData) {
-    return null;
-  }
   if (loading) {
     return <div>loading..</div>;
   }
@@ -86,24 +70,21 @@ const Writeanother = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <M_Layout>
-        {category.length >= 1 && (
-          <StyledRowMaxWidth topcompo="true">
-            <StyledSpace>
-              <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
-              <Button onClick={sesstionStart} size="small">
-                세션 시작
-              </Button>
-            </StyledSpace>
-          </StyledRowMaxWidth>
-        )}
+        <StyledRowMaxWidth topcompo="true">
+          <StyledSpace>
+            <CategorySettingButton category={category2} />
+            <Button onClick={sesstionStart} size="small">
+              세션 시작
+            </Button>
+          </StyledSpace>
+        </StyledRowMaxWidth>
 
         <StyledRowMaxWidth>
-          {myBook2.filter((_book) => _book.mybook_info.studylike === true).length > 0 && (
+          {myBook2.filter((_book) => _book.mybook_info.isStudyLike).length > 0 && (
             <Col span={24}>
-              <StudyFavoriteBooksTable
-                category={category}
+              <M_StudyFavoriteBooksTable
+                category={category2}
                 myBook={myBook2}
-                handleToGetMyBook={handleToGetMyBook}
                 isPopupSomething={isPopupSomething}
                 chagePopup={chagePopup}
                 activedTable={activedTable}
@@ -115,10 +96,9 @@ const Writeanother = () => {
           )}
 
           <Col span={24}>
-            <StudyBooksTable
-              category={category}
+            <M_StudyBooksTable
+              category={category2}
               myBook={myBook2}
-              handleToGetMyBook={handleToGetMyBook}
               isPopupSomething={isPopupSomething}
               chagePopup={chagePopup}
               activedTable={activedTable}

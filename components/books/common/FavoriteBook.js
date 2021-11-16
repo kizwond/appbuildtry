@@ -7,58 +7,33 @@ import { CHANGE_WRITE_LIKE } from "../../../graphql/query/writePage";
 import { Tooltip } from "antd";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { useMemo } from "react";
+import { MUTATION_SET_MY_BOOK_LIKE } from "../../../graphql/mutation/myBook";
 
 const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType }) => {
-  const { _id, writelike, studylike } = record;
-  const isStudyTable = tableType === "study" ? "mybook_changestudylike" : "mybook_changewritelike";
+  const { _id, isWriteLike, isStudyLike, studyLikeLength, writeLikeLength } = record;
 
   const router = useRouter();
-  const [changeLike] = useMutation(tableType === "study" ? CHANGE_STUDY_LIKE : CHANGE_WRITE_LIKE, {
+  const [changeLike] = useMutation(MUTATION_SET_MY_BOOK_LIKE, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
-      if (received_data[isStudyTable].status === "200") {
-      } else if (received_data[isStudyTable].status === "401") {
+      if (received_data.mybook_setLike.status === "200") {
+      } else if (received_data.mybook_setLike.status === "401") {
         router.push("/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }
     },
   });
-  async function updateBook(_boolean) {
-    const variables =
-      tableType === "study"
-        ? {
-            mybook_id: _id,
-            studylike: _boolean,
-          }
-        : {
-            mybook_id: _id,
-            writelike: _boolean,
-          };
+  async function updateBook(_boolean, seq) {
     try {
       await changeLike({
-        variables,
-        update: (cache, { data }) => {
-          if (data[isStudyTable].status === "200") {
-            cache.writeFragment({
-              id: `Mybook:${_id}`,
-              fragment: gql`
-                fragment MyBook on Mybook {
-                  mybook_info {
-                    ${tableType === "study" ? "studylike" : "writelike"}
-                  }
-                }
-              `,
-              data:
-                tableType === "study"
-                  ? {
-                      mybook_info: { studylike: _boolean, __typename: "Mybook_info" },
-                    }
-                  : {
-                      mybook_info: { writelike: _boolean, __typename: "Mybook_info" },
-                    },
-            });
-          }
+        variables: {
+          forSetLike: {
+            mybook_id: _id,
+            likeType: tableType === "study" ? "StudyLike" : "WriteLike",
+            isLike: _boolean,
+            seq: seq,
+          },
         },
       });
     } catch (error) {
@@ -67,7 +42,7 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const like = useMemo(() => (tableType === "study" ? studylike : writelike), [tableType]);
+  const like = useMemo(() => (tableType === "study" ? isStudyLike : isWriteLike), [tableType]);
 
   return (
     <>
@@ -85,7 +60,7 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
               cursor: "pointer",
             }}
             onClick={() => {
-              updateBook(false);
+              updateBook(false, null);
               changeActivedTable("");
               changeFoldedMenu("");
             }}
@@ -107,7 +82,8 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
               cursor: "pointer",
             }}
             onClick={() => {
-              updateBook(true);
+              console.log({ studyLikeLength });
+              updateBook(true, tableType === "study" ? studyLikeLength : writeLikeLength);
               changeActivedTable("");
               changeFoldedMenu("");
             }}

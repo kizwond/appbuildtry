@@ -47,6 +47,7 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
               }
             `,
           });
+          console.log({ _data, mybook_createMybook });
           cache.writeQuery({
             query: gql`
               ${FRAGMENT_MYBOOK}

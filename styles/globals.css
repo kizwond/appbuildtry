@@ -121,9 +121,6 @@ p {
   margin-bottom: 0 !important;
 }
 
-.ant-drawer-body{
-  padding:0;
-}
 .compact-picker{
   width:210px !important;
 }
@@ -133,4 +130,15 @@ p {
 }
 .card_setting_tab .ant-tabs-nav{
   margin:0;
+}
+
+.ant-tree{
+  font-size: 1rem;
+  color:#535353;
+}
+.ant-drawer-header{
+  padding:5px 10px;
+}
+.ant-drawer-body{
+  padding:5px;
 }

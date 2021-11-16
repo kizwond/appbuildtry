@@ -35,27 +35,12 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   const [cardTypeSetId, setCardTypeSetId] = useState();
   const [cardTypeSets, setCardTypeSets] = useState();
   const [cardTypes, setCardTypes] = useState();
-  const [cardTypeInfos, setcardTypeInfos] = useState();
-  const [indexId, setIndexId] = useState();
   const [cardSetId, setCardSetId] = useState();
   const [cards, setCards] = useState([]);
   const [editorOn, setEditorOn] = useState();
   const [editorOnFromCard, setEditorOnFromCard] = useState();
   const [cardId, setCardId] = useState("");
   const [selectedCardType, setSelectedCardType] = useState();
-  const [parentCardId, setParentCardId] = useState();
-
-  const [face1_input1, set_face1_input1] = useState();
-  const [face1_input2, set_face1_input2] = useState();
-  const [face1_input3, set_face1_input3] = useState();
-  const [face1_input4, set_face1_input4] = useState();
-  const [face1_input5, set_face1_input5] = useState();
-
-  const [face2_input1, set_face2_input1] = useState();
-  const [face2_input2, set_face2_input2] = useState();
-  const [face2_input3, set_face2_input3] = useState();
-  const [face2_input4, set_face2_input4] = useState();
-  const [face2_input5, set_face2_input5] = useState();
 
   const {
     loading,
@@ -71,7 +56,6 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
       setCardTypeSets(data1.cardtypeset_getbymybookid.cardtypesets);
       setCardTypes(data1.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
-      setIndexId(data1.indexset_getbymybookid.indexsets[0].indexes[0]._id);
       setCardSetId(data1.cardset_getbyindexid.cardsets[0]._id);
       setCards(data1.cardset_getbyindexid.cardsets[0].cards);
     } else {
@@ -80,9 +64,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   }, [data1, indexChanged, first_index]);
 
   const cardTypeInfo = (cardtype_info, from, parentId) => {
-    setcardTypeInfos(cardtype_info);
     console.log(parentId);
-    console.log(parentCardId);
     console.log("여기다여기 : ", cardtype_info);
     const cardtypeEditor = cardtype_info.cardtype; //에디터에서 플립모드에 셀렉션 부과하려고 필요한 정보
 

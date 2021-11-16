@@ -1,36 +1,13 @@
 import { gql } from "@apollo/client";
 
 export const UploadExcelFile = gql`
-  mutation UploadExcelFile($forInspectExcelFile: forInspectExcelFile) {
-    cardset_inspectExcelFileToImport(forInspectExcelFile: $forInspectExcelFile) {
+  mutation UploadExcelFile($forSaveAndExtractSheetList: forSaveAndExtractSheetList) {
+    cardset_saveAndExtractSheetList(forSaveAndExtractSheetList: $forSaveAndExtractSheetList) {
       status
       msg
       filename
-      inspectionResult {
-        normal {
-          row
-          cardtype
-          maker_flag
-          face1
-          face2
-          annotation
-        }
-        cardtypeErr {
-          row
-          cardtype
-          maker_flag
-          face1
-          face2
-          annotation
-        }
-        makerflagErr {
-          row
-          cardtype
-          maker_flag
-          face1
-          face2
-          annotation
-        }
+      sheetList {
+        name
       }
     }
   }

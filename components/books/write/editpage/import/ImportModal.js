@@ -14,7 +14,7 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
   const [inspectResultTypeError, setInspectResultTypeError] = useState();
   const [inspectResultFlagError, setInspectResultFlagError] = useState();
 
-  const [cardset_inspectExcelFileToImport, { loading, data }] = useMutation(UploadExcelFile, { onCompleted: showdata });
+  const [cardset_saveAndExtractSheetList, { loading, data }] = useMutation(UploadExcelFile, { onCompleted: showdata });
   const [cardset_importExcelFile, { loading: loading2, data:data2 }] = useMutation(ImportExcelFile, { onCompleted: showdata2 });
   const [cardset_cancelImportExcelFile, { loading: loading3, data:data3 }] = useMutation(CancelImport, { onCompleted: showdata3 });
 
@@ -32,18 +32,18 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
 
   function showdata(data) {
     console.log("response after file upload :", data);
-    setNewFileName(data.cardset_inspectExcelFileToImport.filename);
-    setInspectResultNormal(data.cardset_inspectExcelFileToImport.inspectionResult.normal);
-    setInspectResultTypeError(data.cardset_inspectExcelFileToImport.inspectionResult.cardtypeErr);
-    setInspectResultFlagError(data.cardset_inspectExcelFileToImport.inspectionResult.makerflagErr);
+    setNewFileName(data.cardset_saveAndExtractSheetList.filename);
+    setInspectResultNormal(data.cardset_saveAndExtractSheetList.inspectionResult.normal);
+    setInspectResultTypeError(data.cardset_saveAndExtractSheetList.inspectionResult.cardtypeErr);
+    setInspectResultFlagError(data.cardset_saveAndExtractSheetList.inspectionResult.makerflagErr);
   }
 
   async function uploadfile(mybook_id) {
     console.log(file);
     try {
-      await cardset_inspectExcelFileToImport({
+      await cardset_saveAndExtractSheetList({
         variables: {
-          forInspectExcelFile: {
+          forSaveAndExtractSheetList: {
             mybook_id: mybook_id,
             file: file,
           },

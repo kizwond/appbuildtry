@@ -13,51 +13,56 @@ export const UploadExcelFile = gql`
   }
 `;
 
-export const ImportExcelFile = gql`
-  mutation ImportExcelFile($forImportExcelFile: forImportExcelFile) {
-    cardset_importExcelFile(forImportExcelFile: $forImportExcelFile) {
+export const InspectTargetSheet = gql`
+  mutation InspectTargetSheet($forInspectTargetSheet: forInspectTargetSheet) {
+    cardset_inspectTargetSheet(forInspectTargetSheet: $forInspectTargetSheet) {
       status
       msg
-      cardsets {
-        _id
-        cardset_info {
-          user_id
-          mybook_id
-          indexset_id
-          index_id
-        }
-        cards {
-          _id
-          card_info {
-            cardtype_id
-            cardtype
-            time_created
-            hasParent
-            parent_card_id
+      inspectionResult {
+        successCards {
+          cardtype_id
+          cardtype
+          hasParent
+          content {
+            face1
+            selection
+            face2
+            annotation
           }
-          contents {
-            user_flag
-            maker_flag
-            location
-            mycontents_id {
-              _id
-              face1
-              selection
-              face2
-              annotation
-              memo
-            }
-            buycontents_id {
-              _id
-              face1
-              selection
-              face2
-              annotation
-              memo
-            }
+          makerFlag {
+            value
+            comment
+          }
+        }
+        failureList {
+          cardtype {
+            row
+            value
+          }
+          hasParent {
+            row
+            value
+          }
+          face {
+            row
+            value
+          }
+          row {
+            row
+            value
           }
         }
       }
+    }
+  }
+`;
+
+
+export const ImportExcelFile = gql`
+  mutation ImportExcelFile($forConfirmMakeCard: forConfirmMakeCard) {
+    cardset_confirmMakeCard(forConfirmMakeCard: $forConfirmMakeCard) {
+      status
+      msg
     }
   }
 `;
@@ -70,6 +75,3 @@ export const CancelImport = gql`
     }
   }
 `;
-
-
-

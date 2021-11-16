@@ -5,7 +5,7 @@ import styled from "styled-components";
 import moment from "moment";
 
 import { Table, Card, Space, Drawer, Checkbox, Progress } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, MinusCircleTwoTone, PlusCircleTwoTone } from "@ant-design/icons";
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, FileProtectOutlined, MinusCircleTwoTone, PlusCircleTwoTone, PlusSquareFilled } from "@ant-design/icons";
 
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 import BookOrderButton from "../../common/BookOrderButton";
@@ -141,7 +141,14 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       width: 40,
       render: (_value, _record) => {
         const obj = {
-          children: <div>{_value}</div>,
+          children: (
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer" }} onClick={()=>{
+              console.log('책 카드 상세 보기 페이지로 전환해야 함')
+            }}>
+              <div style={{ lineHeight: 1, marginRight: "3px" }}>{_value}</div>
+              <FileProtectOutlined />
+            </div>
+          ),
           props: {
             colSpan: 1,
             rowSpan: 1,

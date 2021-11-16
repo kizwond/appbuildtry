@@ -114,7 +114,7 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       className: "normal",
       ellipsis: true,
       width: 40,
-      render: (_value, _record) => <div>{_value}</div>,
+      render: (_value, _record) => <div style={{ display: "flex", justifyContent: "flex-end" }}>{_value}</div>,
     },
     // {
     //   title: "최근학습일",

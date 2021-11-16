@@ -1,30 +1,20 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
-import moment from '../../../../node_modules/moment/moment';
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import styled from "styled-components";
+import moment from "../../../../node_modules/moment/moment";
 
-import { Table, Card, Space, Drawer, Checkbox, Progress } from 'antd';
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons';
+import { Table, Card, Space, Drawer, Checkbox, Progress } from "antd";
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
-import { StyledDivEllipsis } from '../../../common/styledComponent/page';
-import BookOrderButton from '../../common/BookOrderButton';
-import HideOrShowButton from '../../common/HideOrShowButton';
-import FavoriteBook from '../../common/FavoriteBook';
-import MoveToBookSetting from './MoveToBookSetting';
-import makeDataSource from '../../common/logic';
+import { StyledDivEllipsis } from "../../../common/styledComponent/page";
+import BookOrderButton from "../../common/BookOrderButton";
+import HideOrShowButton from "../../common/HideOrShowButton";
+import FavoriteBook from "../../common/FavoriteBook";
+import MoveToBookSetting from "./MoveToBookSetting";
+import makeDataSource from "../../common/logic";
 
-const StudyBooksTable = ({
-  category,
-  myBook,
-  handleToGetMyBook,
-  isPopupSomething,
-  chagePopup,
-  activedTable,
-  changeActivedTable,
-  selectedBooks,
-  changeSelectedBooks,
-}) => {
+const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -44,50 +34,45 @@ const StudyBooksTable = ({
   }, []);
 
   useEffect(() => {
-    setExpandedRowKeys(category.map((_cate) => `KEY:${_cate._id}INDEX:0`));
+    setExpandedRowKeys(category.mybookcates.map((_cate) => `KEY:${_cate._id}INDEX:0`));
     setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const dataSource = useMemo(() => makeDataSource(myBook, category.mybookcates, isShowedHiddenBook, changeIsShowedHiddenBook), [myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook]);
 
   if (!mounted) {
     return null;
   }
 
-  const dataSource = makeDataSource(myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook);
-
   const getConditionValue = (_record) => {
-    return (
-      (!expandedRowKeys.includes(_record.key) && _record.relationship === 'parent') ||
-      _record.classType === 'hiddenBar' ||
-      _record.classType === 'middle-hiddenBar' ||
-      _record.classType === 'empty-category'
-    );
+    return (!expandedRowKeys.includes(_record.key) && _record.relationship === "parent") || _record.classType === "hiddenBar" || _record.classType === "middle-hiddenBar" || _record.classType === "empty-category";
   };
 
   const columns = [
     {
       title: <StyledDivEllipsis>카테고리</StyledDivEllipsis>,
-      key: 'categoryName',
-      className: 'categoryCol',
+      key: "categoryName",
+      className: "categoryCol",
       width: 50,
-      dataIndex: 'categoryName',
-      render: (_value, _record) => (_record.relationship === 'parent' ? <StyledDivEllipsis>{_value}</StyledDivEllipsis> : null),
+      dataIndex: "categoryName",
+      render: (_value, _record) => (_record.relationship === "parent" ? <StyledDivEllipsis>{_value}</StyledDivEllipsis> : null),
     },
     {
       title: <StyledDivEllipsis>책 제목</StyledDivEllipsis>,
-      key: 'title',
-      dataIndex: 'title',
-      className: 'Row-First-Left',
+      key: "title",
+      dataIndex: "title",
+      className: "Row-First-Left",
       width: 85,
       render: (value, _record, index) => {
         const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
         const obj = {
           children:
-            _record.classType === 'empty-category' ? (
+            _record.classType === "empty-category" ? (
               <div>빈 칸테고리</div>
-            ) : _record.relationship === 'parent' && !expandedRowKeys.includes(_record.key) ? (
+            ) : _record.relationship === "parent" && !expandedRowKeys.includes(_record.key) ? (
               <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
-            ) : _record.classType === 'middle-hiddenBar' || _record.classType === 'hiddenBar' ? (
+            ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
               <StyledDivEllipsis>{value}</StyledDivEllipsis>
             ) : (
               <StyledDivEllipsis>
@@ -104,7 +89,7 @@ const StudyBooksTable = ({
                     }}
                   />
                   <div>
-                    <DollarCircleFilled style={{ marginRight: '3px', color: 'aqua' }} />
+                    <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
                     {value}
                   </div>
                 </Space>
@@ -127,10 +112,10 @@ const StudyBooksTable = ({
           <StyledDivEllipsis>(읽기/뒤집기)</StyledDivEllipsis>
         </>
       ),
-      key: 'total',
-      align: 'center',
-      dataIndex: 'total',
-      className: 'normal',
+      key: "total",
+      align: "center",
+      dataIndex: "total",
+      className: "normal",
       ellipsis: true,
       width: 70,
       render: (_value, _record) => {
@@ -151,16 +136,16 @@ const StudyBooksTable = ({
     },
     {
       title: <StyledDivEllipsis>최근학습일</StyledDivEllipsis>,
-      key: 'timeStudy',
-      dataIndex: 'timeStudy',
-      align: 'center',
-      className: 'normal',
+      key: "timeStudy",
+      dataIndex: "timeStudy",
+      align: "center",
+      className: "normal",
       width: 45,
       render: (_value, _record) => {
         const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format('YY.MM.DD');
+        const DateString = moment(newDate).format("YY.MM.DD");
         const obj = {
-          children: <div>{_value === null ? '-' : DateString}</div>,
+          children: <div>{_value === null ? "-" : DateString}</div>,
           props: {
             colSpan: 1,
             rowSpan: 1,
@@ -180,17 +165,17 @@ const StudyBooksTable = ({
           <StyledDivEllipsis>진도율</StyledDivEllipsis>
         </>
       ),
-      key: 'timeModify',
-      dataIndex: 'timeModify',
-      align: 'center',
-      className: 'normal',
+      key: "timeModify",
+      dataIndex: "timeModify",
+      align: "center",
+      className: "normal",
       width: 75,
       render: (_value, _record) => {
         const obj = {
           children: (
-            <div style={{ paddingLeft: '5px', paddingRight: '5px' }}>
+            <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
               {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-              {_record.total === 0 ? '-' : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
+              {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
             </div>
           ),
           props: {
@@ -207,41 +192,41 @@ const StudyBooksTable = ({
       },
     },
     {
-      title: '이동',
-      key: 'seq_in_category',
-      dataIndex: 'seq_in_category',
-      className: 'normal',
-      align: 'right',
+      title: "이동",
+      key: "seq_in_category",
+      dataIndex: "seq_in_category",
+      className: "normal",
+      align: "right",
       width: 35,
       render: (value, _record, index) => {
         const obj = {
           children: (
             <div
               style={{
-                position: 'relative',
+                position: "relative",
                 zIndex: 2,
               }}
             >
               <div
                 style={{
-                  width: '100%',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  justifyContent: 'end',
+                  width: "100%",
+                  cursor: "pointer",
+                  display: "flex",
+                  justifyContent: "end",
                 }}
                 onClick={() => {
                   changeFoldedMenu(_record._id);
-                  changeActivedTable('bookTable');
+                  changeActivedTable("bookTable");
                 }}
               >
                 <div
                   className="PullCustomCircleButton"
                   style={{
-                    width: '44px',
-                    height: '30px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    width: "44px",
+                    height: "30px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
                   <DoubleLeftOutlined />
@@ -251,41 +236,34 @@ const StudyBooksTable = ({
               <Drawer
                 destroyOnClose={true}
                 placement="right"
-                width={'210px'}
+                width={"210px"}
                 closable={false}
                 mask={false}
-                visible={activedTable === 'bookTable' && _record._id === isFoldedMenu}
+                visible={activedTable === "bookTable" && _record._id === isFoldedMenu}
                 getContainer={false}
-                style={{ position: 'absolute', textAlign: 'initial', height: '30px', top: '2px' }}
-                contentWrapperStyle={{ boxShadow: 'unset' }}
-                drawerStyle={{ display: 'block' }}
+                style={{ position: "absolute", textAlign: "initial", height: "30px", top: "2px" }}
+                contentWrapperStyle={{ boxShadow: "unset" }}
+                drawerStyle={{ display: "block" }}
                 bodyStyle={{
-                  padding: 'unset',
-                  flexGrow: 'unset',
-                  overflow: 'hidden',
-                  height: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
+                  padding: "unset",
+                  flexGrow: "unset",
+                  overflow: "hidden",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
                 }}
               >
                 <Space size={3}>
-                  <BookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} /> |
-                  <FavoriteBook
-                    record={_record}
-                    handleToGetMyBook={handleToGetMyBook}
-                    changeActivedTable={changeActivedTable}
-                    changeFoldedMenu={changeFoldedMenu}
-                    tableType="study"
-                  />{' '}
-                  |
-                  <HideOrShowButton record={_record} handleToGetMyBook={handleToGetMyBook} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+                  <BookOrderButton _record={_record} /> |
+                  <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" /> |
+                  <HideOrShowButton record={_record} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
                 </Space>
                 <div
                   className="PushCustomCircleButton"
                   onClick={() => {
-                    setIsFoldedMenu('');
-                    changeActivedTable('');
+                    setIsFoldedMenu("");
+                    changeActivedTable("");
                   }}
                 >
                   <DoubleRightOutlined />
@@ -304,21 +282,15 @@ const StudyBooksTable = ({
       },
     },
     {
-      title: '설정',
-      align: 'center',
-      className: 'Row-Last-One',
+      title: "설정",
+      align: "center",
+      className: "Row-Last-One",
       width: 35,
       render: (value, _record, index) => {
         const obj = {
           children: (
             <div>
-              <MoveToBookSetting
-                mybook_id={_record._id}
-                title={_record.title}
-                isPopupSomething={isPopupSomething}
-                chagePopup={chagePopup}
-                handleToGetMyBook={handleToGetMyBook}
-              />
+              <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
             </div>
           ),
           props: {},
@@ -334,7 +306,7 @@ const StudyBooksTable = ({
   ];
 
   return (
-    <StyledCard bordered={false} size="small" title={<div style={{ fontSize: '1rem', fontWeight: 'bold' }}>나의 책</div>}>
+    <StyledCard bordered={false} size="small" title={<div style={{ fontSize: "1rem", fontWeight: "bold" }}>나의 책</div>}>
       <Table
         dataSource={dataSource}
         tableLayout="fixed"
@@ -346,21 +318,21 @@ const StudyBooksTable = ({
         // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
         // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
         rowClassName={(record, index) =>
-          record.classType === 'empty-category'
-            ? 'NoBooksCategory'
-            : !expandedRowKeys.includes(record.key) && record.relationship === 'parent'
-            ? 'foldedCategory'
-            : record.classType === 'hiddenBar'
-            ? 'LastHiddenBar'
-            : record.classType === 'middle-hiddenBar'
-            ? 'MiddleHiddenBar'
-            : record.classType === 'last-even-book'
-            ? 'lastEvenBook'
-            : record.classType === 'last-odd-book'
-            ? 'lastOddBook'
-            : record.classType === 'even-book'
-            ? 'EvenNumberRow'
-            : 'OddNumberRow'
+          record.classType === "empty-category"
+            ? "NoBooksCategory"
+            : !expandedRowKeys.includes(record.key) && record.relationship === "parent"
+            ? "foldedCategory"
+            : record.classType === "hiddenBar"
+            ? "LastHiddenBar"
+            : record.classType === "middle-hiddenBar"
+            ? "MiddleHiddenBar"
+            : record.classType === "last-even-book"
+            ? "lastEvenBook"
+            : record.classType === "last-odd-book"
+            ? "lastOddBook"
+            : record.classType === "even-book"
+            ? "EvenNumberRow"
+            : "OddNumberRow"
         }
         // rowSelection={{
         //   hideSelectAll: true,
@@ -371,7 +343,7 @@ const StudyBooksTable = ({
         expandable={{
           expandedRowKeys,
           // 아래 클래스이름 지정하는 것은 나중에 selected checkbox css 할 때 해보자
-          expandedRowClassName: (record, index, indent) => '',
+          expandedRowClassName: (record, index, indent) => "",
           onExpand: (ex, re) => {
             if (!ex) {
               setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re.key));

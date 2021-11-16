@@ -1,21 +1,21 @@
 import React, { memo } from "react";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
-import { UPDATE_BOOK_HIDE } from "../../../graphql/query/writePage";
 
 import { Tooltip } from "antd";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
+import { MUTATION_SET_MY_BOOK_HIDE_OR_SHOW } from "../../../graphql/mutation/myBook";
 
 const HideOrShowButton = ({ record }) => {
-  const { title, _id, hide_or_show } = record;
-  const isShowed = hide_or_show === "show";
+  const { _id, hideOrShow } = record;
+  const isShowed = hideOrShow === "show";
 
   const router = useRouter();
-  const [updateBookTitle, { variables }] = useMutation(UPDATE_BOOK_HIDE, {
+  const [updateBookTitle, { variables }] = useMutation(MUTATION_SET_MY_BOOK_HIDE_OR_SHOW, {
     onCompleted: (received_data) => {
       console.log("책 수정함", received_data);
-      if (received_data.mybook_update.status === "200") {
-      } else if (received_data.mybook_update.status === "401") {
+      if (received_data.mybook_setHideOrShow.status === "200") {
+      } else if (received_data.mybook_setHideOrShow.status === "401") {
         router.push("/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -23,27 +23,12 @@ const HideOrShowButton = ({ record }) => {
     },
   });
   async function updateBook(hide) {
+    console.log({ hide });
     try {
       await updateBookTitle({
         variables: {
           mybook_id: _id,
-          title,
-          hide_or_show: hide,
-        },
-        update: (cache, { data: { mybook_update } }) => {
-          cache.writeFragment({
-            id: `Mybook:${_id}`,
-            fragment: gql`
-              fragment MyBook on Mybook {
-                mybook_info {
-                  hide_or_show
-                }
-              }
-            `,
-            data: {
-              mybook_info: { hide_or_show: hide, __typename: "Mybook_info" },
-            },
-          });
+          hideOrShow: hide,
         },
       });
     } catch (error) {

@@ -1,17 +1,17 @@
 import Head from "next/head";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_CATEGORY_AND_BOOKS_INFO } from "../../../graphql/query/writePage";
 import { useRouter } from "next/router";
 
 import styled from "styled-components";
 
-import { Row, Space, Col, Button } from "antd";
+import { Space, Col, Button } from "antd";
 import Layout from "../../../components/layout/Layout";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
 import StudyBooksTable from "../../../components/books/studypage/booksTable/StudyBooksTable";
 import StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/StudyFavoriteBooksTable";
 import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
+import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
 
 const StudyPage = () => {
   const router = useRouter();
@@ -26,20 +26,21 @@ const StudyPage = () => {
 
   const [selectedBooks, setSelectedBooks] = useState([]);
 
-  const { loading, error, data } = useQuery(GET_CATEGORY_AND_BOOKS_INFO, {
+  const { loading, error, data } = useQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
-      if (received_data.mybookcate_get.status === "200") {
-        setMyBook(received_data.mybook_getAllMybook.mybooks);
-        setCategory(received_data.mybookcate_get.mybookcates);
+      if (received_data.mybookcateset_getMybookcatesetByUserID.status === "200") {
         setIsReceivedData(true);
-      } else if (received_data.mybookcate_get.status === "401") {
-        router.push("/account/login");
+      } else if (received_data.mybookcateset_getMybookcatesetByUserID.status === "401") {
+        router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }
     },
   });
+
+  const myBook2 = useMemo(() => data?.mybook_getMybookByUserID.mybooks, [data]);
+  const category2 = useMemo(() => data?.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0], [data]);
 
   useEffect(() => {
     sessionStorage.removeItem("books_selected");
@@ -84,24 +85,21 @@ const StudyPage = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Layout>
-        {category.length >= 1 && (
-          <StyledRowMaxWidth topcompo="true">
-            <StyledSpace>
-              <CategorySettingButton category={category} handleToGetMyCategory={handleToGetMyCategory} handleToGetMyBook={handleToGetMyBook} />
-              <Button onClick={sesstionStart} size="small">
-                세션 시작
-              </Button>
-            </StyledSpace>
-          </StyledRowMaxWidth>
-        )}
+        <StyledRowMaxWidth topcompo="true">
+          <StyledSpace>
+            <CategorySettingButton category={category2} />
+            <Button onClick={sesstionStart} size="small">
+              세션 시작
+            </Button>
+          </StyledSpace>
+        </StyledRowMaxWidth>
 
         <StyledRowMaxWidth>
-          {myBook.filter((_book) => _book.mybook_info.studylike === true).length > 0 && (
+          {myBook2.filter((_book) => _book.mybook_info.isStudyLike).length > 0 && (
             <Col span={24}>
               <StudyFavoriteBooksTable
-                category={category}
-                myBook={myBook}
-                handleToGetMyBook={handleToGetMyBook}
+                category={category2}
+                myBook={myBook2}
                 isPopupSomething={isPopupSomething}
                 chagePopup={chagePopup}
                 activedTable={activedTable}
@@ -114,9 +112,8 @@ const StudyPage = () => {
 
           <Col span={24}>
             <StudyBooksTable
-              category={category}
-              myBook={myBook}
-              handleToGetMyBook={handleToGetMyBook}
+              category={category2}
+              myBook={myBook2}
               isPopupSomething={isPopupSomething}
               chagePopup={chagePopup}
               activedTable={activedTable}

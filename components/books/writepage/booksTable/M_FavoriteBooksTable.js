@@ -12,7 +12,7 @@ import MoveToBookSetting from "./MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
 
-const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
+const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
@@ -37,7 +37,7 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
     router.push(`/m/write/${bookid}`);
   }
 
-  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.isWriteLike === true);
+  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.isWriteLike);
   const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seqInWriteLike - book_B.mybook_info.seqInWriteLike);
   const dataSource = sortedBook.map((_book, _index) => {
     return {
@@ -47,11 +47,21 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       ..._book.stats?.overall,
       studyHistory: _book.stats?.studyHistory,
       writeHistory: _book.stats?.writeHistory,
-      categoryName: category.mybookcates.find((_cate) => _cate._id === _book.mybook_info.mybookcate_id).mybookcate_info.name,
+      categoryName: category.mybookcates.find((_cate) => _cate._id === _book.mybook_info.mybookcate_id).name,
       isFirstBook: _index === 0,
       isLastBook: writeLikedBooksList.length === _index + 1,
       key: _book._id,
       _id: _book._id,
+      aboveAndBelowBooks: {
+        aboveBook: {
+          mybook_id: sortedBook[_index - 1] && sortedBook[_index - 1]._id,
+          seqInWriteLike: sortedBook[_index - 1] && sortedBook[_index - 1].mybook_info.seqInWriteLike,
+        },
+        belowBook: {
+          mybook_id: sortedBook[_index + 1] && sortedBook[_index + 1]._id,
+          seqInWriteLike: sortedBook[_index + 1] && sortedBook[_index + 1].mybook_info.seqInWriteLike,
+        },
+      },
     };
   });
 
@@ -240,8 +250,8 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
             }}
           >
             <Space size={3}>
-              <FavoriteBookOrderButton handleToGetMyBook={handleToGetMyBook} _record={_record} tableType="write" /> |
-              <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} /> |
+              <FavoriteBookOrderButton _record={_record} tableType="write" /> |
+              <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
               <HideOrShowButton record={_record} />
             </Space>
             <div
@@ -264,7 +274,7 @@ const FavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSometh
       width: 35,
       render: (value, _record, index) => (
         <div>
-          <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} handleToGetMyBook={handleToGetMyBook} />
+          <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
         </div>
       ),
     },

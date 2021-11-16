@@ -26,3 +26,29 @@ export const MUTATION_CHANGE_BOOK_ORDER = gql`
     }
   }
 `;
+
+export const MUTATION_SET_MY_BOOK_LIKE = gql`
+  ${FRAGMENT_MYBOOK}
+  mutation setMyBookLike($forSetLike: forSetLike) {
+    mybook_setLike(forSetLike: $forSetLike) {
+      status
+      msg
+      mybooks {
+        ...MyBookFragment
+      }
+    }
+  }
+`;
+
+export const MUTATION_SET_MY_BOOK_HIDE_OR_SHOW = gql`
+  ${FRAGMENT_MYBOOK}
+  mutation setMyBookHideOrShow($mybook_id: String!, $hideOrShow: String) {
+    mybook_setHideOrShow(mybook_id: $mybook_id, hideOrShow: $hideOrShow) {
+      status
+      msg
+      mybooks {
+        ...MyBookFragment
+      }
+    }
+  }
+`;

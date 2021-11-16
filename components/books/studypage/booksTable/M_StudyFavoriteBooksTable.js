@@ -2,26 +2,25 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "../../../../node_modules/moment/moment";
+import moment from "moment";
 
-import { Table, Button, Card, Tooltip, Space, Drawer } from "antd";
+import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "./MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
-import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
+import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 
-const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
+const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
 
-  const router = useRouter();
-
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
+  console.log("마운트 윗 코드");
 
   useEffect(() => {
     setMounted(true);
@@ -31,14 +30,10 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
     return null;
   }
 
-  function movepage(bookid) {
-    localStorage.removeItem("book_id");
-    localStorage.setItem("book_id", bookid);
-    router.push(`/books/write/${bookid}`);
-  }
+  console.log("마운트 아래 코드");
 
-  const writeLikedBooksList = myBook.filter((_book) => _book.mybook_info.isWriteLike);
-  const sortedBook = writeLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seqInWriteLike - book_B.mybook_info.seqInWriteLike);
+  const likedBooksList = myBook.filter((_book) => _book.mybook_info.isStudyLike);
+  const sortedBook = likedBooksList.sort((book_A, book_B) => book_A.mybook_info.seqInStudyLike - book_B.mybook_info.seqInStudyLike);
   const dataSource = sortedBook.map((_book, _index) => {
     return {
       ..._book.mybook_info,
@@ -49,17 +44,17 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
       writeHistory: _book.stats?.writeHistory,
       categoryName: category.mybookcates.find((_cate) => _cate._id === _book.mybook_info.mybookcate_id).name,
       isFirstBook: _index === 0,
-      isLastBook: writeLikedBooksList.length === _index + 1,
+      isLastBook: likedBooksList.length === _index + 1,
       key: _book._id,
       _id: _book._id,
       aboveAndBelowBooks: {
         aboveBook: {
           mybook_id: sortedBook[_index - 1] && sortedBook[_index - 1]._id,
-          seqInWriteLike: sortedBook[_index - 1] && sortedBook[_index - 1].mybook_info.seqInWriteLike,
+          seqInStudyLike: sortedBook[_index - 1] && sortedBook[_index - 1].mybook_info.seqInStudyLike,
         },
         belowBook: {
           mybook_id: sortedBook[_index + 1] && sortedBook[_index + 1]._id,
-          seqInWriteLike: sortedBook[_index + 1] && sortedBook[_index + 1].mybook_info.seqInWriteLike,
+          seqInStudyLike: sortedBook[_index + 1] && sortedBook[_index + 1].mybook_info.seqInStudyLike,
         },
       },
     };
@@ -80,13 +75,10 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
       dataIndex: "title",
       className: "TitleCol",
       width: 85,
-      render: (value, _record, index) => (
-        <div
-          onClick={() => {
-            movepage(_record._id);
-          }}
-          style={{ cursor: "pointer" }}
-        >
+      render: (value, _record, index) => {
+        const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
+
+        return (
           <div
             style={{
               overflow: "hidden",
@@ -94,11 +86,26 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
               whiteSpace: "nowrap",
             }}
           >
-            <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
-            {value}
+            <Space>
+              <Checkbox
+                checked={isSelected}
+                onChange={() => {
+                  if (isSelected) {
+                    changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                  }
+                  if (!isSelected) {
+                    changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                  }
+                }}
+              />
+              <div>
+                <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
+                {value}
+              </div>
+            </Space>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       title: (
@@ -141,52 +148,12 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
       dataIndex: "timeModify",
       className: "normal",
       width: 75,
-      render: (_value, _record) => {
-        const now = new Date();
-
-        const today = moment(now).format("YYYYMMDD");
-        const todayCards = _record.writeHistory?.filter((_arr) => _arr.date === today)[0];
-        const todayCreatedCards = todayCards ? todayCards.numCreatedCards : 0;
-
-        const yesterday = moment(now).subtract(1, "days").format("YYYYMMDD");
-        const yesterdayCards = _record.writeHistory?.filter((_arr) => _arr.date === yesterday)[0];
-        const yesterdayCreatedCards = yesterdayCards ? yesterdayCards.numCreatedCards : 0;
-
-        const theDayBeforeYesterday = moment(now).subtract(1, "days").format("YYYYMMDD");
-        const theDayBeforeYesterdayCards = _record.writeHistory?.filter((_arr) => _arr.date === theDayBeforeYesterday)[0];
-        const theDayBeforeYesterdayCreatedCards = theDayBeforeYesterdayCards ? theDayBeforeYesterdayCards.numCreatedCards : 0;
-
-        return (
-          <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-around" }}>
-                <div className="singleBar">
-                  <div className="graphBar">
-                    <div className="AchivedCard" style={{ height: theDayBeforeYesterdayCreatedCards >= 100 ? "100%" : `${theDayBeforeYesterdayCreatedCards}%` }}>
-                      <span className="CardCounter">{theDayBeforeYesterdayCreatedCards}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="singleBar">
-                  <div className="graphBar">
-                    <div className="AchivedCard" style={{ height: yesterdayCreatedCards >= 100 ? "100%" : `${yesterdayCreatedCards}%` }}>
-                      <span className="CardCounter">{yesterdayCreatedCards}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="singleBar">
-                  <div className="graphBar">
-                    <div className="AchivedCard" style={{ height: todayCreatedCards >= 100 ? "100%" : `${todayCreatedCards}%` }}>
-                      <span className="CardCounter">{todayCreatedCards}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div style={{ width: "100%", height: 1, borderBottom: "1px solid #c5c6c7" }}></div>
-            </div>
-          </div>
-        );
-      },
+      render: (_value, _record) => (
+        <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
+          {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
+          {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
+        </div>
+      ),
     },
     {
       title: "이동",
@@ -250,8 +217,9 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
             }}
           >
             <Space size={3}>
-              <FavoriteBookOrderButton h _record={_record} tableType="write" /> |
-              <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
+              <FavoriteBookOrderButton _record={_record} tableType="study" /> |
+              <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" />
+              |
               <HideOrShowButton record={_record} />
             </Space>
             <div
@@ -268,7 +236,7 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
       ),
     },
     {
-      title: "상설",
+      title: "설정",
       align: "center",
       className: "Row-Last-One",
       width: 35,
@@ -287,11 +255,9 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
       title={
         <div>
           <span style={{ marginRight: "30px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
-          {dataSource.length > 0 && (
-            <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
-              {visible ? "접기" : "펼치기"}
-            </Button>
-          )}
+          <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
+            {visible ? "접기" : "펼치기"}
+          </Button>
         </div>
       }
     >
@@ -302,7 +268,7 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
   );
 };
 
-export default FavoriteBooksTable;
+export default M_StudyFavoriteBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
@@ -310,6 +276,9 @@ const StyledCard = styled(Card)`
     font-size: 0.8rem;
   }
 
+  /* & .ant-table-thead .categoryCol::before {
+    display: none;
+  } */
   & .ant-table-thead .categoryCol {
     border-bottom: 1px solid #f0f0f0;
   }

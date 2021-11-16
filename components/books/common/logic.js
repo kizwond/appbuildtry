@@ -1,10 +1,16 @@
 import { Tooltip, Tag } from "antd";
 import { VerticalAlignBottomOutlined } from "@ant-design/icons";
+import _, { filter } from "lodash";
 
 export default function makeDataSource(myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook) {
   const noCategoryId = category.find((_cate) => _cate.isFixed === "yes")._id;
   const noCategoryBooksLength = myBook.filter((_book) => _book.mybook_info.mybookcate_id === noCategoryId).length;
   const filteredCategory = noCategoryBooksLength > 0 ? category : category.filter((_cate) => _cate.name !== "(미지정)");
+
+  const studyLikedBoooks = myBook.filter((book) => book.mybook_info.isStudyLike);
+  const studyLikeLength = studyLikedBoooks.length === 0 ? 1 : Math.max(...studyLikedBoooks.map((book) => book.mybook_info.seqInStudyLike)) + 1;
+  const writeLikedBooks = myBook.filter((book) => book.mybook_info.isWriteLike);
+  const writeLikeLength = writeLikedBooks.length === 0 ? 1 : Math.max(...writeLikedBooks.map((book) => book.mybook_info.seqInWriteLike)) + 1;
 
   const dataSource = filteredCategory.map((_cate, _categoryIndex) => {
     const { name, seq } = _cate;
@@ -59,6 +65,8 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
           seqInCategory: markedShowList[_index + 1] && markedShowList[_index + 1].mybook_info.seqInCategory,
         },
       },
+      studyLikeLength,
+      writeLikeLength,
     }));
 
     const hiddenList = markedHideList.map((_book, _index) => ({
@@ -82,6 +90,8 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       isLastBook: markedHideListLength === _index + 1,
       key: `KEY:${_cate._id}INDEX_HIDDEN:${_index}`,
       _id: _book._id,
+      studyLikeLength,
+      writeLikeLength,
     }));
 
     const hiddenBar = {

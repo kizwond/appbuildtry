@@ -1,31 +1,29 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "../../../../node_modules/moment/moment";
+import moment from "moment";
 
-import { Table, Card, Space, Drawer } from "antd";
+import { Table, Card, Space, Drawer, Checkbox, Progress } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
+import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
 import MoveToBookSetting from "./MoveToBookSetting";
-
 import makeDataSource from "../../common/logic";
-import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 
-const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId }) => {
+const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
 
-  const router = useRouter();
-
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
+
   const changeIsShowedHiddenBook = useCallback((isShowedAllBooks, isShowedHiddenBook, id) => {
     if (isShowedAllBooks) {
       setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== id));
@@ -36,20 +34,8 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
   }, []);
 
   useEffect(() => {
-    setExpandedRowKeys([...expandedRowKeys, `KEY:${newCateId}INDEX:0`]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newCateId]);
-
-  useEffect(() => {
     setExpandedRowKeys(category.mybookcates.map((_cate) => `KEY:${_cate._id}INDEX:0`));
     setMounted(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const movepage = useCallback(function (bookid) {
-    localStorage.removeItem("book_id");
-    localStorage.setItem("book_id", bookid);
-    router.push(`/books/write/${bookid}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -79,6 +65,7 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
       className: "Row-First-Left",
       width: 85,
       render: (value, _record, index) => {
+        const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
         const obj = {
           children:
             _record.classType === "empty-category" ? (
@@ -88,17 +75,25 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
             ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
               <StyledDivEllipsis>{value}</StyledDivEllipsis>
             ) : (
-              <div
-                onClick={() => {
-                  movepage(_record._id);
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                <StyledDivEllipsis>
-                  <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
-                  {value}
-                </StyledDivEllipsis>
-              </div>
+              <StyledDivEllipsis>
+                <Space>
+                  <Checkbox
+                    checked={isSelected}
+                    onChange={() => {
+                      if (isSelected) {
+                        changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                      }
+                      if (!isSelected) {
+                        changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                      }
+                    }}
+                  />
+                  <div>
+                    <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
+                    {value}
+                  </div>
+                </Space>
+              </StyledDivEllipsis>
             ),
           props: {},
         };
@@ -140,10 +135,10 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
       },
     },
     {
-      title: <StyledDivEllipsis>수정일</StyledDivEllipsis>,
-      key: "timeModify",
+      title: <StyledDivEllipsis>최근학습일</StyledDivEllipsis>,
+      key: "timeStudy",
+      dataIndex: "timeStudy",
       align: "center",
-      dataIndex: "timeModify",
       className: "normal",
       width: 45,
       render: (_value, _record) => {
@@ -167,59 +162,20 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
     {
       title: (
         <>
-          <StyledDivEllipsis>최근 3일간</StyledDivEllipsis>
-          <StyledDivEllipsis>카드생성</StyledDivEllipsis>
+          <StyledDivEllipsis>진도율</StyledDivEllipsis>
         </>
       ),
       key: "timeModify",
-      align: "center",
       dataIndex: "timeModify",
+      align: "center",
       className: "normal",
       width: 75,
       render: (_value, _record) => {
-        const now = new Date();
-
-        const today = moment(now).format("YYYYMMDD");
-        const todayCards = _record.writeHistory?.filter((_arr) => _arr.date === today)[0];
-        const todayCreatedCards = todayCards ? todayCards.numCreatedCards : 0;
-
-        const yesterday = moment(now).subtract(1, "days").format("YYYYMMDD");
-        const yesterdayCards = _record.writeHistory?.filter((_arr) => _arr.date === yesterday)[0];
-        const yesterdayCreatedCards = yesterdayCards ? yesterdayCards.numCreatedCards : 0;
-
-        const theDayBeforeYesterday = moment(now).subtract(1, "days").format("YYYYMMDD");
-        const theDayBeforeYesterdayCards = _record.writeHistory?.filter((_arr) => _arr.date === theDayBeforeYesterday)[0];
-        const theDayBeforeYesterdayCreatedCards = theDayBeforeYesterdayCards ? theDayBeforeYesterdayCards.numCreatedCards : 0;
-
         const obj = {
           children: (
             <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-around" }}>
-                  <div className="singleBar">
-                    <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: theDayBeforeYesterdayCreatedCards >= 100 ? "100%" : `${theDayBeforeYesterdayCreatedCards}%` }}>
-                        <span className="CardCounter">{theDayBeforeYesterdayCreatedCards}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="singleBar">
-                    <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: yesterdayCreatedCards >= 100 ? "100%" : `${yesterdayCreatedCards}%` }}>
-                        <span className="CardCounter">{yesterdayCreatedCards}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="singleBar">
-                    <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: todayCreatedCards >= 100 ? "100%" : `${todayCreatedCards}%` }}>
-                        <span className="CardCounter">{todayCreatedCards}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div style={{ width: "100%", height: 1, borderBottom: "1px solid #c5c6c7" }}></div>
-              </div>
+              {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
+              {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
             </div>
           ),
           props: {
@@ -300,7 +256,7 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
               >
                 <Space size={3}>
                   <BookOrderButton _record={_record} /> |
-                  <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
+                  <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" /> |
                   <HideOrShowButton record={_record} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
                 </Space>
                 <div
@@ -326,7 +282,7 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
       },
     },
     {
-      title: "상설",
+      title: "설정",
       align: "center",
       className: "Row-Last-One",
       width: 35,
@@ -358,6 +314,9 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
         size="small"
         rowKey={(record) => record.key}
         pagination={false}
+        // bordered
+        // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
+        // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
         rowClassName={(record, index) =>
           record.classType === "empty-category"
             ? "NoBooksCategory"
@@ -375,8 +334,16 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
             ? "EvenNumberRow"
             : "OddNumberRow"
         }
+        // rowSelection={{
+        //   hideSelectAll: true,
+        // }}
+        // scroll={{
+        //   y: 370,
+        // }}
         expandable={{
           expandedRowKeys,
+          // 아래 클래스이름 지정하는 것은 나중에 selected checkbox css 할 때 해보자
+          expandedRowClassName: (record, index, indent) => "",
           onExpand: (ex, re) => {
             if (!ex) {
               setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re.key));
@@ -391,7 +358,7 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
   );
 };
 
-export default BooksTable;
+export default M_StudyBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */

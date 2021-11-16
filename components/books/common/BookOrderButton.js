@@ -10,9 +10,7 @@ const BookOrderButton = ({ _record }) => {
   const router = useRouter();
   const [rePosition] = useMutation(MUTATION_CHANGE_BOOK_ORDER, {
     onCompleted: (received_data) => {
-      console.log("received_data", received_data);
       if (received_data.mybook_modifySeq.status === "200") {
-        // handleToGetMyBook(received_data.mybook_modifySeq.mybooks);
       } else if (received_data.mybook_modifySeq.status === "401") {
         router.push("/account/login");
       } else {
@@ -26,16 +24,6 @@ const BookOrderButton = ({ _record }) => {
       await rePosition({
         variables: {
           forModifySeq: forModifySeq,
-        },
-        update: (cache, data) => {
-          // const queryData = cache.readQuery({ query: GET_CATEGORY_AND_BOOKS_INFO_STUDY });
-          // console.log(queryData);
-          // const selectedBook = queryData.mybook_getAllMybook.mybooks.find((book) => book._id === id);
-          // const swichedBook = queryData.mybook_getAllMybook.mybooks.find((book) => book._id === id);
-          // cache.writeQuery({
-          //   query: GET_CATEGORY_AND_BOOKS_INFO_STUDY,
-          //   data: 1,
-          // });
         },
       });
     } catch (error) {
@@ -74,7 +62,6 @@ const BookOrderButton = ({ _record }) => {
               cursor: "pointer",
             }}
             onClick={() => {
-              console.log(_record);
               const forModifySeq = [
                 {
                   mybook_id: _record.aboveAndBelowBooks.aboveBook.mybook_id,
@@ -82,7 +69,7 @@ const BookOrderButton = ({ _record }) => {
                   seq: _record.seqInCategory,
                 },
                 {
-                  mybook_id: _record.mybook_id,
+                  mybook_id: _record._id,
                   seqType: "Category",
                   seq: _record.aboveAndBelowBooks.aboveBook.seqInCategory,
                 },

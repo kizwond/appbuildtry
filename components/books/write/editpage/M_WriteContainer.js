@@ -67,7 +67,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
   useEffect(() => {
     if (data1) {
-      // console.log("최초 로드 data : ", data1);
+      console.log("최초 로드 data : ", data1);
       setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
       setCardTypeSets(data1.cardtypeset_getbymybookid.cardtypesets);
       setCardTypes(data1.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
@@ -230,24 +230,26 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       await cardset_addcard({
         variables: {
           forAddCard: {
-            cardset_id: cardSetId,
-            current_position_card_id: current_position_card_id,
+            currentPositionCardID: current_position_card_id,
             card_info: {
               mybook_id: mybook_id,
+              indexset_id : indexSetId,
+              index_id : first_index,
+              cardset_id: cardSetId,
               cardtypeset_id: cardTypeSetId,
               cardtype_id,
               cardtype,
               hasParent: hasParent,
-              parent_card_id: parentId,
+              parentCard_id: parentId,
             },
             contents: {
-              user_flag: null,
-              maker_flag: null,
+              // user_flag: null,
+              // maker_flag: null,
               face1: face1_contents,
               selection: null,
               face2: face2_contents,
               annotation: annotation_contents,
-              memo: null,
+              // memo: null,
             },
           },
         },

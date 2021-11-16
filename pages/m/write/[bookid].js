@@ -35,7 +35,7 @@ const Book = () => {
   const [indexChanged, setIndexChanged] = useState();
   const [indexSetId, setIndexSetId] = useState();
   const { loading, error, data } = useQuery(GetIndex, {
-    variables: { mybook_id: book_id },
+    variables: { mybook_ids: [book_id] },
   });
   const index_changed = (value) => {
     console.log("index changed!!!!----------------------->", value);
@@ -46,16 +46,16 @@ const Book = () => {
     if (data) {
       console.log(data);
       localStorage.removeItem("first_index");
-      localStorage.setItem("first_index", data.indexset_getbymybookid.indexsets[0].indexes[0]._id);
-      setIndexChanged(data.indexset_getbymybookid.indexsets[0].indexes[0]._id);
-      setIndexSetId(data.indexset_getbymybookid.indexsets[0]._id);
+      localStorage.setItem("first_index", data.indexset_getByMybookids.indexsets[0].indexes[0]._id);
+      setIndexChanged(data.indexset_getByMybookids.indexsets[0].indexes[0]._id);
+      setIndexSetId(data.indexset_getByMybookids.indexsets[0]._id);
     }
   }, [data]);
 
   return (
     <>
       <M_Layout>
-        <M_LeftDrawer index_changed={index_changed} indexChanged={indexChanged} book_id={book_id} />
+        <M_LeftDrawer index_changed={index_changed} book_id={book_id} />
         <M_WriteContainer book_id={book_id} indexChanged={indexChanged} indexSetId={indexSetId} Editor={Editor} EditorFromCard={EditorFromCard} FroalaEditorView={FroalaEditorView} />
       </M_Layout>
     </>

@@ -22,3 +22,26 @@ export const GET_USER_ALL_CATEGORY_AND_BOOKS = gql`
     }
   }
 `;
+
+
+export const GetIndex = gql`
+  query Index($mybook_ids: [ID]) {
+    indexset_getByMybookids(mybook_ids: $mybook_ids) {
+      status
+      msg
+      indexsets {
+        _id
+        indexset_info {
+          mybook_id
+          user_id
+        }
+        indexes {
+          _id
+          name     
+          level 
+          indextype 
+        }
+      }
+    }
+  }
+`;

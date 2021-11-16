@@ -1,30 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Drawer, Button, Tree, Modal } from "antd";
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, useLazyQuery, useMutation } from "@apollo/client";
-import { GetIndex, IndexCreateMutation, IndexRenameMutation, IndexLevelMutation, IndexDeleteMutation } from "../../../../graphql/query/bookIndex";
+import { Drawer, Tree } from "antd";
+import { useQuery, useMutation } from "@apollo/client";
+import { GetIndex } from "../../../../graphql/query/allQuery";
+import { IndexCreateMutation, IndexRenameMutation, IndexLevelMutation, IndexDeleteMutation } from "../../../../graphql/mutation/indexSet";
 import IndexSettingModal from "../index/IndexSettingModal";
-import { UnorderedListOutlined, DoubleLeftOutlined, CarryOutOutlined } from "@ant-design/icons";
-import { GetCardSet } from "../../../../graphql/query/card_contents";
-import { useMediaQuery } from "react-responsive";
+import { CarryOutOutlined } from "@ant-design/icons";
 
 const backgroundColor = "black";
 const buttonColor = "white";
 const fontColor = "white";
 
-const Desktop = ({ children }) => {
-  const isDesktop = useMediaQuery({ minWidth: 992 });
-  return isDesktop ? children : null;
-};
-const Tablet = ({ children }) => {
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-  return isTablet ? children : null;
-};
-const Mobile = ({ children }) => {
-  const isMobile = useMediaQuery({ maxWidth: 767 });
-  return isMobile ? children : null;
-};
-
-const LeftDrawer = ({ index_changed, indexChanged }) => {
+const LeftDrawer = ({ index_changed }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
@@ -39,32 +25,31 @@ const LeftDrawer = ({ index_changed, indexChanged }) => {
   const [visible, setVisible] = useState(false);
 
   const { loading, error, data } = useQuery(GetIndex, {
-    variables: { mybook_id: book_id },
+    variables: { mybook_ids: [book_id] },
   });
   const [indexinfo, setIndexInfo] = useState();
   const [indexSetInfo, setIndexSetInfo] = useState();
-  const [selectedIndexId, setSelectedIndexId] = useState();
 
   useEffect(() => {
     if (data) {
       console.log(data);
-      setIndexInfo(data.indexset_getbymybookid.indexsets[0].indexes);
-      setIndexSetInfo(data.indexset_getbymybookid.indexsets[0]);
+      setIndexInfo(data.indexset_getByMybookids.indexsets[0].indexes);
+      setIndexSetInfo(data.indexset_getByMybookids.indexsets[0]);
     }
   }, [data]);
-
+  
   //새 목차 추가
-  const [indexset_addindex] = useMutation(IndexCreateMutation, { onCompleted: showindexdata });
+  const [indexset_addIndex] = useMutation(IndexCreateMutation, { onCompleted: showindexdata });
 
   function showindexdata(data) {
     console.log("data", data);
-    setIndexInfo(data.indexset_addindex.indexsets[0].indexes);
-    setIndexSetInfo(data.indexset_addindex.indexsets[0]);
+    setIndexInfo(data.indexset_addIndex.indexsets[0].indexes);
+    setIndexSetInfo(data.indexset_addIndex.indexsets[0]);
   }
 
   async function postindex(name, current_index_id, indexset_id) {
     try {
-      await indexset_addindex({
+      await indexset_addIndex({
         variables: {
           forAddIndex: {
             indexset_id: indexset_id,
@@ -83,17 +68,17 @@ const LeftDrawer = ({ index_changed, indexChanged }) => {
   };
 
   //목차 이름변경
-  const [indexset_updateindexname] = useMutation(IndexRenameMutation, { onCompleted: showindexdatarename });
+  const [indexset_updateIndexName] = useMutation(IndexRenameMutation, { onCompleted: showindexdatarename });
 
   function showindexdatarename(data) {
     console.log("data", data);
-    setIndexInfo(data.indexset_updateindexname.indexsets[0].indexes);
-    setIndexSetInfo(data.indexset_updateindexname.indexsets[0]);
+    setIndexInfo(data.indexset_updateIndexName.indexsets[0].indexes);
+    setIndexSetInfo(data.indexset_updateIndexName.indexsets[0]);
   }
 
   async function postindexrename(name, current_index_id, indexset_id) {
     try {
-      await indexset_updateindexname({
+      await indexset_updateIndexName({
         variables: {
           forUpdateIndexName: {
             indexset_id: indexset_id,
@@ -112,17 +97,17 @@ const LeftDrawer = ({ index_changed, indexChanged }) => {
   };
 
   //목차 레벨변경변경
-  const [indexset_updateindexlevel] = useMutation(IndexLevelMutation, { onCompleted: showindexdatarelevel });
+  const [indexset_updateIndexLevel] = useMutation(IndexLevelMutation, { onCompleted: showindexdatarelevel });
 
   function showindexdatarelevel(data) {
     console.log("data", data);
-    setIndexInfo(data.indexset_updateindexlevel.indexsets[0].indexes);
-    setIndexSetInfo(data.indexset_updateindexlevel.indexsets[0]);
+    setIndexInfo(data.indexset_updateIndexLevel.indexsets[0].indexes);
+    setIndexSetInfo(data.indexset_updateIndexLevel.indexsets[0]);
   }
 
   async function postindexrelevel(direction, current_index_id, indexset_id) {
     try {
-      await indexset_updateindexlevel({
+      await indexset_updateIndexLevel({
         variables: {
           forUpdateIndexLevel: {
             indexset_id: indexset_id,
@@ -180,12 +165,10 @@ const LeftDrawer = ({ index_changed, indexChanged }) => {
   const onSelect = (selectedKeys, info) => {
     console.log("selected---------------------->", selectedKeys, info);
     console.log(info.node.index_id);
-    setSelectedIndexId(info.node.index_id);
     localStorage.removeItem("first_index");
     localStorage.setItem("first_index", info.node.index_id);
     index_changed(info.node.index_id);
   };
-  const [cardset_getbyindexid, { data: data2 }] = useLazyQuery(GetCardSet);
 
   if (indexinfo) {
     console.log(indexinfo);

@@ -1,27 +1,5 @@
 import { gql } from '@apollo/client';
 
-export const GetIndex = gql`
-  query Index($mybook_ids: [ID]) {
-    indexset_getByMybookids(mybook_ids: $mybook_ids) {
-      status
-      msg
-      indexsets {
-        _id
-        indexset_info {
-          mybook_id
-          user_id
-        }
-        indexes {
-          _id
-          name     
-          level 
-          indextype 
-        }
-      }
-    }
-  }
-`;
-
 export const IndexCreateMutation = gql`
   mutation IndexCreateMutation($forAddIndex: forAddIndex) {
     indexset_addIndex(forAddIndex: $forAddIndex) {
@@ -46,7 +24,7 @@ export const IndexCreateMutation = gql`
 
 export const IndexRenameMutation = gql`
   mutation IndexRenameMutation($forUpdateIndexName: forUpdateIndexName) {
-    indexset_updateindexname(forUpdateIndexName: $forUpdateIndexName) {
+    indexset_updateIndexName(forUpdateIndexName: $forUpdateIndexName) {
       status
       msg
       indexsets {
@@ -68,7 +46,7 @@ export const IndexRenameMutation = gql`
 
 export const IndexLevelMutation = gql`
   mutation IndexLevelMutation($forUpdateIndexLevel: forUpdateIndexLevel) {
-    indexset_updateindexlevel(forUpdateIndexLevel: $forUpdateIndexLevel) {
+    indexset_updateIndexLevel(forUpdateIndexLevel: $forUpdateIndexLevel) {
       status
       msg
       indexsets {
@@ -90,7 +68,7 @@ export const IndexLevelMutation = gql`
 
 export const IndexDeleteMutation = gql`
   mutation IndexDeleteMutation($forDeleteIndex: forDeleteIndex) {
-    indexset_deleteindex(forDeleteIndex: $forDeleteIndex) {
+    indexset_deleteIndex(forDeleteIndex: $forDeleteIndex) {
       status
       msg
       indexsets {

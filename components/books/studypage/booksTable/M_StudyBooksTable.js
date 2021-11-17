@@ -1,10 +1,10 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
-import { Table, Card, Space, Drawer, Checkbox, Progress } from "antd";
+import { Table, Card, Space, Drawer, Checkbox, Progress, Popover } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, FileProtectOutlined, MinusCircleTwoTone, PlusCircleTwoTone, PlusSquareFilled } from "@ant-design/icons";
 
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
@@ -13,12 +13,15 @@ import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
 import MoveToBookSetting from "./MoveToBookSetting";
 import makeDataSource from "../../common/logic";
+import Modal from "antd/lib/modal/Modal";
 
 const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
+
+  const checkRef = useRef({});
 
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
@@ -51,7 +54,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
 
   const columns = [
     {
-      title: <StyledDivEllipsis>카테고리</StyledDivEllipsis>,
+      title: "카테고리",
       key: "categoryName",
       className: "categoryCol",
       align: "center",
@@ -76,7 +79,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
         ) : null,
     },
     {
-      title: <StyledDivEllipsis>책 제목</StyledDivEllipsis>,
+      title: "책 제목",
       key: "title",
       dataIndex: "title",
       align: "center",
@@ -102,8 +105,13 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
             ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
               <StyledDivEllipsis>{value}</StyledDivEllipsis>
             ) : (
-              <StyledDivEllipsis>
+              <div
+                onClick={() => {
+                  checkRef.current[_record.key].props.onChange();
+                }}
+              >
                 <Checkbox
+                  ref={(ref) => (checkRef.current[_record.key] = ref)}
                   checked={isSelected}
                   onChange={() => {
                     if (isSelected) {
@@ -119,7 +127,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                   <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
                   {value}
                 </StyledDivEllipsis>
-              </StyledDivEllipsis>
+              </div>
             ),
           props: {},
         };
@@ -139,14 +147,37 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       className: "normal",
       ellipsis: true,
       width: 40,
-      render: (_value, _record) => {
+      render: (_value, _record, _index) => {
         const obj = {
           children: (
-            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer" }} onClick={()=>{
-              console.log('책 카드 상세 보기 페이지로 전환해야 함')
-            }}>
-              <div style={{ lineHeight: 1, marginRight: "3px" }}>{_value}</div>
-              <FileProtectOutlined />
+            <div style={{ width: "100%" }}>
+              <Popover
+                arrowPointAtCenter
+                content={
+                  <>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <div>읽기카드:</div>
+                      <div>{_record.read}</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <div>뒤집기카드:</div>
+                      <div>{_record.flip}</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <div>목차카드:</div>
+                      <div>0</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <div>일반카드:</div>
+                      <div>235</div>
+                    </div>
+                  </>
+                }
+                trigger="click"
+                overlayClassName="M-Popover-NumberOfCards"
+              >
+                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{_index < 2 ? 987 : _value}</div>
+              </Popover>
             </div>
           ),
           props: {
@@ -420,24 +451,6 @@ const StyledCard = styled(Card)`
     color: #4d4d4d;
   }
 
-  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
-  & .anticon-double-right > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
-    font-size: 18px;
-    color: #fff;
-  }
-
-  & .anticon-double-left > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
-    color: #fff;
-  }
-
   & .anticon-arrow-down > svg {
     font-size: 16px;
     color: #dee2e6;
@@ -480,7 +493,7 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-setting > svg {
+  & .anticon-more > svg {
     font-size: 16px;
     color: #a3a3a3;
   }
@@ -566,19 +579,19 @@ const StyledCard = styled(Card)`
   & .LastHiddenBar > .categoryCol,
   & .lastEvenBook > .categoryCol,
   & .lastOddBook > .categoryCol {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .LastHiddenBar > .Row-First-Left,
   & .NoBooksCategory > .Row-First-Left,
   & .foldedCategory > .Row-First-Left {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .lastEvenBook > .Row-First-Left,
   & .lastEvenBook > .normal,
   & .lastEvenBook > .Row-Last-One {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .lastEvenBook > .normal > div,
@@ -619,7 +632,7 @@ const StyledCard = styled(Card)`
   & .lastOddBook > .Row-First-Left,
   & .lastOddBook > .normal,
   & .lastOddBook > .Row-Last-One {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .lastOddBook > .normal > div,

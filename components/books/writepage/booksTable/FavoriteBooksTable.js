@@ -416,7 +416,7 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-setting > svg {
+  & .anticon-more > svg {
     font-size: 16px;
     color: #a3a3a3;
   }

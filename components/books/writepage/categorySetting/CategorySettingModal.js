@@ -9,12 +9,14 @@ import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 import styled from "styled-components";
 import { Modal, Button, Input, Table, Space } from "antd";
 import { EditFilled, CloseCircleFilled, CheckCircleFilled, DeleteOutlined, ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
 
 const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, ref) => {
   const [editingCell, setEditingCell] = useState("");
   const [cateName, setCateName] = useState("");
   const [expandedRowKeys, setExpandedRowKeys] = useState("");
   const newIdRef = useRef();
+  const router = useRouter();
 
   const [createNewCategory] = useMutation(MUTATION_CREATE_MY_BOOK_CATEGORY, {
     onCompleted: (received_data) => {
@@ -151,7 +153,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리 이름</div>,
       key: "name",
       dataIndex: "name",
-      width: 200,
+      width: 130,
       render: (_value, _record) => {
         return (
           <div
@@ -216,7 +218,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>순서변경</div>,
       key: "seq",
       dataIndex: "seq",
-      width: 90,
+      width: 50,
       align: "center",
       render: (_value, _record, _index) => {
         return (

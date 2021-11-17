@@ -1,21 +1,23 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
 import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "./MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
+import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
 
-const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
+const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }, ref) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
+  const checkRef = useRef({});
 
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
@@ -59,7 +61,7 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
 
   const columns = [
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리</div>,
+      title: "카테고리",
       key: "categoryName",
       className: "Row-First-Left",
       align: "center",
@@ -68,7 +70,7 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
     },
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>책 제목</div>,
+      title: "책 제목",
       key: "title",
       dataIndex: "title",
       align: "center",
@@ -84,9 +86,13 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
             }}
+            onClick={() => {
+              checkRef.current[_record.key].props.onChange();
+            }}
           >
             <Space>
               <Checkbox
+                ref={(ref) => (checkRef.current[_record.key] = ref)}
                 checked={isSelected}
                 onChange={() => {
                   if (isSelected) {
@@ -239,14 +245,16 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
 
   return (
     <StyledCard
+      isvisible={toString(visible)}
       bordered={false}
       size="small"
       title={
-        <div>
-          <span style={{ marginRight: "30px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
-          <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
-            {visible ? "접기" : "펼치기"}
-          </Button>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div onClick={() => setVisible((_prev) => !_prev)}>
+            <span style={{ marginRight: "10px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
+            <DoubleRightOutlined rotate={visible ? 270 : 90} />
+          </div>
+          <CategorySettingButton category={category} ref={ref} />
         </div>
       }
     >
@@ -255,7 +263,7 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       )}
     </StyledCard>
   );
-};
+});
 
 export default M_StudyFavoriteBooksTable;
 
@@ -265,6 +273,9 @@ const StyledCard = styled(Card)`
     font-size: 0.8rem;
   }
 
+  & .ant-card-body {
+    padding: ${(props) => (props.isvisible === "true" ? "0px 12px 12px 12px" : "0px 12px 0px 12px !important")};
+  }
   /* & .ant-table-thead .categoryCol::before {
     display: none;
   } */
@@ -293,6 +304,28 @@ const StyledCard = styled(Card)`
   & .customCircleButton:hover {
     background-color: #495057;
   }
+  & .customCircleButton-CategoryManager {
+    background-color: #e9f2fa;
+  }
+  & .customCircleButton-CategoryManager:hover {
+    background-color: #c9dff3;
+  }
+
+  & .customCircleButton-CategoryManager:active {
+    background-color: #7fbaf2;
+  }
+  & .customCircleButton-CategoryManager > .anticon.anticon-ordered-list.writeUnliked > svg {
+    color: #8a8a8a;
+    font-size: 14px;
+  }
+  & .customCircleButton-CategoryManager:active > .anticon.anticon-ordered-list.writeUnliked > svg {
+    color: #e9e9e9;
+  }
+
+  & .customCircleButton:hover {
+    background-color: #495057;
+  }
+
   & .PushCustomCircleButton {
     width: 44px;
     height: 30px;
@@ -312,24 +345,6 @@ const StyledCard = styled(Card)`
   & .FirstBookCustom > .anticon-arrow-up > svg,
   & .LastBookCustom > .anticon-arrow-down > svg {
     color: #4d4d4d;
-  }
-
-  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
-  & .anticon-double-right > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
-    font-size: 18px;
-    color: #fff;
-  }
-
-  & .anticon-double-left > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
-    color: #fff;
   }
 
   & .anticon-arrow-down > svg {
@@ -374,7 +389,7 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-setting > svg {
+  & .anticon-more > svg {
     font-size: 16px;
     color: #a3a3a3;
   }

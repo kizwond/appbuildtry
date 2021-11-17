@@ -464,7 +464,7 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-setting > svg {
+  & .anticon-more > svg {
     font-size: 16px;
     color: #a3a3a3;
   }
@@ -550,19 +550,19 @@ const StyledCard = styled(Card)`
   & .LastHiddenBar > .categoryCol,
   & .lastEvenBook > .categoryCol,
   & .lastOddBook > .categoryCol {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .LastHiddenBar > .Row-First-Left,
   & .NoBooksCategory > .Row-First-Left,
   & .foldedCategory > .Row-First-Left {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .lastEvenBook > .Row-First-Left,
   & .lastEvenBook > .normal,
   & .lastEvenBook > .Row-Last-One {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .lastEvenBook > .normal > div,
@@ -603,7 +603,7 @@ const StyledCard = styled(Card)`
   & .lastOddBook > .Row-First-Left,
   & .lastOddBook > .normal,
   & .lastOddBook > .Row-Last-One {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .lastOddBook > .normal > div,

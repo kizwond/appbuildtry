@@ -1,3 +1,4 @@
+import { OrderedListOutlined } from "@ant-design/icons";
 import { Button } from "antd";
 import React, { forwardRef, useCallback, useState } from "react";
 import CategorySettingModal from "./CategorySettingModal";
@@ -11,10 +12,23 @@ const CategorySettingButton = forwardRef(({ category }, ref) => {
 
   return (
     <>
-      <Button size="small" type="primary" onClick={() => changeVisible(true)}>
-        카테고리 관리
-      </Button>
-
+      <div
+        className="customCircleButton-CategoryManager"
+        style={{
+          width: "34px",
+          height: "16px",
+          borderRadius: "12px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          cursor: "pointer",
+        }}
+        onClick={() => {
+          setVisible(!visible);
+        }}
+      >
+        <OrderedListOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
+      </div>
       <CategorySettingModal visible={visible} ref={ref} changeVisible={changeVisible} category={category} />
     </>
   );

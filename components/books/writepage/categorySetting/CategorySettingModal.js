@@ -46,12 +46,10 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       console.log(error);
     }
   }
-
   const [changeCategoryName] = useMutation(MUTATION_UPDATE_MY_BOOK_CATEGORY_NAME, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
       if (received_data.mybookcateset_updateMybookcateInfo.status === "200") {
-        // handleToGetMyCategory(received_data.mybookcateset_updateMybookcateInfo.mybookcatesets[0].mybookcates);
       } else if (received_data.mybookcateset_updateMybookcateInfo.status === "401") {
         router.push("/account/login");
       } else {
@@ -64,7 +62,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       await changeCategoryName({
         variables: {
           forUpdateMybookcateInfo: {
-            mybookcateset_id: "618df7479bc52c0f84f85459",
+            mybookcateset_id: category._id,
             mybookcate_id,
             name,
           },
@@ -79,7 +77,6 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
       if (received_data.mybookcateset_updateMybookcateOrder.status === "200") {
-        // handleToGetMyCategory(received_data.mybookcateset_updateMybookcateOrder.mybookcates);
       } else if (received_data.mybookcateset_updateMybookcateOrder.status === "401") {
         router.push("/account/login");
       } else {
@@ -92,7 +89,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       await changeCategoryOrder({
         variables: {
           forUpdateMybookcateOrder: {
-            mybookcateset_id: "618df7479bc52c0f84f85459",
+            mybookcateset_id: category._id,
             mybookcate_id,
             direction,
           },
@@ -119,7 +116,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       await deleteCategory({
         variables: {
           forDeleteMybookcate: {
-            mybookcateset_id: "618df7479bc52c0f84f85459",
+            mybookcateset_id: category._id,
             mybookcate_id,
             moveToMybookcate_id: category.mybookcates.find((cate) => cate.isFixed === "yes")._id,
           },
@@ -229,7 +226,9 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
               icon={<ArrowUpOutlined />}
               disabled={_record.isFixed === "yes" || _index === 1}
               onClick={() => {
-                changeCategoryPosition({ mybookcate_id: _record._id, direction: "up" });
+                if (_index > 1) {
+                  changeCategoryPosition({ mybookcate_id: _record._id, direction: "up" });
+                }
               }}
             />
             <Button

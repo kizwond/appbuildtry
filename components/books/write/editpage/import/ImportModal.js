@@ -83,6 +83,7 @@ const ImportModal = ({ indexList, cardTypes, cardTypeInfo, cardSetId, indexChang
   //검토요청부분
   function showdata4(data) {
     console.log("inpection results :", data);
+
   }
   async function sheetConfirm(mybook_id) {
     console.log(file);
@@ -146,7 +147,7 @@ const ImportModal = ({ indexList, cardTypes, cardTypeInfo, cardSetId, indexChang
         variables: {
           forConfirmMakeCard: {
             mybook_id: mybook_id,
-            cardset_id: cardSetId,
+            index_id: indexSelected,
             filename: newFileName,
             sheetOrder: sheetSelected,
           },

@@ -1,21 +1,24 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
-import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { Table, Button, Card, Space, Drawer, Checkbox, Progress, Popover } from "antd";
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
-import MoveToBookSetting from "./MoveToBookSetting";
+import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
+import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
+import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 
-const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
+const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }, ref) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
+  const checkRef = useRef({});
 
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
@@ -59,7 +62,7 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
 
   const columns = [
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리</div>,
+      title: "카테고리",
       key: "categoryName",
       className: "Row-First-Left",
       align: "center",
@@ -68,40 +71,38 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
     },
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>책 제목</div>,
+      title: "책 제목",
       key: "title",
       dataIndex: "title",
-      align: "center",
       className: "TitleCol",
+      align: "center",
       width: 85,
       render: (value, _record, index) => {
         const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
 
         return (
           <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+            onClick={() => {
+              checkRef.current[_record.key].props.onChange();
             }}
+            style={{ cursor: "pointer" }}
           >
-            <Space>
-              <Checkbox
-                checked={isSelected}
-                onChange={() => {
-                  if (isSelected) {
-                    changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
-                  }
-                  if (!isSelected) {
-                    changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
-                  }
-                }}
-              />
-              <div>
-                <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
-                {value}
-              </div>
-            </Space>
+            <Checkbox
+              ref={(ref) => (checkRef.current[_record.key] = ref)}
+              checked={isSelected}
+              onChange={() => {
+                if (isSelected) {
+                  changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                }
+                if (!isSelected) {
+                  changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                }
+              }}
+            />
+            <StyledDivEllipsis>
+              <DollarCircleFilled style={{ marginRight: "3px", marginLeft: "4px", color: "aqua" }} />
+              {value}
+            </StyledDivEllipsis>
           </div>
         );
       },
@@ -109,33 +110,50 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
     {
       title: "카드수",
       key: "total",
-      align: "center",
       dataIndex: "total",
       className: "normal",
+      align: "center",
       ellipsis: true,
       width: 40,
-      render: (_value, _record) => <div style={{ display: "flex", justifyContent: "flex-end" }}>{_value}</div>,
+      render: (_value, _record) => (
+        <div style={{ width: "100%" }}>
+          <Popover
+            arrowPointAtCenter
+            content={
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>읽기카드:</div>
+                  <div>{_record.read}</div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>뒤집기카드:</div>
+                  <div>{_record.flip}</div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>목차카드:</div>
+                  <div>수정必</div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>일반카드:</div>
+                  <div>수정必</div>
+                </div>
+              </>
+            }
+            trigger="click"
+            overlayClassName="M-Popover-NumberOfCards"
+          >
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{_value}</div>
+          </Popover>
+        </div>
+      ),
     },
-    // {
-    //   title: "최근학습일",
-    //   key: "timeModify",
-    //   align: "center",
-    //   dataIndex: "timeModify",
-    //   className: "normal",
-    //   width: 47,
-    //   render: (_value, _record) => {
-    //     const newDate = new Date(Number(_value));
-    //     const DateString = moment(newDate).format("YY.MM.DD");
 
-    //     return <div>{_value === null ? "-" : DateString}</div>;
-    //   },
-    // },
     {
-      title: "최근생성이력",
+      title: "진도율",
       key: "timeModify",
-      align: "center",
       dataIndex: "timeModify",
       className: "normal",
+      align: "center",
       width: 75,
       render: (_value, _record) => (
         <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
@@ -146,12 +164,12 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
     },
     {
       // title: "이동",
-      key: "seq_in_category",
-      dataIndex: "seq_in_category",
+      key: "seqInCategory",
+      dataIndex: "seqInCategory",
       className: "normal",
       align: "right",
       width: 25,
-      render: (value, _record, index) => (
+      render: (value, _record) => (
         <div
           style={{
             position: "relative",
@@ -226,10 +244,10 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
     },
     {
       // title: "설정",
-      align: "center",
       className: "Row-Last-One",
+      align: "center",
       width: 25,
-      render: (value, _record, index) => (
+      render: (value, _record) => (
         <div>
           <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
         </div>
@@ -239,14 +257,18 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
 
   return (
     <StyledCard
+      isvisible={toString(visible)}
       bordered={false}
       size="small"
       title={
-        <div>
-          <span style={{ marginRight: "30px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
-          <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
-            {visible ? "접기" : "펼치기"}
-          </Button>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div onClick={() => setVisible((_prev) => !_prev)}>
+            <span style={{ marginRight: "10px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
+            <DoubleRightOutlined rotate={visible ? 270 : 90} />
+          </div>
+          <div>
+            <CategorySettingButton category={category} ref={ref} />
+          </div>
         </div>
       }
     >
@@ -255,7 +277,7 @@ const M_StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePo
       )}
     </StyledCard>
   );
-};
+});
 
 export default M_StudyFavoriteBooksTable;
 
@@ -265,9 +287,10 @@ const StyledCard = styled(Card)`
     font-size: 0.8rem;
   }
 
-  /* & .ant-table-thead .categoryCol::before {
-    display: none;
-  } */
+  & .ant-card-body {
+    padding: ${(props) => (props.isvisible === "true" ? "0px 12px 12px 12px" : "0px 12px 0px 12px !important")};
+  }
+
   & .ant-table-thead .categoryCol {
     border-bottom: 1px solid #f0f0f0;
   }
@@ -293,6 +316,11 @@ const StyledCard = styled(Card)`
   & .customCircleButton:hover {
     background-color: #495057;
   }
+
+  & .customCircleButton:hover {
+    background-color: #495057;
+  }
+
   & .PushCustomCircleButton {
     width: 44px;
     height: 30px;
@@ -312,24 +340,6 @@ const StyledCard = styled(Card)`
   & .FirstBookCustom > .anticon-arrow-up > svg,
   & .LastBookCustom > .anticon-arrow-down > svg {
     color: #4d4d4d;
-  }
-
-  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
-  & .anticon-double-right > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
-    font-size: 18px;
-    color: #fff;
-  }
-
-  & .anticon-double-left > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
-    color: #fff;
   }
 
   & .anticon-arrow-down > svg {
@@ -372,11 +382,6 @@ const StyledCard = styled(Card)`
   }
   & .customCircleButton:hover > .anticon-eye-invisible > svg {
     color: #fff;
-  }
-
-  & .anticon-setting > svg {
-    font-size: 16px;
-    color: #a3a3a3;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
@@ -494,32 +499,5 @@ const StyledCard = styled(Card)`
   & .OddNumberRow > .Row-Last-One > div {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-  }
-
-  & .singleBar {
-    width: 18px;
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-  & .graphBar {
-    position: relative;
-    height: 20px;
-    background: rgba(237, 238, 233, 0);
-  }
-
-  & .AchivedCard {
-    position: absolute;
-    bottom: 0;
-    width: 18px;
-    background: #c5c6c7;
-    display: flex;
-    justify-content: center;
-  }
-
-  & .CardCounter {
-    position: absolute;
-    font-size: 0.6rem;
-    bottom: 3px;
-    display: block;
   }
 `;

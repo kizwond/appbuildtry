@@ -1,18 +1,21 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, forwardRef } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
-import { Table, Button, Card, Space, Drawer } from "antd";
+import { Table, Button, Card, Space, Drawer, Popover } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
-import MoveToBookSetting from "./MoveToBookSetting";
+import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
+import { StyledDivEllipsis } from "../../../common/styledComponent/page";
+import CategorySettingButton from "../categorySetting/CategorySettingButton";
+import CreateBookButton from "../createBook/CreateBookButton";
 
-const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }) => {
+const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }, ref) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
@@ -67,18 +70,20 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
 
   const columns = [
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리</div>,
+      title: "카테고리",
       key: "categoryName",
       className: "Row-First-Left",
+      align: "center",
       width: 50,
       dataIndex: "categoryName",
       render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
     },
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>책 제목</div>,
+      title: "책 제목",
       key: "title",
       dataIndex: "title",
       className: "TitleCol",
+      align: "center",
       width: 85,
       render: (value, _record, index) => (
         <div
@@ -87,59 +92,61 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
           }}
           style={{ cursor: "pointer" }}
         >
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
+          <StyledDivEllipsis>
             <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
             {value}
-          </div>
+          </StyledDivEllipsis>
         </div>
       ),
     },
     {
-      title: (
-        <>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드 수</div>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>(읽기/뒤집기)</div>
-        </>
-      ),
+      title: "카드수",
       key: "total",
       align: "center",
       dataIndex: "total",
       className: "normal",
+      align: "center",
       ellipsis: true,
-      width: 70,
-      render: (_value, _record) => <div>{`(${_record.read}/${_record.flip})`}</div>,
-    },
-    {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>수정일</div>,
-      key: "timeModify",
-      align: "center",
-      dataIndex: "timeModify",
-      className: "normal",
-      width: 45,
-      render: (_value, _record) => {
-        const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format("YY.MM.DD");
-
-        return <div>{_value === null ? "-" : DateString}</div>;
-      },
-    },
-    {
-      title: (
-        <>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>최근 3일간</div>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드생성</div>
-        </>
+      width: 40,
+      render: (_value, _record) => (
+        <div style={{ width: "100%" }}>
+          <Popover
+            arrowPointAtCenter
+            content={
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>읽기카드:</div>
+                  <div>{_record.read}</div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>뒤집기카드:</div>
+                  <div>{_record.flip}</div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>목차카드:</div>
+                  <div>수정必</div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>일반카드:</div>
+                  <div>수정必</div>
+                </div>
+              </>
+            }
+            trigger="click"
+            overlayClassName="M-Popover-NumberOfCards"
+          >
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{_value}</div>
+          </Popover>
+        </div>
       ),
-      key: "timeModify",
-      align: "center",
-      dataIndex: "timeModify",
+    },
+
+    {
+      title: "카드생성이력",
+      key: "writeHistory",
+      dataIndex: "writeHistory",
       className: "normal",
+      align: "center",
       width: 75,
       render: (_value, _record) => {
         const now = new Date();
@@ -163,21 +170,21 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
                 <div className="singleBar">
                   <div className="graphBar">
                     <div className="AchivedCard" style={{ height: theDayBeforeYesterdayCreatedCards >= 100 ? "100%" : `${theDayBeforeYesterdayCreatedCards}%` }}>
-                      <span className="CardCounter">{theDayBeforeYesterdayCreatedCards}</span>
+                      <span className="CardCounter">{theDayBeforeYesterdayCreatedCards === 0 ? "-" : theDayBeforeYesterdayCreatedCards}</span>
                     </div>
                   </div>
                 </div>
                 <div className="singleBar">
                   <div className="graphBar">
                     <div className="AchivedCard" style={{ height: yesterdayCreatedCards >= 100 ? "100%" : `${yesterdayCreatedCards}%` }}>
-                      <span className="CardCounter">{yesterdayCreatedCards}</span>
+                      <span className="CardCounter">{yesterdayCreatedCards === 0 ? "-" : yesterdayCreatedCards}</span>
                     </div>
                   </div>
                 </div>
                 <div className="singleBar">
                   <div className="graphBar">
                     <div className="AchivedCard" style={{ height: todayCreatedCards >= 100 ? "100%" : `${todayCreatedCards}%` }}>
-                      <span className="CardCounter">{todayCreatedCards}</span>
+                      <span className="CardCounter">{todayCreatedCards === 0 ? "-" : todayCreatedCards}</span>
                     </div>
                   </div>
                 </div>
@@ -189,13 +196,13 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
       },
     },
     {
-      title: "이동",
+      // title: "이동",
       key: "seqInCategory",
       dataIndex: "seqInCategory",
       className: "normal",
       align: "right",
-      width: 35,
-      render: (value, _record, index) => (
+      width: 25,
+      render: (value, _record) => (
         <div
           style={{
             position: "relative",
@@ -268,11 +275,11 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
       ),
     },
     {
-      title: "상설",
-      align: "center",
+      // title: "상설",
       className: "Row-Last-One",
-      width: 35,
-      render: (value, _record, index) => (
+      align: "center",
+      width: 25,
+      render: (value, _record) => (
         <div>
           <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
         </div>
@@ -282,16 +289,21 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
 
   return (
     <StyledCard
+      isvisible={toString(visible)}
       bordered={false}
       size="small"
       title={
-        <div>
-          <span style={{ marginRight: "30px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
-          {dataSource.length > 0 && (
-            <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
-              {visible ? "접기" : "펼치기"}
-            </Button>
-          )}
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div onClick={() => setVisible((_prev) => !_prev)}>
+            <span style={{ marginRight: "10px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
+            <DoubleRightOutlined rotate={visible ? 270 : 90} />
+          </div>
+          <div>
+            <Space>
+              <CreateBookButton category={category} />
+              <CategorySettingButton category={category} ref={ref} />
+            </Space>
+          </div>
         </div>
       }
     >
@@ -300,7 +312,7 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
       )}
     </StyledCard>
   );
-};
+});
 
 export default FavoriteBooksTable;
 
@@ -308,6 +320,10 @@ const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
   & * {
     font-size: 0.8rem;
+  }
+
+  & .ant-card-body {
+    padding: ${(props) => (props.isvisible === "true" ? "0px 12px 12px 12px" : "0px 12px 0px 12px !important")};
   }
 
   & .ant-table-thead .categoryCol {
@@ -356,24 +372,6 @@ const StyledCard = styled(Card)`
     color: #4d4d4d;
   }
 
-  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
-  & .anticon-double-right > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
-    font-size: 18px;
-    color: #fff;
-  }
-
-  & .anticon-double-left > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
-    color: #fff;
-  }
-
   & .anticon-arrow-down > svg {
     font-size: 16px;
     color: #dee2e6;
@@ -414,11 +412,6 @@ const StyledCard = styled(Card)`
   }
   & .customCircleButton:hover > .anticon-eye-invisible > svg {
     color: #fff;
-  }
-
-  & .anticon-setting > svg {
-    font-size: 16px;
-    color: #a3a3a3;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
@@ -553,7 +546,7 @@ const StyledCard = styled(Card)`
     position: absolute;
     bottom: 0;
     width: 18px;
-    background: #c5c6c7;
+    background: #e1e1e1;
     display: flex;
     justify-content: center;
   }
@@ -563,5 +556,6 @@ const StyledCard = styled(Card)`
     font-size: 0.6rem;
     bottom: 3px;
     display: block;
+    color: #707070;
   }
 `;

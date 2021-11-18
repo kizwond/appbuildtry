@@ -10,7 +10,7 @@ import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@an
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
-import MoveToBookSetting from "./MoveToBookSetting";
+import MoveToBookSetting from "../../common/MoveToBookSetting";
 
 import makeDataSource from "../../common/logic";
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
@@ -497,11 +497,6 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-setting > svg {
-    font-size: 16px;
-    color: #a3a3a3;
-  }
-
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 0;
   }
@@ -583,19 +578,19 @@ const StyledCard = styled(Card)`
   & .LastHiddenBar > .categoryCol,
   & .lastEvenBook > .categoryCol,
   & .lastOddBook > .categoryCol {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .LastHiddenBar > .Row-First-Left,
   & .NoBooksCategory > .Row-First-Left,
   & .foldedCategory > .Row-First-Left {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .lastEvenBook > .Row-First-Left,
   & .lastEvenBook > .normal,
   & .lastEvenBook > .Row-Last-One {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .lastEvenBook > .normal > div,
@@ -636,7 +631,7 @@ const StyledCard = styled(Card)`
   & .lastOddBook > .Row-First-Left,
   & .lastOddBook > .normal,
   & .lastOddBook > .Row-Last-One {
-    border-bottom: 0.5px solid #b3b2b2;
+    border-bottom: 0.5px solid #dfdfdf;
   }
 
   & .lastOddBook > .normal > div,
@@ -769,7 +764,7 @@ const StyledCard = styled(Card)`
     position: absolute;
     bottom: 0;
     width: 18px;
-    background: #c5c6c7;
+    background: #e1e1e1;
     display: flex;
     justify-content: center;
   }

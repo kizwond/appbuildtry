@@ -9,12 +9,14 @@ import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 import styled from "styled-components";
 import { Modal, Button, Input, Table, Space } from "antd";
 import { EditFilled, CloseCircleFilled, CheckCircleFilled, DeleteOutlined, ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
 
 const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, ref) => {
   const [editingCell, setEditingCell] = useState("");
   const [cateName, setCateName] = useState("");
   const [expandedRowKeys, setExpandedRowKeys] = useState("");
   const newIdRef = useRef();
+  const router = useRouter();
 
   const [createNewCategory] = useMutation(MUTATION_CREATE_MY_BOOK_CATEGORY, {
     onCompleted: (received_data) => {
@@ -44,12 +46,10 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       console.log(error);
     }
   }
-
   const [changeCategoryName] = useMutation(MUTATION_UPDATE_MY_BOOK_CATEGORY_NAME, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
       if (received_data.mybookcateset_updateMybookcateInfo.status === "200") {
-        // handleToGetMyCategory(received_data.mybookcateset_updateMybookcateInfo.mybookcatesets[0].mybookcates);
       } else if (received_data.mybookcateset_updateMybookcateInfo.status === "401") {
         router.push("/account/login");
       } else {
@@ -62,7 +62,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       await changeCategoryName({
         variables: {
           forUpdateMybookcateInfo: {
-            mybookcateset_id: "618df7479bc52c0f84f85459",
+            mybookcateset_id: category._id,
             mybookcate_id,
             name,
           },
@@ -77,7 +77,6 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
       if (received_data.mybookcateset_updateMybookcateOrder.status === "200") {
-        // handleToGetMyCategory(received_data.mybookcateset_updateMybookcateOrder.mybookcates);
       } else if (received_data.mybookcateset_updateMybookcateOrder.status === "401") {
         router.push("/account/login");
       } else {
@@ -90,7 +89,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       await changeCategoryOrder({
         variables: {
           forUpdateMybookcateOrder: {
-            mybookcateset_id: "618df7479bc52c0f84f85459",
+            mybookcateset_id: category._id,
             mybookcate_id,
             direction,
           },
@@ -117,7 +116,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       await deleteCategory({
         variables: {
           forDeleteMybookcate: {
-            mybookcateset_id: "618df7479bc52c0f84f85459",
+            mybookcateset_id: category._id,
             mybookcate_id,
             moveToMybookcate_id: category.mybookcates.find((cate) => cate.isFixed === "yes")._id,
           },
@@ -151,7 +150,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리 이름</div>,
       key: "name",
       dataIndex: "name",
-      width: 200,
+      width: 130,
       render: (_value, _record) => {
         return (
           <div
@@ -216,7 +215,7 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
       title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>순서변경</div>,
       key: "seq",
       dataIndex: "seq",
-      width: 90,
+      width: 50,
       align: "center",
       render: (_value, _record, _index) => {
         return (
@@ -227,7 +226,9 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
               icon={<ArrowUpOutlined />}
               disabled={_record.isFixed === "yes" || _index === 1}
               onClick={() => {
-                changeCategoryPosition({ mybookcate_id: _record._id, direction: "up" });
+                if (_index > 1) {
+                  changeCategoryPosition({ mybookcate_id: _record._id, direction: "up" });
+                }
               }}
             />
             <Button
@@ -348,6 +349,19 @@ export default memo(CategorySettingModal);
 const StyledModal = styled(Modal)`
   & * {
     font-size: 0.8rem;
+  }
+  min-width: 340px;
+
+  & .ant-modal-body {
+    padding: 8px 24px 8px 24px;
+  }
+
+  & .ant-row.ant-form-item {
+    margin-bottom: 8px;
+  }
+
+  & .ant-modal-footer {
+    padding: 10px 24px;
   }
 
   & .AddNewCategory {

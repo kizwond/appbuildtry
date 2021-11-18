@@ -8,7 +8,7 @@ import { Table, Button, Card, Tooltip, Space, Drawer } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
-import MoveToBookSetting from "./MoveToBookSetting";
+import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
 
@@ -416,11 +416,6 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-setting > svg {
-    font-size: 16px;
-    color: #a3a3a3;
-  }
-
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 0;
   }
@@ -553,7 +548,7 @@ const StyledCard = styled(Card)`
     position: absolute;
     bottom: 0;
     width: 18px;
-    background: #c5c6c7;
+    background: #e1e1e1;
     display: flex;
     justify-content: center;
   }

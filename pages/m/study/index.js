@@ -6,14 +6,15 @@ import { useRouter } from "next/router";
 
 import styled from "styled-components";
 
-import { Space, Col, Button } from "antd";
+import { Col, Button } from "antd";
 import M_Layout from "../../../components/layout/M_Layout";
-import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
 import M_StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/M_StudyFavoriteBooksTable";
 import M_StudyBooksTable from "../../../components/books/studypage/booksTable/M_StudyBooksTable";
+import useWindowDimensions from "../../../hooks/useWindowDimensions";
 
 const Writeanother = () => {
   const router = useRouter();
+  const { height } = useWindowDimensions();
 
   const [activedTable, setActivedTable] = useState();
 
@@ -32,9 +33,6 @@ const Writeanother = () => {
       }
     },
   });
-
-  const myBook2 = useMemo(() => data && data.mybook_getMybookByUserID.mybooks, [data]);
-  const category2 = useMemo(() => data && data.mybookcateset_getMybookcatesetByUserID?.mybookcatesets[0], [data]);
 
   useEffect(() => {
     sessionStorage.removeItem("books_selected");
@@ -62,26 +60,21 @@ const Writeanother = () => {
   if (error) {
     return <div>Error..</div>;
   }
+
+  const myBook2 = data && data.mybook_getMybookByUserID.mybooks;
+  const category2 = myBook2 && data && data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0];
   return (
     <>
       <Head>
         <title>Write - CogBook</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      <M_Layout>
-        <StyledRowMaxWidth topcompo="true">
-          <StyledSpace>
-            <CategorySettingButton category={category2} />
-            <Button onClick={sesstionStart} size="small">
-              세션 시작
-            </Button>
-          </StyledSpace>
-        </StyledRowMaxWidth>
-
-        <StyledRowMaxWidth>
-          {myBook2.filter((_book) => _book.mybook_info.isStudyLike).length > 0 && (
+      {myBook2 && category2 && (
+        <M_Layout>
+          <StyledRowMaxWidth height={height}>
             <Col span={24}>
               <M_StudyFavoriteBooksTable
+                ref={(ref) => (newCateRef.current = ref)}
                 category={category2}
                 myBook={myBook2}
                 isPopupSomething={isPopupSomething}
@@ -92,41 +85,50 @@ const Writeanother = () => {
                 changeSelectedBooks={changeSelectedBooks}
               />
             </Col>
-          )}
 
-          <Col span={24}>
-            <M_StudyBooksTable
-              category={category2}
-              myBook={myBook2}
-              isPopupSomething={isPopupSomething}
-              chagePopup={chagePopup}
-              activedTable={activedTable}
-              changeActivedTable={changeActivedTable}
-              selectedBooks={selectedBooks}
-              changeSelectedBooks={changeSelectedBooks}
-            />
-          </Col>
-        </StyledRowMaxWidth>
-      </M_Layout>
+            <Col span={24}>
+              <M_StudyBooksTable
+                category={category2}
+                myBook={myBook2}
+                isPopupSomething={isPopupSomething}
+                chagePopup={chagePopup}
+                activedTable={activedTable}
+                changeActivedTable={changeActivedTable}
+                selectedBooks={selectedBooks}
+                changeSelectedBooks={changeSelectedBooks}
+              />
+            </Col>
+          </StyledRowMaxWidth>
+          <StyledBottomBar>
+            <div>바로 보기</div>
+            <div onClick={sesstionStart}>세션 시작</div>
+          </StyledBottomBar>
+        </M_Layout>
+      )}
     </>
   );
 };
 
 export default Writeanother;
 
-const StyledSpace = styled(Space)`
-  & * {
-    font-size: 0.8rem;
-  }
-  padding: 12px 12px 0 12px;
-`;
-
 const StyledRowMaxWidth = styled.div`
   margin: 0 auto;
-  margin-top: 40px;
+  position: absolute;
+  top: 40px;
+  height: ${(props) => props.height - 76}px;
+  overflow: scroll;
+
+  & .ant-card-head {
+    border-bottom: none;
+    /* border-top: 1px solid #f0f0f0; */
+  }
+
+  & .ant-card-small > .ant-card-body {
+    padding: 0px 12px 12px 12px;
+  }
 
   & .ant-table.ant-table-small .ant-table-thead > tr > th {
-    padding: 8px 0px;
+    padding: 4px 0px;
   }
 
   & .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
@@ -140,5 +142,57 @@ const StyledRowMaxWidth = styled.div`
   & .ant-checkbox-inner::after {
     width: 4px;
     height: 7px;
+  }
+
+  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
+  & .PushCustomCircleButton > .anticon-double-right > svg {
+    font-size: 18px;
+    color: #a3a3a3;
+  }
+  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
+    font-size: 18px;
+    color: #fff;
+  }
+
+  & .PullCustomCircleButton > .anticon-double-left > svg {
+    font-size: 14px;
+    color: #a3a3a3;
+  }
+  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
+    color: #fff;
+  }
+  & .PullCustomCircleButton > .anticon-setting > svg {
+    font-size: 14px;
+    color: #a3a3a3;
+  }
+  & .PullCustomCircleButton:hover > .anticon-setting > svg {
+    color: #fff;
+  }
+`;
+
+const StyledBottomBar = styled.div`
+  overflow: hidden;
+  /* border: 1px solid #d1d1d1; */
+  border-top: 1px solid #e1e1e1;
+  background-color: #f5f5f5;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 32px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  /* padding: 8px 0; */
+  z-index: 9999;
+
+  & > div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  & > div:first-child {
+    border-right: 1px solid #e1e1e1;
   }
 `;

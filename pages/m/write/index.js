@@ -12,7 +12,6 @@ import CreateBookButton from "../../../components/books/writepage/createBook/Cre
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
 import M_BooksTable from "../../../components/books/writepage/booksTable/M_BooksTable";
 import M_FavoriteBooksTable from "../../../components/books/writepage/booksTable/M_FavoriteBooksTable";
-import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
 
 const M_WriteMain = () => {
   const router = useRouter();
@@ -35,8 +34,8 @@ const M_WriteMain = () => {
     },
   });
 
-  const myBook2 = useMemo(() => data?.mybook_getMybookByUserID.mybooks, [data]);
-  const category2 = useMemo(() => data?.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0], [data]);
+  const myBook2 = data && data.mybook_getMybookByUserID.mybooks;
+  const category2 = myBook2 && data && data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0];
 
   const chagePopup = useCallback((_boolean) => {
     setisPopupSomething(_boolean);
@@ -57,20 +56,19 @@ const M_WriteMain = () => {
         <title>Write - CogBook</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
-      {data && (
+      {myBook2 && category2 && (
         <M_Layout>
-          {category2.mybookcates.length >= 1 && (
-            <StyledRowMaxWidth topcompo="true">
-              <StyledSpace>
-                <CreateBookButton category={category2} />
-                <CategorySettingButton ref={(ref) => (newCateRef.current = ref)} category={category2} />
-              </StyledSpace>
-            </StyledRowMaxWidth>
-          )}
-
           <StyledRowMaxWidth>
             <Col span={24}>
-              <M_FavoriteBooksTable category={category2} myBook={myBook2} isPopupSomething={isPopupSomething} chagePopup={chagePopup} activedTable={activedTable} changeActivedTable={changeActivedTable} />
+              <M_FavoriteBooksTable
+                ref={(ref) => (newCateRef.current = ref)}
+                category={category2}
+                myBook={myBook2}
+                isPopupSomething={isPopupSomething}
+                chagePopup={chagePopup}
+                activedTable={activedTable}
+                changeActivedTable={changeActivedTable}
+              />
             </Col>
             <Col span={24}>
               <M_BooksTable
@@ -92,9 +90,59 @@ const M_WriteMain = () => {
 
 export default M_WriteMain;
 
-const StyledSpace = styled(Space)`
-  & * {
-    font-size: 0.8rem;
+const StyledRowMaxWidth = styled.div`
+  margin: 0 auto;
+  position: absolute;
+  top: 40px;
+
+  & .ant-card-head {
+    border-bottom: none;
+    /* border-top: 1px solid #f0f0f0; */
   }
-  padding: 12px 12px 0 12px;
+
+  & .ant-card-small > .ant-card-body {
+    padding: 0px 12px 12px 12px;
+  }
+
+  & .ant-table.ant-table-small .ant-table-thead > tr > th {
+    padding: 4px 0px;
+  }
+
+  & .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+    display: none;
+  }
+
+  & .ant-checkbox-inner {
+    width: 12px;
+    height: 12px;
+  }
+  & .ant-checkbox-inner::after {
+    width: 4px;
+    height: 7px;
+  }
+
+  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
+  & .PushCustomCircleButton > .anticon-double-right > svg {
+    font-size: 18px;
+    color: #a3a3a3;
+  }
+  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
+    font-size: 18px;
+    color: #fff;
+  }
+
+  & .PullCustomCircleButton > .anticon-double-left > svg {
+    font-size: 14px;
+    color: #a3a3a3;
+  }
+  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
+    color: #fff;
+  }
+  & .PullCustomCircleButton > .anticon-setting > svg {
+    font-size: 14px;
+    color: #a3a3a3;
+  }
+  & .PullCustomCircleButton:hover > .anticon-setting > svg {
+    color: #fff;
+  }
 `;

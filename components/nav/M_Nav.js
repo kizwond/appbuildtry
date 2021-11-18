@@ -47,7 +47,7 @@ const Nav = () => {
           boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
           position: "fixed",
           top: "0",
-          zIndex: 3,
+          zIndex: 9999,
         }}
       >
         <div style={{ flexBasis: "33%" }}>
@@ -65,6 +65,7 @@ const Nav = () => {
             onClose={onClose}
             visible={visible}
             width={170}
+            zIndex={20000}
           >
             <div
               style={{

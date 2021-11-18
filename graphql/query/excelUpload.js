@@ -94,6 +94,48 @@ export const ImportExcelFile = gql`
     cardset_confirmMakeCard(forConfirmMakeCard: $forConfirmMakeCard) {
       status
       msg
+      cardsets {
+        _id
+        cardset_info {
+          user_id
+          mybook_id
+          indexset_id
+          index_id
+        }
+        cards {
+          _id
+          card_info {
+            mybook_id
+            indexset_id
+            index_id
+            cardset_id
+            cardtypeset_id
+            cardtype_id
+            cardtype
+            time_created
+            hasParent
+            parent_card_id
+          }
+          content {
+            userFlag
+            makerFlag {
+              value
+              comment
+            }
+            location
+            mycontent_id
+            buycontent_id
+          }
+        }
+      }
+      mycontents {
+        _id
+        user_id
+        face1
+        selection
+        face2
+        annotation
+      }
     }
   }
 `;

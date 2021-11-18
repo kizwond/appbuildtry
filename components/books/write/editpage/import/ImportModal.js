@@ -158,7 +158,7 @@ const ImportModal = ({ indexList, cardTypes, cardTypeInfo, cardSetId, indexChang
     }
   }
 
-  const importFile = (event) => {
+  const importFile = () => {
     const mybook_id = localStorage.getItem("book_id");
     importfile(mybook_id, cardSetId);
   };
@@ -224,21 +224,15 @@ const ImportModal = ({ indexList, cardTypes, cardTypeInfo, cardSetId, indexChang
             <Option value="default">목차 선택</Option>
             {index_list}
           </Select>
-          <button onClick={onClickSheetList} disabled={index_disabled}>
+          <button onClick={importFile} disabled={index_disabled}>
             카드생성
           </button>
         </div>
         <div>
-          <div>파일검토결과</div>
-          <Button size="small" onClick={importFile}>
-            최종업로드
-          </Button>
-          <Button size="small" onClick={cancelImport}>
-            업로드취소
-          </Button>
+          {/* <div>파일검토결과</div>
           <div>
             <ResultTable inspectResultNormal={inspectResultNormal} inspectResultTypeError={inspectResultTypeError} inspectResultFlagError={inspectResultFlagError} />
-          </div>
+          </div> */}
         </div>
       </Modal>
     </>

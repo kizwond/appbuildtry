@@ -8,7 +8,7 @@ import { Table, Button, Card, Space, Drawer, Checkbox, Progress, Popover } from 
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
-import MoveToBookSetting from "./MoveToBookSetting";
+import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
@@ -247,7 +247,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       className: "Row-Last-One",
       align: "center",
       width: 25,
-      render: (value, _record, index) => (
+      render: (value, _record) => (
         <div>
           <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
         </div>
@@ -384,11 +384,6 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-more > svg {
-    font-size: 16px;
-    color: #a3a3a3;
-  }
-
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 0;
   }
@@ -504,32 +499,5 @@ const StyledCard = styled(Card)`
   & .OddNumberRow > .Row-Last-One > div {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-  }
-
-  & .singleBar {
-    width: 18px;
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-  & .graphBar {
-    position: relative;
-    height: 20px;
-    background: rgba(237, 238, 233, 0);
-  }
-
-  & .AchivedCard {
-    position: absolute;
-    bottom: 0;
-    width: 18px;
-    background: #c5c6c7;
-    display: flex;
-    justify-content: center;
-  }
-
-  & .CardCounter {
-    position: absolute;
-    font-size: 0.6rem;
-    bottom: 3px;
-    display: block;
   }
 `;

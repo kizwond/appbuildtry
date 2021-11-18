@@ -385,11 +385,6 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-more > svg {
-    font-size: 16px;
-    color: #a3a3a3;
-  }
-
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 0;
   }
@@ -505,32 +500,5 @@ const StyledCard = styled(Card)`
   & .OddNumberRow > .Row-Last-One > div {
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
-  }
-
-  & .singleBar {
-    width: 18px;
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-  & .graphBar {
-    position: relative;
-    height: 20px;
-    background: rgba(237, 238, 233, 0);
-  }
-
-  & .AchivedCard {
-    position: absolute;
-    bottom: 0;
-    width: 18px;
-    background: #c5c6c7;
-    display: flex;
-    justify-content: center;
-  }
-
-  & .CardCounter {
-    position: absolute;
-    font-size: 0.6rem;
-    bottom: 3px;
-    display: block;
   }
 `;

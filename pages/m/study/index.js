@@ -155,10 +155,17 @@ const StyledRowMaxWidth = styled.div`
   }
 
   & .PullCustomCircleButton > .anticon-double-left > svg {
-    font-size: 18px;
+    font-size: 14px;
     color: #a3a3a3;
   }
   & .PullCustomCircleButton:hover > .anticon-double-left > svg {
+    color: #fff;
+  }
+  & .PullCustomCircleButton > .anticon-setting > svg {
+    font-size: 14px;
+    color: #a3a3a3;
+  }
+  & .PullCustomCircleButton:hover > .anticon-setting > svg {
     color: #fff;
   }
 `;

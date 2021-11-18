@@ -8,7 +8,7 @@ import { Table, Button, Card, Space, Drawer, Popover } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
-import MoveToBookSetting from "./MoveToBookSetting";
+import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
@@ -170,21 +170,21 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
                 <div className="singleBar">
                   <div className="graphBar">
                     <div className="AchivedCard" style={{ height: theDayBeforeYesterdayCreatedCards >= 100 ? "100%" : `${theDayBeforeYesterdayCreatedCards}%` }}>
-                      <span className="CardCounter">{theDayBeforeYesterdayCreatedCards}</span>
+                      <span className="CardCounter">{theDayBeforeYesterdayCreatedCards === 0 ? "-" : theDayBeforeYesterdayCreatedCards}</span>
                     </div>
                   </div>
                 </div>
                 <div className="singleBar">
                   <div className="graphBar">
                     <div className="AchivedCard" style={{ height: yesterdayCreatedCards >= 100 ? "100%" : `${yesterdayCreatedCards}%` }}>
-                      <span className="CardCounter">{yesterdayCreatedCards}</span>
+                      <span className="CardCounter">{yesterdayCreatedCards === 0 ? "-" : yesterdayCreatedCards}</span>
                     </div>
                   </div>
                 </div>
                 <div className="singleBar">
                   <div className="graphBar">
                     <div className="AchivedCard" style={{ height: todayCreatedCards >= 100 ? "100%" : `${todayCreatedCards}%` }}>
-                      <span className="CardCounter">{todayCreatedCards}</span>
+                      <span className="CardCounter">{todayCreatedCards === 0 ? "-" : todayCreatedCards}</span>
                     </div>
                   </div>
                 </div>
@@ -201,8 +201,8 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
       dataIndex: "seqInCategory",
       className: "normal",
       align: "right",
-      width: 35,
-      render: (value, _record, index) => (
+      width: 25,
+      render: (value, _record) => (
         <div
           style={{
             position: "relative",
@@ -278,7 +278,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
       // title: "상설",
       className: "Row-Last-One",
       align: "center",
-      width: 35,
+      width: 25,
       render: (value, _record) => (
         <div>
           <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
@@ -414,11 +414,6 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-more > svg {
-    font-size: 16px;
-    color: #a3a3a3;
-  }
-
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 0;
   }
@@ -551,7 +546,7 @@ const StyledCard = styled(Card)`
     position: absolute;
     bottom: 0;
     width: 18px;
-    background: #c5c6c7;
+    background: #e1e1e1;
     display: flex;
     justify-content: center;
   }
@@ -561,5 +556,6 @@ const StyledCard = styled(Card)`
     font-size: 0.6rem;
     bottom: 3px;
     display: block;
+    color: #707070;
   }
 `;

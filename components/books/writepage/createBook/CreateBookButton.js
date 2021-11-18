@@ -1,5 +1,4 @@
 import { FormOutlined } from "@ant-design/icons";
-import { Button } from "antd";
 import React, { useCallback, useState } from "react";
 import CreateBookModal from "./CreateBookModal";
 
@@ -31,8 +30,7 @@ const CreateBookButton = ({ category }) => {
       >
         <FormOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
       </button>
-
-      <CreateBookModal visible={visible} changeVisible={changeVisible} category={category} />
+      {visible && <CreateBookModal visible={visible} changeVisible={changeVisible} category={category} />}
     </>
   );
 };

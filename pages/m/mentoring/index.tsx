@@ -179,41 +179,6 @@ const MentoringHome = () => {
                                 mybook_id,
                               },
                             },
-                            update: (cache, data) => {
-                              const _data: any = cache.readQuery({ query: GET_MENTORING });
-                              console.log({ _data });
-                              cache.writeQuery({
-                                query: GET_MENTORING,
-                                data: {
-                                  mentoring_getMentoring: produce(_data.mentoring_getMentoring, (draft) => {
-                                    draft.mentorings[0].myMentees = [
-                                      ...draft.mentorings[0].myMentees,
-                                      {
-                                        comment,
-                                        finishDate: null,
-                                        menteeGroup_id: "61832257ee843403b8512f3e",
-                                        menteeName,
-                                        menteeOrganization,
-                                        menteeUser_id,
-                                        menteeUsername,
-                                        mentorName,
-                                        mentorOrganization,
-                                        mentorUser_id,
-                                        mentorUsername,
-                                        mentoringStatus: "onGoing",
-                                        mybookTitle,
-                                        mybook_id,
-                                        startDate: new Date().valueOf(),
-                                        __typename: "MyMenteeDetails",
-                                      },
-                                    ];
-
-                                    draft.mentorings[0].receivedReqs[indexNumber].reqStatus = "accepted";
-                                  }),
-                                },
-                              });
-                            },
-                            // refetchQueries: [{ query: GET_MENTORING }],
                           });
                         }}
                       >

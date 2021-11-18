@@ -1,15 +1,21 @@
 import { gql, useMutation } from "@apollo/client";
 import { Modal, Form, Input, Select } from "antd";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { memo } from "react";
 import styled from "styled-components";
 import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 import { MUTATION_CREATE_MY_BOOK } from "../../../../graphql/mutation/myBook";
 
-const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }) => {
+const CreateBookModal = ({ category, visible, changeVisible }) => {
   const router = useRouter();
   const [form] = Form.useForm();
-  const { resetFields } = form;
+  const { resetFields, getFieldInstance } = form;
+
+  useEffect(() => {
+    getFieldInstance("book_title").focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [mybook_create, { loading }] = useMutation(MUTATION_CREATE_MY_BOOK, {
     onCompleted: (_data) => {

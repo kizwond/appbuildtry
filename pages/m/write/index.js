@@ -58,15 +58,6 @@ const M_WriteMain = () => {
       </Head>
       {myBook2 && category2 && (
         <M_Layout>
-          {/* {category2.mybookcates.length >= 1 && (
-            <StyledRowMaxWidth topcompo="true">
-              <StyledSpace>
-                <CreateBookButton category={category2} />
-                <CategorySettingButton ref={(ref) => (newCateRef.current = ref)} category={category2} />
-              </StyledSpace>
-            </StyledRowMaxWidth>
-          )} */}
-
           <StyledRowMaxWidth>
             <Col span={24}>
               <M_FavoriteBooksTable
@@ -141,10 +132,17 @@ const StyledRowMaxWidth = styled.div`
   }
 
   & .PullCustomCircleButton > .anticon-double-left > svg {
-    font-size: 18px;
+    font-size: 14px;
     color: #a3a3a3;
   }
   & .PullCustomCircleButton:hover > .anticon-double-left > svg {
+    color: #fff;
+  }
+  & .PullCustomCircleButton > .anticon-setting > svg {
+    font-size: 14px;
+    color: #a3a3a3;
+  }
+  & .PullCustomCircleButton:hover > .anticon-setting > svg {
     color: #fff;
   }
 `;

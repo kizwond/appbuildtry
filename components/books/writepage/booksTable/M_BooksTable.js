@@ -10,7 +10,7 @@ import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, DownOutlin
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
-import MoveToBookSetting from "./MoveToBookSetting";
+import MoveToBookSetting from "../../common/MoveToBookSetting";
 
 import makeDataSource from "../../common/logic";
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
@@ -246,21 +246,28 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
                   <div className="singleBar">
                     <div className="graphBar">
                       <div className="AchivedCard" style={{ height: theDayBeforeYesterdayCreatedCards >= 100 ? "100%" : `${theDayBeforeYesterdayCreatedCards}%` }}>
-                        <span className="CardCounter">{theDayBeforeYesterdayCreatedCards}</span>
+                        <span className="CardCounter">{theDayBeforeYesterdayCreatedCards === 0 ? "-" : theDayBeforeYesterdayCreatedCards}</span>
                       </div>
                     </div>
                   </div>
                   <div className="singleBar">
                     <div className="graphBar">
                       <div className="AchivedCard" style={{ height: yesterdayCreatedCards >= 100 ? "100%" : `${yesterdayCreatedCards}%` }}>
-                        <span className="CardCounter">{yesterdayCreatedCards}</span>
+                        <span className="CardCounter" style={{ fontSize: "6px" }}>
+                          {yesterdayCreatedCards === 0 ? "-" : yesterdayCreatedCards}
+                        </span>
                       </div>
                     </div>
                   </div>
                   <div className="singleBar">
                     <div className="graphBar">
-                      <div className="AchivedCard" style={{ height: todayCreatedCards >= 100 ? "100%" : `${todayCreatedCards}%` }}>
-                        <span className="CardCounter">{todayCreatedCards}</span>
+                      <div
+                        className="AchivedCard"
+                        style={{
+                          height: todayCreatedCards >= 100 ? "100%" : `${todayCreatedCards}%`,
+                        }}
+                      >
+                        <span className="CardCounter">{todayCreatedCards === 0 ? "-" : todayCreatedCards}</span>
                       </div>
                     </div>
                   </div>
@@ -288,7 +295,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       dataIndex: "seqInCategory",
       className: "normal",
       align: "right",
-      width: 35,
+      width: 25,
       render: (value, _record) => {
         const obj = {
           children: (
@@ -376,7 +383,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       // title: "상설",
       className: "Row-Last-One",
       align: "center",
-      width: 35,
+      width: 25,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -517,11 +524,6 @@ const StyledCard = styled(Card)`
   }
   & .customCircleButton:hover > .anticon-eye-invisible > svg {
     color: #fff;
-  }
-
-  & .anticon-more > svg {
-    font-size: 16px;
-    color: #a3a3a3;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
@@ -791,7 +793,7 @@ const StyledCard = styled(Card)`
     position: absolute;
     bottom: 0;
     width: 18px;
-    background: #c5c6c7;
+    background: #e1e1e1;
     display: flex;
     justify-content: center;
   }
@@ -801,5 +803,6 @@ const StyledCard = styled(Card)`
     font-size: 0.6rem;
     bottom: 3px;
     display: block;
+    color: #707070;
   }
 `;

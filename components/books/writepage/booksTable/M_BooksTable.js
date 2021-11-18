@@ -84,7 +84,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
               }
             }}
           >
-            {expandedRowKeys.includes(_record.key) ? <DownOutlined /> : <RightOutlined />}
+            {_record.classType === "empty-category" ? null : expandedRowKeys.includes(_record.key) ? <DownOutlined /> : <RightOutlined />}
             <StyledDivEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledDivEllipsis>
           </div>
         ) : null,

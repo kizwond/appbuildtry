@@ -12,8 +12,9 @@ const CategorySettingButton = forwardRef(({ category }, ref) => {
 
   return (
     <>
-      <div
-        className="customCircleButton-CategoryManager"
+      <button
+        className="customButtonForMainPage"
+        type="button"
         style={{
           width: "34px",
           height: "16px",
@@ -22,13 +23,14 @@ const CategorySettingButton = forwardRef(({ category }, ref) => {
           justifyContent: "center",
           alignItems: "center",
           cursor: "pointer",
+          border: "none",
         }}
         onClick={() => {
           setVisible(!visible);
         }}
       >
         <OrderedListOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
-      </div>
+      </button>
       <CategorySettingModal visible={visible} ref={ref} changeVisible={changeVisible} category={category} />
     </>
   );

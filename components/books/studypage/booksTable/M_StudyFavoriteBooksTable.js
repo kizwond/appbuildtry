@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
-import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from "antd";
+import { Table, Button, Card, Space, Drawer, Checkbox, Progress, Popover } from "antd";
 import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, OrderedListOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
@@ -12,6 +12,7 @@ import MoveToBookSetting from "./MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
+import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 
 const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }, ref) => {
   const [mounted, setMounted] = useState(false);
@@ -73,41 +74,35 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       title: "책 제목",
       key: "title",
       dataIndex: "title",
-      align: "center",
       className: "TitleCol",
+      align: "center",
       width: 85,
       render: (value, _record, index) => {
         const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
 
         return (
           <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
             onClick={() => {
               checkRef.current[_record.key].props.onChange();
             }}
+            style={{ cursor: "pointer" }}
           >
-            <Space>
-              <Checkbox
-                ref={(ref) => (checkRef.current[_record.key] = ref)}
-                checked={isSelected}
-                onChange={() => {
-                  if (isSelected) {
-                    changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
-                  }
-                  if (!isSelected) {
-                    changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
-                  }
-                }}
-              />
-              <div>
-                <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
-                {value}
-              </div>
-            </Space>
+            <Checkbox
+              ref={(ref) => (checkRef.current[_record.key] = ref)}
+              checked={isSelected}
+              onChange={() => {
+                if (isSelected) {
+                  changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                }
+                if (!isSelected) {
+                  changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                }
+              }}
+            />
+            <StyledDivEllipsis>
+              <DollarCircleFilled style={{ marginRight: "3px", marginLeft: "4px", color: "aqua" }} />
+              {value}
+            </StyledDivEllipsis>
           </div>
         );
       },
@@ -115,33 +110,50 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
     {
       title: "카드수",
       key: "total",
-      align: "center",
       dataIndex: "total",
       className: "normal",
+      align: "center",
       ellipsis: true,
       width: 40,
-      render: (_value, _record) => <div style={{ display: "flex", justifyContent: "flex-end" }}>{_value}</div>,
+      render: (_value, _record) => (
+        <div style={{ width: "100%" }}>
+          <Popover
+            arrowPointAtCenter
+            content={
+              <>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>읽기카드:</div>
+                  <div>{_record.read}</div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>뒤집기카드:</div>
+                  <div>{_record.flip}</div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>목차카드:</div>
+                  <div>수정必</div>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>일반카드:</div>
+                  <div>수정必</div>
+                </div>
+              </>
+            }
+            trigger="click"
+            overlayClassName="M-Popover-NumberOfCards"
+          >
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{_value}</div>
+          </Popover>
+        </div>
+      ),
     },
-    // {
-    //   title: "최근학습일",
-    //   key: "timeModify",
-    //   align: "center",
-    //   dataIndex: "timeModify",
-    //   className: "normal",
-    //   width: 47,
-    //   render: (_value, _record) => {
-    //     const newDate = new Date(Number(_value));
-    //     const DateString = moment(newDate).format("YY.MM.DD");
 
-    //     return <div>{_value === null ? "-" : DateString}</div>;
-    //   },
-    // },
     {
-      title: "최근생성이력",
+      title: "진도율",
       key: "timeModify",
-      align: "center",
       dataIndex: "timeModify",
       className: "normal",
+      align: "center",
       width: 75,
       render: (_value, _record) => (
         <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
@@ -152,12 +164,12 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
     },
     {
       // title: "이동",
-      key: "seq_in_category",
-      dataIndex: "seq_in_category",
+      key: "seqInCategory",
+      dataIndex: "seqInCategory",
       className: "normal",
       align: "right",
       width: 25,
-      render: (value, _record, index) => (
+      render: (value, _record) => (
         <div
           style={{
             position: "relative",
@@ -232,8 +244,8 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
     },
     {
       // title: "설정",
-      align: "center",
       className: "Row-Last-One",
+      align: "center",
       width: 25,
       render: (value, _record, index) => (
         <div>
@@ -254,7 +266,9 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
             <span style={{ marginRight: "10px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
             <DoubleRightOutlined rotate={visible ? 270 : 90} />
           </div>
-          <CategorySettingButton category={category} ref={ref} />
+          <div>
+            <CategorySettingButton category={category} ref={ref} />
+          </div>
         </div>
       }
     >
@@ -276,9 +290,7 @@ const StyledCard = styled(Card)`
   & .ant-card-body {
     padding: ${(props) => (props.isvisible === "true" ? "0px 12px 12px 12px" : "0px 12px 0px 12px !important")};
   }
-  /* & .ant-table-thead .categoryCol::before {
-    display: none;
-  } */
+
   & .ant-table-thead .categoryCol {
     border-bottom: 1px solid #f0f0f0;
   }
@@ -303,23 +315,6 @@ const StyledCard = styled(Card)`
   }
   & .customCircleButton:hover {
     background-color: #495057;
-  }
-  & .customCircleButton-CategoryManager {
-    background-color: #e9f2fa;
-  }
-  & .customCircleButton-CategoryManager:hover {
-    background-color: #c9dff3;
-  }
-
-  & .customCircleButton-CategoryManager:active {
-    background-color: #7fbaf2;
-  }
-  & .customCircleButton-CategoryManager > .anticon.anticon-ordered-list.writeUnliked > svg {
-    color: #8a8a8a;
-    font-size: 14px;
-  }
-  & .customCircleButton-CategoryManager:active > .anticon.anticon-ordered-list.writeUnliked > svg {
-    color: #e9e9e9;
   }
 
   & .customCircleButton:hover {

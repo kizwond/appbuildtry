@@ -65,47 +65,45 @@ const Writeanother = () => {
   const category2 = myBook2 && data && data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0];
   return (
     <>
+      <Head>
+        <title>Write - CogBook</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>
       {myBook2 && category2 && (
-        <>
-          <Head>
-            <title>Write - CogBook</title>
-            <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-          </Head>
-          <M_Layout>
-            <StyledRowMaxWidth height={height}>
-              <Col span={24}>
-                <M_StudyFavoriteBooksTable
-                  ref={(ref) => (newCateRef.current = ref)}
-                  category={category2}
-                  myBook={myBook2}
-                  isPopupSomething={isPopupSomething}
-                  chagePopup={chagePopup}
-                  activedTable={activedTable}
-                  changeActivedTable={changeActivedTable}
-                  selectedBooks={selectedBooks}
-                  changeSelectedBooks={changeSelectedBooks}
-                />
-              </Col>
+        <M_Layout>
+          <StyledRowMaxWidth height={height}>
+            <Col span={24}>
+              <M_StudyFavoriteBooksTable
+                ref={(ref) => (newCateRef.current = ref)}
+                category={category2}
+                myBook={myBook2}
+                isPopupSomething={isPopupSomething}
+                chagePopup={chagePopup}
+                activedTable={activedTable}
+                changeActivedTable={changeActivedTable}
+                selectedBooks={selectedBooks}
+                changeSelectedBooks={changeSelectedBooks}
+              />
+            </Col>
 
-              <Col span={24}>
-                <M_StudyBooksTable
-                  category={category2}
-                  myBook={myBook2}
-                  isPopupSomething={isPopupSomething}
-                  chagePopup={chagePopup}
-                  activedTable={activedTable}
-                  changeActivedTable={changeActivedTable}
-                  selectedBooks={selectedBooks}
-                  changeSelectedBooks={changeSelectedBooks}
-                />
-              </Col>
-            </StyledRowMaxWidth>
-            <StyledBottomBar>
-              <div>바로 보기</div>
-              <div onClick={sesstionStart}>세션 시작</div>
-            </StyledBottomBar>
-          </M_Layout>
-        </>
+            <Col span={24}>
+              <M_StudyBooksTable
+                category={category2}
+                myBook={myBook2}
+                isPopupSomething={isPopupSomething}
+                chagePopup={chagePopup}
+                activedTable={activedTable}
+                changeActivedTable={changeActivedTable}
+                selectedBooks={selectedBooks}
+                changeSelectedBooks={changeSelectedBooks}
+              />
+            </Col>
+          </StyledRowMaxWidth>
+          <StyledBottomBar>
+            <div>바로 보기</div>
+            <div onClick={sesstionStart}>세션 시작</div>
+          </StyledBottomBar>
+        </M_Layout>
       )}
     </>
   );

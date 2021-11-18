@@ -350,6 +350,19 @@ const StyledModal = styled(Modal)`
   & * {
     font-size: 0.8rem;
   }
+  min-width: 340px;
+
+  & .ant-modal-body {
+    padding: 8px 24px 8px 24px;
+  }
+
+  & .ant-row.ant-form-item {
+    margin-bottom: 8px;
+  }
+
+  & .ant-modal-footer {
+    padding: 10px 24px;
+  }
 
   & .AddNewCategory {
     width: 25px;

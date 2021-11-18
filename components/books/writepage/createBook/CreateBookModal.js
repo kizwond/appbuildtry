@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import { Modal, Form, Input, Select } from "antd";
 import { useRouter } from "next/router";
 import { memo } from "react";
+import styled from "styled-components";
 import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 import { MUTATION_CREATE_MY_BOOK } from "../../../../graphql/mutation/myBook";
 
@@ -78,15 +79,19 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
 
   return (
     <>
-      <Modal
+      <StyledModal
         visible={visible}
-        title="새 책 만들기"
+        title={<div style={{ fontSize: "1rem", fontWeight: "bold" }}>새 책 만들기</div>}
         cancelText="취소"
         onCancel={() => changeVisible(false)}
         okButtonProps={{
           form: "category-editor-form",
           key: "submit",
           htmlType: "submit",
+          size: "small",
+        }}
+        cancelButtonProps={{
+          size: "small",
         }}
         mask={false} // 모달 바깥 전체화면 덮기 기능
         okText="새 책 만들기 완료"
@@ -132,7 +137,7 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
               },
             ]}
           >
-            <Select placeholder="카테고리를 선택해 주세요.">
+            <Select placeholder="카테고리를 선택해 주세요." size="small">
               {category.mybookcates.map((_category) => (
                 <Select.Option key={_category._id} value={_category._id}>
                   {_category.name}
@@ -141,9 +146,37 @@ const CreateBookModal = ({ category, visible, changeVisible, handleToGetMyBook }
             </Select>
           </Form.Item>
         </Form>
-      </Modal>
+      </StyledModal>
     </>
   );
 };
 
 export default memo(CreateBookModal);
+
+const StyledModal = styled(Modal)`
+  & * {
+    font-size: 0.8rem;
+  }
+  min-width: 300px;
+
+  & .ant-modal-body {
+    padding: 8px 24px 8px 24px;
+  }
+
+  & .ant-form-item-label {
+    padding: 0;
+  }
+  & .ant-form-item-label > label {
+    height: auto;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  & .ant-row.ant-form-item {
+    margin-bottom: 8px;
+  }
+
+  & .ant-modal-footer {
+    padding: 10px 24px;
+  }
+`;

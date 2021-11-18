@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
-import { Table, Card, Space, Drawer } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { Table, Card, Space, Drawer, Popover } from "antd";
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, DownOutlined, MinusCircleOutlined, PlusCircleOutlined, RightOutlined } from "@ant-design/icons";
 
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
@@ -65,18 +65,36 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
 
   const columns = [
     {
-      title: <StyledDivEllipsis>카테고리</StyledDivEllipsis>,
+      title: "카테고리",
       key: "categoryName",
       className: "categoryCol",
+      align: "center",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => (_record.relationship === "parent" ? <StyledDivEllipsis>{_value}</StyledDivEllipsis> : null),
+      render: (_value, _record) =>
+        _record.relationship === "parent" ? (
+          <div
+            style={{ display: "flex", alignItems: "center", height: "30px" }}
+            onClick={() => {
+              if (expandedRowKeys.includes(_record.key)) {
+                setExpandedRowKeys(expandedRowKeys.filter((key) => key !== _record.key));
+              }
+              if (!expandedRowKeys.includes(_record.key)) {
+                setExpandedRowKeys([...expandedRowKeys, _record.key]);
+              }
+            }}
+          >
+            {expandedRowKeys.includes(_record.key) ? <DownOutlined /> : <RightOutlined />}
+            <StyledDivEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledDivEllipsis>
+          </div>
+        ) : null,
     },
     {
-      title: <StyledDivEllipsis>책 제목</StyledDivEllipsis>,
+      title: "책 제목",
       key: "title",
       dataIndex: "title",
       className: "Row-First-Left",
+      align: "center",
       width: 85,
       render: (value, _record, index) => {
         const obj = {
@@ -84,7 +102,16 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
             _record.classType === "empty-category" ? (
               <div>빈 칸테고리</div>
             ) : _record.relationship === "parent" && !expandedRowKeys.includes(_record.key) ? (
-              <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
+              <div
+                onClick={() => {
+                  if (expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys(expandedRowKeys.filter((key) => key !== _record.key));
+                  }
+                  if (!expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys([...expandedRowKeys, _record.key]);
+                  }
+                }}
+              >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
               <StyledDivEllipsis>{value}</StyledDivEllipsis>
             ) : (
@@ -111,21 +138,46 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       },
     },
     {
-      title: (
-        <>
-          <StyledDivEllipsis>카드 수</StyledDivEllipsis>
-          <StyledDivEllipsis>(읽기/뒤집기)</StyledDivEllipsis>
-        </>
-      ),
+      title: "카드수",
       key: "total",
-      align: "center",
       dataIndex: "total",
       className: "normal",
+      align: "center",
       ellipsis: true,
-      width: 70,
+      width: 40,
       render: (_value, _record) => {
         const obj = {
-          children: <div>{`(${_record.read}/${_record.flip})`}</div>,
+          children: (
+            <div style={{ width: "100%" }}>
+              <Popover
+                arrowPointAtCenter
+                content={
+                  <>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <div>읽기카드:</div>
+                      <div>{_record.read}</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <div>뒤집기카드:</div>
+                      <div>{_record.flip}</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <div>목차카드:</div>
+                      <div>수정必</div>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <div>일반카드:</div>
+                      <div>수정必</div>
+                    </div>
+                  </>
+                }
+                trigger="click"
+                overlayClassName="M-Popover-NumberOfCards"
+              >
+                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{_value}</div>
+              </Popover>
+            </div>
+          ),
           props: {
             colSpan: 1,
             rowSpan: 1,
@@ -139,42 +191,37 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
         return obj;
       },
     },
+    // {
+    //   title: <StyledDivEllipsis>수정일</StyledDivEllipsis>,
+    //   key: "timeModify",
+    //   align: "center",
+    //   dataIndex: "timeModify",
+    //   className: "normal",
+    //   width: 45,
+    //   render: (_value, _record) => {
+    //     const newDate = new Date(Number(_value));
+    //     const DateString = moment(newDate).format("YY.MM.DD");
+    //     const obj = {
+    //       children: <div>{_value === null ? "-" : DateString}</div>,
+    //       props: {
+    //         colSpan: 1,
+    //         rowSpan: 1,
+    //       },
+    //     };
+    //     if (getConditionValue(_record)) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
     {
-      title: <StyledDivEllipsis>수정일</StyledDivEllipsis>,
-      key: "timeModify",
-      align: "center",
-      dataIndex: "timeModify",
+      title: "카드생성이력",
+      key: "writeHistory",
+      dataIndex: "writeHistory",
       className: "normal",
-      width: 45,
-      render: (_value, _record) => {
-        const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format("YY.MM.DD");
-        const obj = {
-          children: <div>{_value === null ? "-" : DateString}</div>,
-          props: {
-            colSpan: 1,
-            rowSpan: 1,
-          },
-        };
-        if (getConditionValue(_record)) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
-    {
-      title: (
-        <>
-          <StyledDivEllipsis>최근 3일간</StyledDivEllipsis>
-          <StyledDivEllipsis>카드생성</StyledDivEllipsis>
-        </>
-      ),
-      key: "timeModify",
       align: "center",
-      dataIndex: "timeModify",
-      className: "normal",
       width: 75,
       render: (_value, _record) => {
         const now = new Date();
@@ -236,13 +283,13 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       },
     },
     {
-      title: "이동",
-      key: "seq_in_category",
-      dataIndex: "seq_in_category",
+      // title: "이동",
+      key: "seqInCategory",
+      dataIndex: "seqInCategory",
       className: "normal",
       align: "right",
       width: 35,
-      render: (value, _record, index) => {
+      render: (value, _record) => {
         const obj = {
           children: (
             <div
@@ -326,9 +373,9 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       },
     },
     {
-      title: "상설",
-      align: "center",
+      // title: "상설",
       className: "Row-Last-One",
+      align: "center",
       width: 35,
       render: (value, _record, index) => {
         const obj = {
@@ -377,14 +424,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
         }
         expandable={{
           expandedRowKeys,
-          onExpand: (ex, re) => {
-            if (!ex) {
-              setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re.key));
-            }
-            if (ex) {
-              setExpandedRowKeys([...expandedRowKeys, re.key]);
-            }
-          },
+          expandIcon: () => null,
         }}
       />
     </StyledCard>
@@ -435,24 +475,6 @@ const StyledCard = styled(Card)`
   & .FirstBookCustom > .anticon-arrow-up > svg,
   & .LastBookCustom > .anticon-arrow-down > svg {
     color: #4d4d4d;
-  }
-
-  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
-  & .anticon-double-right > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
-    font-size: 18px;
-    color: #fff;
-  }
-
-  & .anticon-double-left > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
-    color: #fff;
   }
 
   & .anticon-arrow-down > svg {

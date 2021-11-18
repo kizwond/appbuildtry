@@ -5,7 +5,7 @@ import styled from "styled-components";
 import moment from "moment";
 
 import { Table, Card, Space, Drawer, Checkbox, Progress, Popover } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, FileProtectOutlined, MinusCircleTwoTone, PlusCircleTwoTone, PlusSquareFilled } from "@ant-design/icons";
+import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, PlusCircleOutlined, MinusCircleOutlined, DownOutlined, RightOutlined } from "@ant-design/icons";
 
 import { StyledDivEllipsis } from "../../../common/styledComponent/page";
 import BookOrderButton from "../../common/BookOrderButton";
@@ -73,7 +73,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
               }
             }}
           >
-            {expandedRowKeys.includes(_record.key) ? <MinusCircleTwoTone /> : <PlusCircleTwoTone />}
+            {expandedRowKeys.includes(_record.key) ? <DownOutlined /> : <RightOutlined />}
             <StyledDivEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledDivEllipsis>
           </div>
         ) : null,
@@ -82,8 +82,8 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       title: "책 제목",
       key: "title",
       dataIndex: "title",
-      align: "center",
       className: "Row-First-Left",
+      align: "center",
       width: 85,
       render: (value, _record, index) => {
         const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
@@ -109,6 +109,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                 onClick={() => {
                   checkRef.current[_record.key].props.onChange();
                 }}
+                style={{ cursor: "pointer" }}
               >
                 <Checkbox
                   ref={(ref) => (checkRef.current[_record.key] = ref)}
@@ -121,10 +122,9 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                       changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
                     }
                   }}
-                  style={{ marginRight: "4px" }}
                 />
                 <StyledDivEllipsis>
-                  <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
+                  <DollarCircleFilled style={{ marginRight: "3px", marginLeft: "4px", color: "aqua" }} />
                   {value}
                 </StyledDivEllipsis>
               </div>
@@ -142,9 +142,9 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
     {
       title: "카드수",
       key: "total",
-      align: "center",
       dataIndex: "total",
       className: "normal",
+      align: "center",
       ellipsis: true,
       width: 40,
       render: (_value, _record, _index) => {
@@ -165,11 +165,11 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <div>목차카드:</div>
-                      <div>0</div>
+                      <div>수정必</div>
                     </div>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                       <div>일반카드:</div>
-                      <div>235</div>
+                      <div>수정必</div>
                     </div>
                   </>
                 }
@@ -193,37 +193,13 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
         return obj;
       },
     },
-    // {
-    //   title: "최근학습일",
-    //   key: "timeStudy",
-    //   dataIndex: "timeStudy",
-    //   align: "center",
-    //   className: "normal",
-    //   width: 47,
-    //   render: (_value, _record) => {
-    //     const newDate = new Date(Number(_value));
-    //     const DateString = moment(newDate).format("YY.MM.DD");
-    //     const obj = {
-    //       children: <div>{_value === null ? "-" : DateString}</div>,
-    //       props: {
-    //         colSpan: 1,
-    //         rowSpan: 1,
-    //       },
-    //     };
-    //     if (getConditionValue(_record)) {
-    //       obj.props.colSpan = 0;
-    //     } else {
-    //       obj.props.colSpan = 1;
-    //     }
-    //     return obj;
-    //   },
-    // },
+
     {
       title: "진도율",
-      key: "timeModify",
-      dataIndex: "timeModify",
-      align: "center",
+      key: "accuLevel",
+      dataIndex: "accuLevel",
       className: "normal",
+      align: "center",
       width: 75,
       render: (_value, _record) => {
         const obj = {
@@ -248,8 +224,8 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
     },
     {
       // title: "이동",
-      key: "seq_in_category",
-      dataIndex: "seq_in_category",
+      key: "seqInCategory",
+      dataIndex: "seqInCategory",
       className: "normal",
       align: "right",
       width: 25,
@@ -338,10 +314,10 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
     },
     {
       // title: "설정",
-      align: "center",
       className: "Row-Last-One",
+      align: "center",
       width: 25,
-      render: (value, _record, index) => {
+      render: (value, _record) => {
         const obj = {
           children: (
             <div>
@@ -397,7 +373,6 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
         // }}
         expandable={{
           expandedRowKeys,
-
           expandIcon: () => null,
         }}
       />

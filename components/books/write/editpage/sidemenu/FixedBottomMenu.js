@@ -6,7 +6,7 @@ const backgroundColor = "black";
 const buttonColor = "white";
 const fontColor = "white";
 
-const FloatingMenu = ({setCardId, setEditorOnFromCard,setSelectedCardType, cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId, book_id, selectedCardType }) => {
+const FloatingMenu = ({indexList, setCardId, setEditorOnFromCard,setSelectedCardType, cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId, book_id, selectedCardType }) => {
 
   const addCard = () => {
     setCardId("");
@@ -63,7 +63,7 @@ const FloatingMenu = ({setCardId, setEditorOnFromCard,setSelectedCardType, cardT
           </span>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", flexBasis: "100px", alignItems: "center" }}>
-          <ImportModal cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
+          <ImportModal indexList={indexList} cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
           <M_RightDrawer book_id={book_id} />
         </div>
       </div>

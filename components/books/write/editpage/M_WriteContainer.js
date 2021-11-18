@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { GetCardTypeSet, CardTypeCreate } from "../../../../graphql/query/cardtype";
+import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
-import FloatingMenu from "./sidemenu/FloatingMenu";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
-import { Input, message, Button, Select } from "antd";
-import { AddCard, GetCardSet } from "../../../../graphql/query/card_contents";
-import { ControlOutlined } from "@ant-design/icons";
+import { Button, Select } from "antd";
+import { AddCard } from "../../../../graphql/query/card_contents";
 
 const { Option } = Select;
 
@@ -46,18 +44,18 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     loading,
     error,
     data: data1,
-  } = useQuery(GetCardTypeSet, {
-    variables: { mybook_id: book_id, index_id: first_index },
+  } = useQuery(GetCardRelated, {
+    variables: { mybook_ids: book_id, index_ids: first_index },
   });
-
+  var indexList = data1.indexset_getByMybookids.indexsets[0].indexes;
   useEffect(() => {
     if (data1) {
       console.log("최초 로드 data : ", data1);
-      setCardTypeSetId(data1.cardtypeset_getbymybookid.cardtypesets[0]._id);
-      setCardTypeSets(data1.cardtypeset_getbymybookid.cardtypesets);
-      setCardTypes(data1.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
-      setCardSetId(data1.cardset_getbyindexid.cardsets[0]._id);
-      setCards(data1.cardset_getbyindexid.cardsets[0].cards);
+      // setCardTypeSetId(data1.cardtypeset_getbymybookids.cardtypesets[0]._id);
+      // setCardTypeSets(data1.cardtypeset_getbymybookids.cardtypesets);
+      // setCardTypes(data1.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);
+      // setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
+      // setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
     } else {
       console.log("why here?");
     }
@@ -215,8 +213,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             currentPositionCardID: current_position_card_id,
             card_info: {
               mybook_id: mybook_id,
-              indexset_id : indexSetId,
-              index_id : first_index,
+              indexset_id: indexSetId,
+              index_id: first_index,
               cardset_id: cardSetId,
               cardtypeset_id: cardTypeSetId,
               cardtype_id,
@@ -636,7 +634,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                     </>
                   )}
                 </div>
-                <div style={{height:"5px"}}></div>
+                <div style={{ height: "5px" }}></div>
               </div>
               {content._id === cardId && (
                 <>
@@ -980,10 +978,10 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   const onClickCard = (card_id, from, group) => {
     console.log("cardClicked!!!!!");
     console.log("onClickCard", card_id);
-    console.log("from", from)
-    console.log("parent", group)
-    if(from !== "general" && from !== "normal" && from !== "flip" && group === undefined || null){
-      console.log("null or undefined")
+    console.log("from", from);
+    console.log("parent", group);
+    if ((from !== "general" && from !== "normal" && from !== "flip" && group === undefined) || null) {
+      console.log("null or undefined");
       const selected1 = document.getElementsByClassName("child_group");
       const selected2 = document.getElementsByClassName("other");
       for (var a = 0; a < selected2.length; a++) {
@@ -994,9 +992,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         const section2 = selected1.item(a);
         section2.style.borderLeft = "none";
       }
-      
-    } else if( from === "general"){
-      console.log("general")
+    } else if (from === "general") {
+      console.log("general");
       const selected1 = document.getElementsByClassName(card_id);
       const selected2 = document.getElementsByClassName("other");
       for (var a = 0; a < selected2.length; a++) {
@@ -1007,8 +1004,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         const section2 = selected1.item(b);
         section2.style.borderLeft = "2px solid blue";
       }
-    } else if( from === "normal"){
-      console.log("normal")
+    } else if (from === "normal") {
+      console.log("normal");
       const selected1 = document.getElementsByClassName(card_id);
       const selected2 = document.getElementsByClassName("other");
       for (var a = 0; a < selected2.length; a++) {
@@ -1019,8 +1016,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         const section2 = selected1.item(b);
         section2.style.borderLeft = "2px solid blue";
       }
-    } else if(from === "flip" && group === undefined || null){
-      console.log("flip")
+    } else if ((from === "flip" && group === undefined) || null) {
+      console.log("flip");
       const selected4 = document.getElementsByClassName(card_id);
       const selected2 = document.getElementsByClassName("other");
       for (var a = 0; a < selected2.length; a++) {
@@ -1031,8 +1028,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         const section4 = selected4.item(b);
         section4.style.borderLeft = "2px solid blue";
       }
-    }else {
-      console.log("parent Id")
+    } else {
+      console.log("parent Id");
       const selected3 = document.getElementsByClassName(group);
       const selected2 = document.getElementsByClassName("other");
       for (var a = 0; a < selected2.length; a++) {
@@ -1041,15 +1038,14 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       }
       for (var c = 0; c < selected3.length; c++) {
         const section3 = selected3.item(c);
-        console.log(section3)
+        console.log(section3);
         section3.style.borderLeft = "2px solid blue";
       }
     }
-    
+
     setCardId(card_id);
     setEditorOnFromCard("");
     setEditorOn("");
-   
   };
 
   return (
@@ -1059,18 +1055,23 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         <div>{contents}</div>
         <div>{editorOn}</div>
       </div>
-      <FixedBottomMenu
-        selectedCardType={selectedCardType}
-        setSelectedCardType={setSelectedCardType}
-        book_id={book_id}
-        cardTypes={cardTypes}
-        cardTypeInfo={cardTypeInfo}
-        cardSetId={cardSetId}
-        indexChanged={indexChanged}
-        indexSetId={indexSetId}
-        setEditorOnFromCard={setEditorOnFromCard}
-        setCardId={setCardId}
-      />
+      {data1 && (
+        <>
+          <FixedBottomMenu
+            selectedCardType={selectedCardType}
+            setSelectedCardType={setSelectedCardType}
+            book_id={book_id}
+            cardTypes={cardTypes}
+            cardTypeInfo={cardTypeInfo}
+            cardSetId={cardSetId}
+            indexChanged={indexChanged}
+            indexSetId={indexSetId}
+            indexList={indexList}
+            setEditorOnFromCard={setEditorOnFromCard}
+            setCardId={setCardId}
+          />
+        </>
+      )}
     </>
   );
 };

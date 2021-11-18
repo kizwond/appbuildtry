@@ -39,6 +39,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   const [editorOnFromCard, setEditorOnFromCard] = useState();
   const [cardId, setCardId] = useState("");
   const [selectedCardType, setSelectedCardType] = useState();
+  const [indexList, setIndexList] = useState();
 
   const {
     loading,
@@ -47,10 +48,11 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   } = useQuery(GetCardRelated, {
     variables: { mybook_ids: book_id, index_ids: first_index },
   });
-  var indexList = data1.indexset_getByMybookids.indexsets[0].indexes;
+  
   useEffect(() => {
     if (data1) {
       console.log("최초 로드 data : ", data1);
+      setIndexList(data1.indexset_getByMybookids.indexsets[0].indexes)
       // setCardTypeSetId(data1.cardtypeset_getbymybookids.cardtypesets[0]._id);
       // setCardTypeSets(data1.cardtypeset_getbymybookids.cardtypesets);
       // setCardTypes(data1.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);

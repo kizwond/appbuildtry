@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShoppingCartOutlined, BellOutlined, UserOutlined, MenuOutlined, ReadOutlined, FormOutlined, TeamOutlined, ShopOutlined, FileTextOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, BellOutlined, UserOutlined, MenuOutlined, ReadOutlined, FormOutlined, TeamOutlined, ShopOutlined, FileTextOutlined, CrownOutlined } from "@ant-design/icons";
 import { Input, Avatar } from "antd";
 import React, { useEffect, useState } from "react";
 import { Drawer, Button } from "antd";
@@ -122,6 +122,12 @@ const Nav = () => {
                     <a style={linkStyleDrawer}>
                       <ShopOutlined style={{ marginRight: 10 }} />
                       서점
+                    </a>
+                  </Link>
+                  <Link href="/m/challenges">
+                    <a style={linkStyleDrawer}>
+                      <CrownOutlined style={{ marginRight: 10 }} />
+                      도전출판
                     </a>
                   </Link>
                   <Link href="/cart">

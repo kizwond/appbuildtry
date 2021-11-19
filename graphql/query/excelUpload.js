@@ -38,7 +38,7 @@ export const InspectTargetSheet = gql`
             cardtype
             time_created
             hasParent
-            parent_card_id
+            parentCard_id
           }
           content {
             userFlag
@@ -114,7 +114,7 @@ export const ImportExcelFile = gql`
             cardtype
             time_created
             hasParent
-            parent_card_id
+            parentCard_id
           }
           content {
             userFlag

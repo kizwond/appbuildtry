@@ -660,7 +660,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                               </Button>
                             </div>
                             <div>
-                              <Button size="small" onClick={() => onClickCardAddChild("general", content._id)} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
+                              <Button size="small" onClick={() => onClickCardAddChild("general", content_value._id)} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
                                 자식카드추가
                               </Button>
                             </div>
@@ -679,10 +679,10 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "top-bottom" && (
                 <>
-                  <div className={`${content.card_info.parent_card_id} ${content_value._id} child_group other`}>
+                  <div className={`${content.card_info.parentCard_id} ${content_value._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
-                        onClick={() => onClickCard(content_value._id, "flip", content.card_info.parent_card_id)}
+                        onClick={() => onClickCard(content_value._id, "flip", content.card_info.parentCard_id)}
                         style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}`, marginLeft: `${content.card_info.hasParent === "yes" && "10px"}` }}
                       >
                         {/* 페이스1 스타일 영역 */}
@@ -820,7 +820,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                             <div>
                               <Button
                                 size="small"
-                                onClick={() => onClickCardAddChild("general", content.card_info.parent_card_id)}
+                                onClick={() => onClickCardAddChild("general", content.card_info.parentCard_id)}
                                 style={{ fontSize: "0.75rem", border: "1px solid grey" }}
                               >
                                 자식카드추가
@@ -841,10 +841,10 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "left-right" && (
                 <>
-                  <div className={`${content.card_info.parent_card_id} ${content_value._id} child_group other`}>
+                  <div className={`${content.card_info.parentCard_id} ${content_value._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
-                        onClick={() => onClickCard(content_value._id, "flip", content.card_info.parent_card_id)}
+                        onClick={() => onClickCard(content_value._id, "flip", content.card_info.parentCard_id)}
                         style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}`, marginLeft: `${content.card_info.hasParent === "yes" && "10px"}` }}
                       >
                         {/* 페이스1 스타일 영역 */}
@@ -986,7 +986,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                             <div>
                               <Button
                                 size="small"
-                                onClick={() => onClickCardAddChild("general", content.card_info.parent_card_id)}
+                                onClick={() => onClickCardAddChild("general", content.card_info.parentCard_id)}
                                 style={{ fontSize: "0.75rem", border: "1px solid grey" }}
                               >
                                 자식카드추가
@@ -1053,7 +1053,19 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         const section2 = selected1.item(b);
         section2.style.borderLeft = "2px solid blue";
       }
-    } else if (from === "flip" && group === undefined || null) {
+    } else if (from === "flip" && group === null) {
+      console.log("flip");
+      const selected4 = document.getElementsByClassName(card_id);
+      const selected2 = document.getElementsByClassName("other");
+      for (var a = 0; a < selected2.length; a++) {
+        const section1 = selected2.item(a);
+        section1.style.borderLeft = "none";
+      }
+      for (var b = 0; b < selected4.length; b++) {
+        const section4 = selected4.item(b);
+        section4.style.borderLeft = "2px solid blue";
+      }
+    }else if (from === "flip" && group === undefined) {
       console.log("flip");
       const selected4 = document.getElementsByClassName(card_id);
       const selected2 = document.getElementsByClassName("other");

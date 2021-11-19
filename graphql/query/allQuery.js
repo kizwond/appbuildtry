@@ -71,7 +71,7 @@ export const GetCardRelated = gql`
             cardtype
             time_created
             hasParent
-            parent_card_id
+            parentCard_id
           }
           content {
             userFlag

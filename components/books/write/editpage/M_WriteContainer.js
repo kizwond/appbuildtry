@@ -89,7 +89,11 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         }
       });
       console.log("===========>", childs)
+      let lastElement = childs[childs.length - 1];
+      console.log(lastElement)
+      setCardId(lastElement._id)
     }
+    
 
     console.log(parentId);
     console.log("여기다여기 : ", cardtype_info);

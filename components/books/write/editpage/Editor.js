@@ -252,8 +252,8 @@ class Editor extends Component {
     const editorList = this.props.nicks.map((item, index) => {
       if(this.props.cardtypeEditor === "flip" && index === 0){
         return (
-          <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
-            <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
+          <div key={index} style={{ display: "flex", flexDirection:"column", marginTop: "1px"}}>
+            <label className="editor_label" style={{ width: "50px", fontSize:"0.5rem", color:"lightgrey" }}>
               {item}
             </label>
             <FroalaEditorComponent
@@ -262,13 +262,13 @@ class Editor extends Component {
               model={this.state["editor" + (index + 1).toString()]}
               onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
             />
-            <div><PlusCircleOutlined onClick={this.onClickAddSelection} style={{ marginLeft: "7px", fontSize: "1.4rem", color: "grey" }} /></div>
+            {/* <div><PlusCircleOutlined onClick={this.onClickAddSelection} style={{ marginLeft: "7px", fontSize: "1.4rem", color: "grey" }} /></div> */}
           </div>
         );
       } else if(this.props.cardtypeEditor === "flip" && index !== 0){
         return (
-          <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
-            <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
+          <div key={index} style={{ display: "flex", flexDirection:"column", marginTop: "1px"}}>
+            <label className="editor_label" style={{ width: "50px", fontSize:"0.5rem", color:"lightgrey" }}>
               {item}
             </label>
             <FroalaEditorComponent
@@ -281,8 +281,8 @@ class Editor extends Component {
         );
       }else {
         return (
-          <div key={index} style={{ display: "flex", marginTop: "5px", alignItems: "center", justifyContent:"space-between" }}>
-            <label className="editor_label" style={{ width: "50px", fontSize:"0.8rem" }}>
+          <div key={index} style={{ display: "flex", flexDirection:"column", marginTop: "1px"}}>
+            <label className="editor_label" style={{ width: "50px", fontSize:"0.5rem", color:"lightgrey" }}>
               {item}
             </label>
             <FroalaEditorComponent
@@ -300,7 +300,7 @@ class Editor extends Component {
       <>
         <div id="editor">
           <div id="toolbarContainer"></div>
-          <div style={{ padding: "10px", border: "1px solid lightgrey" }}>
+          <div style={{ padding: "3px", border: "1px solid lightgrey" }}>
             <div style={{marginBottom:"10px"}}>
             {editorList}
             </div>

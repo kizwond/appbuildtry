@@ -81,19 +81,20 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   }, [data1, indexChanged, first_index, mycontent_getMycontentByMycontentIDs]);
 
   const cardTypeInfo = (cardtype_info, from, parentId, generalCardId) => {
-    console.log("generalCardId", generalCardId)
+    console.log("generalCardId", generalCardId);
     if (generalCardId) {
       const childs = cards.filter((item) => {
         if (item.card_info.parentCard_id === generalCardId) {
-          return item
+          return item;
         }
       });
-      console.log("===========>", childs)
+      console.log("===========>", childs);
       let lastElement = childs[childs.length - 1];
-      console.log(lastElement)
-      setCardId(lastElement._id)
+      console.log(lastElement);
+      if (lastElement !== undefined) {
+        setCardId(lastElement._id);
+      }
     }
-    
 
     console.log(parentId);
     console.log("여기다여기 : ", cardtype_info);
@@ -576,7 +577,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                             </div>
                           </>
                         ))}
-                      </div> 
+                      </div>
                     </div>
                     {content._id === cardId && (
                       <>

@@ -36,22 +36,22 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
             titleForSale,
           },
         },
-        // update: (cache, { data: { buybook_createBuybook } }) => {
-        //   const _data = cache.readQuery({
-        //     query: GET_ALL_BUY_BOOKS,
-        //   });
-        //   console.log({ _data, buybook_createBuybook });
-        //   cache.writeQuery({
-        //     query: GET_ALL_BUY_BOOKS,
-        //     data: {
-        //       ..._data,
-        //       buybook_getAllBuybook: {
-        //         ..._data.buybook_getAllBuybook,
-        //         buybooks: [..._data.buybook_getAllBuybook.buybooks, ...buybook_createBuybook.buybooks],
-        //       },
-        //     },
-        //   });
-        // },
+        update: (cache, { data: { buybook_createBuybook } }) => {
+          const _data = cache.readQuery({
+            query: GET_ALL_BUY_BOOKS,
+          });
+          console.log({ _data, buybook_createBuybook });
+          cache.writeQuery({
+            query: GET_ALL_BUY_BOOKS,
+            data: {
+              ..._data,
+              buybook_getAllBuybook: {
+                ..._data.buybook_getAllBuybook,
+                buybooks: [..._data.buybook_getAllBuybook.buybooks, ...buybook_createBuybook.buybooks],
+              },
+            },
+          });
+        },
       });
     } catch (error) {
       console.log(error);

@@ -11,9 +11,7 @@ import Image from "next/image";
 import { MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK } from "../../../graphql/mutation/buyBook";
 import { any } from "prop-types";
 
-interface ChallengesProps {}
-
-const Challenges: FunctionComponent<ChallengesProps> = () => {
+const Challenges = () => {
   const [drawerRegisterBuyBook, setDrawerRegisterBuyBook] = useState(false);
   const router = useRouter();
 
@@ -56,26 +54,26 @@ const Challenges: FunctionComponent<ChallengesProps> = () => {
       }
     },
   });
-  const createMyBook = async (buybook_id: string) => {
+  const createMyBook = async (buybook_id) => {
     try {
       await createMyBookFromBuyBook({
         variables: { buybook_id },
-        // update: (cache, { data: { buybook_createMybookFromBuybook } }) => {
-        //   const _data = cache.readQuery({
-        //     query: GET_USER_ALL_MY_BOOKS,
-        //   });
-        //   console.log({ _data, buybook_createMybookFromBuybook });
-        //   cache.writeQuery({
-        //     query: GET_USER_ALL_MY_BOOKS,
-        //     data: {
-        //       ..._data,
-        //       mybook_getMybookByUserID: {
-        //         ..._data.mybook_getMybookByUserID,
-        //         buybooks: [..._data.mybook_getMybookByUserID.mybooks, ...buybook_createMybookFromBuybook.mybooks],
-        //       },
-        //     },
-        //   });
-        // },
+        update: (cache, { data: { buybook_createMybookFromBuybook } }) => {
+          const _data = cache.readQuery({
+            query: GET_USER_ALL_MY_BOOKS,
+          });
+          console.log({ _data, buybook_createMybookFromBuybook });
+          cache.writeQuery({
+            query: GET_USER_ALL_MY_BOOKS,
+            data: {
+              ..._data,
+              mybook_getMybookByUserID: {
+                ..._data.mybook_getMybookByUserID,
+                mybooks: [..._data.mybook_getMybookByUserID.mybooks, ...buybook_createMybookFromBuybook.mybooks],
+              },
+            },
+          });
+        },
       });
     } catch (error) {
       console.log(error);
@@ -109,7 +107,7 @@ const Challenges: FunctionComponent<ChallengesProps> = () => {
               </div>
             }
           >
-            {buyBookData.buybook_getAllBuybook.buybooks.map((_book: any, _index: number) => (
+            {buyBookData.buybook_getAllBuybook.buybooks.map((_book, _index) => (
               <Card size="small" key={_book._id} bodyStyle={{ padding: "5px 8px 5px 8px" }} style={{ marginBottom: "6px" }} hoverable>
                 <Row>
                   <Col span={6}>

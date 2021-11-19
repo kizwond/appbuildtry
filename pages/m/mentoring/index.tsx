@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client";
 import _, { divide } from "lodash";
 import produce from "immer";
+import Image from "next/image";
 import Layout from "../../../components/layout/M_Layout";
 
 import { GET_MENTORING, REQUEST_MENTORING, SEARCH_USER_INFO, GET_BOOKS_INFO, ACCEPT_MENTORING_REQUEST } from "../../../graphql/query/mentoring";
@@ -11,14 +12,38 @@ import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import moment from "moment";
 import useGetMentoringAndMenteeBooks from "../../../components/mentoring/useHooks/useGetMentoringAndMenteeBooks";
+import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
+import M_MentoringBooksTable from "../../../components/mentoring/M_MentoringBooksTable.js";
+import { useRouter } from "next/router";
 
 const MentoringHome = () => {
+  const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [drawerRequestMentoringVisible, setDrawerRequestMentoringVisible] = useState(false);
   const selectorRef = useRef();
 
   const [acceptMentroingRequest] = useMutation(ACCEPT_MENTORING_REQUEST, {});
 
   const { newData, mentoringData } = useGetMentoringAndMenteeBooks();
+  const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
+    onCompleted: (data) => {
+      if (data.mybookcateset_getMybookcatesetByUserID.status === "200") {
+        console.log({ receivedBookDataMentoring: data });
+      } else if (data.mybookcateset_getMybookcatesetByUserID.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
+  });
+
+  const getAllBooks = async () => {
+    try {
+      await getAllBooksInfo();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const client = useApolloClient();
 
@@ -104,12 +129,36 @@ const MentoringHome = () => {
               </Tabs.TabPane>
               <Tabs.TabPane tab="멘토" key="멘토">
                 <Space>
-                  <Button size="small" onClick={() => setDrawerVisible((prev) => !prev)}>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      setDrawerRequestMentoringVisible((prev) => !prev);
+                    }}
+                  >
                     보낸 요청
                   </Button>
-                  <Button size="small" shape="circle" type="primary">
-                    <PlusOutlined style={{ fontSize: "14px" }} />
-                  </Button>
+                  <button
+                    className="customButtonForMainPage"
+                    type="button"
+                    style={{
+                      width: "34px",
+                      height: "16px",
+                      borderRadius: "12px",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      border: "none",
+                    }}
+                    onClick={() => {
+                      setDrawerRequestMentoringVisible((prev) => !prev);
+                      if (!data) {
+                        getAllBooks();
+                      }
+                    }}
+                  >
+                    <PlusOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
+                  </button>
                 </Space>
                 <Table
                   size="small"
@@ -219,6 +268,18 @@ const MentoringHome = () => {
               )
               .value()}
           </DrawerWrapper>
+
+          <DrawerWrapper
+            title="멘토링 요청하기"
+            placement="right"
+            width={"100%"}
+            visible={drawerRequestMentoringVisible}
+            onClose={() => setDrawerRequestMentoringVisible(false)}
+            headerStyle={{ padding: "12px 12px 8px 12px" }}
+            bodyStyle={{ backgroundColor: "#e9e9e9" }}
+          >
+            {drawerRequestMentoringVisible && <M_MentoringBooksTable bookData={data} loading={loading} error={error} />}
+          </DrawerWrapper>
         </MentoringWrapper>
       )}
     </Layout>
@@ -295,15 +356,14 @@ const MentoringWrapper = styled.div`
   & time,
   & mark,
   & audio,
-  & video {
+  & video,
+  & input {
     font-size: 0.8rem;
-  }
-  & button {
-    line-height: 1rem;
   }
 `;
 
 const DrawerWrapper = styled(Drawer)`
+  top: 40px;
   & .ant-card-actions {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -314,79 +374,5 @@ const DrawerWrapper = styled(Drawer)`
   & .ant-card-actions > li > span {
     font-size: 0.8rem;
     line-height: 1.5715;
-  }
-
-  & div,
-  & button,
-  & span,
-  & object,
-  & iframe,
-  & h1,
-  & h2,
-  & h3,
-  & h4,
-  & h5,
-  & h6,
-  & p,
-  & blockquote,
-  & pre,
-  & abbr,
-  & address,
-  & cite,
-  & code,
-  & del,
-  & dfn,
-  & em,
-  & img,
-  & ins,
-  & kbd,
-  & q,
-  & samp,
-  & small,
-  & strong,
-  & sub,
-  & sup,
-  & var,
-  & b,
-  & i,
-  & dl,
-  & dt,
-  & dd,
-  & ol,
-  & ul,
-  & li,
-  & fieldset,
-  & form,
-  & label,
-  & legend,
-  & table,
-  & caption,
-  & tbody,
-  & tfoot,
-  & thead,
-  & tr,
-  & th,
-  & td,
-  & article,
-  & aside,
-  & canvas,
-  & details,
-  & figcaption,
-  & figure,
-  & footer,
-  & header,
-  & hgroup,
-  & menu,
-  & nav,
-  & section,
-  & summary,
-  & time,
-  & mark,
-  & audio,
-  & video {
-    font-size: 0.8rem;
-  }
-  & button {
-    line-height: 1rem;
   }
 `;

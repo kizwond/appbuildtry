@@ -352,8 +352,6 @@ export const GetCardTypeSetByMybookIds = gql`
             }
           }
         }
-
-
       }
     }
   }
@@ -374,24 +372,24 @@ export const CardTypeCreate = gql`
           _id
           cardtype_info {
             name
-            cardtype            
+            cardtype
             num_of_row {
               face1
               face2
               annotation
-            }            
+            }
             nick_of_row {
               face1
               face2
               annotation
             }
-            flip_option{
+            flip_option {
               card_direction
               left_face_ratio
             }
           }
           face_style {
-            background{
+            background {
               color
               opacity
             }
@@ -432,7 +430,7 @@ export const CardTypeCreate = gql`
           }
           row_style {
             face1 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -472,7 +470,7 @@ export const CardTypeCreate = gql`
               }
             }
             face2 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -512,7 +510,7 @@ export const CardTypeCreate = gql`
               }
             }
             annotation {
-              background{
+              background {
                 color
                 opacity
               }
@@ -582,15 +580,14 @@ export const CardTypeCreate = gql`
             }
           }
         }
-
-
       }
     }
   }
 `;
+
 export const GetCardTypeSet = gql`
-  query GetCardTypeSet($mybook_id: ID, $index_id: ID) {
-    cardset_getbyindexid(index_id: $index_id) {
+  query GetCardTypeSet($mybook_ids: [ID], $index_ids: [ID]) {
+    cardset_getByIndexIDs(index_ids: $index_ids) {
       status
       msg
       cardsets {
@@ -604,40 +601,34 @@ export const GetCardTypeSet = gql`
         cards {
           _id
           card_info {
+            mybook_id
+            indexset_id
+            index_id
+            cardset_id
+            cardtypeset_id
             cardtype_id
             cardtype
             time_created
             hasParent
             parent_card_id
           }
-          contents {
-            user_flag
-            maker_flag
+          content {
+            userFlag
+            makerFlag {
+              value
+              comment
+            }
             location
-            mycontents_id {
-              _id
-              face1
-              selection
-              face2
-              annotation
-              memo
-            }
-            buycontents_id {
-              _id
-              face1
-              selection
-              face2
-              annotation
-              memo
-            }
+            mycontent_id
+            buycontent_id
           }
         }
       }
     }
 
-    indexset_getbymybookid(mybook_id: $mybook_id){
+    indexset_getByMybookids(mybook_ids: $mybook_ids) {
       status
-      msg 
+      msg
       indexsets {
         _id
         indexset_info {
@@ -646,13 +637,14 @@ export const GetCardTypeSet = gql`
         }
         indexes {
           _id
-          name     
-          level 
-          indextype 
+          name
+          level
+          indextype
         }
-      }       
+      }
     }
-    cardtypeset_getbymybookid(mybook_id: $mybook_id) {
+
+    cardtypeset_getbymybookids(mybook_ids: $mybook_ids) {
       status
       msg
       cardtypesets {
@@ -665,24 +657,24 @@ export const GetCardTypeSet = gql`
           _id
           cardtype_info {
             name
-            cardtype            
+            cardtype
             num_of_row {
               face1
               face2
               annotation
-            }            
+            }
             nick_of_row {
               face1
               face2
               annotation
             }
-            flip_option{
+            flip_option {
               card_direction
               left_face_ratio
             }
           }
           face_style {
-            background{
+            background {
               color
               opacity
             }
@@ -723,7 +715,7 @@ export const GetCardTypeSet = gql`
           }
           row_style {
             face1 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -763,7 +755,7 @@ export const GetCardTypeSet = gql`
               }
             }
             face2 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -803,7 +795,7 @@ export const GetCardTypeSet = gql`
               }
             }
             annotation {
-              background{
+              background {
                 color
                 opacity
               }
@@ -873,8 +865,6 @@ export const GetCardTypeSet = gql`
             }
           }
         }
-
-
       }
     }
   }
@@ -1232,8 +1222,6 @@ export const GetCardTypeSets = gql`
             }
           }
         }
-
-
       }
     }
   }
@@ -1590,8 +1578,6 @@ export const UpdateCardType = gql`
             }
           }
         }
-
-
       }
     }
   }
@@ -1612,24 +1598,24 @@ export const UpdateCardFace = gql`
           _id
           cardtype_info {
             name
-            cardtype            
+            cardtype
             num_of_row {
               face1
               face2
               annotation
-            }            
+            }
             nick_of_row {
               face1
               face2
               annotation
             }
-            flip_option{
+            flip_option {
               card_direction
               left_face_ratio
             }
           }
           face_style {
-            background{
+            background {
               color
               opacity
             }
@@ -1670,7 +1656,7 @@ export const UpdateCardFace = gql`
           }
           row_style {
             face1 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -1710,7 +1696,7 @@ export const UpdateCardFace = gql`
               }
             }
             face2 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -1750,7 +1736,7 @@ export const UpdateCardFace = gql`
               }
             }
             annotation {
-              background{
+              background {
                 color
                 opacity
               }
@@ -1820,16 +1806,10 @@ export const UpdateCardFace = gql`
             }
           }
         }
-
-
       }
     }
   }
 `;
-
-
-
-
 
 export const UpdateRowStyle = gql`
   mutation UpdateRowStyle($forUpdateRowStyle: forUpdateRowStyle) {
@@ -1846,24 +1826,24 @@ export const UpdateRowStyle = gql`
           _id
           cardtype_info {
             name
-            cardtype            
+            cardtype
             num_of_row {
               face1
               face2
               annotation
-            }            
+            }
             nick_of_row {
               face1
               face2
               annotation
             }
-            flip_option{
+            flip_option {
               card_direction
               left_face_ratio
             }
           }
           face_style {
-            background{
+            background {
               color
               opacity
             }
@@ -1904,7 +1884,7 @@ export const UpdateRowStyle = gql`
           }
           row_style {
             face1 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -1944,7 +1924,7 @@ export const UpdateRowStyle = gql`
               }
             }
             face2 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -1984,7 +1964,7 @@ export const UpdateRowStyle = gql`
               }
             }
             annotation {
-              background{
+              background {
                 color
                 opacity
               }
@@ -2054,13 +2034,10 @@ export const UpdateRowStyle = gql`
             }
           }
         }
-
-
       }
     }
   }
 `;
-
 
 export const UpdateRowFont = gql`
   mutation UpdateRowFont($forUpdateRowFont: forUpdateRowFont) {
@@ -2077,24 +2054,24 @@ export const UpdateRowFont = gql`
           _id
           cardtype_info {
             name
-            cardtype            
+            cardtype
             num_of_row {
               face1
               face2
               annotation
-            }            
+            }
             nick_of_row {
               face1
               face2
               annotation
             }
-            flip_option{
+            flip_option {
               card_direction
               left_face_ratio
             }
           }
           face_style {
-            background{
+            background {
               color
               opacity
             }
@@ -2135,7 +2112,7 @@ export const UpdateRowFont = gql`
           }
           row_style {
             face1 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -2175,7 +2152,7 @@ export const UpdateRowFont = gql`
               }
             }
             face2 {
-              background{
+              background {
                 color
                 opacity
               }
@@ -2215,7 +2192,7 @@ export const UpdateRowFont = gql`
               }
             }
             annotation {
-              background{
+              background {
                 color
                 opacity
               }
@@ -2285,13 +2262,7 @@ export const UpdateRowFont = gql`
             }
           }
         }
-
-
       }
     }
   }
 `;
-
-
-
-

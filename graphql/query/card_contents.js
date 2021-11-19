@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const AddCard = gql`
-  mutation AddCard($forAddCard: forAddCard) {
-    cardset_addcard(forAddCard: $forAddCard) {
+  mutation AddCard($forAddcardAtSameIndex: forAddcardAtSameIndex) {
+    cardset_addcardAtSameIndex(forAddcardAtSameIndex: $forAddcardAtSameIndex) {
       status
       msg
       cardsets {
@@ -16,34 +16,45 @@ export const AddCard = gql`
         cards {
           _id
           card_info {
+            mybook_id
+            indexset_id
+            index_id
+            cardset_id
+            cardtypeset_id
             cardtype_id
             cardtype
             time_created
             hasParent
-            parent_card_id
+            parentCard_id
           }
-          contents {
-            user_flag
-            maker_flag
+          content {
+            userFlag
+            makerFlag {
+              value
+              comment
+            }
             location
-            mycontents_id {
-              _id
-              face1
-              selection
-              face2
-              annotation
-              memo
-            }
-            buycontents_id {
-              _id
-              face1
-              selection
-              face2
-              annotation
-              memo
-            }
+            mycontent_id
+            buycontent_id
           }
         }
+      }
+    }
+  }
+`;
+
+export const GET_CARD_CONTENT = gql`
+  query GET_CARD_CONTENT($mycontent_ids: [ID]) {
+    mycontent_getMycontentByMycontentIDs(mycontent_ids: $mycontent_ids) {
+      status
+      msg
+      mycontents{
+        _id
+        user_id
+        face1
+        selection
+        face2
+        annotation
       }
     }
   }

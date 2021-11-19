@@ -18,51 +18,124 @@ export const InspectTargetSheet = gql`
     cardset_inspectTargetSheet(forInspectTargetSheet: $forInspectTargetSheet) {
       status
       msg
-      inspectionResult {
-        successCards {
-          cardtype_id
-          cardtype
-          hasParent
+      cardsets {
+        _id
+        cardset_info {
+          user_id
+          mybook_id
+          indexset_id
+          index_id
+        }
+        cards {
+          _id
+          card_info {
+            mybook_id
+            indexset_id
+            index_id
+            cardset_id
+            cardtypeset_id
+            cardtype_id
+            cardtype
+            time_created
+            hasParent
+            parent_card_id
+          }
           content {
-            face1
-            selection
-            face2
-            annotation
-          }
-          makerFlag {
-            value
-            comment
-          }
-        }
-        failureList {
-          cardtype {
-            row
-            value
-          }
-          hasParent {
-            row
-            value
-          }
-          face {
-            row
-            value
-          }
-          row {
-            row
-            value
+            userFlag
+            makerFlag {
+              value
+              comment
+            }
+            location
+            mycontent_id
+            buycontent_id
           }
         }
+      }
+      mycontents {
+        _id
+        user_id
+        face1
+        selection
+        face2
+        annotation
+      }
+      failureList {
+        cardtypeErr {
+          row
+          value
+        }
+        hasParentErr {
+          row
+          value
+        }
+        faceNameErr {
+          row
+          value
+        }
+        rowNameErr {
+          row
+          value
+        }
+      }
+      numCreatedCards {
+        try
+        read
+        flip
+        subject
+        general
       }
     }
   }
 `;
-
 
 export const ImportExcelFile = gql`
   mutation ImportExcelFile($forConfirmMakeCard: forConfirmMakeCard) {
     cardset_confirmMakeCard(forConfirmMakeCard: $forConfirmMakeCard) {
       status
       msg
+      cardsets {
+        _id
+        cardset_info {
+          user_id
+          mybook_id
+          indexset_id
+          index_id
+        }
+        cards {
+          _id
+          card_info {
+            mybook_id
+            indexset_id
+            index_id
+            cardset_id
+            cardtypeset_id
+            cardtype_id
+            cardtype
+            time_created
+            hasParent
+            parent_card_id
+          }
+          content {
+            userFlag
+            makerFlag {
+              value
+              comment
+            }
+            location
+            mycontent_id
+            buycontent_id
+          }
+        }
+      }
+      mycontents {
+        _id
+        user_id
+        face1
+        selection
+        face2
+        annotation
+      }
     }
   }
 `;

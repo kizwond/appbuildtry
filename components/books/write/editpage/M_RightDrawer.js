@@ -3,7 +3,7 @@ import { Drawer, Button, Space, Divider } from "antd";
 import M_CardTypeSettingModal from "../../../../components/books/write/cardtype/M_CardTypeSettingModal";
 import CardTypeSetting from "./cardtype/CardTypeSetting";
 import CardtypeContainer from "../../write/editpage/cardtype/CardtypeContainer";
-import { GetCardTypeSet } from "../../../../graphql/query/cardtype";
+import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useQuery, useMutation } from "@apollo/client";
 import { SettingOutlined } from "@ant-design/icons";
 import { useMediaQuery } from "react-responsive";
@@ -39,17 +39,17 @@ const RightDrawer = () => {
   const [cardTypeDetail, setCardTypeDetail] = useState();
 
   const [cardTypes, setCardTypes] = useState([]);
-  const { loading, error, data } = useQuery(GetCardTypeSet, {
-    variables: { mybook_id: book_id },
+  const { loading, error, data } = useQuery(GetCardRelated, {
+    variables: { mybook_ids: book_id },
   });
 
   useEffect(() => {
     console.log("컴포넌트가 화면에 나타남??");
     if (data) {
       console.log("cardtypesetting page", data);
-      if (data.cardtypeset_getbymybookid.cardtypesets[0] !== null) {
-        setCardTypeSetId(data.cardtypeset_getbymybookid.cardtypesets[0]._id);
-        setCardTypes(data.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
+      if (data.cardtypeset_getbymybookids.cardtypesets[0] !== null) {
+        setCardTypeSetId(data.cardtypeset_getbymybookids.cardtypesets[0]._id);
+        setCardTypes(data.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);
       }
     }
   }, [data]);
@@ -97,7 +97,7 @@ const RightDrawer = () => {
       <Mobile>
         <SettingOutlined onClick={showDrawer} />
       </Mobile>
-      
+
       <Drawer
         title={
           <>

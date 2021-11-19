@@ -8,12 +8,13 @@ import ResultTable from "./ResultTable";
 
 const { Option } = Select;
 
-const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId }) => {
+const ImportModal = ({ indexList, cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId }) => {
   const [file, setFile] = useState(null);
   const [visiable, setVisiable] = useState(null);
   const [newFileName, setNewFileName] = useState(null);
   const [sheetList, setSheetList] = useState(null);
   const [sheetSelected, setSheetSelected] = useState(null);
+  const [indexSelected, setIndexSelected] = useState(null);
   const [inspectResultNormal, setInspectResultNormal] = useState();
   const [inspectResultTypeError, setInspectResultTypeError] = useState();
   const [inspectResultFlagError, setInspectResultFlagError] = useState();
@@ -44,22 +45,45 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
     // setInspectResultFlagError(data.cardset_saveAndExtractSheetList.inspectionResult.makerflagErr);
   }
   if (sheetList) {
+    var disabled = false;
     var sheet_list = sheetList.map((item, index) => {
       return (
         <>
-        <Option value={index}>{item.name}</Option>
+          <Option value={index+1}>{item.name}</Option>
         </>
       );
     });
-  }
-  function handleChange(value) {
-    console.log(`selected ${value}`);
-    setSheetSelected(value)
+  } else {
+    disabled = true;
   }
 
-  //asdfasdfasdfasdf
+  function handleChange(value) {
+    console.log(`selected ${value}`);
+    setSheetSelected(value);
+  }
+
+  if (indexList) {
+    var index_disabled = false;
+    var index_list = indexList.map((item, index) => {
+      return (
+        <>
+          <Option value={item._id}>{item.name}</Option>
+        </>
+      );
+    });
+  } else {
+    index_disabled = true;
+  }
+  function index_handleChange(value) {
+    console.log(`selected ${value}`);
+    setIndexSelected(value);
+  }
+
+  
+  //검토요청부분
   function showdata4(data) {
     console.log("inpection results :", data);
+
   }
   async function sheetConfirm(mybook_id) {
     console.log(file);
@@ -69,7 +93,7 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
           forInspectTargetSheet: {
             mybook_id: mybook_id,
             filename: newFileName,
-            sheetOrder : sheetSelected
+            sheetOrder: sheetSelected,
           },
         },
       });
@@ -91,7 +115,6 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
       await cardset_saveAndExtractSheetList({
         variables: {
           forSaveAndExtractSheetList: {
-            mybook_id: mybook_id,
             file: file,
           },
         },
@@ -124,9 +147,9 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
         variables: {
           forConfirmMakeCard: {
             mybook_id: mybook_id,
-            cardset_id: cardSetId,
+            index_id: indexSelected,
             filename: newFileName,
-            sheetOrder:sheetSelected
+            sheetOrder: sheetSelected,
           },
         },
       });
@@ -135,7 +158,7 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
     }
   }
 
-  const importFile = (event) => {
+  const importFile = () => {
     const mybook_id = localStorage.getItem("book_id");
     importfile(mybook_id, cardSetId);
   };
@@ -188,24 +211,28 @@ const ImportModal = ({ cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSe
           파일업로드
         </Button>
         <div>
-          <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange}>
+          <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange} disabled={disabled}>
             <Option value="default">sheet 선택</Option>
             {sheet_list}
           </Select>
-          <button onClick={onClickSheetList}>확인</button>
-          
+          <button onClick={onClickSheetList} disabled={disabled}>
+            검토요청
+          </button>
         </div>
         <div>
-          <div>파일검토결과</div>
-          <Button size="small" onClick={importFile}>
-            최종업로드
-          </Button>
-          <Button size="small" onClick={cancelImport}>
-            업로드취소
-          </Button>
+          <Select defaultValue="default" style={{ width: 120 }} onChange={index_handleChange} disabled={index_disabled}>
+            <Option value="default">목차 선택</Option>
+            {index_list}
+          </Select>
+          <button onClick={importFile} disabled={index_disabled}>
+            카드생성
+          </button>
+        </div>
+        <div>
+          {/* <div>파일검토결과</div>
           <div>
             <ResultTable inspectResultNormal={inspectResultNormal} inspectResultTypeError={inspectResultTypeError} inspectResultFlagError={inspectResultFlagError} />
-          </div>
+          </div> */}
         </div>
       </Modal>
     </>

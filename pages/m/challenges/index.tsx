@@ -1,13 +1,15 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Button, Card, Col, Drawer, Row, Space } from "antd";
 import { useRouter } from "next/router";
 import { FunctionComponent, useState } from "react";
-import { GET_ALL_BUY_BOOKS, GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
+import { GET_ALL_BUY_BOOKS, GET_USER_ALL_CATEGORY_AND_BOOKS, GET_USER_ALL_MY_BOOKS } from "../../../graphql/query/allQuery";
 import M_MyBooksTable from "../../../components/challenges/M_MyBooksTable.js";
 import styled from "styled-components";
 import M_Layout from "../../../components/layout/M_Layout.js";
 import { FormOutlined } from "@ant-design/icons";
 import Image from "next/image";
+import { MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK } from "../../../graphql/mutation/buyBook";
+import { any } from "prop-types";
 
 interface ChallengesProps {}
 
@@ -43,7 +45,43 @@ const Challenges: FunctionComponent<ChallengesProps> = () => {
     }
   };
 
-  console.log({ buyBookData });
+  const [createMyBookFromBuyBook] = useMutation(MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK, {
+    onCompleted: (_data) => {
+      if (_data.buybook_createMybookFromBuybook.msg == "책 생성 성공적!") {
+        console.log("도전책을 내책으로 데이터", _data);
+      } else if (_data.buybook_createMybookFromBuybook.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
+  });
+  const createMyBook = async (buybook_id: string) => {
+    try {
+      await createMyBookFromBuyBook({
+        variables: { buybook_id },
+        // update: (cache, { data: { buybook_createMybookFromBuybook } }) => {
+        //   const _data = cache.readQuery({
+        //     query: GET_USER_ALL_MY_BOOKS,
+        //   });
+        //   console.log({ _data, buybook_createMybookFromBuybook });
+        //   cache.writeQuery({
+        //     query: GET_USER_ALL_MY_BOOKS,
+        //     data: {
+        //       ..._data,
+        //       mybook_getMybookByUserID: {
+        //         ..._data.mybook_getMybookByUserID,
+        //         buybooks: [..._data.mybook_getMybookByUserID.mybooks, ...buybook_createMybookFromBuybook.mybooks],
+        //       },
+        //     },
+        //   });
+        // },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <M_Layout>
       {buyBookData && (
@@ -77,11 +115,23 @@ const Challenges: FunctionComponent<ChallengesProps> = () => {
                   <Col span={6}>
                     <Image src={`/image/bookcover/bookcover${(_index % 6) + 1}.png`} alt={_book.buybook_info.title} width={55} height={75} />
                   </Col>
-                  <Col span={6}>
+                  <Col span={12}>
                     <div>카테고리: {_book.buybook_info.buybookcateName}</div>
                     <div>제목: {_book.buybook_info.title}</div>
                     <div>저자: {_book.buybook_info.authorName}</div>
                     <div>평점: {_book.buybook_info.status}</div>
+                  </Col>
+                  <Col span={6}>
+                    <div>
+                      <Button
+                        block
+                        onClick={() => {
+                          createMyBook(_book._id);
+                        }}
+                      >
+                        내 책에 추가
+                      </Button>
+                    </div>
                   </Col>
                 </Row>
               </Card>

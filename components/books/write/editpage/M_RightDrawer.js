@@ -105,7 +105,7 @@ const RightDrawer = () => {
           </>
         }
         placement="right"
-        closable={true}
+        closable={false}
         onClose={onClose}
         visible={visible}
         mask={true}

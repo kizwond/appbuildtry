@@ -590,7 +590,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                 <>
                   <div className={`${content_value._id} child_group other`}>
                     <div style={{ marginBottom: "5px" }}>
-                      <div onClick={() => onClickCard(content_value._id, "general")} style={{ borderLeft: "2px solid green" }}>
+                      <div onClick={() => onClickCard(content_value._id, "general")} >
                         {/* 페이스 스타일 영역 */}
                         <div
                           style={{
@@ -683,7 +683,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                     <div style={{ marginBottom: "0px" }}>
                       <div
                         onClick={() => onClickCard(content_value._id, "flip", content.card_info.parentCard_id)}
-                        style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}`, marginLeft: `${content.card_info.hasParent === "yes" && "10px"}` }}
+                        // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
                       >
                         {/* 페이스1 스타일 영역 */}
                         <div
@@ -845,7 +845,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                     <div style={{ marginBottom: "0px" }}>
                       <div
                         onClick={() => onClickCard(content_value._id, "flip", content.card_info.parentCard_id)}
-                        style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}`, marginLeft: `${content.card_info.hasParent === "yes" && "10px"}` }}
+                        // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
                       >
                         {/* 페이스1 스타일 영역 */}
                         <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", width: "100%" }}>

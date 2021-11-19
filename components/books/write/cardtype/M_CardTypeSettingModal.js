@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Tooltip, Modal, Input, Radio, InputNumber, Space, Divider } from "antd";
 import axios from "axios";
 import { QuestionCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import { GetCardTypeSet, CardTypeCreate } from "../../../../graphql/query/cardtype";
+import { CardTypeCreate } from "../../../../graphql/query/cardtype";
+import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery } from "@apollo/client";
 
 const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
@@ -15,17 +16,17 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
   const [cardTypeSetId, setCardTypeSetId] = useState();
 
   const [cardTypes, setCardTypes] = useState();
-  const { loading, error, data } = useQuery(GetCardTypeSet, {
-    variables: { mybook_id: book_id },
+  const { loading, error, data } = useQuery(GetCardRelated, {
+    variables: { mybook_ids: book_id },
   });
   useEffect(() => {
     console.log("카드타입셋을 불러옴");
     if (data) {
       console.log("--->", data);
-      setCardTypeSetId(data.cardtypeset_getbymybookid.cardtypesets[0]._id);
-      setCardTypes(data.cardtypeset_getbymybookid.cardtypesets[0].cardtypes);
+      setCardTypeSetId(data.cardtypeset_getbymybookids.cardtypesets[0]._id);
+      setCardTypes(data.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);
     } else {
-      console.log("why here?");
+      console.log("why here?"); 
     }
   }, [data]);
 
@@ -33,7 +34,7 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
 
   function showdatacreate(data) {
     console.log("data", data);
-    getUpdatedCardTypeList(data.cardtypeset_addcardtype.cardtypesets[0].cardtypes);
+    // getUpdatedCardTypeList(data.cardtypeset_addcardtype.cardtypesets[0].cardtypes);
   }
 
   async function cardtypecreate(value) {

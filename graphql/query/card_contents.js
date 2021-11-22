@@ -60,8 +60,8 @@ export const GET_CARD_CONTENT = gql`
   }
 `;
 export const GET_BUY_CARD_CONTENT = gql`
-  query GET_CARD_CONTENT($mycontent_ids: [ID]) {
-    buycontent_getBuycontentByBuycontentIDs(mycontent_ids: $mycontent_ids) {
+  query GET_CARD_CONTENT($buycontent_ids: [ID]) {
+    buycontent_getBuycontentByBuycontentIDs(buycontent_ids: $buycontent_ids) {
       status
       msg
       buycontents{

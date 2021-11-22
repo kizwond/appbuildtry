@@ -173,7 +173,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                 trigger="click"
                 overlayClassName="M-Popover-NumberOfCards"
               >
-                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{_index < 2 ? 987 : _value}</div>
+                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{_value}</div>
               </Popover>
             </div>
           ),

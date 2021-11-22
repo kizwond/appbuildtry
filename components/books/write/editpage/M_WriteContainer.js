@@ -3,7 +3,7 @@ import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Button, Select } from "antd";
-import { AddCard, GET_CARD_CONTENT } from "../../../../graphql/query/card_contents";
+import { AddCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
 
 const { Option } = Select;
 
@@ -51,10 +51,26 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   });
 
   const [mycontent_getMycontentByMycontentIDs, { loading: loading2, error: error2, data }] = useLazyQuery(GET_CARD_CONTENT, { onCompleted: afterGetContent });
+  const [buycontent_getBuycontentByBuycontentIDs, { loading: loading3, error: error3, data: buyContents }] = useLazyQuery(GET_BUY_CARD_CONTENT, {
+    onCompleted: afterGetBuyContent,
+  });
 
   function afterGetContent(data) {
     console.log(data);
-    setContentsList(data.mycontent_getMycontentByMycontentIDs.mycontents);
+    console.log(contentsList);
+    const newArray = contentsList.concat(data.mycontent_getMycontentByMycontentIDs.mycontents);
+    var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
+    console.log(uniq);
+    setContentsList(uniq);
+  }
+
+  function afterGetBuyContent(data) {
+    console.log(data);
+    console.log(contentsList);
+    const newArray = contentsList.concat(data.buycontent_getBuycontentByBuycontentIDs.buycontents);
+    var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
+    console.log(uniq);
+    setContentsList(uniq);
   }
 
   useEffect(() => {
@@ -72,19 +88,29 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       const buyContentsIdsList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
         return item.content.buycontent_id;
       });
-      const myBuyTotal = cardIdList.concat(buyContentsIdsList);
-      console.log(myBuyTotal)
-      console.log(buyContentsIdsList)
+      // const myBuyTotal = cardIdList.concat(buyContentsIdsList);
+      // console.log(myBuyTotal);
+      console.log(buyContentsIdsList);
       console.log(cardIdList);
+      // let temp = [];
+      // for (let i of myBuyTotal) i && temp.push(i);
+      // let arr = temp;
+      // console.log(arr)
       mycontent_getMycontentByMycontentIDs({
         variables: {
-          mycontent_ids: myBuyTotal,
+          mycontent_ids: cardIdList,
+        },
+      });
+
+      buycontent_getBuycontentByBuycontentIDs({
+        variables: {
+          buycontent_ids: buyContentsIdsList,
         },
       });
     } else {
       console.log("why here?");
     }
-  }, [data1, indexChanged, first_index, mycontent_getMycontentByMycontentIDs]);
+  }, [data1, indexChanged, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
 
   const cardTypeInfo = (cardtype_info, from, parentId, generalCardId) => {
     console.log("generalCardId", generalCardId);
@@ -228,7 +254,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
     const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
 
-    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2, values.annotation);
+    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2, values.annotation, values.flagStar, values.flagComment);
   };
 
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
@@ -247,7 +273,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     });
   }
 
-  async function addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, face1_contents, face2_contents, annotation_contents) {
+  async function addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, face1_contents, face2_contents, annotation_contents, flagStar, flagComment) {
     const parentId = sessionStorage.getItem("parentId");
     console.log("부모카드아이디", parentId);
     if (parentId === null) {
@@ -279,6 +305,10 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
               face2: face2_contents,
               annotation: annotation_contents,
               // memo: null,
+            },
+            makerFlag: {
+              value: Number(flagStar),
+              comment: flagComment,
             },
           },
         },
@@ -363,15 +393,17 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       const row_font = current_card_style[0].row_font;
 
       // console.log(row_font);
-
+      console.log(contentsList);
       const show_contents = contentsList.map((content_value) => {
         if (content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) {
+          console.log(content_value._id, content.content.buycontent_id);
           if (content_value._id === cardId) {
             var borderLeft = "2px solid blue";
           } else {
             borderLeft = "none";
           }
           console.log("해당카드 정보", content);
+          console.log("해당카드 정보", content_value);
 
           return (
             <>
@@ -1121,6 +1153,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         <div>selected index id : {first_index}</div>
         <div>{contents}</div>
         <div>{editorOn}</div>
+        <div style={{ height: "50px" }}></div>
       </div>
       {data1 && (
         <>

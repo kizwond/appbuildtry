@@ -59,6 +59,22 @@ export const GET_CARD_CONTENT = gql`
     }
   }
 `;
+export const GET_BUY_CARD_CONTENT = gql`
+  query GET_CARD_CONTENT($buycontent_ids: [ID]) {
+    buycontent_getBuycontentByBuycontentIDs(buycontent_ids: $buycontent_ids) {
+      status
+      msg
+      buycontents{
+        _id
+        user_id
+        face1
+        selection
+        face2
+        annotation
+      }
+    }
+  }
+`;
 
 export const GetCardSet = gql`
   query GetCardSet($index_id: ID) {

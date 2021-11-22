@@ -69,10 +69,16 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
         return item.content.mycontent_id;
       });
+      const buyContentsIdsList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
+        return item.content.buycontent_id;
+      });
+      const myBuyTotal = cardIdList.concat(buyContentsIdsList);
+      console.log(myBuyTotal)
+      console.log(buyContentsIdsList)
       console.log(cardIdList);
       mycontent_getMycontentByMycontentIDs({
         variables: {
-          mycontent_ids: cardIdList,
+          mycontent_ids: myBuyTotal,
         },
       });
     } else {
@@ -359,7 +365,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       // console.log(row_font);
 
       const show_contents = contentsList.map((content_value) => {
-        if (content_value._id === content.content.mycontent_id) {
+        if (content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) {
           if (content_value._id === cardId) {
             var borderLeft = "2px solid blue";
           } else {

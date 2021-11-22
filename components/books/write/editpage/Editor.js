@@ -302,18 +302,28 @@ class Editor extends Component {
         );
       } else {
         return (
-          <div key={index} style={{ display: "flex", flexDirection: "column", marginTop: "1px" }}>
-            <label className="editor_label" style={{ width: "50px", fontSize: "0.5rem", color: "lightgrey" }}>
-              {item}
-            </label>
-            <FroalaEditorComponent
-              tag="textarea"
-              placeholder="something"
-              config={this.config}
-              model={this.state["editor" + (index + 1).toString()]}
-              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-            />
-          </div>
+          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom:"3px"  }}>
+          <label
+            className="editor_label"
+            style={{
+              zIndex: this.state["editorZindex" + (index + 1).toString()],
+              position: "absolute",
+              left: "5px",
+              top: "15px",
+              width: "50px",
+              fontSize: "0.5rem",
+              color: "lightgrey",
+            }}
+          >
+            {item}
+          </label>
+          <FroalaEditorComponent
+            tag="textarea"
+            config={this.config}
+            model={this.state["editor" + (index + 1).toString()]}
+            onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+          />
+        </div>
         );
       }
     });

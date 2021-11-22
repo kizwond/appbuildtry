@@ -29,21 +29,32 @@ const useGetMentorBooks = (mentoringData) => {
     console.log(mentorBooks);
     return (
       mentorBooks &&
-      mentoringData.mentoring_getMentoring.mentorings[0].myMentors.map((mentor) => ({
-        ...mentor,
-        key: mentor._id,
-        mentorGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup, { _id: mentor.mentorGroup_id }).name,
-        studyHistory:
-          _(_.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).stats?.studyHistory)
-            .map((history) => history.studyHour)
-            .take(5)
-            .value() === []
-            ? _(_.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).stats.studyHistory)
+      mentoringData.mentoring_getMentoring.mentorings[0].myMentors
+        .map((mentor) => {
+          console.log("소팅용", `${_.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup, { _id: mentor.mentorGroup_id }).name}${mentor.mybookTitle}`);
+          return {
+            ...mentor,
+            key: mentor._id,
+            // 멘토로 추가로 소팅하려면 mentoUserName+MentoUserId조합을 아래에 추가해야함
+            forSorting: `${_.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup, { _id: mentor.mentorGroup_id }).name}${mentor.mybookTitle}`,
+            mentorGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup, { _id: mentor.mentorGroup_id }).name,
+            studyHistory:
+              _(_.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).stats?.studyHistory)
                 .map((history) => history.studyHour)
                 .take(5)
-                .value()
-            : ["0.5", "2", "0", "1", "2"],
-      }))
+                .value() === []
+                ? _(_.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).stats.studyHistory)
+                    .map((history) => history.studyHour)
+                    .take(5)
+                    .value()
+                : ["0.5", "2", "0", "1", "2"],
+          };
+        })
+        .sort((a, b) => {
+          if (a.forSorting > b.forSorting) return 1;
+          if (a.forSorting < b.forSorting) return -1;
+          if (a.forSorting === b.forSorting) return 0;
+        })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mentorBooks]);

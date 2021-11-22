@@ -3,7 +3,7 @@ import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Button, Select } from "antd";
-import { AddCard, GET_CARD_CONTENT } from "../../../../graphql/query/card_contents";
+import { AddCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
 
 const { Option } = Select;
 
@@ -51,10 +51,20 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   });
 
   const [mycontent_getMycontentByMycontentIDs, { loading: loading2, error: error2, data }] = useLazyQuery(GET_CARD_CONTENT, { onCompleted: afterGetContent });
+  const [buycontent_getBuycontentByBuycontentIDs, { loading: loading3, error: error3, data:buyContents }] = useLazyQuery(GET_BUY_CARD_CONTENT, { onCompleted: afterGetBuyContent });
 
   function afterGetContent(data) {
     console.log(data);
-    setContentsList(data.mycontent_getMycontentByMycontentIDs.mycontents);
+    console.log(contentsList)
+    const newArray = contentsList.concat(data.mycontent_getMycontentByMycontentIDs.mycontents)
+    setContentsList(newArray);
+  }
+
+  function afterGetBuyContent(data) {
+    console.log(data);
+    console.log(contentsList)
+    const newArray = contentsList.concat(data.buycontent_getBuycontentByBuycontentIDs.buycontents)
+    setContentsList(newArray);
   }
 
   useEffect(() => {
@@ -72,19 +82,29 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       const buyContentsIdsList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
         return item.content.buycontent_id;
       });
-      const myBuyTotal = cardIdList.concat(buyContentsIdsList);
-      console.log(myBuyTotal)
-      console.log(buyContentsIdsList)
+      // const myBuyTotal = cardIdList.concat(buyContentsIdsList);
+      // console.log(myBuyTotal);
+      console.log(buyContentsIdsList);
       console.log(cardIdList);
+      // let temp = [];
+      // for (let i of myBuyTotal) i && temp.push(i);
+      // let arr = temp;
+      // console.log(arr)
       mycontent_getMycontentByMycontentIDs({
         variables: {
-          mycontent_ids: myBuyTotal,
+          mycontent_ids: cardIdList,
+        },
+      });
+
+      buycontent_getBuycontentByBuycontentIDs({
+        variables: {
+          mycontent_ids: buyContentsIdsList,
         },
       });
     } else {
       console.log("why here?");
     }
-  }, [data1, indexChanged, first_index, mycontent_getMycontentByMycontentIDs]);
+  }, [data1, indexChanged, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
 
   const cardTypeInfo = (cardtype_info, from, parentId, generalCardId) => {
     console.log("generalCardId", generalCardId);
@@ -363,15 +383,17 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       const row_font = current_card_style[0].row_font;
 
       // console.log(row_font);
-
+      console.log(contentsList)
       const show_contents = contentsList.map((content_value) => {
         if (content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) {
+          console.log(content_value._id, content.content.buycontent_id  )
           if (content_value._id === cardId) {
             var borderLeft = "2px solid blue";
           } else {
             borderLeft = "none";
           }
           console.log("해당카드 정보", content);
+          console.log("해당카드 정보", content_value);
 
           return (
             <>

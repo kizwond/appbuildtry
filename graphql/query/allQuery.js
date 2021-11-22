@@ -6,6 +6,20 @@ import { FRAGMENT_MY_CARD_TYPE_SET } from "../fragment/cardTypeSet";
 import { FRAGMENT_CARD_SET } from "../fragment/cardSet";
 import { FRAGMENT_BUY_BOOK } from "../fragment/buyBook";
 
+// 유저 정보 불러오기
+export const GET_USER_MINIMUM_INFORMATION_BY_USER_NAME = gql`
+  query GetUserMinimumInfomationByUserName($username: String) {
+    user_getUserMinInfo(username: $username) {
+      status
+      msg
+      _id
+      username
+      name
+      organization
+    }
+  }
+`;
+
 // 책정보 및 카테고리 정보 불러오기
 export const GET_USER_ALL_CATEGORY_AND_BOOKS = gql`
   ${FRAGMENT_MYBOOK}

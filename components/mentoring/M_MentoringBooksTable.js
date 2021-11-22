@@ -1,16 +1,17 @@
 /* eslint-disable react/display-name */
 import styled from "styled-components";
 
-import { Table, Card, Popover, Button, Input, Space, Form } from "antd";
+import { Table, Card, Popover, Button, Input, Space, Form, Row, Col } from "antd";
 import { DollarCircleFilled, SearchOutlined } from "@ant-design/icons";
 
 import { StyledDivEllipsis } from "../common/styledComponent/page";
+import M_RequestMentoringCard from "../../components/mentoring/M_RequestMetoringCard";
 
 const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
   if (error) <div>에러</div>;
   if (loading) <div>에러</div>;
 
-  const { Search } = Input;
+  const { Search, TextArea } = Input;
 
   const myBook2 = bookData && bookData.mybook_getMybookByUserID.mybooks;
 
@@ -140,36 +141,48 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
             expandRowByClick: true,
             expandIcon: () => null,
             expandedRowRender: (_record, _index) => (
-              <Card
-                style={{ margin: "8px 0 8px", minWidth: 320 }}
-                actions={[
-                  <div
-                    key="accept"
-                    onClick={() => {
-                      // acceptMentroingRequest({
-                      //   variables: {
-                      //     forAcceptMentoringReq: {
-                      //       menteeGroup_id: selectorRef.current,
-                      //       menteeUser_id,
-                      //       mentorUser_id,
-                      //       mybook_id,
-                      //     },
-                      //   },
-                      // });
-                    }}
-                  >
-                    취소
-                  </div>,
-                  <div key="decline">신청</div>,
-                ]}
-                size="small"
-              >
-                <Form name="requestMentoringForm">
-                  <Form.Item label="아이디" name="mentorId" rules={[{ required: true, message: "찾으려는 멘토 아이디를 입력하세요" }]}>
-                    <Search size="small" allowClear />
-                  </Form.Item>
-                </Form>
-              </Card>
+              <M_RequestMentoringCard />
+              // <Card
+              //   style={{ margin: "8px 0 8px", minWidth: 320 }}
+              //   actions={[
+              //     <div
+              //       key="accept"
+              //       onClick={() => {
+              //         // acceptMentroingRequest({
+              //         //   variables: {
+              //         //     forAcceptMentoringReq: {
+              //         //       menteeGroup_id: selectorRef.current,
+              //         //       menteeUser_id,
+              //         //       mentorUser_id,
+              //         //       mybook_id,
+              //         //     },
+              //         //   },
+              //         // });
+              //       }}
+              //     >
+              //       취소
+              //     </div>,
+              //     <div key="decline">신청</div>,
+              //   ]}
+              //   size="small"
+              // >
+              //   <Row gutter={[8, 12]}>
+              //     <Col span={5}>아이디:</Col>
+              //     <Col span={19}>
+              //       <Search size="small" allowClear onSearch={(value) => console.log(value)} enterButton placeholder="요청할 멘토의 아이디를 입력하세요" />
+              //       <span style={{ color: "red" }}>입력하신 아이디는 존재하지 않습니다.</span>
+              //     </Col>
+
+              //     <Col span={5}>소속(정보):</Col>
+              //     <Col span={19}>한국대학교 영문학과</Col>
+
+              //     <Col span={5}>요청 메세지:</Col>
+              //     <Col span={19}>
+              //       <TextArea size="small" allowClear showCount autoSize placeholder="요청 메세지를 입력하세요" />
+              //       <span style={{ color: "red" }}>10자 이상을 입력해주세요.</span>
+              //     </Col>
+              //   </Row>
+              // </Card>
             ),
             childrenColumnName: "주까",
           }}
@@ -254,12 +267,13 @@ const StyledCard = styled(Card)`
   & mark,
   & audio,
   & video,
-  & input {
+  & input,
+  & textarea {
     font-size: 0.8rem;
   }
 
   & .ant-input.ant-input-sm {
-    height: 24px;
+    height: 22px;
   }
 
   & > .ant-card-body {

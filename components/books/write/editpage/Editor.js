@@ -276,6 +276,9 @@ class Editor extends Component {
         })
       }
   }
+  componentWillUnmount(){
+    console.log("unmount")
+  }
   render() {
     const editorList = this.props.nicks.map((item, index) => {
       if(this.props.cardtypeEditor === "flip" && index === 0){

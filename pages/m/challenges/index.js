@@ -9,7 +9,6 @@ import M_Layout from "../../../components/layout/M_Layout.js";
 import { FormOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK } from "../../../graphql/mutation/buyBook";
-import { any } from "prop-types";
 
 const Challenges = () => {
   const [drawerRegisterBuyBook, setDrawerRegisterBuyBook] = useState(false);
@@ -79,6 +78,9 @@ const Challenges = () => {
       console.log(error);
     }
   };
+
+  if (buyBookError) <div>에러</div>;
+  if (buyBookLoading) <div>로딩</div>;
 
   return (
     <M_Layout>

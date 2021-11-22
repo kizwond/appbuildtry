@@ -1,28 +1,26 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client";
 import _, { divide } from "lodash";
-import produce from "immer";
-import Image from "next/image";
 import Layout from "../../../components/layout/M_Layout";
 
-import { GET_MENTORING, REQUEST_MENTORING, SEARCH_USER_INFO, GET_BOOKS_INFO, ACCEPT_MENTORING_REQUEST } from "../../../graphql/query/mentoring";
-
 import { Badge, Button, Card, Col, Drawer, Table, Tabs, Row, Avatar, Select, Space } from "antd";
-import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import moment from "moment";
 import useGetMentoringAndMenteeBooks from "../../../components/mentoring/useHooks/useGetMentoringAndMenteeBooks";
 import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
 import M_MentoringBooksTable from "../../../components/mentoring/M_MentoringBooksTable.js";
+import M_MentosTable from "../../../components/mentoring/M_MentorsTable";
 import { useRouter } from "next/router";
+import { MUTATION_ACCEPT_MENTOR_REQUEST } from "../../../graphql/mutation/mentoring";
 
 const MentoringHome = () => {
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerRequestMentoringVisible, setDrawerRequestMentoringVisible] = useState(false);
-  const selectorRef = useRef();
+  const selectorRef = useRef("");
 
-  const [acceptMentroingRequest] = useMutation(ACCEPT_MENTORING_REQUEST, {});
+  const [acceptMentroingRequest] = useMutation(MUTATION_ACCEPT_MENTOR_REQUEST, { onCompleted: (data) => console.log("멘토 수락후 받은 데이터", data) });
 
   const { newData, mentoringData } = useGetMentoringAndMenteeBooks();
   const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
@@ -160,7 +158,8 @@ const MentoringHome = () => {
                     <PlusOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
                   </button>
                 </Space>
-                <Table
+                {mentoringData && <M_MentosTable mentoringData={mentoringData} />}
+                {/* <Table
                   size="small"
                   pagination={false}
                   dataSource={newData}
@@ -194,7 +193,7 @@ const MentoringHome = () => {
                       ),
                     },
                   ]}
-                />
+                /> */}
               </Tabs.TabPane>
             </Tabs>
           </Card>
@@ -222,7 +221,7 @@ const MentoringHome = () => {
                           acceptMentroingRequest({
                             variables: {
                               forAcceptMentoringReq: {
-                                menteeGroup_id: selectorRef.current,
+                                menteeGroup_id: selectorRef.current === "" ? mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup[0]._id : selectorRef.current,
                                 menteeUser_id,
                                 mentorUser_id,
                                 mybook_id,
@@ -368,11 +367,11 @@ const DrawerWrapper = styled(Drawer)`
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     & > li {
-      margin: 4px 0;
+      margin: 0;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-  }
-  & .ant-card-actions > li > span {
-    font-size: 0.8rem;
-    line-height: 1.5715;
   }
 `;

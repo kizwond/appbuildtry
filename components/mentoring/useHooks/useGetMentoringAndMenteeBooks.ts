@@ -8,6 +8,9 @@ const useGetMentoringAndMenteeBooks = () => {
   const [getBooksInfo, { data: menteeBooks, error, loading }] = useLazyQuery(GET_MY_BOOKS_BY_BOOK_IDS, {
     onCompleted: (data) => console.log({ 책정보: data }),
   });
+  const [getMentorBooksInfo, { data: mentorBooks, error: mentorBookserror, loading: mentorBooksloading }] = useLazyQuery(GET_MY_BOOKS_BY_BOOK_IDS, {
+    onCompleted: (data) => console.log({ 멘토책정보: data }),
+  });
 
   const [getMentoring, { data: mentoringData, error: error1, loading: loading1 }] = useLazyQuery(GET_MENTORING, {
     onCompleted: (data) => {

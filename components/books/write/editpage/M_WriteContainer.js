@@ -98,7 +98,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
       buycontent_getBuycontentByBuycontentIDs({
         variables: {
-          mycontent_ids: buyContentsIdsList,
+          buycontent_ids: buyContentsIdsList,
         },
       });
     } else {

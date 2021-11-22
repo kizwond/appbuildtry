@@ -248,6 +248,37 @@ class Editor extends Component {
   onClickAddSelection = () => {
     console.log("selection add clicked!!!")
   }
+  componentDidMount(){
+    this.props.nicks.map((item, index)=>{
+      this.setState({
+        ["editor" + (index + 1).toString()] :item
+      })
+    })
+    // const selected = document.getElementsByClassName("fr-placeholder");
+    //   for (var a = 0; a < selected.length; a++) {
+    //     const section = selected.item(a);
+    //     this.props.nicks.map((item, index)=>{
+    //       section.innerHTML = `<span style='font-size:0.8rem; color:lightgrey;'>${item}</span>`
+    //     })
+    //   }
+  }
+  componentDidUpdate(){
+    console.log("did update")
+    const selected = document.getElementsByClassName("fr-placeholder");
+      for (var a = 0; a < selected.length; a++) {
+        const section = selected.item(a);
+        console.log(section)
+        this.props.nicks.map((item, index)=>{
+          if(index == a){
+            section.innerHTML = `<span style='font-size:0.8rem; color:lightgrey;'>${item}</span>`
+          }
+         
+        })
+      }
+  }
+  componentWillUnmount(){
+    console.log("unmount")
+  }
   render() {
     const editorList = this.props.nicks.map((item, index) => {
       if(this.props.cardtypeEditor === "flip" && index === 0){
@@ -287,6 +318,7 @@ class Editor extends Component {
             </label>
             <FroalaEditorComponent
               tag="textarea"
+              placeholder="something"
               config={this.config}
               model={this.state["editor" + (index + 1).toString()]}
               onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}

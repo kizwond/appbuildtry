@@ -33,6 +33,22 @@ class Editor extends Component {
       editor14: "",
       editor15: "",
       editor16: "",
+      editorZindex1: 10,
+      editorZindex2: 10,
+      editorZindex3: 10,
+      editorZindex4: 10,
+      editorZindex5: 10,
+      editorZindex6: 10,
+      editorZindex7: 10,
+      editorZindex8: 10,
+      editorZindex9: 10,
+      editorZindex10: 10,
+      editorZindex11: 10,
+      editorZindex12: 10,
+      editorZindex13: 10,
+      editorZindex14: 10,
+      editorZindex15: 10,
+      editorZindex16: 10,
     };
     this.config = {
       key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
@@ -50,7 +66,7 @@ class Editor extends Component {
       attribution: false,
       charCounterCount: false,
       videoAllowedTypes: ["mp3"],
-
+      placeholderText: "",
       //   videoDefaultWidth: "90%",
       language: "ko",
       toolbarButtons: [
@@ -92,108 +108,220 @@ class Editor extends Component {
     console.log("editor1:", model);
     this.setState({
       editor1: model,
+      editorZindex1: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor1: model,
+        editorZindex1: 10,
+      });
+    }
   };
   handleModelChangeEditor2 = (model) => {
     console.log("editor2:", model);
     this.setState({
       editor2: model,
+      editorZindex2: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor2: model,
+        editorZindex2: 10,
+      });
+    }
   };
   handleModelChangeEditor3 = (model) => {
     console.log("editor3:", model);
     this.setState({
       editor3: model,
+      editorZindex3: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor3: model,
+      editorZindex3: 10,
+      });
+    }
   };
   handleModelChangeEditor4 = (model) => {
     console.log("editor4:", model);
     this.setState({
       editor4: model,
+      editorZindex4: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor4: model,
+        editorZindex4: 10,
+      });
+    }
   };
 
   handleModelChangeEditor5 = (model) => {
     console.log("editor5:", model);
     this.setState({
       editor5: model,
+      editorZindex5: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor5: model,
+      editorZindex5: 10,
+      });
+    }
   };
 
   handleModelChangeEditor6 = (model) => {
     console.log("editor6:", model);
     this.setState({
       editor6: model,
+      editorZindex6: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor6: model,
+      editorZindex6: 10,
+      });
+    }
   };
 
   handleModelChangeEditor7 = (model) => {
     console.log("editor7:", model);
     this.setState({
       editor7: model,
+      editorZindex7: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor7: model,
+        editorZindex7: 10,
+      });
+    }
   };
 
   handleModelChangeEditor8 = (model) => {
     console.log("editor8:", model);
     this.setState({
       editor8: model,
+      editorZindex8: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor8: model,
+        editorZindex8: 10,
+      });
+    }
   };
 
   handleModelChangeEditor9 = (model) => {
     console.log("editor9:", model);
     this.setState({
       editor9: model,
+      editorZindex9: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor9: model,
+        editorZindex9: 10,
+      });
+    }
   };
 
   handleModelChangeEditor10 = (model) => {
     console.log("editor10:", model);
     this.setState({
       editor10: model,
+      editorZindex10: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor10: model,
+      editorZindex10: 10,
+      });
+    }
   };
 
   handleModelChangeEditor11 = (model) => {
     console.log("editor11:", model);
     this.setState({
       editor11: model,
+      editorZindex11: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor11: model,
+        editorZindex11: 10,
+      });
+    }
   };
 
   handleModelChangeEditor12 = (model) => {
     console.log("editor12:", model);
     this.setState({
       editor12: model,
+      editorZindex12: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor12: model,
+      editorZindex12: 10,
+      });
+    }
   };
 
   handleModelChangeEditor13 = (model) => {
     console.log("editor13:", model);
     this.setState({
       editor13: model,
+      editorZindex13: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor13: model,
+      editorZindex13: 10,
+      });
+    }
   };
 
   handleModelChangeEditor14 = (model) => {
     console.log("editor14:", model);
     this.setState({
       editor14: model,
+      editorZindex14: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor14: model,
+      editorZindex14: 10,
+      });
+    }
   };
 
   handleModelChangeEditor15 = (model) => {
     console.log("editor15:", model);
     this.setState({
       editor15: model,
+      editorZindex15: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor15: model,
+      editorZindex15: 10,
+      });
+    }
   };
   handleModelChangeEditor16 = (model) => {
     console.log("editor16:", model);
     this.setState({
       editor16: model,
+      editorZindex16: 0,
     });
+    if (model === "") {
+      this.setState({
+        editor16: model,
+      editorZindex16: 10,
+      });
+    }
   };
 
   handleSubmit = () => {
@@ -273,8 +401,19 @@ class Editor extends Component {
     const editorList = this.props.nicks.map((item, index) => {
       if (this.props.cardtypeEditor === "flip" && index === 0) {
         return (
-          <div key={index} style={{ display: "flex", flexDirection: "column", marginTop: "1px" }}>
-            <label className="editor_label" style={{ width: "50px", fontSize: "0.5rem", color: "lightgrey" }}>
+          <div key={index} style={{position: "relative", display: "flex", flexDirection: "column", marginTop: "1px" }}>
+             <label
+            className="editor_label"
+            style={{
+              zIndex: this.state["editorZindex" + (index + 1).toString()],
+              position: "absolute",
+              left: "5px",
+              top: "15px",
+              width: "50px",
+              fontSize: "0.5rem",
+              color: "lightgrey",
+            }}
+          >
               {item}
             </label>
             <FroalaEditorComponent
@@ -288,8 +427,19 @@ class Editor extends Component {
         );
       } else if (this.props.cardtypeEditor === "flip" && index !== 0) {
         return (
-          <div key={index} style={{ display: "flex", flexDirection: "column", marginTop: "1px" }}>
-            <label className="editor_label" style={{ width: "50px", fontSize: "0.5rem", color: "lightgrey" }}>
+          <div key={index} style={{ position: "relative",display: "flex", flexDirection: "column", marginTop: "1px" }}>
+             <label
+            className="editor_label"
+            style={{
+              zIndex: this.state["editorZindex" + (index + 1).toString()],
+              position: "absolute",
+              left: "5px",
+              top: "15px",
+              width: "50px",
+              fontSize: "0.5rem",
+              color: "lightgrey",
+            }}
+          >
               {item}
             </label>
             <FroalaEditorComponent

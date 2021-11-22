@@ -115,9 +115,9 @@ class EditorFromCard extends Component {
   }
 
   handleFlagStar = (e) => {
-    console.log("comment:", e.target.value);
+    console.log("comment:", e);
     this.setState({
-      flagStar: e.target.value,
+      flagStar: e,
     });
   };
   handleFlagComment = (e) => {
@@ -388,7 +388,7 @@ class EditorFromCard extends Component {
       }
     }
 
-    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array, parentId: this.props.parentId, flagStar:flagStar, flagComment:this.state.flagComment };
+    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array, parentId: this.props.parentId, flagStar:this.state.flagStar, flagComment:this.state.flagComment };
     console.log(this.props.parentId);
     this.props.onFinish(values, "inCard", this.props.parendId);
 
@@ -433,7 +433,7 @@ class EditorFromCard extends Component {
           <div id="toolbarContainer"></div>
           <div style={{ padding: "3px", border: "1px solid lightgrey" }}>
             <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"2px" }}>
-            <Select size="small" defaultValue={this.state.flagStar} style={{ width: 95, fontSize:"0.8rem"}} onChange={this.handleChangeRating}>
+            <Select size="small" defaultValue={this.state.flagStar} style={{ width: 95, fontSize:"0.8rem"}} onChange={this.handleFlagStar}>
               <Option value="default" disabled>
                 플래그선택
               </Option>

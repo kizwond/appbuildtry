@@ -51,20 +51,26 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   });
 
   const [mycontent_getMycontentByMycontentIDs, { loading: loading2, error: error2, data }] = useLazyQuery(GET_CARD_CONTENT, { onCompleted: afterGetContent });
-  const [buycontent_getBuycontentByBuycontentIDs, { loading: loading3, error: error3, data:buyContents }] = useLazyQuery(GET_BUY_CARD_CONTENT, { onCompleted: afterGetBuyContent });
+  const [buycontent_getBuycontentByBuycontentIDs, { loading: loading3, error: error3, data: buyContents }] = useLazyQuery(GET_BUY_CARD_CONTENT, {
+    onCompleted: afterGetBuyContent,
+  });
 
   function afterGetContent(data) {
     console.log(data);
-    console.log(contentsList)
-    const newArray = contentsList.concat(data.mycontent_getMycontentByMycontentIDs.mycontents)
-    setContentsList(newArray);
+    console.log(contentsList);
+    const newArray = contentsList.concat(data.mycontent_getMycontentByMycontentIDs.mycontents);
+    var uniq = newArray.filter((v,i,a)=>a.findIndex(t=>(t._id === v._id))===i)
+    console.log(uniq)
+    setContentsList(uniq);
   }
 
   function afterGetBuyContent(data) {
     console.log(data);
-    console.log(contentsList)
-    const newArray = contentsList.concat(data.buycontent_getBuycontentByBuycontentIDs.buycontents)
-    setContentsList(newArray);
+    console.log(contentsList);
+    const newArray = contentsList.concat(data.buycontent_getBuycontentByBuycontentIDs.buycontents);
+    var uniq = newArray.filter((v,i,a)=>a.findIndex(t=>(t._id === v._id))===i)
+    console.log(uniq)
+    setContentsList(uniq);
   }
 
   useEffect(() => {
@@ -383,10 +389,10 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       const row_font = current_card_style[0].row_font;
 
       // console.log(row_font);
-      console.log(contentsList)
+      console.log(contentsList);
       const show_contents = contentsList.map((content_value) => {
         if (content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) {
-          console.log(content_value._id, content.content.buycontent_id  )
+          console.log(content_value._id, content.content.buycontent_id);
           if (content_value._id === cardId) {
             var borderLeft = "2px solid blue";
           } else {
@@ -1143,6 +1149,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         <div>selected index id : {first_index}</div>
         <div>{contents}</div>
         <div>{editorOn}</div>
+        <div style={{height:"50px"}}></div>
       </div>
       {data1 && (
         <>

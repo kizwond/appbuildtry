@@ -33,7 +33,7 @@ class Editor extends Component {
       editor14: "",
       editor15: "",
       editor16: "",
-    }
+    };
     this.config = {
       key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
       editorClass: "editor_try",
@@ -210,7 +210,7 @@ class Editor extends Component {
     const annotation_array = [];
 
     //읽기카드만 있을때
-    if (num_face1 > 0 && num_face2 === 0 && num_annot > 0 ) {
+    if (num_face1 > 0 && num_face2 === 0 && num_annot > 0) {
       for (var i = 1; i < num_face1 + 1; i++) {
         face1_array.push(this.state["editor" + i]);
       }
@@ -222,7 +222,7 @@ class Editor extends Component {
     }
 
     //뒤집기카드만 있을때
-    if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 ) {
+    if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
       for (i = 1; i < num_face1 + 1; i++) {
         face1_array.push(this.state["editor" + i]);
       }
@@ -232,59 +232,49 @@ class Editor extends Component {
         }
       }
       if (num_annot > 0) {
-        for (i = num_face1+num_face2 + 1; i <  num_face1 + num_face2 + num_annot +1; i++) {
+        for (i = num_face1 + num_face2 + 1; i < num_face1 + num_face2 + num_annot + 1; i++) {
           annotation_array.push(this.state["editor" + i]);
         }
       }
     }
 
     const values = { face1: face1_array, face2: face2_array, annotation: annotation_array };
-    console.log(this.props.parentId)
-    this.props.onFinish(values,"normal", this.props.parentId);
+    console.log(this.props.parentId);
+    this.props.onFinish(values, "normal", this.props.parentId);
 
-    this.props.setEditorOn('')
+    this.props.setEditorOn("");
   };
 
   onClickAddSelection = () => {
-    console.log("selection add clicked!!!")
-  }
-  componentDidMount(){
-    this.props.nicks.map((item, index)=>{
-      this.setState({
-        ["editor" + (index + 1).toString()] :item
-      })
-    })
-    // const selected = document.getElementsByClassName("fr-placeholder");
-    //   for (var a = 0; a < selected.length; a++) {
-    //     const section = selected.item(a);
-    //     this.props.nicks.map((item, index)=>{
-    //       section.innerHTML = `<span style='font-size:0.8rem; color:lightgrey;'>${item}</span>`
-    //     })
-    //   }
-  }
-  componentDidUpdate(){
-    console.log("did update")
-    const selected = document.getElementsByClassName("fr-placeholder");
-      for (var a = 0; a < selected.length; a++) {
-        const section = selected.item(a);
-        console.log(section)
-        this.props.nicks.map((item, index)=>{
-          if(index == a){
-            section.innerHTML = `<span style='font-size:0.8rem; color:lightgrey;'>${item}</span>`
-          }
-         
-        })
-      }
-  }
-  componentWillUnmount(){
-    console.log("unmount")
-  }
+    console.log("selection add clicked!!!");
+  };
+  // componentDidMount() {
+  //   this.props.nicks.map((item, index) => {
+  //     this.setState({
+  //       ["editor" + (index + 1).toString()]: item,
+  //     });
+  //   });
+  // }
+  // componentDidUpdate() {
+  //   console.log("did update");
+  //   const selected = document.getElementsByClassName("fr-placeholder");
+  //   for (var a = 0; a < selected.length; a++) {
+  //     const section = selected.item(a);
+  //     console.log(section);
+  //     this.props.nicks.map((item, index) => {
+  //       if (index == a) {
+  //         section.innerHTML = `<span style='font-size:0.8rem; color:lightgrey;'>${item}</span>`;
+  //       }
+  //     });
+  //   }
+  // }
+
   render() {
     const editorList = this.props.nicks.map((item, index) => {
-      if(this.props.cardtypeEditor === "flip" && index === 0){
+      if (this.props.cardtypeEditor === "flip" && index === 0) {
         return (
-          <div key={index} style={{ display: "flex", flexDirection:"column", marginTop: "1px"}}>
-            <label className="editor_label" style={{ width: "50px", fontSize:"0.5rem", color:"lightgrey" }}>
+          <div key={index} style={{ display: "flex", flexDirection: "column", marginTop: "1px" }}>
+            <label className="editor_label" style={{ width: "50px", fontSize: "0.5rem", color: "lightgrey" }}>
               {item}
             </label>
             <FroalaEditorComponent
@@ -296,10 +286,10 @@ class Editor extends Component {
             {/* <div><PlusCircleOutlined onClick={this.onClickAddSelection} style={{ marginLeft: "7px", fontSize: "1.4rem", color: "grey" }} /></div> */}
           </div>
         );
-      } else if(this.props.cardtypeEditor === "flip" && index !== 0){
+      } else if (this.props.cardtypeEditor === "flip" && index !== 0) {
         return (
-          <div key={index} style={{ display: "flex", flexDirection:"column", marginTop: "1px"}}>
-            <label className="editor_label" style={{ width: "50px", fontSize:"0.5rem", color:"lightgrey" }}>
+          <div key={index} style={{ display: "flex", flexDirection: "column", marginTop: "1px" }}>
+            <label className="editor_label" style={{ width: "50px", fontSize: "0.5rem", color: "lightgrey" }}>
               {item}
             </label>
             <FroalaEditorComponent
@@ -310,10 +300,10 @@ class Editor extends Component {
             />
           </div>
         );
-      }else {
+      } else {
         return (
-          <div key={index} style={{ display: "flex", flexDirection:"column", marginTop: "1px"}}>
-            <label className="editor_label" style={{ width: "50px", fontSize:"0.5rem", color:"lightgrey" }}>
+          <div key={index} style={{ display: "flex", flexDirection: "column", marginTop: "1px" }}>
+            <label className="editor_label" style={{ width: "50px", fontSize: "0.5rem", color: "lightgrey" }}>
               {item}
             </label>
             <FroalaEditorComponent
@@ -333,20 +323,18 @@ class Editor extends Component {
         <div id="editor">
           <div id="toolbarContainer"></div>
           <div style={{ padding: "3px", border: "1px solid lightgrey" }}>
-            <div style={{marginBottom:"10px"}}>
-            {editorList}
-            </div>
-            <div style={{textAlign:"right"}}>
-              <Button size="small" onClick={this.handleSubmit} id="saveButton" style={{ fontSize: "0.8rem", marginRight:"5px" }}>
+            <div style={{ marginBottom: "10px" }}>{editorList}</div>
+            <div style={{ textAlign: "right" }}>
+              <Button size="small" onClick={this.handleSubmit} id="saveButton" style={{ fontSize: "0.8rem", marginRight: "5px" }}>
                 저장
               </Button>
-              <Button size="small" onClick={() => this.props.setEditorOn('')} id="cancelButton" style={{ fontSize: "0.8rem" }}>
+              <Button size="small" onClick={() => this.props.setEditorOn("")} id="cancelButton" style={{ fontSize: "0.8rem" }}>
                 취소
               </Button>
             </div>
           </div>
         </div>
-        <div style={{height:"50px"}}></div>
+        <div style={{ height: "50px" }}></div>
       </>
     );
   }

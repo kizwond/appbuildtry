@@ -1,4 +1,6 @@
 /* eslint-disable react/display-name */
+import { useCallback, useState } from "react";
+
 import styled from "styled-components";
 
 import { Table, Card, Popover, Button, Input, Space, Form, Row, Col } from "antd";
@@ -8,6 +10,11 @@ import { StyledDivEllipsis } from "../common/styledComponent/page";
 import M_RequestMentoringCard from "../../components/mentoring/M_RequestMetoringCard";
 
 const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+
+  const resetExpandedRowKeys = useCallback(() => {
+    setExpandedRowKeys([]);
+  }, []);
   if (error) <div>에러</div>;
   if (loading) <div>에러</div>;
 
@@ -110,13 +117,25 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
     },
 
     {
-      // title: "상설",
+      title: "멘토링 요청",
+      key: "_id",
+      dataIndex: "_id",
       className: "Row-Last-One",
       align: "center",
       width: 60,
       render: (value, _record, index) => (
         <div>
-          <Button type="link" size="small">
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              if (expandedRowKeys.includes(value)) {
+                setExpandedRowKeys([]);
+              } else {
+                setExpandedRowKeys([value]);
+              }
+            }}
+          >
             멘토링 요청
           </Button>
         </div>
@@ -140,8 +159,9 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
           expandable={{
             expandRowByClick: true,
             expandIcon: () => null,
+            expandedRowKeys,
             expandedRowRender: (_record, _index) => (
-              <M_RequestMentoringCard />
+              <M_RequestMentoringCard resetExpandedRowKeys={resetExpandedRowKeys} mybook_id={_record._id} mybookTitle={_record.title} cardVisible={expandedRowKeys.includes(_record._id)} />
               // <Card
               //   style={{ margin: "8px 0 8px", minWidth: 320 }}
               //   actions={[

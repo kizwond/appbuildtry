@@ -1,13 +1,25 @@
 import ImportModal from "../import/ImportModal";
 import M_RightDrawer from "../M_RightDrawer";
+import M_FlagSettingDrawer from "../M_FlagSettingDrawer";
 import { Button } from "antd";
-
+import { PlusSquareOutlined } from "@ant-design/icons";
 const backgroundColor = "black";
 const buttonColor = "white";
 const fontColor = "white";
 
-const FloatingMenu = ({indexList, setCardId, setEditorOnFromCard,setSelectedCardType, cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId, book_id, selectedCardType }) => {
-
+const FloatingMenu = ({
+  indexList,
+  setCardId,
+  setEditorOnFromCard,
+  setSelectedCardType,
+  cardTypes,
+  cardTypeInfo,
+  cardSetId,
+  indexChanged,
+  indexSetId,
+  book_id,
+  selectedCardType,
+}) => {
   const addCard = () => {
     setCardId("");
     setEditorOnFromCard("");
@@ -17,7 +29,7 @@ const FloatingMenu = ({indexList, setCardId, setEditorOnFromCard,setSelectedCard
       setSelectedCardType(hello[0].cardtype_info);
       sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
       cardTypeInfo(hello[0].cardtype_info, "normal");
-      console.log("selectedCardType이 있을때 바텀메뉴에서 로그")
+      console.log("selectedCardType이 있을때 바텀메뉴에서 로그");
     } else {
       console.log("no cardtype selected!!!!!!! 그래서 그냥 첫번째 읽기 기본이 미리 선택된것임");
       console.log(cardTypes[0].cardtype_info.cardtype);
@@ -25,7 +37,7 @@ const FloatingMenu = ({indexList, setCardId, setEditorOnFromCard,setSelectedCard
       sessionStorage.setItem("selectedCardTypeId", cardTypes[0]._id);
       cardTypeInfo(cardTypes[0].cardtype_info, "normal");
       sessionStorage.setItem("cardtype", cardTypes[0].cardtype_info.cardtype);
-      console.log("selectedCardType이 없을때 바텀메뉴에서 로그")
+      console.log("selectedCardType이 없을때 바텀메뉴에서 로그");
     }
     console.log("clicked!!!");
   };
@@ -50,20 +62,17 @@ const FloatingMenu = ({indexList, setCardId, setEditorOnFromCard,setSelectedCard
         <div
           style={{
             margin: 0,
+            width:"100%",
             display: "flex",
             flexDirection: "row",
             listStyle: "none",
             alignItems: "center",
+            justifyContent:"space-around"
           }}
         >
-          <span style={{ marginRight: "10px" }}>
-            <Button onClick={addCard} size="small" style={{ fontSize: "0.8rem" }}>
-              카드추가
-            </Button>
-          </span>
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between", flexBasis: "100px", alignItems: "center" }}>
+          <PlusSquareOutlined style={{fontSize:"1.2rem"}} onClick={addCard} />
           <ImportModal indexList={indexList} cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
+          <M_FlagSettingDrawer />
           <M_RightDrawer book_id={book_id} />
         </div>
       </div>

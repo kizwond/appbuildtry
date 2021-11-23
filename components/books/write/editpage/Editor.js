@@ -9,8 +9,10 @@ import "froala-editor//css/themes/gray.css";
 
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
-import { Form, Input, Button, message } from "antd";
-import { QuestionCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Select } from "antd";
+import { StarOutlined, StarFilled } from "@ant-design/icons";
+
+const { Option } = Select;
 
 class Editor extends Component {
   constructor(props) {
@@ -33,6 +35,8 @@ class Editor extends Component {
       editor14: "",
       editor15: "",
       editor16: "",
+      flagStar: "default",
+      flagComment: "",
       editorZindex1: 10,
       editorZindex2: 10,
       editorZindex3: 10,
@@ -104,6 +108,18 @@ class Editor extends Component {
     };
   }
 
+  handleFlagStar = (e) => {
+    console.log("comment:", e);
+    this.setState({
+      flagStar: e,
+    });
+  };
+  handleFlagComment = (e) => {
+    console.log("comment:", e.target.value);
+    this.setState({
+      flagComment: e.target.value,
+    });
+  };
   handleModelChangeEditor1 = (model) => {
     console.log("editor1:", model);
     this.setState({
@@ -366,7 +382,7 @@ class Editor extends Component {
       }
     }
 
-    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array };
+    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array, flagStar:this.state.flagStar, flagComment:this.state.flagComment  };
     console.log(this.props.parentId);
     this.props.onFinish(values, "normal", this.props.parentId);
 
@@ -483,6 +499,39 @@ class Editor extends Component {
         <div id="editor">
           <div id="toolbarContainer"></div>
           <div style={{ padding: "3px", border: "1px solid lightgrey" }}>
+          <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "3px" }}>
+              <Select size="small" defaultValue={this.state.flagStar} style={{ flexBasis: "100px", flexShrink: 0, width: 100, fontSize: "0.8rem", marginRight:"3px"  }} onChange={this.handleFlagStar}>
+                <Option value="default" disabled>
+                  플래그선택
+                </Option>
+                <Option value="1">
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+                <Option value="2">
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+                <Option value="3">
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+                <Option value="4">
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+                <Option value="5">
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+              </Select>
+              <Input size="small" style={{ fontSize: "0.8rem", height: "24px" }} onChange={this.handleFlagComment} value={this.state.flagComment} placeholder="코멘트 입력" />
+            </div>
             <div style={{ marginBottom: "10px" }}>{editorList}</div>
             <div style={{ textAlign: "right" }}>
               <Button size="small" onClick={this.handleSubmit} id="saveButton" style={{ fontSize: "0.8rem", marginRight: "5px" }}>

@@ -1,12 +1,18 @@
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Card, Col, Input, Row } from "antd";
 import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import { GET_USER_MINIMUM_INFORMATION_BY_USER_NAME } from "../../graphql/query/allQuery";
 import { MUTATION_REQUEST_MENTORING } from "../../graphql/mutation/mentoring";
 
 const { Search, TextArea } = Input;
 
 const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, cardVisible }) => {
+  const router = useRouter();
+
+  const textAreaRef = useRef();
+  const searchRef = useRef();
+
   const [mentorIdInputValue, setMentorIdInputValue] = useState("");
   const [visibleNoMentoId, setVisibleNoMentoId] = useState(false);
 
@@ -18,10 +24,35 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
   }, [cardVisible]);
 
   const [requestUserInfomation, { data, loading, error }] = useLazyQuery(GET_USER_MINIMUM_INFORMATION_BY_USER_NAME, {
-    onCompleted: (data) => console.log("유저 정보는", data),
+    onCompleted: (data) => {
+      if (data.user_getUserMinInfo.status === "200") {
+        console.log("유저 정보는", data);
+        textAreaRef.current.focus();
+      } else if (data.user_getUserMinInfo.status === "400") {
+        // 없는 사용자일때
+        searchRef.current.focus({
+          cursor: "all",
+        });
+      } else if (data.user_getUserMinInfo.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
   });
 
-  const [requestMentoring] = useMutation(MUTATION_REQUEST_MENTORING, { onCompleted: (data) => console.log(data) });
+  const [requestMentoring] = useMutation(MUTATION_REQUEST_MENTORING, {
+    onCompleted: (data) => {
+      if (data.mentoring_createMentoringReq.status === "200") {
+        console.log("멘토링 요청후 받은 데이터", data);
+        resetExpandedRowKeys();
+      } else if (data.mentoring_createMentoringReq.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
+  });
 
   async function sendRequest() {
     try {
@@ -34,7 +65,7 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
             mentorOrganization: data.user_getUserMinInfo.organization,
             mybook_id,
             mybookTitle,
-            comment: requestMessageInput === "" ? "안녕하세요. 멘토링 요청 드립니다." : "requestMessageInput",
+            comment: requestMessageInput === "" ? "안녕하세요. 멘토링 요청 드립니다." : requestMessageInput,
           },
         },
       });
@@ -59,7 +90,7 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
             }
           }}
         >
-          신청
+          멘토링 요청
         </div>,
       ]}
       size="small"
@@ -68,6 +99,7 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
         <Col span={5}>아이디:</Col>
         <Col span={19}>
           <Search
+            ref={searchRef}
             size="small"
             allowClear
             value={mentorIdInputValue}
@@ -91,7 +123,7 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
             enterButton={false}
             placeholder="요청할 멘토의 아이디를 입력하세요"
           />
-          {visibleNoMentoId && data && data.user_getUserMinInfo.status === "400" && <span style={{ color: "red" }}>입력하신 아이디는 존재하지 않습니다.</span>}
+          {mentorIdInputValue !== "" && visibleNoMentoId && data && data.user_getUserMinInfo.status === "400" && <span style={{ color: "red" }}>입력하신 아이디는 존재하지 않습니다.</span>}
         </Col>
         {data && data.user_getUserMinInfo.username == mentorIdInputValue && (
           <>
@@ -101,6 +133,7 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
             <Col span={5}>요청 메세지:</Col>
             <Col span={19}>
               <TextArea
+                ref={textAreaRef}
                 size="small"
                 allowClear
                 showCount
@@ -112,8 +145,6 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
                   setRequestMessageInput(e.target.value);
                 }}
               />
-              {/* 메세지 입력안했을 때는 placeholder의 내용을 요청 메세지로 보낸다 */}
-              <span style={{ color: "red" }}>10자 이상을 입력해주세요.</span>
             </Col>
           </>
         )}

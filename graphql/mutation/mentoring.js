@@ -16,8 +16,34 @@ export const MUTATION_REQUEST_MENTORING = gql`
 
 export const MUTATION_ACCEPT_MENTOR_REQUEST = gql`
   ${FRAGMENT_MENTORING}
-  mutation RequestMentoring($forAcceptMentoringReq: forAcceptMentoringReq) {
+  mutation AcceptMentorRequest($forAcceptMentoringReq: forAcceptMentoringReq) {
     mentoring_acceptMentoringReq(forAcceptMentoringReq: $forAcceptMentoringReq) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;
+
+export const MUTATION_CANCEL_MENTORING_REQUEST = gql`
+  ${FRAGMENT_MENTORING}
+  mutation CancelMentoringRequest($forCancelMentoringReq: forCancelMentoringReq) {
+    mentoring_cancelMentoringReq(forCancelMentoringReq: $forCancelMentoringReq) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;
+
+export const MUTATION_UPDATE_MENTORING_REQUEST = gql`
+  ${FRAGMENT_MENTORING}
+  mutation UpdateMentoringRequest($forUpdateMentoringReq: forUpdateMentoringReq) {
+    mentoring_updateMentoringReq(forUpdateMentoringReq: $forUpdateMentoringReq) {
       status
       msg
       mentorings {

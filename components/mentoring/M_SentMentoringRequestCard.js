@@ -13,21 +13,22 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring }) => {
   const { comment, menteeUser_id, mentorName, mentorUser_id, mentorUsername, mybookTitle, mybook_id, reqDate } = mentor;
   const textAreaRef = useRef();
   const [textAreaDisabled, setTextAreaDisabled] = useState(true);
-  const [textArearInputValue, setTextArearInputValue] = useState("");
+  const [textAreaInputValue, setTextAreaInputValue] = useState("");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => setTextArearInputValue(comment), [comment]);
+  useEffect(() => setTextAreaInputValue(comment), [comment]);
 
   // 멘토링 수정 요청 api아직
   const [updateMentoringRequest] = useMutation(MUTATION_UPDATE_MENTORING_REQUEST, {
     onCompleted: (data) => {
-      console.log("멘토링 요청 수정 후 받은 데이터", data);
-      // if (data.mentoring_updateMentoringReq.status === "200") {
-      // } else if (data.mentoring_updateMentoringReq.status === "401") {
-      //   router.push("/m/account/login");
-      // } else {
-      //   console.log("어떤 문제가 발생함");
-      // }
+      if (data.mentoring_updateMentoringReq.status === "200") {
+        setTextAreaDisabled(true);
+        console.log("멘토링 요청 수정 후 받은 데이터", data);
+      } else if (data.mentoring_updateMentoringReq.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
     },
   });
 
@@ -36,7 +37,7 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring }) => {
       await updateMentoringRequest({
         variables: {
           forUpdateMentoringReq: {
-            comment: textArearInputValue,
+            comment: textAreaInputValue,
             menteeUser_id,
             mentorUser_id,
             mybook_id,
@@ -57,17 +58,14 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring }) => {
           onClick={() => {
             if (textAreaDisabled) {
               setTextAreaDisabled(false);
-              console.log(textAreaRef);
               textAreaRef.current.focus({
                 cursor: "end",
               });
             }
             if (!textAreaDisabled) {
-              // 서버에 수정 요청 보내기 - 통신 완료시 textAreaDisabled 코드는 onCompleted에 작성
-              if (comment !== textArearInputValue) {
+              if (comment !== textAreaInputValue) {
                 updateRequest();
               }
-              setTextAreaDisabled(true);
             }
           }}
         >
@@ -81,7 +79,7 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring }) => {
             }
             if (!textAreaDisabled) {
               setTextAreaDisabled(true);
-              setTextArearInputValue(comment);
+              setTextAreaInputValue(comment);
             }
           }}
         >
@@ -100,7 +98,7 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring }) => {
             <div>멘토: {`${mentorName}(${mentorUsername})`}</div>
             <div>요청 날짜: {moment(new Date(Number(reqDate))).format("YY-MM-DD")}</div>
             <div>요청메세지:</div>
-            <Input.TextArea ref={textAreaRef} disabled={textAreaDisabled} value={textArearInputValue} placeholder="안녕하세요. 멘토링 요청 드립니다." onChange={(e) => setTextArearInputValue(e.target.value)} />
+            <Input.TextArea ref={textAreaRef} disabled={textAreaDisabled} value={textAreaInputValue} placeholder="안녕하세요. 멘토링 요청 드립니다." onChange={(e) => setTextAreaInputValue(e.target.value)} />
           </>
         }
       />

@@ -8,12 +8,10 @@ export const FRAGMENT_MENTORING = gql`
       menteeGroup {
         _id
         name
-        isFixed
       }
       mentorGroup {
         _id
         name
-        isFixed
       }
     }
     sentReqs {

@@ -1,20 +1,33 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useEffect, useMemo } from "react";
+import { useLazyQuery } from "@apollo/client";
 import _ from "lodash";
 
 import { GET_MENTORING, GET_MY_BOOKS_BY_BOOK_IDS } from "../../../graphql/query/allQuery";
+import { useRouter } from "next/router";
 
 const useGetMentoringAndMenteeBooks = () => {
+  const router = useRouter();
   const [getBooksInfo, { data: menteeBooks, error, loading }] = useLazyQuery(GET_MY_BOOKS_BY_BOOK_IDS, {
-    onCompleted: (data) => console.log({ 책정보: data }),
-  });
-  const [getMentorBooksInfo, { data: mentorBooks, error: mentorBookserror, loading: mentorBooksloading }] = useLazyQuery(GET_MY_BOOKS_BY_BOOK_IDS, {
-    onCompleted: (data) => console.log({ 멘토책정보: data }),
+    onCompleted: (data) => {
+      if (data.mybook_getMybookByMybookIDs.status === "200") {
+        console.log("멘티 책 정보 받음", data);
+      } else if (data.mybook_getMybookByMybookIDs.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
   });
 
   const [getMentoring, { data: mentoringData, error: error1, loading: loading1 }] = useLazyQuery(GET_MENTORING, {
     onCompleted: (data) => {
-      console.log({ 멘토링정보: data });
+      if (data.mentoring_getMentoring.status === "200") {
+        console.log("멘토링 정보 받음", data);
+      } else if (data.mentoring_getMentoring.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
     },
   });
 

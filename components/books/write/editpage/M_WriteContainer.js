@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
@@ -9,9 +9,15 @@ import { StarOutlined, StarFilled } from "@ant-design/icons";
 const { Option } = Select;
 
 const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromCard, FroalaEditorView }) => {
+  const myRef = useRef(null) //스크롤
+  // const executeScroll = () => myRef.current.scrollTo({
+  //   top: 500,
+  //   behavior: 'smooth'
+  // });//스크롤
+  const executeScroll = () => myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline :"end" })//스크롤
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
-    var book_id = localStorage.getItem("book_id");
+    var book_id = localStorage.getItem("book_id");  
     var first_index_tmp = localStorage.getItem("first_index");
     if (indexChanged) {
       if (indexChanged === first_index_tmp) {
@@ -234,10 +240,13 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       console.log("노멀모드로 에디터가 뿌려질것임. 여기다가 setCardId() 이걸 했는데 안먹음.");
       console.log(cardId);
       setEditorOn(editor);
+      executeScroll(); //스크롤
     } else if (from === "inCard") {
       setEditorOnFromCard(editorFromCard);
     }
+    
   };
+
 
   const onFinish = (values, from) => {
     console.log(values);
@@ -1241,7 +1250,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         <div>selected index id : {first_index}</div>
         <div>{contents}</div>
         <div>{editorOn}</div>
-        <div style={{ height: "50px" }}></div>
+        <div ref={myRef} style={{ height: "50px" }}></div>
       </div>
       {data1 && (
         <>
@@ -1257,6 +1266,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             indexList={indexList}
             setEditorOnFromCard={setEditorOnFromCard}
             setCardId={setCardId}
+            cardTypeSets={cardTypeSets}
           />
         </>
       )}

@@ -1,13 +1,11 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { Drawer, Button, Space, Divider } from "antd";
-import CardTypeSetting from "./cardtype/CardTypeSetting";
-import CardtypeContainer from "../../write/editpage/cardtype/CardtypeContainer";
-import { GetCardRelated } from "../../../../graphql/query/allQuery";
+import React, { useState, useEffect } from "react";
+import { Drawer } from "antd";
 import { useQuery, useMutation } from "@apollo/client";
 import { FlagOutlined } from "@ant-design/icons";
+import FlagStyleContainer from "./flagstyle/FlagStyleContainer";
 
 
-const M_FlagSettingDrawer = () => {
+const M_FlagSettingDrawer = ({cardTypeSets}) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
@@ -20,25 +18,15 @@ const M_FlagSettingDrawer = () => {
     }
   }
   const [visible, setVisible] = useState(false);
-  const [cardTypeId, setCardTypeId] = useState();
-  const [cardTypeSetId, setCardTypeSetId] = useState();
-  const [cardTypeDetail, setCardTypeDetail] = useState();
 
   const [cardTypes, setCardTypes] = useState([]);
-  const { loading, error, data } = useQuery(GetCardRelated, {
-    variables: { mybook_ids: book_id },
-  });
 
   useEffect(() => {
     console.log("컴포넌트가 화면에 나타남??");
-    if (data) {
-      console.log("cardtypesetting page", data);
-      if (data.cardtypeset_getbymybookids.cardtypesets[0] !== null) {
-        setCardTypeSetId(data.cardtypeset_getbymybookids.cardtypesets[0]._id);
-        setCardTypes(data.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);
-      }
+    if (cardTypeSets) {
+      console.log("cardtypesetting page", cardTypeSets);
     }
-  }, [data]);
+  }, [cardTypeSets]);
 
   const showDrawer = () => {
     setVisible(true);
@@ -47,28 +35,6 @@ const M_FlagSettingDrawer = () => {
   const onClose = () => {
     setVisible(false);
   };
-
-  function handleChange(value, cardType) {
-    console.log("cardTypeId", value);
-    console.log("cardTypeSetId", cardTypeSetId);
-    console.log("cardType", cardType);
-    setCardTypeId(value);
-    setCardTypeSetId(cardTypeSetId);
-    setCardTypeDetail(cardType);
-  }
-
-  function getUpdatedCardTypeList(cardTypes) {
-    setCardTypes(cardTypes);
-    console.log("기존", cardTypeDetail);
-    console.log("업데이트 할 전체", cardTypes);
-    const prevCardTypeId = cardTypeDetail[0]._id;
-    const cardType = cardTypes.filter((item) => {
-      if (item._id === prevCardTypeId) {
-        return item;
-      }
-    });
-    setCardTypeDetail(cardType);
-  }
 
   return (
     <>
@@ -86,7 +52,7 @@ const M_FlagSettingDrawer = () => {
         mask={true}
         width={250}
       >
-          <div>플래그 세팅</div>
+          <div><FlagStyleContainer/></div>
       </Drawer>
     </>
   );

@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Table, Tag } from "antd";
 import React from "react";
 import useGetMentorBooks from "../../components/mentoring/useHooks/useGetMentorBooks.js";
 
@@ -24,20 +24,22 @@ const M_MentorsTable = ({ mentoringData }) => {
               width: "25%",
             },
             {
-              title: "멘터이름",
-              dataIndex: "mentorName",
+              title: "멘토",
+              dataIndex: "mentorNameAndId",
+              ellipsis: true,
               width: "15%",
             },
             {
-              title: "학습이력",
+              title: "최근 학습시간",
               dataIndex: "studyHistory",
               width: "35%",
               // eslint-disable-next-line react/display-name
               render: (v) => (
                 <>
                   {v.map((item, index) => (
-                    <span key={index}>{`${index === 4 ? item : `${item}, `}`} </span>
+                    <span key={index}>{`${index === 2 ? item : `${item}, `}`} </span>
                   ))}
+                  <Tag style={{ marginLeft: "5px" }}>상세보기</Tag>
                 </>
               ),
             },

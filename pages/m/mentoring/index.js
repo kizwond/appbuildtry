@@ -1,26 +1,48 @@
-import { useMemo, useRef, useState } from "react";
-import { useApolloClient, useLazyQuery, useMutation } from "@apollo/client";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import _, { divide } from "lodash";
-import Layout from "../../../components/layout/M_Layout";
 
-import { Badge, Button, Card, Col, Drawer, Table, Tabs, Row, Avatar, Select, Space } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-import styled from "styled-components";
 import moment from "moment";
-import useGetMentoringAndMenteeBooks from "../../../components/mentoring/useHooks/useGetMentoringAndMenteeBooks";
 import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
+import { MUTATION_ACCEPT_MENTOR_REQUEST, MUTATION_CANCEL_MENTORING_REQUEST } from "../../../graphql/mutation/mentoring";
+import useGetMentoringAndMenteeBooks from "../../../components/mentoring/useHooks/useGetMentoringAndMenteeBooks";
+
+import styled from "styled-components";
+import { Badge, Button, Card, Col, Drawer, Table, Tabs, Row, Avatar, Select, Space, Tag, Alert, Input } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+
+import Layout from "../../../components/layout/M_Layout";
 import M_MentoringBooksTable from "../../../components/mentoring/M_MentoringBooksTable.js";
 import M_MentosTable from "../../../components/mentoring/M_MentorsTable";
-import { useRouter } from "next/router";
-import { MUTATION_ACCEPT_MENTOR_REQUEST } from "../../../graphql/mutation/mentoring";
+import M_SentMentoringRequestCard from "../../../components/mentoring/M_SentMentoringRequestCard";
 
 const MentoringHome = () => {
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerRequestMentoringVisible, setDrawerRequestMentoringVisible] = useState(false);
+  const [drawerSentMentoringRequestVisible, setDrawerSentMentoringRequestVisible] = useState(false);
   const selectorRef = useRef("");
 
-  const [acceptMentroingRequest] = useMutation(MUTATION_ACCEPT_MENTOR_REQUEST, { onCompleted: (data) => console.log("멘토 수락후 받은 데이터", data) });
+  const [acceptMentroingRequest] = useMutation(MUTATION_ACCEPT_MENTOR_REQUEST, { onCompleted: (data) => console.log("멘토요청 수락 후 받은 데이터", data) });
+  const [declineMentroRequest] = useMutation(MUTATION_CANCEL_MENTORING_REQUEST, { onCompleted: (data) => console.log("멘토요청 취소 후 받은 데이터", data) });
+  const declineMentoring = useCallback(async ({ menteeUser_id, mentorUser_id, mybook_id, response }) => {
+    try {
+      await declineMentroRequest({
+        variables: {
+          forCancelMentoringReq: {
+            response,
+            menteeUser_id,
+            mentorUser_id,
+            mybook_id,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { newData, mentoringData } = useGetMentoringAndMenteeBooks();
   const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
@@ -43,14 +65,12 @@ const MentoringHome = () => {
     }
   };
 
-  const client = useApolloClient();
-
   const menteeGroupSelector = useMemo(() => {
     return (
       mentoringData && (
         <>
           <Select defaultValue={mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup[0]._id} size="small" onChange={(v) => (selectorRef.current = v)}>
-            {mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup.map((group: any) => (
+            {mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup.map((group) => (
               <Select.Option key={group._id} value={group._id}>
                 {group.name}
               </Select.Option>
@@ -65,7 +85,6 @@ const MentoringHome = () => {
     <Layout>
       {newData && (
         <MentoringWrapper>
-          <button onClick={() => console.log(client)}>아폴로</button>
           <Card size="small" bordered={false}>
             <Tabs size="small">
               <Tabs.TabPane tab="멘티" key="멘티">
@@ -73,7 +92,7 @@ const MentoringHome = () => {
                   size="small"
                   count={
                     _(mentoringData.mentoring_getMentoring.mentorings[0].receivedReqs)
-                      .filter(({ reqStatus }) => reqStatus !== "accepted")
+                      .filter(({ reqStatus }) => reqStatus === "waiting")
                       .value().length
                   }
                 >
@@ -82,7 +101,7 @@ const MentoringHome = () => {
                     onClick={() => setDrawerVisible((prev) => !prev)}
                     disabled={
                       _(mentoringData.mentoring_getMentoring.mentorings[0].receivedReqs)
-                        .filter(({ reqStatus }) => reqStatus !== "accepted")
+                        .filter(({ reqStatus }) => reqStatus === "waiting")
                         .value().length === 0
                     }
                   >
@@ -106,19 +125,21 @@ const MentoringHome = () => {
                     },
                     {
                       title: "멘티",
-                      dataIndex: "menteeName",
+                      ellipsis: true,
+                      dataIndex: "menteeNameAndId",
                       width: "15%",
                     },
                     {
-                      title: "학습이력",
+                      title: "최근 학습시간",
                       dataIndex: "studyHistory",
                       width: "35%",
                       // eslint-disable-next-line react/display-name
                       render: (v) => (
                         <>
-                          {v.map((item: any, index: number) => (
-                            <span key={index}>{`${index === 4 ? item : `${item}, `}`} </span>
+                          {v.map((item, index) => (
+                            <span key={index}>{`${index === 2 ? item : `${item}, `}`} </span>
                           ))}
+                          <Tag style={{ marginLeft: "5px" }}>상세보기</Tag>
                         </>
                       ),
                     },
@@ -127,14 +148,28 @@ const MentoringHome = () => {
               </Tabs.TabPane>
               <Tabs.TabPane tab="멘토" key="멘토">
                 <Space>
-                  <Button
+                  <Badge
                     size="small"
-                    onClick={() => {
-                      setDrawerRequestMentoringVisible((prev) => !prev);
-                    }}
+                    count={
+                      _(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
+                        .filter(({ reqStatus }) => reqStatus === "waiting")
+                        .value().length
+                    }
                   >
-                    보낸 요청
-                  </Button>
+                    <Button
+                      size="small"
+                      disabled={
+                        _(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
+                          .filter(({ reqStatus }) => reqStatus === "waiting")
+                          .value().length === 0
+                      }
+                      onClick={() => {
+                        setDrawerSentMentoringRequestVisible((prev) => !prev);
+                      }}
+                    >
+                      보낸 요청
+                    </Button>
+                  </Badge>
                   <button
                     className="customButtonForMainPage"
                     type="button"
@@ -159,41 +194,6 @@ const MentoringHome = () => {
                   </button>
                 </Space>
                 {mentoringData && <M_MentosTable mentoringData={mentoringData} />}
-                {/* <Table
-                  size="small"
-                  pagination={false}
-                  dataSource={newData}
-                  columns={[
-                    {
-                      title: "그룹",
-                      dataIndex: "menteeGroupName",
-                      width: "15%",
-                    },
-                    {
-                      title: "책",
-                      dataIndex: "mybookTitle",
-                      width: "25%",
-                    },
-                    {
-                      title: "멘티",
-                      dataIndex: "menteeName",
-                      width: "15%",
-                    },
-                    {
-                      title: "학습이력",
-                      dataIndex: "studyHistory",
-                      width: "35%",
-                      // eslint-disable-next-line react/display-name
-                      render: (v) => (
-                        <>
-                          {v.map((item: any, index: number) => (
-                            <span key={index}>{`${index === 4 ? item : `${item}, `}`} </span>
-                          ))}
-                        </>
-                      ),
-                    },
-                  ]}
-                /> */}
               </Tabs.TabPane>
             </Tabs>
           </Card>
@@ -201,7 +201,12 @@ const MentoringHome = () => {
             title="멘토링 요청 수락"
             placement="right"
             width={"100%"}
-            visible={drawerVisible}
+            visible={
+              drawerVisible &&
+              _(mentoringData.mentoring_getMentoring.mentorings[0].receivedReqs)
+                .filter(({ reqStatus }) => reqStatus === "waiting")
+                .value().length > 0
+            }
             onClose={() => setDrawerVisible(false)}
             headerStyle={{ padding: "12px 12px 8px 12px" }}
             bodyStyle={{ backgroundColor: "#e9e9e9" }}
@@ -232,7 +237,14 @@ const MentoringHome = () => {
                       >
                         수락
                       </div>,
-                      <div key="decline">거절</div>,
+                      <div
+                        key="decline"
+                        onClick={() => {
+                          declineMentoring({ menteeUser_id, mentorUser_id, mybook_id, response: "declined" });
+                        }}
+                      >
+                        거절
+                      </div>,
                     ]}
                     style={{ margin: "10px", borderRadius: "10px" }}
                     bordered={false}
@@ -250,19 +262,6 @@ const MentoringHome = () => {
                       description={comment}
                     />
                   </Card>
-
-                  // <Row key={`${menteeUser_id}${mybook_id}`} wrap={false}>
-                  //   <Col span={4}>{mybookTitle}</Col>
-                  //   <Col span={4}>{menteeUsername}</Col>
-                  //   <Col span={3}>{reqDate}</Col>
-                  //   <Col span={6}>{comment}</Col>
-                  //   <Col span={5}>
-                  //     <Space>
-                  //       <Button size="small">수락</Button>
-                  //       <Button size="small">거절</Button>
-                  //     </Space>
-                  //   </Col>
-                  // </Row>
                 )
               )
               .value()}
@@ -279,6 +278,20 @@ const MentoringHome = () => {
           >
             {drawerRequestMentoringVisible && <M_MentoringBooksTable bookData={data} loading={loading} error={error} />}
           </DrawerWrapper>
+          <DrawerWrapper
+            title="보낸 요청"
+            placement="right"
+            width={"100%"}
+            visible={drawerSentMentoringRequestVisible}
+            onClose={() => setDrawerSentMentoringRequestVisible(false)}
+            headerStyle={{ padding: "12px 12px 8px 12px" }}
+            bodyStyle={{ backgroundColor: "#e9e9e9" }}
+          >
+            {_(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
+              .filter(({ reqStatus }) => reqStatus === "waiting")
+              .map((mentor) => <M_SentMentoringRequestCard mentor={mentor} key={`${mentor.mentorUser_id}${mentor.mybook_id}`} declineMentoring={declineMentoring} />)
+              .value()}
+          </DrawerWrapper>
         </MentoringWrapper>
       )}
     </Layout>
@@ -288,6 +301,9 @@ const MentoringHome = () => {
 export default MentoringHome;
 
 const MentoringWrapper = styled.div`
+  position: absolute;
+  top: 40px;
+
   & div,
   & button,
   & span,

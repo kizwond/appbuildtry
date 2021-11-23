@@ -57,7 +57,7 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
       key: "categoryName",
       className: "categoryCol",
       align: "center",
-      width: 50,
+      width: 60,
       dataIndex: "categoryName",
       render: (_value, _record) => (_record.relationship === "parent" ? <StyledDivEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledDivEllipsis> : null),
     },
@@ -82,7 +82,7 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
       className: "normal",
       align: "center",
       ellipsis: true,
-      width: 40,
+      width: 60,
       render: (_value, _record) => (
         <div style={{ width: "100%" }}>
           <Popover
@@ -122,22 +122,20 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
       dataIndex: "_id",
       className: "Row-Last-One",
       align: "center",
-      width: 60,
+      width: 75,
       render: (value, _record, index) => (
         <div>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              if (expandedRowKeys.includes(value)) {
-                setExpandedRowKeys([]);
-              } else {
+          {expandedRowKeys.includes(value) ? null : (
+            <Button
+              type="link"
+              size="small"
+              onClick={() => {
                 setExpandedRowKeys([value]);
-              }
-            }}
-          >
-            멘토링 요청
-          </Button>
+              }}
+            >
+              멘토링 요청
+            </Button>
+          )}
         </div>
       ),
     },
@@ -148,8 +146,8 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
       {myBook2 && (
         <Table
           dataSource={dataSource}
-          tableLayout="fixed"
           loading={loading}
+          rowKey={(record) => record.key}
           columns={columns}
           size="small"
           pagination={false}
@@ -157,54 +155,12 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
             record.classType === "last-odd-book" ? "lastOddBook" : record.classType === "last-even-book" ? "lastEvenBook" : record.classType === "even-book" ? "EvenNumberRow" : "OddNumberRow"
           }
           expandable={{
-            expandRowByClick: true,
             expandIcon: () => null,
+            columnWidth: 0,
             expandedRowKeys,
             expandedRowRender: (_record, _index) => (
               <M_RequestMentoringCard resetExpandedRowKeys={resetExpandedRowKeys} mybook_id={_record._id} mybookTitle={_record.title} cardVisible={expandedRowKeys.includes(_record._id)} />
-              // <Card
-              //   style={{ margin: "8px 0 8px", minWidth: 320 }}
-              //   actions={[
-              //     <div
-              //       key="accept"
-              //       onClick={() => {
-              //         // acceptMentroingRequest({
-              //         //   variables: {
-              //         //     forAcceptMentoringReq: {
-              //         //       menteeGroup_id: selectorRef.current,
-              //         //       menteeUser_id,
-              //         //       mentorUser_id,
-              //         //       mybook_id,
-              //         //     },
-              //         //   },
-              //         // });
-              //       }}
-              //     >
-              //       취소
-              //     </div>,
-              //     <div key="decline">신청</div>,
-              //   ]}
-              //   size="small"
-              // >
-              //   <Row gutter={[8, 12]}>
-              //     <Col span={5}>아이디:</Col>
-              //     <Col span={19}>
-              //       <Search size="small" allowClear onSearch={(value) => console.log(value)} enterButton placeholder="요청할 멘토의 아이디를 입력하세요" />
-              //       <span style={{ color: "red" }}>입력하신 아이디는 존재하지 않습니다.</span>
-              //     </Col>
-
-              //     <Col span={5}>소속(정보):</Col>
-              //     <Col span={19}>한국대학교 영문학과</Col>
-
-              //     <Col span={5}>요청 메세지:</Col>
-              //     <Col span={19}>
-              //       <TextArea size="small" allowClear showCount autoSize placeholder="요청 메세지를 입력하세요" />
-              //       <span style={{ color: "red" }}>10자 이상을 입력해주세요.</span>
-              //     </Col>
-              //   </Row>
-              // </Card>
             ),
-            childrenColumnName: "주까",
           }}
         />
       )}
@@ -219,6 +175,9 @@ const StyledCard = styled(Card)`
   /* & * {
     font-size: 0.8rem;
   } */
+
+  min-width: 355px;
+
   & div,
   & button,
   & span,

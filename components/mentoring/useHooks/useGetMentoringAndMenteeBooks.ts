@@ -46,24 +46,21 @@ const useGetMentoringAndMenteeBooks = () => {
       menteeBooks &&
       mentoringData &&
       _(mentoringData.mentoring_getMentoring.mentorings[0].myMentees)
-        .map(({ mybookTitle, menteeGroup_id, mybook_id, menteeUsername, menteeName }) => ({
-          key: mybook_id,
-          mybookTitle,
-          mybook_id,
-          menteeUsername,
-          menteeName,
-          menteeGroup_id,
-          menteeGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup, { _id: menteeGroup_id }).name,
+        .map((mentee) => ({
+          ...mentee,
+          key: mentee.mybook_id,
+          menteeNameAndId: `${mentee.menteeName}(${mentee.menteeUsername})`,
+          menteeGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup, { _id: mentee.menteeGroup_id }).name,
           studyHistory:
-            _(_.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mybook_id).stats?.studyHistory)
+            _(_.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).stats?.studyHistory)
               .map((history) => history.studyHour)
-              .take(5)
+              .take(3)
               .value() === []
-              ? _(_.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mybook_id).stats.studyHistory)
+              ? _(_.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).stats.studyHistory)
                   .map((history) => history.studyHour)
-                  .take(5)
+                  .take(3)
                   .value()
-              : ["0.5", "2", "0", "1", "2"],
+              : ["0.5", "2", "0"],
         }))
         .value()
     );

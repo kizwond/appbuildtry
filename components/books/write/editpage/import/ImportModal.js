@@ -1,7 +1,6 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { Modal, Button, Select } from "antd";
-import { DownloadOutlined } from "@ant-design/icons";
-import axios from "axios";
+import { UploadOutlined } from "@ant-design/icons";
 import { UploadExcelFile, ImportExcelFile, CancelImport, InspectTargetSheet } from "../../../../../graphql/query/excelUpload";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import ResultTable from "./ResultTable";
@@ -49,7 +48,7 @@ const ImportModal = ({ indexList, cardTypes, cardTypeInfo, cardSetId, indexChang
     var sheet_list = sheetList.map((item, index) => {
       return (
         <>
-          <Option value={index+1}>{item.name}</Option>
+          <Option value={index + 1}>{item.name}</Option>
         </>
       );
     });
@@ -79,11 +78,9 @@ const ImportModal = ({ indexList, cardTypes, cardTypeInfo, cardSetId, indexChang
     setIndexSelected(value);
   }
 
-  
   //검토요청부분
   function showdata4(data) {
     console.log("inpection results :", data);
-
   }
   async function sheetConfirm(mybook_id) {
     console.log(file);
@@ -192,10 +189,7 @@ const ImportModal = ({ indexList, cardTypes, cardTypeInfo, cardSetId, indexChang
 
   return (
     <>
-      <Button type="default" size="small" onClick={showModal}>
-        <span style={{ fontSize: "0.8rem" }}>import</span>
-        <DownloadOutlined />
-      </Button>
+      <UploadOutlined style={{fontSize:"1.2rem"}} onClick={showModal} />
       <Modal footer={null} title="Basic Modal" width={800} visible={visiable} onOk={handleOk} onCancel={handleCancel}>
         <form action="#">
           <input

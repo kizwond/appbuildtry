@@ -388,7 +388,14 @@ class EditorFromCard extends Component {
       }
     }
 
-    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array, parentId: this.props.parentId, flagStar:this.state.flagStar, flagComment:this.state.flagComment };
+    const values = {
+      face1: face1_array,
+      face2: face2_array,
+      annotation: annotation_array,
+      parentId: this.props.parentId,
+      flagStar: this.state.flagStar,
+      flagComment: this.state.flagComment,
+    };
     console.log(this.props.parentId);
     this.props.onFinish(values, "inCard", this.props.parendId);
 
@@ -432,38 +439,38 @@ class EditorFromCard extends Component {
         <div id="editor">
           <div id="toolbarContainer"></div>
           <div style={{ padding: "3px", border: "1px solid lightgrey" }}>
-            <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"2px" }}>
-            <Select size="small" defaultValue={this.state.flagStar} style={{ width: 95, fontSize:"0.8rem"}} onChange={this.handleFlagStar}>
-              <Option value="default" disabled>
-                플래그선택
-              </Option>
-              <Option value="1">
-                <StarFilled style={{color:"#fff006"}}/>
-              </Option>
-              <Option value="2">
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-              </Option>
-              <Option value="3">
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-              </Option>
-              <Option value="4">
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-              </Option>
-              <Option value="5">
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-                <StarFilled style={{color:"#fff006"}}/>
-              </Option>
-            </Select>
-            <Input size="small" style={{fontSize:"0.8rem", height:"24px"}} onChange={this.handleFlagComment} value={this.state.flagComment} placeholder="코멘트 입력" />
+            <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "3px" }}>
+              <Select size="small" defaultValue={this.state.flagStar} style={{ flexBasis: "100px", flexShrink: 0, fontSize: "0.8rem", marginRight:"3px" }} onChange={this.handleFlagStar}>
+                <Option value="default" disabled>
+                  플래그선택
+                </Option>
+                <Option value="1">
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+                <Option value="2">
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+                <Option value="3">
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+                <Option value="4">
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+                <Option value="5">
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                  <StarFilled style={{ color: "#fff006" }} />
+                </Option>
+              </Select>
+              <Input size="small" style={{fontSize: "0.8rem", height: "24px" }} onChange={this.handleFlagComment} value={this.state.flagComment} placeholder="코멘트 입력" />
             </div>
             <div style={{ marginBottom: "10px" }}>{editorList}</div>
             <div style={{ textAlign: "right" }}>

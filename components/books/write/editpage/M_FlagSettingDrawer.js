@@ -1,27 +1,13 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Drawer, Button, Space, Divider } from "antd";
-import M_CardTypeSettingModal from "../../../../components/books/write/cardtype/M_CardTypeSettingModal";
 import CardTypeSetting from "./cardtype/CardTypeSetting";
 import CardtypeContainer from "../../write/editpage/cardtype/CardtypeContainer";
 import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useQuery, useMutation } from "@apollo/client";
-import { SettingOutlined } from "@ant-design/icons";
-import { useMediaQuery } from "react-responsive";
+import { FlagOutlined } from "@ant-design/icons";
 
-const Desktop = ({ children }) => {
-  const isDesktop = useMediaQuery({ minWidth: 992 });
-  return isDesktop ? children : null;
-};
-const Tablet = ({ children }) => {
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-  return isTablet ? children : null;
-};
-const Mobile = ({ children }) => {
-  const isMobile = useMediaQuery({ maxWidth: 767 });
-  return isMobile ? children : null;
-};
 
-const RightDrawer = () => {
+const M_FlagSettingDrawer = () => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
@@ -86,22 +72,11 @@ const RightDrawer = () => {
 
   return (
     <>
-      <Desktop>
-        <Button type="primary" onClick={showDrawer}>
-          카드설정
-        </Button>
-      </Desktop>
-      <Tablet>
-        <SettingOutlined onClick={showDrawer} style={{ fontSize: "1rem" }} />
-      </Tablet>
-      <Mobile>
-        <SettingOutlined style={{fontSize:"1.2rem"}} onClick={showDrawer} />
-      </Mobile>
-
+      <FlagOutlined style={{fontSize:"1.2rem"}} onClick={showDrawer}/>
       <Drawer
         title={
           <>
-            <span style={{ fontSize: "1rem", fontWeight: "700" }}>카드설정</span>
+            <span style={{ fontSize: "1rem", fontWeight: "700" }}>플래그 세팅</span>
           </>
         }
         placement="right"
@@ -111,20 +86,10 @@ const RightDrawer = () => {
         mask={true}
         width={250}
       >
-        <Space direction="vertical">
-          <div style={{ display: "flex", width: "250px", padding: "10px 10px 2px 10px", alignItems:"center" }}>
-            <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
-            <M_CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
-          </div>
-          {cardTypeDetail && (
-            <>
-              <CardtypeContainer cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />
-            </>
-          )}
-        </Space>
+          <div>플래그 세팅</div>
       </Drawer>
     </>
   );
 };
 
-export default RightDrawer;
+export default M_FlagSettingDrawer;

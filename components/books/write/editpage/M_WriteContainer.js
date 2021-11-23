@@ -4,6 +4,7 @@ import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Button, Select } from "antd";
 import { AddCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
+import { StarOutlined, StarFilled } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -393,6 +394,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       const row_font = current_card_style[0].row_font;
 
       // console.log(row_font);
+      console.log(content);
       console.log(contentsList);
       const show_contents = contentsList.map((content_value) => {
         if (content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) {
@@ -405,6 +407,52 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
           console.log("해당카드 정보", content);
           console.log("해당카드 정보", content_value);
 
+          if (content.content.makerFlag.value === 1) {
+            var ratings = <StarFilled style={{ color: "#fff006" }} />;
+          } else if (content.content.makerFlag.value === 2) {
+            var ratings = (
+              <>
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+              </>
+            );
+          } else if (content.content.makerFlag.value === 3) {
+            var ratings = (
+              <>
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+              </>
+            );
+          } else if (content.content.makerFlag.value === 4) {
+            var ratings = (
+              <>
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+              </>
+            );
+          } else if (content.content.makerFlag.value === 5) {
+            var ratings = (
+              <>
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+                <StarFilled style={{ color: "#fff006" }} />
+              </>
+            );
+          } else {
+            var ratings = <></>;
+          }
+
+          if (content.content.makerFlag.comment) {
+            var comment = content.content.makerFlag.comment;
+          } else {
+            comment = "";
+          }
+
           return (
             <>
               {content.card_info.cardtype === "read" && (
@@ -412,6 +460,14 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                   <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
+                      {content.content.makerFlag.value !== null && (
+                        <>
+                          <div>
+                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
+                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
+                          </div>
+                        </>
+                      )}
                       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                         <div
                           style={{
@@ -558,6 +614,14 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                   <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
+                      {content.content.makerFlag.value !== null && (
+                        <>
+                          <div>
+                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
+                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
+                          </div>
+                        </>
+                      )}
                       <div
                         style={{
                           backgroundColor: face_style[0].background.color,
@@ -642,6 +706,14 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                     <div style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "general")}>
                         {/* 페이스 스타일 영역 */}
+                        {content.content.makerFlag.value !== null && (
+                        <>
+                          <div>
+                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
+                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
+                          </div>
+                        </>
+                      )}
                         <div
                           style={{
                             backgroundColor: face_style[0].background.color,
@@ -736,6 +808,14 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
                       >
                         {/* 페이스1 스타일 영역 */}
+                        {content.content.makerFlag.value !== null && (
+                        <>
+                          <div>
+                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
+                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
+                          </div>
+                        </>
+                      )}
                         <div
                           style={{
                             backgroundColor: face_style[0].background.color,
@@ -898,6 +978,14 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
                       >
                         {/* 페이스1 스타일 영역 */}
+                        {content.content.makerFlag.value !== null && (
+                        <>
+                          <div>
+                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
+                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
+                          </div>
+                        </>
+                      )}
                         <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", width: "100%" }}>
                           <div
                             style={{

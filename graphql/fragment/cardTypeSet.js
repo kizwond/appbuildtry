@@ -7,6 +7,62 @@ export const FRAGMENT_MY_CARD_TYPE_SET = gql`
       user_id
       mybook_id
     }
+    makerFlag_style {
+      row_style {
+        background {
+          color
+          opacity
+        }
+        outer_margin {
+          top
+          bottom
+          left
+          right
+        }
+        inner_padding {
+          top
+          bottom
+          left
+          right
+        }
+        border {
+          top {
+            bordertype
+            thickness
+            color
+          }
+          bottom {
+            bordertype
+            thickness
+            color
+          }
+          left {
+            bordertype
+            thickness
+            color
+          }
+          right {
+            bordertype
+            thickness
+            color
+          }
+        }
+      }
+      figure_style {
+        shape
+        size
+        color
+      }
+      comment_font {
+        font
+        size
+        color
+        align
+        bold
+        italic
+        underline
+      }
+    }
     cardtypes {
       _id
       cardtype_info {

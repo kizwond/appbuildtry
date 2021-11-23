@@ -7,7 +7,7 @@ import ResultTable from "./ResultTable";
 
 const { Option } = Select;
 
-const ImportModal = ({ indexList, cardTypes, cardTypeInfo, cardSetId, indexChanged, indexSetId }) => {
+const ImportModal = ({ indexList, cardSetId }) => {
   const [file, setFile] = useState(null);
   const [visiable, setVisiable] = useState(null);
   const [newFileName, setNewFileName] = useState(null);

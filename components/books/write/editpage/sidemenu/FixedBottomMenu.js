@@ -19,6 +19,7 @@ const FloatingMenu = ({
   indexSetId,
   book_id,
   selectedCardType,
+  cardTypeSets,
 }) => {
   const addCard = () => {
     setCardId("");
@@ -71,8 +72,8 @@ const FloatingMenu = ({
           }}
         >
           <PlusSquareOutlined style={{fontSize:"1.2rem"}} onClick={addCard} />
-          <ImportModal indexList={indexList} cardTypes={cardTypes} cardTypeInfo={cardTypeInfo} cardSetId={cardSetId} indexChanged={indexChanged} indexSetId={indexSetId} />
-          <M_FlagSettingDrawer />
+          <ImportModal indexList={indexList} cardSetId={cardSetId} />
+          <M_FlagSettingDrawer cardTypeSets={cardTypeSets} />
           <M_RightDrawer book_id={book_id} />
         </div>
       </div>

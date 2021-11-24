@@ -240,13 +240,19 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       console.log("노멀모드로 에디터가 뿌려질것임. 여기다가 setCardId() 이걸 했는데 안먹음.");
       console.log(cardId);
       setEditorOn(editor);
-      executeScroll(); //스크롤
+      // executeScroll(); //스크롤
     } else if (from === "inCard") {
       setEditorOnFromCard(editorFromCard);
     }
     
   };
 
+  useEffect(() => {
+    if(editorOn){
+      executeScroll();
+    }
+  }, [executeScroll, editorOn ]);
+  
 
   const onFinish = (values, from) => {
     console.log(values);
@@ -1267,6 +1273,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             setEditorOnFromCard={setEditorOnFromCard}
             setCardId={setCardId}
             cardTypeSets={cardTypeSets}
+            cardTypeSetId={cardTypeSetId}
           />
         </>
       )}

@@ -4,7 +4,7 @@ import { Form, Input, Button, Tabs, Select, Cascader, DatePicker, Space, TreeSel
 import FlagRowSetting from "./FlagRowSetting";
 const { TabPane } = Tabs;
 
-const FlagStyleContainer = ({ }) => {
+const FlagStyleContainer = ({cardTypeSets, cardTypeSetId }) => {
   const [cardType, setCardType] = useState();
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const FlagStyleContainer = ({ }) => {
       <div style={{ padding: "0px 10px 0px 10px" }}>
         <Tabs className="card_setting_tab" defaultActiveKey="1" type="card" size="small">
           <TabPane tab={<><span style={{fontSize:"0.8rem"}}>행설정</span></>} key="1">
-            <FlagRowSetting/>
+            <FlagRowSetting cardTypeSets={cardTypeSets} cardTypeSetId={cardTypeSetId}/>
           </TabPane>
           <TabPane tab={<><span style={{fontSize:"0.8rem"}}>플래그</span></>}  key="2">
           <div>플래그</div> </TabPane>

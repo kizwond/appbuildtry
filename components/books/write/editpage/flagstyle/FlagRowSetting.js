@@ -2,19 +2,11 @@ import React, { useState, useEffect, Fragment } from "react";
 import { GetCardType } from "../../../../../graphql/query/cardtype";
 import { useQuery, useMutation } from "@apollo/client";
 import { Form, Input, Button, Radio, Select, Divider, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
-import { UpdateCardType, GetCardTypeSet, UpdateRowStyle } from "../../../../../graphql/query/cardtype";
+import { UpdateMakerFlagRowStyle } from "../../../../../graphql/mutation/flagUpdate";
 import { CompactPicker } from "react-color";
 const { Option } = Select;
 
-const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedCardTypeList }) => {
-  const [cardType, setCardType] = useState([]);
-  const [current_cardTypeId, set_current_CardTypeId] = useState();
-  const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
-
-  const [faceSelected, setFaceSelected] = useState("default");
-  const [rowSelected, setRowSelected] = useState("default");
-  const [rowOptions, setRowOptions] = useState();
-
+const FlagRowSetting = ({ cardTypeSets, cardTypeSetId }) => {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
 
   const [displayColorPicker1, setDisplayColorPicker1] = useState(false);
@@ -23,7 +15,6 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
   const [displayColorPicker4, setDisplayColorPicker4] = useState(false);
 
   const [backgroundColor, setBackgroundColor] = useState();
-  const [opacity, setOpacity] = useState();
 
   const [outer_margin_top, set_outer_margin_top] = useState();
   const [outer_margin_bottom, set_outer_margin_bottom] = useState();
@@ -51,29 +42,52 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
   const [border_right_color, set_border_right_color] = useState();
 
   useEffect(() => {
-    console.log("카드 디테일 세팅 화면 온");
-    if (cardTypeId) {
-      console.log("cardTypeId", cardTypeId);
-      setCardType(cardTypeDetail[0].cardtype_info.cardtype);
-    }
-  }, [cardTypeId, cardTypeDetail]);
+    console.log("플래그 디테일 세팅 화면 온");
+    if (cardTypeSets) {
+      console.log(cardTypeSetId);
+      console.log("cardTypeSets", cardTypeSets);
+      setBackgroundColor(cardTypeSets[0].makerFlag_style.row_style.background.color);
 
-  const [cardtypeset_updaterowstyle] = useMutation(UpdateRowStyle, { onCompleted: afterupdatemutation });
+      set_outer_margin_top(cardTypeSets[0].makerFlag_style.row_style.outer_margin.top);
+      set_outer_margin_bottom(cardTypeSets[0].makerFlag_style.row_style.outer_margin.bottom);
+      set_outer_margin_left(cardTypeSets[0].makerFlag_style.row_style.outer_margin.left);
+      set_outer_margin_right(cardTypeSets[0].makerFlag_style.row_style.outer_margin.right);
+
+      set_inner_padding_top(cardTypeSets[0].makerFlag_style.row_style.inner_padding.top);
+      set_inner_padding_bottom(cardTypeSets[0].makerFlag_style.row_style.inner_padding.bottom);
+      set_inner_padding_left(cardTypeSets[0].makerFlag_style.row_style.inner_padding.left);
+      set_inner_padding_right(cardTypeSets[0].makerFlag_style.row_style.inner_padding.right);
+
+      set_border_top_type(cardTypeSets[0].makerFlag_style.row_style.border.top.bordertype);
+      set_border_bottom_type(cardTypeSets[0].makerFlag_style.row_style.border.bottom.bordertype);
+      set_border_left_type(cardTypeSets[0].makerFlag_style.row_style.border.left.bordertype);
+      set_border_right_type(cardTypeSets[0].makerFlag_style.row_style.border.right.bordertype);
+
+      set_border_top_thickness(cardTypeSets[0].makerFlag_style.row_style.border.top.thickness);
+      set_border_bottom_thickness(cardTypeSets[0].makerFlag_style.row_style.border.bottom.thickness);
+      set_border_left_thickness(cardTypeSets[0].makerFlag_style.row_style.border.left.thickness);
+      set_border_right_thickness(cardTypeSets[0].makerFlag_style.row_style.border.right.thickness);
+
+      set_border_top_color(cardTypeSets[0].makerFlag_style.row_style.border.top.color);
+      set_border_bottom_color(cardTypeSets[0].makerFlag_style.row_style.border.bottom.color);
+      set_border_left_color(cardTypeSets[0].makerFlag_style.row_style.border.left.color);
+      set_border_right_color(cardTypeSets[0].makerFlag_style.row_style.border.right.color);
+    }
+  }, [cardTypeSets, cardTypeSetId]);
+
+  const [cardtypeset_updateMakerFlagRowStyle] = useMutation(UpdateMakerFlagRowStyle, { onCompleted: afterupdatemutation });
 
   function afterupdatemutation(data) {
     console.log("data", data);
-    getUpdatedCardTypeList(data.cardtypeset_updaterowstyle.cardtypesets[0].cardtypes);
   }
 
   async function updaterowstyle() {
+      console.log(backgroundColor)
     try {
-      await cardtypeset_updaterowstyle({
+      await cardtypeset_updateMakerFlagRowStyle({
         variables: {
-          forUpdateRowStyle: {
-            cardtype_id: cardTypeId,
+          forUpdateMakerFlagRowStyle: {
             cardtypeset_id: cardTypeSetId,
-            target_face: faceSelected,
-            target_row: Number(rowSelected),
             row_style: {
               background: { color: backgroundColor, opacity: 100 },
               outer_margin: {
@@ -119,8 +133,6 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
     }
   }
 
-  const backgroundColorHandler = (e) => set_background_color(e.target.value);
-
   const outerMarginTopHandler = (e) => set_outer_margin_top(e);
   const outerMarginBottomHandler = (e) => set_outer_margin_bottom(e);
   const outerMarginLeftHandler = (e) => set_outer_margin_left(e);
@@ -141,128 +153,7 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
   const borderLeftThicknessHandler = (e) => set_border_left_thickness(e);
   const borderRightThicknessHandler = (e) => set_border_right_thickness(e);
 
-  // const borderTopColorHandler = (e) => set_border_top_color(e.target.value);
-  // const borderBottomColorHandler = (e) => set_border_bottom_color(e.target.value);
-  // const borderLeftColorHandler = (e) => set_border_left_color(e.target.value);
-  // const borderRightColorHandler = (e) => set_border_right_color(e.target.value);
-
   const handleSubmit = () => updaterowstyle();
-
-  const resetValue = () => {
-    setBackgroundColor();
-    set_outer_margin_top();
-    set_outer_margin_bottom();
-    set_outer_margin_left();
-    set_outer_margin_right();
-    set_inner_padding_top();
-    set_inner_padding_bottom();
-    set_inner_padding_left();
-    set_inner_padding_right();
-    set_border_top_type();
-    set_border_bottom_type();
-    set_border_left_type();
-    set_border_right_type();
-    set_border_top_thickness();
-    set_border_bottom_thickness();
-    set_border_left_thickness();
-    set_border_right_thickness();
-    set_border_top_color();
-    set_border_bottom_color();
-    set_border_left_color();
-    set_border_right_color();
-  };
-  const selectFaceHandler = (e) => {
-    console.log(e);
-    setFaceSelected(e);
-    if (e === "face1") {
-      setRowSelected("default");
-      resetValue();
-      console.log("face1selected");
-      console.log("cardTypeDetail : ", cardTypeDetail[0].cardtype_info.num_of_row.face1);
-      const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face1;
-      let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
-        nums.push(i);
-      }
-      console.log(nums);
-      const rows = nums.map((item) => (
-        <>
-          <React.Fragment key={item - 1}>
-            <Select.Option value={item - 1}>{item}</Select.Option>
-          </React.Fragment>
-        </>
-      ));
-      setRowOptions(rows);
-    } else if (e === "face2") {
-      setRowSelected("default");
-      resetValue();
-      console.log("face2selected");
-      const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face2;
-      let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
-        nums.push(i);
-      }
-      console.log(nums);
-      const rows = nums.map((item) => (
-        <>
-          <React.Fragment key={item - 1}>
-            <Select.Option value={item - 1}>{item}</Select.Option>
-          </React.Fragment>
-        </>
-      ));
-      setRowOptions(rows);
-    } else if (e === "annotation") {
-      setRowSelected("default");
-      resetValue();
-      console.log("face3selected");
-      const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.annotation;
-      let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
-        nums.push(i);
-      }
-      console.log(nums);
-      const rows = nums.map((item) => (
-        <>
-          <React.Fragment key={item - 1}>
-            <Select.Option value={item - 1}>{item}</Select.Option>
-          </React.Fragment>
-        </>
-      ));
-      setRowOptions(rows);
-    }
-  };
-  const selectRowHandler = (e) => {
-    console.log(e);
-    setRowSelected(e);
-
-    setBackgroundColor(cardTypeDetail[0].row_style[faceSelected][e].background.color);
-    setOpacity(cardTypeDetail[0].face_style[e].background.opacity);
-
-    set_outer_margin_top(cardTypeDetail[0].row_style[faceSelected][e].outer_margin.top);
-    set_outer_margin_bottom(cardTypeDetail[0].row_style[faceSelected][e].outer_margin.bottom);
-    set_outer_margin_left(cardTypeDetail[0].row_style[faceSelected][e].outer_margin.left);
-    set_outer_margin_right(cardTypeDetail[0].row_style[faceSelected][e].outer_margin.right);
-
-    set_inner_padding_top(cardTypeDetail[0].row_style[faceSelected][e].inner_padding.top);
-    set_inner_padding_bottom(cardTypeDetail[0].row_style[faceSelected][e].inner_padding.bottom);
-    set_inner_padding_left(cardTypeDetail[0].row_style[faceSelected][e].inner_padding.left);
-    set_inner_padding_right(cardTypeDetail[0].row_style[faceSelected][e].inner_padding.right);
-
-    set_border_top_type(cardTypeDetail[0].row_style[faceSelected][e].border.top.bordertype);
-    set_border_bottom_type(cardTypeDetail[0].row_style[faceSelected][e].border.bottom.bordertype);
-    set_border_left_type(cardTypeDetail[0].row_style[faceSelected][e].border.left.bordertype);
-    set_border_right_type(cardTypeDetail[0].row_style[faceSelected][e].border.right.bordertype);
-
-    set_border_top_thickness(cardTypeDetail[0].row_style[faceSelected][e].border.top.thickness);
-    set_border_bottom_thickness(cardTypeDetail[0].row_style[faceSelected][e].border.bottom.thickness);
-    set_border_left_thickness(cardTypeDetail[0].row_style[faceSelected][e].border.left.thickness);
-    set_border_right_thickness(cardTypeDetail[0].row_style[faceSelected][e].border.right.thickness);
-
-    set_border_top_color(cardTypeDetail[0].row_style[faceSelected][e].border.top.color);
-    set_border_bottom_color(cardTypeDetail[0].row_style[faceSelected][e].border.bottom.color);
-    set_border_left_color(cardTypeDetail[0].row_style[faceSelected][e].border.left.color);
-    set_border_right_color(cardTypeDetail[0].row_style[faceSelected][e].border.right.color);
-  };
 
   const handleClick = () => {
     setDisplayColorPicker(!displayColorPicker);
@@ -273,6 +164,7 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
   };
 
   const handleChangeComplete = (color) => {
+      console.log(color.hex)
     setBackgroundColor(color.hex);
   };
 
@@ -329,11 +221,7 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
       <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
         <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: "0.8rem" }}>행배경색</div>
-          <Button
-            size="small"
-            onClick={handleClick}
-            style={{ width: "80px", fontSize: "0.8rem", background: backgroundColor }}
-          >
+          <Button size="small" onClick={handleClick} style={{ width: "80px", fontSize: "0.8rem", background: backgroundColor }}>
             Color
           </Button>
           {displayColorPicker ? (
@@ -395,16 +283,12 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
               <Option value="dotted">dotted</Option>
             </Select>
             {/* <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input> */}
-            <Button
-              size="small"
-              onClick={handleClick1}
-              style={{ width: "50px", fontSize: "0.8rem", background:border_top_color }}
-            >
+            <Button size="small" onClick={handleClick1} style={{ width: "50px", fontSize: "0.8rem", background: border_top_color }}>
               Color
             </Button>
             {displayColorPicker1 ? (
-              <div style={popover1}>
-                <div style={cover1} onClick={handleClose1} />
+              <div style={popover}>
+                <div style={cover} onClick={handleClose1} />
                 <CompactPicker color={border_top_color} onChange={borderTopColorHandler} />
                 {/* <span>none</span> */}
               </div>
@@ -419,11 +303,7 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
               <Option value="dotted">dotted</Option>
             </Select>
             {/* <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input> */}
-            <Button
-              size="small"
-              onClick={handleClick2}
-              style={{ width: "50px", fontSize: "0.8rem", background:border_bottom_color }}
-            >
+            <Button size="small" onClick={handleClick2} style={{ width: "50px", fontSize: "0.8rem", background: border_bottom_color }}>
               Color
             </Button>
             {displayColorPicker2 ? (
@@ -443,11 +323,7 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
               <Option value="dotted">dotted</Option>
             </Select>
             {/* <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input> */}
-            <Button
-              size="small"
-              onClick={handleClick3}
-              style={{ width: "50px", fontSize: "0.8rem", background:border_left_color }}
-            >
+            <Button size="small" onClick={handleClick3} style={{ width: "50px", fontSize: "0.8rem", background: border_left_color }}>
               Color
             </Button>
             {displayColorPicker3 ? (
@@ -467,11 +343,7 @@ const FlagRowSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedC
               <Option value="dotted">dotted</Option>
             </Select>
             {/* <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input> */}
-            <Button
-              size="small"
-              onClick={handleClick4}
-              style={{ width: "50px", fontSize: "0.8rem", background:border_right_color }}
-            >
+            <Button size="small" onClick={handleClick4} style={{ width: "50px", fontSize: "0.8rem", background: border_right_color }}>
               Color
             </Button>
             {displayColorPicker4 ? (

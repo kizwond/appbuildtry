@@ -1,4 +1,5 @@
-import { Col, Input, Row, Table } from "antd";
+import { EditFilled } from "@ant-design/icons";
+import { Button, Col, Input, Row, Table, Tag } from "antd";
 import { useEffect, useRef, useState } from "react";
 
 const M_MenteeGroupTable = ({ menteeGroup }) => {
@@ -20,18 +21,17 @@ const M_MenteeGroupTable = ({ menteeGroup }) => {
       <Table
         size="small"
         pagination={false}
-        dataSource={menteeGroup}
+        dataSource={menteeGroup.map((group) => ({ ...group, key: group._id }))}
         bordered={false}
         columns={[
           {
             title: "그룹명",
             dataIndex: "name",
-            width: "35%",
             render: function menteeGroupElement(value, record, index) {
               return (
                 <>
                   <Row>
-                    <Col span={9}>
+                    <Col span={activedInput.includes(record._id) ? 17 : 12}>
                       <Input
                         ref={(ref) => (inputRefs.current[record._id] = ref)}
                         size="small"
@@ -42,22 +42,41 @@ const M_MenteeGroupTable = ({ menteeGroup }) => {
                       />
                     </Col>
                     <Col
-                      span={5}
+                      span={activedInput.includes(record._id) ? 7 : 3}
                       onClick={() => {
-                        if (activedInput.includes(record._id)) {
-                          setActivedInput("");
-                          console.log(inputRefs);
-                        } else {
+                        if (!activedInput.includes(record._id)) {
                           clearTimeout(focusInput);
                           setActivedInput(record._id);
                           focusInput = setTimeout(() => inputRefs.current[record._id].focus(), 100);
                         }
                       }}
+                      style={{ display: "flex", justifyContent: "center" }}
                     >
-                      이름
+                      {!activedInput.includes(record._id) ? (
+                        <EditFilled style={{ fontSize: "1.1rem" }} />
+                      ) : (
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <div
+                            onClick={() => {
+                              setActivedInput("");
+                              // 서버요청보내야함
+                            }}
+                          >
+                            <Tag>수정</Tag>
+                          </div>
+                          <div
+                            onClick={() => {
+                              setActivedInput("");
+                              setInputValues({ ...inputValues, [record._id]: value });
+                            }}
+                          >
+                            <Tag>취소</Tag>
+                          </div>
+                        </div>
+                      )}
                     </Col>
-                    <Col span={6}>상하이동</Col>
-                    <Col span={4}>삭제</Col>
+                    <Col span={activedInput.includes(record._id) ? 0 : 6}>상하이동</Col>
+                    <Col span={activedInput.includes(record._id) ? 0 : 3}>삭제</Col>
                   </Row>
                 </>
               );
@@ -66,7 +85,8 @@ const M_MenteeGroupTable = ({ menteeGroup }) => {
           // {
           //   title: "그룹명 변경",
           //   align: "center",
-          //   width: "15%",
+          //   width: 0,
+          //   colSpan: 0,
           //   onCell: (record, rowIndex) => {
           //     return {
           //       onClick: (event) => {}, // click row

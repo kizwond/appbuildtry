@@ -21,15 +21,15 @@ export default function summaryAll(cardsList, checkedKeys) {
     )
     .flat()
     .map((item) => ({
-      progress_for_total_card: item.num_cards.total.progress,
-      total_cards_number_for_total_card: item.num_cards.total.total,
-      yet_cards_number_for_total_card: item.num_cards.total.yet,
-      total_on_study_cards_number_for_total_card: item.num_cards.total.ing.total,
-      until_today_on_study_cards_number_for_total_card: item.num_cards.total.ing.untilToday,
-      until_now_on_study_cards_number_for_total_card: item.num_cards.total.ing.untilNow,
-      from_tomorrow_on_study_cards_number_for_total_card: item.num_cards.total.ing.afterTomorrow,
-      completed_cards_number_for_total_card: item.num_cards.total.completed,
-      holding_cards_number_for_total_card: item.num_cards.total.hold,
+      progress_for_total_card: item.numCards.total.progress,
+      total_cards_number_for_total_card: item.numCards.total.total,
+      yet_cards_number_for_total_card: item.numCards.total.yet,
+      total_on_study_cards_number_for_total_card: item.numCards.total.ing.total,
+      until_today_on_study_cards_number_for_total_card: item.numCards.total.ing.untilToday,
+      until_now_on_study_cards_number_for_total_card: item.numCards.total.ing.untilNow,
+      from_tomorrow_on_study_cards_number_for_total_card: item.numCards.total.ing.afterTomorrow,
+      completed_cards_number_for_total_card: item.numCards.total.completed,
+      holding_cards_number_for_total_card: item.numCards.total.hold,
     }))
     .reduce(sumOfObjects, {
       progress_for_total_card: 0,

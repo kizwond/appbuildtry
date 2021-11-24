@@ -1,9 +1,7 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID = gql`
-  query getSessionCardsDataByBooksId(
-    $forGetNumCardsbyIndex: forGetNumCardsbyIndex
-  ) {
+  query getSessionCardsDataByBooksId($forGetNumCardsbyIndex: forGetNumCardsbyIndex) {
     session_getNumCardsbyIndex(forGetNumCardsbyIndex: $forGetNumCardsbyIndex) {
       status
       msg
@@ -18,7 +16,7 @@ export const GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID = gql`
           name
           level
           indextype
-          num_cards {
+          numCards {
             total {
               progress
               total

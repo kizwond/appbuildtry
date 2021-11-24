@@ -10,21 +10,22 @@ import useGetMentoringAndMenteeBooks from "../../../components/mentoring/useHook
 
 import styled from "styled-components";
 import { Badge, Button, Card, Col, Drawer, Table, Tabs, Row, Avatar, Select, Space, Tag, Alert, Input } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { GroupOutlined, PlusOutlined } from "@ant-design/icons";
 
 import Layout from "../../../components/layout/M_Layout";
 import M_MentoringBooksTable from "../../../components/mentoring/M_MentoringBooksTable.js";
 import M_MentosTable from "../../../components/mentoring/M_MentorsTable";
 import M_SentMentoringRequestCard from "../../../components/mentoring/M_SentMentoringRequestCard";
+import M_ReceivedMentoringRequestCard from "../../../components/mentoring/M_ReceivedMentoringRequestCard";
+import M_MenteeGroupTable from "../../../components/mentoring/M_MenteeGroupTable";
 
 const MentoringHome = () => {
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerRequestMentoringVisible, setDrawerRequestMentoringVisible] = useState(false);
   const [drawerSentMentoringRequestVisible, setDrawerSentMentoringRequestVisible] = useState(false);
-  const selectorRef = useRef("");
+  const [drawerMenteeGroupVisible, setDrawerMenteeGroupVisible] = useState(false);
 
-  const [acceptMentroingRequest] = useMutation(MUTATION_ACCEPT_MENTOR_REQUEST, { onCompleted: (data) => console.log("멘토요청 수락 후 받은 데이터", data) });
   const [declineMentroRequest] = useMutation(MUTATION_CANCEL_MENTORING_REQUEST, { onCompleted: (data) => console.log("멘토요청 취소 후 받은 데이터", data) });
   const declineMentoring = useCallback(async ({ menteeUser_id, mentorUser_id, mybook_id, response }) => {
     try {
@@ -65,22 +66,6 @@ const MentoringHome = () => {
     }
   };
 
-  const menteeGroupSelector = useMemo(() => {
-    return (
-      mentoringData && (
-        <>
-          <Select defaultValue={mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup[0]._id} size="small" onChange={(v) => (selectorRef.current = v)}>
-            {mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup.map((group) => (
-              <Select.Option key={group._id} value={group._id}>
-                {group.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </>
-      )
-    );
-  }, [mentoringData]);
-
   return (
     <Layout>
       {newData && (
@@ -88,26 +73,37 @@ const MentoringHome = () => {
           <Card size="small" bordered={false}>
             <Tabs size="small">
               <Tabs.TabPane tab="멘티" key="멘티">
-                <Badge
-                  size="small"
-                  count={
-                    _(mentoringData.mentoring_getMentoring.mentorings[0].receivedReqs)
-                      .filter(({ reqStatus }) => reqStatus === "waiting")
-                      .value().length
-                  }
-                >
-                  <Button
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Badge
                     size="small"
-                    onClick={() => setDrawerVisible((prev) => !prev)}
-                    disabled={
+                    count={
                       _(mentoringData.mentoring_getMentoring.mentorings[0].receivedReqs)
                         .filter(({ reqStatus }) => reqStatus === "waiting")
-                        .value().length === 0
+                        .value().length
                     }
                   >
-                    받은 요청
+                    <Button
+                      size="small"
+                      onClick={() => setDrawerVisible((prev) => !prev)}
+                      disabled={
+                        _(mentoringData.mentoring_getMentoring.mentorings[0].receivedReqs)
+                          .filter(({ reqStatus }) => reqStatus === "waiting")
+                          .value().length === 0
+                      }
+                    >
+                      받은 요청
+                    </Button>
+                  </Badge>
+                  <Button
+                    icon={<GroupOutlined />}
+                    size="small"
+                    onClick={() => {
+                      setDrawerMenteeGroupVisible(true);
+                    }}
+                  >
+                    멘티그룹관리
                   </Button>
-                </Badge>
+                </div>
                 <Table
                   size="small"
                   pagination={false}
@@ -213,57 +209,14 @@ const MentoringHome = () => {
           >
             {_(mentoringData.mentoring_getMentoring.mentorings[0].receivedReqs)
               .filter(({ reqStatus }) => reqStatus === "waiting")
-              .map(
-                ({ comment, menteeName, menteeOrganization, menteeUser_id, menteeUsername, mentorName, mentorOrganization, mentorUser_id, mentorUsername, mybookTitle, mybook_id, processedDate, reqDate, reqStatus }) => (
-                  <Card
-                    size="small"
-                    key={`${menteeUser_id}${mybook_id}`}
-                    actions={[
-                      menteeGroupSelector,
-                      <div
-                        key="accept"
-                        onClick={() => {
-                          acceptMentroingRequest({
-                            variables: {
-                              forAcceptMentoringReq: {
-                                menteeGroup_id: selectorRef.current === "" ? mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup[0]._id : selectorRef.current,
-                                menteeUser_id,
-                                mentorUser_id,
-                                mybook_id,
-                              },
-                            },
-                          });
-                        }}
-                      >
-                        수락
-                      </div>,
-                      <div
-                        key="decline"
-                        onClick={() => {
-                          declineMentoring({ menteeUser_id, mentorUser_id, mybook_id, response: "declined" });
-                        }}
-                      >
-                        거절
-                      </div>,
-                    ]}
-                    style={{ margin: "10px", borderRadius: "10px" }}
-                    bordered={false}
-                    hoverable
-                  >
-                    <Card.Meta
-                      avatar={
-                        <div style={{ width: "70px", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                          <Avatar src="/image/bookcover/bookcover2.png" />
-                          <div>책: {mybookTitle}</div>
-                          <div>아이디: {menteeName}</div>
-                        </div>
-                      }
-                      title={<div style={{ fontSize: "1rem" }}>요청받은 날짜: {moment(new Date(Number(reqDate))).format("YY-MM-DD")}</div>}
-                      description={comment}
-                    />
-                  </Card>
-                )
-              )
+              .map((mentee) => (
+                <M_ReceivedMentoringRequestCard
+                  key={`${mentee.menteeUser_id}${mentee.mybook_id}`}
+                  mentee={mentee}
+                  declineMentoring={declineMentoring}
+                  menteeGroup={mentoringData && mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup}
+                />
+              ))
               .value()}
           </DrawerWrapper>
 
@@ -282,7 +235,12 @@ const MentoringHome = () => {
             title="보낸 요청"
             placement="right"
             width={"100%"}
-            visible={drawerSentMentoringRequestVisible}
+            visible={
+              drawerSentMentoringRequestVisible &&
+              _(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
+                .filter(({ reqStatus }) => reqStatus === "waiting")
+                .value().length > 0
+            }
             onClose={() => setDrawerSentMentoringRequestVisible(false)}
             headerStyle={{ padding: "12px 12px 8px 12px" }}
             bodyStyle={{ backgroundColor: "#e9e9e9" }}
@@ -291,6 +249,17 @@ const MentoringHome = () => {
               .filter(({ reqStatus }) => reqStatus === "waiting")
               .map((mentor) => <M_SentMentoringRequestCard mentor={mentor} key={`${mentor.mentorUser_id}${mentor.mybook_id}`} declineMentoring={declineMentoring} />)
               .value()}
+          </DrawerWrapper>
+          <DrawerWrapper
+            title="멘티 그룹 관리"
+            placement="right"
+            width={"100%"}
+            visible={drawerMenteeGroupVisible}
+            onClose={() => setDrawerMenteeGroupVisible(false)}
+            headerStyle={{ padding: "12px 12px 8px 12px" }}
+            bodyStyle={{ backgroundColor: "#e9e9e9" }}
+          >
+            <M_MenteeGroupTable menteeGroup={mentoringData && mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup} />
           </DrawerWrapper>
         </MentoringWrapper>
       )}
@@ -389,5 +358,76 @@ const DrawerWrapper = styled(Drawer)`
       align-items: center;
       justify-content: center;
     }
+  }
+  & div,
+  & button,
+  & span,
+  & object,
+  & iframe,
+  & h1,
+  & h2,
+  & h3,
+  & h4,
+  & h5,
+  & h6,
+  & p,
+  & blockquote,
+  & pre,
+  & abbr,
+  & address,
+  & cite,
+  & code,
+  & del,
+  & dfn,
+  & em,
+  & img,
+  & ins,
+  & kbd,
+  & q,
+  & samp,
+  & small,
+  & strong,
+  & sub,
+  & sup,
+  & var,
+  & b,
+  & i,
+  & dl,
+  & dt,
+  & dd,
+  & ol,
+  & ul,
+  & li,
+  & fieldset,
+  & form,
+  & label,
+  & legend,
+  & table,
+  & caption,
+  & tbody,
+  & tfoot,
+  & thead,
+  & tr,
+  & th,
+  & td,
+  & article,
+  & aside,
+  & canvas,
+  & details,
+  & figcaption,
+  & figure,
+  & footer,
+  & header,
+  & hgroup,
+  & menu,
+  & nav,
+  & section,
+  & summary,
+  & time,
+  & mark,
+  & audio,
+  & video,
+  & input {
+    font-size: 0.8rem;
   }
 `;

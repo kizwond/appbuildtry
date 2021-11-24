@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal, Button, Select } from "antd";
+import { Modal, Space, Select, Button } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { UploadExcelFile, ImportExcelFile, CancelImport, InspectTargetSheet } from "../../../../../graphql/query/excelUpload";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
@@ -189,45 +189,51 @@ const ImportModal = ({ indexList, cardSetId }) => {
 
   return (
     <>
-      <UploadOutlined style={{fontSize:"1.2rem"}} onClick={showModal} />
-      <Modal footer={null} title="Basic Modal" width={800} visible={visiable} onOk={handleOk} onCancel={handleCancel}>
-        <form action="#">
-          <input
-            type="file"
-            name="map"
-            onChange={(event) => {
-              const file = event.target.files[0];
-              setFile(file);
-            }}
-          />
-        </form>
-        <Button size="small" onClick={uplodeFile}>
-          파일업로드
-        </Button>
-        <div>
-          <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange} disabled={disabled}>
-            <Option value="default">sheet 선택</Option>
-            {sheet_list}
-          </Select>
-          <button onClick={onClickSheetList} disabled={disabled}>
-            검토요청
-          </button>
-        </div>
-        <div>
-          <Select defaultValue="default" style={{ width: 120 }} onChange={index_handleChange} disabled={index_disabled}>
-            <Option value="default">목차 선택</Option>
-            {index_list}
-          </Select>
-          <button onClick={importFile} disabled={index_disabled}>
-            카드생성
-          </button>
-        </div>
-        <div>
-          {/* <div>파일검토결과</div>
+      <UploadOutlined style={{ fontSize: "1.2rem" }} onClick={showModal} />
+      <Modal footer={null} title="엑셀 임포트" width={800} visible={visiable} onOk={handleOk} onCancel={handleCancel}>
+        <Space direction="vertical">
+          <div>
+            <div style={{marginBottom:"10px"}}>
+              <form action="#">
+                <input
+                  type="file"
+                  name="map"
+                  onChange={(event) => {
+                    const file = event.target.files[0];
+                    setFile(file);
+                  }}
+                />
+              </form>
+            </div>
+            <Button size="small" onClick={uplodeFile} style={{fontSize:"0.8rem"}}>
+              파일업로드
+            </Button>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Select size="small" defaultValue="default" style={{ width: "70%", fontSize:"0.8rem" }} onChange={handleChange} disabled={disabled}>
+              <Option value="default" style={{fontSize:"0.8rem"}}>sheet 선택</Option>
+              {sheet_list}
+            </Select>
+            <Button size="small" onClick={onClickSheetList} disabled={disabled} style={{fontSize:"0.8rem"}}>
+              검토요청
+            </Button>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Select size="small" defaultValue="default" style={{ width: "70%", fontSize:"0.8rem" }} onChange={index_handleChange} disabled={index_disabled}>
+              <Option value="default" style={{fontSize:"0.8rem"}}>목차 선택</Option>
+              {index_list}
+            </Select>
+            <Button size="small" onClick={importFile} disabled={index_disabled} style={{fontSize:"0.8rem"}}>
+              카드생성
+            </Button>
+          </div>
+          <div>
+            {/* <div>파일검토결과</div>
           <div>
             <ResultTable inspectResultNormal={inspectResultNormal} inspectResultTypeError={inspectResultTypeError} inspectResultFlagError={inspectResultFlagError} />
           </div> */}
-        </div>
+          </div>
+        </Space>
       </Modal>
     </>
   );

@@ -48,6 +48,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   const [cardId, setCardId] = useState("");
   const [selectedCardType, setSelectedCardType] = useState();
   const [indexList, setIndexList] = useState();
+  const [makerFlagStyle, setMakerFlagStyle] = useState();
 
   const {
     loading,
@@ -87,6 +88,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       setCardTypeSetId(data1.cardtypeset_getbymybookids.cardtypesets[0]._id);
       setCardTypeSets(data1.cardtypeset_getbymybookids.cardtypesets);
       setCardTypes(data1.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);
+      setMakerFlagStyle(data1.cardtypeset_getbymybookids.cardtypesets[0].makerFlag_style);
       setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
       const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
@@ -421,6 +423,18 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
           }
           console.log("해당카드 정보", content);
           console.log("해당카드 정보", content_value);
+          
+          const figure_shape = makerFlagStyle.figure_style.shape;
+          const figure_size = makerFlagStyle.figure_style.size;
+          const figure_color = makerFlagStyle.figure_style.color;
+
+          const comment_font_align = makerFlagStyle.comment_font.align;
+          const comment_font_bold = makerFlagStyle.comment_font.bold;
+          const comment_font_color = makerFlagStyle.comment_font.color;
+          const comment_font_font = makerFlagStyle.comment_font.font;
+          const comment_font_italic = makerFlagStyle.comment_font.italic;
+          const comment_font_size = makerFlagStyle.comment_font.size;
+          const comment_font_underline = makerFlagStyle.comment_font.underline;
 
           if (content.content.makerFlag.value === 1) {
             var ratings = <StarFilled style={{ color: "#fff006" }} />;

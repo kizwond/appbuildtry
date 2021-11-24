@@ -44,7 +44,6 @@ const FlagRowSetting = ({ cardTypeSets, cardTypeSetId }) => {
   useEffect(() => {
     console.log("플래그 디테일 세팅 화면 온");
     if (cardTypeSets) {
-      console.log(cardTypeSetId);
       console.log("cardTypeSets", cardTypeSets);
       setBackgroundColor(cardTypeSets[0].makerFlag_style.row_style.background.color);
 
@@ -73,7 +72,7 @@ const FlagRowSetting = ({ cardTypeSets, cardTypeSetId }) => {
       set_border_left_color(cardTypeSets[0].makerFlag_style.row_style.border.left.color);
       set_border_right_color(cardTypeSets[0].makerFlag_style.row_style.border.right.color);
     }
-  }, [cardTypeSets, cardTypeSetId]);
+  }, [cardTypeSets]);
 
   const [cardtypeset_updateMakerFlagRowStyle] = useMutation(UpdateMakerFlagRowStyle, { onCompleted: afterupdatemutation });
 
@@ -82,7 +81,6 @@ const FlagRowSetting = ({ cardTypeSets, cardTypeSetId }) => {
   }
 
   async function updaterowstyle() {
-      console.log(backgroundColor)
     try {
       await cardtypeset_updateMakerFlagRowStyle({
         variables: {

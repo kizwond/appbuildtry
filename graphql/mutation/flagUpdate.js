@@ -70,3 +70,139 @@ export const UpdateMakerFlagRowStyle = gql`
     }
   }
 `;
+
+export const UpdateFlagRowFont = gql`
+  mutation UpdateFlagRowFont($forUpdateMakerFlagRowFont: forUpdateMakerFlagRowFont) {
+    cardtypeset_updateMakerFlagRowFont(forUpdateMakerFlagRowFont: $forUpdateMakerFlagRowFont) {
+      status
+      msg
+      cardtypesets {
+        _id
+        makerFlag_style {
+          row_style {
+            background {
+              color
+              opacity
+            }
+            outer_margin {
+              top
+              bottom
+              left
+              right
+            }
+            inner_padding {
+              top
+              bottom
+              left
+              right
+            }
+            border {
+              top {
+                bordertype
+                thickness
+                color
+              }
+              bottom {
+                bordertype
+                thickness
+                color
+              }
+              left {
+                bordertype
+                thickness
+                color
+              }
+              right {
+                bordertype
+                thickness
+                color
+              }
+            }
+          }
+          figure_style {
+            shape
+            size
+            color
+          }
+          comment_font {
+            font
+            size
+            color
+            align
+            bold
+            italic
+            underline
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const UpdateFlagFigure = gql`
+  mutation UpdateFlagFigure($forUpdateMakerFlagFigureStyle: forUpdateMakerFlagFigureStyle) {
+    cardtypeset_updateMakerFlagFigureStyle(forUpdateMakerFlagFigureStyle: $forUpdateMakerFlagFigureStyle) {
+      status
+      msg
+      cardtypesets {
+        _id
+        makerFlag_style {
+          row_style {
+            background {
+              color
+              opacity
+            }
+            outer_margin {
+              top
+              bottom
+              left
+              right
+            }
+            inner_padding {
+              top
+              bottom
+              left
+              right
+            }
+            border {
+              top {
+                bordertype
+                thickness
+                color
+              }
+              bottom {
+                bordertype
+                thickness
+                color
+              }
+              left {
+                bordertype
+                thickness
+                color
+              }
+              right {
+                bordertype
+                thickness
+                color
+              }
+            }
+          }
+          figure_style {
+            shape
+            size
+            color
+          }
+          comment_font {
+            font
+            size
+            color
+            align
+            bold
+            italic
+            underline
+          }
+        }
+      }
+    }
+  }
+`;

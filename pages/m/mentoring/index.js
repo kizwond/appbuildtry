@@ -1,15 +1,14 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/router";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import _, { divide } from "lodash";
 
-import moment from "moment";
 import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
-import { MUTATION_ACCEPT_MENTOR_REQUEST, MUTATION_CANCEL_MENTORING_REQUEST } from "../../../graphql/mutation/mentoring";
+import { MUTATION_CANCEL_MENTORING_REQUEST } from "../../../graphql/mutation/mentoring";
 import useGetMentoringAndMenteeBooks from "../../../components/mentoring/useHooks/useGetMentoringAndMenteeBooks";
 
 import styled from "styled-components";
-import { Badge, Button, Card, Col, Drawer, Table, Tabs, Row, Avatar, Select, Space, Tag, Alert, Input } from "antd";
+import { Badge, Button, Card, Drawer, Table, Tabs, Space, Tag } from "antd";
 import { GroupOutlined, PlusOutlined } from "@ant-design/icons";
 
 import Layout from "../../../components/layout/M_Layout";
@@ -250,17 +249,14 @@ const MentoringHome = () => {
               .map((mentor) => <M_SentMentoringRequestCard mentor={mentor} key={`${mentor.mentorUser_id}${mentor.mybook_id}`} declineMentoring={declineMentoring} />)
               .value()}
           </DrawerWrapper>
-          <DrawerWrapper
-            title="멘티 그룹 관리"
-            placement="right"
-            width={"100%"}
-            visible={drawerMenteeGroupVisible}
-            onClose={() => setDrawerMenteeGroupVisible(false)}
-            headerStyle={{ padding: "12px 12px 8px 12px" }}
-            bodyStyle={{ backgroundColor: "#e9e9e9" }}
-          >
-            <M_MenteeGroupTable menteeGroup={mentoringData && mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup} />
-          </DrawerWrapper>
+
+          <M_MenteeGroupTable
+            menteeGroup={mentoringData && mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup}
+            drawerMenteeGroupVisible={drawerMenteeGroupVisible}
+            changevisible={(ref) => {
+              setDrawerMenteeGroupVisible(ref);
+            }}
+          />
         </MentoringWrapper>
       )}
     </Layout>

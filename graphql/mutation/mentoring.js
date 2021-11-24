@@ -52,3 +52,16 @@ export const MUTATION_UPDATE_MENTORING_REQUEST = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_MENTORING_GROUP = gql`
+  ${FRAGMENT_MENTORING}
+  mutation UpdateMentoringGroup($groupType: MentoringGroupType, $mentoringGroup_id: ID, $newMentoringGroupName: String) {
+    mentoring_updateMentoringGroup(groupType: $groupType, mentoringGroup_id: $mentoringGroup_id, newMentoringGroupName: $newMentoringGroupName) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;

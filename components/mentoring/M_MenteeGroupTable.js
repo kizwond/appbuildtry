@@ -1,8 +1,13 @@
 import { EditFilled } from "@ant-design/icons";
+import { useMutation } from "@apollo/client";
 import { Button, Col, Input, Row, Table, Tag } from "antd";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import { MUTATION_UPDATE_MENTORING_GROUP } from "../../graphql/mutation/mentoring";
 
 const M_MenteeGroupTable = ({ menteeGroup }) => {
+  const router = useRouter();
+
   const inputRefs = useRef({});
   const [inputValues, setInputValues] = useState({});
   const [activedInput, setActivedInput] = useState("");
@@ -14,6 +19,32 @@ const M_MenteeGroupTable = ({ menteeGroup }) => {
     });
     setInputValues(inialValues);
   }, [menteeGroup]);
+
+  const [changeMentoringGroupName] = useMutation(MUTATION_UPDATE_MENTORING_GROUP, {
+    onCompleted: (data) => {
+      if (data.mentoring_updateMentoringGroup.status === "200") {
+        console.log("멘토링 그룹 이름 변경 후 받은 데이터", data);
+      } else if (data.mentoring_updateMentoringGroup.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
+  });
+
+  async function changeGroupName({ mentoringGroup_id, newMentoringGroupName }) {
+    try {
+      await changeMentoringGroupName({
+        variables: {
+          groupType: "menteeGroup",
+          mentoringGroup_id,
+          newMentoringGroupName,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   var focusInput;
   return (
@@ -60,6 +91,7 @@ const M_MenteeGroupTable = ({ menteeGroup }) => {
                             onClick={() => {
                               setActivedInput("");
                               // 서버요청보내야함
+                              changeGroupName({ mentoringGroup_id: record._id, newMentoringGroupName: inputValues[record._id] });
                             }}
                           >
                             <Tag>수정</Tag>

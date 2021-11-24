@@ -5,7 +5,7 @@ import { FlagOutlined } from "@ant-design/icons";
 import FlagStyleContainer from "./flagstyle/FlagStyleContainer";
 
 
-const M_FlagSettingDrawer = ({cardTypeSets}) => {
+const M_FlagSettingDrawer = ({cardTypeSets,cardTypeSetId}) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
@@ -52,7 +52,7 @@ const M_FlagSettingDrawer = ({cardTypeSets}) => {
         mask={true}
         width={250}
       >
-          <div><FlagStyleContainer/></div>
+          <div><FlagStyleContainer cardTypeSets={cardTypeSets} cardTypeSetId={cardTypeSetId}/></div>
       </Drawer>
     </>
   );

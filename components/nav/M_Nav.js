@@ -8,7 +8,7 @@ import { useMutation } from "@apollo/client";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../graphql/query/account";
 
-const backgroundColor = "black";
+const backgroundColor = "#565656";
 const fontColor = "white";
 
 const Nav = () => {
@@ -31,7 +31,7 @@ const Nav = () => {
     console.log("here");
     window.location.href = "/m";
   };
-  const burgerSize = "1rem";
+  const burgerSize = "1.3rem";
   return (
     <>
       <div
@@ -160,7 +160,7 @@ const Nav = () => {
               flexBasis: "33%",
               textAlign: "center",
               fontFamily: `Architects Daughter, cursive`,
-              fontWeight: 900,
+              fontWeight: 400,
               color: fontColor,
             }}
           >

@@ -123,6 +123,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
   const cardTypeInfo = (cardtype_info, from, parentId, generalCardId) => {
     console.log("generalCardId", generalCardId);
+    console.log(cardId)
     if (generalCardId) {
       const childs = cards.filter((item) => {
         if (item.card_info.parentCard_id === generalCardId) {
@@ -221,7 +222,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             <Option value="default" style={{ fontSize: "0.8rem", color: "black", fontWeight: "700" }} disabled>
               카드타입선택
             </Option>
-            {cardTypeListInCard}
+            {!parentId && cardTypeListInCard}
+            {parentId && cardTypeListInCardChild}
           </Select>
         </div>
         <EditorFromCard
@@ -244,6 +246,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       setEditorOn(editor);
       // executeScroll(); //스크롤
     } else if (from === "inCard") {
+      console.log("inCard")
       setEditorOnFromCard(editorFromCard);
     }
   };
@@ -353,6 +356,17 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
         </>
       );
     });
+    var cardTypeListInCardChild = cardTypes.map((cardType) => {
+      if(cardType.cardtype_info.cardtype === "flip") {
+        return (
+          <>
+            <Option value={[cardType.cardtype_info.name, "inCard"]} style={{ fontSize: "0.8rem" }}>
+              {cardType.cardtype_info.name}
+            </Option>
+          </>
+        );
+      }
+    });
   }
 
   function handleChange(value) {
@@ -386,10 +400,13 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     sessionStorage.setItem("parentId", parentId);
     setEditorOn("");
     if (selectedCardType === undefined) {
+      console.log(1)
+      console.log(cardTypes[0].cardtype_info)
       setSelectedCardType(cardTypes[0].cardtype_info);
       cardTypeInfo(cardTypes[0].cardtype_info, "inCard", parentId);
       sessionStorage.setItem("cardtype", cardTypes[0].cardtype_info.cardtype);
     } else {
+      console.log(2)
       const hello = cardTypes.filter((item) => item.cardtype_info.name === selectedCardType.name);
       setSelectedCardType(hello[0].cardtype_info);
       sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
@@ -402,7 +419,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       // console.log("카드에 스타일 입히기 시작", cardTypeSets);
 
       const current_card_style = cardTypeSets[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
-      console.log(current_card_style);
+      // console.log(current_card_style);
 
       const face_style = current_card_style[0].face_style;
       const row_style = current_card_style[0].row_style;
@@ -413,14 +430,14 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       console.log(contentsList);
       const show_contents = contentsList.map((content_value) => {
         if (content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) {
-          console.log(content_value._id, content.content.buycontent_id);
+          // console.log(content_value._id, content.content.buycontent_id);
           if (content_value._id === cardId) {
             var borderLeft = "2px solid blue";
           } else {
             borderLeft = "none";
           }
-          console.log("해당카드 정보", content);
-          console.log("해당카드 정보", content_value);
+          // console.log("해당카드 정보", content);
+          // console.log("해당카드 정보", content_value);
 
           const figure_shape = makerFlagStyle.figure_style.shape;
           const figure_size = makerFlagStyle.figure_style.size;
@@ -615,7 +632,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             <>
               {content.card_info.cardtype === "read" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "5px",boxShadow: "0px 0px 6px -5px #5E5E5E" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -743,7 +760,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                     </div>
                     {content._id === cardId && (
                       <>
-                        <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                        <div style={{ padding:"5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                           <div>
                             <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
                               다음카드추가
@@ -762,7 +779,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
               )}
               {content.card_info.cardtype === "subject" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "5px",boxShadow: "0px 0px 6px -5px #5E5E5E"  }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -827,7 +844,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                     </div>
                     {content._id === cardId && (
                       <>
-                        <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                        <div style={{padding:"5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                           <div>
                             <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
                               다음카드추가
@@ -846,7 +863,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
               )}
               {content.card_info.cardtype === "general" && (
                 <>
-                  <div className={`${content._id} child_group other`}>
+                  <div className={`${content._id} child_group other`} style={{boxShadow: "0px 0px 6px -5px #5E5E5E" }}>
                     <div style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "general")}>
                         {/* 페이스 스타일 영역 */}
@@ -912,7 +929,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                       </div>
                       {content._id === cardId && (
                         <>
-                          <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                          <div style={{padding:"5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                             <div>
                               <Button size="small" onClick={() => onClickCardAdd("general", content._id)} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
                                 다음카드추가
@@ -938,7 +955,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "top-bottom" && (
                 <>
-                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
+                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`} style={{boxShadow: "0px 0px 6px -5px #5E5E5E" }}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
                         onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
@@ -1083,7 +1100,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                       </div>
                       {content._id === cardId && content.card_info.hasParent === "no" && (
                         <>
-                          <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                          <div style={{padding:"5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                             <div>
                               <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
                                 다음카드추가
@@ -1094,7 +1111,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                       )}
                       {content._id === cardId && content.card_info.hasParent === "yes" && (
                         <>
-                          <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                          <div style={{padding:"5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                             <div>
                               <Button
                                 size="small"
@@ -1119,7 +1136,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "left-right" && (
                 <>
-                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
+                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`} style={{boxShadow: "0px 0px 6px -5px #5E5E5E" }}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
                         onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
@@ -1267,7 +1284,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         </div>
                         {content._id === cardId && content.card_info.hasParent === "no" && (
                           <>
-                            <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                            <div style={{padding:"5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                               <div>
                                 <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
                                   다음카드추가
@@ -1278,7 +1295,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         )}
                         {content._id === cardId && content.card_info.hasParent === "yes" && (
                           <>
-                            <div style={{ fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                            <div style={{padding:"5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                               <div>
                                 <Button
                                   size="small"
@@ -1336,7 +1353,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       }
       for (var b = 0; b < selected1.length; b++) {
         const section2 = selected1.item(b);
-        section2.style.borderLeft = "2px solid blue";
+        section2.style.borderLeft = "5px solid #4285f4";
+        // section2.style.borderRadius = "4px";
       }
     } else if (from === "normal") {
       console.log("normal");
@@ -1348,10 +1366,11 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       }
       for (var b = 0; b < selected1.length; b++) {
         const section2 = selected1.item(b);
-        section2.style.borderLeft = "2px solid blue";
+        section2.style.borderLeft = "5px solid #4285f4";
+        // section2.style.borderRadius = "4px";
       }
     } else if (from === "flip" && group === null) {
-      console.log("flip");
+      console.log("flip1");
       const selected4 = document.getElementsByClassName(card_id);
       const selected2 = document.getElementsByClassName("other");
       for (var a = 0; a < selected2.length; a++) {
@@ -1360,10 +1379,12 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       }
       for (var b = 0; b < selected4.length; b++) {
         const section4 = selected4.item(b);
-        section4.style.borderLeft = "2px solid blue";
+        section4.style.borderLeft = "5px solid #4285f4";
+        // section4.style.borderRadius = "4px";
+
       }
     } else if (from === "flip" && group === undefined) {
-      console.log("flip");
+      console.log("flip2");
       const selected4 = document.getElementsByClassName(card_id);
       const selected2 = document.getElementsByClassName("other");
       for (var a = 0; a < selected2.length; a++) {
@@ -1372,7 +1393,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       }
       for (var b = 0; b < selected4.length; b++) {
         const section4 = selected4.item(b);
-        section4.style.borderLeft = "2px solid blue";
+        section4.style.borderLeft = "5px solid #4285f4";
+        // section4.style.borderRadius = "4px";
       }
     } else {
       console.log("parent Id");
@@ -1385,7 +1407,8 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
       for (var c = 0; c < selected3.length; c++) {
         const section3 = selected3.item(c);
         console.log(section3);
-        section3.style.borderLeft = "2px solid blue";
+        section3.style.borderLeft = "5px solid #4285f4";
+        // section3.style.borderRadius = "4px";
       }
     }
 
@@ -1427,12 +1450,3 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
 
 export default WriteContainer;
 
-const a4Page = {
-  width: `790px`,
-  minHeight: `1000px`,
-  padding: `75px 75px 75px 75px`,
-  border: "1px #D3D3D3 solid",
-  borderRadius: "5px",
-  background: `#ffffff`,
-  boxShadow: " 0 0 5px rgba(0, 0, 0, 0.1)",
-};

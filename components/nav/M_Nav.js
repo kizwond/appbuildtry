@@ -8,10 +8,22 @@ import { useMutation } from "@apollo/client";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../graphql/query/account";
 
-const backgroundColor = "black";
+const backgroundColor = "#565656";
 const fontColor = "white";
 
 const Nav = () => {
+  const ISSERVER = typeof window === "undefined";
+  if (!ISSERVER) {
+    var usernameTemp = localStorage.getItem("username");
+    if(usernameTemp){
+      var username = usernameTemp
+    } else {
+      var username = null
+    }
+  } else {
+    var username = "로그인을 해주세요"
+  }
+
   const isLogged = useSelector((state) => state.isLogged);
   const [visible, setVisible] = useState(false);
   const [logout] = useMutation(LOGOUT);
@@ -31,7 +43,7 @@ const Nav = () => {
     console.log("here");
     window.location.href = "/m";
   };
-  const burgerSize = "1rem";
+  const burgerSize = "1.3rem";
   return (
     <>
       <div
@@ -56,7 +68,7 @@ const Nav = () => {
             title={
               <>
                 <div style={{ height: "100%", padding: "0" }}>
-                  <Avatar size="small" icon={<UserOutlined />} /> <span style={{ fontSize: "0.8rem" }}>user name</span>
+                  <Avatar size="small" icon={<UserOutlined />} /> <span style={{ fontSize: "0.8rem" }}>{username}{username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}</span>
                 </div>
               </>
             }
@@ -88,13 +100,13 @@ const Nav = () => {
                     <>
                       <Link href="/m/account/login">
                         <a style={linkStyleDrawer}>
-                          <UserOutlined style={{ marginRight: 5, color: "black" }} />
+                          <UserOutlined style={{ marginRight: 10 }} />
                           로그인
                         </a>
                       </Link>
                       <Link href="/m/account/register">
                         <a style={linkStyleDrawer}>
-                          <FileTextOutlined style={{ marginRight: 5, color: "black" }} />
+                          <FileTextOutlined style={{ marginRight: 10 }} />
                           회원가입
                         </a>
                       </Link>
@@ -102,50 +114,50 @@ const Nav = () => {
                   )}
                   <Link href="/m/study">
                     <a style={linkStyleDrawer}>
-                      <ReadOutlined style={{ marginRight: 10 }} />
+                      <ReadOutlined style={{ marginRight: 10  }} />
                       학습
                     </a>
                   </Link>
                   <Link href="/m/write">
                     <a style={linkStyleDrawer}>
-                      <FormOutlined style={{ marginRight: 10 }} />
+                      <FormOutlined style={{ marginRight: 10  }} />
                       만들기
                     </a>
                   </Link>
                   <Link href="/m/mentoring">
                     <a style={linkStyleDrawer}>
-                      <TeamOutlined style={{ marginRight: 10 }} />
+                      <TeamOutlined style={{ marginRight: 10  }} />
                       멘토링
                     </a>
                   </Link>
                   <Link href="/bookstore">
                     <a style={linkStyleDrawer}>
-                      <ShopOutlined style={{ marginRight: 10 }} />
+                      <ShopOutlined style={{ marginRight: 10  }} />
                       서점
                     </a>
                   </Link>
                   <Link href="/m/challenges">
                     <a style={linkStyleDrawer}>
-                      <CrownOutlined style={{ marginRight: 10 }} />
+                      <CrownOutlined style={{ marginRight: 10  }} />
                       도전출판
                     </a>
                   </Link>
                   <Link href="/cart">
                     <a style={linkStyleDrawer}>
-                      <ShoppingCartOutlined style={{ marginRight: 10 }} />
+                      <ShoppingCartOutlined style={{ marginRight: 10  }} />
                       장바구니
                     </a>
                   </Link>
                   <Link href="/notification">
                     <a style={linkStyleDrawer}>
-                      <BellOutlined style={{ marginRight: 10 }} />
+                      <BellOutlined style={{ marginRight: 10  }} />
                       알림
                     </a>
                   </Link>
                 </div>
                 {isLogged && (
                   <>
-                    <Button size="large" shape="round" style={{ fontSize: "0.8rem" }} onClick={() => onClickLogout()}>
+                    <Button size="large" shape="round" style={{ fontSize: "0.8rem"  }} onClick={() => onClickLogout()}>
                       로그아웃
                     </Button>
                   </>
@@ -160,7 +172,7 @@ const Nav = () => {
               flexBasis: "33%",
               textAlign: "center",
               fontFamily: `Architects Daughter, cursive`,
-              fontWeight: 900,
+              fontWeight: 400,
               color: fontColor,
             }}
           >
@@ -176,7 +188,7 @@ const Nav = () => {
 export default Nav;
 
 const linkStyleDrawer = {
-  color: "black",
+  color: "#5b5b5b",
   padding: 10,
   fontSize: "0.8rem",
 };

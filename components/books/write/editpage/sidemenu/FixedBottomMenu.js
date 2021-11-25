@@ -3,6 +3,8 @@ import M_RightDrawer from "../M_RightDrawer";
 import M_FlagSettingDrawer from "../M_FlagSettingDrawer";
 import { Button } from "antd";
 import { PlusSquareOutlined } from "@ant-design/icons";
+import M_LeftDrawer from "../M_LeftDrawer"
+
 const backgroundColor = "black";
 const buttonColor = "white";
 const fontColor = "white";
@@ -16,11 +18,12 @@ const FloatingMenu = ({
   cardTypeInfo,
   cardSetId,
   indexChanged,
+  index_changed,
   indexSetId,
   book_id,
   selectedCardType,
   cardTypeSets,
-  cardTypeSetId
+  cardTypeSetId,
 }) => {
   const addCard = () => {
     setCardId("");
@@ -48,33 +51,37 @@ const FloatingMenu = ({
       <div
         style={{
           margin: "auto",
-          background: backgroundColor,
-          borderRadius: "5px 5px 0 0",
+          background: "white",
+          // borderRadius: "5px 5px 0 0",
           borderBottom: "none",
-          width: "90%",
+          width: "100%",
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
-          padding: 10,
+          padding: 5,
           boxShadow: "0px -1px 6px -1px #999999",
           alignItems: "center",
-          color: fontColor,
+          color: "#5b5b5b",
         }}
       >
         <div
           style={{
             margin: 0,
-            width:"100%",
+            width: "100%",
             display: "flex",
             flexDirection: "row",
             listStyle: "none",
             alignItems: "center",
-            justifyContent:"space-around"
+            justifyContent: "space-around",
           }}
         >
-          <PlusSquareOutlined style={{fontSize:"1.2rem"}} onClick={addCard} />
+          <M_LeftDrawer index_changed={index_changed} book_id={book_id} />
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <PlusSquareOutlined style={{ fontSize: "1.3rem" }} onClick={addCard} />
+            카드추가
+          </div>
           <ImportModal indexList={indexList} cardSetId={cardSetId} />
-          <M_FlagSettingDrawer cardTypeSets={cardTypeSets} cardTypeSetId={cardTypeSetId}/>
+          <M_FlagSettingDrawer cardTypeSets={cardTypeSets} cardTypeSetId={cardTypeSetId} />
           <M_RightDrawer book_id={book_id} />
         </div>
       </div>

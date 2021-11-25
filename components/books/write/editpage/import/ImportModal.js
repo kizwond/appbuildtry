@@ -189,11 +189,15 @@ const ImportModal = ({ indexList, cardSetId }) => {
 
   return (
     <>
-      <UploadOutlined style={{ fontSize: "1.2rem" }} onClick={showModal} />
+      <div onClick={showModal} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <UploadOutlined style={{ fontSize: "1.3rem" }} onClick={showModal} />
+        엑셀임포트
+      </div>
+
       <Modal footer={null} title="엑셀 임포트" width={800} visible={visiable} onOk={handleOk} onCancel={handleCancel}>
         <Space direction="vertical">
           <div>
-            <div style={{marginBottom:"10px"}}>
+            <div style={{ marginBottom: "10px" }}>
               <form action="#">
                 <input
                   type="file"
@@ -205,25 +209,29 @@ const ImportModal = ({ indexList, cardSetId }) => {
                 />
               </form>
             </div>
-            <Button size="small" onClick={uplodeFile} style={{fontSize:"0.8rem"}}>
+            <Button size="small" onClick={uplodeFile} style={{ fontSize: "0.8rem" }}>
               파일업로드
             </Button>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Select size="small" defaultValue="default" style={{ width: "70%", fontSize:"0.8rem" }} onChange={handleChange} disabled={disabled}>
-              <Option value="default" style={{fontSize:"0.8rem"}}>sheet 선택</Option>
+            <Select size="small" defaultValue="default" style={{ width: "70%", fontSize: "0.8rem" }} onChange={handleChange} disabled={disabled}>
+              <Option value="default" style={{ fontSize: "0.8rem" }}>
+                sheet 선택
+              </Option>
               {sheet_list}
             </Select>
-            <Button size="small" onClick={onClickSheetList} disabled={disabled} style={{fontSize:"0.8rem"}}>
+            <Button size="small" onClick={onClickSheetList} disabled={disabled} style={{ fontSize: "0.8rem" }}>
               검토요청
             </Button>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Select size="small" defaultValue="default" style={{ width: "70%", fontSize:"0.8rem" }} onChange={index_handleChange} disabled={index_disabled}>
-              <Option value="default" style={{fontSize:"0.8rem"}}>목차 선택</Option>
+            <Select size="small" defaultValue="default" style={{ width: "70%", fontSize: "0.8rem" }} onChange={index_handleChange} disabled={index_disabled}>
+              <Option value="default" style={{ fontSize: "0.8rem" }}>
+                목차 선택
+              </Option>
               {index_list}
             </Select>
-            <Button size="small" onClick={importFile} disabled={index_disabled} style={{fontSize:"0.8rem"}}>
+            <Button size="small" onClick={importFile} disabled={index_disabled} style={{ fontSize: "0.8rem" }}>
               카드생성
             </Button>
           </div>

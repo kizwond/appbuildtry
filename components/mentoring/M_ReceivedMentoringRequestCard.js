@@ -71,7 +71,12 @@ const M_ReceivedMentoringRequestCard = ({ mentee, declineMentoring, menteeGroup 
         >
           수락
         </div>,
-        <div key="decline" onClick={() => {}}>
+        <div
+          key="decline"
+          onClick={() => {
+            declineMentoring({ menteeUser_id, mentorUser_id, mybook_id, response: "declined" });
+          }}
+        >
           거절
         </div>,
       ]}

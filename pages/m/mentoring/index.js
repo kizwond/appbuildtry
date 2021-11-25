@@ -27,10 +27,10 @@ const MentoringHome = () => {
   const [drawerMenteeGroupVisible, setDrawerMenteeGroupVisible] = useState(false);
   const [drawerMentorGroupVisible, setDrawerMentorGroupVisible] = useState(false);
 
-  const [declineMentroRequest] = useMutation(MUTATION_CANCEL_MENTORING_REQUEST, { onCompleted: (data) => console.log("멘토요청 취소 후 받은 데이터", data) });
+  const [declineMentorRequest] = useMutation(MUTATION_CANCEL_MENTORING_REQUEST, { onCompleted: (data) => console.log("멘토요청 취소 후 받은 데이터", data) });
   const declineMentoring = useCallback(async ({ menteeUser_id, mentorUser_id, mybook_id, response }) => {
     try {
-      await declineMentroRequest({
+      await declineMentorRequest({
         variables: {
           forCancelMentoringReq: {
             response,
@@ -58,7 +58,6 @@ const MentoringHome = () => {
       }
     },
   });
-
   const getAllBooks = async () => {
     try {
       await getAllBooksInfo();

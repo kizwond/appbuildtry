@@ -142,52 +142,64 @@ const MentoringHome = () => {
                 />
               </Tabs.TabPane>
               <Tabs.TabPane tab="멘토" key="멘토">
-                <Space>
-                  <Badge
-                    size="small"
-                    count={
-                      _(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
-                        .filter(({ reqStatus }) => reqStatus === "waiting")
-                        .value().length
-                    }
-                  >
-                    <Button
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  {" "}
+                  <Space>
+                    <Badge
                       size="small"
-                      disabled={
+                      count={
                         _(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
                           .filter(({ reqStatus }) => reqStatus === "waiting")
-                          .value().length === 0
+                          .value().length
                       }
+                    >
+                      <Button
+                        size="small"
+                        disabled={
+                          _(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
+                            .filter(({ reqStatus }) => reqStatus === "waiting")
+                            .value().length === 0
+                        }
+                        onClick={() => {
+                          setDrawerSentMentoringRequestVisible((prev) => !prev);
+                        }}
+                      >
+                        보낸 요청
+                      </Button>
+                    </Badge>
+                    <button
+                      className="customButtonForMainPage"
+                      type="button"
+                      style={{
+                        width: "34px",
+                        height: "16px",
+                        borderRadius: "12px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        border: "none",
+                      }}
                       onClick={() => {
-                        setDrawerSentMentoringRequestVisible((prev) => !prev);
+                        setDrawerRequestMentoringVisible((prev) => !prev);
+                        if (!data) {
+                          getAllBooks();
+                        }
                       }}
                     >
-                      보낸 요청
-                    </Button>
-                  </Badge>
-                  <button
-                    className="customButtonForMainPage"
-                    type="button"
-                    style={{
-                      width: "34px",
-                      height: "16px",
-                      borderRadius: "12px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: "pointer",
-                      border: "none",
-                    }}
+                      <PlusOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
+                    </button>
+                  </Space>
+                  <Button
+                    icon={<GroupOutlined />}
+                    size="small"
                     onClick={() => {
-                      setDrawerRequestMentoringVisible((prev) => !prev);
-                      if (!data) {
-                        getAllBooks();
-                      }
+                      setDrawerMenteeGroupVisible(true);
                     }}
                   >
-                    <PlusOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
-                  </button>
-                </Space>
+                    멘토그룹관리
+                  </Button>
+                </div>
                 {mentoringData && <M_MentosTable mentoringData={mentoringData} />}
               </Tabs.TabPane>
             </Tabs>

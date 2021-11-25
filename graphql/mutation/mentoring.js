@@ -91,3 +91,16 @@ export const MUTATION_CHANGE_MENTORING_GROUP_ORDER = gql`
     }
   }
 `;
+
+export const MUTATION_DELETE_MENTORING_GROUP = gql`
+  ${FRAGMENT_MENTORING}
+  mutation DeleteMentoringGroup($groupType: MentoringGroupType, $currentMentoringGroup_id: ID, $moveToMentoringGroup_id: ID) {
+    mentoring_deleteMentoringGroup(groupType: $groupType, currentMentoringGroup_id: $currentMentoringGroup_id, moveToMentoringGroup_id: $moveToMentoringGroup_id) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;

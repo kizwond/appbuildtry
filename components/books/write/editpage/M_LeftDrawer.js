@@ -479,7 +479,7 @@ const LeftDrawer = ({ index_changed }) => {
             fontSize: "0.8rem",
             border: "1px solid lightgrey",
             borderLeft: "none",
-            width: "25px",
+            width: "20px",
             borderRadius: "0 5px 5px 0",
           }}
         >

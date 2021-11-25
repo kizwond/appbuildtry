@@ -9,7 +9,6 @@ const { Option } = Select;
 
 const FlagFontSetting = ({ cardTypeSets, cardTypeSetId }) => {
   const [displayColorPicker, setDisplayColorPicker] = useState(false);
-  const [align, set_align] = useState();
   const [bold, set_bold] = useState();
   const [color, set_color] = useState();
   const [font, set_font] = useState();
@@ -20,7 +19,6 @@ const FlagFontSetting = ({ cardTypeSets, cardTypeSetId }) => {
   useEffect(() => {
     if (cardTypeSets) {
       console.log("cardTypeSets", cardTypeSets);
-      set_align(cardTypeSets[0].makerFlag_style.comment_font.align);
       set_bold(cardTypeSets[0].makerFlag_style.comment_font.bold);
       set_color(cardTypeSets[0].makerFlag_style.comment_font.color);
       set_font(cardTypeSets[0].makerFlag_style.comment_font.font);
@@ -46,7 +44,7 @@ const FlagFontSetting = ({ cardTypeSets, cardTypeSetId }) => {
               font: font,
               size: size,
               color: color,
-              align: align,
+              align: "left",
               bold: bold,
               italic: italic,
               underline: underline,
@@ -59,7 +57,6 @@ const FlagFontSetting = ({ cardTypeSets, cardTypeSetId }) => {
     }
   }
 
-  const alignHandler = (e) => set_align(e);
   const boldHandler = (e) => set_bold(e);
   const fontHandler = (e) => set_font(e);
   const italicHandler = (e) => set_italic(e);
@@ -119,14 +116,6 @@ const FlagFontSetting = ({ cardTypeSets, cardTypeSetId }) => {
               {/* <span>none</span> */}
             </div>
           ) : null}
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: "0.8rem" }}>align</span>
-            <Select size="small" value={align} style={{ width: 120, fontSize: "0.8rem" }} onChange={alignHandler}>
-              <Option value="left">left</Option>
-              <Option value="right">right</Option>
-              <Option value="center">center</Option>
-            </Select>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: "0.8rem" }}>bold</span>

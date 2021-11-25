@@ -72,8 +72,10 @@ const RightDrawer = () => {
 
   return (
     <>
-      <SettingOutlined style={{fontSize:"1.2rem"}} onClick={showDrawer} />
-
+      <div onClick={showDrawer} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <SettingOutlined style={{ fontSize: "1.3rem" }} />
+        카드설정
+      </div>
       <Drawer
         title={
           <>
@@ -88,7 +90,7 @@ const RightDrawer = () => {
         width={250}
       >
         <Space direction="vertical">
-          <div style={{ display: "flex", width: "250px", padding: "10px 10px 2px 10px", alignItems:"center" }}>
+          <div style={{ display: "flex", width: "250px", padding: "10px 10px 2px 10px", alignItems: "center" }}>
             <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
             <M_CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
           </div>

@@ -4,8 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { FlagOutlined } from "@ant-design/icons";
 import FlagStyleContainer from "./flagstyle/FlagStyleContainer";
 
-
-const M_FlagSettingDrawer = ({cardTypeSets,cardTypeSetId}) => {
+const M_FlagSettingDrawer = ({ cardTypeSets, cardTypeSetId }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
@@ -38,7 +37,11 @@ const M_FlagSettingDrawer = ({cardTypeSets,cardTypeSetId}) => {
 
   return (
     <>
-      <FlagOutlined style={{fontSize:"1.2rem"}} onClick={showDrawer}/>
+      <div onClick={showDrawer} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <FlagOutlined style={{ fontSize: "1.3rem" }} />
+        플래그설정
+      </div>
+
       <Drawer
         title={
           <>
@@ -52,7 +55,9 @@ const M_FlagSettingDrawer = ({cardTypeSets,cardTypeSetId}) => {
         mask={true}
         width={250}
       >
-          <div><FlagStyleContainer cardTypeSets={cardTypeSets} cardTypeSetId={cardTypeSetId}/></div>
+        <div>
+          <FlagStyleContainer cardTypeSets={cardTypeSets} cardTypeSetId={cardTypeSetId} />
+        </div>
       </Drawer>
     </>
   );

@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { GetIndex } from "../../../../graphql/query/allQuery";
 import { IndexCreateMutation, IndexRenameMutation, IndexLevelMutation, IndexDeleteMutation } from "../../../../graphql/mutation/indexSet";
 import IndexSettingModal from "../index/IndexSettingModal";
-import { CarryOutOutlined } from "@ant-design/icons";
+import { UnorderedListOutlined } from "@ant-design/icons";
 
 const backgroundColor = "black";
 const buttonColor = "white";
@@ -470,22 +470,12 @@ const LeftDrawer = ({ index_changed }) => {
 
   return (
     <>
-      <div style={{ position: "fixed", top: 100, left: 0 }}>
-        <button
-          onClick={showDrawer}
-          style={{
-            color: fontColor,
-            background: backgroundColor,
-            fontSize: "0.8rem",
-            border: "1px solid lightgrey",
-            borderLeft: "none",
-            width: "20px",
-            borderRadius: "0 5px 5px 0",
-          }}
-        >
-          목차
-        </button>
-      </div>
+    
+        <div onClick={showDrawer} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <UnorderedListOutlined style={{ fontSize: "1.3rem" }}/>
+            목차보기
+          </div>
+      
       {indexinfo && (
         <>
           <Drawer

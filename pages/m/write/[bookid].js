@@ -58,10 +58,11 @@ const Book = () => {
       {indexSetId && (
         <>
           <M_Layout>
-            <M_LeftDrawer index_changed={index_changed} book_id={book_id} />
+            {/* <M_LeftDrawer index_changed={index_changed} book_id={book_id} /> */}
             <M_WriteContainer
               book_id={book_id}
               indexChanged={indexChanged}
+              index_changed={index_changed}
               indexSetId={indexSetId}
               Editor={Editor}
               EditorFromCard={EditorFromCard}

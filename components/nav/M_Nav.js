@@ -12,6 +12,18 @@ const backgroundColor = "#565656";
 const fontColor = "white";
 
 const Nav = () => {
+  const ISSERVER = typeof window === "undefined";
+  if (!ISSERVER) {
+    var usernameTemp = localStorage.getItem("username");
+    if(usernameTemp){
+      var username = usernameTemp
+    } else {
+      var username = null
+    }
+  } else {
+    var username = "로그인을 해주세요"
+  }
+
   const isLogged = useSelector((state) => state.isLogged);
   const [visible, setVisible] = useState(false);
   const [logout] = useMutation(LOGOUT);
@@ -56,7 +68,7 @@ const Nav = () => {
             title={
               <>
                 <div style={{ height: "100%", padding: "0" }}>
-                  <Avatar size="small" icon={<UserOutlined />} /> <span style={{ fontSize: "0.8rem" }}>user name</span>
+                  <Avatar size="small" icon={<UserOutlined />} /> <span style={{ fontSize: "0.8rem", color: "#5b5b5b" }}>{username}{username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}</span>
                 </div>
               </>
             }
@@ -88,13 +100,13 @@ const Nav = () => {
                     <>
                       <Link href="/m/account/login">
                         <a style={linkStyleDrawer}>
-                          <UserOutlined style={{ marginRight: 5, color: "black" }} />
+                          <UserOutlined style={{ marginRight: 5, color: "#5b5b5b" }} />
                           로그인
                         </a>
                       </Link>
                       <Link href="/m/account/register">
                         <a style={linkStyleDrawer}>
-                          <FileTextOutlined style={{ marginRight: 5, color: "black" }} />
+                          <FileTextOutlined style={{ marginRight: 5, color: "#5b5b5b" }} />
                           회원가입
                         </a>
                       </Link>
@@ -102,50 +114,50 @@ const Nav = () => {
                   )}
                   <Link href="/m/study">
                     <a style={linkStyleDrawer}>
-                      <ReadOutlined style={{ marginRight: 10 }} />
+                      <ReadOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
                       학습
                     </a>
                   </Link>
                   <Link href="/m/write">
                     <a style={linkStyleDrawer}>
-                      <FormOutlined style={{ marginRight: 10 }} />
+                      <FormOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
                       만들기
                     </a>
                   </Link>
                   <Link href="/m/mentoring">
                     <a style={linkStyleDrawer}>
-                      <TeamOutlined style={{ marginRight: 10 }} />
+                      <TeamOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
                       멘토링
                     </a>
                   </Link>
                   <Link href="/bookstore">
                     <a style={linkStyleDrawer}>
-                      <ShopOutlined style={{ marginRight: 10 }} />
+                      <ShopOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
                       서점
                     </a>
                   </Link>
                   <Link href="/m/challenges">
                     <a style={linkStyleDrawer}>
-                      <CrownOutlined style={{ marginRight: 10 }} />
+                      <CrownOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
                       도전출판
                     </a>
                   </Link>
                   <Link href="/cart">
                     <a style={linkStyleDrawer}>
-                      <ShoppingCartOutlined style={{ marginRight: 10 }} />
+                      <ShoppingCartOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
                       장바구니
                     </a>
                   </Link>
                   <Link href="/notification">
                     <a style={linkStyleDrawer}>
-                      <BellOutlined style={{ marginRight: 10 }} />
+                      <BellOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
                       알림
                     </a>
                   </Link>
                 </div>
                 {isLogged && (
                   <>
-                    <Button size="large" shape="round" style={{ fontSize: "0.8rem" }} onClick={() => onClickLogout()}>
+                    <Button size="large" shape="round" style={{ fontSize: "0.8rem", color: "#5b5b5b"  }} onClick={() => onClickLogout()}>
                       로그아웃
                     </Button>
                   </>

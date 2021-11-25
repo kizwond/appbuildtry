@@ -43,11 +43,13 @@ const Home = () => {
       console.log(data);
       if (data.me.status === "401") {
         console.log("로그아웃상태입니다.");
+        localStorage.removeItem("username")
         setLoginState(false);
         dispatch(logIn(false));
         reset(refreshToken);
       } else {
         console.log("로그인상태입니다.");
+        localStorage.setItem("username", data.me.users[0].user_info.username);
         setLoginState(true);
         dispatch(logIn(true));
       }

@@ -4,7 +4,7 @@ import { Button, Col, Input, Modal, Row, Table, Tag, Drawer, Form } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { MUTATION_CREATE_MENTORING_GROUP, MUTATION_UPDATE_MENTORING_GROUP } from "../../graphql/mutation/mentoring";
+import { MUTATION_CHANGE_MENTORING_GROUP_ORDER, MUTATION_CREATE_MENTORING_GROUP, MUTATION_UPDATE_MENTORING_GROUP } from "../../graphql/mutation/mentoring";
 
 const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisible }) => {
   const router = useRouter();
@@ -73,6 +73,32 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
         variables: {
           groupType: "menteeGroup",
           newGroupName,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const [changeMentoringGroupOrder] = useMutation(MUTATION_CHANGE_MENTORING_GROUP_ORDER, {
+    onCompleted: (data) => {
+      if (data.mentoring_changeMentoringGroupOrder.status === "200") {
+        console.log("멘토링 그룹 순서 변경 후 받은 데이터", data);
+      } else if (data.mentoring_changeMentoringGroupOrder.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
+  });
+
+  async function changeGroupOrder({ mentoringGroup_id, direction }) {
+    try {
+      await changeMentoringGroupOrder({
+        variables: {
+          groupType: "menteeGroup",
+          mentoringGroup_id,
+          direction,
         },
       });
     } catch (error) {
@@ -229,10 +255,20 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                       </Col>
                       <Col span={activedInput.includes(record._id) ? 0 : 6}>
                         <div style={{ display: "flex", alignItems: "center" }}>
-                          <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                          <div
+                            style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}
+                            onClick={() => {
+                              changeGroupOrder({ mentoringGroup_id: record._id, direction: "up" });
+                            }}
+                          >
                             <ArrowUpOutlined style={{ fontSize: "1rem" }} />
                           </div>
-                          <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                          <div
+                            style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}
+                            onClick={() => {
+                              changeGroupOrder({ mentoringGroup_id: record._id, direction: "down" });
+                            }}
+                          >
                             <ArrowDownOutlined style={{ fontSize: "1rem" }} />
                           </div>
                         </div>

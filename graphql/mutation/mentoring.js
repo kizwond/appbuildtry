@@ -78,3 +78,16 @@ export const MUTATION_CREATE_MENTORING_GROUP = gql`
     }
   }
 `;
+
+export const MUTATION_CHANGE_MENTORING_GROUP_ORDER = gql`
+  ${FRAGMENT_MENTORING}
+  mutation ChangeMentoringGroupOrder($groupType: MentoringGroupType, $mentoringGroup_id: ID, $direction: String) {
+    mentoring_changeMentoringGroupOrder(groupType: $groupType, mentoringGroup_id: $mentoringGroup_id, direction: $direction) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;

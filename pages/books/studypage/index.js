@@ -134,5 +134,6 @@ const StyledSpace = styled(Space)`
   & * {
     font-size: 0.8rem;
   }
+
   padding: 12px 12px 0 12px;
 `;

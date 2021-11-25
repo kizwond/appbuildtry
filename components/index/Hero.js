@@ -6,7 +6,7 @@ const Hero = () => {
     color: "#fff",
     lineHeight: "160px",
     textAlign: "center",
-    background: "#303740",
+    background: "#939393",
   };
   return (
     <>

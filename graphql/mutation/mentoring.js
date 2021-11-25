@@ -65,3 +65,42 @@ export const MUTATION_UPDATE_MENTORING_GROUP = gql`
     }
   }
 `;
+
+export const MUTATION_CREATE_MENTORING_GROUP = gql`
+  ${FRAGMENT_MENTORING}
+  mutation CreateMentoringGroup($groupType: MentoringGroupType, $newGroupName: String) {
+    mentoring_createMentoringGroup(groupType: $groupType, newGroupName: $newGroupName) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;
+
+export const MUTATION_CHANGE_MENTORING_GROUP_ORDER = gql`
+  ${FRAGMENT_MENTORING}
+  mutation ChangeMentoringGroupOrder($groupType: MentoringGroupType, $mentoringGroup_id: ID, $direction: String) {
+    mentoring_changeMentoringGroupOrder(groupType: $groupType, mentoringGroup_id: $mentoringGroup_id, direction: $direction) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;
+
+export const MUTATION_DELETE_MENTORING_GROUP = gql`
+  ${FRAGMENT_MENTORING}
+  mutation DeleteMentoringGroup($groupType: MentoringGroupType, $currentMentoringGroup_id: ID, $moveToMentoringGroup_id: ID) {
+    mentoring_deleteMentoringGroup(groupType: $groupType, currentMentoringGroup_id: $currentMentoringGroup_id, moveToMentoringGroup_id: $moveToMentoringGroup_id) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;

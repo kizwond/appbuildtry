@@ -1,15 +1,14 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/router";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import _, { divide } from "lodash";
 
-import moment from "moment";
 import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
-import { MUTATION_ACCEPT_MENTOR_REQUEST, MUTATION_CANCEL_MENTORING_REQUEST } from "../../../graphql/mutation/mentoring";
+import { MUTATION_CANCEL_MENTORING_REQUEST } from "../../../graphql/mutation/mentoring";
 import useGetMentoringAndMenteeBooks from "../../../components/mentoring/useHooks/useGetMentoringAndMenteeBooks";
 
 import styled from "styled-components";
-import { Badge, Button, Card, Col, Drawer, Table, Tabs, Row, Avatar, Select, Space, Tag, Alert, Input } from "antd";
+import { Badge, Button, Card, Drawer, Table, Tabs, Space, Tag } from "antd";
 import { GroupOutlined, PlusOutlined } from "@ant-design/icons";
 
 import Layout from "../../../components/layout/M_Layout";
@@ -18,6 +17,7 @@ import M_MentosTable from "../../../components/mentoring/M_MentorsTable";
 import M_SentMentoringRequestCard from "../../../components/mentoring/M_SentMentoringRequestCard";
 import M_ReceivedMentoringRequestCard from "../../../components/mentoring/M_ReceivedMentoringRequestCard";
 import M_MenteeGroupTable from "../../../components/mentoring/M_MenteeGroupTable";
+import M_MentorGroupTable from "../../../components/mentoring/M_MentorGroupTable";
 
 const MentoringHome = () => {
   const router = useRouter();
@@ -25,6 +25,7 @@ const MentoringHome = () => {
   const [drawerRequestMentoringVisible, setDrawerRequestMentoringVisible] = useState(false);
   const [drawerSentMentoringRequestVisible, setDrawerSentMentoringRequestVisible] = useState(false);
   const [drawerMenteeGroupVisible, setDrawerMenteeGroupVisible] = useState(false);
+  const [drawerMentorGroupVisible, setDrawerMentorGroupVisible] = useState(false);
 
   const [declineMentroRequest] = useMutation(MUTATION_CANCEL_MENTORING_REQUEST, { onCompleted: (data) => console.log("멘토요청 취소 후 받은 데이터", data) });
   const declineMentoring = useCallback(async ({ menteeUser_id, mentorUser_id, mybook_id, response }) => {
@@ -143,52 +144,64 @@ const MentoringHome = () => {
                 />
               </Tabs.TabPane>
               <Tabs.TabPane tab="멘토" key="멘토">
-                <Space>
-                  <Badge
-                    size="small"
-                    count={
-                      _(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
-                        .filter(({ reqStatus }) => reqStatus === "waiting")
-                        .value().length
-                    }
-                  >
-                    <Button
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  {" "}
+                  <Space>
+                    <Badge
                       size="small"
-                      disabled={
+                      count={
                         _(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
                           .filter(({ reqStatus }) => reqStatus === "waiting")
-                          .value().length === 0
+                          .value().length
                       }
+                    >
+                      <Button
+                        size="small"
+                        disabled={
+                          _(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
+                            .filter(({ reqStatus }) => reqStatus === "waiting")
+                            .value().length === 0
+                        }
+                        onClick={() => {
+                          setDrawerSentMentoringRequestVisible((prev) => !prev);
+                        }}
+                      >
+                        보낸 요청
+                      </Button>
+                    </Badge>
+                    <button
+                      className="customButtonForMainPage"
+                      type="button"
+                      style={{
+                        width: "34px",
+                        height: "16px",
+                        borderRadius: "12px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        border: "none",
+                      }}
                       onClick={() => {
-                        setDrawerSentMentoringRequestVisible((prev) => !prev);
+                        setDrawerRequestMentoringVisible((prev) => !prev);
+                        if (!data) {
+                          getAllBooks();
+                        }
                       }}
                     >
-                      보낸 요청
-                    </Button>
-                  </Badge>
-                  <button
-                    className="customButtonForMainPage"
-                    type="button"
-                    style={{
-                      width: "34px",
-                      height: "16px",
-                      borderRadius: "12px",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      cursor: "pointer",
-                      border: "none",
-                    }}
+                      <PlusOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
+                    </button>
+                  </Space>
+                  <Button
+                    icon={<GroupOutlined />}
+                    size="small"
                     onClick={() => {
-                      setDrawerRequestMentoringVisible((prev) => !prev);
-                      if (!data) {
-                        getAllBooks();
-                      }
+                      setDrawerMentorGroupVisible(true);
                     }}
                   >
-                    <PlusOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
-                  </button>
-                </Space>
+                    멘토그룹관리
+                  </Button>
+                </div>
                 {mentoringData && <M_MentosTable mentoringData={mentoringData} />}
               </Tabs.TabPane>
             </Tabs>
@@ -250,17 +263,21 @@ const MentoringHome = () => {
               .map((mentor) => <M_SentMentoringRequestCard mentor={mentor} key={`${mentor.mentorUser_id}${mentor.mybook_id}`} declineMentoring={declineMentoring} />)
               .value()}
           </DrawerWrapper>
-          <DrawerWrapper
-            title="멘티 그룹 관리"
-            placement="right"
-            width={"100%"}
-            visible={drawerMenteeGroupVisible}
-            onClose={() => setDrawerMenteeGroupVisible(false)}
-            headerStyle={{ padding: "12px 12px 8px 12px" }}
-            bodyStyle={{ backgroundColor: "#e9e9e9" }}
-          >
-            <M_MenteeGroupTable menteeGroup={mentoringData && mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup} />
-          </DrawerWrapper>
+
+          <M_MenteeGroupTable
+            menteeGroup={mentoringData && mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup}
+            drawerMenteeGroupVisible={drawerMenteeGroupVisible}
+            changevisible={(_boolean) => {
+              setDrawerMenteeGroupVisible(_boolean);
+            }}
+          />
+          <M_MentorGroupTable
+            mentorGroup={mentoringData && mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup}
+            drawerMentorGroupVisible={drawerMentorGroupVisible}
+            changevisible={(_boolean) => {
+              setDrawerMentorGroupVisible(_boolean);
+            }}
+          />
         </MentoringWrapper>
       )}
     </Layout>

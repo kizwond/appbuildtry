@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { MUTATION_CHANGE_MENTORING_GROUP_ORDER, MUTATION_CREATE_MENTORING_GROUP, MUTATION_DELETE_MENTORING_GROUP, MUTATION_UPDATE_MENTORING_GROUP } from "../../graphql/mutation/mentoring";
 
-const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisible }) => {
+const M_MenteeGroupTable = ({ mentorGroup, drawerMentorGroupVisible, changevisible }) => {
   const router = useRouter();
 
   const inputRefs = useRef({});
@@ -20,11 +20,11 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
 
   useEffect(() => {
     let inialValues = {};
-    menteeGroup.forEach((group) => {
+    mentorGroup.forEach((group) => {
       inialValues[group._id] = group.name;
     });
     setInputValues(inialValues);
-  }, [menteeGroup]);
+  }, [mentorGroup]);
 
   const [changeMentoringGroupName] = useMutation(MUTATION_UPDATE_MENTORING_GROUP, {
     onCompleted: (data) => {
@@ -43,7 +43,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     try {
       await changeMentoringGroupName({
         variables: {
-          groupType: "mentee",
+          groupType: "mentor",
           mentoringGroup_id,
           newMentoringGroupName,
         },
@@ -71,7 +71,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     try {
       await createNewMentoringGroupName({
         variables: {
-          groupType: "mentee",
+          groupType: "mentor",
           newGroupName,
         },
       });
@@ -96,7 +96,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     try {
       await changeMentoringGroupOrder({
         variables: {
-          groupType: "mentee",
+          groupType: "mentor",
           mentoringGroup_id,
           direction,
         },
@@ -122,9 +122,9 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     try {
       await deleteMentoringGroup({
         variables: {
-          groupType: "mentee",
+          groupType: "mentor",
           currentMentoringGroup_id,
-          moveToMentoringGroup_id: menteeGroup[0]._id,
+          moveToMentoringGroup_id: mentorGroup[0]._id,
         },
       });
     } catch (error) {
@@ -140,7 +140,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
       <DrawerWrapper
         title={
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-            <div>멘티 그룹 관리</div>
+            <div>멘토 그룹 관리</div>
             <div>
               <button
                 className="customButtonForMainPage"
@@ -168,7 +168,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
         }
         placement="right"
         width={"100%"}
-        visible={drawerMenteeGroupVisible}
+        visible={drawerMentorGroupVisible}
         onClose={() => {
           changevisible(false);
         }}
@@ -211,7 +211,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                   message: "그룹 이름은 필수값입니다",
                 },
                 {
-                  validator: (_, value) => (menteeGroup.map((gr) => gr.name).includes(value) ? Promise.reject(new Error("동일한 그룹명이 존재합니다.")) : Promise.resolve()),
+                  validator: (_, value) => (mentorGroup.map((gr) => gr.name).includes(value) ? Promise.reject(new Error("동일한 그룹명이 존재합니다.")) : Promise.resolve()),
                 },
               ]}
             >
@@ -223,7 +223,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
         <Table
           size="small"
           pagination={false}
-          dataSource={menteeGroup.map((group) => ({ ...group, key: group._id }))}
+          dataSource={mentorGroup.map((group) => ({ ...group, key: group._id }))}
           bordered={false}
           columns={[
             {

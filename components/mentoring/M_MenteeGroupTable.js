@@ -43,7 +43,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     try {
       await changeMentoringGroupName({
         variables: {
-          groupType: "menteeGroup",
+          groupType: "mentee",
           mentoringGroup_id,
           newMentoringGroupName,
         },
@@ -71,7 +71,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     try {
       await createNewMentoringGroupName({
         variables: {
-          groupType: "menteeGroup",
+          groupType: "mentee",
           newGroupName,
         },
       });
@@ -96,7 +96,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     try {
       await changeMentoringGroupOrder({
         variables: {
-          groupType: "menteeGroup",
+          groupType: "mentee",
           mentoringGroup_id,
           direction,
         },
@@ -122,7 +122,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     try {
       await deleteMentoringGroup({
         variables: {
-          groupType: "menteeGroup",
+          groupType: "mentee",
           currentMentoringGroup_id,
           moveToMentoringGroup_id: menteeGroup[0]._id,
         },

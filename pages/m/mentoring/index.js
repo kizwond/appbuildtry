@@ -17,6 +17,7 @@ import M_MentosTable from "../../../components/mentoring/M_MentorsTable";
 import M_SentMentoringRequestCard from "../../../components/mentoring/M_SentMentoringRequestCard";
 import M_ReceivedMentoringRequestCard from "../../../components/mentoring/M_ReceivedMentoringRequestCard";
 import M_MenteeGroupTable from "../../../components/mentoring/M_MenteeGroupTable";
+import M_MentorGroupTable from "../../../components/mentoring/M_MentorGroupTable";
 
 const MentoringHome = () => {
   const router = useRouter();
@@ -24,6 +25,7 @@ const MentoringHome = () => {
   const [drawerRequestMentoringVisible, setDrawerRequestMentoringVisible] = useState(false);
   const [drawerSentMentoringRequestVisible, setDrawerSentMentoringRequestVisible] = useState(false);
   const [drawerMenteeGroupVisible, setDrawerMenteeGroupVisible] = useState(false);
+  const [drawerMentorGroupVisible, setDrawerMentorGroupVisible] = useState(false);
 
   const [declineMentroRequest] = useMutation(MUTATION_CANCEL_MENTORING_REQUEST, { onCompleted: (data) => console.log("멘토요청 취소 후 받은 데이터", data) });
   const declineMentoring = useCallback(async ({ menteeUser_id, mentorUser_id, mybook_id, response }) => {
@@ -194,7 +196,7 @@ const MentoringHome = () => {
                     icon={<GroupOutlined />}
                     size="small"
                     onClick={() => {
-                      setDrawerMenteeGroupVisible(true);
+                      setDrawerMentorGroupVisible(true);
                     }}
                   >
                     멘토그룹관리
@@ -265,8 +267,15 @@ const MentoringHome = () => {
           <M_MenteeGroupTable
             menteeGroup={mentoringData && mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup}
             drawerMenteeGroupVisible={drawerMenteeGroupVisible}
-            changevisible={(ref) => {
-              setDrawerMenteeGroupVisible(ref);
+            changevisible={(_boolean) => {
+              setDrawerMenteeGroupVisible(_boolean);
+            }}
+          />
+          <M_MentorGroupTable
+            mentorGroup={mentoringData && mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup}
+            drawerMentorGroupVisible={drawerMentorGroupVisible}
+            changevisible={(_boolean) => {
+              setDrawerMentorGroupVisible(_boolean);
             }}
           />
         </MentoringWrapper>

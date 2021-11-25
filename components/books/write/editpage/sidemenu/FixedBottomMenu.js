@@ -61,7 +61,7 @@ const FloatingMenu = ({
           padding: 5,
           boxShadow: "0px -1px 6px -1px #999999",
           alignItems: "center",
-          color: "#434343",
+          color: "#5b5b5b",
         }}
       >
         <div

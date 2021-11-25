@@ -201,14 +201,12 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   };
 
   const handleChangeComplete = (color) => {
-    console.log(color)
+    console.log(color);
     setBackgroundColor(color.hex);
   };
 
-
-
   const handleClick1 = () => {
-    console.log("clicked handleclick 1")
+    console.log("clicked handleclick 1");
     setDisplayColorPicker1(!displayColorPicker1);
   };
 
@@ -219,8 +217,6 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const borderTopColorHandler = (color) => {
     set_border_top_color(color.hex);
   };
-
-
 
   const handleClick2 = () => {
     setDisplayColorPicker2(!displayColorPicker2);
@@ -234,8 +230,6 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     set_border_bottom_color(color.hex);
   };
 
-
-
   const handleClick3 = () => {
     setDisplayColorPicker3(!displayColorPicker3);
   };
@@ -247,8 +241,6 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const borderLeftColorHandler = (color) => {
     set_border_left_color(color.hex);
   };
-
-
 
   const handleClick4 = () => {
     setDisplayColorPicker4(!displayColorPicker4);
@@ -264,27 +256,12 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   return (
     <div style={{ padding: "0px 10px 10px 10px" }}>
       <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
-        {cardType === "flip" && (
-          <React.Fragment>
-            <li>
-              <div style={{ fontSize: "0.8rem" }}>레이아웃</div>
-              <div style={{ fontSize: "0.8rem" }}>방향</div>
-              <Select size="small" value={card_direction} style={{ width: 120, fontSize: "0.8rem" }} onChange={directionHandler}>
-                <Option value="left-right" style={{ fontSize: "0.8rem" }}>좌우</Option>
-                <Option value="top-bottom" style={{ fontSize: "0.8rem" }}>위아래</Option>
-              </Select>
-              <div style={{ fontSize: "0.8rem" }}>1면 비율</div>
-              {card_direction === "left-right" && <InputNumber size="small" value={left_face_ratio} onChange={leftFaceRatioHandler} />}
-              {card_direction === "top-bottom" && <InputNumber size="small" value={left_face_ratio} onChange={leftFaceRatioHandler} disabled />}
-            </li>
-            <Divider style={{ width: "100%", margin: "0px 10px 0px 10px" }} />
-          </React.Fragment>
-        )}
-
         <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: "0.8rem" }}>면선택</div>
           <Select size="small" value={faceSelected} style={{ width: 120, fontSize: "0.8rem" }} onChange={selectFaceHandler}>
-            <Option value="default">면선택</Option>
+            <Option value="default" disabled>
+              면선택
+            </Option>
             {cardType === "read" && (
               <React.Fragment>
                 <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
@@ -319,7 +296,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             {cardType === "flip" && (
               <React.Fragment>
                 <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
-                  양면 [ㅁ ㅁ]
+                  전체면 [ &nbsp;&nbsp;&nbsp;&nbsp; ]
                 </Select.Option>
                 <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
                   1면 [ㅁ X]
@@ -335,13 +312,34 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           </Select>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+        {cardType === "flip" && (
+          <React.Fragment>
+            <li>
+              <div style={{ fontSize: "0.8rem" }}>레이아웃</div>
+              <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div style={{ fontSize: "0.8rem" }}>방향</div>
+                <Select size="small" value={card_direction} style={{ fontSize: "0.8rem" }} onChange={directionHandler}>
+                  <Option value="left-right" style={{ fontSize: "0.8rem" }}>
+                    좌우
+                  </Option>
+                  <Option value="top-bottom" style={{ fontSize: "0.8rem" }}>
+                    위아래
+                  </Option>
+                </Select>
+              </div>
+              <div style={{display:"flex", justifyContent:"space-between"}}>
+                <div style={{ fontSize: "0.8rem" }}>1면 비율</div>
+                {card_direction === "left-right" && <InputNumber size="small" value={left_face_ratio} onChange={leftFaceRatioHandler} style={{ fontSize: "0.8rem" }}/>}
+                {card_direction === "top-bottom" && <InputNumber size="small" value={left_face_ratio} onChange={leftFaceRatioHandler} style={{ fontSize: "0.8rem" }} disabled />}
+              </div>
+            </li>
+            <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+          </React.Fragment>
+        )}
+        
         <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: "0.8rem" }}>면배경색</div>
-          <Button
-            size="small"
-            onClick={handleClick}
-            style={{ width: "80px", fontSize: "0.8rem", background: backgroundColor }}
-          >
+          <Button size="small" onClick={handleClick} style={{ width: "80px", fontSize: "0.8rem", background: backgroundColor }}>
             Color
           </Button>
           {displayColorPicker ? (
@@ -403,16 +401,18 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>상</span>
             <Select size="small" value={border_top_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderTopTypeHandler}>
-              <Option value="solid">solid</Option>
-              <Option value="dashed">dashed</Option>
-              <Option value="dotted">dotted</Option>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
             </Select>
             {/* <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input> */}
-            <Button
-              size="small"
-              onClick={handleClick1}
-              style={{ width: "50px", fontSize: "0.8rem", background: border_top_color }}
-            >
+            <Button size="small" onClick={handleClick1} style={{ width: "50px", fontSize: "0.8rem", background: border_top_color }}>
               Color
             </Button>
             {displayColorPicker1 ? (
@@ -427,16 +427,18 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>하</span>
             <Select size="small" value={border_bottom_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderBottomTypeHandler}>
-              <Option value="solid">solid</Option>
-              <Option value="dashed">dashed</Option>
-              <Option value="dotted">dotted</Option>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
             </Select>
             {/* <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input> */}
-            <Button
-              size="small"
-              onClick={handleClick2}
-              style={{ width: "50px", fontSize: "0.8rem", background: border_bottom_color }}
-            >
+            <Button size="small" onClick={handleClick2} style={{ width: "50px", fontSize: "0.8rem", background: border_bottom_color }}>
               Color
             </Button>
             {displayColorPicker2 ? (
@@ -451,16 +453,18 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>좌</span>
             <Select size="small" value={border_left_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderLeftTypeHandler}>
-              <Option value="solid">solid</Option>
-              <Option value="dashed">dashed</Option>
-              <Option value="dotted">dotted</Option>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
             </Select>
             {/* <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input> */}
-            <Button
-              size="small"
-              onClick={handleClick3}
-              style={{ width: "50px", fontSize: "0.8rem", background: border_left_color }}
-            >
+            <Button size="small" onClick={handleClick3} style={{ width: "50px", fontSize: "0.8rem", background: border_left_color }}>
               Color
             </Button>
             {displayColorPicker3 ? (
@@ -475,16 +479,18 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>우</span>
             <Select size="small" value={border_right_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderRightTypeHandler}>
-              <Option value="solid">solid</Option>
-              <Option value="dashed">dashed</Option>
-              <Option value="dotted">dotted</Option>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
             </Select>
             {/* <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input> */}
-            <Button
-              size="small"
-              onClick={handleClick4}
-              style={{ width: "50px", fontSize: "0.8rem", background: border_right_color }}
-            >
+            <Button size="small" onClick={handleClick4} style={{ width: "50px", fontSize: "0.8rem", background: border_right_color }}>
               Color
             </Button>
             {displayColorPicker4 ? (

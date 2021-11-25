@@ -6,20 +6,6 @@ import CardtypeContainer from "../../write/editpage/cardtype/CardtypeContainer";
 import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useQuery, useMutation } from "@apollo/client";
 import { SettingOutlined } from "@ant-design/icons";
-import { useMediaQuery } from "react-responsive";
-
-const Desktop = ({ children }) => {
-  const isDesktop = useMediaQuery({ minWidth: 992 });
-  return isDesktop ? children : null;
-};
-const Tablet = ({ children }) => {
-  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 991 });
-  return isTablet ? children : null;
-};
-const Mobile = ({ children }) => {
-  const isMobile = useMediaQuery({ maxWidth: 767 });
-  return isMobile ? children : null;
-};
 
 const RightDrawer = () => {
   const ISSERVER = typeof window === "undefined";
@@ -86,17 +72,7 @@ const RightDrawer = () => {
 
   return (
     <>
-      <Desktop>
-        <Button type="primary" onClick={showDrawer}>
-          카드설정
-        </Button>
-      </Desktop>
-      <Tablet>
-        <SettingOutlined onClick={showDrawer} style={{ fontSize: "1rem" }} />
-      </Tablet>
-      <Mobile>
-        <SettingOutlined style={{fontSize:"1.2rem"}} onClick={showDrawer} />
-      </Mobile>
+      <SettingOutlined style={{fontSize:"1.2rem"}} onClick={showDrawer} />
 
       <Drawer
         title={

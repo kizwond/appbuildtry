@@ -3,9 +3,11 @@ import { GetCardType } from "../../../../../graphql/query/cardtype";
 import { useQuery, useMutation } from "@apollo/client";
 import { Form, Input, Button, Radio, Select, Cascader, Divider, InputNumber, TreeSelect, Switch } from "antd";
 import { UpdateCardType, GetCardTypeSet, UpdateRowStyle, UpdateRowFont } from "../../../../../graphql/query/cardtype";
+import { CompactPicker } from "react-color";
 const { Option } = Select;
 
 const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedCardTypeList }) => {
+  const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const [cardType, setCardType] = useState([]);
   const [current_cardTypeId, set_current_CardTypeId] = useState();
   const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
@@ -38,10 +40,6 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   }
 
   async function updaterowstyle() {
-    console.log(font);
-    console.log(size);
-    console.log(color);
-    console.log(align, bold, italic, underline);
     try {
       await cardtypeset_updaterowfont({
         variables: {
@@ -69,7 +67,6 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
 
   const alignHandler = (e) => set_align(e);
   const boldHandler = (e) => set_bold(e);
-  const colorHandler = (e) => set_color(e.target.value);
   const fontHandler = (e) => set_font(e);
   const italicHandler = (e) => set_italic(e);
   const sizeHandler = (e) => set_size(e);
@@ -159,43 +156,56 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     set_underline(cardTypeDetail[0].row_font[faceSelected][e].underline);
   };
 
+  const handleClick = () => {
+    setDisplayColorPicker(!displayColorPicker);
+  };
+
+  const handleClose = () => {
+    setDisplayColorPicker(false);
+  };
+
+  const handleChangeComplete = (color) => {
+      console.log(color.hex)
+      set_color(color.hex);
+  };
+
   return (
     <div>
       <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
         <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ fontSize: "0.8rem" }}>면선택</div>
           <Select size="small" value={faceSelected} style={{ width: 120, fontSize: "0.8rem" }} onChange={selectFaceHandler}>
-            <Option value="default">면선택</Option>
+            <Option value="default" disabled>면선택</Option>
             {cardType === "read" && (
               <React.Fragment>
-                <Select.Option value="face1">1면</Select.Option>
-                <Select.Option value="annotation">주석</Select.Option>
+                <Select.Option value="face1" style={{ fontSize: "0.8rem" }}>1면</Select.Option>
+                <Select.Option value="annotation" style={{ fontSize: "0.8rem" }}>주석</Select.Option>
               </React.Fragment>
             )}
             {cardType === "subject" && (
               <React.Fragment>
-                <Select.Option value="0">1면</Select.Option>
-                <Select.Option value="1">주석</Select.Option>
+                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>1면</Select.Option>
+                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>주석</Select.Option>
               </React.Fragment>
             )}
             {cardType === "general" && (
               <React.Fragment>
-                <Select.Option value="0">1면</Select.Option>
-                <Select.Option value="1">주석</Select.Option>
+                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>1면</Select.Option>
+                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>주석</Select.Option>
               </React.Fragment>
             )}
             {cardType === "flip" && (
               <React.Fragment>
-                <Select.Option value="face1">1면</Select.Option>
-                <Select.Option value="face2">2면</Select.Option>
-                <Select.Option value="annotation">주석</Select.Option>
+                <Select.Option value="face1" style={{ fontSize: "0.8rem" }}>1면</Select.Option>
+                <Select.Option value="face2" style={{ fontSize: "0.8rem" }}>2면</Select.Option>
+                <Select.Option value="annotation" style={{ fontSize: "0.8rem" }}>주석</Select.Option>
               </React.Fragment>
             )}
           </Select>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ fontSize: "0.8rem" }}>행선택</div>
+          <div style={{ fontSize: "0.8rem" }} disabled>행선택</div>
           <Select size="small" value={rowSelected} style={{ width: 120, fontSize: "0.8rem"  }} onChange={selectRowHandler}>
             <Option value="default" style={{ fontSize: "0.8rem" }}>행선택</Option>
             {rowOptions}
@@ -218,35 +228,44 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: "0.8rem" }}>색</span>
-            <input type="color" id="head" name="background_color" value={color} onChange={colorHandler}></input>
+            <Button size="small" onClick={handleClick} style={{ width: "80px", fontSize: "0.8rem", background: color }}>
+            Color
+          </Button>
+            {displayColorPicker ? (
+            <div style={popover}>
+              <div style={cover} onClick={handleClose} />
+              <CompactPicker color={color} onChange={handleChangeComplete} />
+              {/* <span>none</span> */}
+            </div>
+          ) : null}
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: "0.8rem" }}>align</span>
             <Select size="small" value={align} style={{ width: 120, fontSize: "0.8rem"  }} onChange={alignHandler}>
-              <Option value="left">left</Option>
-              <Option value="right">right</Option>
-              <Option value="center">center</Option>
+              <Option value="left" style={{ fontSize: "0.8rem" }}>left</Option>
+              <Option value="right" style={{ fontSize: "0.8rem" }}>right</Option>
+              <Option value="center" style={{ fontSize: "0.8rem" }}>center</Option>
             </Select>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: "0.8rem" }}>bold</span>
             <Select size="small" value={bold} style={{ width: 120, fontSize: "0.8rem"  }} onChange={boldHandler}>
-              <Option value="on">on</Option>
-              <Option value="off">off</Option>
+              <Option value="on" style={{ fontSize: "0.8rem" }}>on</Option>
+              <Option value="off" style={{ fontSize: "0.8rem" }}>off</Option>
             </Select>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: "0.8rem" }}>italic</span>
             <Select size="small" value={italic} style={{ width: 120, fontSize: "0.8rem"  }} onChange={italicHandler}>
-              <Option value="on">on</Option>
-              <Option value="off">off</Option>
+              <Option value="on" style={{ fontSize: "0.8rem" }}>on</Option>
+              <Option value="off" style={{ fontSize: "0.8rem" }}>off</Option>
             </Select>
           </div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ fontSize: "0.8rem" }}>underline</span>
             <Select size="small" value={underline} style={{ width: 120, fontSize: "0.8rem"  }} onChange={underlineHandler}>
-              <Option value="on">on</Option>
-              <Option value="off">off</Option>
+              <Option value="on" style={{ fontSize: "0.8rem" }}>on</Option>
+              <Option value="off" style={{ fontSize: "0.8rem" }}>off</Option>
             </Select>
           </div>
         </li>
@@ -262,3 +281,17 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
 };
 
 export default CardFaceSetting;
+
+const popover = {
+  position: "absolute",
+  zIndex: "2",
+};
+const cover = {
+  position: "fixed",
+  top: "0px",
+  right: "0px",
+  bottom: "0px",
+  left: "100px",
+};
+
+

@@ -68,7 +68,7 @@ const Nav = () => {
             title={
               <>
                 <div style={{ height: "100%", padding: "0" }}>
-                  <Avatar size="small" icon={<UserOutlined />} /> <span style={{ fontSize: "0.8rem", color: "#5b5b5b" }}>{username}{username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}</span>
+                  <Avatar size="small" icon={<UserOutlined />} /> <span style={{ fontSize: "0.8rem" }}>{username}{username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}</span>
                 </div>
               </>
             }
@@ -100,13 +100,13 @@ const Nav = () => {
                     <>
                       <Link href="/m/account/login">
                         <a style={linkStyleDrawer}>
-                          <UserOutlined style={{ marginRight: 5, color: "#5b5b5b" }} />
+                          <UserOutlined style={{ marginRight: 10 }} />
                           로그인
                         </a>
                       </Link>
                       <Link href="/m/account/register">
                         <a style={linkStyleDrawer}>
-                          <FileTextOutlined style={{ marginRight: 5, color: "#5b5b5b" }} />
+                          <FileTextOutlined style={{ marginRight: 10 }} />
                           회원가입
                         </a>
                       </Link>
@@ -114,50 +114,50 @@ const Nav = () => {
                   )}
                   <Link href="/m/study">
                     <a style={linkStyleDrawer}>
-                      <ReadOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
+                      <ReadOutlined style={{ marginRight: 10  }} />
                       학습
                     </a>
                   </Link>
                   <Link href="/m/write">
                     <a style={linkStyleDrawer}>
-                      <FormOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
+                      <FormOutlined style={{ marginRight: 10  }} />
                       만들기
                     </a>
                   </Link>
                   <Link href="/m/mentoring">
                     <a style={linkStyleDrawer}>
-                      <TeamOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
+                      <TeamOutlined style={{ marginRight: 10  }} />
                       멘토링
                     </a>
                   </Link>
                   <Link href="/bookstore">
                     <a style={linkStyleDrawer}>
-                      <ShopOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
+                      <ShopOutlined style={{ marginRight: 10  }} />
                       서점
                     </a>
                   </Link>
                   <Link href="/m/challenges">
                     <a style={linkStyleDrawer}>
-                      <CrownOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
+                      <CrownOutlined style={{ marginRight: 10  }} />
                       도전출판
                     </a>
                   </Link>
                   <Link href="/cart">
                     <a style={linkStyleDrawer}>
-                      <ShoppingCartOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
+                      <ShoppingCartOutlined style={{ marginRight: 10  }} />
                       장바구니
                     </a>
                   </Link>
                   <Link href="/notification">
                     <a style={linkStyleDrawer}>
-                      <BellOutlined style={{ marginRight: 10, color: "#5b5b5b"  }} />
+                      <BellOutlined style={{ marginRight: 10  }} />
                       알림
                     </a>
                   </Link>
                 </div>
                 {isLogged && (
                   <>
-                    <Button size="large" shape="round" style={{ fontSize: "0.8rem", color: "#5b5b5b"  }} onClick={() => onClickLogout()}>
+                    <Button size="large" shape="round" style={{ fontSize: "0.8rem"  }} onClick={() => onClickLogout()}>
                       로그아웃
                     </Button>
                   </>
@@ -188,7 +188,7 @@ const Nav = () => {
 export default Nav;
 
 const linkStyleDrawer = {
-  color: "black",
+  color: "#5b5b5b",
   padding: 10,
   fontSize: "0.8rem",
 };

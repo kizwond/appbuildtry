@@ -431,6 +431,10 @@ const DrawerWrapper = styled(Drawer)`
     font-size: 0.8rem;
   }
 
+  & .ant-table-tbody > tr * {
+    font-size: 1rem;
+  }
+
   & .ant-drawer-header-title {
     justify-content: start;
     width: 100%;

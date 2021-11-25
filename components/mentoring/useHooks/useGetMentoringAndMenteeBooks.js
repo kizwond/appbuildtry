@@ -53,9 +53,12 @@ const useGetMentoringAndMenteeBooks = () => {
 
   useEffect(() => {
     getMentoring();
-    setIsFetfetching(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setIsFetfetching(true);
+  }, [mentoringData]);
 
   const newData = useMemo(() => {
     return (
@@ -87,7 +90,8 @@ const useGetMentoringAndMenteeBooks = () => {
           if (a.menteeSeq === b.menteeSeq) return 0;
         })
     );
-  }, [menteeBooks, mentoringData, isFetching]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [menteeBooks, mentoringData]);
 
   return { newData, mentoringData };
 };

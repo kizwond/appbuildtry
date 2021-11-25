@@ -251,6 +251,10 @@ const StyledCard = styled(Card)`
     font-size: 0.8rem;
   }
 
+  & .ant-table-tbody > tr * {
+    font-size: 1rem;
+  }
+
   & .ant-input.ant-input-sm {
     height: 22px;
   }

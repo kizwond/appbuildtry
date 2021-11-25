@@ -160,6 +160,16 @@ p {
 .ant-table-tbody > tr > td.ant-table-cell-row-hover {
   background: none;
 }
+.ant-table-tbody > tr > td {
+  height: 4.2rem;
+}
+.ant-table-tbody > tr > td {
+  font-size: 1rem;
+}
+
+.ant-table.ant-table-small .ant-table-tbody > tr > td {
+  padding: 0 4px;
+}
 
 /* page 커스텀 버튼 */
 .customButtonForMainPage {
@@ -198,6 +208,6 @@ p {
   color: #e9e9e9;
 }
 
-.editor_try{
-  width:100% !important;
+.editor_try {
+  width: 100% !important;
 }

@@ -279,12 +279,14 @@ const StyledCard = styled(Card)`
   /* & .ant-table-thead .categoryCol::before {
     display: none;
   } */
+
   & .ant-table-thead .categoryCol {
     border-bottom: 1px solid #f0f0f0;
   }
 
   & .ant-table-tbody > tr > td {
     border-bottom: none;
+    font-size: 1rem;
   }
 
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */

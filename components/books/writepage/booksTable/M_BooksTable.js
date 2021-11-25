@@ -446,6 +446,10 @@ const StyledCard = styled(Card)`
     font-size: 0.8rem;
   }
 
+  & .ant-table-tbody > tr * {
+    font-size: 1rem;
+  }
+
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
   & .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;

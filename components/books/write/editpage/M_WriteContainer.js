@@ -4,20 +4,20 @@ import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Button, Select } from "antd";
 import { AddCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
-import { StarOutlined, StarFilled } from "@ant-design/icons";
+import { HeartFilled, StarFilled, CheckCircleFilled } from "@ant-design/icons";
 
 const { Option } = Select;
 
 const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromCard, FroalaEditorView }) => {
-  const myRef = useRef(null) //스크롤
+  const myRef = useRef(null); //스크롤
   // const executeScroll = () => myRef.current.scrollTo({
   //   top: 500,
   //   behavior: 'smooth'
   // });//스크롤
-  const executeScroll = () => myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline :"end" })//스크롤
+  const executeScroll = () => myRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" }); //스크롤
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
-    var book_id = localStorage.getItem("book_id");  
+    var book_id = localStorage.getItem("book_id");
     var first_index_tmp = localStorage.getItem("first_index");
     if (indexChanged) {
       if (indexChanged === first_index_tmp) {
@@ -246,15 +246,13 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
     } else if (from === "inCard") {
       setEditorOnFromCard(editorFromCard);
     }
-    
   };
 
   useEffect(() => {
-    if(editorOn){
+    if (editorOn) {
       executeScroll();
     }
-  }, [executeScroll, editorOn ]);
-  
+  }, [executeScroll, editorOn]);
 
   const onFinish = (values, from) => {
     console.log(values);
@@ -423,12 +421,11 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
           }
           console.log("해당카드 정보", content);
           console.log("해당카드 정보", content_value);
-          
+
           const figure_shape = makerFlagStyle.figure_style.shape;
           const figure_size = makerFlagStyle.figure_style.size;
           const figure_color = makerFlagStyle.figure_style.color;
 
-          const comment_font_align = makerFlagStyle.comment_font.align;
           const comment_font_bold = makerFlagStyle.comment_font.bold;
           const comment_font_color = makerFlagStyle.comment_font.color;
           const comment_font_font = makerFlagStyle.comment_font.font;
@@ -436,42 +433,127 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
           const comment_font_size = makerFlagStyle.comment_font.size;
           const comment_font_underline = makerFlagStyle.comment_font.underline;
 
+          const star_shape = <StarFilled style={{ color: figure_color }} />;
+          const heart_shape = <HeartFilled style={{ color: figure_color }} />;
+          const circle_shape = <CheckCircleFilled style={{ color: figure_color }} />;
           if (content.content.makerFlag.value === 1) {
-            var ratings = <StarFilled style={{ color: "#fff006" }} />;
+            if (figure_shape === "star") {
+              var ratings = star_shape;
+            } else if (figure_shape === "heart") {
+              var ratings = heart_shape;
+            } else if (figure_shape === "circle") {
+              var ratings = circle_shape;
+            }
           } else if (content.content.makerFlag.value === 2) {
-            var ratings = (
-              <>
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-              </>
-            );
+            if (figure_shape === "star") {
+              var ratings = (
+                <>
+                  {star_shape}
+                  {star_shape}
+                </>
+              );
+            } else if (figure_shape === "heart") {
+              var ratings = (
+                <>
+                  {heart_shape}
+                  {heart_shape}
+                </>
+              );
+            } else if (figure_shape === "circle") {
+              var ratings = (
+                <>
+                  {circle_shape}
+                  {circle_shape}
+                </>
+              );
+            }
           } else if (content.content.makerFlag.value === 3) {
-            var ratings = (
-              <>
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-              </>
-            );
+            if (figure_shape === "star") {
+              var ratings = (
+                <>
+                  {star_shape}
+                  {star_shape}
+                  {star_shape}
+                </>
+              );
+            } else if (figure_shape === "heart") {
+              var ratings = (
+                <>
+                  {heart_shape}
+                  {heart_shape}
+                  {heart_shape}
+                </>
+              );
+            } else if (figure_shape === "circle") {
+              var ratings = (
+                <>
+                  {circle_shape}
+                  {circle_shape}
+                  {circle_shape}
+                </>
+              );
+            }
           } else if (content.content.makerFlag.value === 4) {
-            var ratings = (
-              <>
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-              </>
-            );
+            if (figure_shape === "star") {
+              var ratings = (
+                <>
+                  {star_shape}
+                  {star_shape}
+                  {star_shape}
+                  {star_shape}
+                </>
+              );
+            } else if (figure_shape === "heart") {
+              var ratings = (
+                <>
+                  {heart_shape}
+                  {heart_shape}
+                  {heart_shape}
+                  {heart_shape}
+                </>
+              );
+            } else if (figure_shape === "circle") {
+              var ratings = (
+                <>
+                  {circle_shape}
+                  {circle_shape}
+                  {circle_shape}
+                  {circle_shape}
+                </>
+              );
+            }
           } else if (content.content.makerFlag.value === 5) {
-            var ratings = (
-              <>
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-                <StarFilled style={{ color: "#fff006" }} />
-              </>
-            );
+            if (figure_shape === "star") {
+              var ratings = (
+                <>
+                  {star_shape}
+                  {star_shape}
+                  {star_shape}
+                  {star_shape}
+                  {star_shape}
+                </>
+              );
+            } else if (figure_shape === "heart") {
+              var ratings = (
+                <>
+                  {heart_shape}
+                  {heart_shape}
+                  {heart_shape}
+                  {heart_shape}
+                  {heart_shape}
+                </>
+              );
+            } else if (figure_shape === "circle") {
+              var ratings = (
+                <>
+                  {circle_shape}
+                  {circle_shape}
+                  {circle_shape}
+                  {circle_shape}
+                  {circle_shape}
+                </>
+              );
+            }
           } else {
             var ratings = <></>;
           }
@@ -482,6 +564,53 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
             comment = "";
           }
 
+          const flagArea = (
+            <>
+              <div
+                style={{
+                  display:"inline-flex",
+                  backgroundColor: makerFlagStyle.row_style.background.color,
+                  marginTop: makerFlagStyle.row_style.outer_margin.top,
+                  marginBottom: makerFlagStyle.row_style.outer_margin.bottom,
+                  marginLeft: makerFlagStyle.row_style.outer_margin.left,
+                  marginRight: makerFlagStyle.row_style.outer_margin.right,
+                  paddingTop: makerFlagStyle.row_style.inner_padding.top,
+                  paddingBottom: makerFlagStyle.row_style.inner_padding.bottom,
+                  paddingLeft: makerFlagStyle.row_style.inner_padding.left,
+                  paddingRight: makerFlagStyle.row_style.inner_padding.right,
+                  borderTop: `${makerFlagStyle.row_style.border.top.thickness}px ${makerFlagStyle.row_style.border.top.bordertype} ${makerFlagStyle.row_style.border.top.color}`,
+                  borderBottom: `${makerFlagStyle.row_style.border.bottom.thickness}px ${makerFlagStyle.row_style.border.bottom.bordertype} ${makerFlagStyle.row_style.border.bottom.color}`,
+                  borderLeft: `${makerFlagStyle.row_style.border.left.thickness}px ${makerFlagStyle.row_style.border.left.bordertype} ${makerFlagStyle.row_style.border.left.color}`,
+                  borderRight: `${makerFlagStyle.row_style.border.right.thickness}px ${makerFlagStyle.row_style.border.right.bordertype} ${makerFlagStyle.row_style.border.right.color}`,
+                }}
+              >
+                <span style={{ display: "inline-block", marginRight: "5px", fontSize: `${figure_size}px` }}>{ratings}</span>
+                <span
+                  style={{
+                    color: comment_font_color,
+                    fontFamily: `${
+                      comment_font_font === "고딕"
+                        ? `NanumGothic`
+                        : comment_font_font === "명조"
+                        ? `NanumMyeongjo`
+                        : comment_font_font === "바탕"
+                        ? `Gowun Batang, sans-serif`
+                        : comment_font_font === "돋움"
+                        ? `Gowun Dodum, sans-serif`
+                        : ""
+                    } `,
+                    fontStyle: `${comment_font_italic === "on" ? "italic" : "normal"}`,
+                    fontSize: `${comment_font_size}px`,
+                    textDecoration: `${comment_font_underline === "on" ? "underline" : "none"}`,
+                    fontWeight: `${comment_font_bold === "on" ? 700 : 400}`,
+                  }}
+                >
+                  {comment}
+                </span>
+              </div>
+            </>
+          );
+
           return (
             <>
               {content.card_info.cardtype === "read" && (
@@ -489,14 +618,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                   <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
-                      {content.content.makerFlag.value !== null && (
-                        <>
-                          <div>
-                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
-                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
-                          </div>
-                        </>
-                      )}
+                      {content.content.makerFlag.value !== null && flagArea}
                       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                         <div
                           style={{
@@ -643,14 +765,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                   <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
-                      {content.content.makerFlag.value !== null && (
-                        <>
-                          <div>
-                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
-                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
-                          </div>
-                        </>
-                      )}
+                      {content.content.makerFlag.value !== null && flagArea}
                       <div
                         style={{
                           backgroundColor: face_style[0].background.color,
@@ -735,14 +850,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                     <div style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "general")}>
                         {/* 페이스 스타일 영역 */}
-                        {content.content.makerFlag.value !== null && (
-                        <>
-                          <div>
-                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
-                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
-                          </div>
-                        </>
-                      )}
+                        {content.content.makerFlag.value !== null && flagArea}
                         <div
                           style={{
                             backgroundColor: face_style[0].background.color,
@@ -837,14 +945,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
                       >
                         {/* 페이스1 스타일 영역 */}
-                        {content.content.makerFlag.value !== null && (
-                        <>
-                          <div>
-                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
-                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
-                          </div>
-                        </>
-                      )}
+                        {content.content.makerFlag.value !== null && flagArea}
                         <div
                           style={{
                             backgroundColor: face_style[0].background.color,
@@ -1007,14 +1108,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                         // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
                       >
                         {/* 페이스1 스타일 영역 */}
-                        {content.content.makerFlag.value !== null && (
-                        <>
-                          <div>
-                            <span style={{ display: "inline-block",marginRight:"5px", fontSize: "10px" }}>{ratings}</span>
-                            <span style={{ color: "grey", fontSize: "0.8rem" }}>{comment}</span>
-                          </div>
-                        </>
-                      )}
+                        {content.content.makerFlag.value !== null && flagArea}
                         <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", width: "100%" }}>
                           <div
                             style={{
@@ -1267,7 +1361,7 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
   return (
     <>
       <div style={{ width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
-        <div>selected index id : {first_index}</div>
+        {/* <div>selected index id : {first_index}</div> */}
         <div>{contents}</div>
         <div>{editorOn}</div>
         <div ref={myRef} style={{ height: "50px" }}></div>

@@ -129,15 +129,29 @@ const MentoringHome = () => {
                       title: "최근 학습시간",
                       dataIndex: "studyHistory",
                       width: "35%",
+                      colSpan: 2,
                       // eslint-disable-next-line react/display-name
-                      render: (v) => (
-                        <>
-                          {v.map((item, index) => (
-                            <span key={index}>{`${index === 2 ? item : `${item}, `}`} </span>
-                          ))}
-                          <Tag style={{ marginLeft: "5px" }}>상세보기</Tag>
-                        </>
-                      ),
+                      render: (v) => {
+                        const obj = {
+                          colSpan: 2,
+                          rowSpan: 1,
+                          children: (
+                            <>
+                              {v?.map((item, index) => (
+                                <span key={index}>{`${index === 2 ? item : `${item}, `}`} </span>
+                              ))}
+                              <Tag style={{ marginLeft: "5px" }}>상세보기</Tag>
+                            </>
+                          ),
+                        };
+                        return obj;
+                      },
+                    },
+                    {
+                      title: "최근 학습시간",
+                      dataIndex: "studyHistory",
+                      width: "35%",
+                      colSpan: 0,
                     },
                   ]}
                 />

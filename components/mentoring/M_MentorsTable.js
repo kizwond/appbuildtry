@@ -25,7 +25,7 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData }) => {
             },
             {
               title: "멘토",
-              dataIndex: "mentorNameAndId",
+              dataIndex: "mentorName",
               ellipsis: true,
               width: "15%",
             },

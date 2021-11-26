@@ -290,7 +290,7 @@ const StyledCard = styled(Card)`
   & .ant-card-body {
     padding: ${(props) => (props.isvisible === "true" ? "0px 12px 12px 12px" : "0px 12px 0px 12px !important")};
   }
-  & .ant-table-tbody > tr * {
+  & .ant-table-container * {
     font-size: 1rem;
   }
 

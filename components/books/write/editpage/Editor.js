@@ -427,48 +427,51 @@ class Editor extends Component {
     this.props.setEditorOn("");
   };
 
-  // componentDidUpdate() {
-  //   const originArray = JSON.parse(sessionStorage.getItem("nicks_without_selections"));
-  //   const newArray = JSON.parse(sessionStorage.getItem("nicks_with_selections"));
-  //   if (originArray && newArray) {
-  //     var diffIndexes = [];
-  //     const arrayDiff = (a, b) => {
-  //       return a.filter(function (i) {
-  //         if (b.indexOf(i) < 0) {
-  //           diffIndexes.push(a.indexOf(i));
-  //           return true;
-  //         } else {
-  //           return false;
-  //         }
-  //       });
-  //     };
-  //     var diffValues = arrayDiff(newArray, originArray);
-  //     console.log(diffIndexes);
-  //     console.log(diffValues);
-  //     const keyname = `editor${diffIndexes[diffIndexes.length-1]+1}`
-  //     const keynameNext1 = `editor${diffIndexes[diffIndexes.length-1]+2}`
-  //     const keynameNext2 = `editor${diffIndexes[diffIndexes.length-1]+3}`
-  //     const keynameNext3 = `editor${diffIndexes[diffIndexes.length-1]+4}`
-  //     const keynameNext4 = `editor${diffIndexes[diffIndexes.length-1]+5}`
-  //     const keynameNext5 = `editor${diffIndexes[diffIndexes.length-1]+6}`
+  componentDidUpdate() {
+    const originArray = JSON.parse(sessionStorage.getItem("nicks_without_selections"));
+    const newArray = JSON.parse(sessionStorage.getItem("nicks_with_selections"));
+    const num_selection = sessionStorage.getItem("selections")
+    const num_selection_adding = sessionStorage.getItem("selections_adding")
+    if (originArray && newArray) {
+      sessionStorage.setItem("selections_adding", num_selection)
+      var diffIndexes = [];
+      const arrayDiff = (a, b) => {
+        return a.filter(function (i) {
+          if (b.indexOf(i) < 0) {
+            diffIndexes.push(a.indexOf(i));
+            return true;
+          } else {
+            return false;
+          }
+        });
+      };
+      var diffValues = arrayDiff(newArray, originArray);
+      console.log(diffIndexes);
+      console.log(diffValues);
+      const keyname = `editor${diffIndexes[diffIndexes.length-1]+1}`
+      const keynameNext1 = `editor${diffIndexes[diffIndexes.length-1]+2}`
+      const keynameNext2 = `editor${diffIndexes[diffIndexes.length-1]+3}`
+      const keynameNext3 = `editor${diffIndexes[diffIndexes.length-1]+4}`
+      const keynameNext4 = `editor${diffIndexes[diffIndexes.length-1]+5}`
+      const keynameNext5 = `editor${diffIndexes[diffIndexes.length-1]+6}`
 
-  //     if(this.state[keyname] !== this.state[keynameNext1]){
-  //       this.setState({
-  //         [keyname] :""
-  //       })
-  //       this.setState({
-  //         [keynameNext1] :this.state[keyname]
-  //       })
-  //       this.setState({
-  //         [keynameNext2] :this.state[keynameNext1]
-  //       })
-  //       this.setState({
-  //         [keynameNext3] :this.state[keynameNext2]
-  //       })
-  //     }
+      if(num_selection_adding !== num_selection){
+        this.setState({
+          [keyname] :""
+        })
+        this.setState({
+          [keynameNext1] :this.state[keyname]
+        })
+        this.setState({
+          [keynameNext2] :this.state[keynameNext1]
+        })
+        this.setState({
+          [keynameNext3] :this.state[keynameNext2]
+        })
+      }
       
-  //   }
-  // }
+    }
+  }
   render() {
     const editorList = this.props.nicks.map((item, index) => {
       return (

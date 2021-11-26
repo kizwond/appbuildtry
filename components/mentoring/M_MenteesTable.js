@@ -51,7 +51,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
     try {
       await reassignMentoringMemberToAnotherGroup({
         variables: {
-          groupType: "mentor",
+          groupType: "mentee",
           target_id,
           newMentoringGroup_id,
         },

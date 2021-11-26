@@ -205,6 +205,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     } else {
       selectedCardTypeOption = selectedCardType.name;
     }
+
+    if(selections){
+      sessionStorage.setItem("nicks_with_selections", JSON.stringify(nicks))
+    } else if(cardtypeEditor === "flip") {
+      sessionStorage.setItem("nicks_without_selections", JSON.stringify(nicks))
+    }
+    
     const editor = (
       <>
         <div
@@ -258,6 +265,14 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             {parentId && cardTypeListInCardChild}
           </Select>
         </div>
+        {cardtypeEditor === "flip" && (
+          <>
+            <div style={{ border: "1px solid lightgrey", borderBottom: "0px", borderTop: "0px", padding: "0 5px 5px 5px", display: "flex", justifyContent: "space-between" }}>
+              <div></div>
+              <Button size="small" style={{fontSize:"0.8rem"}} onClick={addSelections}>셀렉션추가</Button>
+            </div>
+          </>
+        )}
         <EditorFromCard
           face1={face1}
           face2={face2}
@@ -325,12 +340,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
 
     const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
 
-    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.face2, values.annotation, values.flagStar, values.flagComment);
+    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.selection, values.face2, values.annotation, values.flagStar, values.flagComment);
   };
 
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 
   function afteraddcardmutation(data) {
+    sessionStorage.removeItem("selections");
     setCards(data.cardset_addcardAtSameIndex.cardsets[0].cards);
     sessionStorage.removeItem("parentId");
     const cardIdList = data.cardset_addcardAtSameIndex.cardsets[0].cards.map((item) => {
@@ -344,7 +360,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     });
   }
 
-  async function addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, face1_contents, face2_contents, annotation_contents, flagStar, flagComment) {
+  async function addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, face1_contents, selection_contents, face2_contents, annotation_contents, flagStar, flagComment) {
     const parentId = sessionStorage.getItem("parentId");
     console.log("부모카드아이디", parentId);
     if (parentId === null) {
@@ -377,7 +393,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               // user_flag: null,
               // maker_flag: null,
               face1: face1_contents,
-              selection: null,
+              selection: selection_contents,
               face2: face2_contents,
               annotation: annotation_contents,
               // memo: null,
@@ -1111,6 +1127,45 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                 </div>
                               </>
                             ))}
+                            {content_value.selection && content_value.selection.map((item, index) => (
+                              <>
+                                <div
+                                  style={{
+                                    backgroundColor: row_style.face1[index].background.color,
+                                    marginTop: row_style.face1[index].outer_margin.top,
+                                    marginBottom: row_style.face1[index].outer_margin.bottom,
+                                    marginLeft: row_style.face1[index].outer_margin.left,
+                                    marginRight: row_style.face1[index].outer_margin.right,
+                                    paddingTop: row_style.face1[index].inner_padding.top,
+                                    paddingBottom: row_style.face1[index].inner_padding.bottom,
+                                    paddingLeft: row_style.face1[index].inner_padding.left,
+                                    paddingRight: row_style.face1[index].inner_padding.right,
+                                    borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
+                                    borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
+                                    borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
+                                    borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                                    textAlign: row_font.face1[index].align,
+                                    fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
+                                    color: row_font.face1[index].color,
+                                    fontFamily: `${
+                                      row_font.face1[index].font === "고딕"
+                                        ? `NanumGothic`
+                                        : row_font.face1[index].font === "명조"
+                                        ? `NanumMyeongjo`
+                                        : row_font.face1[index].font === "바탕"
+                                        ? `Gowun Batang, sans-serif`
+                                        : row_font.face1[index].font === "돋움"
+                                        ? `Gowun Dodum, sans-serif`
+                                        : ""
+                                    } `,
+                                    fontSize: row_font.face1[index].size,
+                                    textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
+                                  }}
+                                >
+                                  <FroalaEditorView model={item} />
+                                </div>
+                              </>
+                            ))}
                           </div>
                           {/* 페이스2 스타일 영역 */}
                           <div
@@ -1296,6 +1351,45 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                   </div>
                                 </>
                               ))}
+                              {content_value.selection && content_value.selection.map((item, index) => (
+                                <>
+                                  <div
+                                    style={{
+                                      backgroundColor: row_style.face1[index].background.color,
+                                      marginTop: row_style.face1[index].outer_margin.top,
+                                      marginBottom: row_style.face1[index].outer_margin.bottom,
+                                      marginLeft: row_style.face1[index].outer_margin.left,
+                                      marginRight: row_style.face1[index].outer_margin.right,
+                                      paddingTop: row_style.face1[index].inner_padding.top,
+                                      paddingBottom: row_style.face1[index].inner_padding.bottom,
+                                      paddingLeft: row_style.face1[index].inner_padding.left,
+                                      paddingRight: row_style.face1[index].inner_padding.right,
+                                      borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
+                                      borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
+                                      borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
+                                      borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                                      textAlign: row_font.face1[index].align,
+                                      fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
+                                      color: row_font.face1[index].color,
+                                      fontFamily: `${
+                                        row_font.face1[index].font === "고딕"
+                                          ? `NanumGothic`
+                                          : row_font.face1[index].font === "명조"
+                                          ? `NanumMyeongjo`
+                                          : row_font.face1[index].font === "바탕"
+                                          ? `Gowun Batang, sans-serif`
+                                          : row_font.face1[index].font === "돋움"
+                                          ? `Gowun Dodum, sans-serif`
+                                          : ""
+                                      } `,
+                                      fontSize: row_font.face1[index].size,
+                                      textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
+                                    }}
+                                  >
+                                    <FroalaEditorView model={item} />
+                                  </div>
+                                </>
+                              ))}
                             </div>
                             {/* 페이스2 스타일 영역 */}
                             <div
@@ -1363,9 +1457,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                           <>
                             <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                               <div>
-                                <Button size="small" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", border: "1px solid grey" }}>
-                                  다음카드
-                                </Button>
+                                <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                다음카드
+                              </Button>
                               </div>
                             </div>
                           </>
@@ -1374,13 +1468,15 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                           <>
                             <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                               <div>
-                                <Button
-                                  size="small"
-                                  onClick={() => onClickCardAddChild("child", content.card_info.parentCard_id, current_card_style[0].cardtype_info.name)}
-                                  style={{ fontSize: "0.75rem", border: "1px solid grey" }}
-                                >
-                                  자식카드
-                                </Button>
+                              <Button
+                                icon={<ApartmentOutlined />}
+                                size="small"
+                                type="primary"
+                                onClick={() => onClickCardAddChild("child", content.card_info.parentCard_id, current_card_style[0].cardtype_info.name)}
+                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                              >
+                                자식카드
+                              </Button>
                               </div>
                             </div>
                           </>

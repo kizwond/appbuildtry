@@ -155,7 +155,7 @@ class Editor extends Component {
     if (model === "") {
       this.setState({
         editor3: model,
-      editorZindex3: 10,
+        editorZindex3: 10,
       });
     }
   };
@@ -182,7 +182,7 @@ class Editor extends Component {
     if (model === "") {
       this.setState({
         editor5: model,
-      editorZindex5: 10,
+        editorZindex5: 10,
       });
     }
   };
@@ -196,7 +196,7 @@ class Editor extends Component {
     if (model === "") {
       this.setState({
         editor6: model,
-      editorZindex6: 10,
+        editorZindex6: 10,
       });
     }
   };
@@ -252,7 +252,7 @@ class Editor extends Component {
     if (model === "") {
       this.setState({
         editor10: model,
-      editorZindex10: 10,
+        editorZindex10: 10,
       });
     }
   };
@@ -280,7 +280,7 @@ class Editor extends Component {
     if (model === "") {
       this.setState({
         editor12: model,
-      editorZindex12: 10,
+        editorZindex12: 10,
       });
     }
   };
@@ -294,7 +294,7 @@ class Editor extends Component {
     if (model === "") {
       this.setState({
         editor13: model,
-      editorZindex13: 10,
+        editorZindex13: 10,
       });
     }
   };
@@ -308,7 +308,7 @@ class Editor extends Component {
     if (model === "") {
       this.setState({
         editor14: model,
-      editorZindex14: 10,
+        editorZindex14: 10,
       });
     }
   };
@@ -322,7 +322,7 @@ class Editor extends Component {
     if (model === "") {
       this.setState({
         editor15: model,
-      editorZindex15: 10,
+        editorZindex15: 10,
       });
     }
   };
@@ -335,7 +335,7 @@ class Editor extends Component {
     if (model === "") {
       this.setState({
         editor16: model,
-      editorZindex16: 10,
+        editorZindex16: 10,
       });
     }
   };
@@ -344,6 +344,8 @@ class Editor extends Component {
     console.log("onClick handleSubmit!!!!!");
     // console.log(this.state.editor1)
     // this.props.onFinish(this.state.editor1);
+    const selections = sessionStorage.getItem("selections");
+
     const num_face1 = this.props.cardtype_info.num_of_row.face1;
     const num_face2 = this.props.cardtype_info.num_of_row.face2;
     const num_annot = this.props.cardtype_info.num_of_row.annotation;
@@ -364,59 +366,113 @@ class Editor extends Component {
         }
       }
     }
+    if (selections) {
+      var num_selection = Number(selections);
 
-    //뒤집기카드만 있을때
-    if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
-      for (i = 1; i < num_face1 + 1; i++) {
-        face1_array.push(this.state["editor" + i]);
-      }
-      if (num_face2 > 0) {
-        for (i = num_face1 + 1; i < num_face1 + num_face2 + 1; i++) {
-          face2_array.push(this.state["editor" + i]);
+      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 && num_selection > 0) {
+        for (i = 1; i < num_face1 + 1; i++) {
+          face1_array.push(this.state["editor" + i]);
+        }
+        if (num_selection > 0) {
+          for (i = num_face1 + 1; i < num_face1 + num_selection + 1; i++) {
+            selection_array.push(this.state["editor" + i]);
+          }
+        }
+        if (num_face2 > 0) {
+          for (i = num_face1 + num_selection + 1; i < num_face1 + num_selection + num_face2 + 1; i++) {
+            face2_array.push(this.state["editor" + i]);
+          }
+        }
+        if (num_annot > 0) {
+          for (i = num_face1 + num_selection + num_face2 + 1; i < num_face1 + num_selection + num_face2 + num_annot + 1; i++) {
+            annotation_array.push(this.state["editor" + i]);
+          }
         }
       }
-      if (num_annot > 0) {
-        for (i = num_face1 + num_face2 + 1; i < num_face1 + num_face2 + num_annot + 1; i++) {
-          annotation_array.push(this.state["editor" + i]);
+    } else {
+      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
+        for (i = 1; i < num_face1 + 1; i++) {
+          face1_array.push(this.state["editor" + i]);
+        }
+        if (num_face2 > 0) {
+          for (i = num_face1 + 1; i < num_face1 + num_face2 + 1; i++) {
+            face2_array.push(this.state["editor" + i]);
+          }
+        }
+        if (num_annot > 0) {
+          for (i = num_face1 + num_face2 + 1; i < num_face1 + num_face2 + num_annot + 1; i++) {
+            annotation_array.push(this.state["editor" + i]);
+          }
         }
       }
     }
+    //뒤집기카드만 있을때
+    if (selection_array.length > 0) {
+      var selectionsArray = selection_array;
+    } else {
+      selectionsArray = null;
+    }
 
-    const values = { face1: face1_array, face2: face2_array, annotation: annotation_array, flagStar:this.state.flagStar, flagComment:this.state.flagComment  };
+    const values = {
+      face1: face1_array,
+      selection: selectionsArray,
+      face2: face2_array,
+      annotation: annotation_array,
+      flagStar: this.state.flagStar,
+      flagComment: this.state.flagComment,
+    };
     console.log(this.props.parentId);
     this.props.onFinish(values, "normal", this.props.parentId);
 
     this.props.setEditorOn("");
   };
 
-  onClickAddSelection = () => {
-    console.log("selection add clicked!!!");
-  };
-  // componentDidMount() {
-  //   this.props.nicks.map((item, index) => {
-  //     this.setState({
-  //       ["editor" + (index + 1).toString()]: item,
-  //     });
-  //   });
-  // }
   // componentDidUpdate() {
-  //   console.log("did update");
-  //   const selected = document.getElementsByClassName("fr-placeholder");
-  //   for (var a = 0; a < selected.length; a++) {
-  //     const section = selected.item(a);
-  //     console.log(section);
-  //     this.props.nicks.map((item, index) => {
-  //       if (index == a) {
-  //         section.innerHTML = `<span style='font-size:0.8rem; color:lightgrey;'>${item}</span>`;
-  //       }
-  //     });
+  //   const originArray = JSON.parse(sessionStorage.getItem("nicks_without_selections"));
+  //   const newArray = JSON.parse(sessionStorage.getItem("nicks_with_selections"));
+  //   if (originArray && newArray) {
+  //     var diffIndexes = [];
+  //     const arrayDiff = (a, b) => {
+  //       return a.filter(function (i) {
+  //         if (b.indexOf(i) < 0) {
+  //           diffIndexes.push(a.indexOf(i));
+  //           return true;
+  //         } else {
+  //           return false;
+  //         }
+  //       });
+  //     };
+  //     var diffValues = arrayDiff(newArray, originArray);
+  //     console.log(diffIndexes);
+  //     console.log(diffValues);
+  //     const keyname = `editor${diffIndexes[diffIndexes.length-1]+1}`
+  //     const keynameNext1 = `editor${diffIndexes[diffIndexes.length-1]+2}`
+  //     const keynameNext2 = `editor${diffIndexes[diffIndexes.length-1]+3}`
+  //     const keynameNext3 = `editor${diffIndexes[diffIndexes.length-1]+4}`
+  //     const keynameNext4 = `editor${diffIndexes[diffIndexes.length-1]+5}`
+  //     const keynameNext5 = `editor${diffIndexes[diffIndexes.length-1]+6}`
+
+  //     if(this.state[keyname] !== this.state[keynameNext1]){
+  //       this.setState({
+  //         [keyname] :""
+  //       })
+  //       this.setState({
+  //         [keynameNext1] :this.state[keyname]
+  //       })
+  //       this.setState({
+  //         [keynameNext2] :this.state[keynameNext1]
+  //       })
+  //       this.setState({
+  //         [keynameNext3] :this.state[keynameNext2]
+  //       })
+  //     }
+      
   //   }
   // }
-
   render() {
     const editorList = this.props.nicks.map((item, index) => {
-        return (
-          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom:"3px"  }}>
+      return (
+        <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
           <label
             className="editor_label"
             style={{
@@ -438,8 +494,7 @@ class Editor extends Component {
             onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
           />
         </div>
-        );
-      
+      );
     });
 
     return (
@@ -447,8 +502,13 @@ class Editor extends Component {
         <div id="editor">
           <div id="toolbarContainer"></div>
           <div style={{ padding: "3px", border: "1px solid lightgrey" }}>
-          <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "3px" }}>
-              <Select size="small" defaultValue={this.state.flagStar} style={{ flexBasis: "100px", flexShrink: 0, width: 100, fontSize: "0.8rem", marginRight:"3px"  }} onChange={this.handleFlagStar}>
+            <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "3px" }}>
+              <Select
+                size="small"
+                defaultValue={this.state.flagStar}
+                style={{ flexBasis: "100px", flexShrink: 0, width: 100, fontSize: "0.8rem", marginRight: "3px" }}
+                onChange={this.handleFlagStar}
+              >
                 <Option value="default" disabled>
                   플래그선택
                 </Option>

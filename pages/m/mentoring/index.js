@@ -24,6 +24,7 @@ const MentoringHome = () => {
   const router = useRouter();
 
   const [isMenteeEditMode, setIsMenteeEditMode] = useState(false);
+  const [isMentorEditMode, setIsMentorEditMode] = useState(false);
 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerRequestMentoringVisible, setDrawerRequestMentoringVisible] = useState(false);
@@ -164,6 +165,9 @@ const MentoringHome = () => {
                       <PlusOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
                     </button>
                   </Space>
+                  <Button size="small" onClick={() => setIsMentorEditMode((prev) => !prev)}>
+                    구성원 편집
+                  </Button>
                   <Button
                     icon={<GroupOutlined />}
                     size="small"
@@ -174,7 +178,14 @@ const MentoringHome = () => {
                     멘토그룹관리
                   </Button>
                 </div>
-                {mentoringData && <M_MentosTable mentoringData={mentoringData} previousMentoringData={previousMentoringData} />}
+                {mentoringData && (
+                  <M_MentosTable
+                    mentoringData={mentoringData}
+                    isMentorEditMode={isMentorEditMode}
+                    previousMentoringData={previousMentoringData}
+                    mentorGroup={mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup}
+                  />
+                )}
               </Tabs.TabPane>
             </Tabs>
           </Card>

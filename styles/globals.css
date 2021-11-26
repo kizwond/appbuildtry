@@ -160,15 +160,19 @@ p {
 .ant-table-tbody > tr > td.ant-table-cell-row-hover {
   background: none;
 }
+.ant-table.ant-table-small .ant-table-thead > tr > th {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
 .ant-table-tbody > tr > td {
   height: 4.2rem;
 }
-.ant-table-tbody > tr > td {
+.ant-table-container * {
   font-size: 1rem;
 }
-
 .ant-table.ant-table-small .ant-table-tbody > tr > td {
-  padding: 0 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 /* page 커스텀 버튼 */

@@ -166,7 +166,7 @@ const StyledCard = styled(Card)`
     font-size: 0.8rem;
   }
 
-  & .ant-table-tbody > tr * {
+  & .ant-table-container * {
     font-size: 1rem;
   }
 `;
@@ -177,7 +177,7 @@ const DrawerWrapper = styled(Drawer)`
   }
   top: 40px;
 
-  & .ant-table-tbody > tr * {
+  & .ant-table-container * {
     font-size: 1rem;
   }
 

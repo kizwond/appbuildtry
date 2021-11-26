@@ -46,7 +46,7 @@ const MentoringHome = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { newData, mentoringData } = useGetMentoringAndMenteeBooks();
+  const { newData, mentoringData, previousMentoringData } = useGetMentoringAndMenteeBooks();
   const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
     onCompleted: (data) => {
       if (data.mybookcateset_getMybookcatesetByUserID.status === "200") {
@@ -205,7 +205,7 @@ const MentoringHome = () => {
                     멘토그룹관리
                   </Button>
                 </div>
-                {mentoringData && <M_MentosTable mentoringData={mentoringData} />}
+                {mentoringData && <M_MentosTable mentoringData={mentoringData} previousMentoringData={previousMentoringData} />}
               </Tabs.TabPane>
             </Tabs>
           </Card>

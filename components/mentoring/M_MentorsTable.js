@@ -2,8 +2,8 @@ import { Table, Tag } from "antd";
 import React from "react";
 import useGetMentorBooks from "../../components/mentoring/useHooks/useGetMentorBooks.js";
 
-const M_MentorsTable = ({ mentoringData }) => {
-  const myMentorBooks = useGetMentorBooks(mentoringData);
+const M_MentorsTable = ({ mentoringData, previousMentoringData }) => {
+  const myMentorBooks = useGetMentorBooks(mentoringData, previousMentoringData);
 
   return (
     <>

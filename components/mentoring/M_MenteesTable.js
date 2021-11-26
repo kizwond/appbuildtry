@@ -1,9 +1,12 @@
 import { useMutation } from "@apollo/client";
 import { Button, Form, Input, Select, Space, Table, Tag } from "antd";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER, MUTATION_TERMINATE_MENTORING } from "../../graphql/mutation/mentoring";
 
 const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
+  const router = useRouter();
+
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   const [terminateMentoring] = useMutation(MUTATION_TERMINATE_MENTORING, {

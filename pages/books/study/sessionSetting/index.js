@@ -325,7 +325,7 @@ const StyledDiv = styled.div`
   } */
 
   & * {
-    font-size: 0.7rem;
+    font-size: 1rem;
   }
   margin: 0 auto;
   max-width: 1440px;
@@ -391,7 +391,7 @@ const StyledDivSecond = styled.div`
     border-color: #f0f0f0;
   }
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {
-    padding: 4px 8px;
+    padding: 0;
     background-color: #fff;
   }
 

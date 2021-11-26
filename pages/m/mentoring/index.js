@@ -112,46 +112,36 @@ const MentoringHome = () => {
                     {
                       title: "그룹",
                       dataIndex: "menteeGroupName",
-                      width: "15%",
+                      className: "MenteeGroupNameCell",
+                      width: 60,
+                      render: function ad(v) {
+                        return <div>{v}</div>;
+                      },
                     },
                     {
                       title: "책",
                       dataIndex: "mybookTitle",
-                      width: "25%",
+                      width: 80,
                     },
                     {
                       title: "멘티",
                       ellipsis: true,
                       dataIndex: "menteeNameAndId",
-                      width: "15%",
+                      width: 40,
                     },
                     {
-                      title: "최근 학습시간",
+                      title: "학습시간",
                       dataIndex: "studyHistory",
-                      width: "35%",
-                      colSpan: 2,
+                      width: 40,
                       // eslint-disable-next-line react/display-name
-                      render: (v) => {
-                        const obj = {
-                          colSpan: 2,
-                          rowSpan: 1,
-                          children: (
-                            <>
-                              {v?.map((item, index) => (
-                                <span key={index}>{`${index === 2 ? item : `${item}, `}`} </span>
-                              ))}
-                              <Tag style={{ marginLeft: "5px" }}>상세보기</Tag>
-                            </>
-                          ),
-                        };
-                        return obj;
-                      },
-                    },
-                    {
-                      title: "최근 학습시간",
-                      dataIndex: "studyHistory",
-                      width: "35%",
-                      colSpan: 0,
+                      render: (v) => (
+                        <>
+                          {v.map((item, index) => (
+                            <span key={index}>{`${index === 2 ? item : `${item}, `}`} </span>
+                          ))}
+                          {/* <Tag style={{ marginLeft: "5px" }}>상세보기</Tag> */}
+                        </>
+                      ),
                     },
                   ]}
                 />
@@ -372,7 +362,19 @@ const MentoringWrapper = styled.div`
   & audio,
   & video,
   & input {
-    font-size: 0.8rem;
+    font-size: 1rem;
+  }
+
+  & .MenteeGroupNameCell > div {
+    /* height: 3rem; */
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
   }
 `;
 
@@ -458,6 +460,6 @@ const DrawerWrapper = styled(Drawer)`
   & audio,
   & video,
   & input {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 `;

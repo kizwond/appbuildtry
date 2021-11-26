@@ -307,7 +307,7 @@ export default FavoriteBooksTable;
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
   & * {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 
   & .ant-table-thead .categoryCol {

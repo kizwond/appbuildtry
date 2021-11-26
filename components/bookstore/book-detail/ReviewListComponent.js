@@ -120,7 +120,7 @@ const ReviewBody = styled.div`
     word-wrap: break-word;
     word-break: keep-all;
     white-space: normal;
-    max-height: 800px;
+    max-height: 37px;
   }
 `;
 

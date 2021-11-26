@@ -428,7 +428,7 @@ const DrawerWrapper = styled(Drawer)`
   & audio,
   & video,
   & input {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 
   & .ant-drawer-header-title {

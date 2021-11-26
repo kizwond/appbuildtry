@@ -415,58 +415,6 @@ class Editor extends Component {
 
   render() {
     const editorList = this.props.nicks.map((item, index) => {
-      if (this.props.cardtypeEditor === "flip" && index === 0) {
-        return (
-          <div key={index} style={{position: "relative", display: "flex", flexDirection: "column", marginTop: "1px" }}>
-             <label
-            className="editor_label"
-            style={{
-              zIndex: this.state["editorZindex" + (index + 1).toString()],
-              position: "absolute",
-              left: "5px",
-              top: "15px",
-              width: "50px",
-              fontSize: "0.5rem",
-              color: "lightgrey",
-            }}
-          >
-              {item}
-            </label>
-            <FroalaEditorComponent
-              tag="textarea"
-              config={this.config}
-              model={this.state["editor" + (index + 1).toString()]}
-              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-            />
-            {/* <div><PlusCircleOutlined onClick={this.onClickAddSelection} style={{ marginLeft: "7px", fontSize: "1.4rem", color: "grey" }} /></div> */}
-          </div>
-        );
-      } else if (this.props.cardtypeEditor === "flip" && index !== 0) {
-        return (
-          <div key={index} style={{ position: "relative",display: "flex", flexDirection: "column", marginTop: "1px" }}>
-             <label
-            className="editor_label"
-            style={{
-              zIndex: this.state["editorZindex" + (index + 1).toString()],
-              position: "absolute",
-              left: "5px",
-              top: "15px",
-              width: "50px",
-              fontSize: "0.5rem",
-              color: "lightgrey",
-            }}
-          >
-              {item}
-            </label>
-            <FroalaEditorComponent
-              tag="textarea"
-              config={this.config}
-              model={this.state["editor" + (index + 1).toString()]}
-              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-            />
-          </div>
-        );
-      } else {
         return (
           <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom:"3px"  }}>
           <label
@@ -491,7 +439,7 @@ class Editor extends Component {
           />
         </div>
         );
-      }
+      
     });
 
     return (

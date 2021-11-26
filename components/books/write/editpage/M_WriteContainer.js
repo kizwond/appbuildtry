@@ -4,7 +4,7 @@ import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Button, Select, Space } from "antd";
 import { AddCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
-import { HeartFilled, StarFilled, CheckCircleFilled,PlusOutlined,ApartmentOutlined } from "@ant-design/icons";
+import { HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -49,6 +49,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   const [selectedCardType, setSelectedCardType] = useState();
   const [indexList, setIndexList] = useState();
   const [makerFlagStyle, setMakerFlagStyle] = useState();
+  // const [selections, setSelections] = useState();
+  // const [selectionNicks, setSelectionNicks] = useState([]);
 
   const {
     loading,
@@ -121,35 +123,43 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }, [data1, indexChanged, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
 
-  const cardTypeInfo = (cardtype_info, from, parentId, generalCardId) => {
-    console.log("generalCardId", generalCardId);
-    console.log(cardId);
+  const cardTypeInfo = (cardtype_info, from, parentId, generalCardId, selections) => {
+    sessionStorage.setItem("cardtype_info", JSON.stringify(cardtype_info))
+    sessionStorage.setItem("from", from)
+    sessionStorage.setItem("parentId", parentId)
+    sessionStorage.setItem("generalCardId", generalCardId)
+
+    console.log("cardTypeInfo fired!!!! editor on process")
+    console.log(selections)
+    // console.log("generalCardId", generalCardId);
+    // console.log(cardId);
     if (generalCardId) {
       const childs = cards.filter((item) => {
         if (item.card_info.parentCard_id === generalCardId) {
           return item;
         }
       });
-      console.log("===========>", childs);
+      // console.log("===========>", childs);
       let lastElement = childs[childs.length - 1];
-      console.log(lastElement);
+      // console.log(lastElement);
       if (lastElement !== undefined) {
         setCardId(lastElement._id);
       }
     }
 
-    console.log(parentId);
-    console.log("여기다여기 : ", cardtype_info);
+    // console.log(parentId);
+    // console.log("여기다여기 : ", cardtype_info);
     const cardtypeEditor = cardtype_info.cardtype; //에디터에서 플립모드에 셀렉션 부과하려고 필요한 정보
 
     const num_face1 = cardtype_info.num_of_row.face1;
     const num_face2 = cardtype_info.num_of_row.face2;
-    const num_selection = cardtype_info.num_of_row.selection;
+    if(selections){
+      var num_selection = selections;
+    }
     const num_annotation = cardtype_info.num_of_row.annotation;
 
     const nick_face1 = cardtype_info.nick_of_row.face1;
-    const nick_face2 = cardtype_info.nick_of_row.face2;
-    const nick_selection = cardtype_info.nick_of_row.selection;
+    const nick_face2 = cardtype_info.nick_of_row.face2; 
     const nick_annotation = cardtype_info.nick_of_row.annotation;
 
     const nicks = [];
@@ -160,6 +170,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       face1.push(i);
       face1Nick.push(nick_face1[i]);
       nicks.push(nick_face1[i]);
+    }
+
+    if(selections){
+      const selection = [];
+      const selectionNick = [];
+      for (var i = 0; i < num_selection; i++) {
+        selection.push(i);
+        selectionNick.push(`보기${i+1}`);
+        nicks.push(`보기${i+1}`);
+      }
     }
 
     const face2 = [];
@@ -177,6 +197,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       annotNick.push(nick_annotation[i]);
       nicks.push(nick_annotation[i]);
     }
+
+    
 
     if (selectedCardType === undefined) {
       var selectedCardTypeOption = cardtype_info.name;
@@ -196,6 +218,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             {cardTypeListNormal}
           </Select>
         </div>
+
+        {cardtypeEditor === "flip" && (
+          <>
+            <div style={{ border: "1px solid lightgrey", borderBottom: "0px", borderTop: "0px", padding: "0 5px 5px 5px", display: "flex", justifyContent: "space-between" }}>
+              <div></div>
+              <Button size="small" style={{fontSize:"0.8rem"}} onClick={addSelections}>셀렉션추가</Button>
+            </div>
+          </>
+        )}
+
         <div style={{ marginBottom: "100px" }}>
           <Editor
             face1={face1}
@@ -251,6 +283,26 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   };
 
+
+  function addSelections() {
+    console.log("add selection clicked!!!")
+    const selections = sessionStorage.getItem("selections");
+    if(selections === undefined){
+      sessionStorage.setItem("selections", 1)
+      var num_selection = 1
+    } else {
+      var num_selection = Number(selections) + 1;
+      sessionStorage.setItem("selections", num_selection)
+    }
+    
+    const cardtype_info = JSON.parse(sessionStorage.getItem("cardtype_info"))
+    const from = sessionStorage.getItem("from")
+    const parentId = sessionStorage.getItem("parentId")
+    const generalCardId = sessionStorage.getItem("generalCardId")
+
+    cardTypeInfo(cardtype_info, from, parentId, generalCardId, num_selection)
+  }
+
   useEffect(() => {
     if (editorOn) {
       executeScroll();
@@ -297,8 +349,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     console.log("부모카드아이디", parentId);
     if (parentId === null) {
       var hasParent = "no";
-    } else {
+      var parentCard_id = undefined
+    } else if(parentId === "undefined"){
+      hasParent = "no";
+      parentCard_id = undefined
+    }else {
       hasParent = "yes";
+      parentCard_id = parentId
     }
     try {
       await cardset_addcardAtSameIndex({
@@ -314,7 +371,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               cardtype_id,
               cardtype,
               hasParent: hasParent,
-              parentCard_id: parentId,
+              parentCard_id: parentCard_id,
             },
             content: {
               // user_flag: null,
@@ -370,6 +427,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   }
 
   function handleChange(value) {
+    sessionStorage.removeItem("selections");
     console.log(`selected ${value[0]}`);
     console.log(`selected ${value[1]}`);
     if (value[0] !== "default") {
@@ -382,6 +440,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   }
 
   function onClickCardAdd(from, generalCardId) {
+    sessionStorage.removeItem("selections");
     setEditorOn("");
     if (selectedCardType === undefined) {
       setSelectedCardType(cardTypes[0].cardtype_info);
@@ -396,6 +455,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   }
 
   function onClickCardAddChild(from, parentId, typeName) {
+    sessionStorage.removeItem("selections");
     console.log(parentId);
     sessionStorage.setItem("parentId", parentId);
     setEditorOn("");
@@ -763,9 +823,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                       <>
                         <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                           <div>
-                          <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius:"5px" }}>
-                                  다음카드
-                                </Button>
+                            <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                              다음카드
+                            </Button>
                           </div>
                         </div>
                       </>
@@ -847,9 +907,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                       <>
                         <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                           <div>
-                            <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius:"5px" }}>
-                                  다음카드
-                                </Button>
+                            <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                              다음카드
+                            </Button>
                           </div>
                         </div>
                       </>
@@ -933,12 +993,24 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                           <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                             <Space>
                               <div>
-                                <Button icon={<PlusOutlined />} size="small" type="primary" onClick={() => onClickCardAdd("general", content._id)} style={{ fontSize: "0.75rem", borderRadius:"5px" }}>
+                                <Button
+                                  icon={<PlusOutlined />}
+                                  size="small"
+                                  type="primary"
+                                  onClick={() => onClickCardAdd("general", content._id)}
+                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                >
                                   다음카드
                                 </Button>
                               </div>
                               <div>
-                                <Button icon={<ApartmentOutlined />} size="small"  type="primary" onClick={() => onClickCardAddChild("general", content._id)} style={{ fontSize: "0.75rem", borderRadius:"5px" }}>
+                                <Button
+                                  icon={<ApartmentOutlined />}
+                                  size="small"
+                                  type="primary"
+                                  onClick={() => onClickCardAddChild("general", content._id)}
+                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                >
                                   자식카드
                                 </Button>
                               </div>
@@ -1105,9 +1177,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                         <>
                           <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                             <div>
-                              <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius:"5px" }}>
-                                  다음카드
-                                </Button>
+                              <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                다음카드
+                              </Button>
                             </div>
                           </div>
                         </>
@@ -1116,10 +1188,15 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                         <>
                           <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                             <div>
-                   
-                              <Button icon={<ApartmentOutlined />} size="small"  type="primary" onClick={() => onClickCardAddChild("child", content.card_info.parentCard_id, current_card_style[0].cardtype_info.name)} style={{ fontSize: "0.75rem", borderRadius:"5px" }}>
-                                  자식카드
-                                </Button>
+                              <Button
+                                icon={<ApartmentOutlined />}
+                                size="small"
+                                type="primary"
+                                onClick={() => onClickCardAddChild("child", content.card_info.parentCard_id, current_card_style[0].cardtype_info.name)}
+                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                              >
+                                자식카드
+                              </Button>
                             </div>
                           </div>
                         </>

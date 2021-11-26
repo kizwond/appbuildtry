@@ -350,6 +350,8 @@ class EditorFromCard extends Component {
     console.log("onClick handleSubmit!!!!!");
     // console.log(this.state.editor1)
     // this.props.onFinish(this.state.editor1);
+    const selections = sessionStorage.getItem("selections");
+
     const num_face1 = this.props.cardtype_info.num_of_row.face1;
     const num_face2 = this.props.cardtype_info.num_of_row.face2;
     const num_annot = this.props.cardtype_info.num_of_row.annotation;
@@ -370,26 +372,57 @@ class EditorFromCard extends Component {
         }
       }
     }
+    if(selections){
+      var num_selection = Number(selections)
 
+      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 && num_selection > 0) {
+        for (i = 1; i < num_face1 + 1; i++) {
+          face1_array.push(this.state["editor" + i]);
+        }
+        if (num_selection > 0) {
+          for (i = num_face1 + 1; i < num_face1 + num_selection + 1; i++) {
+            selection_array.push(this.state["editor" + i]);
+          }
+        }
+        if (num_face2 > 0) {
+          for (i = num_face1 + num_selection + 1; i < num_face1 + num_selection + num_face2 + 1; i++) {
+            face2_array.push(this.state["editor" + i]);
+          }
+        }
+        if (num_annot > 0) {
+          for (i =  num_face1 + num_selection + num_face2 + 1; i < num_face1 + num_selection + num_face2 + num_annot + 1; i++) {
+            annotation_array.push(this.state["editor" + i]);
+          }
+        }
+      }
+
+    } else {
+      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
+        for (i = 1; i < num_face1 + 1; i++) {
+          face1_array.push(this.state["editor" + i]);
+        }
+        if (num_face2 > 0) {
+          for (i = num_face1 + 1; i < num_face1 + num_face2 + 1; i++) {
+            face2_array.push(this.state["editor" + i]);
+          }
+        }
+        if (num_annot > 0) {
+          for (i = num_face1 + num_face2 + 1; i < num_face1 + num_face2 + num_annot + 1; i++) {
+            annotation_array.push(this.state["editor" + i]);
+          }
+        }
+      }
+    }
     //뒤집기카드만 있을때
-    if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
-      for (i = 1; i < num_face1 + 1; i++) {
-        face1_array.push(this.state["editor" + i]);
-      }
-      if (num_face2 > 0) {
-        for (i = num_face1 + 1; i < num_face1 + num_face2 + 1; i++) {
-          face2_array.push(this.state["editor" + i]);
-        }
-      }
-      if (num_annot > 0) {
-        for (i = num_face1 + num_face2 + 1; i < num_face1 + num_face2 + num_annot + 1; i++) {
-          annotation_array.push(this.state["editor" + i]);
-        }
-      }
+    if(selection_array.length > 0){
+      var selectionsArray = selection_array;
+    } else {
+      selectionsArray = null
     }
 
     const values = {
       face1: face1_array,
+      selection: selectionsArray,
       face2: face2_array,
       annotation: annotation_array,
       parentId: this.props.parentId,

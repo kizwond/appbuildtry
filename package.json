@@ -26,6 +26,7 @@
     "next": "11.0.1",
     "next-redux-wrapper": "^7.0.2",
     "next-useragent": "^2.6.0",
+    "pm2": "^5.1.2",
     "pretty-ms": "^7.0.1",
     "prop-types": "^15.7.2",
     "react": "17.0.2",

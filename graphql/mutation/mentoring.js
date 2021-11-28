@@ -104,3 +104,29 @@ export const MUTATION_DELETE_MENTORING_GROUP = gql`
     }
   }
 `;
+
+export const MUTATION_TERMINATE_MENTORING = gql`
+  ${FRAGMENT_MENTORING}
+  mutation TerminateMentoring($forTerminateMentoring: forTerminateMentoring) {
+    mentoring_terminateMentoring(forTerminateMentoring: $forTerminateMentoring) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;
+
+export const MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER = gql`
+  ${FRAGMENT_MENTORING}
+  mutation ReassignMentoringGroupMember($groupType: MentoringGroupType, $target_id: ID, $newMentoringGroup_id: ID) {
+    mentoring_moveToOtherMentoringGroup(groupType: $groupType, target_id: $target_id, newMentoringGroup_id: $newMentoringGroup_id) {
+      status
+      msg
+      mentorings {
+        ...mentoringFragment
+      }
+    }
+  }
+`;

@@ -14,6 +14,7 @@ import { GroupOutlined, PlusOutlined } from "@ant-design/icons";
 import Layout from "../../../components/layout/M_Layout";
 import M_MentoringBooksTable from "../../../components/mentoring/M_MentoringBooksTable.js";
 import M_MentosTable from "../../../components/mentoring/M_MentorsTable";
+import M_MenteesTable from "../../../components/mentoring/M_MenteesTable";
 import M_SentMentoringRequestCard from "../../../components/mentoring/M_SentMentoringRequestCard";
 import M_ReceivedMentoringRequestCard from "../../../components/mentoring/M_ReceivedMentoringRequestCard";
 import M_MenteeGroupTable from "../../../components/mentoring/M_MenteeGroupTable";
@@ -21,6 +22,10 @@ import M_MentorGroupTable from "../../../components/mentoring/M_MentorGroupTable
 
 const MentoringHome = () => {
   const router = useRouter();
+
+  const [isMenteeEditMode, setIsMenteeEditMode] = useState(false);
+  const [isMentorEditMode, setIsMentorEditMode] = useState(false);
+
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerRequestMentoringVisible, setDrawerRequestMentoringVisible] = useState(false);
   const [drawerSentMentoringRequestVisible, setDrawerSentMentoringRequestVisible] = useState(false);
@@ -94,57 +99,22 @@ const MentoringHome = () => {
                       받은 요청
                     </Button>
                   </Badge>
-                  <Button
-                    icon={<GroupOutlined />}
-                    size="small"
-                    onClick={() => {
-                      setDrawerMenteeGroupVisible(true);
-                    }}
-                  >
-                    멘티그룹관리
-                  </Button>
+                  <Space>
+                    <Button size="small" onClick={() => setIsMenteeEditMode((prev) => !prev)}>
+                      구성원 편집
+                    </Button>
+                    <Button
+                      icon={<GroupOutlined />}
+                      size="small"
+                      onClick={() => {
+                        setDrawerMenteeGroupVisible(true);
+                      }}
+                    >
+                      멘티그룹관리
+                    </Button>
+                  </Space>
                 </div>
-                <Table
-                  size="small"
-                  pagination={false}
-                  dataSource={newData}
-                  columns={[
-                    {
-                      title: "그룹",
-                      dataIndex: "menteeGroupName",
-                      className: "MenteeGroupNameCell",
-                      width: 60,
-                      render: function ad(v) {
-                        return <div>{v}</div>;
-                      },
-                    },
-                    {
-                      title: "책",
-                      dataIndex: "mybookTitle",
-                      width: 80,
-                    },
-                    {
-                      title: "멘티",
-                      ellipsis: true,
-                      dataIndex: "menteeNameAndId",
-                      width: 40,
-                    },
-                    {
-                      title: "학습시간",
-                      dataIndex: "studyHistory",
-                      width: 40,
-                      // eslint-disable-next-line react/display-name
-                      render: (v) => (
-                        <>
-                          {v.map((item, index) => (
-                            <span key={index}>{`${index === 2 ? item : `${item}, `}`} </span>
-                          ))}
-                          {/* <Tag style={{ marginLeft: "5px" }}>상세보기</Tag> */}
-                        </>
-                      ),
-                    },
-                  ]}
-                />
+                <M_MenteesTable newData={newData} isMenteeEditMode={isMenteeEditMode} menteeGroup={mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup} />
               </Tabs.TabPane>
               <Tabs.TabPane tab="멘토" key="멘토">
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -195,6 +165,9 @@ const MentoringHome = () => {
                       <PlusOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
                     </button>
                   </Space>
+                  <Button size="small" onClick={() => setIsMentorEditMode((prev) => !prev)}>
+                    구성원 편집
+                  </Button>
                   <Button
                     icon={<GroupOutlined />}
                     size="small"
@@ -205,7 +178,14 @@ const MentoringHome = () => {
                     멘토그룹관리
                   </Button>
                 </div>
-                {mentoringData && <M_MentosTable mentoringData={mentoringData} previousMentoringData={previousMentoringData} />}
+                {mentoringData && (
+                  <M_MentosTable
+                    mentoringData={mentoringData}
+                    isMentorEditMode={isMentorEditMode}
+                    previousMentoringData={previousMentoringData}
+                    mentorGroup={mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup}
+                  />
+                )}
               </Tabs.TabPane>
             </Tabs>
           </Card>

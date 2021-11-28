@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import _ from "lodash";
+import { flow, map, filter, sortBy } from "lodash/fp";
 
 import { GET_MY_BOOKS_BY_BOOK_IDS } from "../../../graphql/query/allQuery";
 
@@ -13,26 +14,7 @@ const useGetMentorBooks = (mentoringData, previousMentoringData) => {
   const [getBooksInfo, { data: mentorBooks, error, loading }] = useLazyQuery(GET_MY_BOOKS_BY_BOOK_IDS, {
     onCompleted: (data) => {
       if (data.mybook_getMybookByMybookIDs.status === "200") {
-        const fordata = _.sortBy(
-          mentoringData.mentoring_getMentoring.mentorings[0].myMentors.map((mentor) => ({
-            ...mentor,
-            key: mentor._id,
-            mentorNameAndId: `${mentor.mentorName}(${mentor.mentorUsername})`,
-            mentorGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup, { _id: mentor.mentorGroup_id }).name,
-            mentorSeq: mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup.findIndex((gr) => gr._id === mentor.mentorGroup_id),
-            studyHistory:
-              _(_.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).stats?.studyHistory)
-                .map((history) => history.studyHour)
-                .take(3)
-                .value() === []
-                ? _(_.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).stats.studyHistory)
-                    .map((history) => history.studyHour)
-                    .take(3)
-                    .value()
-                : ["0.5", "2", "0"],
-          })),
-          ["mentorSeq"]
-        );
+        const fordata = getCaculatedData(mentoringData.mentoring_getMentoring.mentorings[0].myMentors);
         setNewData(fordata);
         console.log("멘토 정보 업데이트 프로세스 작업 종료(with책 정보 갱신)", data);
       } else if (data.mybook_getMybookByMybookIDs.status === "401") {
@@ -42,6 +24,29 @@ const useGetMentorBooks = (mentoringData, previousMentoringData) => {
       }
     },
   });
+
+  const getCaculatedData = flow(
+    filter((mentor) => mentor.mentoringStatus === "onGoing"),
+    map((mentor) => ({
+      ...mentor,
+      key: mentor._id,
+      mentorNameAndId: `${mentor.mentorName}(${mentor.mentorUsername})`,
+      mentorGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup, { _id: mentor.mentorGroup_id }).name,
+      mentorSeq: mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup.findIndex((gr) => gr._id === mentor.mentorGroup_id),
+      studyHistory:
+        mentorBooks &&
+        _(_.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).stats?.studyHistory)
+          .map((history) => history.studyHour)
+          .take(3)
+          .value() === []
+          ? _(_.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).stats.studyHistory)
+              .map((history) => history.studyHour)
+              .take(3)
+              .value()
+          : ["0.5", "2", "0"],
+    })),
+    sortBy(["mentorSeq"])
+  );
 
   useEffect(() => {
     if (mentoringData) {
@@ -67,16 +72,7 @@ const useGetMentorBooks = (mentoringData, previousMentoringData) => {
           },
         });
       } else {
-        const fordata = _.sortBy(
-          _(newData)
-            .map((mentor) => ({
-              ...mentor,
-              mentorGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup, { _id: mentor.mentorGroup_id }).name,
-              mentorSeq: mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup.findIndex((gr) => gr._id === mentor.mentorGroup_id),
-            }))
-            .value(),
-          ["menteeSeq"]
-        );
+        const fordata = getCaculatedData(mentoringData.mentoring_getMentoring.mentorings[0].myMentors);
         setNewData(fordata);
         console.log("멘토 정보 업데이트 프로세스 작업 종료(without책 정보 갱신)");
       }

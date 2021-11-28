@@ -1,14 +1,11 @@
 import { useMutation } from "@apollo/client";
-import { Button, Form, Select, Space, Table, Tag } from "antd";
+import { Button, Form, Input, Select, Space, Table, Tag } from "antd";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import useGetMentorBooks from "../../components/mentoring/useHooks/useGetMentorBooks.js";
-import { MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER, MUTATION_TERMINATE_MENTORING } from "../../graphql/mutation/mentoring.js";
+import { MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER, MUTATION_TERMINATE_MENTORING } from "../../graphql/mutation/mentoring";
 
-const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isMentorEditMode }) => {
+const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
   const router = useRouter();
-
-  const myMentorBooks = useGetMentorBooks(mentoringData, previousMentoringData);
 
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
@@ -57,7 +54,7 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
     try {
       await reassignMentoringMemberToAnotherGroup({
         variables: {
-          groupType: "mentor",
+          groupType: "mentee",
           target_id,
           newMentoringGroup_id,
         },
@@ -69,11 +66,11 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
 
   return (
     <>
-      {myMentorBooks ? (
+      {newData ? (
         <Table
           size="small"
           pagination={false}
-          dataSource={myMentorBooks}
+          dataSource={newData}
           expandable={{
             expandIcon: () => null,
             columnWidth: 0,
@@ -84,12 +81,12 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
                 layout="inline"
                 onFinish={({ selector }) => reassignMentoringMember({ target_id: _record._id, newMentoringGroup_id: selector })}
                 onValuesChange={(cv) => console.log(cv)}
-                initialValues={{ selector: mentorGroup[0]._id }}
+                initialValues={{ selector: menteeGroup[0]._id }}
                 size="small"
               >
                 <Form.Item name="selector">
                   <Select style={{ width: "140px" }}>
-                    {mentorGroup
+                    {menteeGroup
                       .filter((gr) => gr._id !== _record.menteeGroup_id)
                       .map(({ _id, name }) => (
                         <Select.Option key={_id} value={_id}>
@@ -110,7 +107,7 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
           columns={[
             {
               title: "그룹",
-              dataIndex: "mentorGroupName",
+              dataIndex: "menteeGroupName",
               width: "15%",
             },
             {
@@ -120,17 +117,17 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
             },
             {
               title: "멘토",
-              dataIndex: "mentorName",
+              dataIndex: "menteeName",
               ellipsis: true,
               width: "15%",
             },
             {
-              title: "최근 학습시간",
+              title: isMenteeEditMode ? "편집" : "최근 학습시간",
               dataIndex: "studyHistory",
               width: "35%",
               // eslint-disable-next-line react/display-name
               render: (v, record) =>
-                isMentorEditMode ? (
+                isMenteeEditMode ? (
                   <Space>
                     <Button
                       onClick={() => {
@@ -163,4 +160,4 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
   );
 };
 
-export default M_MentorsTable;
+export default M_MenteesTable;

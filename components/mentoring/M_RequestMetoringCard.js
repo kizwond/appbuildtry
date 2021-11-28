@@ -127,6 +127,9 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
         </Col>
         {data && data.user_getUserMinInfo.username == mentorIdInputValue && (
           <>
+            <Col span={5}>멘토 이름:</Col>
+            <Col span={19}>{data.user_getUserMinInfo.name}</Col>
+
             <Col span={5}>소속(정보):</Col>
             <Col span={19}>{data.user_getUserMinInfo.organiztion}</Col>
 

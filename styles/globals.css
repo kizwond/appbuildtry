@@ -171,8 +171,8 @@ p {
   font-size: 1rem;
 }
 .ant-table.ant-table-small .ant-table-tbody > tr > td {
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 /* page 커스텀 버튼 */

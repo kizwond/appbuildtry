@@ -65,7 +65,7 @@ class Editor extends Component {
       saveParam: "content",
       width: "auto",
       theme: "gray",
-      tabSpaces: 0,
+      indentMargin: 10,
       toolbarContainer: "#toolbarContainer",
       attribution: false,
       charCounterCount: false,

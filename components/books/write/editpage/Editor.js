@@ -10,7 +10,7 @@ import "froala-editor//css/themes/gray.css";
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Form, Input, Button, Select } from "antd";
-import { StarOutlined, StarFilled } from "@ant-design/icons";
+import { MinusCircleOutlined, StarFilled } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -53,6 +53,7 @@ class Editor extends Component {
       editorZindex14: 10,
       editorZindex15: 10,
       editorZindex16: 10,
+      lastSelectionNick: "",
     };
     this.config = {
       key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
@@ -448,6 +449,13 @@ class Editor extends Component {
       var diffValues = arrayDiff(newArray, originArray);
       console.log(diffIndexes);
       console.log(diffValues);
+
+      if (this.state.lastSelectionNick !== diffValues[diffValues.length - 1]){
+        this.setState({
+          lastSelectionNick: diffValues[diffValues.length - 1],
+        });
+      }
+        
       const keyname = `editor${diffIndexes[diffIndexes.length - 1] + 1}`;
       const keynameNext1 = `editor${diffIndexes[diffIndexes.length - 1] + 2}`;
       const keynameNext2 = `editor${diffIndexes[diffIndexes.length - 1] + 3}`;
@@ -488,6 +496,35 @@ class Editor extends Component {
   }
   render() {
     const editorList = this.props.nicks.map((item, index) => {
+      if (item === this.state.lastSelectionNick) {
+        return (
+          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
+            <label
+              className="editor_label"
+              style={{
+                zIndex: this.state["editorZindex" + (index + 1).toString()],
+                position: "absolute",
+                left: "5px",
+                top: "15px",
+                width: "50px",
+                fontSize: "0.5rem",
+                color: "lightgrey",
+              }}
+            >
+              {item}
+            </label>
+            <div style={{display:"flex", alignItems:"center"}}>
+            <FroalaEditorComponent
+              tag="textarea"
+              config={this.config}
+              model={this.state["editor" + (index + 1).toString()]}
+              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+            />
+            <MinusCircleOutlined style={{fontSize:"1.3rem", marginLeft:"5px"}} onClick={this.props.removeSelection}/>
+            </div>
+          </div>
+        );
+      }
       return (
         <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
           <label
@@ -566,6 +603,7 @@ class Editor extends Component {
                 size="small"
                 onClick={() => {
                   this.props.setEditorOn("");
+                  sessionStorage.removeItem("selections");
                   sessionStorage.removeItem("selections_adding");
                   sessionStorage.removeItem("nicks_with_selections");
                   sessionStorage.removeItem("nicks_without_selections");

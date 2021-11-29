@@ -498,7 +498,7 @@ class EditorFromCard extends Component {
       }
     }
   }
-  
+
   render() {
     const editorList = this.props.nicks.map((item, index) => {
       return (
@@ -572,6 +572,7 @@ class EditorFromCard extends Component {
               </Button>
               <Button size="small" onClick={() => {
                   this.props.setEditorOnFromCard("");
+                  sessionStorage.removeItem("selections");
                   sessionStorage.removeItem("selections_adding");
                   sessionStorage.removeItem("nicks_with_selections");
                   sessionStorage.removeItem("nicks_without_selections");

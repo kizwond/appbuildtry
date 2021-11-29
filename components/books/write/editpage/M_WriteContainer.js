@@ -349,6 +349,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     sessionStorage.removeItem("selections");
     setCards(data.cardset_addcardAtSameIndex.cardsets[0].cards);
     sessionStorage.removeItem("parentId");
+    sessionStorage.removeItem("nicks_with_selections")
+    sessionStorage.removeItem("nicks_without_selections")
     const cardIdList = data.cardset_addcardAtSameIndex.cardsets[0].cards.map((item) => {
       return item.content.mycontent_id;
     });
@@ -444,6 +446,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
 
   function handleChange(value) {
     sessionStorage.removeItem("selections");
+    sessionStorage.removeItem("nicks_with_selections")
+    sessionStorage.removeItem("nicks_without_selections")
     console.log(`selected ${value[0]}`);
     console.log(`selected ${value[1]}`);
     if (value[0] !== "default") {

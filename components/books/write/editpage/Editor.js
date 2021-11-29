@@ -10,7 +10,7 @@ import "froala-editor//css/themes/gray.css";
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Form, Input, Button, Select } from "antd";
-import { StarOutlined, StarFilled } from "@ant-design/icons";
+import { MinusCircleOutlined, StarFilled } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -53,6 +53,8 @@ class Editor extends Component {
       editorZindex14: 10,
       editorZindex15: 10,
       editorZindex16: 10,
+      lastSelectionNick: "",
+      selectionNextNick: "",
     };
     this.config = {
       key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
@@ -65,7 +67,7 @@ class Editor extends Component {
       saveParam: "content",
       width: "auto",
       theme: "gray",
-      tabSpaces: 0,
+      indentMargin: 10,
       toolbarContainer: "#toolbarContainer",
       attribution: false,
       charCounterCount: false,
@@ -349,7 +351,9 @@ class Editor extends Component {
     const num_face1 = this.props.cardtype_info.num_of_row.face1;
     const num_face2 = this.props.cardtype_info.num_of_row.face2;
     const num_annot = this.props.cardtype_info.num_of_row.annotation;
-
+    console.log(num_face1);
+    console.log(num_face2);
+    console.log(num_annot);
     const face1_array = [];
     const selection_array = [];
     const face2_array = [];
@@ -359,6 +363,7 @@ class Editor extends Component {
     if (num_face1 > 0 && num_face2 === 0 && num_annot > 0) {
       for (var i = 1; i < num_face1 + 1; i++) {
         face1_array.push(this.state["editor" + i]);
+        console.log(this.state["editor" + i]);
       }
       if (num_annot > 0) {
         for (i = num_face1 + 1; i < num_face1 + num_annot + 1; i++) {
@@ -366,7 +371,7 @@ class Editor extends Component {
         }
       }
     }
-    if (selections) {
+    if (selections > 0) {
       var num_selection = Number(selections);
 
       if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 && num_selection > 0) {
@@ -393,15 +398,18 @@ class Editor extends Component {
       if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
         for (i = 1; i < num_face1 + 1; i++) {
           face1_array.push(this.state["editor" + i]);
+          console.log(this.state["editor" + i]);
         }
         if (num_face2 > 0) {
           for (i = num_face1 + 1; i < num_face1 + num_face2 + 1; i++) {
             face2_array.push(this.state["editor" + i]);
+            console.log(this.state["editor" + i]);
           }
         }
         if (num_annot > 0) {
           for (i = num_face1 + num_face2 + 1; i < num_face1 + num_face2 + num_annot + 1; i++) {
             annotation_array.push(this.state["editor" + i]);
+            console.log(this.state["editor" + i]);
           }
         }
       }
@@ -421,6 +429,7 @@ class Editor extends Component {
       flagStar: this.state.flagStar,
       flagComment: this.state.flagComment,
     };
+    console.log(values);
     console.log(this.props.parentId);
     this.props.onFinish(values, "normal", this.props.parentId);
 
@@ -430,50 +439,217 @@ class Editor extends Component {
   componentDidUpdate() {
     const originArray = JSON.parse(sessionStorage.getItem("nicks_without_selections"));
     const newArray = JSON.parse(sessionStorage.getItem("nicks_with_selections"));
-    const num_selection = sessionStorage.getItem("selections")
-    const num_selection_adding = sessionStorage.getItem("selections_adding")
-    if (originArray && newArray) {
-      sessionStorage.setItem("selections_adding", num_selection)
-      var diffIndexes = [];
-      const arrayDiff = (a, b) => {
-        return a.filter(function (i) {
-          if (b.indexOf(i) < 0) {
-            diffIndexes.push(a.indexOf(i));
-            return true;
-          } else {
-            return false;
-          }
-        });
-      };
-      var diffValues = arrayDiff(newArray, originArray);
-      console.log(diffIndexes);
-      console.log(diffValues);
-      const keyname = `editor${diffIndexes[diffIndexes.length-1]+1}`
-      const keynameNext1 = `editor${diffIndexes[diffIndexes.length-1]+2}`
-      const keynameNext2 = `editor${diffIndexes[diffIndexes.length-1]+3}`
-      const keynameNext3 = `editor${diffIndexes[diffIndexes.length-1]+4}`
-      const keynameNext4 = `editor${diffIndexes[diffIndexes.length-1]+5}`
-      const keynameNext5 = `editor${diffIndexes[diffIndexes.length-1]+6}`
+    const num_selection = sessionStorage.getItem("selections");
+    const num_selection_adding = sessionStorage.getItem("selections_adding");
+    const removed = sessionStorage.getItem("removed");
+    if (removed === "true") {
+      console.log("removed true");
+      if (originArray && newArray) {
+        sessionStorage.setItem("selections_adding", num_selection);
+        var diffIndexes = [];
+        const arrayDiff = (a, b) => {
+          return a.filter(function (i) {
+            if (b.indexOf(i) < 0) {
+              diffIndexes.push(a.indexOf(i));
+              return true;
+            } else {
+              return false;
+            }
+          });
+        };
+        var diffValues = arrayDiff(newArray, originArray);
+        console.log(diffIndexes);
+        console.log(diffValues);
 
-      if(num_selection_adding !== num_selection){
-        this.setState({
-          [keyname] :""
-        })
-        this.setState({
-          [keynameNext1] :this.state[keyname]
-        })
-        this.setState({
-          [keynameNext2] :this.state[keynameNext1]
-        })
-        this.setState({
-          [keynameNext3] :this.state[keynameNext2]
-        })
+        if (this.state.lastSelectionNick !== diffValues[diffValues.length - 1]) {
+          this.setState({
+            lastSelectionNick: diffValues[diffValues.length - 1],
+          });
+        }
+
+        const keyname = `editor${diffIndexes[diffIndexes.length - 1] + 1}`;
+        const keynameNext1 = `editor${diffIndexes[diffIndexes.length - 1] + 2}`;
+        const keynameNext2 = `editor${diffIndexes[diffIndexes.length - 1] + 3}`;
+        const keynameNext3 = `editor${diffIndexes[diffIndexes.length - 1] + 4}`;
+        const keynameNext4 = `editor${diffIndexes[diffIndexes.length - 1] + 5}`;
+        const keynameNext5 = `editor${diffIndexes[diffIndexes.length - 1] + 6}`;
+        const keynameNext6 = `editor${diffIndexes[diffIndexes.length - 1] + 7}`;
+        const keynameNext7 = `editor${diffIndexes[diffIndexes.length - 1] + 8}`;
+        const keynameNext8 = `editor${diffIndexes[diffIndexes.length - 1] + 9}`;
+        if (this.props.cardtypeEditor === "flip") {
+          if (num_selection_adding !== num_selection) {
+            this.setState({
+              [keyname]: this.state[keynameNext1],
+            });
+            this.setState({
+              [keynameNext1]: this.state[keynameNext2],
+            });
+            this.setState({
+              [keynameNext2]: this.state[keynameNext3],
+            });
+            this.setState({
+              [keynameNext3]: this.state[keynameNext4],
+            });
+            this.setState({
+              [keynameNext4]: this.state[keynameNext5],
+            });
+            this.setState({
+              [keynameNext5]: this.state[keynameNext6],
+            });
+            this.setState({
+              [keynameNext6]: this.state[keynameNext7],
+            });
+            this.setState({
+              [keynameNext7]: this.state[keynameNext8],
+            });
+          }
+        }
+      } else {
+        console.log("last remove");
+        const lastSelectionRemoving = sessionStorage.getItem("lastSelectionRemoving");
+        const changeoccur = this.props.nicks.indexOf(this.state.selectionNextNick);
+
+        const keyname = `editor${changeoccur + 1}`;
+        console.log(keyname);
+        const keynameNext1 = `editor${changeoccur + 2}`;
+        console.log(keynameNext1);
+        const keynameNext2 = `editor${changeoccur + 3}`;
+        const keynameNext3 = `editor${changeoccur + 4}`;
+        const keynameNext4 = `editor${changeoccur + 5}`;
+        const keynameNext5 = `editor${changeoccur + 6}`;
+        const keynameNext6 = `editor${changeoccur + 7}`;
+        const keynameNext7 = `editor${changeoccur + 8}`;
+        const keynameNext8 = `editor${changeoccur + 9}`;
+        if (this.props.cardtypeEditor === "flip") {
+          if (lastSelectionRemoving === "true") {
+            this.setState({
+              [keyname]: this.state[keynameNext1],
+            });
+            this.setState({
+              [keynameNext1]: this.state[keynameNext2],
+            });
+            this.setState({
+              [keynameNext2]: this.state[keynameNext3],
+            });
+            this.setState({
+              [keynameNext3]: this.state[keynameNext4],
+            });
+            this.setState({
+              [keynameNext4]: this.state[keynameNext5],
+            });
+            this.setState({
+              [keynameNext5]: this.state[keynameNext6],
+            });
+            this.setState({
+              [keynameNext6]: this.state[keynameNext7],
+            });
+            this.setState({
+              [keynameNext7]: this.state[keynameNext8],
+            });
+            sessionStorage.setItem("lastSelectionRemoving", false);
+          }
+        }
       }
-      
+    } else {
+      console.log("removed false");
+      if (originArray && newArray) {
+        sessionStorage.setItem("selections_adding", num_selection);
+        var diffIndexes = [];
+        const arrayDiff = (a, b) => {
+          return a.filter(function (i) {
+            if (b.indexOf(i) < 0) {
+              diffIndexes.push(a.indexOf(i));
+              return true;
+            } else {
+              return false;
+            }
+          });
+        };
+        var diffValues = arrayDiff(newArray, originArray);
+        console.log(diffIndexes);
+        console.log(diffValues);
+
+        if (this.state.lastSelectionNick !== diffValues[diffValues.length - 1]) {
+          this.setState({
+            lastSelectionNick: diffValues[diffValues.length - 1],
+          });
+          const indexOfNext = newArray.indexOf(diffValues[diffValues.length - 1]);
+          this.setState({
+            selectionNextNick: newArray[indexOfNext + 1],
+          });
+          console.log(newArray[indexOfNext + 1]);
+        }
+
+        const keyname = `editor${diffIndexes[diffIndexes.length - 1] + 1}`;
+        const keynameNext1 = `editor${diffIndexes[diffIndexes.length - 1] + 2}`;
+        const keynameNext2 = `editor${diffIndexes[diffIndexes.length - 1] + 3}`;
+        const keynameNext3 = `editor${diffIndexes[diffIndexes.length - 1] + 4}`;
+        const keynameNext4 = `editor${diffIndexes[diffIndexes.length - 1] + 5}`;
+        const keynameNext5 = `editor${diffIndexes[diffIndexes.length - 1] + 6}`;
+        const keynameNext6 = `editor${diffIndexes[diffIndexes.length - 1] + 7}`;
+        const keynameNext7 = `editor${diffIndexes[diffIndexes.length - 1] + 8}`;
+        if (this.props.cardtypeEditor === "flip") {
+          if (num_selection_adding !== num_selection) {
+            this.setState({
+              [keyname]: "",
+            });
+            this.setState({
+              [keynameNext1]: this.state[keyname],
+            });
+            this.setState({
+              [keynameNext2]: this.state[keynameNext1],
+            });
+            this.setState({
+              [keynameNext3]: this.state[keynameNext2],
+            });
+            this.setState({
+              [keynameNext4]: this.state[keynameNext3],
+            });
+            this.setState({
+              [keynameNext5]: this.state[keynameNext4],
+            });
+            this.setState({
+              [keynameNext6]: this.state[keynameNext5],
+            });
+            this.setState({
+              [keynameNext7]: this.state[keynameNext6],
+            });
+          }
+        }
+      }
     }
   }
   render() {
     const editorList = this.props.nicks.map((item, index) => {
+      if (item === this.state.lastSelectionNick) {
+        return (
+          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
+            <label
+              className="editor_label"
+              style={{
+                zIndex: this.state["editorZindex" + (index + 1).toString()],
+                position: "absolute",
+                left: "5px",
+                top: "15px",
+                width: "50px",
+                fontSize: "0.5rem",
+                color: "lightgrey",
+              }}
+            >
+              {item}
+            </label>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <FroalaEditorComponent
+                tag="textarea"
+                config={this.config}
+                model={this.state["editor" + (index + 1).toString()]}
+                onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+              />
+              <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px" }} onClick={this.props.removeSelection} />
+            </div>
+          </div>
+        );
+      }
       return (
         <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
           <label
@@ -548,7 +724,18 @@ class Editor extends Component {
               <Button size="small" onClick={this.handleSubmit} id="saveButton" style={{ fontSize: "0.8rem", marginRight: "5px" }}>
                 저장
               </Button>
-              <Button size="small" onClick={() => this.props.setEditorOn("")} id="cancelButton" style={{ fontSize: "0.8rem" }}>
+              <Button
+                size="small"
+                onClick={() => {
+                  this.props.setEditorOn("");
+                  sessionStorage.removeItem("selections");
+                  sessionStorage.removeItem("selections_adding");
+                  sessionStorage.removeItem("nicks_with_selections");
+                  sessionStorage.removeItem("nicks_without_selections");
+                }}
+                id="cancelButton"
+                style={{ fontSize: "0.8rem" }}
+              >
                 취소
               </Button>
             </div>

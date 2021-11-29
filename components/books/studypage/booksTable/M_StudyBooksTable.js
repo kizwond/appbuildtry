@@ -121,7 +121,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                   }}
                 />
                 <StyledDivEllipsis>
-                  <DollarCircleFilled style={{ marginRight: "3px", marginLeft: "4px", color: "aqua" }} />
+                  <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
                   {value}
                 </StyledDivEllipsis>
               </div>
@@ -564,7 +564,7 @@ const StyledCard = styled(Card)`
   & .lastEvenBook > .normal > div,
   & .lastEvenBook > .Row-Last-One > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
     margin-bottom: 3px;
     display: flex;
     align-items: center;
@@ -572,7 +572,7 @@ const StyledCard = styled(Card)`
   }
   & .lastEvenBook > .Row-First-Left > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
     margin-bottom: 3px;
     display: flex;
     align-items: center;
@@ -605,7 +605,7 @@ const StyledCard = styled(Card)`
   & .lastOddBook > .normal > div,
   & .lastOddBook > .Row-Last-One > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
     margin-bottom: 3px;
     display: flex;
     align-items: center;
@@ -613,7 +613,7 @@ const StyledCard = styled(Card)`
   }
   & .lastOddBook > .Row-First-Left > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
 
     margin-bottom: 3px;
     display: flex;
@@ -641,7 +641,7 @@ const StyledCard = styled(Card)`
   & .EvenNumberRow > .normal > div,
   & .EvenNumberRow > .Row-Last-One > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
 
     display: flex;
     align-items: center;
@@ -649,7 +649,7 @@ const StyledCard = styled(Card)`
   }
   & .EvenNumberRow > .Row-First-Left > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
 
     display: flex;
     align-items: center;
@@ -675,7 +675,7 @@ const StyledCard = styled(Card)`
   & .OddNumberRow > .normal > div,
   & .OddNumberRow > .Row-Last-One > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
 
     display: flex;
     align-items: center;
@@ -683,7 +683,7 @@ const StyledCard = styled(Card)`
   }
   & .OddNumberRow > .Row-First-Left > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
 
     display: flex;
     align-items: center;
@@ -716,4 +716,18 @@ const StyledCard = styled(Card)`
   & .ant-table-tbody > tr > td {
     border-bottom: none;
   }
+`;
+
+const StyledBookTypeDiv = styled.div`
+  width: 10px;
+  height: 30px;
+  color: white;
+  display: inline-block;
+  border-radius: 3px;
+  margin: 0 4px;
+  line-height: 30px;
+  background-color: ${(props) => {
+    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
+    return bgColor;
+  }};
 `;

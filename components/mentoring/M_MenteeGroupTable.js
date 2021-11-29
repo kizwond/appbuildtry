@@ -353,7 +353,7 @@ const DrawerWrapper = styled(Drawer)`
     border-bottom-right-radius: 10px;
     & > li {
       margin: 0;
-      height: 24px;
+      height: 3.5rem;
       display: flex;
       align-items: center;
       justify-content: center;

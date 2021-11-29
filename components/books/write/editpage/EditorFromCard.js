@@ -71,7 +71,7 @@ class EditorFromCard extends Component {
       saveParam: "content",
       width: "auto",
       theme: "gray",
-      tabSpaces: 0,
+      indentMargin: 10,
       toolbarContainer: "#toolbarContainer",
       attribution: false,
       charCounterCount: false,
@@ -439,6 +439,66 @@ class EditorFromCard extends Component {
     console.log(`selected ${value}`);
   };
 
+  componentDidUpdate() {
+    const originArray = JSON.parse(sessionStorage.getItem("nicks_without_selections"));
+    const newArray = JSON.parse(sessionStorage.getItem("nicks_with_selections"));
+    const num_selection = sessionStorage.getItem("selections");
+    const num_selection_adding = sessionStorage.getItem("selections_adding");
+    if (originArray && newArray) {
+      sessionStorage.setItem("selections_adding", num_selection);
+      var diffIndexes = [];
+      const arrayDiff = (a, b) => {
+        return a.filter(function (i) {
+          if (b.indexOf(i) < 0) {
+            diffIndexes.push(a.indexOf(i));
+            return true;
+          } else {
+            return false;
+          }
+        });
+      };
+      var diffValues = arrayDiff(newArray, originArray);
+      console.log(diffIndexes);
+      console.log(diffValues);
+      const keyname = `editor${diffIndexes[diffIndexes.length - 1] + 1}`;
+      const keynameNext1 = `editor${diffIndexes[diffIndexes.length - 1] + 2}`;
+      const keynameNext2 = `editor${diffIndexes[diffIndexes.length - 1] + 3}`;
+      const keynameNext3 = `editor${diffIndexes[diffIndexes.length - 1] + 4}`;
+      const keynameNext4 = `editor${diffIndexes[diffIndexes.length - 1] + 5}`;
+      const keynameNext5 = `editor${diffIndexes[diffIndexes.length - 1] + 6}`;
+      const keynameNext6 = `editor${diffIndexes[diffIndexes.length - 1] + 7}`;
+      const keynameNext7 = `editor${diffIndexes[diffIndexes.length - 1] + 8}`;
+      if (this.props.cardtypeEditor === "flip") {
+        if (num_selection_adding !== num_selection) {
+          this.setState({
+            [keyname]: "",
+          });
+          this.setState({
+            [keynameNext1]: this.state[keyname],
+          });
+          this.setState({
+            [keynameNext2]: this.state[keynameNext1],
+          });
+          this.setState({
+            [keynameNext3]: this.state[keynameNext2],
+          });
+          this.setState({
+            [keynameNext4]: this.state[keynameNext3],
+          });
+          this.setState({
+            [keynameNext5]: this.state[keynameNext4],
+          });
+          this.setState({
+            [keynameNext6]: this.state[keynameNext5],
+          });
+          this.setState({
+            [keynameNext7]: this.state[keynameNext6],
+          });
+        }
+      }
+    }
+  }
+  
   render() {
     const editorList = this.props.nicks.map((item, index) => {
       return (
@@ -510,7 +570,12 @@ class EditorFromCard extends Component {
               <Button size="small" onClick={this.handleSubmit} id="saveButton" style={{ fontSize: "0.8rem", marginRight: "5px" }}>
                 저장
               </Button>
-              <Button size="small" onClick={() => this.props.setEditorOnFromCard("")} id="cancelButton" style={{ fontSize: "0.8rem" }}>
+              <Button size="small" onClick={() => {
+                  this.props.setEditorOnFromCard("");
+                  sessionStorage.removeItem("selections_adding");
+                  sessionStorage.removeItem("nicks_with_selections");
+                  sessionStorage.removeItem("nicks_without_selections");
+                }} id="cancelButton" style={{ fontSize: "0.8rem" }}>
                 취소
               </Button>
             </div>

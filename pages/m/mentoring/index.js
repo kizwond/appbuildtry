@@ -243,7 +243,7 @@ const MentoringHome = () => {
           >
             {_(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
               .filter(({ reqStatus }) => reqStatus === "waiting")
-              .map((mentor) => <M_SentMentoringRequestCard mentor={mentor} key={`${mentor.mentorUser_id}${mentor.mybook_id}`} declineMentoring={declineMentoring} />)
+              .map((mentor, i) => <M_SentMentoringRequestCard mentor={mentor} key={`${mentor.mentorUser_id}${mentor.mybook_id}`} forId={`sentReq:${i}`} declineMentoring={declineMentoring} />)
               .value()}
           </DrawerWrapper>
 

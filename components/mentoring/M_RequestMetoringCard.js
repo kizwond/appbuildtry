@@ -28,7 +28,7 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
       clearTimeout(timer);
       // eslint-disable-next-line react-hooks/exhaustive-deps
       timer = setTimeout(() => {
-        document.getElementById(mybook_id).scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById(`requestMentoring:${mybook_id}`).scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

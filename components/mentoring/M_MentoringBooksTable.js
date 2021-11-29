@@ -1,24 +1,48 @@
 /* eslint-disable react/display-name */
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import styled from "styled-components";
 
-import { Table, Card, Popover, Button, Input, Space, Form, Row, Col } from "antd";
-import { DollarCircleFilled, SearchOutlined } from "@ant-design/icons";
+import { Table, Card, Popover, Button } from "antd";
+import { DollarCircleFilled } from "@ant-design/icons";
 
 import { StyledDivEllipsis } from "../common/styledComponent/page";
 import M_RequestMentoringCard from "../../components/mentoring/M_RequestMetoringCard";
 
 const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [cardHeight, setCardHeight] = useState(0);
+  const cardRef = useRef();
 
   const resetExpandedRowKeys = useCallback(() => {
     setExpandedRowKeys([]);
   }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const tableheight = cardRef.current.clientHeight;
+      if (expandedRowKeys.length > 0) {
+        const deviceHeight = window.innerHeight || document.body.clientHeight;
+        setCardHeight(`${tableheight + deviceHeight - 320}px`);
+      }
+      if (expandedRowKeys.length === 0) {
+        setCardHeight(`${tableheight + 50}px`);
+      }
+    }
+  }, [expandedRowKeys]);
+
+  const setFirstCardHeight = () => {
+    if (cardRef.current) {
+      setCardHeight(`${cardRef.current.offsetHeight + 40}px`);
+    }
+  };
+
+  useLayoutEffect(() => {
+    setFirstCardHeight();
+  }, [bookData]);
+
   if (error) <div>에러</div>;
   if (loading) <div>에러</div>;
-
-  const { Search, TextArea } = Input;
 
   const myBook2 = bookData && bookData.mybook_getMybookByUserID.mybooks;
 
@@ -124,7 +148,7 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
       align: "center",
       width: 75,
       render: (value, _record, index) => (
-        <div>
+        <div id={_record._id}>
           {expandedRowKeys.includes(value) ? null : (
             <Button
               type="link"
@@ -142,28 +166,30 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
   ];
 
   return (
-    <StyledCard bordered={false} size="small">
-      {myBook2 && (
-        <Table
-          dataSource={dataSource}
-          loading={loading}
-          rowKey={(record) => record.key}
-          columns={columns}
-          size="small"
-          pagination={false}
-          rowClassName={(record, index) =>
-            record.classType === "last-odd-book" ? "lastOddBook" : record.classType === "last-even-book" ? "lastEvenBook" : record.classType === "even-book" ? "EvenNumberRow" : "OddNumberRow"
-          }
-          expandable={{
-            expandIcon: () => null,
-            columnWidth: 0,
-            expandedRowKeys,
-            expandedRowRender: (_record, _index) => (
-              <M_RequestMentoringCard resetExpandedRowKeys={resetExpandedRowKeys} mybook_id={_record._id} mybookTitle={_record.title} cardVisible={expandedRowKeys.includes(_record._id)} />
-            ),
-          }}
-        />
-      )}
+    <StyledCard bordered={false} size="small" cardheight={cardHeight}>
+      {
+        <div ref={cardRef}>
+          <Table
+            dataSource={dataSource}
+            loading={loading}
+            rowKey={(record) => record.key}
+            columns={columns}
+            size="small"
+            pagination={false}
+            rowClassName={(record, index) =>
+              record.classType === "last-odd-book" ? "lastOddBook" : record.classType === "last-even-book" ? "lastEvenBook" : record.classType === "even-book" ? "EvenNumberRow" : "OddNumberRow"
+            }
+            expandable={{
+              expandIcon: () => null,
+              columnWidth: 0,
+              expandedRowKeys,
+              expandedRowRender: (_record, _index) => (
+                <M_RequestMentoringCard resetExpandedRowKeys={resetExpandedRowKeys} mybook_id={_record._id} mybookTitle={_record.title} cardVisible={expandedRowKeys.includes(_record._id)} />
+              ),
+            }}
+          />
+        </div>
+      }
     </StyledCard>
   );
 };
@@ -177,6 +203,8 @@ const StyledCard = styled(Card)`
   } */
 
   min-width: 355px;
+  height: ${(props) => props.cardheight};
+  padding: 3px;
 
   & div,
   & button,
@@ -259,10 +287,6 @@ const StyledCard = styled(Card)`
     height: 22px;
   }
 
-  & > .ant-card-body {
-    padding: 3px;
-  }
-
   & .ant-table table {
     border-collapse: collapse;
     background-color: white;
@@ -324,7 +348,7 @@ const StyledCard = styled(Card)`
   & .lastEvenBook > .normal > div,
   & .lastEvenBook > .Row-Last-One > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
     margin-bottom: 3px;
     display: flex;
     align-items: center;
@@ -332,7 +356,7 @@ const StyledCard = styled(Card)`
   }
   & .lastEvenBook > .Row-First-Left > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
     margin-bottom: 3px;
     display: flex;
     align-items: center;
@@ -365,7 +389,7 @@ const StyledCard = styled(Card)`
   & .lastOddBook > .normal > div,
   & .lastOddBook > .Row-Last-One > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
     margin-bottom: 3px;
     display: flex;
     align-items: center;
@@ -373,7 +397,7 @@ const StyledCard = styled(Card)`
   }
   & .lastOddBook > .Row-First-Left > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
 
     margin-bottom: 3px;
     display: flex;
@@ -401,7 +425,7 @@ const StyledCard = styled(Card)`
   & .EvenNumberRow > .normal > div,
   & .EvenNumberRow > .Row-Last-One > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
 
     display: flex;
     align-items: center;
@@ -409,7 +433,7 @@ const StyledCard = styled(Card)`
   }
   & .EvenNumberRow > .Row-First-Left > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
 
     display: flex;
     align-items: center;
@@ -435,7 +459,7 @@ const StyledCard = styled(Card)`
   & .OddNumberRow > .normal > div,
   & .OddNumberRow > .Row-Last-One > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
 
     display: flex;
     align-items: center;
@@ -443,7 +467,7 @@ const StyledCard = styled(Card)`
   }
   & .OddNumberRow > .Row-First-Left > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
 
     display: flex;
     align-items: center;

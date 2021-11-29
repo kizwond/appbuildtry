@@ -413,7 +413,7 @@ const StyledCard = styled(Card)`
 
   & .EvenNumberRow > .Row-First-Left > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
 
     display: flex;
     align-items: center;
@@ -429,7 +429,7 @@ const StyledCard = styled(Card)`
   }
   & .EvenNumberRow > .TitleCol > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
     display: flex;
     align-items: center;
     padding-left: 15px;
@@ -443,7 +443,7 @@ const StyledCard = styled(Card)`
   & .EvenNumberRow > .normal > div,
   & .EvenNumberRow > .Row-Last-One > div {
     background-color: #f5f5f5;
-    height: 34px;
+    height: 4.2rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -460,7 +460,7 @@ const StyledCard = styled(Card)`
 
   & .OddNumberRow > .Row-First-Left > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
     display: flex;
     align-items: center;
     border-top-left-radius: 10px;
@@ -475,7 +475,7 @@ const StyledCard = styled(Card)`
   }
   & .OddNumberRow > .TitleCol > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
     display: flex;
     align-items: center;
     padding-left: 15px;
@@ -489,7 +489,7 @@ const StyledCard = styled(Card)`
   & .OddNumberRow > .normal > div,
   & .OddNumberRow > .Row-Last-One > div {
     background-color: #fff;
-    height: 34px;
+    height: 4.2rem;
     display: flex;
     align-items: center;
     justify-content: center;

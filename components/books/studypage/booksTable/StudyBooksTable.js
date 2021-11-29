@@ -224,7 +224,7 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                   className="PullCustomCircleButton"
                   style={{
                     width: "44px",
-                    height: "30px",
+                    height: "4.2rem",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -242,7 +242,7 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                 mask={false}
                 visible={activedTable === "bookTable" && _record._id === isFoldedMenu}
                 getContainer={false}
-                style={{ position: "absolute", textAlign: "initial", height: "30px", top: "2px" }}
+                style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
                 contentWrapperStyle={{ boxShadow: "unset" }}
                 drawerStyle={{ display: "block" }}
                 bodyStyle={{
@@ -481,8 +481,8 @@ const StyledCard = styled(Card)`
 
   & .Row-Last-One {
     position: relative;
-    z-index: 3;
-    background-color: white;
+    z-index: 5000;
+    background-color: white !important;
   }
 
   & .foldedCategory > .Row-First-Left > div {

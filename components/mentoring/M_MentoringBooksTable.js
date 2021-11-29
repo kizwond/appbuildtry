@@ -305,8 +305,8 @@ const StyledCard = styled(Card)`
 
   & .Row-Last-One {
     position: relative;
-    z-index: 3;
-    background-color: white;
+    z-index: 5000;
+    background-color: white !important;
   }
 
   & .LastHiddenBar > .Row-First-Left > div {

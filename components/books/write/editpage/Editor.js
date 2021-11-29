@@ -466,8 +466,6 @@ class Editor extends Component {
             lastSelectionNick: diffValues[diffValues.length - 1],
           });
         }
-
-        const keyname = `editor${diffIndexes[diffIndexes.length - 1] + 1}`;
         const keynameNext1 = `editor${diffIndexes[diffIndexes.length - 1] + 2}`;
         const keynameNext2 = `editor${diffIndexes[diffIndexes.length - 1] + 3}`;
         const keynameNext3 = `editor${diffIndexes[diffIndexes.length - 1] + 4}`;
@@ -479,27 +477,12 @@ class Editor extends Component {
         if (this.props.cardtypeEditor === "flip") {
           if (num_selection_adding !== num_selection) {
             this.setState({
-              [keyname]: this.state[keynameNext1],
-            });
-            this.setState({
               [keynameNext1]: this.state[keynameNext2],
-            });
-            this.setState({
               [keynameNext2]: this.state[keynameNext3],
-            });
-            this.setState({
               [keynameNext3]: this.state[keynameNext4],
-            });
-            this.setState({
               [keynameNext4]: this.state[keynameNext5],
-            });
-            this.setState({
               [keynameNext5]: this.state[keynameNext6],
-            });
-            this.setState({
               [keynameNext6]: this.state[keynameNext7],
-            });
-            this.setState({
               [keynameNext7]: this.state[keynameNext8],
             });
           }
@@ -524,26 +507,12 @@ class Editor extends Component {
           if (lastSelectionRemoving === "true") {
             this.setState({
               [keyname]: this.state[keynameNext1],
-            });
-            this.setState({
               [keynameNext1]: this.state[keynameNext2],
-            });
-            this.setState({
               [keynameNext2]: this.state[keynameNext3],
-            });
-            this.setState({
               [keynameNext3]: this.state[keynameNext4],
-            });
-            this.setState({
               [keynameNext4]: this.state[keynameNext5],
-            });
-            this.setState({
               [keynameNext5]: this.state[keynameNext6],
-            });
-            this.setState({
               [keynameNext6]: this.state[keynameNext7],
-            });
-            this.setState({
               [keynameNext7]: this.state[keynameNext8],
             });
             sessionStorage.setItem("lastSelectionRemoving", false);

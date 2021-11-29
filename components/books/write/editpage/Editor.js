@@ -454,6 +454,8 @@ class Editor extends Component {
       const keynameNext3 = `editor${diffIndexes[diffIndexes.length-1]+4}`
       const keynameNext4 = `editor${diffIndexes[diffIndexes.length-1]+5}`
       const keynameNext5 = `editor${diffIndexes[diffIndexes.length-1]+6}`
+      const keynameNext6 = `editor${diffIndexes[diffIndexes.length-1]+7}`
+      const keynameNext7 = `editor${diffIndexes[diffIndexes.length-1]+8}`
       if(this.props.cardtypeEditor === "flip"){
         if(num_selection_adding !== num_selection){
           this.setState({
@@ -467,6 +469,18 @@ class Editor extends Component {
           })
           this.setState({
             [keynameNext3] :this.state[keynameNext2]
+          })
+          this.setState({
+            [keynameNext4] :this.state[keynameNext3]
+          })
+          this.setState({
+            [keynameNext5] :this.state[keynameNext4]
+          })
+          this.setState({
+            [keynameNext6] :this.state[keynameNext5]
+          })
+          this.setState({
+            [keynameNext7] :this.state[keynameNext6]
           })
         }
       }

@@ -541,7 +541,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       // console.log("카드에 스타일 입히기 시작", cardTypeSets);
 
       const current_card_style = cardTypeSets[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
-      // console.log(current_card_style);
+      console.log(current_card_style);
 
       const face_style = current_card_style[0].face_style;
       const row_style = current_card_style[0].row_style;
@@ -558,8 +558,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
           } else {
             borderLeft = "none";
           }
-          // console.log("해당카드 정보", content);
-          // console.log("해당컨텐츠 정보", content_value);
+          console.log("해당카드 정보", content);
+          console.log("해당컨텐츠 정보", content_value);
 
           const figure_shape = makerFlagStyle.figure_style.shape;
           const figure_size = makerFlagStyle.figure_style.size;

@@ -301,10 +301,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     );
 
     if (from === "normal") {
-      console.log("노멀모드로 에디터가 뿌려질것임. 여기다가 setCardId() 이걸 했는데 안먹음.");
-      console.log(cardId);
+      // console.log(cardId);
       setEditorOn(editor);
-      // executeScroll(); //스크롤
     } else if (from === "inCard") {
       console.log("inCard");
       setEditorOnFromCard(editorFromCard);

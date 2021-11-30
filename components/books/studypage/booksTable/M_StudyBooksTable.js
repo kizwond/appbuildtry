@@ -400,18 +400,6 @@ const StyledCard = styled(Card)`
     border-bottom-left-radius: 15px;
   }
 
-  & .PushCustomCircleButton {
-    width: 44px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: #212529;
-  }
-  & .PushCustomCircleButton:hover {
-    background-color: #a9a9a9;
-  }
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
   }

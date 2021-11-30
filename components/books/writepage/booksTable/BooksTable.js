@@ -285,7 +285,7 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
                 mask={false}
                 visible={activedTable === "bookTable" && _record._id === isFoldedMenu}
                 getContainer={false}
-                style={{ position: "absolute", textAlign: "initial", height: "30px", top: "2px" }}
+                style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
                 contentWrapperStyle={{ boxShadow: "unset" }}
                 drawerStyle={{ display: "block" }}
                 bodyStyle={{
@@ -414,18 +414,6 @@ const StyledCard = styled(Card)`
     border-bottom-left-radius: 15px;
   }
 
-  & .PushCustomCircleButton {
-    width: 44px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: #212529;
-  }
-  & .PushCustomCircleButton:hover {
-    background-color: #a9a9a9;
-  }
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
   }

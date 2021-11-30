@@ -223,32 +223,28 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
         <div
           style={{ border: "1px solid lightgrey", borderBottom: "0px", padding: "5px", display: "flex", justifyContent: "space-between", fontSize: "0.8rem", alignItems: "center" }}
         >
-          <div>카드 템플릿 선택 : </div>
+          <div style={{width:"50px"}}>템플릿 : </div>
           <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 200, fontSize: "0.75rem" }} onChange={handleChange}>
             <Option value="default" style={{ fontSize: "0.8rem", color: "black", fontWeight: "700" }} disabled>
               카드타입선택
             </Option>
             {cardTypeListNormal}
           </Select>
-        </div>
-
-        {cardtypeEditor === "flip" && (
-          <>
-            <div style={{ border: "1px solid lightgrey", borderBottom: "0px", borderTop: "0px", padding: "0 5px 5px 5px", display: "flex", justifyContent: "space-between" }}>
-              <div></div>
+          {cardtypeEditor === "flip" && (
+            <>
               {selections == undefined && (
-                <Button size="small" style={{ fontSize: "0.8rem" }} onClick={addSelections}>
-                  셀렉션추가
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft:"3px"}} onClick={addSelections}>
+                  보기추가
                 </Button>
               )}
               {selections == 0 && (
-                <Button size="small" style={{ fontSize: "0.8rem" }} onClick={addSelections}>
-                  셀렉션추가
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft:"3px" }} onClick={addSelections}>
+                  보기추가
                 </Button>
               )}
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
 
         <div style={{ marginBottom: "100px" }}>
           <Editor

@@ -10,7 +10,7 @@ import "froala-editor//css/themes/gray.css";
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Radio, Input, Button, Select } from "antd";
-import { MinusCircleOutlined, StarFilled } from "@ant-design/icons";
+import { PlusCircleOutlined, MinusCircleOutlined, StarFilled } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -464,7 +464,12 @@ class Editor extends Component {
         console.log(diffIndexes);
         console.log(diffValues);
         console.log(newArray[diffIndexes.length + 1]);
-
+        if (JSON.stringify(this.state.diffValues) !== JSON.stringify(diffValues)) {
+          this.setState({
+            diffValues: diffValues,
+          });
+          console.log(diffValues);
+        }
         if (this.state.lastSelectionNick !== diffValues[diffValues.length - 1]) {
           this.setState({
             lastSelectionNick: diffValues[diffValues.length - 1],
@@ -632,104 +637,184 @@ class Editor extends Component {
       if (item == this.state.lastSelectionNick) {
         console.log("editor", item);
         return (
-
-            <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
+          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
+            {item.slice(0, 2) !== "보기" && (
               <label
                 className="editor_label"
                 style={{
                   zIndex: this.state["editorZindex" + (index + 1).toString()],
                   position: "absolute",
                   left: "5px",
-                  top: "15px",
-                  width: "50px",
+                  top: "5px",
+
                   fontSize: "0.5rem",
                   color: "lightgrey",
                 }}
               >
                 {item}
               </label>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <FroalaEditorComponent
-                  tag="textarea"
-                  config={this.config}
-                  model={this.state["editor" + (index + 1).toString()]}
-                  onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-                />
-                <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px" }} onClick={this.props.removeSelection} />
-              </div>
-              {this.state.diffValues && (
-                <div style={{ display: "flex" }}>
-                  <Radio.Group onChange={this.onChange} name={index + 1} defaultChecked={false} value={this.state.answerRadio}>
-                    {this.state.diffValues.map((value, answerindex) => {
-                      return (
-                        <React.Fragment key={value}>
-                          <Radio value={(answerindex + 1).toString()} style={{ fontSize: "0.8rem" }}>
-                            {value}
-                          </Radio>
-                        </React.Fragment>
-                      );
-                    })}
-                  </Radio.Group>
-                </div>
+            )}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "1" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➀</span>
+                </>
               )}
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "2" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➁</span>
+                </>
+              )}
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "3" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➂</span>
+                </>
+              )}
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "4" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➃</span>
+                </>
+              )}
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "5" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➄</span>
+                </>
+              )}
+              <FroalaEditorComponent
+                tag="textarea"
+                config={this.config}
+                model={this.state["editor" + (index + 1).toString()]}
+                onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+              />
+              <PlusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color:"grey" }} onClick={this.props.addSelections} />
+              <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color:"grey" }} onClick={this.props.removeSelection} />
             </div>
-
+            {this.state.diffValues && (
+              <div style={{ display: "flex", marginTop:"3px", alignItems:"center" }}>
+                <span style={{fontSize:"0.8rem", marginRight:"5px"}}>정답 :</span>
+                <Radio.Group buttonStyle="solid" size="small" onChange={this.onChange} name={index + 1} defaultChecked={false} value={this.state.answerRadio}>
+                  {this.state.diffValues.map((value, answerindex) => {
+                    return (
+                      <React.Fragment key={value}>
+                        <Radio.Button value={(answerindex + 1).toString()} style={{ fontSize: "1.5rem" }}>
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "1" && (
+                            <>
+                              <span>➀</span>
+                            </>
+                          )}
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "2" && (
+                            <>
+                              <span>➁</span>
+                            </>
+                          )}
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "3" && (
+                            <>
+                              <span>➂</span>
+                            </>
+                          )}
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "4" && (
+                            <>
+                              <span>➃</span>
+                            </>
+                          )}
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "5" && (
+                            <>
+                              <span>➄</span>
+                            </>
+                          )}
+                        </Radio.Button>
+                      </React.Fragment>
+                    );
+                  })}
+                </Radio.Group>
+              </div>
+            )}
+          </div>
         );
       } else if (item == this.state.answerFieldNick) {
         console.log("editor", item);
         return (
-            <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
-              <label
-                className="editor_label"
-                style={{
-                  zIndex: this.state["editorZindex" + (index + 1).toString()],
-                  position: "absolute",
-                  left: "5px",
-                  top: "15px",
-                  width: "50px",
-                  fontSize: "0.5rem",
-                  color: "lightgrey",
-                }}
-              >
-                {item}
-              </label>
-              <div style={{ display: "flex", alignItems: "center" }}>
-                {/* <FroalaEditorComponent
+          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px", display: "none" }}>
+            {/* <label
+              className="editor_label"
+              style={{
+                zIndex: this.state["editorZindex" + (index + 1).toString()],
+                position: "absolute",
+                left: "5px",
+                top: "5px",
+                width: "50px",
+                fontSize: "0.5rem",
+                color: "lightgrey",
+              }}
+            >
+              {item}
+            </label> */}
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {/* <FroalaEditorComponent
                   tag="textarea"
                   config={this.config}
                   model={this.state["editor" + (index + 1).toString()]}
                   onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
                   disabled
                 /> */}
-                <Input type="text" value={this.state["editor" + (index + 1).toString()]} readOnly />
-              </div>
+              <Input type="text" value={this.state["editor" + (index + 1).toString()]} readOnly />
             </div>
+          </div>
         );
       } else {
         return (
           <React.Fragment key={item}>
             <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
-              <label
-                className="editor_label"
-                style={{
-                  zIndex: this.state["editorZindex" + (index + 1).toString()],
-                  position: "absolute",
-                  left: "5px",
-                  top: "15px",
-                  width: "50px",
-                  fontSize: "0.5rem",
-                  color: "lightgrey",
-                }}
-              >
-                {item}
-              </label>
-              <FroalaEditorComponent
-                key={`editor${item}`}
-                tag="textarea"
-                config={this.config}
-                model={this.state["editor" + (index + 1).toString()]}
-                onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-              />
+              {item.slice(0, 2) !== "보기" && (
+                <label
+                  className="editor_label"
+                  style={{
+                    zIndex: this.state["editorZindex" + (index + 1).toString()],
+                    position: "absolute",
+                    left: "5px",
+                    top: "5px",
+
+                    fontSize: "0.5rem",
+                    color: "lightgrey",
+                  }}
+                >
+                  {item}
+                </label>
+              )}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "1" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➀</span>
+                  </>
+                )}
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "2" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➁</span>
+                  </>
+                )}
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "3" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➂</span>
+                  </>
+                )}
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "4" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➃</span>
+                  </>
+                )}
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "5" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➄</span>
+                  </>
+                )}
+                <FroalaEditorComponent
+                  key={`editor${item}`}
+                  tag="textarea"
+                  config={this.config}
+                  model={this.state["editor" + (index + 1).toString()]}
+                  onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+                />
+              </div>
             </div>
           </React.Fragment>
         );
@@ -779,7 +864,7 @@ class Editor extends Component {
               </Select>
               <Input size="small" style={{ fontSize: "0.8rem", height: "24px" }} onChange={this.handleFlagComment} value={this.state.flagComment} placeholder="코멘트 입력" />
             </div>
-            <div style={{ marginBottom: "10px" }}>{editorList}</div>
+            <div style={{ marginBottom: "5px" }}>{editorList}</div>
             <div style={{ textAlign: "right" }}>
               <Button size="small" onClick={this.handleSubmit} id="saveButton" style={{ fontSize: "0.8rem", marginRight: "5px" }}>
                 저장
@@ -808,3 +893,14 @@ class Editor extends Component {
 }
 
 export default Editor;
+
+const circleNum = {
+  fontSize: "0.8em",
+  width: "1em",
+  borderRadius: "3em",
+  padding: " .1em  .2em",
+  lineHeight: "1.25em",
+  border: "1px solid #333",
+  display: "inline-block",
+  textAlign: "center",
+};

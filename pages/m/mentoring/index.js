@@ -81,7 +81,13 @@ const MentoringHome = () => {
       {newData && (
         <MentoringWrapper>
           <Card size="small" bordered={false}>
-            <Tabs size="small">
+            <Tabs
+              size="small"
+              onChange={() => {
+                setIsMenteeEditMode(false);
+                setIsMentorEditMode(false);
+              }}
+            >
               <Tabs.TabPane tab="멘티" key="멘티">
                 <StyledFlexSpaceBetween>
                   <Badge

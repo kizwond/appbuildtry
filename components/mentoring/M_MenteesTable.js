@@ -133,7 +133,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
               },
             },
             {
-              title: "멘토",
+              title: "멘티",
               dataIndex: "menteeName",
               ellipsis: true,
               width: "15%",

@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { MUTATION_CHANGE_MENTORING_GROUP_ORDER, MUTATION_CREATE_MENTORING_GROUP, MUTATION_DELETE_MENTORING_GROUP, MUTATION_UPDATE_MENTORING_GROUP } from "../../graphql/mutation/mentoring";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween } from "../common/styledComponent/page";
 
 const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisible }) => {
   const router = useRouter();
@@ -257,7 +258,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                         {!activedInput.includes(record._id) ? (
                           <EditFilled style={{ fontSize: "1rem" }} />
                         ) : (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <StyledFlexSpaceBetween>
                             <div
                               onClick={() => {
                                 // 서버요청보내야함
@@ -276,11 +277,11 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                             >
                               <Tag>취소</Tag>
                             </div>
-                          </div>
+                          </StyledFlexSpaceBetween>
                         )}
                       </Col>
                       <Col span={activedInput.includes(record._id) ? 0 : 6}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <StyledFlexAlignCenter>
                           <div
                             style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}
                             onClick={() => {
@@ -297,7 +298,7 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                           >
                             <ArrowDownOutlined style={{ fontSize: "1rem" }} />
                           </div>
-                        </div>
+                        </StyledFlexAlignCenter>
                       </Col>
                       <Col
                         span={activedInput.includes(record._id) ? 0 : 3}
@@ -429,10 +430,6 @@ const DrawerWrapper = styled(Drawer)`
   & video,
   & input {
     font-size: 1rem;
-  }
-
-  .ant-table-tbody > tr > td {
-    height: 4.2rem;
   }
 
   & .ant-drawer-header-title {

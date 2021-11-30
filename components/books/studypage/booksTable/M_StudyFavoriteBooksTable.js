@@ -12,7 +12,8 @@ import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
-import { StyledDivEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }, ref) => {
   const [mounted, setMounted] = useState(false);
@@ -68,7 +69,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       align: "center",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
+      render: (_value, _record) => <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>,
     },
     {
       title: "책 제목",
@@ -85,24 +86,24 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
             onClick={() => {
               checkRef.current[_record.key].props.onChange();
             }}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", display: "flex" }}
           >
-            <Checkbox
-              ref={(ref) => (checkRef.current[_record.key] = ref)}
-              checked={isSelected}
-              onChange={() => {
-                if (isSelected) {
-                  changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
-                }
-                if (!isSelected) {
-                  changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
-                }
-              }}
-            />
-            <StyledDivEllipsis>
+            <StyledFlexAlignCenter>
+              <Checkbox
+                ref={(ref) => (checkRef.current[_record.key] = ref)}
+                checked={isSelected}
+                onChange={() => {
+                  if (isSelected) {
+                    changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                  }
+                  if (!isSelected) {
+                    changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                  }
+                }}
+              />
               <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
-              {value}
-            </StyledDivEllipsis>
+            </StyledFlexAlignCenter>
+            <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
           </div>
         );
       },
@@ -121,22 +122,22 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
             arrowPointAtCenter
             content={
               <>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <StyledFlexSpaceBetween>
                   <div>읽기카드:</div>
                   <div>{_record.read}</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>뒤집기카드:</div>
                   <div>{_record.flip}</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>목차카드:</div>
                   <div>수정必</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>일반카드:</div>
                   <div>수정必</div>
-                </div>
+                </StyledFlexSpaceBetween>
               </>
             }
             trigger="click"
@@ -169,11 +170,11 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       className: "normal",
       align: "right",
       width: 25,
-      render: (value, _record) => (
+      render: (value, _record, index) => (
         <div
           style={{
             position: "relative",
-            zIndex: 2,
+            zIndex: 1000 - index,
           }}
         >
           <div
@@ -192,7 +193,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
               className="PullCustomCircleButton"
               style={{
                 width: "44px",
-                height: "30px",
+                height: "4.2rem",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -210,7 +211,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
             mask={false}
             visible={activedTable === "favoriteTable" && _record._id === isFoldedMenu}
             getContainer={false}
-            style={{ position: "absolute", textAlign: "initial", height: "30px", top: "2px" }}
+            style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
             contentWrapperStyle={{ boxShadow: "unset" }}
             drawerStyle={{ display: "block" }}
             bodyStyle={{
@@ -261,7 +262,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       bordered={false}
       size="small"
       title={
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <StyledFlexSpaceBetween>
           <div onClick={() => setVisible((_prev) => !_prev)}>
             <span style={{ marginRight: "10px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
             <DoubleRightOutlined rotate={visible ? 270 : 90} />
@@ -269,7 +270,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
           <div>
             <CategorySettingButton category={category} ref={ref} />
           </div>
-        </div>
+        </StyledFlexSpaceBetween>
       }
     >
       {visible && dataSource.length > 0 && (
@@ -316,26 +317,7 @@ const StyledCard = styled(Card)`
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
   }
-  & .customCircleButton:hover {
-    background-color: #495057;
-  }
 
-  & .customCircleButton:hover {
-    background-color: #495057;
-  }
-
-  & .PushCustomCircleButton {
-    width: 44px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: #212529;
-  }
-  & .PushCustomCircleButton:hover {
-    background-color: #a9a9a9;
-  }
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
   }
@@ -349,42 +331,24 @@ const StyledCard = styled(Card)`
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-down > svg {
-    color: #fff;
-  }
 
   & .anticon-arrow-up > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-up > svg {
-    color: #fff;
-  }
 
   & .anticon-star > svg {
     font-size: 16px;
-  }
-  & .customCircleButton:hover > .anticon-star.writeUnliked > svg {
-    color: #fff;
-  }
-  & .customCircleButton:hover > .anticon-star.writeLiked > svg {
-    color: #fcc725;
   }
 
   & .anticon-eye > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-eye > svg {
-    color: #fff;
-  }
 
   & .anticon-eye-invisible > svg {
     font-size: 16px;
     color: #dee2e6;
-  }
-  & .customCircleButton:hover > .anticon-eye-invisible > svg {
-    color: #fff;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {

@@ -4,16 +4,17 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
-import { Table, Button, Card, Space, Drawer, Popover } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { Table, Card, Space, Drawer, Popover } from "antd";
+import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
-import { StyledDivEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 import CategorySettingButton from "../categorySetting/CategorySettingButton";
 import CreateBookButton from "../createBook/CreateBookButton";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }, ref) => {
   const [mounted, setMounted] = useState(false);
@@ -76,7 +77,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
       align: "center",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
+      render: (_value, _record) => <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>,
     },
     {
       title: "책 제목",
@@ -86,17 +87,17 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
       align: "center",
       width: 85,
       render: (value, _record, index) => (
-        <div
+        <StyledFlexAlignCenter
           onClick={() => {
             movepage(_record._id);
           }}
           style={{ cursor: "pointer" }}
         >
-          <StyledDivEllipsis>
+          <StyledFlexAlignCenter>
             <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
-            {value}
-          </StyledDivEllipsis>
-        </div>
+          </StyledFlexAlignCenter>
+          <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
+        </StyledFlexAlignCenter>
       ),
     },
     {
@@ -114,22 +115,22 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
             arrowPointAtCenter
             content={
               <>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <StyledFlexSpaceBetween>
                   <div>읽기카드:</div>
                   <div>{_record.read}</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>뒤집기카드:</div>
                   <div>{_record.flip}</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>목차카드:</div>
                   <div>수정必</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>일반카드:</div>
                   <div>수정必</div>
-                </div>
+                </StyledFlexSpaceBetween>
               </>
             }
             trigger="click"
@@ -225,7 +226,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
               className="PullCustomCircleButton"
               style={{
                 width: "44px",
-                height: "30px",
+                height: "4.2rem",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -243,7 +244,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
             mask={false}
             visible={activedTable === "favoriteTable" && _record._id === isFoldedMenu}
             getContainer={false}
-            style={{ position: "absolute", textAlign: "initial", height: "30px", top: "2px" }}
+            style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
             contentWrapperStyle={{ boxShadow: "unset" }}
             drawerStyle={{ display: "block" }}
             bodyStyle={{
@@ -293,7 +294,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
       bordered={false}
       size="small"
       title={
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <StyledFlexSpaceBetween>
           <div onClick={() => setVisible((_prev) => !_prev)}>
             <span style={{ marginRight: "10px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
             <DoubleRightOutlined rotate={visible ? 270 : 90} />
@@ -304,7 +305,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
               <CategorySettingButton category={category} ref={ref} />
             </Space>
           </div>
-        </div>
+        </StyledFlexSpaceBetween>
       }
     >
       {visible && dataSource.length > 0 && (
@@ -348,21 +349,7 @@ const StyledCard = styled(Card)`
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
   }
-  & .customCircleButton:hover {
-    background-color: #495057;
-  }
-  & .PushCustomCircleButton {
-    width: 44px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: #212529;
-  }
-  & .PushCustomCircleButton:hover {
-    background-color: #a9a9a9;
-  }
+
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
   }
@@ -376,42 +363,24 @@ const StyledCard = styled(Card)`
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-down > svg {
-    color: #fff;
-  }
 
   & .anticon-arrow-up > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-up > svg {
-    color: #fff;
-  }
 
   & .anticon-star > svg {
     font-size: 16px;
-  }
-  & .customCircleButton:hover > .anticon-star.writeUnliked > svg {
-    color: #fff;
-  }
-  & .customCircleButton:hover > .anticon-star.writeLiked > svg {
-    color: #fcc725;
   }
 
   & .anticon-eye > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-eye > svg {
-    color: #fff;
-  }
 
   & .anticon-eye-invisible > svg {
     font-size: 16px;
     color: #dee2e6;
-  }
-  & .customCircleButton:hover > .anticon-eye-invisible > svg {
-    color: #fff;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {

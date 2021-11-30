@@ -11,6 +11,7 @@ import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [mounted, setMounted] = useState(false);
@@ -62,15 +63,15 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
 
   const columns = [
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리</div>,
+      title: "카테고리",
       key: "categoryName",
       className: "Row-First-Left",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
+      render: (_value, _record) => <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>,
     },
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>책 제목</div>,
+      title: "책 제목",
       key: "title",
       dataIndex: "title",
       className: "TitleCol",
@@ -185,7 +186,7 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
               className="PullCustomCircleButton"
               style={{
                 width: "44px",
-                height: "30px",
+                height: "4.2rem",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -203,7 +204,7 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
             mask={false}
             visible={activedTable === "favoriteTable" && _record._id === isFoldedMenu}
             getContainer={false}
-            style={{ position: "absolute", textAlign: "initial", height: "30px", top: "2px" }}
+            style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
             contentWrapperStyle={{ boxShadow: "unset" }}
             drawerStyle={{ display: "block" }}
             bodyStyle={{
@@ -303,21 +304,7 @@ const StyledCard = styled(Card)`
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
   }
-  & .customCircleButton:hover {
-    background-color: #495057;
-  }
-  & .PushCustomCircleButton {
-    width: 44px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: #212529;
-  }
-  & .PushCustomCircleButton:hover {
-    background-color: #a9a9a9;
-  }
+
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
   }
@@ -332,10 +319,6 @@ const StyledCard = styled(Card)`
     font-size: 18px;
     color: #a3a3a3;
   }
-  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
-    font-size: 18px;
-    color: #fff;
-  }
 
   & .anticon-double-left > svg {
     font-size: 18px;
@@ -349,42 +332,24 @@ const StyledCard = styled(Card)`
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-down > svg {
-    color: #fff;
-  }
 
   & .anticon-arrow-up > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-up > svg {
-    color: #fff;
-  }
 
   & .anticon-star > svg {
     font-size: 16px;
-  }
-  & .customCircleButton:hover > .anticon-star.writeUnliked > svg {
-    color: #fff;
-  }
-  & .customCircleButton:hover > .anticon-star.writeLiked > svg {
-    color: #fcc725;
   }
 
   & .anticon-eye > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-eye > svg {
-    color: #fff;
-  }
 
   & .anticon-eye-invisible > svg {
     font-size: 16px;
     color: #dee2e6;
-  }
-  & .customCircleButton:hover > .anticon-eye-invisible > svg {
-    color: #fff;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {

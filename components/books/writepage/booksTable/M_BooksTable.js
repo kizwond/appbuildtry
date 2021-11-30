@@ -13,7 +13,8 @@ import FavoriteBook from "../../common/FavoriteBook";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 
 import makeDataSource from "../../common/logic";
-import { StyledDivEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -73,8 +74,8 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       dataIndex: "categoryName",
       render: (_value, _record) =>
         _record.relationship === "parent" ? (
-          <div
-            style={{ display: "flex", alignItems: "center", height: "30px" }}
+          <StyledFlexAlignCenter
+            // style={{ display: "flex", alignItems: "center", height: "30px" }}
             onClick={() => {
               if (expandedRowKeys.includes(_record.key)) {
                 setExpandedRowKeys(expandedRowKeys.filter((key) => key !== _record.key));
@@ -85,8 +86,8 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
             }}
           >
             {_record.classType === "empty-category" ? null : expandedRowKeys.includes(_record.key) ? <DownOutlined /> : <RightOutlined />}
-            <StyledDivEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledDivEllipsis>
-          </div>
+            <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>{_value}</DoubleLinesEllipsisContainer>
+          </StyledFlexAlignCenter>
         ) : null,
     },
     {
@@ -113,19 +114,19 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
                 }}
               >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
-              <StyledDivEllipsis>{value}</StyledDivEllipsis>
+              <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
             ) : (
-              <div
+              <StyledFlexAlignCenter
                 onClick={() => {
                   movepage(_record._id);
                 }}
                 style={{ cursor: "pointer" }}
               >
-                <StyledDivEllipsis>
+                <StyledFlexAlignCenter>
                   <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
-                  {value}
-                </StyledDivEllipsis>
-              </div>
+                </StyledFlexAlignCenter>
+                <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
+              </StyledFlexAlignCenter>
             ),
           props: {},
         };
@@ -153,22 +154,22 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
                 arrowPointAtCenter
                 content={
                   <>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <StyledFlexSpaceBetween>
                       <div>읽기카드:</div>
                       <div>{_record.read}</div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
                       <div>뒤집기카드:</div>
                       <div>{_record.flip}</div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
                       <div>목차카드:</div>
                       <div>수정必</div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
                       <div>일반카드:</div>
                       <div>수정必</div>
-                    </div>
+                    </StyledFlexSpaceBetween>
                   </>
                 }
                 trigger="click"
@@ -191,31 +192,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
         return obj;
       },
     },
-    // {
-    //   title: <StyledDivEllipsis>수정일</StyledDivEllipsis>,
-    //   key: "timeModify",
-    //   align: "center",
-    //   dataIndex: "timeModify",
-    //   className: "normal",
-    //   width: 45,
-    //   render: (_value, _record) => {
-    //     const newDate = new Date(Number(_value));
-    //     const DateString = moment(newDate).format("YY.MM.DD");
-    //     const obj = {
-    //       children: <div>{_value === null ? "-" : DateString}</div>,
-    //       props: {
-    //         colSpan: 1,
-    //         rowSpan: 1,
-    //       },
-    //     };
-    //     if (getConditionValue(_record)) {
-    //       obj.props.colSpan = 0;
-    //     } else {
-    //       obj.props.colSpan = 1;
-    //     }
-    //     return obj;
-    //   },
-    // },
+
     {
       title: "카드생성이력",
       key: "writeHistory",
@@ -464,21 +441,7 @@ const StyledCard = styled(Card)`
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
   }
-  & .customCircleButton:hover {
-    background-color: #495057;
-  }
-  & .PushCustomCircleButton {
-    width: 44px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    background-color: #212529;
-  }
-  & .PushCustomCircleButton:hover {
-    background-color: #a9a9a9;
-  }
+
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
   }
@@ -492,42 +455,24 @@ const StyledCard = styled(Card)`
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-down > svg {
-    color: #fff;
-  }
 
   & .anticon-arrow-up > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-up > svg {
-    color: #fff;
-  }
 
   & .anticon-star > svg {
     font-size: 16px;
-  }
-  & .customCircleButton:hover > .anticon-star.writeUnliked > svg {
-    color: #fff;
-  }
-  & .customCircleButton:hover > .anticon-star.writeLiked > svg {
-    color: #fcc725;
   }
 
   & .anticon-eye > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-eye > svg {
-    color: #fff;
-  }
 
   & .anticon-eye-invisible > svg {
     font-size: 16px;
     color: #dee2e6;
-  }
-  & .customCircleButton:hover > .anticon-eye-invisible > svg {
-    color: #fff;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {

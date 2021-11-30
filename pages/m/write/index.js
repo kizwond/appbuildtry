@@ -122,14 +122,6 @@ const StyledRowMaxWidth = styled.div`
   }
 
   /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
-  & .PushCustomCircleButton > .anticon-double-right > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
-    font-size: 18px;
-    color: #fff;
-  }
 
   & .PullCustomCircleButton > .anticon-double-left > svg {
     font-size: 14px;

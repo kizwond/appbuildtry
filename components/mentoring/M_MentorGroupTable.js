@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { MUTATION_CHANGE_MENTORING_GROUP_ORDER, MUTATION_CREATE_MENTORING_GROUP, MUTATION_DELETE_MENTORING_GROUP, MUTATION_UPDATE_MENTORING_GROUP } from "../../graphql/mutation/mentoring";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween } from "../common/styledComponent/page";
 
 const M_MenteeGroupTable = ({ mentorGroup, drawerMentorGroupVisible, changevisible }) => {
   const router = useRouter();
@@ -191,6 +192,7 @@ const M_MenteeGroupTable = ({ mentorGroup, drawerMentorGroupVisible, changevisib
             resetFields();
           }}
           onClose={() => console.log("창닫기")}
+          zIndex={9998}
           onOk={() => {
             form
               .validateFields()
@@ -257,7 +259,7 @@ const M_MenteeGroupTable = ({ mentorGroup, drawerMentorGroupVisible, changevisib
                         {!activedInput.includes(record._id) ? (
                           <EditFilled style={{ fontSize: "1rem" }} />
                         ) : (
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <StyledFlexSpaceBetween>
                             <div
                               onClick={() => {
                                 // 서버요청보내야함
@@ -276,11 +278,11 @@ const M_MenteeGroupTable = ({ mentorGroup, drawerMentorGroupVisible, changevisib
                             >
                               <Tag>취소</Tag>
                             </div>
-                          </div>
+                          </StyledFlexSpaceBetween>
                         )}
                       </Col>
                       <Col span={activedInput.includes(record._id) ? 0 : 6}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <StyledFlexAlignCenter>
                           <div
                             style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}
                             onClick={() => {
@@ -297,7 +299,7 @@ const M_MenteeGroupTable = ({ mentorGroup, drawerMentorGroupVisible, changevisib
                           >
                             <ArrowDownOutlined style={{ fontSize: "1rem" }} />
                           </div>
-                        </div>
+                        </StyledFlexAlignCenter>
                       </Col>
                       <Col
                         span={activedInput.includes(record._id) ? 0 : 3}

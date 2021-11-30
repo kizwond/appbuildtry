@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { Table, Card, Popover, Button } from "antd";
 import { DollarCircleFilled } from "@ant-design/icons";
 
-import { StyledDivEllipsis } from "../common/styledComponent/page";
+import { StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../common/styledComponent/page";
 import M_RequestMentoringCard from "../../components/mentoring/M_RequestMetoringCard";
 
 const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
@@ -80,7 +80,7 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
       align: "center",
       width: 60,
       dataIndex: "categoryName",
-      render: (_value, _record) => (_record.relationship === "parent" ? <StyledDivEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledDivEllipsis> : null),
+      render: (_value, _record) => (_record.relationship === "parent" ? <StyledTwoLinesEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledTwoLinesEllipsis> : null),
     },
     {
       title: "책 제목",
@@ -90,10 +90,10 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
       align: "center",
       width: 140,
       render: (value, _record, index) => (
-        <StyledDivEllipsis>
+        <StyledTwoLinesEllipsis>
           <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
           {value}
-        </StyledDivEllipsis>
+        </StyledTwoLinesEllipsis>
       ),
     },
     {
@@ -110,22 +110,22 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
             arrowPointAtCenter
             content={
               <>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <StyledFlexSpaceBetween>
                   <div>읽기카드:</div>
                   <div>{_record.read}</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>뒤집기카드:</div>
                   <div>{_record.flip}</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>목차카드:</div>
                   <div>수정必</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>일반카드:</div>
                   <div>수정必</div>
-                </div>
+                </StyledFlexSpaceBetween>
               </>
             }
             trigger="click"

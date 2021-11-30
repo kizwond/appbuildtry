@@ -19,6 +19,7 @@ import M_SentMentoringRequestCard from "../../../components/mentoring/M_SentMent
 import M_ReceivedMentoringRequestCard from "../../../components/mentoring/M_ReceivedMentoringRequestCard";
 import M_MenteeGroupTable from "../../../components/mentoring/M_MenteeGroupTable";
 import M_MentorGroupTable from "../../../components/mentoring/M_MentorGroupTable";
+import { StyledFlexSpaceBetween } from "../../../components/common/styledComponent/page";
 
 const MentoringHome = () => {
   const router = useRouter();
@@ -78,7 +79,7 @@ const MentoringHome = () => {
           <Card size="small" bordered={false}>
             <Tabs size="small">
               <Tabs.TabPane tab="멘티" key="멘티">
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <StyledFlexSpaceBetween>
                   <Badge
                     size="small"
                     count={
@@ -113,11 +114,11 @@ const MentoringHome = () => {
                       멘티그룹관리
                     </Button>
                   </Space>
-                </div>
+                </StyledFlexSpaceBetween>
                 <M_MenteesTable newData={newData} isMenteeEditMode={isMenteeEditMode} menteeGroup={mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup} />
               </Tabs.TabPane>
               <Tabs.TabPane tab="멘토" key="멘토">
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <StyledFlexSpaceBetween>
                   {" "}
                   <Space>
                     <Badge
@@ -177,7 +178,7 @@ const MentoringHome = () => {
                   >
                     멘토그룹관리
                   </Button>
-                </div>
+                </StyledFlexSpaceBetween>
                 {mentoringData && (
                   <M_MentosTable
                     mentoringData={mentoringData}
@@ -343,18 +344,6 @@ const MentoringWrapper = styled.div`
   & video,
   & input {
     font-size: 1rem;
-  }
-
-  & .MenteeGroupNameCell > div {
-    /* height: 3rem; */
-    display: -webkit-box;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    word-wrap: break-word;
-    word-break: break-all;
-    white-space: normal;
   }
 `;
 

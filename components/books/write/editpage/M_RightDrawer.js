@@ -11,7 +11,7 @@ const RightDrawer = () => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = localStorage.getItem("book_id");
-    console.log(book_id);
+    // console.log(book_id);
     if (book_id !== null) {
       localStorage.removeItem("book_id");
       localStorage.setItem("book_id", book_id);

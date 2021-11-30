@@ -9,7 +9,7 @@ import "froala-editor//css/themes/gray.css";
 
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
-import { Form, Input, Button, Select } from "antd";
+import { Radio, Input, Button, Select } from "antd";
 import { MinusCircleOutlined, StarFilled } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -55,6 +55,9 @@ class Editor extends Component {
       editorZindex16: 10,
       lastSelectionNick: "",
       selectionNextNick: "",
+      diffValues: [],
+      answerRadio: null,
+      answerFieldNick: "",
     };
     this.config = {
       key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
@@ -460,10 +463,12 @@ class Editor extends Component {
         var diffValues = arrayDiff(newArray, originArray);
         console.log(diffIndexes);
         console.log(diffValues);
+        console.log(newArray[diffIndexes.length + 1]);
 
         if (this.state.lastSelectionNick !== diffValues[diffValues.length - 1]) {
           this.setState({
             lastSelectionNick: diffValues[diffValues.length - 1],
+            answerFieldNick: newArray[diffIndexes.length + 1],
           });
         }
         const keynameNext1 = `editor${diffIndexes[diffIndexes.length - 1] + 2}`;
@@ -477,7 +482,8 @@ class Editor extends Component {
         if (this.props.cardtypeEditor === "flip") {
           if (num_selection_adding !== num_selection) {
             this.setState({
-              [keynameNext1]: this.state[keynameNext2],
+              [keynameNext1]: "",
+              // [keynameNext1]: this.state[keynameNext2],
               [keynameNext2]: this.state[keynameNext3],
               [keynameNext3]: this.state[keynameNext4],
               [keynameNext4]: this.state[keynameNext5],
@@ -506,7 +512,8 @@ class Editor extends Component {
         if (this.props.cardtypeEditor === "flip") {
           if (lastSelectionRemoving === "true") {
             this.setState({
-              [keyname]: this.state[keynameNext1],
+              [keyname]: "",
+              // [keyname]: this.state[keynameNext1],
               [keynameNext1]: this.state[keynameNext2],
               [keynameNext2]: this.state[keynameNext3],
               [keynameNext3]: this.state[keynameNext4],
@@ -514,6 +521,7 @@ class Editor extends Component {
               [keynameNext5]: this.state[keynameNext6],
               [keynameNext6]: this.state[keynameNext7],
               [keynameNext7]: this.state[keynameNext8],
+              answerFieldNick: "",
             });
             sessionStorage.setItem("lastSelectionRemoving", false);
           }
@@ -537,16 +545,21 @@ class Editor extends Component {
         var diffValues = arrayDiff(newArray, originArray);
         console.log(diffIndexes);
         console.log(diffValues);
-
-        if (this.state.lastSelectionNick !== diffValues[diffValues.length - 1]) {
+        if (JSON.stringify(this.state.diffValues) !== JSON.stringify(diffValues)) {
           this.setState({
-            lastSelectionNick: diffValues[diffValues.length - 1],
+            diffValues: diffValues,
           });
           const indexOfNext = newArray.indexOf(diffValues[diffValues.length - 1]);
           this.setState({
             selectionNextNick: newArray[indexOfNext + 1],
+            answerFieldNick: newArray[indexOfNext + 1],
           });
           console.log(newArray[indexOfNext + 1]);
+        }
+        if (this.state.lastSelectionNick !== diffValues[diffValues.length - 1]) {
+          this.setState({
+            lastSelectionNick: diffValues[diffValues.length - 1],
+          });
         }
 
         const keyname = `editor${diffIndexes[diffIndexes.length - 1] + 1}`;
@@ -563,7 +576,8 @@ class Editor extends Component {
               [keyname]: "",
             });
             this.setState({
-              [keynameNext1]: this.state[keyname],
+              [keynameNext1]: "",
+              // [keynameNext1]: this.state[keyname],
             });
             this.setState({
               [keynameNext2]: this.state[keynameNext1],
@@ -588,8 +602,50 @@ class Editor extends Component {
       }
     }
   }
+
+  onChange = (e) => {
+    console.log("radio checked", e.target.value);
+    console.log("radio checked", e.target.name);
+    const keyname = `editor${Number(e.target.name) + 1}`;
+    const editorZindex = `editorZindex${Number(e.target.name) + 1}`;
+    const answer = e.target.value;
+    const answerValue = `<p>${answer}</p>`;
+    this.setState({
+      answerRadio: e.target.value,
+      [keyname]: answer,
+      [editorZindex]: 0,
+    });
+  };
+
   render() {
     const editorList = this.props.nicks.map((item, index) => {
+      if(item !== this.state.lastSelectionNick && item !== this.state.answerFieldNick){
+        return (
+          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
+            <label
+              className="editor_label"
+              style={{
+                zIndex: this.state["editorZindex" + (index + 1).toString()],
+                position: "absolute",
+                left: "5px",
+                top: "15px",
+                width: "50px",
+                fontSize: "0.5rem",
+                color: "lightgrey",
+              }}
+            >
+              {item}
+            </label>
+            <FroalaEditorComponent
+              tag="textarea"
+              config={this.config}
+              model={this.state["editor" + (index + 1).toString()]}
+              onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+            />
+          </div>
+        );
+      }
+
       if (item === this.state.lastSelectionNick) {
         return (
           <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
@@ -616,33 +672,56 @@ class Editor extends Component {
               />
               <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px" }} onClick={this.props.removeSelection} />
             </div>
+            {this.state.diffValues && (
+              <div style={{ display: "flex" }}>
+                <Radio.Group onChange={this.onChange} name={index + 1} defaultChecked={false} value={this.state.answerRadio}>
+                  {this.state.diffValues.map((value, answerindex) => {
+                    return (
+                      <>
+                        <Radio value={(answerindex + 1).toString()} style={{ fontSize: "0.8rem" }}>
+                          {value}
+                        </Radio>
+                      </>
+                    );
+                  })}
+                </Radio.Group>
+              </div>
+            )}
           </div>
         );
       }
-      return (
-        <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
-          <label
-            className="editor_label"
-            style={{
-              zIndex: this.state["editorZindex" + (index + 1).toString()],
-              position: "absolute",
-              left: "5px",
-              top: "15px",
-              width: "50px",
-              fontSize: "0.5rem",
-              color: "lightgrey",
-            }}
-          >
-            {item}
-          </label>
-          <FroalaEditorComponent
-            tag="textarea"
-            config={this.config}
-            model={this.state["editor" + (index + 1).toString()]}
-            onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-          />
-        </div>
-      );
+      if (item === this.state.answerFieldNick) {
+        return (
+          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
+            <label
+              className="editor_label"
+              style={{
+                zIndex: this.state["editorZindex" + (index + 1).toString()],
+                position: "absolute",
+                left: "5px",
+                top: "15px",
+                width: "50px",
+                fontSize: "0.5rem",
+                color: "lightgrey",
+              }}
+            >
+              {item}
+            </label>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {/* <FroalaEditorComponent
+                tag="textarea"
+                config={this.config}
+                model={this.state["editor" + (index + 1).toString()]}
+                onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+                disabled
+              /> */}
+              <Input type="text" value={this.state["editor" + (index + 1).toString()]} readOnly />
+            </div>
+          </div>
+        );
+      }
+      
+      
     });
 
     return (

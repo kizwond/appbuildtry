@@ -155,7 +155,7 @@ p {
   padding: 8px 15px 8px 15px;
 }
 
-/* 표 마우스 오버 효과 삭제 */
+/* 표 관련 설정 */
 .ant-table-tbody > tr.ant-table-row:hover > td,
 .ant-table-tbody > tr > td.ant-table-cell-row-hover {
   background: none;
@@ -163,16 +163,15 @@ p {
 .ant-table.ant-table-small .ant-table-thead > tr > th {
   padding-top: 4px;
   padding-bottom: 4px;
+  padding: 4px;
 }
-.ant-table-tbody > tr > td {
+.ant-table.ant-table-small .ant-table-tbody > tr > td {
   height: 4.2rem;
+  padding: 0;
+  border-bottom: none;
 }
 .ant-table-container * {
   font-size: 1rem;
-}
-.ant-table.ant-table-small .ant-table-tbody > tr > td {
-  padding-top: 0;
-  padding-bottom: 0;
 }
 
 /* page 커스텀 버튼 */
@@ -271,16 +270,16 @@ p {
 }
 
 .fr-second-toolbar:empty {
-  min-height: 0px !important; 
+  min-height: 0px !important;
 }
 
-.ant-radio-group-small .ant-radio-button-wrapper{
-  padding:0px 15px !important;
+.ant-radio-group-small .ant-radio-button-wrapper {
+  padding: 0px 15px !important;
 }
 
 .ant-radio-button-wrapper {
-  border:none !important;
+  border: none !important;
 }
-.ant-radio-button-wrapper:not(:first-child)::before{
-  width:0;
+.ant-radio-button-wrapper:not(:first-child)::before {
+  width: 0;
 }

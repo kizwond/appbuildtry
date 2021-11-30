@@ -9,7 +9,7 @@ import M_Layout from "../../../components/layout/M_Layout.js";
 import { FormOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK } from "../../../graphql/mutation/buyBook";
-import { StyledFlexSpaceBetween } from '../../../components/common/styledComponent/page';
+import { StyledFlexSpaceBetween } from "../../../components/common/styledComponent/page";
 
 const Challenges = () => {
   const [drawerRegisterBuyBook, setDrawerRegisterBuyBook] = useState(false);
@@ -107,7 +107,7 @@ const Challenges = () => {
                     <FormOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
                   </StyledButton>
                 </div>
-              </StyledFlex>
+              </StyledFlexSpaceBetween>
             }
           >
             {buyBookData.buybook_getAllBuybook.buybooks.map((_book, _index) => (

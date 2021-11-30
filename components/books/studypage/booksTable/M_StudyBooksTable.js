@@ -439,10 +439,6 @@ const StyledCard = styled(Card)`
     color: #dee2e6;
   }
 
-  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
-    padding: 0;
-  }
-
   & .ant-table table {
     border-collapse: collapse;
     background-color: white;

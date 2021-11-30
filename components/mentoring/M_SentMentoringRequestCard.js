@@ -50,63 +50,66 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring, forId }) => {
   }
 
   return (
-    <StyledCard
-      id={forId}
-      size="small"
-      actions={[
-        <div
-          key="revise"
-          onClick={() => {
-            if (textAreaDisabled) {
-              setTextAreaDisabled(false);
-              setTimeout(() => {
-                document.getElementById(forId).scrollIntoView();
-                textAreaRef.current.focus({
-                  cursor: "end",
-                });
-              }, 100);
-            }
-            if (!textAreaDisabled) {
-              if (comment !== textAreaInputValue) {
-                updateRequest();
+    <div id={forId}>
+      <StyledCard
+        size="small"
+        actions={[
+          <div
+            key="revise"
+            onClick={() => {
+              if (textAreaDisabled) {
+                setTextAreaDisabled(false);
+                setTimeout(() => {
+                  document.getElementById(forId).scrollIntoView({ behavior: "smooth", block: "start" });
+                  // window.scrollY(document.getElementById(forId).offsetTop);
+                  // console.log(document.getElementById(forId));
+                  textAreaRef.current.focus({
+                    cursor: "end",
+                  });
+                }, 100);
               }
-            }
-          }}
-        >
-          {textAreaDisabled ? "요청 수정" : "수정 완료"}
-        </div>,
-        <div
-          key="cancel"
-          onClick={() => {
-            if (textAreaDisabled) {
-              declineMentoring({ menteeUser_id, mentorUser_id, mybook_id, response: "cancelled" });
-            }
-            if (!textAreaDisabled) {
-              setTextAreaDisabled(true);
-              setTextAreaInputValue(comment);
-            }
-          }}
-        >
-          {textAreaDisabled ? "요청 취소" : "수정 취소"}
-        </div>,
-      ]}
-      style={{ margin: "10px", borderRadius: "10px" }}
-      bordered={false}
-      hoverable
-    >
-      <Card.Meta
-        avatar={<Image src="/image/bookcover/bookcover2.png" alt={mybookTitle} width={60} height={85} />}
-        description={
-          <>
-            <div>책이름: {mybookTitle}</div>
-            <div>멘토: {`${mentorName}(${mentorUsername})`}</div>
-            <div>요청 날짜: {moment(new Date(Number(reqDate))).format("YY-MM-DD")}</div>
-            <div>요청메세지:</div>
-            <Input.TextArea ref={textAreaRef} disabled={textAreaDisabled} value={textAreaInputValue} placeholder="안녕하세요. 멘토링 요청 드립니다." onChange={(e) => setTextAreaInputValue(e.target.value)} />
-          </>
-        }
-      />
-    </StyledCard>
+              if (!textAreaDisabled) {
+                if (comment !== textAreaInputValue) {
+                  updateRequest();
+                }
+              }
+            }}
+          >
+            {textAreaDisabled ? "요청 수정" : "수정 완료"}
+          </div>,
+          <div
+            key="cancel"
+            onClick={() => {
+              if (textAreaDisabled) {
+                declineMentoring({ menteeUser_id, mentorUser_id, mybook_id, response: "cancelled" });
+              }
+              if (!textAreaDisabled) {
+                setTextAreaDisabled(true);
+                setTextAreaInputValue(comment);
+              }
+            }}
+          >
+            {textAreaDisabled ? "요청 취소" : "수정 취소"}
+          </div>,
+        ]}
+        style={{ margin: "10px", borderRadius: "10px" }}
+        bordered={false}
+        hoverable
+      >
+        <Card.Meta
+          avatar={<Image src="/image/bookcover/bookcover2.png" alt={mybookTitle} width={60} height={85} />}
+          description={
+            <>
+              <div>책이름: {mybookTitle}</div>
+              <div>멘토: {`${mentorName}(${mentorUsername})`}</div>
+              <div>요청 날짜: {moment(new Date(Number(reqDate))).format("YY-MM-DD")}</div>
+              <div>요청메세지:</div>
+              <Input.TextArea ref={textAreaRef} disabled={textAreaDisabled} value={textAreaInputValue} placeholder="안녕하세요. 멘토링 요청 드립니다." onChange={(e) => setTextAreaInputValue(e.target.value)} />
+            </>
+          }
+        />
+      </StyledCard>
+    </div>
   );
 };
 

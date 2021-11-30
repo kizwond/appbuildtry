@@ -1,6 +1,7 @@
 import { Tooltip, Tag } from "antd";
 import { VerticalAlignBottomOutlined } from "@ant-design/icons";
 import _, { filter } from "lodash";
+import { StyledFlexAlignCenter } from "../../common/styledComponent/page";
 
 export default function makeDataSource(myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook) {
   const noCategoryId = category.find((_cate) => _cate.isFixed === "yes")._id;
@@ -99,7 +100,7 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       classType: "hiddenBar",
       title: (
         <>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <StyledFlexAlignCenter>
             <div style={{ marginRight: "40px" }}>{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</div>
             <Tooltip
               title={isShowedAllBooks ? "숨긴 책 감추기" : "숨긴 책 표시"}
@@ -120,7 +121,7 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
                 {isShowedAllBooks ? "접기" : "보기"}
               </Tag>
             </Tooltip>
-          </div>
+          </StyledFlexAlignCenter>
         </>
       ),
     };

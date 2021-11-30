@@ -13,7 +13,7 @@ import FavoriteBook from "../../common/FavoriteBook";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 
 import makeDataSource from "../../common/logic";
-import { StyledDivEllipsis } from "../../../common/styledComponent/page";
+import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 
 const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -65,15 +65,15 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
 
   const columns = [
     {
-      title: <StyledDivEllipsis>카테고리</StyledDivEllipsis>,
+      title: "카테고리",
       key: "categoryName",
       className: "categoryCol",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => (_record.relationship === "parent" ? <StyledDivEllipsis>{_value}</StyledDivEllipsis> : null),
+      render: (_value, _record) => (_record.relationship === "parent" ? <StyledTwoLinesEllipsis>{_value}</StyledTwoLinesEllipsis> : null),
     },
     {
-      title: <StyledDivEllipsis>책 제목</StyledDivEllipsis>,
+      title: "책 제목",
       key: "title",
       dataIndex: "title",
       className: "Row-First-Left",
@@ -86,7 +86,7 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
             ) : _record.relationship === "parent" && !expandedRowKeys.includes(_record.key) ? (
               <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
-              <StyledDivEllipsis>{value}</StyledDivEllipsis>
+              <StyledTwoLinesEllipsis>{value}</StyledTwoLinesEllipsis>
             ) : (
               <div
                 onClick={() => {
@@ -94,10 +94,10 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
                 }}
                 style={{ cursor: "pointer" }}
               >
-                <StyledDivEllipsis>
+                <StyledTwoLinesEllipsis>
                   <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
                   {value}
-                </StyledDivEllipsis>
+                </StyledTwoLinesEllipsis>
               </div>
             ),
           props: {},
@@ -113,8 +113,8 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
     {
       title: (
         <>
-          <StyledDivEllipsis>카드 수</StyledDivEllipsis>
-          <StyledDivEllipsis>(읽기/뒤집기)</StyledDivEllipsis>
+          <div>카드 수</div>
+          <div>(읽기/뒤집기)</div>
         </>
       ),
       key: "total",
@@ -140,7 +140,7 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
       },
     },
     {
-      title: <StyledDivEllipsis>수정일</StyledDivEllipsis>,
+      title: "수정일",
       key: "timeModify",
       align: "center",
       dataIndex: "timeModify",
@@ -167,8 +167,8 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
     {
       title: (
         <>
-          <StyledDivEllipsis>최근 3일간</StyledDivEllipsis>
-          <StyledDivEllipsis>카드생성</StyledDivEllipsis>
+          <div>최근 3일간</div>
+          <div>카드생성</div>
         </>
       ),
       key: "timeModify",
@@ -413,9 +413,7 @@ const StyledCard = styled(Card)`
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
   }
-  & .customCircleButton:hover {
-    background-color: #495057;
-  }
+
   & .PushCustomCircleButton {
     width: 44px;
     height: 30px;
@@ -459,42 +457,24 @@ const StyledCard = styled(Card)`
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-down > svg {
-    color: #fff;
-  }
 
   & .anticon-arrow-up > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-up > svg {
-    color: #fff;
-  }
 
   & .anticon-star > svg {
     font-size: 16px;
-  }
-  & .customCircleButton:hover > .anticon-star.writeUnliked > svg {
-    color: #fff;
-  }
-  & .customCircleButton:hover > .anticon-star.writeLiked > svg {
-    color: #fcc725;
   }
 
   & .anticon-eye > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-eye > svg {
-    color: #fff;
-  }
 
   & .anticon-eye-invisible > svg {
     font-size: 16px;
     color: #dee2e6;
-  }
-  & .customCircleButton:hover > .anticon-eye-invisible > svg {
-    color: #fff;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {

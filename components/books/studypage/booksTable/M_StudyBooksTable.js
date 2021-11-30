@@ -3,14 +3,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { Table, Card, Space, Drawer, Checkbox, Progress, Popover } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, DownOutlined, RightOutlined } from "@ant-design/icons";
+import { DoubleLeftOutlined, DoubleRightOutlined, DownOutlined, RightOutlined } from "@ant-design/icons";
 
-import { StyledDivEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
 import makeDataSource from "../../common/logic";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -59,8 +60,8 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       dataIndex: "categoryName",
       render: (_value, _record) =>
         _record.relationship === "parent" ? (
-          <div
-            style={{ display: "flex", alignItems: "center", height: "30px" }}
+          <StyledFlexAlignCenter
+            // style={{ display: "flex", alignItems: "center", height: "30px" }}
             onClick={() => {
               if (expandedRowKeys.includes(_record.key)) {
                 setExpandedRowKeys(expandedRowKeys.filter((key) => key !== _record.key));
@@ -71,8 +72,8 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
             }}
           >
             {_record.classType === "empty-category" ? null : expandedRowKeys.includes(_record.key) ? <DownOutlined /> : <RightOutlined />}
-            <StyledDivEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledDivEllipsis>
-          </div>
+            <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>{_value}</DoubleLinesEllipsisContainer>
+          </StyledFlexAlignCenter>
         ) : null,
     },
     {
@@ -100,30 +101,30 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                 }}
               >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
-              <StyledDivEllipsis>{value}</StyledDivEllipsis>
+              <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
             ) : (
               <div
                 onClick={() => {
                   checkRef.current[_record.key].props.onChange();
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", display: "flex" }}
               >
-                <Checkbox
-                  ref={(ref) => (checkRef.current[_record.key] = ref)}
-                  checked={isSelected}
-                  onChange={() => {
-                    if (isSelected) {
-                      changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
-                    }
-                    if (!isSelected) {
-                      changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
-                    }
-                  }}
-                />
-                <StyledDivEllipsis>
+                <StyledFlexAlignCenter>
+                  <Checkbox
+                    ref={(ref) => (checkRef.current[_record.key] = ref)}
+                    checked={isSelected}
+                    onChange={() => {
+                      if (isSelected) {
+                        changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                      }
+                      if (!isSelected) {
+                        changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                      }
+                    }}
+                  />
                   <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
-                  {value}
-                </StyledDivEllipsis>
+                </StyledFlexAlignCenter>
+                <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
               </div>
             ),
           props: {},
@@ -152,22 +153,22 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                 arrowPointAtCenter
                 content={
                   <>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <StyledFlexSpaceBetween>
                       <div>읽기카드:</div>
                       <div>{_record.read}</div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
                       <div>뒤집기카드:</div>
                       <div>{_record.flip}</div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
                       <div>목차카드:</div>
                       <div>수정必</div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
                       <div>일반카드:</div>
                       <div>수정必</div>
-                    </div>
+                    </StyledFlexSpaceBetween>
                   </>
                 }
                 trigger="click"
@@ -399,9 +400,7 @@ const StyledCard = styled(Card)`
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
   }
-  & .customCircleButton:hover {
-    background-color: #495057;
-  }
+
   & .PushCustomCircleButton {
     width: 44px;
     height: 30px;
@@ -427,42 +426,24 @@ const StyledCard = styled(Card)`
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-down > svg {
-    color: #fff;
-  }
 
   & .anticon-arrow-up > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-up > svg {
-    color: #fff;
-  }
 
   & .anticon-star > svg {
     font-size: 16px;
-  }
-  & .customCircleButton:hover > .anticon-star.writeUnliked > svg {
-    color: #fff;
-  }
-  & .customCircleButton:hover > .anticon-star.writeLiked > svg {
-    color: #fcc725;
   }
 
   & .anticon-eye > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-eye > svg {
-    color: #fff;
-  }
 
   & .anticon-eye-invisible > svg {
     font-size: 16px;
     color: #dee2e6;
-  }
-  & .customCircleButton:hover > .anticon-eye-invisible > svg {
-    color: #fff;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {

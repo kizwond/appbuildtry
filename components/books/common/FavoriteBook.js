@@ -18,7 +18,7 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
       console.log("received_data", received_data);
       if (received_data.mybook_setLike.status === "200") {
       } else if (received_data.mybook_setLike.status === "401") {
-        router.push("/account/login");
+        router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }
@@ -50,15 +50,6 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
         <Tooltip mouseEnterDelay={0.3} mouseLeaveDelay={0} title="즐겨찾기 해제" overlayInnerStyle={{ fontSize: "0.65rem", minWidth: "0", minHeight: "0" }} overlayStyle={{ alignSelf: "middle" }}>
           <div
             className="customCircleButton"
-            style={{
-              width: "34px",
-              height: "24px",
-              borderRadius: "12px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
             onClick={() => {
               updateBook(false, null);
               changeActivedTable("");
@@ -72,15 +63,6 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
         <Tooltip mouseEnterDelay={0.3} mouseLeaveDelay={0} title="즐겨찾기 등록" overlayInnerStyle={{ fontSize: "0.65rem", minWidth: "0", minHeight: "0" }} overlayStyle={{ alignSelf: "middle" }}>
           <div
             className="customCircleButton"
-            style={{
-              width: "34px",
-              height: "24px",
-              borderRadius: "12px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
             onClick={() => {
               console.log({ studyLikeLength });
               updateBook(true, tableType === "study" ? studyLikeLength : writeLikeLength);

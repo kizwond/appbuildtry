@@ -176,6 +176,37 @@ p {
 }
 
 /* page 커스텀 버튼 */
+.customCircleButton {
+  width: 34px;
+  height: 24px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.customCircleButton:hover {
+  background-color: #495057;
+}
+.customCircleButton:hover > .anticon-arrow-down > svg {
+  color: #fff;
+}
+.customCircleButton:hover > .anticon-arrow-up > svg {
+  color: #fff;
+}
+.customCircleButton:hover > .anticon-star.writeUnliked > svg {
+  color: #fff;
+}
+.customCircleButton:hover > .anticon-star.writeLiked > svg {
+  color: #fcc725;
+}
+.customCircleButton:hover > .anticon-eye > svg {
+  color: #fff;
+}
+.customCircleButton:hover > .anticon-eye-invisible > svg {
+  color: #fff;
+}
+
 .customButtonForMainPage {
   background-color: #e9f2fa;
 }

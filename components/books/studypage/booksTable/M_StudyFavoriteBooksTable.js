@@ -12,7 +12,7 @@ import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
-import { StyledDivEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 
 const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }, ref) => {
   const [mounted, setMounted] = useState(false);
@@ -99,10 +99,10 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
                 }
               }}
             />
-            <StyledDivEllipsis>
+            <StyledTwoLinesEllipsis>
               <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
               {value}
-            </StyledDivEllipsis>
+            </StyledTwoLinesEllipsis>
           </div>
         );
       },
@@ -121,22 +121,22 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
             arrowPointAtCenter
             content={
               <>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <StyledFlexSpaceBetween>
                   <div>읽기카드:</div>
                   <div>{_record.read}</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>뒤집기카드:</div>
                   <div>{_record.flip}</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>목차카드:</div>
                   <div>수정必</div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
                   <div>일반카드:</div>
                   <div>수정必</div>
-                </div>
+                </StyledFlexSpaceBetween>
               </>
             }
             trigger="click"
@@ -261,7 +261,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       bordered={false}
       size="small"
       title={
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <StyledFlexSpaceBetween>
           <div onClick={() => setVisible((_prev) => !_prev)}>
             <span style={{ marginRight: "10px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
             <DoubleRightOutlined rotate={visible ? 270 : 90} />
@@ -269,7 +269,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
           <div>
             <CategorySettingButton category={category} ref={ref} />
           </div>
-        </div>
+        </StyledFlexSpaceBetween>
       }
     >
       {visible && dataSource.length > 0 && (
@@ -316,13 +316,6 @@ const StyledCard = styled(Card)`
     border-top-left-radius: 15px;
     border-bottom-left-radius: 15px;
   }
-  & .customCircleButton:hover {
-    background-color: #495057;
-  }
-
-  & .customCircleButton:hover {
-    background-color: #495057;
-  }
 
   & .PushCustomCircleButton {
     width: 44px;
@@ -349,42 +342,24 @@ const StyledCard = styled(Card)`
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-down > svg {
-    color: #fff;
-  }
 
   & .anticon-arrow-up > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-arrow-up > svg {
-    color: #fff;
-  }
 
   & .anticon-star > svg {
     font-size: 16px;
-  }
-  & .customCircleButton:hover > .anticon-star.writeUnliked > svg {
-    color: #fff;
-  }
-  & .customCircleButton:hover > .anticon-star.writeLiked > svg {
-    color: #fcc725;
   }
 
   & .anticon-eye > svg {
     font-size: 16px;
     color: #dee2e6;
   }
-  & .customCircleButton:hover > .anticon-eye > svg {
-    color: #fff;
-  }
 
   & .anticon-eye-invisible > svg {
     font-size: 16px;
     color: #dee2e6;
-  }
-  & .customCircleButton:hover > .anticon-eye-invisible > svg {
-    color: #fff;
   }
 
   & .ant-table.ant-table-small .ant-table-tbody > tr > td {

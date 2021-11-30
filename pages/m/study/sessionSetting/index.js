@@ -61,7 +61,7 @@ const SessionSetting = () => {
         console.log({ useQueryData: received_data });
         updateData(received_data);
       } else if (received_data.session_getSessionConfig.status === "401") {
-        router.push("/account/login");
+        router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }
@@ -80,8 +80,15 @@ const SessionSetting = () => {
 
   const [session_createSession] = useMutation(SESSION_CREATE_SESSION, {
     onCompleted: (data) => {
-      sessionStorage.setItem("session_Id", data.session_createSession.sessions[0]._id);
-      router.push(`/books/study/mode/flip/${data.session_createSession.sessions[0]._id}`);
+      if (data.session_createSession.status === "200") {
+        console.log("세션 생성 요청 후 받은 데이터", data);
+        sessionStorage.setItem("session_Id", data.session_createSession.sessions[0]._id);
+        router.push(`/books/study/mode/flip/${data.session_createSession.sessions[0]._id}`);
+      } else if (data.session_createSession.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
     },
   });
 
@@ -122,7 +129,7 @@ const SessionSetting = () => {
 
         setCardsList([...cardsList, received_data]);
       } else if (received_data.session_getNumCardsbyIndex.status === "401") {
-        router.push("/account/login");
+        router.push("m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }

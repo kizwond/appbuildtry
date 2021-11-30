@@ -5,7 +5,7 @@ import styled from "styled-components";
 import moment from "moment";
 
 import { Table, Card, Space, Drawer, Popover } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined, DownOutlined, MinusCircleOutlined, PlusCircleOutlined, RightOutlined } from "@ant-design/icons";
+import { DoubleLeftOutlined, DoubleRightOutlined, DownOutlined, RightOutlined } from "@ant-design/icons";
 
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
@@ -13,7 +13,8 @@ import FavoriteBook from "../../common/FavoriteBook";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 
 import makeDataSource from "../../common/logic";
-import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween } from "../../../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId }) => {
@@ -754,18 +755,4 @@ const StyledCard = styled(Card)`
     display: block;
     color: #707070;
   }
-`;
-
-const StyledBookTypeDiv = styled.div`
-  width: 10px;
-  height: 30px;
-  color: white;
-  display: inline-block;
-  border-radius: 3px;
-  margin: 0 4px;
-  line-height: 30px;
-  background-color: ${(props) => {
-    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
-    return bgColor;
-  }};
 `;

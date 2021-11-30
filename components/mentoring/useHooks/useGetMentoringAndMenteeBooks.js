@@ -19,6 +19,7 @@ const useGetMentoringAndMenteeBooks = () => {
       menteeNameAndId: `${mentee.menteeName}(${mentee.menteeUsername})`,
       menteeGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup, { _id: mentee.menteeGroup_id }).name,
       menteeSeq: mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup.findIndex((gr) => gr._id === mentee.menteeGroup_id),
+      bookType: _.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).mybook_info.type,
       studyHistory:
         _(_.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).stats?.studyHistory)
           .map((history) => history.studyHour)

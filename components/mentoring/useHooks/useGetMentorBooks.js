@@ -33,6 +33,7 @@ const useGetMentorBooks = (mentoringData, previousMentoringData) => {
       mentorNameAndId: `${mentor.mentorName}(${mentor.mentorUsername})`,
       mentorGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup, { _id: mentor.mentorGroup_id }).name,
       mentorSeq: mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.mentorGroup.findIndex((gr) => gr._id === mentor.mentorGroup_id),
+      bookType: _.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).mybook_info.type,
       studyHistory:
         mentorBooks &&
         _(_.find(mentorBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentor.mybook_id).stats?.studyHistory)

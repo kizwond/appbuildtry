@@ -3,6 +3,9 @@ import { Button, Form, Input, Select, Space, Table, Tag } from "antd";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER, MUTATION_TERMINATE_MENTORING } from "../../graphql/mutation/mentoring";
+import DoubleLinesEllipsisContainer from "../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledFlexAlignCenter } from "../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../common/styledComponent/buttons";
 
 const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
   const router = useRouter();
@@ -109,11 +112,24 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
               title: "그룹",
               dataIndex: "menteeGroupName",
               width: "15%",
+              render: function title(v) {
+                return <DoubleLinesEllipsisContainer>{v}</DoubleLinesEllipsisContainer>;
+              },
             },
             {
               title: "책",
               dataIndex: "mybookTitle",
               width: "25%",
+              render: function category(v, _record) {
+                return (
+                  <StyledFlexAlignCenter>
+                    <StyledFlexAlignCenter>
+                      <StyledBookTypeDiv booktype={_record.bookType}>{_record.bookType === "my" ? null : "$"}</StyledBookTypeDiv>
+                    </StyledFlexAlignCenter>
+                    <DoubleLinesEllipsisContainer>{v}</DoubleLinesEllipsisContainer>
+                  </StyledFlexAlignCenter>
+                );
+              },
             },
             {
               title: "멘토",

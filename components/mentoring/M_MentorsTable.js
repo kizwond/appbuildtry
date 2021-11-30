@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import useGetMentorBooks from "../../components/mentoring/useHooks/useGetMentorBooks.js";
 import { MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER, MUTATION_TERMINATE_MENTORING } from "../../graphql/mutation/mentoring.js";
+import { StyledBookTypeDiv } from "../common/styledComponent/buttons.js";
+import DoubleLinesEllipsisContainer from "../common/styledComponent/DoubleLinesEllipsisContainer.js";
+import { StyledFlexAlignCenter } from "../common/styledComponent/page.js";
 
 const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isMentorEditMode }) => {
   const router = useRouter();
@@ -112,11 +115,25 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
               title: "그룹",
               dataIndex: "mentorGroupName",
               width: "15%",
+              render: function title(v) {
+                console.log(v);
+                return <DoubleLinesEllipsisContainer>{v}</DoubleLinesEllipsisContainer>;
+              },
             },
             {
               title: "책",
               dataIndex: "mybookTitle",
               width: "25%",
+              render: function category(v, _record) {
+                return (
+                  <StyledFlexAlignCenter>
+                    <StyledFlexAlignCenter>
+                      <StyledBookTypeDiv booktype={_record.bookType}>{_record.bookType === "my" ? null : "$"}</StyledBookTypeDiv>
+                    </StyledFlexAlignCenter>
+                    <DoubleLinesEllipsisContainer>{v}</DoubleLinesEllipsisContainer>
+                  </StyledFlexAlignCenter>
+                );
+              },
             },
             {
               title: "멘토",

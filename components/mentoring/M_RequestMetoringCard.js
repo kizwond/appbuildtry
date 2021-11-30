@@ -23,13 +23,13 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
   useEffect(() => {
     setMentorIdInputValue("");
     setRequestMessageInput("");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (cardVisible) {
       clearTimeout(timer);
       // eslint-disable-next-line react-hooks/exhaustive-deps
       timer = setTimeout(() => {
+        getFieldInstance("lookupName").focus();
         document.getElementById(`requestMentoring:${mybook_id}`).scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
+      }, 50);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardVisible]);
@@ -94,7 +94,8 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
 
   return (
     <Card
-      style={{ margin: "8px 0 8px", minWidth: 320 }}
+      style={{ margin: "0 0 8px", minWidth: 320 }}
+      bordered={false}
       actions={[
         <div key="decline" onClick={resetExpandedRowKeys}>
           취소

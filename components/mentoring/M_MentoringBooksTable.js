@@ -2,14 +2,14 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import styled from "styled-components";
-
 import { Table, Card, Popover, Button } from "antd";
-import { DollarCircleFilled } from "@ant-design/icons";
 
-import { StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../common/styledComponent/page";
+import DoubleLinesEllipsisContainer from "../common/styledComponent/DoubleLinesEllipsisContainer";
+
 import M_RequestMentoringCard from "../../components/mentoring/M_RequestMetoringCard";
 
-const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
+const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [cardHeight, setCardHeight] = useState(0);
   const cardRef = useRef();
@@ -22,21 +22,11 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
     if (typeof window !== "undefined") {
       const tableheight = cardRef.current.clientHeight;
       if (expandedRowKeys.length > 0) {
-        const deviceHeight = window.innerHeight || document.body.clientHeight;
-        setCardHeight(`${tableheight + deviceHeight - 320}px`);
+        setCardHeight(`${tableheight + deviceDimensions.height - 385}px`);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedRowKeys]);
-
-  const setFirstCardHeight = () => {
-    if (cardRef.current) {
-      setCardHeight(`${cardRef.current.offsetHeight + 40}px`);
-    }
-  };
-
-  useLayoutEffect(() => {
-    setFirstCardHeight();
-  }, [bookData]);
 
   if (error) <div>에러</div>;
   if (loading) <div>에러</div>;
@@ -80,7 +70,7 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
       align: "center",
       width: 60,
       dataIndex: "categoryName",
-      render: (_value, _record) => (_record.relationship === "parent" ? <StyledTwoLinesEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledTwoLinesEllipsis> : null),
+      render: (_value, _record) => (_record.relationship === "parent" ? <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>{_value}</DoubleLinesEllipsisContainer> : null),
     },
     {
       title: "책 제목",
@@ -90,10 +80,12 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
       align: "center",
       width: 140,
       render: (value, _record, index) => (
-        <StyledTwoLinesEllipsis>
-          <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
-          {value}
-        </StyledTwoLinesEllipsis>
+        <StyledFlexAlignCenter>
+          <StyledFlexAlignCenter>
+            <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
+          </StyledFlexAlignCenter>
+          <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
+        </StyledFlexAlignCenter>
       ),
     },
     {
@@ -163,7 +155,7 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error }) => {
   ];
 
   return (
-    <StyledCard bordered={false} size="small" cardheight={cardHeight}>
+    <StyledCard bordered={false} size="small" cardheight={cardHeight} bodyStyle={{ padding: "0", paddingTop: "8px" }}>
       {
         <div ref={cardRef}>
           <Table
@@ -200,8 +192,8 @@ const StyledCard = styled(Card)`
   } */
 
   min-width: 355px;
-  height: ${(props) => props.cardheight};
-  padding: 3px;
+  height: ${(props) => props.cardheight || "auto"};
+  padding: 0 3px;
 
   & div,
   & button,

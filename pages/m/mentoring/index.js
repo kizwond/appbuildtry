@@ -5,6 +5,8 @@ import _, { divide } from "lodash";
 
 import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
 import { MUTATION_CANCEL_MENTORING_REQUEST } from "../../../graphql/mutation/mentoring";
+
+import useWindowDimensions from "../../../hooks/useWindowDimensions";
 import useGetMentoringAndMenteeBooks from "../../../components/mentoring/useHooks/useGetMentoringAndMenteeBooks";
 
 import styled from "styled-components";
@@ -23,6 +25,8 @@ import { StyledFlexSpaceBetween } from "../../../components/common/styledCompone
 
 const MentoringHome = () => {
   const router = useRouter();
+
+  const deviceDimensions = useWindowDimensions();
 
   const [isMenteeEditMode, setIsMenteeEditMode] = useState(false);
   const [isMentorEditMode, setIsMentorEditMode] = useState(false);
@@ -224,9 +228,10 @@ const MentoringHome = () => {
             visible={drawerRequestMentoringVisible}
             onClose={() => setDrawerRequestMentoringVisible(false)}
             headerStyle={{ padding: "12px 12px 8px 12px" }}
-            bodyStyle={{ backgroundColor: "#e9e9e9" }}
+            bodyStyle={{ backgroundColor: "#e9e9e9", padding: "0" }}
+            setheight={deviceDimensions.height - 40}
           >
-            {drawerRequestMentoringVisible && <M_MentoringBooksTable bookData={data} loading={loading} error={error} />}
+            {drawerRequestMentoringVisible && <M_MentoringBooksTable bookData={data} loading={loading} error={error} deviceDimensions={deviceDimensions} />}
           </DrawerWrapper>
           <DrawerWrapper
             title="보낸 요청"
@@ -350,6 +355,9 @@ const MentoringWrapper = styled.div`
 const DrawerWrapper = styled(Drawer)`
   top: 40px;
 
+  & .ant-drawer-wrapper-body {
+    height: ${({ setheight }) => setheight || "auto"}px;
+  }
   & .ant-card-actions {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;

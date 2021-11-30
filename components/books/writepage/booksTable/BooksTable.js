@@ -428,10 +428,6 @@ const StyledCard = styled(Card)`
     font-size: 18px;
     color: #a3a3a3;
   }
-  & .PushCustomCircleButton:hover > .anticon-double-right > svg {
-    font-size: 18px;
-    color: #fff;
-  }
 
   & .anticon-double-left > svg {
     font-size: 18px;

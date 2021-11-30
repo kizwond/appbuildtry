@@ -245,7 +245,7 @@ p {
 
 .PushCustomCircleButton {
   width: 44px;
-  height: 30px;
+  height: 4.2rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -255,6 +255,15 @@ p {
 .PushCustomCircleButton:hover {
   background-color: #a9a9a9;
 }
+.PushCustomCircleButton > .anticon-double-right > svg {
+  font-size: 18px;
+  color: #a3a3a3;
+}
+.PushCustomCircleButton:hover > .anticon-double-right > svg {
+  font-size: 18px;
+  color: #fff;
+}
+
 /* page 커스텀 버튼 끝 */
 
 .editor_try {

@@ -1,5 +1,6 @@
+import { DeleteOutlined, DisconnectOutlined, ExportOutlined } from "@ant-design/icons";
 import { useMutation } from "@apollo/client";
-import { Button, Form, Select, Space, Table, Tag } from "antd";
+import { Button, Col, Form, Popconfirm, Row, Select, Space, Table, Tag } from "antd";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import useGetMentorBooks from "../../components/mentoring/useHooks/useGetMentorBooks.js";
@@ -93,7 +94,7 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
                 <Form.Item name="selector">
                   <Select style={{ width: "140px" }}>
                     {mentorGroup
-                      .filter((gr) => gr._id !== _record.menteeGroup_id)
+                      .filter((gr) => gr._id !== _record.mentorGroup_id)
                       .map(({ _id, name }) => (
                         <Select.Option key={_id} value={_id}>
                           {name}
@@ -102,7 +103,9 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
                   </Select>
                 </Form.Item>
                 <Form.Item>
-                  <Button htmlType="submit">옮기기</Button>
+                  <Button htmlType="submit" disabled={mentorGroup.filter((gr) => gr._id !== _record.mentorGroup_id).length === 0}>
+                    옮기기
+                  </Button>
                 </Form.Item>
                 <Form.Item>
                   <Button htmlType="reset">취소</Button>
@@ -116,7 +119,6 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
               dataIndex: "mentorGroupName",
               width: "15%",
               render: function title(v) {
-                console.log(v);
                 return <DoubleLinesEllipsisContainer>{v}</DoubleLinesEllipsisContainer>;
               },
             },
@@ -148,22 +150,31 @@ const M_MentorsTable = ({ mentoringData, previousMentoringData, mentorGroup, isM
               // eslint-disable-next-line react/display-name
               render: (v, record) =>
                 isMentorEditMode ? (
-                  <Space>
-                    <Button
+                  <Row>
+                    <Col
+                      span={12}
                       onClick={() => {
-                        setExpandedRowKeys([record._id]);
+                        if (!expandedRowKeys.includes(record._Id) && mentorGroup.filter((gr) => gr._id !== record.mentorGroup_id).length > 0) {
+                          setExpandedRowKeys([record._id]);
+                        }
                       }}
                     >
-                      옮기기
-                    </Button>
-                    <Button
-                      onClick={() => {
+                      <Button disabled={mentorGroup.filter((gr) => gr._id !== record.mentorGroup_id).length === 0} icon={<ExportOutlined />} shape="circle" />
+                    </Col>
+                    <Popconfirm
+                      title={record.menteeUsername + "님과의 멘토링을 정말 종료하시겠습니까?"}
+                      okText="멘토링 종료하기"
+                      cancelText="취소"
+                      placement="topRight"
+                      onConfirm={() => {
                         terminateMento({ menteeUser_id: record.menteeUser_id, mentorUser_id: record.mentorUser_id, mybook_id: record.mybook_id });
                       }}
                     >
-                      취소
-                    </Button>
-                  </Space>
+                      <Col span={12} onClick={() => {}}>
+                        <Button icon={<DisconnectOutlined />} shape="circle" />
+                      </Col>
+                    </Popconfirm>
+                  </Row>
                 ) : (
                   <>
                     {v.map((item, index) => (

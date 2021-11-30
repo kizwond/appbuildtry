@@ -106,7 +106,7 @@ const MentoringHome = () => {
                   </Badge>
                   <Space>
                     <Button size="small" onClick={() => setIsMenteeEditMode((prev) => !prev)}>
-                      구성원 편집
+                      {isMenteeEditMode ? "멘티 관리 중" : "멘티 관리"}
                     </Button>
                     <Button
                       icon={<GroupOutlined />}
@@ -171,7 +171,7 @@ const MentoringHome = () => {
                     </button>
                   </Space>
                   <Button size="small" onClick={() => setIsMentorEditMode((prev) => !prev)}>
-                    구성원 편집
+                    {isMentorEditMode ? "멘토 관리 중" : "멘토 관리"}
                   </Button>
                   <Button
                     icon={<GroupOutlined />}

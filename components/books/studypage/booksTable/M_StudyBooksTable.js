@@ -61,7 +61,6 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       render: (_value, _record) =>
         _record.relationship === "parent" ? (
           <StyledFlexAlignCenter
-            // style={{ display: "flex", alignItems: "center", height: "30px" }}
             onClick={() => {
               if (expandedRowKeys.includes(_record.key)) {
                 setExpandedRowKeys(expandedRowKeys.filter((key) => key !== _record.key));

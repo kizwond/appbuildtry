@@ -11,6 +11,7 @@ import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [mounted, setMounted] = useState(false);
@@ -62,15 +63,15 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
 
   const columns = [
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카테고리</div>,
+      title: "카테고리",
       key: "categoryName",
       className: "Row-First-Left",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
+      render: (_value, _record) => <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>,
     },
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>책 제목</div>,
+      title: "책 제목",
       key: "title",
       dataIndex: "title",
       className: "TitleCol",

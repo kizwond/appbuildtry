@@ -14,6 +14,7 @@ import MoveToBookSetting from "../../common/MoveToBookSetting";
 
 import makeDataSource from "../../common/logic";
 import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -85,7 +86,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
             }}
           >
             {_record.classType === "empty-category" ? null : expandedRowKeys.includes(_record.key) ? <DownOutlined /> : <RightOutlined />}
-            <StyledTwoLinesEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledTwoLinesEllipsis>
+            <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>{_value}</DoubleLinesEllipsisContainer>
           </StyledFlexAlignCenter>
         ) : null,
     },
@@ -113,19 +114,19 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
                 }}
               >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
-              <StyledTwoLinesEllipsis>{value}</StyledTwoLinesEllipsis>
+              <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
             ) : (
-              <div
+              <StyledFlexAlignCenter
                 onClick={() => {
                   movepage(_record._id);
                 }}
                 style={{ cursor: "pointer" }}
               >
-                <StyledTwoLinesEllipsis>
+                <StyledFlexAlignCenter>
                   <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
-                  {value}
-                </StyledTwoLinesEllipsis>
-              </div>
+                </StyledFlexAlignCenter>
+                <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
+              </StyledFlexAlignCenter>
             ),
           props: {},
         };

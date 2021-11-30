@@ -11,9 +11,10 @@ import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
-import { StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 import CategorySettingButton from "../categorySetting/CategorySettingButton";
 import CreateBookButton from "../createBook/CreateBookButton";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }, ref) => {
   const [mounted, setMounted] = useState(false);
@@ -76,7 +77,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
       align: "center",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
+      render: (_value, _record) => <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>,
     },
     {
       title: "책 제목",
@@ -86,17 +87,17 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
       align: "center",
       width: 85,
       render: (value, _record, index) => (
-        <div
+        <StyledFlexAlignCenter
           onClick={() => {
             movepage(_record._id);
           }}
           style={{ cursor: "pointer" }}
         >
-          <StyledTwoLinesEllipsis>
+          <StyledFlexAlignCenter>
             <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
-            {value}
-          </StyledTwoLinesEllipsis>
-        </div>
+          </StyledFlexAlignCenter>
+          <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
+        </StyledFlexAlignCenter>
       ),
     },
     {

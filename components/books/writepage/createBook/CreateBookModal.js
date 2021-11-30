@@ -102,6 +102,7 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
         mask={false} // 모달 바깥 전체화면 덮기 기능
         okText="새 책 만들기 완료"
         confirmLoading={loading}
+        zIndex={9998}
       >
         <Form
           form={form}

@@ -192,6 +192,7 @@ const M_MenteeGroupTable = ({ mentorGroup, drawerMentorGroupVisible, changevisib
             resetFields();
           }}
           onClose={() => console.log("창닫기")}
+          zIndex={9998}
           onOk={() => {
             form
               .validateFields()

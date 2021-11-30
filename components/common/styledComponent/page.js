@@ -40,4 +40,5 @@ export const StyledTwoLinesEllipsis = styled.div`
   word-wrap: break-word;
   white-space: normal;
   word-break: keep-all;
+  text-align: left;
 `;

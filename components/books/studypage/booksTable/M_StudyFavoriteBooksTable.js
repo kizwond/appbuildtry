@@ -12,7 +12,8 @@ import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
-import { StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }, ref) => {
   const [mounted, setMounted] = useState(false);
@@ -68,7 +69,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       align: "center",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{_value}</div>,
+      render: (_value, _record) => <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>,
     },
     {
       title: "책 제목",
@@ -85,24 +86,24 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
             onClick={() => {
               checkRef.current[_record.key].props.onChange();
             }}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", display: "flex" }}
           >
-            <Checkbox
-              ref={(ref) => (checkRef.current[_record.key] = ref)}
-              checked={isSelected}
-              onChange={() => {
-                if (isSelected) {
-                  changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
-                }
-                if (!isSelected) {
-                  changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
-                }
-              }}
-            />
-            <StyledTwoLinesEllipsis>
+            <StyledFlexAlignCenter>
+              <Checkbox
+                ref={(ref) => (checkRef.current[_record.key] = ref)}
+                checked={isSelected}
+                onChange={() => {
+                  if (isSelected) {
+                    changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                  }
+                  if (!isSelected) {
+                    changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                  }
+                }}
+              />
               <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
-              {value}
-            </StyledTwoLinesEllipsis>
+            </StyledFlexAlignCenter>
+            <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
           </div>
         );
       },

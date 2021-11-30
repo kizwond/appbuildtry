@@ -269,3 +269,18 @@ p {
 .editor_try {
   width: 100% !important;
 }
+
+.fr-second-toolbar:empty {
+  min-height: 0px !important; 
+}
+
+.ant-radio-group-small .ant-radio-button-wrapper{
+  padding:0px 15px !important;
+}
+
+.ant-radio-button-wrapper {
+  border:none !important;
+}
+.ant-radio-button-wrapper:not(:first-child)::before{
+  width:0;
+}

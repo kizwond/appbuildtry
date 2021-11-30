@@ -130,7 +130,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     sessionStorage.setItem("generalCardId", generalCardId);
 
     console.log("cardTypeInfo fired!!!! editor on process");
-    console.log(typeof(selections));
+    console.log(selections);
     // console.log("generalCardId", generalCardId);
     // console.log(cardId);
     if (generalCardId) {
@@ -154,7 +154,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     const num_face1 = cardtype_info.num_of_row.face1;
     const num_face2 = cardtype_info.num_of_row.face2;
     if (selections) {
-      if(selections > 0){
+      if (selections > 0) {
         var num_selection = selections;
       }
     }
@@ -175,7 +175,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
 
     if (selections) {
-      if(selections >0){
+      if (selections > 0) {
         const selection = [];
         const selectionNick = [];
         for (var i = 0; i < num_selection; i++) {
@@ -184,7 +184,6 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
           nicks.push(`보기${i + 1}`);
         }
       }
-      
     }
 
     const face2 = [];
@@ -210,14 +209,14 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
 
     if (selections > 0) {
-      console.log("here1")
+      console.log("here1");
       sessionStorage.setItem("nicks_with_selections", JSON.stringify(nicks));
     } else if (cardtypeEditor === "flip") {
-      console.log("here2")
+      console.log("here2");
       sessionStorage.setItem("nicks_without_selections", JSON.stringify(nicks));
       sessionStorage.removeItem("nicks_with_selections");
       sessionStorage.setItem("selections_adding", 0);
-    } 
+    }
 
     const editor = (
       <>
@@ -237,9 +236,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
           <>
             <div style={{ border: "1px solid lightgrey", borderBottom: "0px", borderTop: "0px", padding: "0 5px 5px 5px", display: "flex", justifyContent: "space-between" }}>
               <div></div>
-              <Button size="small" style={{ fontSize: "0.8rem" }} onClick={addSelections}>
-                셀렉션추가
-              </Button>
+              {selections == undefined && (
+                <Button size="small" style={{ fontSize: "0.8rem" }} onClick={addSelections}>
+                  셀렉션추가
+                </Button>
+              )}
+              {selections == 0 && (
+                <Button size="small" style={{ fontSize: "0.8rem" }} onClick={addSelections}>
+                  셀렉션추가
+                </Button>
+              )}
             </div>
           </>
         )}
@@ -256,6 +262,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             onFinish={onFinish}
             setEditorOn={setEditorOn}
             cardtype_info={cardtype_info}
+            addSelections={addSelections}
           />
         </div>
       </>
@@ -296,6 +303,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
           onFinish={onFinish}
           setEditorOnFromCard={setEditorOnFromCard}
           cardtype_info={cardtype_info}
+          addSelections={addSelections}
         />
       </>
     );
@@ -307,8 +315,6 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       console.log("inCard");
       setEditorOnFromCard(editorFromCard);
     }
-
-    
   };
 
   function addSelections() {
@@ -320,6 +326,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       var num_selection = 1;
     } else {
       var num_selection = Number(selections) + 1;
+      if (num_selection === 6) {
+        return;
+      }
       sessionStorage.setItem("selections", num_selection);
     }
 
@@ -335,16 +344,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     console.log("removeSelection clicked!!!");
     const selections = sessionStorage.getItem("selections");
     const num_selection = Number(selections) - 1;
-    console.log(num_selection)
+    console.log(num_selection);
     sessionStorage.setItem("selections", num_selection);
-    sessionStorage.setItem("removed", true)
+    sessionStorage.setItem("removed", true);
 
     const cardtype_info = JSON.parse(sessionStorage.getItem("cardtype_info"));
     const from = sessionStorage.getItem("from");
     const parentId = sessionStorage.getItem("parentId");
     const generalCardId = sessionStorage.getItem("generalCardId");
 
-    sessionStorage.setItem("lastSelectionRemoving", true)
+    sessionStorage.setItem("lastSelectionRemoving", true);
     cardTypeInfo(cardtype_info, from, parentId, generalCardId, num_selection);
   }
 
@@ -376,7 +385,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 
   function afteraddcardmutation(data) {
-    sessionStorage.setItem("selections",0);
+    sessionStorage.setItem("selections", 0);
     setCards(data.cardset_addcardAtSameIndex.cardsets[0].cards);
     sessionStorage.removeItem("parentId");
     sessionStorage.removeItem("nicks_with_selections");
@@ -486,7 +495,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   }
 
   function handleChange(value) {
-    sessionStorage.setItem("selections",0);
+    sessionStorage.setItem("selections", 0);
     sessionStorage.removeItem("nicks_with_selections");
     sessionStorage.removeItem("nicks_without_selections");
     console.log(`selected ${value[0]}`);
@@ -501,7 +510,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   }
 
   function onClickCardAdd(from, generalCardId) {
-    sessionStorage.setItem("selections",0);
+    sessionStorage.setItem("selections", 0);
     setEditorOn("");
     if (selectedCardType === undefined) {
       setSelectedCardType(cardTypes[0].cardtype_info);
@@ -516,7 +525,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   }
 
   function onClickCardAddChild(from, parentId, typeName) {
-    sessionStorage.setItem("selections",0);
+    sessionStorage.setItem("selections", 0);
     console.log(parentId);
     sessionStorage.setItem("parentId", parentId);
     setEditorOn("");

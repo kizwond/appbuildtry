@@ -125,7 +125,7 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       className: "normal",
       align: "center",
       ellipsis: true,
-      width: 40,
+      width: 33,
       render: (_value, _record) => (
         <div style={{ width: "100%" }}>
           <Popover
@@ -347,7 +347,7 @@ const StyledCard = styled(Card)`
     border-bottom: none;
   }
 
-  & .Row-Last-One {
+  & .ant-table-tbody > tr > td.Row-Last-One {
     position: relative;
     z-index: 5000;
     background-color: white !important;

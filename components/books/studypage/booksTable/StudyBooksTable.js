@@ -89,7 +89,8 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                     }}
                   />
                   <div>
-                    <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
+                    <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
+
                     {value}
                   </div>
                 </Space>
@@ -223,7 +224,7 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                   className="PullCustomCircleButton"
                   style={{
                     width: "44px",
-                    height: "30px",
+                    height: "4.2rem",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -241,7 +242,7 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                 mask={false}
                 visible={activedTable === "bookTable" && _record._id === isFoldedMenu}
                 getContainer={false}
-                style={{ position: "absolute", textAlign: "initial", height: "30px", top: "2px" }}
+                style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
                 contentWrapperStyle={{ boxShadow: "unset" }}
                 drawerStyle={{ display: "block" }}
                 bodyStyle={{
@@ -480,8 +481,8 @@ const StyledCard = styled(Card)`
 
   & .Row-Last-One {
     position: relative;
-    z-index: 3;
-    background-color: white;
+    z-index: 5000;
+    background-color: white !important;
   }
 
   & .foldedCategory > .Row-First-Left > div {
@@ -715,4 +716,18 @@ const StyledCard = styled(Card)`
   & .ant-table-tbody > tr > td {
     border-bottom: none;
   }
+`;
+
+const StyledBookTypeDiv = styled.div`
+  width: 10px;
+  height: 30px;
+  color: white;
+  display: inline-block;
+  border-radius: 3px;
+  margin: 0 4px;
+  line-height: 30px;
+  background-color: ${(props) => {
+    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
+    return bgColor;
+  }};
 `;

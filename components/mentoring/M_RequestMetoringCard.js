@@ -19,12 +19,17 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
 
   const [requestMessageInput, setRequestMessageInput] = useState("");
 
+  let timer;
   useEffect(() => {
     setMentorIdInputValue("");
     setRequestMessageInput("");
     // eslint-disable-next-line react-hooks/exhaustive-deps
     if (cardVisible) {
-      document.getElementById(mybook_id).scrollIntoView({ behavior: "smooth", block: "start" });
+      clearTimeout(timer);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      timer = setTimeout(() => {
+        document.getElementById(`requestMentoring:${mybook_id}`).scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardVisible]);

@@ -7,7 +7,7 @@ import { MUTATION_UPDATE_MENTORING_REQUEST } from "../../graphql/mutation/mentor
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 
-const M_SentMentoringRequestCard = ({ mentor, declineMentoring }) => {
+const M_SentMentoringRequestCard = ({ mentor, declineMentoring, forId }) => {
   const router = useRouter();
 
   const { comment, menteeUser_id, mentorName, mentorUser_id, mentorUsername, mybookTitle, mybook_id, reqDate } = mentor;
@@ -51,6 +51,7 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring }) => {
 
   return (
     <StyledCard
+      id={forId}
       size="small"
       actions={[
         <div
@@ -58,9 +59,12 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring }) => {
           onClick={() => {
             if (textAreaDisabled) {
               setTextAreaDisabled(false);
-              textAreaRef.current.focus({
-                cursor: "end",
-              });
+              setTimeout(() => {
+                document.getElementById(forId).scrollIntoView();
+                textAreaRef.current.focus({
+                  cursor: "end",
+                });
+              }, 100);
             }
             if (!textAreaDisabled) {
               if (comment !== textAreaInputValue) {

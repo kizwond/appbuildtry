@@ -243,7 +243,7 @@ const MentoringHome = () => {
           >
             {_(mentoringData.mentoring_getMentoring.mentorings[0].sentReqs)
               .filter(({ reqStatus }) => reqStatus === "waiting")
-              .map((mentor) => <M_SentMentoringRequestCard mentor={mentor} key={`${mentor.mentorUser_id}${mentor.mybook_id}`} declineMentoring={declineMentoring} />)
+              .map((mentor, i) => <M_SentMentoringRequestCard mentor={mentor} key={`${mentor.mentorUser_id}${mentor.mybook_id}`} forId={`sentReq:${i}`} declineMentoring={declineMentoring} />)
               .value()}
           </DrawerWrapper>
 
@@ -360,17 +360,27 @@ const MentoringWrapper = styled.div`
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;
+
   & .ant-card-actions {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     & > li {
       margin: 0;
-      height: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 3.5rem;
+      & > span {
+        width: 100%;
+        height: 100%;
+        & > div {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
     }
   }
+
   & div,
   & button,
   & span,

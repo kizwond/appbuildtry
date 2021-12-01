@@ -146,7 +146,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       className: "normal",
       align: "center",
       ellipsis: true,
-      width: 40,
+      width: 33,
       render: (_value, _record) => {
         const obj = {
           children: (
@@ -490,7 +490,7 @@ const StyledCard = styled(Card)`
     border-bottom: none;
   }
 
-  & .Row-Last-One {
+  & .ant-table-tbody > tr > td.Row-Last-One {
     position: relative;
     z-index: 5000;
     background-color: white !important;

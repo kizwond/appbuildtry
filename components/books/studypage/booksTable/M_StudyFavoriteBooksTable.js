@@ -12,7 +12,8 @@ import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
-import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween } from "../../../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }, ref) => {
@@ -115,7 +116,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       className: "normal",
       align: "center",
       ellipsis: true,
-      width: 40,
+      width: 33,
       render: (_value, _record) => (
         <div style={{ width: "100%" }}>
           <Popover
@@ -303,6 +304,11 @@ const StyledCard = styled(Card)`
     border-bottom: none;
   }
 
+  /* 체크박스 오른쪽 여백 */
+  & .ant-checkbox-wrapper {
+    margin-right: 3px;
+  }
+
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
   & .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;
@@ -365,7 +371,7 @@ const StyledCard = styled(Card)`
     border-bottom: none;
   }
 
-  & .Row-Last-One {
+  & .ant-table-tbody > tr > td.Row-Last-One {
     position: relative;
     z-index: 5000;
     background-color: white !important;
@@ -467,18 +473,4 @@ const StyledCard = styled(Card)`
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
   }
-`;
-
-const StyledBookTypeDiv = styled.div`
-  width: 10px;
-  height: 30px;
-  color: white;
-  display: inline-block;
-  border-radius: 3px;
-  margin: 0 4px;
-  line-height: 30px;
-  background-color: ${(props) => {
-    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
-    return bgColor;
-  }};
 `;

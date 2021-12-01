@@ -115,7 +115,9 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
       size="small"
     >
       <Row gutter={[8]}>
-        <Col span={6}>아이디:</Col>
+        <Col span={6} style={{ textAlign: "right" }}>
+          아이디:
+        </Col>
         <Col span={18}>
           <Form
             form={form}
@@ -159,13 +161,19 @@ const M_RequestMetoringCard = ({ resetExpandedRowKeys, mybook_id, mybookTitle, c
         </Col>
       </Row>
       <Row gutter={[8, 12]}>
-        <Col span={6}>멘토 이름:</Col>
+        <Col span={6} style={{ textAlign: "right" }}>
+          멘토 이름:
+        </Col>
         <Col span={18}>{data && data.user_getUserMinInfo.name}</Col>
 
-        <Col span={6}>소속(정보):</Col>
+        <Col span={6} style={{ textAlign: "right" }}>
+          소속(정보):
+        </Col>
         <Col span={18}>{data && data.user_getUserMinInfo.organiztion}</Col>
 
-        <Col span={6}>요청 메세지:</Col>
+        <Col span={6} style={{ textAlign: "right" }}>
+          요청 메세지:
+        </Col>
         <Col span={18}>
           <TextArea
             ref={textAreaRef}

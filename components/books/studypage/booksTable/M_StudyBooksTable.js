@@ -5,7 +5,9 @@ import styled from "styled-components";
 import { Table, Card, Space, Drawer, Checkbox, Progress, Popover } from "antd";
 import { DoubleLeftOutlined, DoubleRightOutlined, DownOutlined, RightOutlined } from "@ant-design/icons";
 
-import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import { StyledFlexAlignCenter, StyledFlexSpaceBetween } from "../../../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
+
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
@@ -143,7 +145,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       className: "normal",
       align: "center",
       ellipsis: true,
-      width: 40,
+      width: 33,
       render: (_value, _record, _index) => {
         const obj = {
           children: (
@@ -390,6 +392,10 @@ const StyledCard = styled(Card)`
     margin-right: 2px;
   }
 
+  /* 체크박스 오른쪽 여백 */
+  & .ant-checkbox-wrapper {
+    margin-right: 3px;
+  }
   /* 개별 책 펼치기  */
   & .ant-drawer-content {
     overflow: hidden;
@@ -433,10 +439,6 @@ const StyledCard = styled(Card)`
     color: #dee2e6;
   }
 
-  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
-    padding: 0;
-  }
-
   & .ant-table table {
     border-collapse: collapse;
     background-color: white;
@@ -447,7 +449,7 @@ const StyledCard = styled(Card)`
     border-bottom: none;
   }
 
-  & .Row-Last-One {
+  & .ant-table-tbody > tr > td.Row-Last-One {
     position: relative;
     z-index: 5000;
     background-color: white !important;
@@ -684,18 +686,4 @@ const StyledCard = styled(Card)`
   & .ant-table-tbody > tr > td {
     border-bottom: none;
   }
-`;
-
-const StyledBookTypeDiv = styled.div`
-  width: 10px;
-  height: 30px;
-  color: white;
-  display: inline-block;
-  border-radius: 3px;
-  margin: 0 4px;
-  line-height: 30px;
-  background-color: ${(props) => {
-    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
-    return bgColor;
-  }};
 `;

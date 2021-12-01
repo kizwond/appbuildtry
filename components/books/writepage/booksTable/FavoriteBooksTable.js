@@ -395,7 +395,7 @@ const StyledCard = styled(Card)`
     border-bottom: none;
   }
 
-  & .Row-Last-One {
+  & .ant-table-tbody > tr > td.Row-Last-One {
     position: relative;
     z-index: 5000;
     background-color: white !important;

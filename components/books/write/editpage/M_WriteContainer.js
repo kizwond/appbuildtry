@@ -3,8 +3,8 @@ import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Button, Select, Space } from "antd";
-import { AddCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
-import { HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
+import { UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
+import { DeleteOutlined, EditOutlined, HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -400,7 +400,6 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       },
     });
   }
-
   async function addcard(
     mybook_id,
     cardtype,
@@ -461,6 +460,63 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       console.log(error);
     }
   }
+
+  const [cardset_deleteCard] = useMutation(DeleteCard, { onCompleted: afterdeletecardmutation });
+
+  function afterdeletecardmutation(data) {
+    console.log("after delete card", data);
+    const cardIdList = data.cardset_deleteCard.cardsets[0].cards.map((item) => {
+      return item.content.mycontent_id;
+    });
+    console.log(cardIdList);
+    mycontent_getMycontentByMycontentIDs({
+      variables: {
+        mycontent_ids: cardIdList,
+      },
+    });
+  }
+  async function deletecard(cardset_id, card_id) {
+    try {
+      await cardset_deleteCard({
+        variables: {
+          forDeleteCard: {
+            cardset_id: cardset_id,
+            card_id: card_id,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const [mycontent_updateMycontent] = useMutation(UpdateMyContents, { onCompleted: afterupdatemycontentsmutation });
+
+  function afterupdatemycontentsmutation(data) {
+    console.log("after update contents", data);
+  }
+  async function updatecontents(mycontent_id, face1, selection, face2, annotation) {
+    try {
+      await mycontent_updateMycontent({
+        variables: {
+          forUpdateMycontent: {
+            mycontent_id: mycontent_id,
+            face1: face1,
+            selection: selection,
+            face2: face2,
+            annotation: annotation,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const onFinishUpdateContents = (values) => {
+    console.log(values);
+    updatecontents(mycontent_id, face1, selection, face2, annotation);
+  };
 
   if (cardTypes) {
     var cardTypeListNormal = cardTypes.map((cardType) => {
@@ -891,11 +947,25 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                     </div>
                     {content._id === cardId && (
                       <>
-                        <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                        <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                           <div>
                             <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
                               다음카드
                             </Button>
+                          </div>
+                          <div>
+                            <Space style={{ display: "flex", alignItems: "center" }}>
+                              <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                내용편집
+                              </Button>
+                              <Button
+                                icon={<DeleteOutlined />}
+                                onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                size="small"
+                                type="secondary"
+                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                              ></Button>
+                            </Space>
                           </div>
                         </div>
                       </>
@@ -975,11 +1045,25 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                     </div>
                     {content._id === cardId && (
                       <>
-                        <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                        <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
                           <div>
                             <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
                               다음카드
                             </Button>
+                          </div>
+                          <div style={{ display: "flex", alignItems: "center" }}>
+                            <Space>
+                              <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                내용편집
+                              </Button>
+                              <Button
+                                icon={<DeleteOutlined />}
+                                onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                size="small"
+                                type="secondary"
+                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                              ></Button>
+                            </Space>
                           </div>
                         </div>
                       </>
@@ -1060,31 +1144,47 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                       </div>
                       {content._id === cardId && (
                         <>
-                          <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
-                            <Space>
-                              <div>
-                                <Button
-                                  icon={<PlusOutlined />}
-                                  size="small"
-                                  type="primary"
-                                  onClick={() => onClickCardAdd("general", content._id)}
-                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                >
-                                  다음카드
+                          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                            <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                              <Space>
+                                <div>
+                                  <Button
+                                    icon={<PlusOutlined />}
+                                    size="small"
+                                    type="primary"
+                                    onClick={() => onClickCardAdd("general", content._id)}
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                  >
+                                    다음카드
+                                  </Button>
+                                </div>
+                                <div>
+                                  <Button
+                                    icon={<ApartmentOutlined />}
+                                    size="small"
+                                    type="primary"
+                                    onClick={() => onClickCardAddChild("general", content._id)}
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                  >
+                                    자식카드
+                                  </Button>
+                                </div>
+                              </Space>
+                            </div>
+                            <div>
+                              <Space style={{ display: "flex", alignItems: "center" }}>
+                                <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                  내용편집
                                 </Button>
-                              </div>
-                              <div>
                                 <Button
-                                  icon={<ApartmentOutlined />}
+                                  icon={<DeleteOutlined />}
+                                  onClick={() => deletecard(content.card_info.cardset_id, content._id)}
                                   size="small"
-                                  type="primary"
-                                  onClick={() => onClickCardAddChild("general", content._id)}
+                                  type="secondary"
                                   style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                >
-                                  자식카드
-                                </Button>
-                              </div>
-                            </Space>
+                                ></Button>
+                              </Space>
+                            </div>
                           </div>
                         </>
                       )}
@@ -1184,37 +1284,45 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                             {content_value.selection &&
                               content_value.selection.map((item, index) => (
                                 <>
-                                 <div
+                                  <div
                                     style={{
-                                      backgroundColor: row_style.face1[row_style.face1.length-1].background.color,
-                                      marginTop: row_style.face1[row_style.face1.length-1].outer_margin.top,
-                                      marginBottom: row_style.face1[row_style.face1.length-1].outer_margin.bottom,
-                                      marginLeft: row_style.face1[row_style.face1.length-1].outer_margin.left,
-                                      marginRight: row_style.face1[row_style.face1.length-1].outer_margin.right,
-                                      paddingTop: row_style.face1[row_style.face1.length-1].inner_padding.top,
-                                      paddingBottom: row_style.face1[row_style.face1.length-1].inner_padding.bottom,
-                                      paddingLeft: row_style.face1[row_style.face1.length-1].inner_padding.left,
-                                      paddingRight: row_style.face1[row_style.face1.length-1].inner_padding.right,
-                                      borderTop: `${row_style.face1[row_style.face1.length-1].border.top.thickness}px ${row_style.face1[row_style.face1.length-1].border.top.bordertype} ${row_style.face1[row_style.face1.length-1].border.top.color}`,
-                                      borderBottom: `${row_style.face1[row_style.face1.length-1].border.bottom.thickness}px ${row_style.face1[row_style.face1.length-1].border.bottom.bordertype} ${row_style.face1[row_style.face1.length-1].border.bottom.color}`,
-                                      borderLeft: `${row_style.face1[row_style.face1.length-1].border.left.thickness}px ${row_style.face1[row_style.face1.length-1].border.left.bordertype} ${row_style.face1[row_style.face1.length-1].border.left.color}`,
-                                      borderRight: `${row_style.face1[row_style.face1.length-1].border.right.thickness}px ${row_style.face1[row_style.face1.length-1].border.right.bordertype} ${row_style.face1[row_style.face1.length-1].border.right.color}`,
-                                      textAlign: row_font.face1[row_font.face1.length-1].align,
-                                      fontWeight: `${row_font.face1[row_font.face1.length-1].bold === "on" ? 700 : 400}`,
-                                      color: row_font.face1[row_font.face1.length-1].color,
+                                      backgroundColor: row_style.face1[row_style.face1.length - 1].background.color,
+                                      marginTop: row_style.face1[row_style.face1.length - 1].outer_margin.top,
+                                      marginBottom: row_style.face1[row_style.face1.length - 1].outer_margin.bottom,
+                                      marginLeft: row_style.face1[row_style.face1.length - 1].outer_margin.left,
+                                      marginRight: row_style.face1[row_style.face1.length - 1].outer_margin.right,
+                                      paddingTop: row_style.face1[row_style.face1.length - 1].inner_padding.top,
+                                      paddingBottom: row_style.face1[row_style.face1.length - 1].inner_padding.bottom,
+                                      paddingLeft: row_style.face1[row_style.face1.length - 1].inner_padding.left,
+                                      paddingRight: row_style.face1[row_style.face1.length - 1].inner_padding.right,
+                                      borderTop: `${row_style.face1[row_style.face1.length - 1].border.top.thickness}px ${
+                                        row_style.face1[row_style.face1.length - 1].border.top.bordertype
+                                      } ${row_style.face1[row_style.face1.length - 1].border.top.color}`,
+                                      borderBottom: `${row_style.face1[row_style.face1.length - 1].border.bottom.thickness}px ${
+                                        row_style.face1[row_style.face1.length - 1].border.bottom.bordertype
+                                      } ${row_style.face1[row_style.face1.length - 1].border.bottom.color}`,
+                                      borderLeft: `${row_style.face1[row_style.face1.length - 1].border.left.thickness}px ${
+                                        row_style.face1[row_style.face1.length - 1].border.left.bordertype
+                                      } ${row_style.face1[row_style.face1.length - 1].border.left.color}`,
+                                      borderRight: `${row_style.face1[row_style.face1.length - 1].border.right.thickness}px ${
+                                        row_style.face1[row_style.face1.length - 1].border.right.bordertype
+                                      } ${row_style.face1[row_style.face1.length - 1].border.right.color}`,
+                                      textAlign: row_font.face1[row_font.face1.length - 1].align,
+                                      fontWeight: `${row_font.face1[row_font.face1.length - 1].bold === "on" ? 700 : 400}`,
+                                      color: row_font.face1[row_font.face1.length - 1].color,
                                       fontFamily: `${
-                                        row_font.face1[row_font.face1.length-1].font === "고딕"
+                                        row_font.face1[row_font.face1.length - 1].font === "고딕"
                                           ? `NanumGothic`
-                                          : row_font.face1[row_font.face1.length-1].font === "명조"
+                                          : row_font.face1[row_font.face1.length - 1].font === "명조"
                                           ? `NanumMyeongjo`
-                                          : row_font.face1[row_font.face1.length-1].font === "바탕"
+                                          : row_font.face1[row_font.face1.length - 1].font === "바탕"
                                           ? `Gowun Batang, sans-serif`
-                                          : row_font.face1[row_font.face1.length-1].font === "돋움"
+                                          : row_font.face1[row_font.face1.length - 1].font === "돋움"
                                           ? `Gowun Dodum, sans-serif`
                                           : ""
                                       } `,
-                                      fontSize: row_font.face1[row_font.face1.length-1].size,
-                                      textDecoration: `${row_font.face1[row_font.face1.length-1].underline === "on" ? "underline" : "none"}`,
+                                      fontSize: row_font.face1[row_font.face1.length - 1].size,
+                                      textDecoration: `${row_font.face1[row_font.face1.length - 1].underline === "on" ? "underline" : "none"}`,
                                     }}
                                   >
                                     <FroalaEditorView model={item} />
@@ -1285,18 +1393,32 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                       </div>
                       {content._id === cardId && content.card_info.hasParent === "no" && (
                         <>
-                          <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                          <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <div>
                               <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
                                 다음카드
                               </Button>
+                            </div>
+                            <div>
+                              <Space style={{ display: "flex", alignItems: "center" }}>
+                                <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                  내용편집
+                                </Button>
+                                <Button
+                                  icon={<DeleteOutlined />}
+                                  onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                  size="small"
+                                  type="secondary"
+                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                ></Button>
+                              </Space>
                             </div>
                           </div>
                         </>
                       )}
                       {content._id === cardId && content.card_info.hasParent === "yes" && (
                         <>
-                          <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                          <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                             <div>
                               <Button
                                 icon={<ApartmentOutlined />}
@@ -1307,6 +1429,20 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                               >
                                 자식카드
                               </Button>
+                            </div>
+                            <div>
+                              <Space style={{ display: "flex", alignItems: "center" }}>
+                                <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                  내용편집
+                                </Button>
+                                <Button
+                                  icon={<DeleteOutlined />}
+                                  onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                  size="small"
+                                  type="secondary"
+                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                ></Button>
+                              </Space>
                             </div>
                           </div>
                         </>
@@ -1511,18 +1647,32 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                         </div>
                         {content._id === cardId && content.card_info.hasParent === "no" && (
                           <>
-                            <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                            <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                               <div>
                                 <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
                                   다음카드
                                 </Button>
+                              </div>
+                              <div>
+                                <Space style={{ display: "flex", alignItems: "center" }}>
+                                  <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                    내용편집
+                                  </Button>
+                                  <Button
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                  ></Button>
+                                </Space>
                               </div>
                             </div>
                           </>
                         )}
                         {content._id === cardId && content.card_info.hasParent === "yes" && (
                           <>
-                            <div style={{ padding: "5px 0 0 5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                            <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                               <div>
                                 <Button
                                   icon={<ApartmentOutlined />}
@@ -1533,6 +1683,20 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                 >
                                   자식카드
                                 </Button>
+                              </div>
+                              <div>
+                                <Space style={{ display: "flex", alignItems: "center" }}>
+                                  <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                    내용편집
+                                  </Button>
+                                  <Button
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                  ></Button>
+                                </Space>
                               </div>
                             </div>
                           </>

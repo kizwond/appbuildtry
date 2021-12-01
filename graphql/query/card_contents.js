@@ -42,13 +42,72 @@ export const AddCard = gql`
     }
   }
 `;
+export const DeleteCard = gql`
+  mutation DeleteCard($forDeleteCard: forDeleteCard) {
+    cardset_deleteCard(forDeleteCard: $forDeleteCard) {
+      status
+      msg
+      cardsets {
+        _id
+        cardset_info {
+          user_id
+          mybook_id
+          indexset_id
+          index_id
+        }
+        cards {
+          _id
+          card_info {
+            mybook_id
+            indexset_id
+            index_id
+            cardset_id
+            cardtypeset_id
+            cardtype_id
+            cardtype
+            time_created
+            hasParent
+            parentCard_id
+          }
+          content {
+            userFlag
+            makerFlag {
+              value
+              comment
+            }
+            location
+            mycontent_id
+            buycontent_id
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const UpdateMyContents = gql`
+  mutation DeleteCard($forUpdateMycontent: forUpdateMycontent) {
+    mycontent_updateMycontent(forUpdateMycontent: $forUpdateMycontent) {
+      status
+      msg
+      mycontents {
+        _id
+        user_id
+        face1
+        selection
+        face2
+        annotation
+      }
+    }
+  }
+`;
 
 export const GET_CARD_CONTENT = gql`
   query GET_CARD_CONTENT($mycontent_ids: [ID]) {
     mycontent_getMycontentByMycontentIDs(mycontent_ids: $mycontent_ids) {
       status
       msg
-      mycontents{
+      mycontents {
         _id
         user_id
         face1
@@ -64,7 +123,7 @@ export const GET_BUY_CARD_CONTENT = gql`
     buycontent_getBuycontentByBuycontentIDs(buycontent_ids: $buycontent_ids) {
       status
       msg
-      buycontents{
+      buycontents {
         _id
         user_id
         face1

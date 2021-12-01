@@ -187,9 +187,7 @@ p {
   border-bottom: none;
   font-size: 1rem;
 }
-.ant-table-tbody > tr > td.TableLastColumn {
-  height: 4.2rem;
-}
+
 .ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableGroupingColumn,
 .ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn,
 .ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableMiddleColumn,
@@ -271,7 +269,7 @@ p {
   display: flex;
   align-items: center;
   padding-left: 4px;
-  height: 4.2rem;
+  height: 3.75rem;
   font-size: 1rem;
 }
 .ant-table.ant-table-small .ant-table-tbody > tr.MiddleHiddenBar > .TableFirstColumn > div,

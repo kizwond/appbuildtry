@@ -19,6 +19,12 @@ const EditorFromCard = dynamic(() => import("../../../components/books/write/edi
   ssr: false,
 });
 
+const UpdateEditor = dynamic(() => import("../../../components/books/write/editpage/UpdateEditor"), {
+  ssr: false,
+});
+
+
+
 const Book = () => {
   const { query } = useRouter();
   console.log(query);
@@ -67,6 +73,7 @@ const Book = () => {
               Editor={Editor}
               EditorFromCard={EditorFromCard}
               FroalaEditorView={FroalaEditorView}
+              UpdateEditor={UpdateEditor}
             />
           </M_Layout>
         </>

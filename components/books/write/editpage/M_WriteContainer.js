@@ -8,7 +8,7 @@ import { DeleteOutlined, EditOutlined, HeartFilled, StarFilled, CheckCircleFille
 
 const { Option } = Select;
 
-const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Editor, EditorFromCard, FroalaEditorView }) => {
+const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Editor, EditorFromCard, FroalaEditorView, UpdateEditor }) => {
   const myRef = useRef(null); //스크롤
   // const executeScroll = () => myRef.current.scrollTo({
   //   top: 500,
@@ -45,7 +45,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   const [contentsList, setContentsList] = useState([]);
   const [editorOn, setEditorOn] = useState();
   const [editorOnFromCard, setEditorOnFromCard] = useState();
+  const [editorOnForUpdate, setEditorOnForUpdate] = useState();
   const [cardId, setCardId] = useState("");
+  const [editMode, setEditMode] = useState("normal");
   const [selectedCardType, setSelectedCardType] = useState();
   const [indexList, setIndexList] = useState();
   const [makerFlagStyle, setMakerFlagStyle] = useState();
@@ -123,7 +125,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }, [data1, indexChanged, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
 
-  const cardTypeInfo = (cardtype_info, from, parentId, generalCardId, selections) => {
+  const cardTypeInfo = (cardtype_info, from, parentId, generalCardId, selections, mycontent) => {
     sessionStorage.setItem("cardtype_info", JSON.stringify(cardtype_info));
     sessionStorage.setItem("from", from);
     sessionStorage.setItem("parentId", parentId);
@@ -308,12 +310,32 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       </>
     );
 
+    const editorForUpdate = (
+      <>
+        <UpdateEditor
+          face1={face1}
+          face2={face2}
+          annot={annot}
+          parentId={parentId}
+          nicks={nicks}
+          cardtypeEditor={cardtypeEditor}
+          onFinish={onFinishUpdateContents}
+          setEditorOnForUpdate={setEditorOnForUpdate}
+          cardtype_info={cardtype_info}
+          mycontent={mycontent}
+        />
+      </>
+    );
+
     if (from === "normal") {
       // console.log(cardId);
       setEditorOn(editor);
     } else if (from === "inCard") {
       console.log("inCard");
       setEditorOnFromCard(editorFromCard);
+    } else if (from === "update") {
+      console.log("update");
+      setEditorOnForUpdate(editorForUpdate);
     }
   };
 
@@ -513,9 +535,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }
 
-  const onFinishUpdateContents = (values) => {
+  const onFinishUpdateContents = (values, from, mycontent_id) => {
     console.log(values);
-    updatecontents(mycontent_id, face1, selection, face2, annotation);
+    updatecontents(mycontent_id, values.face1, values.selection, values.face2, values.annotation);
   };
 
   if (cardTypes) {
@@ -568,6 +590,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   function onClickCardAdd(from, generalCardId) {
     sessionStorage.setItem("selections", 0);
     setEditorOn("");
+    setEditMode("normal")
     if (selectedCardType === undefined) {
       setSelectedCardType(cardTypes[0].cardtype_info);
       cardTypeInfo(cardTypes[0].cardtype_info, "inCard", null, generalCardId);
@@ -580,11 +603,22 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }
 
+  function onClickCardUpdate(mycontent, thisCardType) {
+    sessionStorage.setItem("selections", 0);
+    setEditorOn("");
+    setEditMode("update")
+    const hello = cardTypes.filter((item) => item.cardtype_info.name === thisCardType.cardtype_info.name);
+    setSelectedCardType(hello[0].cardtype_info);
+    sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
+    cardTypeInfo(hello[0].cardtype_info, "update", null, null, null, mycontent);
+  }
+
   function onClickCardAddChild(from, parentId, typeName) {
     sessionStorage.setItem("selections", 0);
     console.log(parentId);
     sessionStorage.setItem("parentId", parentId);
     setEditorOn("");
+    setEditMode("normal")
     if (from === "child") {
       const hello = cardTypes.filter((item) => item.cardtype_info.name === typeName);
       setSelectedCardType(hello[0].cardtype_info);
@@ -955,7 +989,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                           </div>
                           <div>
                             <Space style={{ display: "flex", alignItems: "center" }}>
-                              <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                              <Button icon={<EditOutlined />} onClick={()=>onClickCardUpdate(content_value, current_card_style[0] )} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
                                 내용편집
                               </Button>
                               <Button
@@ -971,11 +1005,19 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                       </>
                     )}
                   </div>
-                  {content._id === cardId && (
+                  {content._id === cardId && editMode === "normal" && (
                     <>
                       <div>{editorOnFromCard}</div>
                     </>
                   )}
+
+                  {content._id === cardId &&
+                    editMode ===
+                      "update"(
+                        <>
+                          <div>{editorOnForUpdate}</div>
+                        </>
+                      )}
                 </>
               )}
               {content.card_info.cardtype === "subject" && (
@@ -1724,6 +1766,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     console.log("onClickCard", card_id);
     console.log("from", from);
     console.log("parent", group);
+    setEditMode("normal")
     if ((from !== "general" && from !== "normal" && from !== "flip" && group === undefined) || null) {
       console.log("null or undefined");
       const selected1 = document.getElementsByClassName("child_group");

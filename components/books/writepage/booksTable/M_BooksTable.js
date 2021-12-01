@@ -69,7 +69,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
     {
       title: "카테고리",
       key: "categoryName",
-      className: "categoryCol",
+      className: "TableGroupingColumn",
       align: "center",
       width: 50,
       dataIndex: "categoryName",
@@ -95,7 +95,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       title: "책 제목",
       key: "title",
       dataIndex: "title",
-      className: "Row-First-Left",
+      className: "TableFirstColumn",
       align: "center",
       width: 85,
       render: (value, _record, index) => {
@@ -143,7 +143,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       title: "카드수",
       key: "total",
       dataIndex: "total",
-      className: "normal",
+      className: "TableMiddleColumn",
       align: "center",
       ellipsis: true,
       width: 33,
@@ -198,7 +198,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       title: "카드생성이력",
       key: "writeHistory",
       dataIndex: "writeHistory",
-      className: "normal",
+      className: "TableMiddleColumn",
       align: "center",
       width: 75,
       render: (_value, _record) => {
@@ -271,7 +271,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
       // title: "이동",
       key: "seqInCategory",
       dataIndex: "seqInCategory",
-      className: "normal",
+      className: "TableMiddleColumn",
       align: "right",
       width: 25,
       render: (value, _record) => {
@@ -359,7 +359,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
     },
     {
       // title: "상설",
-      className: "Row-Last-One",
+      className: "TableLastColumn",
       align: "center",
       width: 25,
       render: (value, _record, index) => {
@@ -392,17 +392,17 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
         pagination={false}
         rowClassName={(record, index) =>
           record.classType === "empty-category"
-            ? "NoBooksCategory"
+            ? "EmptyCategoryRow"
             : !expandedRowKeys.includes(record.key) && record.relationship === "parent"
-            ? "foldedCategory"
+            ? "FoldedCategoryRow"
             : record.classType === "hiddenBar"
-            ? "LastHiddenBar"
+            ? "LastHiddenBarRow"
             : record.classType === "middle-hiddenBar"
             ? "MiddleHiddenBar"
             : record.classType === "last-even-book"
-            ? "lastEvenBook"
+            ? "LastEvenNumberRow"
             : record.classType === "last-odd-book"
-            ? "lastOddBook"
+            ? "LastOddNumberRow"
             : record.classType === "even-book"
             ? "EvenNumberRow"
             : "OddNumberRow"
@@ -422,10 +422,6 @@ const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
   & * {
     font-size: 0.8rem;
-  }
-
-  & .ant-table-container * {
-    font-size: 1rem;
   }
 
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
@@ -476,256 +472,8 @@ const StyledCard = styled(Card)`
     color: #dee2e6;
   }
 
-  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
-    padding: 0;
-  }
-
-  & .ant-table table {
-    border-collapse: collapse;
-    background-color: white;
-    overflow: hidden;
-  }
-
-  & .categoryCol {
-    border-bottom: none;
-  }
-
-  & .ant-table-tbody > tr > td.Row-Last-One {
-    position: relative;
-    z-index: 5000;
-    background-color: white !important;
-  }
-
-  & .foldedCategory > .Row-First-Left > div {
-    background: #e0e2f4;
-    border-radius: 8px;
-    margin: 3px 0px;
-
-    padding-left: 15px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    font-size: 0.7rem;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-  & .MiddleHiddenBar > .Row-First-Left > div,
-  & .LastHiddenBar > .Row-First-Left > div {
-    background: #e0e2f4;
-    border-radius: 8px;
-    margin: 3px 0px;
-    display: flex;
-    align-items: center;
-    padding-left: 15px;
-    height: 30px;
-    font-size: 0.7rem;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
   & .HandleOnOffShow > span {
     font-size: 0.7rem;
-  }
-
-  & .NoBooksCategory > .Row-First-Left > div {
-    background: rgb(228, 224, 224);
-    border-radius: 8px;
-    margin: 3px 0px;
-
-    padding-left: 15px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    font-size: 0.7rem;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-
-  & .foldedCategory > .categoryCol,
-  & .NoBooksCategory > .categoryCol,
-  & .LastHiddenBar > .categoryCol,
-  & .lastEvenBook > .categoryCol,
-  & .lastOddBook > .categoryCol {
-    border-bottom: 0.5px solid #dfdfdf;
-  }
-
-  & .LastHiddenBar > .Row-First-Left,
-  & .NoBooksCategory > .Row-First-Left,
-  & .foldedCategory > .Row-First-Left {
-    border-bottom: 0.5px solid #dfdfdf;
-  }
-
-  & .lastEvenBook > .Row-First-Left,
-  & .lastEvenBook > .normal,
-  & .lastEvenBook > .Row-Last-One {
-    border-bottom: 0.5px solid #dfdfdf;
-  }
-
-  & .lastEvenBook > .normal > div,
-  & .lastEvenBook > .Row-Last-One > div {
-    background-color: #f5f5f5;
-    height: 4.2rem;
-    margin-bottom: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  & .lastEvenBook > .Row-First-Left > div {
-    background-color: #f5f5f5;
-    height: 4.2rem;
-    margin-bottom: 3px;
-    display: flex;
-    align-items: center;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    padding-left: 15px;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-
-  & .lastEvenBook > .normal > div.BookOrder {
-    color: #f5f5f5;
-  }
-
-  & .lastEvenBook > .Row-Last-One > div {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-
-  & .lastOddBook > .Row-First-Left,
-  & .lastOddBook > .normal,
-  & .lastOddBook > .Row-Last-One {
-    border-bottom: 0.5px solid #dfdfdf;
-  }
-
-  & .lastOddBook > .normal > div,
-  & .lastOddBook > .Row-Last-One > div {
-    background-color: #fff;
-    height: 4.2rem;
-    margin-bottom: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  & .lastOddBook > .Row-First-Left > div {
-    background-color: #fff;
-    height: 4.2rem;
-
-    margin-bottom: 3px;
-    display: flex;
-    align-items: center;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    padding-left: 15px;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-
-  & .lastOddBook > .normal > div.BookOrder {
-    color: #fff;
-  }
-
-  & .lastOddBook > .Row-Last-One > div {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-
-  & .EvenNumberRow > .normal > div,
-  & .EvenNumberRow > .Row-Last-One > div {
-    background-color: #f5f5f5;
-    height: 4.2rem;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  & .EvenNumberRow > .Row-First-Left > div {
-    background-color: #f5f5f5;
-    height: 4.2rem;
-
-    display: flex;
-    align-items: center;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    padding-left: 15px;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-  & .EvenNumberRow > .normal > div.BookOrder {
-    color: #f5f5f5;
-  }
-
-  & .EvenNumberRow > .Row-Last-One > div {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-
-  & .OddNumberRow > .normal > div,
-  & .OddNumberRow > .Row-Last-One > div {
-    background-color: #fff;
-    height: 4.2rem;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  & .OddNumberRow > .Row-First-Left > div {
-    background-color: #fff;
-    height: 4.2rem;
-
-    display: flex;
-    align-items: center;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    padding-left: 15px;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-  & .OddNumberRow > .normal > div.BookOrder {
-    color: #fff;
-  }
-
-  & .OddNumberRow > .Row-Last-One > div {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-
-  /* & .ant-table-thead .categoryCol::before {
-    display: none;
-  } */
-  & .ant-table-thead .categoryCol {
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  & .ant-table-tbody > tr > td {
-    border-bottom: none;
   }
 
   & .singleBar {

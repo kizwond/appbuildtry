@@ -390,16 +390,10 @@ const StyledDivSecond = styled.div`
     padding: reset;
     padding: 0px 8px 3px 8px;
   }
-  & .ant-table.ant-table-small .ant-table-thead > tr > th {
-    padding: 4px 8px;
-  }
+
   & .ant-table-tbody > tr.ant-table-row-selected > td {
     background: initial;
     border-color: #f0f0f0;
-  }
-  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
-    padding: 0;
-    background-color: #fff;
   }
 
   & table tr td.ant-table-selection-column {

@@ -66,7 +66,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
     {
       title: "카테고리",
       key: "categoryName",
-      className: "Row-First-Left",
+      className: "TableFirstColumn",
       align: "center",
       width: 50,
       dataIndex: "categoryName",
@@ -76,7 +76,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       title: "책 제목",
       key: "title",
       dataIndex: "title",
-      className: "TitleCol",
+      className: "TableMiddleColumn",
       align: "center",
       width: 85,
       render: (value, _record, index) => {
@@ -113,7 +113,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       title: "카드수",
       key: "total",
       dataIndex: "total",
-      className: "normal",
+      className: "TableMiddleColumn",
       align: "center",
       ellipsis: true,
       width: 33,
@@ -154,7 +154,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       title: "진도율",
       key: "timeModify",
       dataIndex: "timeModify",
-      className: "normal",
+      className: "TableMiddleColumn",
       align: "center",
       width: 75,
       render: (_value, _record) => (
@@ -168,7 +168,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       // title: "이동",
       key: "seqInCategory",
       dataIndex: "seqInCategory",
-      className: "normal",
+      className: "TableMiddleColumn",
       align: "right",
       width: 25,
       render: (value, _record, index) => (
@@ -246,7 +246,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
     },
     {
       // title: "설정",
-      className: "Row-Last-One",
+      className: "TableLastColumn",
       align: "center",
       width: 25,
       render: (value, _record) => (
@@ -291,17 +291,6 @@ const StyledCard = styled(Card)`
 
   & .ant-card-body {
     padding: ${(props) => (props.isvisible === "true" ? "0px 12px 12px 12px" : "0px 12px 0px 12px !important")};
-  }
-  & .ant-table-container * {
-    font-size: 1rem;
-  }
-
-  & .ant-table-thead .categoryCol {
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  & .ant-table-tbody > tr > td {
-    border-bottom: none;
   }
 
   /* 체크박스 오른쪽 여백 */
@@ -357,120 +346,7 @@ const StyledCard = styled(Card)`
     color: #dee2e6;
   }
 
-  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
-    padding: 0;
-  }
-
-  & .ant-table table {
-    border-collapse: collapse;
-    background-color: white;
-    overflow: hidden;
-  }
-
-  & .categoryCol {
-    border-bottom: none;
-  }
-
-  & .ant-table-tbody > tr > td.Row-Last-One {
-    position: relative;
-    z-index: 5000;
-    background-color: white !important;
-  }
-
   & .HandleOnOffShow > span {
     font-size: 0.7rem;
-  }
-
-  & .EvenNumberRow > .Row-First-Left > div {
-    background-color: #f5f5f5;
-    height: 4.2rem;
-
-    display: flex;
-    align-items: center;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    padding-left: 15px;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-  & .EvenNumberRow > .TitleCol > div {
-    background-color: #f5f5f5;
-    height: 4.2rem;
-    display: flex;
-    align-items: center;
-    padding-left: 15px;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-  & .EvenNumberRow > .normal > div,
-  & .EvenNumberRow > .Row-Last-One > div {
-    background-color: #f5f5f5;
-    height: 4.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  & .EvenNumberRow > .normal > div.BookOrder {
-    color: #f5f5f5;
-  }
-
-  & .EvenNumberRow > .Row-Last-One > div {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-  }
-
-  & .OddNumberRow > .Row-First-Left > div {
-    background-color: #fff;
-    height: 4.2rem;
-    display: flex;
-    align-items: center;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    padding-left: 15px;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-  & .OddNumberRow > .TitleCol > div {
-    background-color: #fff;
-    height: 4.2rem;
-    display: flex;
-    align-items: center;
-    padding-left: 15px;
-    @media screen and (min-width: 577px) and (max-width: 768px) {
-      padding-left: 8px;
-    }
-    @media screen and (min-width: 100px) and (max-width: 576px) {
-      padding-left: 4px;
-    }
-  }
-  & .OddNumberRow > .normal > div,
-  & .OddNumberRow > .Row-Last-One > div {
-    background-color: #fff;
-    height: 4.2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  & .OddNumberRow > .normal > div.BookOrder {
-    color: #fff;
-  }
-
-  & .OddNumberRow > .Row-Last-One > div {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
   }
 `;

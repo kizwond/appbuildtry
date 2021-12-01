@@ -127,14 +127,6 @@ const StyledRowMaxWidth = styled.div`
     padding: 0px 12px 12px 12px;
   }
 
-  & .ant-table.ant-table-small .ant-table-thead > tr > th {
-    padding: 4px 0px;
-  }
-
-  & .ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
-    display: none;
-  }
-
   & .ant-checkbox-inner {
     width: 12px;
     height: 12px;

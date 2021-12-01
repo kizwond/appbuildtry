@@ -391,6 +391,6 @@ const StyledModal = styled(Modal)`
   & .ant-table-row-expand-icon {
     top: 20px;
     left: -10px;
-    z-index: 10;
+    z-index: 9999;
   }
 `;

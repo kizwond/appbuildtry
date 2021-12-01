@@ -156,6 +156,11 @@ p {
 }
 
 /* 표 관련 설정 */
+.ant-table table {
+  border-collapse: collapse;
+  background-color: white;
+  overflow: hidden;
+}
 .ant-table-tbody > tr.ant-table-row:hover > td,
 .ant-table-tbody > tr > td.ant-table-cell-row-hover {
   background: none;
@@ -164,14 +169,111 @@ p {
   padding-top: 4px;
   padding-bottom: 4px;
   padding: 4px;
+  font-size: 1rem;
+}
+.ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  display: none;
 }
 .ant-table.ant-table-small .ant-table-tbody > tr > td {
   height: 4.2rem;
   padding: 0;
   border-bottom: none;
-}
-.ant-table-container * {
   font-size: 1rem;
+}
+.ant-table-tbody > tr > td.TableLastColumn {
+  height: 4.2rem;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableGroupingColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableMiddleColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableGroupingColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableMiddleColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.FoldedCategoryRow > .TableGroupingColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.FoldedCategoryRow > .TableFirstColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.EmptyCategoryRow > .TableGroupingColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.EmptyCategoryRow > .TableFirstColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastHiddenBarRow > .TableGroupingColumn,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastHiddenBarRow > .TableFirstColumn {
+  border-bottom: 0.5px solid #dfdfdf;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableLastColumn > div {
+  height: 4.2rem;
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+  font-size: 1rem;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn > div {
+  margin-bottom: 3px;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn > div {
+  background-color: #f5f5f5;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableMiddleColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn > div {
+  background-color: #fff;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn > div {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn > div {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.MiddleHiddenBar > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastHiddenBarRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.EmptyCategoryRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.FoldedCategoryRow > .TableFirstColumn > div {
+  border-radius: 8px;
+  margin: 3px 0px;
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+  height: 4.2rem;
+  font-size: 1rem;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.MiddleHiddenBar > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastHiddenBarRow > .TableFirstColumn > div,
+.ant-table.ant-table-small .ant-table-tbody > tr.FoldedCategoryRow > .TableFirstColumn > div {
+  background: #e0e2f4;
+}
+.ant-table.ant-table-small .ant-table-tbody > tr.EmptyCategoryRow > .TableFirstColumn > div {
+  background: #e4e0e0;
 }
 
 /* page 커스텀 버튼 */

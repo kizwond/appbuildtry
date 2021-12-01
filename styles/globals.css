@@ -161,6 +161,13 @@ p {
   background-color: white;
   overflow: hidden;
 }
+.ant-table.ant-table-small .ant-table-tbody > tr > td > * {
+  font-size: 1rem;
+}
+.ant-table.ant-table-small .ant-table-thead > tr > th > * {
+  font-size: 1rem;
+}
+
 .ant-table-tbody > tr.ant-table-row:hover > td,
 .ant-table-tbody > tr > td.ant-table-cell-row-hover {
   background: none;
@@ -386,6 +393,6 @@ p {
   width: 0;
 }
 
-.ant-drawer{
+.ant-drawer {
   z-index: 20000;
 }

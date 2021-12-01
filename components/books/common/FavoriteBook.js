@@ -47,32 +47,28 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
   return (
     <>
       {like ? (
-        <Tooltip mouseEnterDelay={0.3} mouseLeaveDelay={0} title="즐겨찾기 해제" overlayInnerStyle={{ fontSize: "0.65rem", minWidth: "0", minHeight: "0" }} overlayStyle={{ alignSelf: "middle" }}>
-          <div
-            className="customCircleButton"
-            onClick={() => {
-              updateBook(false, null);
-              changeActivedTable("");
-              changeFoldedMenu("");
-            }}
-          >
-            <StarFilled className="writeLiked" style={{ color: "#fca311" }} />
-          </div>
-        </Tooltip>
+        <div
+          className="customCircleButton"
+          onClick={() => {
+            updateBook(false, null);
+            changeActivedTable("");
+            changeFoldedMenu("");
+          }}
+        >
+          <StarFilled className="writeLiked" />
+        </div>
       ) : (
-        <Tooltip mouseEnterDelay={0.3} mouseLeaveDelay={0} title="즐겨찾기 등록" overlayInnerStyle={{ fontSize: "0.65rem", minWidth: "0", minHeight: "0" }} overlayStyle={{ alignSelf: "middle" }}>
-          <div
-            className="customCircleButton"
-            onClick={() => {
-              console.log({ studyLikeLength });
-              updateBook(true, tableType === "study" ? studyLikeLength : writeLikeLength);
-              changeActivedTable("");
-              changeFoldedMenu("");
-            }}
-          >
-            <StarOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
-          </div>
-        </Tooltip>
+        <div
+          className="customCircleButton"
+          onClick={() => {
+            console.log({ studyLikeLength });
+            updateBook(true, tableType === "study" ? studyLikeLength : writeLikeLength);
+            changeActivedTable("");
+            changeFoldedMenu("");
+          }}
+        >
+          <StarOutlined className="writeUnliked" />
+        </div>
       )}
     </>
   );

@@ -82,7 +82,7 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) 
       render: (value, _record, index) => (
         <StyledFlexAlignCenter>
           <StyledFlexAlignCenter>
-            <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
+            <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
           </StyledFlexAlignCenter>
           <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
         </StyledFlexAlignCenter>

@@ -94,7 +94,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
           style={{ cursor: "pointer" }}
         >
           <StyledFlexAlignCenter>
-            <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
+            <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
           </StyledFlexAlignCenter>
           <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
         </StyledFlexAlignCenter>
@@ -200,7 +200,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
       // title: "이동",
       key: "seqInCategory",
       dataIndex: "seqInCategory",
-      className: "TableMiddleColumn",
+      className: "TableLastColumn",
       align: "right",
       width: 25,
       render: (value, _record) => (
@@ -226,7 +226,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
               className="PullCustomCircleButton"
               style={{
                 width: "44px",
-                height: "4.2rem",
+                height: "3rem",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -239,12 +239,12 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
           <Drawer
             destroyOnClose={true}
             placement="right"
-            width={"210px"}
+            width={"250px"}
             closable={false}
             mask={false}
             visible={activedTable === "favoriteTable" && _record._id === isFoldedMenu}
             getContainer={false}
-            style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
+            style={{ position: "absolute", textAlign: "initial", height: "3rem", top: "0.6rem" }}
             contentWrapperStyle={{ boxShadow: "unset" }}
             drawerStyle={{ display: "block" }}
             bodyStyle={{
@@ -260,7 +260,8 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
             <Space size={3}>
               <FavoriteBookOrderButton _record={_record} tableType="write" /> |
               <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
-              <HideOrShowButton record={_record} />
+              <HideOrShowButton record={_record} isPopupSomething={isPopupSomething} chagePopup={chagePopup} /> |
+              <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
             </Space>
             <div
               className="PushCustomCircleButton"
@@ -275,17 +276,17 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
         </div>
       ),
     },
-    {
-      // title: "상설",
-      className: "TableLastColumn",
-      align: "center",
-      width: 25,
-      render: (value, _record) => (
-        <div>
-          <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-        </div>
-      ),
-    },
+    // {
+    //   // title: "상설",
+    //   className: "TableLastColumn",
+    //   align: "center",
+    //   width: 25,
+    //   render: (value, _record) => (
+    //     <div>
+    //       <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+    //     </div>
+    //   ),
+    // },
   ];
 
   return (
@@ -324,7 +325,7 @@ const StyledCard = styled(Card)`
   }
 
   & .ant-card-body {
-    padding: ${(props) => (props.isvisible === "true" ? "0px 12px 12px 12px" : "0px 12px 0px 12px !important")};
+    padding: ${(props) => (props.isvisible === "true" ? "0px 8px 12px 8px" : "0px 8px 0px 8px !important")};
   }
 
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
@@ -335,44 +336,15 @@ const StyledCard = styled(Card)`
   /* 개별 책 펼치기  */
   & .ant-drawer-content {
     overflow: hidden;
-    background-color: #6c757d;
+    background-color: #73bcfc;
     background-clip: padding-box;
     border: 0;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
   }
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .FirstBookCustom > .anticon-arrow-up > svg,
-  & .LastBookCustom > .anticon-arrow-down > svg {
-    color: #4d4d4d;
-  }
-
-  & .anticon-arrow-down > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-arrow-up > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-star > svg {
-    font-size: 16px;
-  }
-
-  & .anticon-eye > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-eye-invisible > svg {
-    font-size: 16px;
-    color: #dee2e6;
   }
 
   & .HandleOnOffShow > span {

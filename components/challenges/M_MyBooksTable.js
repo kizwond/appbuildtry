@@ -124,8 +124,7 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       dataIndex: "total",
       className: "TableMiddleColumn",
       align: "center",
-      ellipsis: true,
-      width: 33,
+      width: 35,
       render: (_value, _record) => (
         <div style={{ width: "100%" }}>
           <Popover

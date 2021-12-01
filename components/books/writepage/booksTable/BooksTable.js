@@ -236,10 +236,9 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
       },
     },
     {
-      title: "이동",
-      key: "seq_in_category",
-      dataIndex: "seq_in_category",
-      className: "TableMiddleColumn",
+      key: "seqInCategory",
+      dataIndex: "seqInCategory",
+      className: "TableLastColumn",
       align: "right",
       width: 35,
       render: (value, _record, index) => {
@@ -280,12 +279,12 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
               <Drawer
                 destroyOnClose={true}
                 placement="right"
-                width={"210px"}
+                width={"250px"}
                 closable={false}
                 mask={false}
                 visible={activedTable === "bookTable" && _record._id === isFoldedMenu}
                 getContainer={false}
-                style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
+                style={{ position: "absolute", textAlign: "initial", height: "3rem", top: "0.6rem" }}
                 contentWrapperStyle={{ boxShadow: "unset" }}
                 drawerStyle={{ display: "block" }}
                 bodyStyle={{
@@ -301,7 +300,8 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
                 <Space size={3}>
                   <BookOrderButton _record={_record} /> |
                   <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="write" /> |
-                  <HideOrShowButton record={_record} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+                  <HideOrShowButton record={_record} isPopupSomething={isPopupSomething} chagePopup={chagePopup} /> |
+                  <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
                 </Space>
                 <div
                   className="PushCustomCircleButton"
@@ -325,28 +325,28 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
         return obj;
       },
     },
-    {
-      title: "상설",
-      align: "center",
-      className: "TableLastColumn",
-      width: 35,
-      render: (value, _record, index) => {
-        const obj = {
-          children: (
-            <div>
-              <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-            </div>
-          ),
-          props: {},
-        };
-        if (getConditionValue(_record)) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
+    // {
+    //   title: "상설",
+    //   align: "center",
+    //   className: "TableLastColumn",
+    //   width: 35,
+    //   render: (value, _record, index) => {
+    //     const obj = {
+    //       children: (
+    //         <div>
+    //           <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+    //         </div>
+    //       ),
+    //       props: {},
+    //     };
+    //     if (getConditionValue(_record)) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
   ];
 
   return (
@@ -407,20 +407,15 @@ const StyledCard = styled(Card)`
   /* 개별 책 펼치기  */
   & .ant-drawer-content {
     overflow: hidden;
-    background-color: #6c757d;
+    background-color: #73bcfc;
     background-clip: padding-box;
     border: 0;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
   }
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .FirstBookCustom > .anticon-arrow-up > svg,
-  & .LastBookCustom > .anticon-arrow-down > svg {
-    color: #4d4d4d;
   }
 
   /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
@@ -435,30 +430,6 @@ const StyledCard = styled(Card)`
   }
   & .PullCustomCircleButton:hover > .anticon-double-left > svg {
     color: #fff;
-  }
-
-  & .anticon-arrow-down > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-arrow-up > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-star > svg {
-    font-size: 16px;
-  }
-
-  & .anticon-eye > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-eye-invisible > svg {
-    font-size: 16px;
-    color: #dee2e6;
   }
 
   & .HandleOnOffShow > span {

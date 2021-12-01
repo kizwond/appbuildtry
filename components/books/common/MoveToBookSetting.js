@@ -8,22 +8,12 @@ const MoveToBookSetting = ({ mybook_id }) => {
 
   return (
     <div
-      className="PullCustomCircleButton"
-      style={{
-        width: "44px",
-        height: "30px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+      className="customCircleButton"
+      onClick={() => {
+        router.push(`/books/study/setting/${mybook_id}`);
       }}
     >
-      <SettingOutlined
-        shape="circle"
-        icon={<SettingOutlined />}
-        onClick={() => {
-          router.push(`/books/study/setting/${mybook_id}`);
-        }}
-      />
+      <SettingOutlined />
     </div>
   );
 };

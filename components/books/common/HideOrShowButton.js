@@ -40,45 +40,23 @@ const HideOrShowButton = ({ record }) => {
   return (
     <>
       {isShowed ? (
-        <Tooltip mouseEnterDelay={0.3} mouseLeaveDelay={0} title="숨기기" overlayInnerStyle={{ fontSize: "0.65rem", minWidth: "0", minHeight: "0" }} overlayStyle={{ alignSelf: "middle" }}>
-          <div
-            className="customCircleButton"
-            style={{
-              width: "34px",
-              height: "24px",
-              borderRadius: "12px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              updateBook("hide");
-            }}
-          >
-            <EyeOutlined />
-          </div>
-        </Tooltip>
+        <div
+          className="customCircleButton"
+          onClick={() => {
+            updateBook("hide");
+          }}
+        >
+          <EyeOutlined />
+        </div>
       ) : (
-        <Tooltip mouseEnterDelay={0.3} mouseLeaveDelay={0} title="표시하기" overlayInnerStyle={{ fontSize: "0.65rem", minWidth: "0", minHeight: "0" }} overlayStyle={{ alignSelf: "middle" }}>
-          <div
-            className="customCircleButton"
-            style={{
-              width: "34px",
-              height: "24px",
-              borderRadius: "12px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              updateBook("show");
-            }}
-          >
-            <EyeInvisibleOutlined />
-          </div>
-        </Tooltip>
+        <div
+          className="customCircleButton"
+          onClick={() => {
+            updateBook("show");
+          }}
+        >
+          <EyeInvisibleOutlined />
+        </div>
       )}
     </>
   );

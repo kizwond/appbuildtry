@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const StyledBookTypeDiv = styled.div`
-  width: 10px;
-  height: 30px;
+  width: 3px;
+  height: 3rem;
   color: white;
   display: inline-block;
   border-radius: 3px;

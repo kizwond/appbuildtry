@@ -102,7 +102,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
                   }
                 }}
               />
-              <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
+              <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
             </StyledFlexAlignCenter>
             <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
           </div>
@@ -115,8 +115,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       dataIndex: "total",
       className: "TableMiddleColumn",
       align: "center",
-      ellipsis: true,
-      width: 33,
+      width: 35,
       render: (_value, _record) => (
         <div style={{ width: "100%" }}>
           <Popover
@@ -168,7 +167,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       // title: "이동",
       key: "seqInCategory",
       dataIndex: "seqInCategory",
-      className: "TableMiddleColumn",
+      className: "TableLastColumn",
       align: "right",
       width: 25,
       render: (value, _record, index) => (
@@ -194,7 +193,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
               className="PullCustomCircleButton"
               style={{
                 width: "44px",
-                height: "4.2rem",
+                height: "3rem",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -207,12 +206,12 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
           <Drawer
             destroyOnClose={true}
             placement="right"
-            width={"210px"}
+            width={"250px"}
             closable={false}
             mask={false}
             visible={activedTable === "favoriteTable" && _record._id === isFoldedMenu}
             getContainer={false}
-            style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
+            style={{ position: "absolute", textAlign: "initial", height: "3rem", top: "0.6rem" }}
             contentWrapperStyle={{ boxShadow: "unset" }}
             drawerStyle={{ display: "block" }}
             bodyStyle={{
@@ -227,9 +226,9 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
           >
             <Space size={3}>
               <FavoriteBookOrderButton _record={_record} tableType="study" /> |
-              <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" />
-              |
-              <HideOrShowButton record={_record} />
+              <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" /> |
+              <HideOrShowButton record={_record} isPopupSomething={isPopupSomething} chagePopup={chagePopup} /> |
+              <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
             </Space>
             <div
               className="PushCustomCircleButton"
@@ -244,22 +243,22 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
         </div>
       ),
     },
-    {
-      // title: "설정",
-      className: "TableLastColumn",
-      align: "center",
-      width: 25,
-      render: (value, _record) => (
-        <div>
-          <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-        </div>
-      ),
-    },
+    // {
+    //   // title: "설정",
+    //   className: "TableLastColumn",
+    //   align: "center",
+    //   width: 25,
+    //   render: (value, _record) => (
+    //     <div>
+    //       <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+    //     </div>
+    //   ),
+    // },
   ];
-
+  console.log(visible);
   return (
     <StyledCard
-      isvisible={toString(visible)}
+      isvisible={visible ? "true" : "false"}
       bordered={false}
       size="small"
       title={
@@ -290,7 +289,7 @@ const StyledCard = styled(Card)`
   }
 
   & .ant-card-body {
-    padding: ${(props) => (props.isvisible === "true" ? "0px 12px 12px 12px" : "0px 12px 0px 12px !important")};
+    padding: ${(props) => (props.isvisible === "true" ? "0px 8px 12px 8px" : "0px 8px 0px 8px !important")};
   }
 
   /* 체크박스 오른쪽 여백 */
@@ -306,44 +305,15 @@ const StyledCard = styled(Card)`
   /* 개별 책 펼치기  */
   & .ant-drawer-content {
     overflow: hidden;
-    background-color: #6c757d;
+    background-color: #73bcfc;
     background-clip: padding-box;
     border: 0;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
   }
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .FirstBookCustom > .anticon-arrow-up > svg,
-  & .LastBookCustom > .anticon-arrow-down > svg {
-    color: #4d4d4d;
-  }
-
-  & .anticon-arrow-down > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-arrow-up > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-star > svg {
-    font-size: 16px;
-  }
-
-  & .anticon-eye > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-eye-invisible > svg {
-    font-size: 16px;
-    color: #dee2e6;
   }
 
   & .HandleOnOffShow > span {

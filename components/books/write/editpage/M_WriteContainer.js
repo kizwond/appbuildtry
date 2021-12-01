@@ -223,7 +223,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
         <div
           style={{ border: "1px solid lightgrey", borderBottom: "0px", padding: "5px", display: "flex", justifyContent: "space-between", fontSize: "0.8rem", alignItems: "center" }}
         >
-          <div style={{width:"50px"}}>템플릿 : </div>
+          <div style={{ width: "50px" }}>템플릿 : </div>
           <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 200, fontSize: "0.75rem" }} onChange={handleChange}>
             <Option value="default" style={{ fontSize: "0.8rem", color: "black", fontWeight: "700" }} disabled>
               카드타입선택
@@ -233,12 +233,12 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
           {cardtypeEditor === "flip" && (
             <>
               {selections == undefined && (
-                <Button size="small" style={{ fontSize: "0.8rem", marginLeft:"3px"}} onClick={addSelections}>
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft: "3px" }} onClick={addSelections}>
                   보기추가
                 </Button>
               )}
               {selections == 0 && (
-                <Button size="small" style={{ fontSize: "0.8rem", marginLeft:"3px" }} onClick={addSelections}>
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft: "3px" }} onClick={addSelections}>
                   보기추가
                 </Button>
               )}
@@ -277,17 +277,21 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             {!parentId && cardTypeListInCard}
             {parentId && cardTypeListInCardChild}
           </Select>
+          {cardtypeEditor === "flip" && (
+            <>
+              {selections == undefined && (
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft: "3px" }} onClick={addSelections}>
+                  보기추가
+                </Button>
+              )}
+              {selections == 0 && (
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft: "3px" }} onClick={addSelections}>
+                  보기추가
+                </Button>
+              )}
+            </>
+          )}
         </div>
-        {cardtypeEditor === "flip" && (
-          <>
-            <div style={{ border: "1px solid lightgrey", borderBottom: "0px", borderTop: "0px", padding: "0 5px 5px 5px", display: "flex", justifyContent: "space-between" }}>
-              <div></div>
-              <Button size="small" style={{ fontSize: "0.8rem" }} onClick={addSelections}>
-                셀렉션추가
-              </Button>
-            </div>
-          </>
-        )}
         <EditorFromCard
           removeSelection={removeSelection}
           face1={face1}
@@ -1180,37 +1184,37 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                             {content_value.selection &&
                               content_value.selection.map((item, index) => (
                                 <>
-                                  <div
+                                 <div
                                     style={{
-                                      backgroundColor: row_style.face1[index].background.color,
-                                      marginTop: row_style.face1[index].outer_margin.top,
-                                      marginBottom: row_style.face1[index].outer_margin.bottom,
-                                      marginLeft: row_style.face1[index].outer_margin.left,
-                                      marginRight: row_style.face1[index].outer_margin.right,
-                                      paddingTop: row_style.face1[index].inner_padding.top,
-                                      paddingBottom: row_style.face1[index].inner_padding.bottom,
-                                      paddingLeft: row_style.face1[index].inner_padding.left,
-                                      paddingRight: row_style.face1[index].inner_padding.right,
-                                      borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
-                                      borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
-                                      borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
-                                      borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
-                                      textAlign: row_font.face1[index].align,
-                                      fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
-                                      color: row_font.face1[index].color,
+                                      backgroundColor: row_style.face1[row_style.face1.length-1].background.color,
+                                      marginTop: row_style.face1[row_style.face1.length-1].outer_margin.top,
+                                      marginBottom: row_style.face1[row_style.face1.length-1].outer_margin.bottom,
+                                      marginLeft: row_style.face1[row_style.face1.length-1].outer_margin.left,
+                                      marginRight: row_style.face1[row_style.face1.length-1].outer_margin.right,
+                                      paddingTop: row_style.face1[row_style.face1.length-1].inner_padding.top,
+                                      paddingBottom: row_style.face1[row_style.face1.length-1].inner_padding.bottom,
+                                      paddingLeft: row_style.face1[row_style.face1.length-1].inner_padding.left,
+                                      paddingRight: row_style.face1[row_style.face1.length-1].inner_padding.right,
+                                      borderTop: `${row_style.face1[row_style.face1.length-1].border.top.thickness}px ${row_style.face1[row_style.face1.length-1].border.top.bordertype} ${row_style.face1[row_style.face1.length-1].border.top.color}`,
+                                      borderBottom: `${row_style.face1[row_style.face1.length-1].border.bottom.thickness}px ${row_style.face1[row_style.face1.length-1].border.bottom.bordertype} ${row_style.face1[row_style.face1.length-1].border.bottom.color}`,
+                                      borderLeft: `${row_style.face1[row_style.face1.length-1].border.left.thickness}px ${row_style.face1[row_style.face1.length-1].border.left.bordertype} ${row_style.face1[row_style.face1.length-1].border.left.color}`,
+                                      borderRight: `${row_style.face1[row_style.face1.length-1].border.right.thickness}px ${row_style.face1[row_style.face1.length-1].border.right.bordertype} ${row_style.face1[row_style.face1.length-1].border.right.color}`,
+                                      textAlign: row_font.face1[row_font.face1.length-1].align,
+                                      fontWeight: `${row_font.face1[row_font.face1.length-1].bold === "on" ? 700 : 400}`,
+                                      color: row_font.face1[row_font.face1.length-1].color,
                                       fontFamily: `${
-                                        row_font.face1[index].font === "고딕"
+                                        row_font.face1[row_font.face1.length-1].font === "고딕"
                                           ? `NanumGothic`
-                                          : row_font.face1[index].font === "명조"
+                                          : row_font.face1[row_font.face1.length-1].font === "명조"
                                           ? `NanumMyeongjo`
-                                          : row_font.face1[index].font === "바탕"
+                                          : row_font.face1[row_font.face1.length-1].font === "바탕"
                                           ? `Gowun Batang, sans-serif`
-                                          : row_font.face1[index].font === "돋움"
+                                          : row_font.face1[row_font.face1.length-1].font === "돋움"
                                           ? `Gowun Dodum, sans-serif`
                                           : ""
                                       } `,
-                                      fontSize: row_font.face1[index].size,
-                                      textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
+                                      fontSize: row_font.face1[row_font.face1.length-1].size,
+                                      textDecoration: `${row_font.face1[row_font.face1.length-1].underline === "on" ? "underline" : "none"}`,
                                     }}
                                   >
                                     <FroalaEditorView model={item} />

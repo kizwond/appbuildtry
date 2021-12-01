@@ -354,9 +354,7 @@ class Editor extends Component {
     const num_face1 = this.props.cardtype_info.num_of_row.face1;
     const num_face2 = this.props.cardtype_info.num_of_row.face2;
     const num_annot = this.props.cardtype_info.num_of_row.annotation;
-    console.log(num_face1);
-    console.log(num_face2);
-    console.log(num_annot);
+
     const face1_array = [];
     const selection_array = [];
     const face2_array = [];
@@ -432,7 +430,6 @@ class Editor extends Component {
       flagStar: this.state.flagStar,
       flagComment: this.state.flagComment,
     };
-    console.log(values);
     console.log(this.props.parentId);
     this.props.onFinish(values, "normal", this.props.parentId);
 
@@ -588,7 +585,6 @@ class Editor extends Component {
             });
             this.setState({
               [keynameNext1]: "",
-              // [keynameNext1]: this.state[keyname],
             });
             this.setState({
               [keynameNext2]: this.state[keynameNext1],
@@ -620,7 +616,6 @@ class Editor extends Component {
     const keyname = `editor${Number(e.target.name) + 1}`;
     const editorZindex = `editorZindex${Number(e.target.name) + 1}`;
     const answer = e.target.value;
-    const answerValue = `<p>${answer}</p>`;
     this.setState({
       answerRadio: e.target.value,
       [keyname]: answer,
@@ -735,28 +730,7 @@ class Editor extends Component {
         console.log("editor", item);
         return (
           <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px", display: "none" }}>
-            {/* <label
-              className="editor_label"
-              style={{
-                zIndex: this.state["editorZindex" + (index + 1).toString()],
-                position: "absolute",
-                left: "5px",
-                top: "5px",
-                width: "50px",
-                fontSize: "0.5rem",
-                color: "lightgrey",
-              }}
-            >
-              {item}
-            </label> */}
             <div style={{ display: "flex", alignItems: "center" }}>
-              {/* <FroalaEditorComponent
-                  tag="textarea"
-                  config={this.config}
-                  model={this.state["editor" + (index + 1).toString()]}
-                  onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-                  disabled
-                /> */}
               <Input type="text" value={this.state["editor" + (index + 1).toString()]} readOnly />
             </div>
           </div>
@@ -893,14 +867,3 @@ class Editor extends Component {
 }
 
 export default Editor;
-
-const circleNum = {
-  fontSize: "0.8em",
-  width: "1em",
-  borderRadius: "3em",
-  padding: " .1em  .2em",
-  lineHeight: "1.25em",
-  border: "1px solid #333",
-  display: "inline-block",
-  textAlign: "center",
-};

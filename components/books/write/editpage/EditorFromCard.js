@@ -10,15 +10,9 @@ import "froala-editor//css/themes/gray.css";
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Radio, Input, Button, Select } from "antd";
-import { MinusCircleOutlined, StarFilled } from "@ant-design/icons";
+import { PlusCircleOutlined, MinusCircleOutlined, StarFilled } from "@ant-design/icons";
 
 const { Option } = Select;
-// const FroalaEditorComponent = dynamic(import('react-froala-wysiwyg'), {
-//   ssr: false
-// });
-// const Feditor = dynamic(import('froala-editor'), {
-//   ssr: false
-// });
 
 class EditorFromCard extends Component {
   constructor(props) {
@@ -439,10 +433,6 @@ class EditorFromCard extends Component {
     this.props.setEditorOnFromCard("");
   };
 
-  handleChangeRating = (value) => {
-    console.log(`selected ${value}`);
-  };
-
   componentDidUpdate() {
     const originArray = JSON.parse(sessionStorage.getItem("nicks_without_selections"));
     const newArray = JSON.parse(sessionStorage.getItem("nicks_with_selections"));
@@ -468,7 +458,12 @@ class EditorFromCard extends Component {
         console.log(diffIndexes);
         console.log(diffValues);
         console.log(newArray[diffIndexes.length + 1]);
-
+        if (JSON.stringify(this.state.diffValues) !== JSON.stringify(diffValues)) {
+          this.setState({
+            diffValues: diffValues,
+          });
+          console.log(diffValues);
+        }
         if (this.state.lastSelectionNick !== diffValues[diffValues.length - 1]) {
           this.setState({
             lastSelectionNick: diffValues[diffValues.length - 1],
@@ -587,7 +582,6 @@ class EditorFromCard extends Component {
             });
             this.setState({
               [keynameNext1]: "",
-              // [keynameNext1]: this.state[keyname],
             });
             this.setState({
               [keynameNext2]: this.state[keynameNext1],
@@ -619,7 +613,6 @@ class EditorFromCard extends Component {
     const keyname = `editor${Number(e.target.name) + 1}`;
     const editorZindex = `editorZindex${Number(e.target.name) + 1}`;
     const answer = e.target.value;
-    const answerValue = `<p>${answer}</p>`;
     this.setState({
       answerRadio: e.target.value,
       [keyname]: answer,
@@ -629,42 +622,99 @@ class EditorFromCard extends Component {
 
   render() {
     const editorList = this.props.nicks.map((item, index) => {
+      // const diffValues = JSON.parse(sessionStorage.getItem("diffValues"));
+      // const answerFieldNick = sessionStorage.getItem("answerFieldNick");
+      // const lastSelectionNick = sessionStorage.getItem("lastSelectionNick");
+
       if (item == this.state.lastSelectionNick) {
         console.log("editor", item);
         return (
           <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
-            <label
-              className="editor_label"
-              style={{
-                zIndex: this.state["editorZindex" + (index + 1).toString()],
-                position: "absolute",
-                left: "5px",
-                top: "15px",
-                width: "50px",
-                fontSize: "0.5rem",
-                color: "lightgrey",
-              }}
-            >
-              {item}
-            </label>
+            {item.slice(0, 2) !== "보기" && (
+              <label
+                className="editor_label"
+                style={{
+                  zIndex: this.state["editorZindex" + (index + 1).toString()],
+                  position: "absolute",
+                  left: "5px",
+                  top: "5px",
+
+                  fontSize: "0.5rem",
+                  color: "lightgrey",
+                }}
+              >
+                {item}
+              </label>
+            )}
             <div style={{ display: "flex", alignItems: "center" }}>
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "1" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➀</span>
+                </>
+              )}
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "2" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➁</span>
+                </>
+              )}
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "3" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➂</span>
+                </>
+              )}
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "4" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➃</span>
+                </>
+              )}
+              {item.slice(0, 2) === "보기" && item.slice(2, 3) === "5" && (
+                <>
+                  <span style={{ marginRight: "5px" }}>➄</span>
+                </>
+              )}
               <FroalaEditorComponent
                 tag="textarea"
                 config={this.config}
                 model={this.state["editor" + (index + 1).toString()]}
                 onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
               />
-              <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px" }} onClick={this.props.removeSelection} />
+              <PlusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color:"grey" }} onClick={this.props.addSelections} />
+              <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color:"grey" }} onClick={this.props.removeSelection} />
             </div>
             {this.state.diffValues && (
-              <div style={{ display: "flex" }}>
-                <Radio.Group onChange={this.onChange} name={index + 1} defaultChecked={false} value={this.state.answerRadio}>
+              <div style={{ display: "flex", marginTop:"3px", alignItems:"center" }}>
+                <span style={{fontSize:"0.8rem", marginRight:"5px"}}>정답 :</span>
+                <Radio.Group buttonStyle="solid" size="small" onChange={this.onChange} name={index + 1} defaultChecked={false} value={this.state.answerRadio}>
                   {this.state.diffValues.map((value, answerindex) => {
                     return (
                       <React.Fragment key={value}>
-                        <Radio value={(answerindex + 1).toString()} style={{ fontSize: "0.8rem" }}>
-                          {value}
-                        </Radio>
+                        <Radio.Button value={(answerindex + 1).toString()} style={{ fontSize: "1.5rem" }}>
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "1" && (
+                            <>
+                              <span>➀</span>
+                            </>
+                          )}
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "2" && (
+                            <>
+                              <span>➁</span>
+                            </>
+                          )}
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "3" && (
+                            <>
+                              <span>➂</span>
+                            </>
+                          )}
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "4" && (
+                            <>
+                              <span>➃</span>
+                            </>
+                          )}
+                          {value.slice(0, 2) === "보기" && value.slice(2, 3) === "5" && (
+                            <>
+                              <span>➄</span>
+                            </>
+                          )}
+                        </Radio.Button>
                       </React.Fragment>
                     );
                   })}
@@ -676,29 +726,8 @@ class EditorFromCard extends Component {
       } else if (item == this.state.answerFieldNick) {
         console.log("editor", item);
         return (
-          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
-            <label
-              className="editor_label"
-              style={{
-                zIndex: this.state["editorZindex" + (index + 1).toString()],
-                position: "absolute",
-                left: "5px",
-                top: "15px",
-                width: "50px",
-                fontSize: "0.5rem",
-                color: "lightgrey",
-              }}
-            >
-              {item}
-            </label>
+          <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px", display: "none" }}>
             <div style={{ display: "flex", alignItems: "center" }}>
-              {/* <FroalaEditorComponent
-                  tag="textarea"
-                  config={this.config}
-                  model={this.state["editor" + (index + 1).toString()]}
-                  onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-                  disabled
-                /> */}
               <Input type="text" value={this.state["editor" + (index + 1).toString()]} readOnly />
             </div>
           </div>
@@ -707,27 +736,56 @@ class EditorFromCard extends Component {
         return (
           <React.Fragment key={item}>
             <div key={index} style={{ position: "relative", display: "flex", flexDirection: "column", marginTop: "1px", marginBottom: "3px" }}>
-              <label
-                className="editor_label"
-                style={{
-                  zIndex: this.state["editorZindex" + (index + 1).toString()],
-                  position: "absolute",
-                  left: "5px",
-                  top: "15px",
-                  width: "50px",
-                  fontSize: "0.5rem",
-                  color: "lightgrey",
-                }}
-              >
-                {item}
-              </label>
-              <FroalaEditorComponent
-                key={`editor${item}`}
-                tag="textarea"
-                config={this.config}
-                model={this.state["editor" + (index + 1).toString()]}
-                onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
-              />
+              {item.slice(0, 2) !== "보기" && (
+                <label
+                  className="editor_label"
+                  style={{
+                    zIndex: this.state["editorZindex" + (index + 1).toString()],
+                    position: "absolute",
+                    left: "5px",
+                    top: "5px",
+
+                    fontSize: "0.5rem",
+                    color: "lightgrey",
+                  }}
+                >
+                  {item}
+                </label>
+              )}
+              <div style={{ display: "flex", alignItems: "center" }}>
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "1" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➀</span>
+                  </>
+                )}
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "2" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➁</span>
+                  </>
+                )}
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "3" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➂</span>
+                  </>
+                )}
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "4" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➃</span>
+                  </>
+                )}
+                {item.slice(0, 2) === "보기" && item.slice(2, 3) === "5" && (
+                  <>
+                    <span style={{ marginRight: "5px" }}>➄</span>
+                  </>
+                )}
+                <FroalaEditorComponent
+                  key={`editor${item}`}
+                  tag="textarea"
+                  config={this.config}
+                  model={this.state["editor" + (index + 1).toString()]}
+                  onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
+                />
+              </div>
             </div>
           </React.Fragment>
         );
@@ -777,7 +835,7 @@ class EditorFromCard extends Component {
               </Select>
               <Input size="small" style={{ fontSize: "0.8rem", height: "24px" }} onChange={this.handleFlagComment} value={this.state.flagComment} placeholder="코멘트 입력" />
             </div>
-            <div style={{ marginBottom: "10px" }}>{editorList}</div>
+            <div style={{ marginBottom: "5px" }}>{editorList}</div>
             <div style={{ textAlign: "right" }}>
               <Button size="small" onClick={this.handleSubmit} id="saveButton" style={{ fontSize: "0.8rem", marginRight: "5px" }}>
                 저장

@@ -51,6 +51,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   const [selectedCardType, setSelectedCardType] = useState();
   const [indexList, setIndexList] = useState();
   const [makerFlagStyle, setMakerFlagStyle] = useState();
+  const [updateStatus, setUpdateStatus] = useState(false);
   // const [selections, setSelections] = useState();
   // const [selectionNicks, setSelectionNicks] = useState([]);
 
@@ -68,7 +69,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   });
 
   function afterGetContent(data) {
-    // console.log(data);
+    console.log(data);
     // console.log(contentsList);
     const newArray = contentsList.concat(data.mycontent_getMycontentByMycontentIDs.mycontents);
     var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
@@ -123,9 +124,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     } else {
       console.log("why here?");
     }
-  }, [data1, indexChanged, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
+  }, [data1, updateStatus, indexChanged, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
 
-  const cardTypeInfo = (cardtype_info, from, parentId, generalCardId, selections, mycontent) => {
+  const cardTypeInfo = (cardtype_info, from, parentId, generalCardId, selections, mycontent, card_info) => {
     sessionStorage.setItem("cardtype_info", JSON.stringify(cardtype_info));
     sessionStorage.setItem("from", from);
     sessionStorage.setItem("parentId", parentId);
@@ -319,10 +320,11 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
           parentId={parentId}
           nicks={nicks}
           cardtypeEditor={cardtypeEditor}
-          onFinish={onFinishUpdateContents}
+          onFinishUpdateContents={onFinishUpdateContents}
           setEditorOnForUpdate={setEditorOnForUpdate}
           cardtype_info={cardtype_info}
           mycontent={mycontent}
+          card_info={card_info}
         />
       </>
     );
@@ -335,6 +337,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       setEditorOnFromCard(editorFromCard);
     } else if (from === "update") {
       console.log("update");
+      console.log(nicks);
       setEditorOnForUpdate(editorForUpdate);
     }
   };
@@ -516,7 +519,15 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
 
   function afterupdatemycontentsmutation(data) {
     console.log("after update contents", data);
+    const newData = data.mycontent_updateMycontent.mycontents[0]
+    console.log(contentsList)
+    // const newArray = contentsList;
+    const prevIndex = contentsList.findIndex(item=> item._id === newData._id)
+    contentsList[prevIndex] = newData;
+    // setContentsList(newArray)
+    setUpdateStatus(!updateStatus)
   }
+
   async function updatecontents(mycontent_id, face1, selection, face2, annotation) {
     try {
       await mycontent_updateMycontent({
@@ -537,6 +548,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
 
   const onFinishUpdateContents = (values, from, mycontent_id) => {
     console.log(values);
+    console.log(mycontent_id);
     updatecontents(mycontent_id, values.face1, values.selection, values.face2, values.annotation);
   };
 
@@ -590,7 +602,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   function onClickCardAdd(from, generalCardId) {
     sessionStorage.setItem("selections", 0);
     setEditorOn("");
-    setEditMode("normal")
+    setEditMode("normal");
     if (selectedCardType === undefined) {
       setSelectedCardType(cardTypes[0].cardtype_info);
       cardTypeInfo(cardTypes[0].cardtype_info, "inCard", null, generalCardId);
@@ -603,14 +615,20 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }
 
-  function onClickCardUpdate(mycontent, thisCardType) {
+  function onClickCardUpdate(mycontent, thisCardType, card_info) {
     sessionStorage.setItem("selections", 0);
     setEditorOn("");
-    setEditMode("update")
+    setEditMode("update");
     const hello = cardTypes.filter((item) => item.cardtype_info.name === thisCardType.cardtype_info.name);
     setSelectedCardType(hello[0].cardtype_info);
     sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
-    cardTypeInfo(hello[0].cardtype_info, "update", null, null, null, mycontent);
+    if (mycontent.selection) {
+      var selection = mycontent.selection.length;
+      console.log(mycontent.selection.length);
+    } else {
+      selection = null;
+    }
+    cardTypeInfo(hello[0].cardtype_info, "update", null, null, selection, mycontent, card_info);
   }
 
   function onClickCardAddChild(from, parentId, typeName) {
@@ -618,7 +636,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     console.log(parentId);
     sessionStorage.setItem("parentId", parentId);
     setEditorOn("");
-    setEditMode("normal")
+    setEditMode("normal");
     if (from === "child") {
       const hello = cardTypes.filter((item) => item.cardtype_info.name === typeName);
       setSelectedCardType(hello[0].cardtype_info);
@@ -640,7 +658,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       // console.log("카드에 스타일 입히기 시작", cardTypeSets);
 
       const current_card_style = cardTypeSets[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
-      console.log(current_card_style);
+      // console.log(current_card_style);
 
       const face_style = current_card_style[0].face_style;
       const row_style = current_card_style[0].row_style;
@@ -657,8 +675,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
           } else {
             borderLeft = "none";
           }
-          console.log("해당카드 정보", content);
-          console.log("해당컨텐츠 정보", content_value);
+          // console.log("해당카드 정보", content);
+          // console.log("해당컨텐츠 정보", content_value);
 
           const figure_shape = makerFlagStyle.figure_style.shape;
           const figure_size = makerFlagStyle.figure_style.size;
@@ -989,7 +1007,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                           </div>
                           <div>
                             <Space style={{ display: "flex", alignItems: "center" }}>
-                              <Button icon={<EditOutlined />} onClick={()=>onClickCardUpdate(content_value, current_card_style[0] )} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                              <Button
+                                icon={<EditOutlined />}
+                                onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
+                                size="small"
+                                type="secondary"
+                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                              >
                                 내용편집
                               </Button>
                               <Button
@@ -1011,13 +1035,11 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                     </>
                   )}
 
-                  {content._id === cardId &&
-                    editMode ===
-                      "update"(
-                        <>
-                          <div>{editorOnForUpdate}</div>
-                        </>
-                      )}
+                  {content._id === cardId && editMode === "update" && (
+                    <>
+                      <div>{editorOnForUpdate}</div>
+                    </>
+                  )}
                 </>
               )}
               {content.card_info.cardtype === "subject" && (
@@ -1095,7 +1117,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                           </div>
                           <div style={{ display: "flex", alignItems: "center" }}>
                             <Space>
-                              <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                              <Button
+                                icon={<EditOutlined />}
+                                onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
+                                size="small"
+                                type="secondary"
+                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                              >
                                 내용편집
                               </Button>
                               <Button
@@ -1111,9 +1139,15 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                       </>
                     )}
                   </div>
-                  {content._id === cardId && (
+                  {content._id === cardId && editMode === "normal" && (
                     <>
                       <div>{editorOnFromCard}</div>
+                    </>
+                  )}
+
+                  {content._id === cardId && editMode === "update" && (
+                    <>
+                      <div>{editorOnForUpdate}</div>
                     </>
                   )}
                 </>
@@ -1215,7 +1249,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                             </div>
                             <div>
                               <Space style={{ display: "flex", alignItems: "center" }}>
-                                <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                <Button
+                                  icon={<EditOutlined />}
+                                  onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
+                                  size="small"
+                                  type="secondary"
+                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                >
                                   내용편집
                                 </Button>
                                 <Button
@@ -1233,9 +1273,15 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                     </div>
                     <div style={{ height: "5px" }}></div>
                   </div>
-                  {content._id === cardId && (
+                  {content._id === cardId && editMode === "normal" && (
                     <>
                       <div>{editorOnFromCard}</div>
+                    </>
+                  )}
+
+                  {content._id === cardId && editMode === "update" && (
+                    <>
+                      <div>{editorOnForUpdate}</div>
                     </>
                   )}
                 </>
@@ -1443,7 +1489,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                             </div>
                             <div>
                               <Space style={{ display: "flex", alignItems: "center" }}>
-                                <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                <Button
+                                  icon={<EditOutlined />}
+                                  onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
+                                  size="small"
+                                  type="secondary"
+                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                >
                                   내용편집
                                 </Button>
                                 <Button
@@ -1474,7 +1526,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                             </div>
                             <div>
                               <Space style={{ display: "flex", alignItems: "center" }}>
-                                <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                <Button
+                                  icon={<EditOutlined />}
+                                  onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
+                                  size="small"
+                                  type="secondary"
+                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                >
                                   내용편집
                                 </Button>
                                 <Button
@@ -1492,9 +1550,15 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                     </div>
                     <div style={{ height: "5px" }}></div>
                   </div>
-                  {content._id === cardId && (
+                  {content._id === cardId && editMode === "normal" && (
                     <>
                       <div>{editorOnFromCard}</div>
+                    </>
+                  )}
+
+                  {content._id === cardId && editMode === "update" && (
+                    <>
+                      <div>{editorOnForUpdate}</div>
                     </>
                   )}
                 </>
@@ -1697,7 +1761,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                               </div>
                               <div>
                                 <Space style={{ display: "flex", alignItems: "center" }}>
-                                  <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                  <Button
+                                    icon={<EditOutlined />}
+                                    onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                  >
                                     내용편집
                                   </Button>
                                   <Button
@@ -1728,7 +1798,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                               </div>
                               <div>
                                 <Space style={{ display: "flex", alignItems: "center" }}>
-                                  <Button icon={<EditOutlined />} size="small" type="secondary" style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                                  <Button
+                                    icon={<EditOutlined />}
+                                    onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                  >
                                     내용편집
                                   </Button>
                                   <Button
@@ -1747,9 +1823,15 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                       <div style={{ height: "5px" }}></div>
                     </div>
                   </div>
-                  {content._id === cardId && (
+                  {content._id === cardId && editMode === "normal" && (
                     <>
                       <div>{editorOnFromCard}</div>
+                    </>
+                  )}
+
+                  {content._id === cardId && editMode === "update" && (
+                    <>
+                      <div>{editorOnForUpdate}</div>
                     </>
                   )}
                 </>
@@ -1766,7 +1848,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     console.log("onClickCard", card_id);
     console.log("from", from);
     console.log("parent", group);
-    setEditMode("normal")
+    setEditMode("normal");
     if ((from !== "general" && from !== "normal" && from !== "flip" && group === undefined) || null) {
       console.log("null or undefined");
       const selected1 = document.getElementsByClassName("child_group");

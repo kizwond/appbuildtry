@@ -15,7 +15,16 @@ import MoveToBookSetting from "../../common/MoveToBookSetting";
 import makeDataSource from "../../common/logic";
 import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
 
-const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
+const StudyBooksTable = ({
+  category,
+  myBook,
+  isPopupSomething,
+  chagePopup,
+  activedTable,
+  changeActivedTable,
+  selectedBooks,
+  changeSelectedBooks,
+}) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -25,29 +34,51 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
     setIsFoldedMenu(_id);
   }, []);
 
-  const changeIsShowedHiddenBook = useCallback((isShowedAllBooks, isShowedHiddenBook, id) => {
-    if (isShowedAllBooks) {
-      setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== id));
-    }
-    if (!isShowedAllBooks) {
-      setIsShowedHiddenBook([...isShowedHiddenBook, id]);
-    }
-  }, []);
+  const changeIsShowedHiddenBook = useCallback(
+    (isShowedAllBooks, isShowedHiddenBook, id) => {
+      if (isShowedAllBooks) {
+        setIsShowedHiddenBook(
+          isShowedHiddenBook.filter((_cateId) => _cateId !== id)
+        );
+      }
+      if (!isShowedAllBooks) {
+        setIsShowedHiddenBook([...isShowedHiddenBook, id]);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    setExpandedRowKeys(category.mybookcates.map((_cate) => `KEY:${_cate._id}INDEX:0`));
+    setExpandedRowKeys(
+      category.mybookcates.map((_cate) => `KEY:${_cate._id}INDEX:0`)
+    );
     setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const dataSource = useMemo(() => makeDataSource(myBook, category.mybookcates, isShowedHiddenBook, changeIsShowedHiddenBook), [myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook]);
+  const dataSource = useMemo(
+    () =>
+      makeDataSource(
+        myBook,
+        category.mybookcates,
+        isShowedHiddenBook,
+        changeIsShowedHiddenBook
+      ),
+    [myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook]
+  );
 
   if (!mounted) {
     return null;
   }
 
   const getConditionValue = (_record) => {
-    return (!expandedRowKeys.includes(_record.key) && _record.relationship === "parent") || _record.classType === "hiddenBar" || _record.classType === "middle-hiddenBar" || _record.classType === "empty-category";
+    return (
+      (!expandedRowKeys.includes(_record.key) &&
+        _record.relationship === "parent") ||
+      _record.classType === "hiddenBar" ||
+      _record.classType === "middle-hiddenBar" ||
+      _record.classType === "empty-category"
+    );
   };
 
   const columns = [
@@ -55,25 +86,34 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
       title: "카테고리",
       key: "categoryName",
       className: "TableGroupingColumn",
+      align: "center",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => (_record.relationship === "parent" ? <StyledTwoLinesEllipsis>{_value}</StyledTwoLinesEllipsis> : null),
+      render: (_value, _record) =>
+        _record.relationship === "parent" ? (
+          <StyledTwoLinesEllipsis>{_value}</StyledTwoLinesEllipsis>
+        ) : null,
     },
     {
       title: "책 제목",
       key: "title",
       dataIndex: "title",
       className: "TableFirstColumn",
-      width: 85,
+      align: "center",
+      width: 95,
       render: (value, _record, index) => {
-        const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
+        const isSelected =
+          selectedBooks.filter((_book) => _book.book_id === _record._id)
+            .length > 0;
         const obj = {
           children:
             _record.classType === "empty-category" ? (
               <div>빈 칸테고리</div>
-            ) : _record.relationship === "parent" && !expandedRowKeys.includes(_record.key) ? (
+            ) : _record.relationship === "parent" &&
+              !expandedRowKeys.includes(_record.key) ? (
               <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
-            ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
+            ) : _record.classType === "middle-hiddenBar" ||
+              _record.classType === "hiddenBar" ? (
               <StyledTwoLinesEllipsis>{value}</StyledTwoLinesEllipsis>
             ) : (
               <Space>
@@ -81,10 +121,17 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                   checked={isSelected}
                   onChange={() => {
                     if (isSelected) {
-                      changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                      changeSelectedBooks(
+                        selectedBooks.filter(
+                          (_book) => _book.book_id !== _record._id
+                        )
+                      );
                     }
                     if (!isSelected) {
-                      changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                      changeSelectedBooks([
+                        ...selectedBooks,
+                        { book_id: _record._id, book_title: _record.title },
+                      ]);
                     }
                   }}
                 />
@@ -165,13 +212,21 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
       dataIndex: "timeModify",
       align: "center",
       className: "TableMiddleColumn",
-      width: 75,
+      width: 60,
       render: (_value, _record) => {
         const obj = {
           children: (
-            <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
+            <div>
               {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-              {_record.total === 0 ? "-" : <StyledProgress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" strokeWidth={13} />}
+              {_record.total === 0 ? (
+                "-"
+              ) : (
+                <StyledProgress
+                  percent={_record.accuLevel / _record.total}
+                  trailColor="#bbbbbb"
+                  strokeWidth={13}
+                />
+              )}
             </div>
           ),
           props: {
@@ -233,9 +288,16 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                 width={"250px"}
                 closable={false}
                 mask={false}
-                visible={activedTable === "bookTable" && _record._id === isFoldedMenu}
+                visible={
+                  activedTable === "bookTable" && _record._id === isFoldedMenu
+                }
                 getContainer={false}
-                style={{ position: "absolute", textAlign: "initial", height: "3rem", top: "0.6rem" }}
+                style={{
+                  position: "absolute",
+                  textAlign: "initial",
+                  height: "3rem",
+                  top: "0.6rem",
+                }}
                 contentWrapperStyle={{ boxShadow: "unset" }}
                 drawerStyle={{ display: "block" }}
                 bodyStyle={{
@@ -249,10 +311,24 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                 }}
               >
                 <Space size={3}>
-                  <BookOrderButton _record={_record} /> |
-                  <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" /> |
-                  <HideOrShowButton record={_record} isPopupSomething={isPopupSomething} chagePopup={chagePopup} /> |
-                  <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+                  <BookOrderButton
+                    _record={_record}
+                    changeFoldedMenu={changeFoldedMenu}
+                  />{" "}
+                  |
+                  <FavoriteBook
+                    record={_record}
+                    changeActivedTable={changeActivedTable}
+                    changeFoldedMenu={changeFoldedMenu}
+                    tableType="study"
+                  />{" "}
+                  |
+                  <HideOrShowButton
+                    record={_record}
+                    changeFoldedMenu={changeFoldedMenu}
+                  />{" "}
+                  |
+                  <MoveToBookSetting mybook_id={_record._id} />
                 </Space>
                 <div
                   className="PushCustomCircleButton"
@@ -301,7 +377,13 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
   ];
 
   return (
-    <StyledCard bordered={false} size="small" title={<div style={{ fontSize: "1rem", fontWeight: "bold" }}>나의 책</div>}>
+    <StyledCard
+      bordered={false}
+      size="small"
+      title={
+        <div style={{ fontSize: "1rem", fontWeight: "bold" }}>나의 책</div>
+      }
+    >
       <Table
         dataSource={dataSource}
         tableLayout="fixed"
@@ -315,7 +397,8 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
         rowClassName={(record, index) =>
           record.classType === "empty-category"
             ? "EmptyCategoryRow"
-            : !expandedRowKeys.includes(record.key) && record.relationship === "parent"
+            : !expandedRowKeys.includes(record.key) &&
+              record.relationship === "parent"
             ? "FoldedCategoryRow"
             : record.classType === "hiddenBar"
             ? "LastHiddenBarRow"
@@ -341,7 +424,9 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
           expandedRowClassName: (record, index, indent) => "",
           onExpand: (ex, re) => {
             if (!ex) {
-              setExpandedRowKeys(expandedRowKeys.filter((key) => key !== re.key));
+              setExpandedRowKeys(
+                expandedRowKeys.filter((key) => key !== re.key)
+              );
             }
             if (ex) {
               setExpandedRowKeys([...expandedRowKeys, re.key]);

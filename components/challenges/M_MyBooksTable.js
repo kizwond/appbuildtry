@@ -138,7 +138,7 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       dataIndex: "title",
       className: "TableFirstColumn",
       align: "center",
-      width: 140,
+      width: 95,
       render: (value, _record, index) => (
         <StyledTwoLinesEllipsis>
           <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
@@ -152,7 +152,7 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       dataIndex: "total",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 35,
+      width: 26,
       render: (_value, _record) => (
         <div style={{ width: "100%" }}>
           <Popover

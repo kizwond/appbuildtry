@@ -143,7 +143,7 @@ const M_BooksTable = ({
       dataIndex: "title",
       className: "TableFirstColumn",
       align: "center",
-      width: 85,
+      width: 95,
       render: (value, _record, index) => {
         const obj = {
           children:
@@ -199,7 +199,7 @@ const M_BooksTable = ({
       dataIndex: "total",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 35,
+      width: 26,
       render: (_value, _record) => {
         const obj = {
           children: (
@@ -238,7 +238,8 @@ const M_BooksTable = ({
                     width: "100%",
                   }}
                 >
-                  {_value}
+                  {/* {_value} */}
+                  5487
                 </div>
               </Popover>
             </div>
@@ -263,7 +264,7 @@ const M_BooksTable = ({
       dataIndex: "writeHistory",
       className: "TableMiddleColumn",
       align: "center",
-      width: 75,
+      width: 60,
       render: (_value, _record) => {
         const now = new Date();
 
@@ -293,7 +294,7 @@ const M_BooksTable = ({
 
         const obj = {
           children: (
-            <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
+            <div>
               <div>
                 <div
                   style={{ display: "flex", justifyContent: "space-around" }}
@@ -306,12 +307,14 @@ const M_BooksTable = ({
                           height:
                             theDayBeforeYesterdayCreatedCards >= 100
                               ? "100%"
-                              : `${theDayBeforeYesterdayCreatedCards}%`,
+                              : "85%",
+                          // `${theDayBeforeYesterdayCreatedCards}%`
                         }}
                       >
                         <span className="CardCounter">
                           {theDayBeforeYesterdayCreatedCards === 0
-                            ? "-"
+                            ? // "-"
+                              "85"
                             : theDayBeforeYesterdayCreatedCards}
                         </span>
                       </div>
@@ -325,7 +328,8 @@ const M_BooksTable = ({
                           height:
                             yesterdayCreatedCards >= 100
                               ? "100%"
-                              : `${yesterdayCreatedCards}%`,
+                              : //  `${yesterdayCreatedCards}%`
+                                "25%",
                         }}
                       >
                         <span
@@ -333,7 +337,8 @@ const M_BooksTable = ({
                           style={{ fontSize: "6px" }}
                         >
                           {yesterdayCreatedCards === 0
-                            ? "-"
+                            ? //  "-"
+                              "25"
                             : yesterdayCreatedCards}
                         </span>
                       </div>
@@ -347,11 +352,15 @@ const M_BooksTable = ({
                           height:
                             todayCreatedCards >= 100
                               ? "100%"
-                              : `${todayCreatedCards}%`,
+                              : // `${todayCreatedCards}%`
+                                "100%",
                         }}
                       >
                         <span className="CardCounter">
-                          {todayCreatedCards === 0 ? "-" : todayCreatedCards}
+                          {todayCreatedCards === 0
+                            ? // "-"
+                              "100"
+                            : todayCreatedCards}
                         </span>
                       </div>
                     </div>
@@ -381,12 +390,11 @@ const M_BooksTable = ({
       },
     },
     {
-      // title: "이동",
       key: "seqInCategory",
       dataIndex: "seqInCategory",
       className: "TableLastColumn",
       align: "right",
-      width: 25,
+      width: 20,
       render: (value, _record) => {
         const obj = {
           children: (
@@ -450,7 +458,11 @@ const M_BooksTable = ({
                 }}
               >
                 <Space size={3}>
-                  <BookOrderButton _record={_record} /> |
+                  <BookOrderButton
+                    _record={_record}
+                    changeFoldedMenu={changeFoldedMenu}
+                  />{" "}
+                  |
                   <FavoriteBook
                     record={_record}
                     changeActivedTable={changeActivedTable}
@@ -460,16 +472,10 @@ const M_BooksTable = ({
                   |
                   <HideOrShowButton
                     record={_record}
-                    isPopupSomething={isPopupSomething}
-                    chagePopup={chagePopup}
+                    changeFoldedMenu={changeFoldedMenu}
                   />{" "}
                   |
-                  <MoveToBookSetting
-                    mybook_id={_record._id}
-                    title={_record.title}
-                    isPopupSomething={isPopupSomething}
-                    chagePopup={chagePopup}
-                  />
+                  <MoveToBookSetting mybook_id={_record._id} />
                 </Space>
                 <div
                   className="PushCustomCircleButton"
@@ -493,28 +499,6 @@ const M_BooksTable = ({
         return obj;
       },
     },
-    // {
-    //   // title: "상설",
-    //   className: "TableLastColumn",
-    //   align: "center",
-    //   width: 25,
-    //   render: (value, _record, index) => {
-    //     const obj = {
-    //       children: (
-    //         <div>
-    //           <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-    //         </div>
-    //       ),
-    //       props: {},
-    //     };
-    //     if (getConditionValue(_record)) {
-    //       obj.props.colSpan = 0;
-    //     } else {
-    //       obj.props.colSpan = 1;
-    //     }
-    //     return obj;
-    //   },
-    // },
   ];
 
   return (

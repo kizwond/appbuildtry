@@ -6,11 +6,13 @@ import { MUTATION_CHANGE_BOOK_ORDER } from "../../../graphql/mutation/myBook";
 import { Space, Tooltip } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
-const BookOrderButton = ({ _record }) => {
+const BookOrderButton = ({ _record, changeFoldedMenu }) => {
   const router = useRouter();
   const [rePosition] = useMutation(MUTATION_CHANGE_BOOK_ORDER, {
     onCompleted: (received_data) => {
       if (received_data.mybook_modifySeq.status === "200") {
+        console.log("책순서 변경 후 받은 데이터", received_data);
+        changeFoldedMenu("");
       } else if (received_data.mybook_modifySeq.status === "401") {
         router.push("/account/login");
       } else {

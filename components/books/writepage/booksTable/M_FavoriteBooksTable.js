@@ -114,7 +114,7 @@ const FavoriteBooksTable = forwardRef(
         dataIndex: "title",
         className: "TableMiddleColumn",
         align: "center",
-        width: 85,
+        width: 95,
         render: (value, _record, index) => (
           <StyledFlexAlignCenter
             onClick={() => {
@@ -137,7 +137,7 @@ const FavoriteBooksTable = forwardRef(
         className: "TableMiddleColumn TableCardCounterColumn",
         align: "center",
         ellipsis: true,
-        width: 33,
+        width: 26,
         render: (_value, _record) => (
           <div style={{ width: "100%" }}>
             <Popover
@@ -187,7 +187,7 @@ const FavoriteBooksTable = forwardRef(
         dataIndex: "writeHistory",
         className: "TableMiddleColumn",
         align: "center",
-        width: 75,
+        width: 60,
         render: (_value, _record) => {
           const now = new Date();
 
@@ -216,7 +216,7 @@ const FavoriteBooksTable = forwardRef(
             : 0;
 
           return (
-            <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
+            <div>
               <div>
                 <div
                   style={{ display: "flex", justifyContent: "space-around" }}
@@ -295,7 +295,7 @@ const FavoriteBooksTable = forwardRef(
         dataIndex: "seqInCategory",
         className: "TableLastColumn",
         align: "right",
-        width: 25,
+        width: 20,
         render: (value, _record) => (
           <div
             style={{
@@ -368,16 +368,10 @@ const FavoriteBooksTable = forwardRef(
                 |
                 <HideOrShowButton
                   record={_record}
-                  isPopupSomething={isPopupSomething}
-                  chagePopup={chagePopup}
+                  changeFoldedMenu={changeFoldedMenu}
                 />{" "}
                 |
-                <MoveToBookSetting
-                  mybook_id={_record._id}
-                  title={_record.title}
-                  isPopupSomething={isPopupSomething}
-                  chagePopup={chagePopup}
-                />
+                <MoveToBookSetting mybook_id={_record._id} />
               </Space>
               <div
                 className="PushCustomCircleButton"

@@ -132,7 +132,7 @@ const M_StudyBooksTable = ({
       dataIndex: "title",
       className: "TableFirstColumn",
       align: "center",
-      width: 85,
+      width: 95,
       render: (value, _record, index) => {
         const isSelected =
           selectedBooks.filter((_book) => _book.book_id === _record._id)
@@ -274,11 +274,11 @@ const M_StudyBooksTable = ({
       dataIndex: "accuLevel",
       className: "TableMiddleColumn",
       align: "center",
-      width: 75,
+      width: 60,
       render: (_value, _record, _index) => {
         const obj = {
           children: (
-            <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
+            <div>
               {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
               {
                 // _record.total === 0 ? "-" :
@@ -312,7 +312,7 @@ const M_StudyBooksTable = ({
       dataIndex: "seqInCategory",
       className: "TableLastColumn",
       align: "right",
-      width: 25,
+      width: 20,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -376,7 +376,11 @@ const M_StudyBooksTable = ({
                 }}
               >
                 <Space size={3}>
-                  <BookOrderButton _record={_record} /> |
+                  <BookOrderButton
+                    _record={_record}
+                    changeFoldedMenu={changeFoldedMenu}
+                  />{" "}
+                  |
                   <FavoriteBook
                     record={_record}
                     changeActivedTable={changeActivedTable}
@@ -386,16 +390,10 @@ const M_StudyBooksTable = ({
                   |
                   <HideOrShowButton
                     record={_record}
-                    isPopupSomething={isPopupSomething}
-                    chagePopup={chagePopup}
+                    changeFoldedMenu={changeFoldedMenu}
                   />{" "}
                   |
-                  <MoveToBookSetting
-                    mybook_id={_record._id}
-                    title={_record.title}
-                    isPopupSomething={isPopupSomething}
-                    chagePopup={chagePopup}
-                  />
+                  <MoveToBookSetting mybook_id={_record._id} />
                 </Space>
                 <div
                   className="PushCustomCircleButton"

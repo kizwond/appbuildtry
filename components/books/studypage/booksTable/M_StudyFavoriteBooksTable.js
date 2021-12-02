@@ -122,7 +122,7 @@ const M_StudyFavoriteBooksTable = forwardRef(
         dataIndex: "title",
         className: "TableMiddleColumn",
         align: "center",
-        width: 85,
+        width: 95,
         render: (value, _record, index) => {
           const isSelected =
             selectedBooks.filter((_book) => _book.book_id === _record._id)
@@ -170,7 +170,7 @@ const M_StudyFavoriteBooksTable = forwardRef(
         dataIndex: "total",
         className: "TableMiddleColumn TableCardCounterColumn",
         align: "center",
-        width: 35,
+        width: 26,
         render: (_value, _record) => (
           <div style={{ width: "100%" }}>
             <Popover
@@ -220,9 +220,9 @@ const M_StudyFavoriteBooksTable = forwardRef(
         dataIndex: "timeModify",
         className: "TableMiddleColumn",
         align: "center",
-        width: 75,
+        width: 60,
         render: (_value, _record) => (
-          <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
+          <div>
             {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
             {_record.total === 0 ? (
               "-"
@@ -242,7 +242,7 @@ const M_StudyFavoriteBooksTable = forwardRef(
         dataIndex: "seqInCategory",
         className: "TableLastColumn",
         align: "right",
-        width: 25,
+        width: 20,
         render: (value, _record, index) => (
           <div
             style={{
@@ -304,7 +304,11 @@ const M_StudyFavoriteBooksTable = forwardRef(
               }}
             >
               <Space size={3}>
-                <FavoriteBookOrderButton _record={_record} tableType="study" />{" "}
+                <FavoriteBookOrderButton
+                  _record={_record}
+                  tableType="study"
+                  changeFoldedMenu={changeFoldedMenu}
+                />{" "}
                 |
                 <FavoriteBook
                   record={_record}
@@ -315,16 +319,10 @@ const M_StudyFavoriteBooksTable = forwardRef(
                 |
                 <HideOrShowButton
                   record={_record}
-                  isPopupSomething={isPopupSomething}
-                  chagePopup={chagePopup}
+                  changeFoldedMenu={changeFoldedMenu}
                 />{" "}
                 |
-                <MoveToBookSetting
-                  mybook_id={_record._id}
-                  title={_record.title}
-                  isPopupSomething={isPopupSomething}
-                  chagePopup={chagePopup}
-                />
+                <MoveToBookSetting mybook_id={_record._id} />
               </Space>
               <div
                 className="PushCustomCircleButton"

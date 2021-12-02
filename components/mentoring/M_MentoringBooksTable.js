@@ -1,16 +1,32 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import styled from "styled-components";
 import { Table, Card, Popover, Button } from "antd";
 
-import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../common/styledComponent/page";
+import {
+  StyledFlexAlignCenter,
+  StyledFlexSpaceBetween,
+  StyledTwoLinesEllipsis,
+} from "../common/styledComponent/page";
 import DoubleLinesEllipsisContainer from "../common/styledComponent/DoubleLinesEllipsisContainer";
 
 import M_RequestMentoringCard from "../../components/mentoring/M_RequestMetoringCard";
 import { StyledBookTypeDiv } from "../common/styledComponent/buttons";
 
-const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) => {
+const M_Mentoring_BooksTable = ({
+  bookData,
+  loading,
+  error,
+  deviceDimensions,
+}) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [cardHeight, setCardHeight] = useState(0);
   const cardRef = useRef();
@@ -39,19 +55,29 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) 
     bookData.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0].mybookcates
       .map((_cate, _categoryIndex) => {
         const { name, seq } = _cate;
-        const _categoryBooksList = myBook2.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id);
+        const _categoryBooksList = myBook2.filter(
+          (_book) => _cate._id === _book.mybook_info.mybookcate_id
+        );
         if (_categoryBooksList.length === 0) {
           return null;
         }
 
-        const categoryBooksList = _categoryBooksList.sort((a, b) => a.mybook_info.seqInCategory - b.mybook_info.seqInCategory);
+        const categoryBooksList = _categoryBooksList.sort(
+          (a, b) => a.mybook_info.seqInCategory - b.mybook_info.seqInCategory
+        );
 
         const data = categoryBooksList.map((_book, _index) => ({
           ..._book.mybook_info,
           ..._book.stats?.numCards,
           relationship: _index === 0 ? "parent" : "children",
           classType:
-            _index + 1 === categoryBooksList.length && _index % 2 === 0 ? "last-odd-book" : _index + 1 === categoryBooksList.length && _index % 2 !== 0 ? "last-even-book" : _index % 2 !== 0 ? "even-book" : "odd-book",
+            _index + 1 === categoryBooksList.length && _index % 2 === 0
+              ? "last-odd-book"
+              : _index + 1 === categoryBooksList.length && _index % 2 !== 0
+              ? "last-even-book"
+              : _index % 2 !== 0
+              ? "even-book"
+              : "odd-book",
           categoryOrder: seq,
           categoryName: name,
           isLastBook: categoryBooksList.length === _index + 1,
@@ -71,7 +97,12 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) 
       align: "center",
       width: 60,
       dataIndex: "categoryName",
-      render: (_value, _record) => (_record.relationship === "parent" ? <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>{_value}</DoubleLinesEllipsisContainer> : null),
+      render: (_value, _record) =>
+        _record.relationship === "parent" ? (
+          <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>
+            {_value}
+          </DoubleLinesEllipsisContainer>
+        ) : null,
     },
     {
       title: "책 제목",
@@ -79,7 +110,7 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) 
       dataIndex: "title",
       className: "TableFirstColumn",
       align: "center",
-      width: 140,
+      width: 95,
       render: (value, _record, index) => (
         <StyledFlexAlignCenter>
           <StyledFlexAlignCenter>
@@ -124,7 +155,17 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) 
             trigger="click"
             overlayClassName="M-Popover-NumberOfCards"
           >
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", cursor: "pointer", width: "100%" }}>{_value}</div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                width: "100%",
+              }}
+            >
+              {_value}
+            </div>
           </Popover>
         </div>
       ),
@@ -156,7 +197,12 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) 
   ];
 
   return (
-    <StyledCard bordered={false} size="small" cardheight={cardHeight} bodyStyle={{ padding: "0", paddingTop: "8px" }}>
+    <StyledCard
+      bordered={false}
+      size="small"
+      cardheight={cardHeight}
+      bodyStyle={{ padding: "0", paddingTop: "8px" }}
+    >
       {
         <div ref={cardRef}>
           <Table
@@ -167,14 +213,25 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) 
             size="small"
             pagination={false}
             rowClassName={(record, index) =>
-              record.classType === "last-odd-book" ? "LastOddNumberRow" : record.classType === "last-even-book" ? "LastEvenNumberRow" : record.classType === "even-book" ? "EvenNumberRow" : "OddNumberRow"
+              record.classType === "last-odd-book"
+                ? "LastOddNumberRow"
+                : record.classType === "last-even-book"
+                ? "LastEvenNumberRow"
+                : record.classType === "even-book"
+                ? "EvenNumberRow"
+                : "OddNumberRow"
             }
             expandable={{
               expandIcon: () => null,
               columnWidth: 0,
               expandedRowKeys,
               expandedRowRender: (_record, _index) => (
-                <M_RequestMentoringCard resetExpandedRowKeys={resetExpandedRowKeys} mybook_id={_record._id} mybookTitle={_record.title} cardVisible={expandedRowKeys.includes(_record._id)} />
+                <M_RequestMentoringCard
+                  resetExpandedRowKeys={resetExpandedRowKeys}
+                  mybook_id={_record._id}
+                  mybookTitle={_record.title}
+                  cardVisible={expandedRowKeys.includes(_record._id)}
+                />
               ),
             }}
           />

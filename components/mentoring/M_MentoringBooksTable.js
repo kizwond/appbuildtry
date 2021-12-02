@@ -8,6 +8,7 @@ import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis }
 import DoubleLinesEllipsisContainer from "../common/styledComponent/DoubleLinesEllipsisContainer";
 
 import M_RequestMentoringCard from "../../components/mentoring/M_RequestMetoringCard";
+import { StyledBookTypeDiv } from "../common/styledComponent/buttons";
 
 const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -82,7 +83,7 @@ const M_Mentoring_BooksTable = ({ bookData, loading, error, deviceDimensions }) 
       render: (value, _record, index) => (
         <StyledFlexAlignCenter>
           <StyledFlexAlignCenter>
-            <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
+            <StyledBookTypeDiv booktype={_record.type} />
           </StyledFlexAlignCenter>
           <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
         </StyledFlexAlignCenter>
@@ -271,18 +272,4 @@ const StyledCard = styled(Card)`
   & .ant-input.ant-input-sm {
     height: 22px;
   }
-`;
-
-const StyledBookTypeDiv = styled.div`
-  width: 10px;
-  height: 30px;
-  color: white;
-  display: inline-block;
-  border-radius: 3px;
-  margin: 0 4px;
-  line-height: 30px;
-  background-color: ${(props) => {
-    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
-    return bgColor;
-  }};
 `;

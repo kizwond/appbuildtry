@@ -1,13 +1,13 @@
 /* eslint-disable react/display-name */
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "../../../../node_modules/moment/moment";
 
 import { Table, Card, Space, Drawer, Checkbox, Progress } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
@@ -88,7 +88,7 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                   }}
                 />
                 <div>
-                  <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
+                  <StyledBookTypeDiv booktype={_record.type} />
 
                   <StyledTwoLinesEllipsis>{value}</StyledTwoLinesEllipsis>
                 </div>
@@ -396,18 +396,4 @@ const StyledCard = styled(Card)`
   & .HandleOnOffShow > span {
     font-size: 0.7rem;
   }
-`;
-
-const StyledBookTypeDiv = styled.div`
-  width: 10px;
-  height: 30px;
-  color: white;
-  display: inline-block;
-  border-radius: 3px;
-  margin: 0 4px;
-  line-height: 30px;
-  background-color: ${(props) => {
-    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
-    return bgColor;
-  }};
 `;

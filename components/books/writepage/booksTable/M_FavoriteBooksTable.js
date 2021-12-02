@@ -15,6 +15,7 @@ import { StyledFlexAlignCenter, StyledFlexSpaceBetween, StyledTwoLinesEllipsis }
 import CategorySettingButton from "../categorySetting/CategorySettingButton";
 import CreateBookButton from "../createBook/CreateBookButton";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 
 const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable }, ref) => {
   const [mounted, setMounted] = useState(false);
@@ -94,7 +95,7 @@ const FavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, cha
           style={{ cursor: "pointer" }}
         >
           <StyledFlexAlignCenter>
-            <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
+            <StyledBookTypeDiv booktype={_record.type} />
           </StyledFlexAlignCenter>
           <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
         </StyledFlexAlignCenter>
@@ -377,18 +378,4 @@ const StyledCard = styled(Card)`
     display: block;
     color: #707070;
   }
-`;
-
-const StyledBookTypeDiv = styled.div`
-  width: 10px;
-  height: 30px;
-  color: white;
-  display: inline-block;
-  border-radius: 3px;
-  margin: 0 4px;
-  line-height: 30px;
-  background-color: ${(props) => {
-    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
-    return bgColor;
-  }};
 `;

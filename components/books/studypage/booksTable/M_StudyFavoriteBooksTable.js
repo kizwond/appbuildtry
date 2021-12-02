@@ -102,7 +102,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
                   }
                 }}
               />
-              <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
+              <StyledBookTypeDiv booktype={_record.type} />
             </StyledFlexAlignCenter>
             <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
           </div>

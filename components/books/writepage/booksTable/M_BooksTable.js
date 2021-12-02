@@ -124,7 +124,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
                 style={{ cursor: "pointer" }}
               >
                 <StyledFlexAlignCenter>
-                  <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
+                  <StyledBookTypeDiv booktype={_record.type} />
                 </StyledFlexAlignCenter>
                 <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
               </StyledFlexAlignCenter>

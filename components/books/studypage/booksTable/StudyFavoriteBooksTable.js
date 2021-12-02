@@ -1,19 +1,19 @@
 /* eslint-disable react/display-name */
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "../../../../node_modules/moment/moment";
 
 import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 
-const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
+const StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
@@ -100,7 +100,7 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
                 }}
               />
               <div>
-                <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
+                <StyledBookTypeDiv booktype={_record.type} />
                 {value}
               </div>
             </Space>
@@ -311,18 +311,4 @@ const StyledCard = styled(Card)`
   & .HandleOnOffShow > span {
     font-size: 0.7rem;
   }
-`;
-
-const StyledBookTypeDiv = styled.div`
-  width: 10px;
-  height: 30px;
-  color: white;
-  display: inline-block;
-  border-radius: 3px;
-  margin: 0 4px;
-  line-height: 30px;
-  background-color: ${(props) => {
-    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
-    return bgColor;
-  }};
 `;

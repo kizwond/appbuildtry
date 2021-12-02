@@ -123,7 +123,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                       }
                     }}
                   />
-                  <StyledBookTypeDiv booktype={_record.type}></StyledBookTypeDiv>
+                  <StyledBookTypeDiv booktype={_record.type} />
                 </StyledFlexAlignCenter>
                 <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
               </div>

@@ -174,7 +174,6 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
         <div
           style={{
             position: "relative",
-            zIndex: 1000 - index,
           }}
         >
           <div

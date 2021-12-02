@@ -11,33 +11,37 @@ const useGetMentoringAndMenteeBooks = () => {
 
   const router = useRouter();
 
-  const getCaculatedData = flow(
-    filter((mentee) => mentee.mentoringStatus === "onGoing"),
-    map((mentee) => ({
-      ...mentee,
-      key: mentee._id,
-      menteeNameAndId: `${mentee.menteeName}(${mentee.menteeUsername})`,
-      menteeGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup, { _id: mentee.menteeGroup_id }).name,
-      menteeSeq: mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup.findIndex((gr) => gr._id === mentee.menteeGroup_id),
-      bookType: _.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).mybook_info.type,
-      studyHistory:
-        _(_.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).stats?.studyHistory)
-          .map((history) => history.studyHour)
-          .take(3)
-          .value() === []
-          ? _(_.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).stats.studyHistory)
-              .map((history) => history.studyHour)
-              .take(3)
-              .value()
-          : ["0.5", "2", "0"],
-    })),
-    sortBy(["menteeSeq"])
-  );
+  const getCaculatedData = (mentee, menteeBooks) => {
+    const getData = flow(
+      filter((mentee) => mentee.mentoringStatus === "onGoing"),
+      map((mentee) => ({
+        ...mentee,
+        key: mentee._id,
+        menteeNameAndId: `${mentee.menteeName}(${mentee.menteeUsername})`,
+        menteeGroupName: _.find(mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup, { _id: mentee.menteeGroup_id }).name,
+        menteeSeq: mentoringData.mentoring_getMentoring.mentorings[0].mentoring_info.menteeGroup.findIndex((gr) => gr._id === mentee.menteeGroup_id),
+        bookType: _.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).mybook_info.type,
+        studyHistory:
+          _(_.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).stats?.studyHistory)
+            .map((history) => history.studyHour)
+            .take(3)
+            .value() === []
+            ? _(_.find(menteeBooks.mybook_getMybookByMybookIDs.mybooks, (book) => book._id === mentee.mybook_id).stats.studyHistory)
+                .map((history) => history.studyHour)
+                .take(3)
+                .value()
+            : ["0.5", "2", "0"],
+      })),
+      sortBy(["menteeSeq"])
+    );
+
+    return getData(mentee);
+  };
 
   const [getBooksInfo, { data: menteeBooks, error, loading }] = useLazyQuery(GET_MY_BOOKS_BY_BOOK_IDS, {
     onCompleted: (data) => {
       if (data.mybook_getMybookByMybookIDs.status === "200") {
-        const fordata = getCaculatedData(mentoringData.mentoring_getMentoring.mentorings[0].myMentees);
+        const fordata = getCaculatedData(mentoringData.mentoring_getMentoring.mentorings[0].myMentees, data);
 
         setNewData(fordata);
         console.log("멘티정보 업데이트 프로세스 작업 종료(with책 정보 갱신)", data);
@@ -87,7 +91,7 @@ const useGetMentoringAndMenteeBooks = () => {
           },
         });
       } else {
-        const fordata = getCaculatedData(mentoringData.mentoring_getMentoring.mentorings[0].myMentees);
+        const fordata = getCaculatedData(mentoringData.mentoring_getMentoring.mentorings[0].myMentees, menteeBooks);
         setNewData(fordata);
         console.log("멘토 정보 업데이트 프로세스 작업 종료(without책 정보 갱신)");
       }

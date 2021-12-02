@@ -428,7 +428,6 @@ const StyledPointer = styled.div`
   position: relative;
   background: #efedfc;
   color: white;
-  z-index: ${(props) => props.zIndex};
   display: flex;
   align-items: center;
   justify-content: center;

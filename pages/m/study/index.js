@@ -163,7 +163,7 @@ const StyledBottomBar = styled.div`
   justify-content: space-around;
   align-items: center;
   /* padding: 8px 0; */
-  z-index: 9999;
+  z-index: 999;
 
   & > div {
     width: 100%;

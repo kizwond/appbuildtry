@@ -199,7 +199,6 @@ const FavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, ac
         <div
           style={{
             position: "relative",
-            zIndex: 2,
           }}
         >
           <div

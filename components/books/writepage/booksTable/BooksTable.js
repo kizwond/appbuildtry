@@ -247,7 +247,6 @@ const BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTab
             <div
               style={{
                 position: "relative",
-                zIndex: 2,
               }}
             >
               <div

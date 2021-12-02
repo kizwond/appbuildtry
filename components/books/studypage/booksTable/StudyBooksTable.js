@@ -198,7 +198,6 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
             <div
               style={{
                 position: "relative",
-                zIndex: 2,
               }}
             >
               <div
@@ -217,7 +216,7 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
                   className="PullCustomCircleButton"
                   style={{
                     width: "44px",
-                    height: "4.2rem",
+                    height: "3rem",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",

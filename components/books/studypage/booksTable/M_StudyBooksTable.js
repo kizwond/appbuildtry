@@ -233,7 +233,6 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
             <div
               style={{
                 position: "relative",
-                zIndex: 1000 - index,
               }}
             >
               <div

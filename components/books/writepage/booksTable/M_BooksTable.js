@@ -279,7 +279,6 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
             <div
               style={{
                 position: "relative",
-                zIndex: 2,
               }}
             >
               <div
@@ -298,7 +297,7 @@ const M_BooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedT
                   className="PullCustomCircleButton"
                   style={{
                     width: "44px",
-                    height: "4.2rem",
+                    height: "3rem",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",

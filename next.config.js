@@ -53,6 +53,7 @@ module.exports = {
   resolve: {
     modules: ["node_modules"],
   },
+  reactStrictMode: true,
 };
 
 // module.exports = {

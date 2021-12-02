@@ -392,7 +392,3 @@ p {
 .ant-radio-button-wrapper:not(:first-child)::before {
   width: 0;
 }
-
-.ant-drawer {
-  z-index: 20000;
-}

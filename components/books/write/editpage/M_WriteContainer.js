@@ -871,7 +871,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             <>
               {content.card_info.cardtype === "read" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px", boxShadow: "0px 0px 6px -5px #5E5E5E" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -1044,7 +1044,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               )}
               {content.card_info.cardtype === "subject" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px", boxShadow: "0px 0px 6px -5px #5E5E5E" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -1154,7 +1154,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               )}
               {content.card_info.cardtype === "general" && (
                 <>
-                  <div className={`${content._id} child_group other`} style={{ boxShadow: "0px 0px 6px -5px #5E5E5E" }}>
+                  <div className={`${content._id} child_group other`} >
                     <div style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "general")}>
                         {/* 페이스 스타일 영역 */}
@@ -1288,7 +1288,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "top-bottom" && (
                 <>
-                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`} style={{ boxShadow: "0px 0px 6px -5px #5E5E5E" }}>
+                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`} >
                     <div style={{ marginBottom: "0px" }}>
                       <div
                         onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
@@ -1565,7 +1565,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "left-right" && (
                 <>
-                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`} style={{ boxShadow: "0px 0px 6px -5px #5E5E5E" }}>
+                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`} >
                     <div style={{ marginBottom: "0px" }}>
                       <div
                         onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}

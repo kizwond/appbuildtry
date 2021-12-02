@@ -322,7 +322,6 @@ const M_StudyFavoriteBooksTable = forwardRef(
         ),
       },
     ];
-    console.log(visible);
     return (
       <StyledCard
         isvisible={visible ? "true" : "false"}

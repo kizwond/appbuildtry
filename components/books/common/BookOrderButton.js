@@ -39,7 +39,7 @@ const BookOrderButton = ({ _record, changeFoldedMenu }) => {
 
   return (
     <Space size={2}>
-      {_record.isFirstBook ? (
+      {_record.isFirstBook || _record.hideOrShow === "hide" ? (
         <div
           className="FirstBookCustom"
           style={{
@@ -74,7 +74,7 @@ const BookOrderButton = ({ _record, changeFoldedMenu }) => {
           <ArrowUpOutlined />
         </div>
       )}
-      {_record.isLastBook ? (
+      {_record.isLastBook || _record.hideOrShow === "hide" ? (
         <div
           className="LastBookCustom"
           style={{

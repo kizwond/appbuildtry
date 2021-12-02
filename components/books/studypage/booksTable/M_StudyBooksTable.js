@@ -36,7 +36,7 @@ const M_StudyBooksTable = ({
   const [isFoldedMenu, setIsFoldedMenu] = useState();
 
   const checkRef = useRef({});
-
+  console.log({ isFoldedMenu });
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);

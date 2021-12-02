@@ -442,7 +442,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     if (parentId === null) {
       var hasParent = "no";
       var parentCard_id = undefined;
-    } else if (parentId === "undefined") {
+    } else if (parentId === "null") {
+      var hasParent = "no";
+      var parentCard_id = undefined;
+    }else if (parentId === "undefined") {
+      hasParent = "no";
+      parentCard_id = undefined;
+    } else if (parentId === undefined) {
       hasParent = "no";
       parentCard_id = undefined;
     } else {
@@ -519,13 +525,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
 
   function afterupdatemycontentsmutation(data) {
     console.log("after update contents", data);
-    const newData = data.mycontent_updateMycontent.mycontents[0]
-    console.log(contentsList)
+    const newData = data.mycontent_updateMycontent.mycontents[0];
+    console.log(contentsList);
     // const newArray = contentsList;
-    const prevIndex = contentsList.findIndex(item=> item._id === newData._id)
+    const prevIndex = contentsList.findIndex((item) => item._id === newData._id);
     contentsList[prevIndex] = newData;
     // setContentsList(newArray)
-    setUpdateStatus(!updateStatus)
+    setUpdateStatus(!updateStatus);
   }
 
   async function updatecontents(mycontent_id, face1, selection, face2, annotation) {
@@ -1109,7 +1115,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                     </div>
                     {content._id === cardId && (
                       <>
-                        <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row" }}>
+                        <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                           <div>
                             <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
                               다음카드
@@ -1154,7 +1160,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               )}
               {content.card_info.cardtype === "general" && (
                 <>
-                  <div className={`${content._id} child_group other`} >
+                  <div className={`${content._id} child_group other`}>
                     <div style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "general")}>
                         {/* 페이스 스타일 영역 */}
@@ -1288,7 +1294,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "top-bottom" && (
                 <>
-                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`} >
+                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
                         onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
@@ -1565,7 +1571,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "left-right" && (
                 <>
-                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`} >
+                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
                         onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}

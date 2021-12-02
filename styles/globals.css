@@ -124,7 +124,11 @@ p {
   width: 210px !important;
 }
 
-.card_setting_tab .ant-tabs-nav .ant-tabs-nav-wrap .ant-tabs-nav-list .ant-tabs-tab {
+.card_setting_tab
+  .ant-tabs-nav
+  .ant-tabs-nav-wrap
+  .ant-tabs-nav-list
+  .ant-tabs-tab {
   padding: 0px 10px 5px 10px;
 }
 .card_setting_tab .ant-tabs-nav {
@@ -150,7 +154,10 @@ p {
 .M-Popover-NumberOfCards > .ant-popover-content > .ant-popover-inner {
   width: 110px;
 }
-.M-Popover-NumberOfCards > .ant-popover-content > .ant-popover-inner > .ant-popover-inner-content {
+.M-Popover-NumberOfCards
+  > .ant-popover-content
+  > .ant-popover-inner
+  > .ant-popover-inner-content {
   font-size: 0.8rem;
   padding: 8px 15px 8px 15px;
 }
@@ -173,12 +180,15 @@ p {
   background: none;
 }
 .ant-table.ant-table-small .ant-table-thead > tr > th {
-  padding-top: 4px;
-  padding-bottom: 4px;
   padding: 4px;
   font-size: 1rem;
 }
-.ant-table-thead > tr > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+.ant-table.ant-table-small .ant-table-thead > tr > th.TableCardCounterColumn {
+  padding: 0;
+}
+.ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
   display: none;
 }
 .ant-table.ant-table-small .ant-table-tbody > tr > td {
@@ -187,83 +197,296 @@ p {
   border-bottom: none;
   font-size: 1rem;
 }
+.ant-table.ant-table-small .ant-table-tbody > tr > td.TableGroupingColumn {
+  padding: 4px;
+}
 
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableGroupingColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableMiddleColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableGroupingColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableMiddleColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.FoldedCategoryRow > .TableGroupingColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.FoldedCategoryRow > .TableFirstColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.EmptyCategoryRow > .TableGroupingColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.EmptyCategoryRow > .TableFirstColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastHiddenBarRow > .TableGroupingColumn,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastHiddenBarRow > .TableFirstColumn {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableGroupingColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableFirstColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableMiddleColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableLastColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableGroupingColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableFirstColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableMiddleColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableLastColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.FoldedCategoryRow
+  > .TableGroupingColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.FoldedCategoryRow
+  > .TableFirstColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EmptyCategoryRow
+  > .TableGroupingColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EmptyCategoryRow
+  > .TableFirstColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastHiddenBarRow
+  > .TableGroupingColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastHiddenBarRow
+  > .TableFirstColumn {
   border-bottom: 0.5px solid #dfdfdf;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableLastColumn > div {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EvenNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EvenNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EvenNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OddNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OddNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OddNumberRow
+  > .TableLastColumn
+  > div {
   height: 4.2rem;
   display: flex;
   align-items: center;
   padding: 4px;
   font-size: 1rem;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn > div {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableFirstColumn
+  > div {
   margin-bottom: 3px;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn > div {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EvenNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EvenNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EvenNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableFirstColumn
+  > div {
   background-color: #f5f5f5;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableMiddleColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn > div {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OddNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OddNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OddNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableMiddleColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableFirstColumn
+  > div {
   background-color: #fff;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableFirstColumn > div {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EvenNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OddNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableFirstColumn
+  > div {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr.EvenNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.OddNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastEvenNumberRow > .TableLastColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastOddNumberRow > .TableLastColumn > div {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EvenNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OddNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastEvenNumberRow
+  > .TableLastColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastOddNumberRow
+  > .TableLastColumn
+  > div {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr.MiddleHiddenBar > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastHiddenBarRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.EmptyCategoryRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.FoldedCategoryRow > .TableFirstColumn > div {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.MiddleHiddenBar
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastHiddenBarRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EmptyCategoryRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.FoldedCategoryRow
+  > .TableFirstColumn
+  > div {
   border-radius: 8px;
   margin: 3px 0px;
   display: flex;
@@ -272,12 +495,28 @@ p {
   height: 3.75rem;
   font-size: 1rem;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr.MiddleHiddenBar > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.LastHiddenBarRow > .TableFirstColumn > div,
-.ant-table.ant-table-small .ant-table-tbody > tr.FoldedCategoryRow > .TableFirstColumn > div {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.MiddleHiddenBar
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.LastHiddenBarRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.FoldedCategoryRow
+  > .TableFirstColumn
+  > div {
   background: #e0e2f4;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr.EmptyCategoryRow > .TableFirstColumn > div {
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.EmptyCategoryRow
+  > .TableFirstColumn
+  > div {
   background: #e4e0e0;
 }
 
@@ -346,8 +585,12 @@ p {
 .customButtonForMainPage:hover > .anticon.anticon-form.writeUnliked > svg,
 .customButtonForMainPage:active > .anticon.anticon-plus.writeUnliked,
 .customButtonForMainPage:hover > .anticon.anticon-plus.writeUnliked > svg,
-.customButtonForMainPage:active > .anticon.anticon-ordered-list.writeUnliked > svg,
-.customButtonForMainPage:hover > .anticon.anticon-ordered-list.writeUnliked > svg {
+.customButtonForMainPage:active
+  > .anticon.anticon-ordered-list.writeUnliked
+  > svg,
+.customButtonForMainPage:hover
+  > .anticon.anticon-ordered-list.writeUnliked
+  > svg {
   color: #e9e9e9;
 }
 

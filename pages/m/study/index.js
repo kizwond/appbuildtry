@@ -123,10 +123,6 @@ const StyledRowMaxWidth = styled.div`
     /* border-top: 1px solid #f0f0f0; */
   }
 
-  & .ant-card-small > .ant-card-body {
-    padding: 0px 12px 12px 12px;
-  }
-
   & .ant-checkbox-inner {
     width: 12px;
     height: 12px;
@@ -167,7 +163,7 @@ const StyledBottomBar = styled.div`
   justify-content: space-around;
   align-items: center;
   /* padding: 8px 0; */
-  z-index: 9999;
+  z-index: 999;
 
   & > div {
     width: 100%;

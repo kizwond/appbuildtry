@@ -274,7 +274,6 @@ const CategorySettingModal = forwardRef(({ category, visible, changeVisible }, r
         title={<div style={{ fontSize: "1rem", fontWeight: "bold" }}>카테고리 관리</div>}
         onCancel={() => changeVisible(false)}
         mask={false} // 모달 바깥 전체화면 덮기 기능
-        zIndex={9998}
         footer={[
           <Button key="close" onClick={() => changeVisible(false)} size="small">
             닫기

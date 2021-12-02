@@ -3,9 +3,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { Table, Card, Space, Drawer, Checkbox, Progress, Popover } from "antd";
-import { DoubleLeftOutlined, DoubleRightOutlined, DownOutlined, RightOutlined } from "@ant-design/icons";
+import {
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  DownOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
-import { StyledFlexAlignCenter, StyledFlexSpaceBetween } from "../../../common/styledComponent/page";
+import {
+  StyledFlexAlignCenter,
+  StyledFlexSpaceBetween,
+} from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 
 import BookOrderButton from "../../common/BookOrderButton";
@@ -14,8 +22,18 @@ import FavoriteBook from "../../common/FavoriteBook";
 import makeDataSource from "../../common/logic";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
 
-const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
+const M_StudyBooksTable = ({
+  category,
+  myBook,
+  isPopupSomething,
+  chagePopup,
+  activedTable,
+  changeActivedTable,
+  selectedBooks,
+  changeSelectedBooks,
+}) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -27,29 +45,51 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
     setIsFoldedMenu(_id);
   }, []);
 
-  const changeIsShowedHiddenBook = useCallback((isShowedAllBooks, isShowedHiddenBook, id) => {
-    if (isShowedAllBooks) {
-      setIsShowedHiddenBook(isShowedHiddenBook.filter((_cateId) => _cateId !== id));
-    }
-    if (!isShowedAllBooks) {
-      setIsShowedHiddenBook([...isShowedHiddenBook, id]);
-    }
-  }, []);
+  const changeIsShowedHiddenBook = useCallback(
+    (isShowedAllBooks, isShowedHiddenBook, id) => {
+      if (isShowedAllBooks) {
+        setIsShowedHiddenBook(
+          isShowedHiddenBook.filter((_cateId) => _cateId !== id)
+        );
+      }
+      if (!isShowedAllBooks) {
+        setIsShowedHiddenBook([...isShowedHiddenBook, id]);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    setExpandedRowKeys(category.mybookcates.map((_cate) => `KEY:${_cate._id}INDEX:0`));
+    setExpandedRowKeys(
+      category.mybookcates.map((_cate) => `KEY:${_cate._id}INDEX:0`)
+    );
     setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const dataSource = useMemo(() => makeDataSource(myBook, category.mybookcates, isShowedHiddenBook, changeIsShowedHiddenBook), [myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook]);
+  const dataSource = useMemo(
+    () =>
+      makeDataSource(
+        myBook,
+        category.mybookcates,
+        isShowedHiddenBook,
+        changeIsShowedHiddenBook
+      ),
+    [myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook]
+  );
 
   if (!mounted) {
     return null;
   }
 
   const getConditionValue = (_record) => {
-    return (!expandedRowKeys.includes(_record.key) && _record.relationship === "parent") || _record.classType === "hiddenBar" || _record.classType === "middle-hiddenBar" || _record.classType === "empty-category";
+    return (
+      (!expandedRowKeys.includes(_record.key) &&
+        _record.relationship === "parent") ||
+      _record.classType === "hiddenBar" ||
+      _record.classType === "middle-hiddenBar" ||
+      _record.classType === "empty-category"
+    );
   };
 
   const columns = [
@@ -65,15 +105,24 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
           <StyledFlexAlignCenter
             onClick={() => {
               if (expandedRowKeys.includes(_record.key)) {
-                setExpandedRowKeys(expandedRowKeys.filter((key) => key !== _record.key));
+                setExpandedRowKeys(
+                  expandedRowKeys.filter((key) => key !== _record.key)
+                );
               }
               if (!expandedRowKeys.includes(_record.key)) {
                 setExpandedRowKeys([...expandedRowKeys, _record.key]);
               }
             }}
           >
-            {_record.classType === "empty-category" ? null : expandedRowKeys.includes(_record.key) ? <DownOutlined /> : <RightOutlined />}
-            <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>{_value}</DoubleLinesEllipsisContainer>
+            {_record.classType ===
+            "empty-category" ? null : expandedRowKeys.includes(_record.key) ? (
+              <DownOutlined />
+            ) : (
+              <RightOutlined />
+            )}
+            <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>
+              {_value}
+            </DoubleLinesEllipsisContainer>
           </StyledFlexAlignCenter>
         ) : null,
     },
@@ -83,26 +132,34 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       dataIndex: "title",
       className: "TableFirstColumn",
       align: "center",
-      width: 85,
+      width: 95,
       render: (value, _record, index) => {
-        const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
+        const isSelected =
+          selectedBooks.filter((_book) => _book.book_id === _record._id)
+            .length > 0;
         const obj = {
           children:
             _record.classType === "empty-category" ? (
               <div>빈 칸테고리</div>
-            ) : _record.relationship === "parent" && !expandedRowKeys.includes(_record.key) ? (
+            ) : _record.relationship === "parent" &&
+              !expandedRowKeys.includes(_record.key) ? (
               <div
                 onClick={() => {
                   if (expandedRowKeys.includes(_record.key)) {
-                    setExpandedRowKeys(expandedRowKeys.filter((key) => key !== _record.key));
+                    setExpandedRowKeys(
+                      expandedRowKeys.filter((key) => key !== _record.key)
+                    );
                   }
                   if (!expandedRowKeys.includes(_record.key)) {
                     setExpandedRowKeys([...expandedRowKeys, _record.key]);
                   }
                 }}
               >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
-            ) : _record.classType === "middle-hiddenBar" || _record.classType === "hiddenBar" ? (
-              <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
+            ) : _record.classType === "middle-hiddenBar" ||
+              _record.classType === "hiddenBar" ? (
+              <DoubleLinesEllipsisContainer>
+                {value}
+              </DoubleLinesEllipsisContainer>
             ) : (
               <div
                 onClick={() => {
@@ -116,16 +173,25 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                     checked={isSelected}
                     onChange={() => {
                       if (isSelected) {
-                        changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                        changeSelectedBooks(
+                          selectedBooks.filter(
+                            (_book) => _book.book_id !== _record._id
+                          )
+                        );
                       }
                       if (!isSelected) {
-                        changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                        changeSelectedBooks([
+                          ...selectedBooks,
+                          { book_id: _record._id, book_title: _record.title },
+                        ]);
                       }
                     }}
                   />
-                  <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
+                  <StyledBookTypeDiv booktype={_record.type} />
                 </StyledFlexAlignCenter>
-                <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
+                <DoubleLinesEllipsisContainer>
+                  {value}
+                </DoubleLinesEllipsisContainer>
               </div>
             ),
           props: {},
@@ -142,10 +208,9 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       title: "카드수",
       key: "total",
       dataIndex: "total",
-      className: "TableMiddleColumn",
+      className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      ellipsis: true,
-      width: 33,
+      width: 26,
       render: (_value, _record, _index) => {
         const obj = {
           children: (
@@ -175,7 +240,17 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                 trigger="click"
                 overlayClassName="M-Popover-NumberOfCards"
               >
-                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{_value}</div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    width: "100%",
+                  }}
+                >
+                  {4569}
+                </div>
               </Popover>
             </div>
           ),
@@ -199,13 +274,23 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       dataIndex: "accuLevel",
       className: "TableMiddleColumn",
       align: "center",
-      width: 75,
-      render: (_value, _record) => {
+      width: 60,
+      render: (_value, _record, _index) => {
         const obj = {
           children: (
-            <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
+            <div>
               {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-              {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
+              {
+                // _record.total === 0 ? "-" :
+                <StyledProgress
+                  percent={
+                    _index * 30
+                    // _record.accuLevel / _record.total
+                  }
+                  trailColor="#bbbbbb"
+                  strokeWidth={13}
+                />
+              }
             </div>
           ),
           props: {
@@ -225,16 +310,15 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       // title: "이동",
       key: "seqInCategory",
       dataIndex: "seqInCategory",
-      className: "TableMiddleColumn",
+      className: "TableLastColumn",
       align: "right",
-      width: 25,
+      width: 20,
       render: (value, _record, index) => {
         const obj = {
           children: (
             <div
               style={{
                 position: "relative",
-                zIndex: 1000 - index,
               }}
             >
               <div
@@ -253,7 +337,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                   className="PullCustomCircleButton"
                   style={{
                     width: "44px",
-                    height: "4.2rem",
+                    height: "3rem",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -266,12 +350,19 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
               <Drawer
                 destroyOnClose={true}
                 placement="right"
-                width={"210px"}
+                width={"250px"}
                 closable={false}
                 mask={false}
-                visible={activedTable === "bookTable" && _record._id === isFoldedMenu}
+                visible={
+                  activedTable === "bookTable" && _record._id === isFoldedMenu
+                }
                 getContainer={false}
-                style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
+                style={{
+                  position: "absolute",
+                  textAlign: "initial",
+                  height: "3rem",
+                  top: "0.6rem",
+                }}
                 contentWrapperStyle={{ boxShadow: "unset" }}
                 drawerStyle={{ display: "block" }}
                 bodyStyle={{
@@ -285,9 +376,24 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                 }}
               >
                 <Space size={3}>
-                  <BookOrderButton _record={_record} /> |
-                  <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" /> |
-                  <HideOrShowButton record={_record} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+                  <BookOrderButton
+                    _record={_record}
+                    changeFoldedMenu={changeFoldedMenu}
+                  />{" "}
+                  |
+                  <FavoriteBook
+                    record={_record}
+                    changeActivedTable={changeActivedTable}
+                    changeFoldedMenu={changeFoldedMenu}
+                    tableType="study"
+                  />{" "}
+                  |
+                  <HideOrShowButton
+                    record={_record}
+                    changeFoldedMenu={changeFoldedMenu}
+                  />{" "}
+                  |
+                  <MoveToBookSetting mybook_id={_record._id} />
                 </Space>
                 <div
                   className="PushCustomCircleButton"
@@ -311,32 +417,16 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
         return obj;
       },
     },
-    {
-      // title: "설정",
-      className: "TableLastColumn",
-      align: "center",
-      width: 25,
-      render: (value, _record) => {
-        const obj = {
-          children: (
-            <div>
-              <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-            </div>
-          ),
-          props: {},
-        };
-        if (getConditionValue(_record)) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
   ];
 
   return (
-    <StyledCard bordered={false} size="small" title={<div style={{ fontSize: "1rem", fontWeight: "bold" }}>나의 책</div>}>
+    <StyledCard
+      bordered={false}
+      size="small"
+      title={
+        <div style={{ fontSize: "1rem", fontWeight: "bold" }}>나의 책</div>
+      }
+    >
       <Table
         dataSource={dataSource}
         tableLayout="fixed"
@@ -350,7 +440,8 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
         rowClassName={(record, index) =>
           record.classType === "empty-category"
             ? "EmptyCategoryRow"
-            : !expandedRowKeys.includes(record.key) && record.relationship === "parent"
+            : !expandedRowKeys.includes(record.key) &&
+              record.relationship === "parent"
             ? "FoldedCategoryRow"
             : record.classType === "hiddenBar"
             ? "LastHiddenBarRow"
@@ -387,6 +478,10 @@ const StyledCard = styled(Card)`
     font-size: 1rem;
   }
 
+  & .ant-card-body {
+    padding: 0px 8px 12px 8px;
+  }
+
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
   & .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;
@@ -399,44 +494,15 @@ const StyledCard = styled(Card)`
   /* 개별 책 펼치기  */
   & .ant-drawer-content {
     overflow: hidden;
-    background-color: #6c757d;
+    background-color: #73bcfc;
     background-clip: padding-box;
     border: 0;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
   }
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .FirstBookCustom > .anticon-arrow-up > svg,
-  & .LastBookCustom > .anticon-arrow-down > svg {
-    color: #4d4d4d;
-  }
-
-  & .anticon-arrow-down > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-arrow-up > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-star > svg {
-    font-size: 16px;
-  }
-
-  & .anticon-eye > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-eye-invisible > svg {
-    font-size: 16px;
-    color: #dee2e6;
   }
 
   & .HandleOnOffShow > span {

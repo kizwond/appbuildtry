@@ -4,7 +4,10 @@ import styled from "styled-components";
 import { Table, Card, Popover, Button, Input, Space, Form } from "antd";
 import { DollarCircleFilled } from "@ant-design/icons";
 
-import { StyledFlexSpaceBetween, StyledTwoLinesEllipsis } from "../common/styledComponent/page";
+import {
+  StyledFlexSpaceBetween,
+  StyledTwoLinesEllipsis,
+} from "../common/styledComponent/page";
 import { MUTATION_CREATE_BUY_BOOK_FROM_MY_BOOK } from "../../graphql/mutation/buyBook";
 import { GET_ALL_BUY_BOOKS } from "../../graphql/query/allQuery";
 import { useMutation } from "@apollo/client";
@@ -13,20 +16,27 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
   const [form] = Form.useForm();
   const { resetFields, submit } = form;
 
-  const [createBuyBookFromMyBook] = useMutation(MUTATION_CREATE_BUY_BOOK_FROM_MY_BOOK, {
-    onCompleted: (_data) => {
-      if (_data.buybook_createBuybook.msg == "책 생성 성공적!") {
-        console.log("receivedData", _data);
-        resetFields();
-      } else if (_data.buybook_createBuybook.status === "401") {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const [createBuyBookFromMyBook] = useMutation(
+    MUTATION_CREATE_BUY_BOOK_FROM_MY_BOOK,
+    {
+      onCompleted: (_data) => {
+        if (_data.buybook_createBuybook.msg == "책 생성 성공적!") {
+          console.log("receivedData", _data);
+          resetFields();
+        } else if (_data.buybook_createBuybook.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
-  const createBuyBook = async ({ mybook_id, buybookcateName, titleForSale }) => {
+  const createBuyBook = async ({
+    mybook_id,
+    buybookcateName,
+    titleForSale,
+  }) => {
     try {
       await createBuyBookFromMyBook({
         variables: {
@@ -47,7 +57,10 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
               ..._data,
               buybook_getAllBuybook: {
                 ..._data.buybook_getAllBuybook,
-                buybooks: [..._data.buybook_getAllBuybook.buybooks, ...buybook_createBuybook.buybooks],
+                buybooks: [
+                  ..._data.buybook_getAllBuybook.buybooks,
+                  ...buybook_createBuybook.buybooks,
+                ],
               },
             },
           });
@@ -70,19 +83,29 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
     bookData.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0].mybookcates
       .map((_cate, _categoryIndex) => {
         const { name, seq } = _cate;
-        const _categoryBooksList = myBook2.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id);
+        const _categoryBooksList = myBook2.filter(
+          (_book) => _cate._id === _book.mybook_info.mybookcate_id
+        );
         if (_categoryBooksList.length === 0) {
           return null;
         }
 
-        const categoryBooksList = _categoryBooksList.sort((a, b) => a.mybook_info.seqInCategory - b.mybook_info.seqInCategory);
+        const categoryBooksList = _categoryBooksList.sort(
+          (a, b) => a.mybook_info.seqInCategory - b.mybook_info.seqInCategory
+        );
 
         const data = categoryBooksList.map((_book, _index) => ({
           ..._book.mybook_info,
           ..._book.stats?.numCards,
           relationship: _index === 0 ? "parent" : "children",
           classType:
-            _index + 1 === categoryBooksList.length && _index % 2 === 0 ? "last-odd-book" : _index + 1 === categoryBooksList.length && _index % 2 !== 0 ? "last-even-book" : _index % 2 !== 0 ? "even-book" : "odd-book",
+            _index + 1 === categoryBooksList.length && _index % 2 === 0
+              ? "last-odd-book"
+              : _index + 1 === categoryBooksList.length && _index % 2 !== 0
+              ? "last-even-book"
+              : _index % 2 !== 0
+              ? "even-book"
+              : "odd-book",
           categoryOrder: seq,
           categoryName: name,
           isLastBook: categoryBooksList.length === _index + 1,
@@ -102,7 +125,12 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       align: "center",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => (_record.relationship === "parent" ? <StyledTwoLinesEllipsis style={{ marginLeft: "2px" }}>{_value}</StyledTwoLinesEllipsis> : null),
+      render: (_value, _record) =>
+        _record.relationship === "parent" ? (
+          <StyledTwoLinesEllipsis style={{ marginLeft: "2px" }}>
+            {_value}
+          </StyledTwoLinesEllipsis>
+        ) : null,
     },
     {
       title: "책 제목",
@@ -110,7 +138,7 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       dataIndex: "title",
       className: "TableFirstColumn",
       align: "center",
-      width: 140,
+      width: 95,
       render: (value, _record, index) => (
         <StyledTwoLinesEllipsis>
           <DollarCircleFilled style={{ marginRight: "3px", color: "aqua" }} />
@@ -122,10 +150,9 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       title: "카드수",
       key: "total",
       dataIndex: "total",
-      className: "TableMiddleColumn",
+      className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      ellipsis: true,
-      width: 33,
+      width: 26,
       render: (_value, _record) => (
         <div style={{ width: "100%" }}>
           <Popover
@@ -153,7 +180,17 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
             trigger="click"
             overlayClassName="M-Popover-NumberOfCards"
           >
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", cursor: "pointer", width: "100%" }}>{_value}</div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                width: "100%",
+              }}
+            >
+              {_value}
+            </div>
           </Popover>
         </div>
       ),
@@ -185,7 +222,13 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
           size="small"
           pagination={false}
           rowClassName={(record, index) =>
-            record.classType === "last-odd-book" ? "LastOddNumberRow" : record.classType === "last-even-book" ? "LastEvenNumberRow" : record.classType === "even-book" ? "EvenNumberRow" : "OddNumberRow"
+            record.classType === "last-odd-book"
+              ? "LastOddNumberRow"
+              : record.classType === "last-even-book"
+              ? "LastEvenNumberRow"
+              : record.classType === "even-book"
+              ? "EvenNumberRow"
+              : "OddNumberRow"
           }
           expandable={{
             expandRowByClick: true,
@@ -225,10 +268,25 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
                     createBuyBook({ mybook_id: _record._id, ...values });
                   }}
                 >
-                  <Form.Item label="카테고리 선택" name="buybookcateName" rules={[{ required: true, message: "판매 카테고리를 설정해주세요" }]}>
+                  <Form.Item
+                    label="카테고리 선택"
+                    name="buybookcateName"
+                    rules={[
+                      {
+                        required: true,
+                        message: "판매 카테고리를 설정해주세요",
+                      },
+                    ]}
+                  >
                     <Input size="small" allowClear />
                   </Form.Item>
-                  <Form.Item label="판매 책 제목 설정" name="titleForSale" rules={[{ required: true, message: "판매 책 제목은 필수입니다" }]}>
+                  <Form.Item
+                    label="판매 책 제목 설정"
+                    name="titleForSale"
+                    rules={[
+                      { required: true, message: "판매 책 제목은 필수입니다" },
+                    ]}
+                  >
                     <Input size="small" allowClear />
                   </Form.Item>
                 </Form>

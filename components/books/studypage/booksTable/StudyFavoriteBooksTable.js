@@ -1,19 +1,29 @@
 /* eslint-disable react/display-name */
 import { useCallback, useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "../../../../node_modules/moment/moment";
 
 import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from "antd";
-import { DollarCircleFilled, DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
+import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
 
-const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
+const StudyFavoriteBooksTable = ({
+  category,
+  myBook,
+  isPopupSomething,
+  chagePopup,
+  activedTable,
+  changeActivedTable,
+  selectedBooks,
+  changeSelectedBooks,
+}) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
@@ -33,8 +43,13 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
 
   console.log("마운트 아래 코드");
 
-  const studyLikedBooksList = myBook.filter((_book) => _book.mybook_info.isStudyLike);
-  const sortedBook = studyLikedBooksList.sort((book_A, book_B) => book_A.mybook_info.seqInStudyLike - book_B.mybook_info.seqInStudyLike);
+  const studyLikedBooksList = myBook.filter(
+    (_book) => _book.mybook_info.isStudyLike
+  );
+  const sortedBook = studyLikedBooksList.sort(
+    (book_A, book_B) =>
+      book_A.mybook_info.seqInStudyLike - book_B.mybook_info.seqInStudyLike
+  );
   const dataSource = sortedBook.map((_book, _index) => {
     return {
       ..._book.mybook_info,
@@ -43,7 +58,9 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       ..._book.stats?.overall,
       studyHistory: _book.stats?.studyHistory,
       writeHistory: _book.stats?.writeHistory,
-      categoryName: category.mybookcates.find((_cate) => _cate._id === _book.mybook_info.mybookcate_id).name,
+      categoryName: category.mybookcates.find(
+        (_cate) => _cate._id === _book.mybook_info.mybookcate_id
+      ).name,
       isFirstBook: _index === 0,
       isLastBook: studyLikedBooksList.length === _index + 1,
       key: _book._id,
@@ -51,11 +68,15 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       aboveAndBelowBooks: {
         aboveBook: {
           mybook_id: sortedBook[_index - 1] && sortedBook[_index - 1]._id,
-          seqInStudyLike: sortedBook[_index - 1] && sortedBook[_index - 1].mybook_info.seqInStudyLike,
+          seqInStudyLike:
+            sortedBook[_index - 1] &&
+            sortedBook[_index - 1].mybook_info.seqInStudyLike,
         },
         belowBook: {
           mybook_id: sortedBook[_index + 1] && sortedBook[_index + 1]._id,
-          seqInStudyLike: sortedBook[_index + 1] && sortedBook[_index + 1].mybook_info.seqInStudyLike,
+          seqInStudyLike:
+            sortedBook[_index + 1] &&
+            sortedBook[_index + 1].mybook_info.seqInStudyLike,
         },
       },
     };
@@ -65,19 +86,25 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
     {
       title: "카테고리",
       key: "categoryName",
-      className: "TableFirstColumn",
+      className: "TableGroupingColumn",
+      align: "center",
       width: 50,
       dataIndex: "categoryName",
-      render: (_value, _record) => <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>,
+      render: (_value, _record) => (
+        <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>
+      ),
     },
     {
       title: "책 제목",
       key: "title",
       dataIndex: "title",
-      className: "TableMiddleColumn",
-      width: 85,
+      className: "TableFirstColumn",
+      align: "center",
+      width: 95,
       render: (value, _record, index) => {
-        const isSelected = selectedBooks.filter((_book) => _book.book_id === _record._id).length > 0;
+        const isSelected =
+          selectedBooks.filter((_book) => _book.book_id === _record._id)
+            .length > 0;
 
         return (
           <div
@@ -92,15 +119,22 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
                 checked={isSelected}
                 onChange={() => {
                   if (isSelected) {
-                    changeSelectedBooks(selectedBooks.filter((_book) => _book.book_id !== _record._id));
+                    changeSelectedBooks(
+                      selectedBooks.filter(
+                        (_book) => _book.book_id !== _record._id
+                      )
+                    );
                   }
                   if (!isSelected) {
-                    changeSelectedBooks([...selectedBooks, { book_id: _record._id, book_title: _record.title }]);
+                    changeSelectedBooks([
+                      ...selectedBooks,
+                      { book_id: _record._id, book_title: _record.title },
+                    ]);
                   }
                 }}
               />
               <div>
-                <StyledBookTypeDiv booktype={_record.type}>{_record.type === "my" ? null : "$"}</StyledBookTypeDiv>
+                <StyledBookTypeDiv booktype={_record.type} />
                 {value}
               </div>
             </Space>
@@ -111,8 +145,24 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
     {
       title: (
         <>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드 수</div>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>(읽기/뒤집기)</div>
+          <div
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            카드 수
+          </div>
+          <div
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            (읽기/뒤집기)
+          </div>
         </>
       ),
       key: "total",
@@ -121,10 +171,12 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       className: "TableMiddleColumn",
       ellipsis: true,
       width: 70,
-      render: (_value, _record) => <div>{`(${_record.read}/${_record.flip})`}</div>,
+      render: (_value, _record) => (
+        <div>{`(${_record.read}/${_record.flip})`}</div>
+      ),
     },
     {
-      title: <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>수정일</div>,
+      title: "수정일",
       key: "timeModify",
       align: "center",
       dataIndex: "timeModify",
@@ -138,36 +190,37 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       },
     },
     {
-      title: (
-        <>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>최근 3일간</div>
-          <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>카드생성</div>
-        </>
-      ),
+      title: "진도율",
       key: "timeModify",
       align: "center",
       dataIndex: "timeModify",
       className: "TableMiddleColumn",
-      width: 75,
+      width: 60,
       render: (_value, _record) => (
         <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
           {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-          {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
+          {_record.total === 0 ? (
+            "-"
+          ) : (
+            <StyledProgress
+              percent={_record.accuLevel / _record.total}
+              trailColor="#bbbbbb"
+              strokeWidth={13}
+            />
+          )}
         </div>
       ),
     },
     {
-      title: "이동",
-      key: "seq_in_category",
-      dataIndex: "seq_in_category",
-      className: "TableMiddleColumn",
+      key: "seqInCategory",
+      dataIndex: "seqInCategory",
+      className: "TableLastColumn",
       align: "right",
       width: 35,
       render: (value, _record, index) => (
         <div
           style={{
             position: "relative",
-            zIndex: 2,
           }}
         >
           <div
@@ -186,7 +239,7 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
               className="PullCustomCircleButton"
               style={{
                 width: "44px",
-                height: "4.2rem",
+                height: "3rem",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -199,12 +252,19 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
           <Drawer
             destroyOnClose={true}
             placement="right"
-            width={"210px"}
+            width={"250px"}
             closable={false}
             mask={false}
-            visible={activedTable === "favoriteTable" && _record._id === isFoldedMenu}
+            visible={
+              activedTable === "favoriteTable" && _record._id === isFoldedMenu
+            }
             getContainer={false}
-            style={{ position: "absolute", textAlign: "initial", height: "4.2rem" }}
+            style={{
+              position: "absolute",
+              textAlign: "initial",
+              height: "3rem",
+              top: "0.6rem",
+            }}
             contentWrapperStyle={{ boxShadow: "unset" }}
             drawerStyle={{ display: "block" }}
             bodyStyle={{
@@ -218,10 +278,25 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
             }}
           >
             <Space size={3}>
-              <FavoriteBookOrderButton _record={_record} tableType="study" /> |
-              <FavoriteBook record={_record} changeActivedTable={changeActivedTable} changeFoldedMenu={changeFoldedMenu} tableType="study" />
+              <FavoriteBookOrderButton
+                _record={_record}
+                tableType="study"
+                changeFoldedMenu={changeFoldedMenu}
+              />{" "}
               |
-              <HideOrShowButton record={_record} />
+              <FavoriteBook
+                record={_record}
+                changeActivedTable={changeActivedTable}
+                changeFoldedMenu={changeFoldedMenu}
+                tableType="study"
+              />{" "}
+              |
+              <HideOrShowButton
+                record={_record}
+                changeFoldedMenu={changeFoldedMenu}
+              />{" "}
+              |
+              <MoveToBookSetting mybook_id={_record._id} />
             </Space>
             <div
               className="PushCustomCircleButton"
@@ -236,17 +311,17 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
         </div>
       ),
     },
-    {
-      title: "설정",
-      align: "center",
-      className: "TableLastColumn",
-      width: 35,
-      render: (value, _record, index) => (
-        <div>
-          <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-        </div>
-      ),
-    },
+    // {
+    //   title: "설정",
+    //   align: "center",
+    //   className: "TableLastColumn",
+    //   width: 35,
+    //   render: (value, _record, index) => (
+    //     <div>
+    //       <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
+    //     </div>
+    //   ),
+    // },
   ];
 
   return (
@@ -255,7 +330,15 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       size="small"
       title={
         <div>
-          <span style={{ marginRight: "30px", fontSize: "1rem", fontWeight: "bold" }}>즐겨찾기</span>
+          <span
+            style={{
+              marginRight: "30px",
+              fontSize: "1rem",
+              fontWeight: "bold",
+            }}
+          >
+            즐겨찾기
+          </span>
           <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
             {visible ? "접기" : "펼치기"}
           </Button>
@@ -263,7 +346,16 @@ const StudyFavoriteBooksTable = ({ category, myBook, handleToGetMyBook, isPopupS
       }
     >
       {visible && dataSource.length > 0 && (
-        <Table dataSource={dataSource} tableLayout="fixed" columns={columns} size="small" pagination={false} rowClassName={(record, index) => (index % 2 !== 0 ? "EvenNumberRow" : "OddNumberRow")} />
+        <Table
+          dataSource={dataSource}
+          tableLayout="fixed"
+          columns={columns}
+          size="small"
+          pagination={false}
+          rowClassName={(record, index) =>
+            index % 2 !== 0 ? "EvenNumberRow" : "OddNumberRow"
+          }
+        />
       )}
     </StyledCard>
   );
@@ -285,20 +377,15 @@ const StyledCard = styled(Card)`
   /* 개별 책 펼치기  */
   & .ant-drawer-content {
     overflow: hidden;
-    background-color: #6c757d;
+    background-color: #73bcfc;
     background-clip: padding-box;
     border: 0;
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
   }
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .FirstBookCustom > .anticon-arrow-up > svg,
-  & .LastBookCustom > .anticon-arrow-down > svg {
-    color: #4d4d4d;
   }
 
   /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
@@ -315,45 +402,7 @@ const StyledCard = styled(Card)`
     color: #fff;
   }
 
-  & .anticon-arrow-down > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-arrow-up > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-star > svg {
-    font-size: 16px;
-  }
-
-  & .anticon-eye > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
-  & .anticon-eye-invisible > svg {
-    font-size: 16px;
-    color: #dee2e6;
-  }
-
   & .HandleOnOffShow > span {
     font-size: 0.7rem;
   }
-`;
-
-const StyledBookTypeDiv = styled.div`
-  width: 10px;
-  height: 30px;
-  color: white;
-  display: inline-block;
-  border-radius: 3px;
-  margin: 0 4px;
-  line-height: 30px;
-  background-color: ${(props) => {
-    const bgColor = props.booktype === "my" ? "#74ffc3" : props.booktype === "buy" ? "#74bfff" : console.log(new Error("책 타입 잘못 설정됨"));
-    return bgColor;
-  }};
 `;

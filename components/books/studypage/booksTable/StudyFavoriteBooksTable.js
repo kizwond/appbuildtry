@@ -12,6 +12,7 @@ import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
+import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
 
 const StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [mounted, setMounted] = useState(false);
@@ -152,7 +153,7 @@ const StudyFavoriteBooksTable = ({ category, myBook, isPopupSomething, chagePopu
       render: (_value, _record) => (
         <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
           {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-          {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
+          {_record.total === 0 ? "-" : <StyledProgress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" strokeWidth={13} />}
         </div>
       ),
     },

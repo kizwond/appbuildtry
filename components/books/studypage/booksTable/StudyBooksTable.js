@@ -13,6 +13,7 @@ import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import makeDataSource from "../../common/logic";
+import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
 
 const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -170,7 +171,7 @@ const StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activ
           children: (
             <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
               {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-              {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
+              {_record.total === 0 ? "-" : <StyledProgress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" strokeWidth={13} />}
             </div>
           ),
           props: {

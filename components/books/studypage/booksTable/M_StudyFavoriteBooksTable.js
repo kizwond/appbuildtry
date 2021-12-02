@@ -15,6 +15,7 @@ import CategorySettingButton from "../../writepage/categorySetting/CategorySetti
 import { StyledFlexAlignCenter, StyledFlexSpaceBetween } from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
 
 const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }, ref) => {
   const [mounted, setMounted] = useState(false);
@@ -159,7 +160,7 @@ const M_StudyFavoriteBooksTable = forwardRef(({ category, myBook, isPopupSomethi
       render: (_value, _record) => (
         <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
           {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-          {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
+          {_record.total === 0 ? "-" : <StyledProgress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" strokeWidth={13} />}
         </div>
       ),
     },

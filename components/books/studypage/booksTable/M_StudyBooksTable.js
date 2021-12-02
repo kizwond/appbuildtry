@@ -14,6 +14,7 @@ import FavoriteBook from "../../common/FavoriteBook";
 import makeDataSource from "../../common/logic";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
 
 const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, activedTable, changeActivedTable, selectedBooks, changeSelectedBooks }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -174,7 +175,7 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
                 trigger="click"
                 overlayClassName="M-Popover-NumberOfCards"
               >
-                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{3333}</div>
+                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", cursor: "pointer", width: "100%" }}>{4569}</div>
               </Popover>
             </div>
           ),
@@ -199,12 +200,22 @@ const M_StudyBooksTable = ({ category, myBook, isPopupSomething, chagePopup, act
       className: "TableMiddleColumn",
       align: "center",
       width: 75,
-      render: (_value, _record) => {
+      render: (_value, _record, _index) => {
         const obj = {
           children: (
             <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
               {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-              {_record.total === 0 ? "-" : <Progress percent={_record.accuLevel / _record.total} trailColor="#bbbbbb" />}
+              {
+                // _record.total === 0 ? "-" :
+                <StyledProgress
+                  percent={
+                    _index * 30
+                    // _record.accuLevel / _record.total
+                  }
+                  trailColor="#bbbbbb"
+                  strokeWidth={13}
+                />
+              }
             </div>
           ),
           props: {

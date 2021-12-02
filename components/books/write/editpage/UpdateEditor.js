@@ -347,13 +347,14 @@ class UpdateEditor extends Component {
 
   handleSubmit = () => {
     console.log("onClick handleSubmit!!!!!");
-    // console.log(this.state.editor1)
-    // this.props.onFinish(this.state.editor1);
-    const selections = sessionStorage.getItem("selections");
-
-    const num_face1 = this.props.cardtype_info.num_of_row.face1;
-    const num_face2 = this.props.cardtype_info.num_of_row.face2;
-    const num_annot = this.props.cardtype_info.num_of_row.annotation;
+      const num_face1 = this.props.mycontent.face1.length;
+      if (this.props.mycontent.selection !== null) {
+        var num_selection = this.props.mycontent.selection.length;
+      } else {
+        var num_selection = null;
+      }
+      const num_face2 = this.props.mycontent.face2.length;
+      const num_annot = this.props.mycontent.annotation.length;
 
     const face1_array = [];
     const selection_array = [];
@@ -372,9 +373,7 @@ class UpdateEditor extends Component {
         }
       }
     }
-    if (selections > 0) {
-      var num_selection = Number(selections);
-
+    if (num_selection) {
       if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 && num_selection > 0) {
         for (i = 1; i < num_face1 + 1; i++) {
           face1_array.push(this.state["editor" + i]);
@@ -432,7 +431,7 @@ class UpdateEditor extends Component {
     };
     this.props.onFinishUpdateContents(values, "update", this.props.mycontent._id);
 
-    this.props.setUpdateEditorOn("");
+    this.props.setEditorOnForUpdate("");
   };
 
   onChange = (e) => {
@@ -447,7 +446,115 @@ class UpdateEditor extends Component {
       [editorZindex]: 0,
     });
   };
+  componentDidMount() {
+    console.log(this.props.mycontent);
+    console.log(this.props.card_info);
 
+    if (this.props.card_info.content.makerFlag.value !== null) {
+      this.setState({
+        flagStar: this.props.card_info.content.makerFlag.value,
+      });
+    }
+    if (this.props.card_info.content.makerFlag.comment !== null) {
+      this.setState({
+        flagComment: this.props.card_info.content.makerFlag.comment,
+      });
+    }
+    const num_face1 = this.props.mycontent.face1.length;
+    if (this.props.mycontent.selection !== null) {
+      var num_selection = this.props.mycontent.selection.length;
+    } else {
+      var num_selection = null;
+    }
+    const num_face2 = this.props.mycontent.face2.length;
+    const num_annot = this.props.mycontent.annotation.length;
+    if(num_selection){
+        console.log(this.props.nicks[num_face1+num_selection-1])
+        console.log(this.props.nicks.slice(num_face1, num_selection+1))
+        console.log(this.props.nicks[num_face1+num_selection])
+        this.setState({
+            lastSelectionNick: this.props.nicks[num_face1+num_selection-1]
+        })
+        this.setState({
+            diffValues: this.props.nicks.slice(num_face1, num_selection+1)
+        })
+        this.setState({
+            answerFieldNick : this.props.nicks[num_face1+num_selection]
+        })
+    }
+    
+    //읽기카드만 있을때
+    if (num_face1 > 0 && num_face2 === 0 && num_annot > 0) {
+      for (var i = 1; i < num_face1 + 1; i++) {
+        this.setState({
+          ["editor" + i]: this.props.mycontent.face1[i - 1],
+        });
+      }
+      if (num_annot > 0) {
+        for (i = num_face1 + 1; i < num_face1 + num_annot + 1; i++) {
+          this.setState({
+            ["editor" + i]: this.props.mycontent.annotation[i - 1 - num_face1],
+          });
+          console.log(this.props.mycontent.annotation[i - 1 - num_face1])
+        }
+      }
+    }
+    if (num_selection) {
+      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 && num_selection > 0) {
+        for (i = 1; i < num_face1 + 1; i++) {
+          this.setState({
+            ["editor" + i]: this.props.mycontent.face1[i - 1],
+          });
+        }
+        if (num_selection > 0) {
+          for (i = num_face1 + 1; i < num_face1 + num_selection + 1; i++) {
+            this.setState({
+              ["editor" + i]: this.props.mycontent.selection[i - 1 - num_face1],
+            });
+          }
+        }
+        if (num_face2 > 0) {
+            this.setState({
+                answerRadio: this.props.mycontent.face2[0],
+            });
+          for (i = num_face1 + num_selection + 1; i < num_face1 + num_selection + num_face2 + 1; i++) {
+            this.setState({
+              ["editor" + i]: this.props.mycontent.face2[i - 1 - num_face1 - num_selection],
+            });
+          }
+        }
+        if (num_annot > 0) {
+          for (i = num_face1 + num_selection + num_face2 + 1; i < num_face1 + num_selection + num_face2 + num_annot + 1; i++) {
+            this.setState({
+              ["editor" + i]: this.props.mycontent.annotation[i - 1 - num_face1 - num_selection - num_face2],
+            });
+          }
+        }
+      }
+    } else {
+      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
+        for (i = 1; i < num_face1 + 1; i++) {
+          this.setState({
+            ["editor" + i]: this.props.mycontent.face1[i - 1],
+          });
+        }
+        if (num_face2 > 0) {
+          for (i = num_face1 + 1; i < num_face1 + num_face2 + 1; i++) {
+            this.setState({
+              ["editor" + i]: this.props.mycontent.face2[i - 1 - num_face1],
+            });
+          }
+        }
+        if (num_annot > 0) {
+          for (i = num_face1 + num_face2 + 1; i < num_face1 + num_face2 + num_annot + 1; i++) {
+            this.setState({
+              ["editor" + i]: this.props.mycontent.annotation[i - 1 - num_face1 - num_face2 ],
+            });
+          }
+        }
+      }
+    }
+  }
   render() {
     const editorList = this.props.nicks.map((item, index) => {
       if (item == this.state.lastSelectionNick) {
@@ -502,13 +609,13 @@ class UpdateEditor extends Component {
                 model={this.state["editor" + (index + 1).toString()]}
                 onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
               />
-              <PlusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color:"grey" }} onClick={this.props.addSelections} />
-              <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color:"grey" }} onClick={this.props.removeSelection} />
+              {/* <PlusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color: "grey" }} onClick={this.props.addSelections} />
+              <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color: "grey" }} onClick={this.props.removeSelection} /> */}
             </div>
             {this.state.diffValues && (
-              <div style={{ display: "flex", marginTop:"3px", alignItems:"center" }}>
-                <span style={{fontSize:"0.8rem", marginRight:"5px"}}>정답 :</span>
-                <Radio.Group buttonStyle="solid" size="small" onChange={this.onChange} name={index + 1} defaultChecked={false} value={this.state.answerRadio}>
+              <div style={{ display: "flex", marginTop: "3px", alignItems: "center" }}>
+                <span style={{ fontSize: "0.8rem", marginRight: "5px" }}>정답 :</span>
+                <Radio.Group buttonStyle="solid" size="small" onChange={this.onChange} name={index + 1} defaultChecked={true} value={this.state.answerRadio}>
                   {this.state.diffValues.map((value, answerindex) => {
                     return (
                       <React.Fragment key={value}>
@@ -667,7 +774,7 @@ class UpdateEditor extends Component {
               <Button
                 size="small"
                 onClick={() => {
-                  this.props.setEditorOn("");
+                  this.props.setEditorOnForUpdate("");
                   sessionStorage.removeItem("selections");
                   sessionStorage.removeItem("selections_adding");
                   sessionStorage.removeItem("nicks_with_selections");

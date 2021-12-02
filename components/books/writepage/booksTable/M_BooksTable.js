@@ -25,15 +25,7 @@ import {
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
-const M_BooksTable = ({
-  category,
-  myBook,
-  isPopupSomething,
-  chagePopup,
-  activedTable,
-  changeActivedTable,
-  newCateId,
-}) => {
+const M_BooksTable = ({ category, myBook, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -411,8 +403,7 @@ const M_BooksTable = ({
                   justifyContent: "end",
                 }}
                 onClick={() => {
-                  changeFoldedMenu(_record._id);
-                  changeActivedTable("bookTable");
+                  changeFoldedMenu(`table${_record._id}`);
                 }}
               >
                 <div
@@ -431,13 +422,12 @@ const M_BooksTable = ({
 
               <Drawer
                 destroyOnClose={true}
+                className="BookDrawerMenu"
                 placement="right"
                 width={"250px"}
                 closable={false}
                 mask={false}
-                visible={
-                  activedTable === "bookTable" && _record._id === isFoldedMenu
-                }
+                visible={`table${_record._id}` === isFoldedMenu}
                 getContainer={false}
                 style={{
                   position: "absolute",
@@ -465,7 +455,6 @@ const M_BooksTable = ({
                   |
                   <FavoriteBook
                     record={_record}
-                    changeActivedTable={changeActivedTable}
                     changeFoldedMenu={changeFoldedMenu}
                     tableType="write"
                   />{" "}
@@ -481,7 +470,6 @@ const M_BooksTable = ({
                   className="PushCustomCircleButton"
                   onClick={() => {
                     setIsFoldedMenu("");
-                    changeActivedTable("");
                   }}
                 >
                   <DoubleRightOutlined />
@@ -562,7 +550,7 @@ const StyledCard = styled(Card)`
   /* 개별 책 펼치기  */
   & .ant-drawer-content {
     overflow: hidden;
-    background-color: #73bcfc;
+    background-color: #2fbf40;
     background-clip: padding-box;
     border: 0;
     border-top-left-radius: 10px;

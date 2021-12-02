@@ -17,7 +17,7 @@ const HideOrShowButton = ({ record, changeFoldedMenu }) => {
       onCompleted: (received_data) => {
         if (received_data.mybook_setHideOrShow.status === "200") {
           changeFoldedMenu("");
-          console.log("책 수정함", received_data);
+          console.log("책 숨긴 설정 후 받은 데이터", received_data);
         } else if (received_data.mybook_setHideOrShow.status === "401") {
           router.push("/account/login");
         } else {

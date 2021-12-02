@@ -18,15 +18,15 @@ const M_WriteMain = () => {
 
   const newCateRef = useRef();
 
-  const [activedTable, setActivedTable] = useState();
-
-  const [isPopupSomething, setisPopupSomething] = useState(false);
-
   const { loading, error, data } = useQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
-      if (received_data.mybookcateset_getMybookcatesetByUserID.status === "200") {
-      } else if (received_data.mybookcateset_getMybookcatesetByUserID.status === "401") {
+      if (
+        received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
+      ) {
+      } else if (
+        received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
+      ) {
         router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -35,14 +35,10 @@ const M_WriteMain = () => {
   });
 
   const myBook2 = data && data.mybook_getMybookByUserID.mybooks;
-  const category2 = myBook2 && data && data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0];
-
-  const chagePopup = useCallback((_boolean) => {
-    setisPopupSomething(_boolean);
-  }, []);
-  const changeActivedTable = useCallback((_table) => {
-    setActivedTable(_table);
-  }, []);
+  const category2 =
+    myBook2 &&
+    data &&
+    data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0];
 
   if (loading) {
     return <div>loading..</div>;
@@ -64,20 +60,12 @@ const M_WriteMain = () => {
                 ref={(ref) => (newCateRef.current = ref)}
                 category={category2}
                 myBook={myBook2}
-                isPopupSomething={isPopupSomething}
-                chagePopup={chagePopup}
-                activedTable={activedTable}
-                changeActivedTable={changeActivedTable}
               />
             </Col>
             <Col span={24}>
               <M_BooksTable
                 category={category2}
                 myBook={myBook2}
-                isPopupSomething={isPopupSomething}
-                chagePopup={chagePopup}
-                activedTable={activedTable}
-                changeActivedTable={changeActivedTable}
                 newCateId={newCateRef.current}
               />
             </Col>

@@ -20,18 +20,18 @@ const StudyPage = () => {
   const [category, setCategory] = useState([]);
   const [myBook, setMyBook] = useState([]);
 
-  const [activedTable, setActivedTable] = useState();
-
-  const [isPopupSomething, setisPopupSomething] = useState(false);
-
   const [selectedBooks, setSelectedBooks] = useState([]);
 
   const { loading, error, data } = useQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
-      if (received_data.mybookcateset_getMybookcatesetByUserID.status === "200") {
+      if (
+        received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
+      ) {
         setIsReceivedData(true);
-      } else if (received_data.mybookcateset_getMybookcatesetByUserID.status === "401") {
+      } else if (
+        received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
+      ) {
         router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -40,7 +40,10 @@ const StudyPage = () => {
   });
 
   const myBook2 = useMemo(() => data?.mybook_getMybookByUserID.mybooks, [data]);
-  const category2 = useMemo(() => data?.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0], [data]);
+  const category2 = useMemo(
+    () => data?.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0],
+    [data]
+  );
 
   useEffect(() => {
     sessionStorage.removeItem("books_selected");
@@ -55,13 +58,6 @@ const StudyPage = () => {
   }, []);
   const handleToGetMyCategory = useCallback((_categories) => {
     setCategory(_categories);
-  }, []);
-
-  const chagePopup = useCallback((_boolean) => {
-    setisPopupSomething(_boolean);
-  }, []);
-  const changeActivedTable = useCallback((_table) => {
-    setActivedTable(_table);
   }, []);
 
   const changeSelectedBooks = useCallback((_booksArray) => {
@@ -95,15 +91,12 @@ const StudyPage = () => {
         </StyledRowMaxWidth>
 
         <StyledRowMaxWidth>
-          {myBook2.filter((_book) => _book.mybook_info.isStudyLike).length > 0 && (
+          {myBook2.filter((_book) => _book.mybook_info.isStudyLike).length >
+            0 && (
             <Col span={24}>
               <StudyFavoriteBooksTable
                 category={category2}
                 myBook={myBook2}
-                isPopupSomething={isPopupSomething}
-                chagePopup={chagePopup}
-                activedTable={activedTable}
-                changeActivedTable={changeActivedTable}
                 selectedBooks={selectedBooks}
                 changeSelectedBooks={changeSelectedBooks}
               />
@@ -114,10 +107,6 @@ const StudyPage = () => {
             <StudyBooksTable
               category={category2}
               myBook={myBook2}
-              isPopupSomething={isPopupSomething}
-              chagePopup={chagePopup}
-              activedTable={activedTable}
-              changeActivedTable={changeActivedTable}
               selectedBooks={selectedBooks}
               changeSelectedBooks={changeSelectedBooks}
             />

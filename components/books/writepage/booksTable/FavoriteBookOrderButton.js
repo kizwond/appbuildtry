@@ -3,16 +3,20 @@ import { memo } from "react";
 import { useRouter } from "next/router";
 import { MUTATION_CHANGE_BOOK_ORDER } from "../../../../graphql/mutation/myBook";
 
-import { Space, Tooltip } from "antd";
+import { Space } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
 const FavoriteBookOrderButton = ({ _record, tableType, changeFoldedMenu }) => {
   const router = useRouter();
+  let timer;
   const [rePosition, { loading }] = useMutation(MUTATION_CHANGE_BOOK_ORDER, {
     onCompleted: (received_data) => {
       if (received_data.mybook_modifySeq.status === "200") {
         console.log("즐겨찾기 책순서 변경후 받은 데이터", received_data);
-        changeFoldedMenu("");
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          changeFoldedMenu("");
+        }, 200);
       } else if (received_data.mybook_modifySeq.status === "401") {
         router.push("/account/login");
       } else {
@@ -36,154 +40,104 @@ const FavoriteBookOrderButton = ({ _record, tableType, changeFoldedMenu }) => {
   return (
     <Space size={2}>
       {_record.isFirstBook ? (
-        <Tooltip
-          mouseEnterDelay={0.5}
-          mouseLeaveDelay={0}
-          color="#4d4d4d"
-          title="첫번째 책"
-          overlayInnerStyle={{
-            fontSize: "0.65rem",
-            minWidth: "0",
-            minHeight: "0",
+        <div
+          className="FirstBookCustom"
+          style={{
+            width: "34px",
+            height: "24px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-          overlayStyle={{ alignSelf: "middle" }}
         >
-          <div
-            className="FirstBookCustom"
-            style={{
-              width: "34px",
-              height: "24px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ArrowUpOutlined />
-          </div>
-        </Tooltip>
+          <ArrowUpOutlined />
+        </div>
       ) : (
-        <Tooltip
-          mouseEnterDelay={0.3}
-          mouseLeaveDelay={0}
-          title="위로 이동"
-          overlayInnerStyle={{
-            fontSize: "0.65rem",
-            minWidth: "0",
-            minHeight: "0",
+        <div
+          className="customCircleButton"
+          style={{
+            width: "34px",
+            height: "24px",
+            borderRadius: "12px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
           }}
-          overlayStyle={{ alignSelf: "middle" }}
+          onClick={() => {
+            const forModifySeq = [
+              {
+                mybook_id: _record.aboveAndBelowBooks.aboveBook.mybook_id,
+                seqType: tableType === "study" ? "StudyLike" : "WriteLike",
+                seq:
+                  tableType === "study"
+                    ? _record.seqInStudyLike
+                    : _record.seqInWriteLike,
+              },
+              {
+                mybook_id: _record._id,
+                seqType: tableType === "study" ? "StudyLike" : "WriteLike",
+                seq:
+                  tableType === "study"
+                    ? _record.aboveAndBelowBooks.aboveBook.seqInStudyLike
+                    : _record.aboveAndBelowBooks.aboveBook.seqInWriteLike,
+              },
+            ];
+            positionBooks(forModifySeq);
+          }}
         >
-          <div
-            className="customCircleButton"
-            style={{
-              width: "34px",
-              height: "24px",
-              borderRadius: "12px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              const forModifySeq = [
-                {
-                  mybook_id: _record.aboveAndBelowBooks.aboveBook.mybook_id,
-                  seqType: tableType === "study" ? "StudyLike" : "WriteLike",
-                  seq:
-                    tableType === "study"
-                      ? _record.seqInStudyLike
-                      : _record.seqInWriteLike,
-                },
-                {
-                  mybook_id: _record._id,
-                  seqType: tableType === "study" ? "StudyLike" : "WriteLike",
-                  seq:
-                    tableType === "study"
-                      ? _record.aboveAndBelowBooks.aboveBook.seqInStudyLike
-                      : _record.aboveAndBelowBooks.aboveBook.seqInWriteLike,
-                },
-              ];
-              positionBooks(forModifySeq);
-            }}
-          >
-            <ArrowUpOutlined />
-          </div>
-        </Tooltip>
+          <ArrowUpOutlined />
+        </div>
       )}
       {_record.isLastBook ? (
-        <Tooltip
-          mouseEnterDelay={0.5}
-          mouseLeaveDelay={0}
-          color="#4d4d4d"
-          title="마지막 책"
-          overlayInnerStyle={{
-            fontSize: "0.65rem",
-            minWidth: "0",
-            minHeight: "0",
+        <div
+          className="LastBookCustom"
+          style={{
+            width: "34px",
+            height: "24px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-          overlayStyle={{ alignSelf: "middle" }}
         >
-          <div
-            className="LastBookCustom"
-            style={{
-              width: "34px",
-              height: "24px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <ArrowDownOutlined />
-          </div>
-        </Tooltip>
+          <ArrowDownOutlined />
+        </div>
       ) : (
-        <Tooltip
-          mouseEnterDelay={0.3}
-          mouseLeaveDelay={0}
-          title="아래로 이동"
-          overlayInnerStyle={{
-            fontSize: "0.65rem",
-            minWidth: "0",
-            minHeight: "0",
+        <div
+          className="customCircleButton"
+          style={{
+            width: "34px",
+            height: "24px",
+            borderRadius: "12px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
           }}
-          overlayStyle={{ alignSelf: "middle" }}
+          onClick={() => {
+            const forModifySeq = [
+              {
+                mybook_id: _record.aboveAndBelowBooks.belowBook.mybook_id,
+                seqType: tableType === "study" ? "StudyLike" : "WriteLike",
+                seq:
+                  tableType === "study"
+                    ? _record.seqInStudyLike
+                    : _record.seqInWriteLike,
+              },
+              {
+                mybook_id: _record._id,
+                seqType: tableType === "study" ? "StudyLike" : "WriteLike",
+                seq:
+                  tableType === "study"
+                    ? _record.aboveAndBelowBooks.belowBook.seqInStudyLike
+                    : _record.aboveAndBelowBooks.belowBook.seqInWriteLike,
+              },
+            ];
+            positionBooks(forModifySeq);
+          }}
         >
-          <div
-            className="customCircleButton"
-            style={{
-              width: "34px",
-              height: "24px",
-              borderRadius: "12px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              const forModifySeq = [
-                {
-                  mybook_id: _record.aboveAndBelowBooks.belowBook.mybook_id,
-                  seqType: tableType === "study" ? "StudyLike" : "WriteLike",
-                  seq:
-                    tableType === "study"
-                      ? _record.seqInStudyLike
-                      : _record.seqInWriteLike,
-                },
-                {
-                  mybook_id: _record._id,
-                  seqType: tableType === "study" ? "StudyLike" : "WriteLike",
-                  seq:
-                    tableType === "study"
-                      ? _record.aboveAndBelowBooks.belowBook.seqInStudyLike
-                      : _record.aboveAndBelowBooks.belowBook.seqInWriteLike,
-                },
-              ];
-              positionBooks(forModifySeq);
-            }}
-          >
-            <ArrowDownOutlined />
-          </div>
-        </Tooltip>
+          <ArrowDownOutlined />
+        </div>
       )}
     </Space>
   );

@@ -55,15 +55,6 @@ const FavoriteBookOrderButton = ({ _record, tableType, changeFoldedMenu }) => {
       ) : (
         <div
           className="customCircleButton"
-          style={{
-            width: "34px",
-            height: "24px",
-            borderRadius: "12px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "pointer",
-          }}
           onClick={() => {
             const forModifySeq = [
               {
@@ -105,15 +96,6 @@ const FavoriteBookOrderButton = ({ _record, tableType, changeFoldedMenu }) => {
       ) : (
         <div
           className="customCircleButton"
-          style={{
-            width: "34px",
-            height: "24px",
-            borderRadius: "12px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "pointer",
-          }}
           onClick={() => {
             const forModifySeq = [
               {

@@ -24,6 +24,7 @@ import {
 } from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 
 const M_BooksTable = ({ category, myBook, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -117,8 +118,7 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
               }
             }}
           >
-            {_record.classType ===
-            "empty-category" ? null : expandedRowKeys.includes(_record.key) ? (
+            {expandedRowKeys.includes(_record.key) ? (
               <DownOutlined />
             ) : (
               <RightOutlined />
@@ -420,7 +420,8 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
                 </div>
               </div>
 
-              <Drawer
+              <StyledBookSettingBarDrawer
+                booktype={_record.type}
                 destroyOnClose={true}
                 className="BookDrawerMenu"
                 placement="right"
@@ -429,23 +430,6 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
                 mask={false}
                 visible={`table${_record._id}` === isFoldedMenu}
                 getContainer={false}
-                style={{
-                  position: "absolute",
-                  textAlign: "initial",
-                  height: "3rem",
-                  top: "0.6rem",
-                }}
-                contentWrapperStyle={{ boxShadow: "unset" }}
-                drawerStyle={{ display: "block" }}
-                bodyStyle={{
-                  padding: "unset",
-                  flexGrow: "unset",
-                  overflow: "hidden",
-                  height: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
               >
                 <Space size={3}>
                   <BookOrderButton
@@ -474,7 +458,7 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
                 >
                   <DoubleRightOutlined />
                 </div>
-              </Drawer>
+              </StyledBookSettingBarDrawer>
             </div>
           ),
           props: {},
@@ -545,16 +529,6 @@ const StyledCard = styled(Card)`
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
   & .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;
-  }
-
-  /* 개별 책 펼치기  */
-  & .ant-drawer-content {
-    overflow: hidden;
-    background-color: #2fbf40;
-    background-clip: padding-box;
-    border: 0;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
   }
 
   & .PullCustomCircleButton:hover {

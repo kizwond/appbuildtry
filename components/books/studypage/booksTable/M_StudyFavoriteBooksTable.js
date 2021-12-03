@@ -19,6 +19,7 @@ import {
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
+import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 
 const M_StudyFavoriteBooksTable = forwardRef(
   ({ category, myBook, selectedBooks, changeSelectedBooks }, ref) => {
@@ -248,7 +249,8 @@ const M_StudyFavoriteBooksTable = forwardRef(
               </div>
             </div>
 
-            <Drawer
+            <StyledBookSettingBarDrawer
+              booktype={_record.type}
               destroyOnClose={true}
               className="BookDrawerMenu"
               placement="right"
@@ -257,23 +259,6 @@ const M_StudyFavoriteBooksTable = forwardRef(
               mask={false}
               visible={`favorite${_record._id}` === isFoldedMenu}
               getContainer={false}
-              style={{
-                position: "absolute",
-                textAlign: "initial",
-                height: "3rem",
-                top: "0.6rem",
-              }}
-              contentWrapperStyle={{ boxShadow: "unset" }}
-              drawerStyle={{ display: "block" }}
-              bodyStyle={{
-                padding: "unset",
-                flexGrow: "unset",
-                overflow: "hidden",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
             >
               <Space size={3}>
                 <FavoriteBookOrderButton
@@ -303,7 +288,7 @@ const M_StudyFavoriteBooksTable = forwardRef(
               >
                 <DoubleRightOutlined />
               </div>
-            </Drawer>
+            </StyledBookSettingBarDrawer>
           </div>
         ),
       },
@@ -373,16 +358,6 @@ const StyledCard = styled(Card)`
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
   & .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;
-  }
-
-  /* 개별 책 펼치기  */
-  & .ant-drawer-content {
-    overflow: hidden;
-    background-color: #2fbf40;
-    background-clip: padding-box;
-    border: 0;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
   }
 
   & .PullCustomCircleButton:hover {

@@ -27,10 +27,6 @@ import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgr
 const M_StudyBooksTable = ({
   category,
   myBook,
-  isPopupSomething,
-  chagePopup,
-  activedTable,
-  changeActivedTable,
   selectedBooks,
   changeSelectedBooks,
 }) => {
@@ -40,7 +36,7 @@ const M_StudyBooksTable = ({
   const [isFoldedMenu, setIsFoldedMenu] = useState();
 
   const checkRef = useRef({});
-
+  console.log({ isFoldedMenu });
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
@@ -329,8 +325,7 @@ const M_StudyBooksTable = ({
                   justifyContent: "end",
                 }}
                 onClick={() => {
-                  changeFoldedMenu(_record._id);
-                  changeActivedTable("bookTable");
+                  changeFoldedMenu(`table${_record._id}`);
                 }}
               >
                 <div
@@ -349,13 +344,12 @@ const M_StudyBooksTable = ({
 
               <Drawer
                 destroyOnClose={true}
+                className="BookDrawerMenu"
                 placement="right"
                 width={"250px"}
                 closable={false}
                 mask={false}
-                visible={
-                  activedTable === "bookTable" && _record._id === isFoldedMenu
-                }
+                visible={`table${_record._id}` === isFoldedMenu}
                 getContainer={false}
                 style={{
                   position: "absolute",
@@ -383,7 +377,6 @@ const M_StudyBooksTable = ({
                   |
                   <FavoriteBook
                     record={_record}
-                    changeActivedTable={changeActivedTable}
                     changeFoldedMenu={changeFoldedMenu}
                     tableType="study"
                   />{" "}
@@ -399,7 +392,6 @@ const M_StudyBooksTable = ({
                   className="PushCustomCircleButton"
                   onClick={() => {
                     setIsFoldedMenu("");
-                    changeActivedTable("");
                   }}
                 >
                   <DoubleRightOutlined />
@@ -494,7 +486,7 @@ const StyledCard = styled(Card)`
   /* 개별 책 펼치기  */
   & .ant-drawer-content {
     overflow: hidden;
-    background-color: #73bcfc;
+    background-color: #2fbf40;
     background-clip: padding-box;
     border: 0;
     border-top-left-radius: 10px;

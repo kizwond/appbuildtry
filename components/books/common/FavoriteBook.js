@@ -9,14 +9,16 @@ import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { useMemo } from "react";
 import { MUTATION_SET_MY_BOOK_LIKE } from "../../../graphql/mutation/myBook";
 
-const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType }) => {
-  const { _id, isWriteLike, isStudyLike, studyLikeLength, writeLikeLength } = record;
+const FavoriteBook = ({ record, changeFoldedMenu, tableType }) => {
+  const { _id, isWriteLike, isStudyLike, studyLikeLength, writeLikeLength } =
+    record;
 
   const router = useRouter();
   const [changeLike] = useMutation(MUTATION_SET_MY_BOOK_LIKE, {
     onCompleted: (received_data) => {
-      console.log("received_data", received_data);
       if (received_data.mybook_setLike.status === "200") {
+        changeFoldedMenu("");
+        console.log("책 즐겨찾기 설정 후 받은 데이터", received_data);
       } else if (received_data.mybook_setLike.status === "401") {
         router.push("/m/account/login");
       } else {
@@ -42,7 +44,10 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const like = useMemo(() => (tableType === "study" ? isStudyLike : isWriteLike), [tableType]);
+  const like = useMemo(
+    () => (tableType === "study" ? isStudyLike : isWriteLike),
+    [tableType]
+  );
 
   return (
     <>
@@ -51,8 +56,6 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
           className="customCircleButton"
           onClick={() => {
             updateBook(false, null);
-            changeActivedTable("");
-            changeFoldedMenu("");
           }}
         >
           <StarFilled className="writeLiked" />
@@ -62,9 +65,10 @@ const FavoriteBook = ({ record, changeActivedTable, changeFoldedMenu, tableType 
           className="customCircleButton"
           onClick={() => {
             console.log({ studyLikeLength });
-            updateBook(true, tableType === "study" ? studyLikeLength : writeLikeLength);
-            changeActivedTable("");
-            changeFoldedMenu("");
+            updateBook(
+              true,
+              tableType === "study" ? studyLikeLength : writeLikeLength
+            );
           }}
         >
           <StarOutlined className="writeUnliked" />

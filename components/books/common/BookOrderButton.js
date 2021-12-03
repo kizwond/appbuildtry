@@ -8,11 +8,15 @@ import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
 const BookOrderButton = ({ _record, changeFoldedMenu }) => {
   const router = useRouter();
+  let timer;
   const [rePosition] = useMutation(MUTATION_CHANGE_BOOK_ORDER, {
     onCompleted: (received_data) => {
       if (received_data.mybook_modifySeq.status === "200") {
         console.log("책순서 변경 후 받은 데이터", received_data);
-        changeFoldedMenu("");
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          changeFoldedMenu("");
+        }, 300);
       } else if (received_data.mybook_modifySeq.status === "401") {
         router.push("/account/login");
       } else {
@@ -35,7 +39,7 @@ const BookOrderButton = ({ _record, changeFoldedMenu }) => {
 
   return (
     <Space size={2}>
-      {_record.isFirstBook ? (
+      {_record.isFirstBook || _record.hideOrShow === "hide" ? (
         <div
           className="FirstBookCustom"
           style={{
@@ -70,7 +74,7 @@ const BookOrderButton = ({ _record, changeFoldedMenu }) => {
           <ArrowUpOutlined />
         </div>
       )}
-      {_record.isLastBook ? (
+      {_record.isLastBook || _record.hideOrShow === "hide" ? (
         <div
           className="LastBookCustom"
           style={{

@@ -520,7 +520,13 @@ p {
   background: #e4e0e0;
 }
 
-/* page 커스텀 버튼 */
+/* page 책 슬라이드 메뉴 관련 설정 */
+
+.ant-drawer.ant-drawer-right.BookDrawerMenu .ant-drawer-content-wrapper {
+  transition: transform 1.3s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 1.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
 .customCircleButton {
   width: 34px;
   height: 24px;
@@ -542,7 +548,7 @@ p {
 .customCircleButton > .anticon-eye-invisible > svg,
 .customCircleButton > .anticon-setting > svg {
   font-size: 16px;
-  color: #dee2e6;
+  color: #050505;
 }
 .customCircleButton > .anticon-star.writeLiked > svg {
   font-size: 16px;
@@ -556,7 +562,7 @@ p {
 }
 .FirstBookCustom > .anticon-arrow-up > svg,
 .LastBookCustom > .anticon-arrow-down > svg {
-  color: #4d4d4d;
+  color: #828282;
   font-size: 16px;
 }
 

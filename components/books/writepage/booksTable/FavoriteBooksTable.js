@@ -17,14 +17,7 @@ import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
-const FavoriteBooksTable = ({
-  category,
-  myBook,
-  isPopupSomething,
-  chagePopup,
-  activedTable,
-  changeActivedTable,
-}) => {
+const FavoriteBooksTable = ({ category, myBook }) => {
   const [mounted, setMounted] = useState(false);
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
@@ -294,8 +287,7 @@ const FavoriteBooksTable = ({
               justifyContent: "end",
             }}
             onClick={() => {
-              changeFoldedMenu(_record._id);
-              changeActivedTable("favoriteTable");
+              changeFoldedMenu(`favorite${_record._id}`);
             }}
           >
             <div
@@ -314,13 +306,12 @@ const FavoriteBooksTable = ({
 
           <Drawer
             destroyOnClose={true}
+            className="BookDrawerMenu"
             placement="right"
             width={"250px"}
             closable={false}
             mask={false}
-            visible={
-              activedTable === "favoriteTable" && _record._id === isFoldedMenu
-            }
+            visible={`favorite${_record._id}` === isFoldedMenu}
             getContainer={false}
             style={{
               position: "absolute",
@@ -345,7 +336,6 @@ const FavoriteBooksTable = ({
               |
               <FavoriteBook
                 record={_record}
-                changeActivedTable={changeActivedTable}
                 changeFoldedMenu={changeFoldedMenu}
                 tableType="write"
               />{" "}
@@ -361,7 +351,6 @@ const FavoriteBooksTable = ({
               className="PushCustomCircleButton"
               onClick={() => {
                 changeFoldedMenu("");
-                changeActivedTable("");
               }}
             >
               <DoubleRightOutlined />
@@ -370,17 +359,6 @@ const FavoriteBooksTable = ({
         </div>
       ),
     },
-    // {
-    //   title: "상설",
-    //   align: "center",
-    //   className: "TableLastColumn",
-    //   width: 35,
-    //   render: (value, _record, index) => (
-    //     <div>
-    //       <MoveToBookSetting mybook_id={_record._id} title={_record.title} isPopupSomething={isPopupSomething} chagePopup={chagePopup} />
-    //     </div>
-    //   ),
-    // },
   ];
 
   return (
@@ -438,7 +416,7 @@ const StyledCard = styled(Card)`
   /* 개별 책 펼치기  */
   & .ant-drawer-content {
     overflow: hidden;
-    background-color: #73bcfc;
+    background-color: #2fbf40;
     background-clip: padding-box;
     border: 0;
     border-top-left-radius: 10px;

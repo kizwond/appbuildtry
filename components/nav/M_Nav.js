@@ -68,7 +68,7 @@ const Nav = () => {
             title={
               <>
                 <div style={{ height: "100%", padding: "0" }}>
-                  <Avatar size="small" icon={<UserOutlined />} /> <span style={{ fontSize: "0.8rem" }}>{username}{username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}</span>
+                  <Avatar size="small" icon={<UserOutlined />} /> <span style={{ fontSize: "1rem" }}>{username}{username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}</span>
                 </div>
               </>
             }
@@ -157,7 +157,8 @@ const Nav = () => {
                 </div>
                 {isLogged && (
                   <>
-                    <Button size="large" shape="round" style={{ fontSize: "0.8rem"  }} onClick={() => onClickLogout()}>
+                  
+                    <Button size="medium" shape="round" style={{ width:"85%", fontSize: "1rem", margin:"auto"  }} onClick={() => onClickLogout()}>
                       로그아웃
                     </Button>
                   </>
@@ -179,7 +180,7 @@ const Nav = () => {
             CogBook
           </a>
         </Link>
-        <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "0.8rem" }}></div>
+        <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem" }}></div>
       </div>
     </>
   );
@@ -190,5 +191,5 @@ export default Nav;
 const linkStyleDrawer = {
   color: "#5b5b5b",
   padding: 10,
-  fontSize: "0.8rem",
+  fontSize: "1rem",
 };

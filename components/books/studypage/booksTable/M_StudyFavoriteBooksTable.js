@@ -4,22 +4,8 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
-import {
-  Table,
-  Button,
-  Card,
-  Space,
-  Drawer,
-  Checkbox,
-  Progress,
-  Popover,
-} from "antd";
-import {
-  DollarCircleFilled,
-  DoubleLeftOutlined,
-  DoubleRightOutlined,
-  OrderedListOutlined,
-} from "@ant-design/icons";
+import { Table, Card, Space, Drawer, Checkbox, Popover } from "antd";
+import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
@@ -206,7 +192,7 @@ const M_StudyFavoriteBooksTable = forwardRef(
         title: "진도율",
         key: "timeModify",
         dataIndex: "timeModify",
-        className: "TableMiddleColumn",
+        className: "TableMiddleColumn TextAlignCenterColumn",
         align: "center",
         width: 60,
         render: (_value, _record) => (

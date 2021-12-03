@@ -110,8 +110,7 @@ const M_StudyBooksTable = ({
               }
             }}
           >
-            {_record.classType ===
-            "empty-category" ? null : expandedRowKeys.includes(_record.key) ? (
+            {expandedRowKeys.includes(_record.key) ? (
               <DownOutlined />
             ) : (
               <RightOutlined />
@@ -351,23 +350,6 @@ const M_StudyBooksTable = ({
                 mask={false}
                 visible={`table${_record._id}` === isFoldedMenu}
                 getContainer={false}
-                style={{
-                  position: "absolute",
-                  textAlign: "initial",
-                  height: "3rem",
-                  top: "0.6rem",
-                }}
-                contentWrapperStyle={{ boxShadow: "unset" }}
-                drawerStyle={{ display: "block" }}
-                bodyStyle={{
-                  padding: "unset",
-                  flexGrow: "unset",
-                  overflow: "hidden",
-                  height: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
               >
                 <Space size={3}>
                   <BookOrderButton

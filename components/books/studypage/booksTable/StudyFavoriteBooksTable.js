@@ -246,6 +246,7 @@ const StudyFavoriteBooksTable = ({
           </div>
 
           <StyledBookSettingBarDrawer
+            booktype={_record.type}
             destroyOnClose={true}
             className="BookDrawerMenu"
             placement="right"
@@ -254,23 +255,6 @@ const StudyFavoriteBooksTable = ({
             mask={false}
             visible={`favorite${_record._id}` === isFoldedMenu}
             getContainer={false}
-            style={{
-              position: "absolute",
-              textAlign: "initial",
-              height: "3rem",
-              top: "0.6rem",
-            }}
-            contentWrapperStyle={{ boxShadow: "unset" }}
-            drawerStyle={{ display: "block" }}
-            bodyStyle={{
-              padding: "unset",
-              flexGrow: "unset",
-              overflow: "hidden",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
           >
             <Space size={3}>
               <FavoriteBookOrderButton

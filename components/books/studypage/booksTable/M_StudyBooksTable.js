@@ -483,7 +483,6 @@ const StyledCard = styled(Card)`
   & .ant-checkbox-wrapper {
     margin-right: 3px;
   }
-  /* 개별 책 펼치기  */
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;

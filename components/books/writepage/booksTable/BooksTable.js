@@ -11,13 +11,15 @@ import {
   DoubleRightOutlined,
 } from "@ant-design/icons";
 
+import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 
 import makeDataSource from "../../common/logic";
-import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 
 const BooksTable = ({ category, myBook, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -356,8 +358,7 @@ const BooksTable = ({ category, myBook, newCateId }) => {
                   <DoubleLeftOutlined />
                 </div>
               </div>
-
-              <Drawer
+              <StyledBookSettingBarDrawer
                 destroyOnClose={true}
                 className="BookDrawerMenu"
                 placement="right"
@@ -411,7 +412,7 @@ const BooksTable = ({ category, myBook, newCateId }) => {
                 >
                   <DoubleRightOutlined />
                 </div>
-              </Drawer>
+              </StyledBookSettingBarDrawer>
             </div>
           ),
           props: {},

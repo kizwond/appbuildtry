@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const StyledProgress = styled.div`
   width: 100%;
   height: 1.4rem;
-  background-color: #919191;
+  background-color: #e5e5e5;
   position: relative;
   width: 100%;
   overflow: hidden;
@@ -29,9 +29,9 @@ export const StyledProgress = styled.div`
     background-color: ${(props) => {
       const bgColor =
         props.booktype === "my"
-          ? "#74ffc3"
+          ? "#ff6f56"
           : props.booktype === "buy"
-          ? "#74bfff"
+          ? "#4dadfe"
           : console.log(new Error("책 타입 잘못 설정됨"));
       return bgColor;
     }};

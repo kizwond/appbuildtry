@@ -24,6 +24,7 @@ import {
 } from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 
 const M_BooksTable = ({ category, myBook, newCateId }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -420,7 +421,7 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
                 </div>
               </div>
 
-              <Drawer
+              <StyledBookSettingBarDrawer
                 destroyOnClose={true}
                 className="BookDrawerMenu"
                 placement="right"
@@ -474,7 +475,7 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
                 >
                   <DoubleRightOutlined />
                 </div>
-              </Drawer>
+              </StyledBookSettingBarDrawer>
             </div>
           ),
           props: {},
@@ -545,16 +546,6 @@ const StyledCard = styled(Card)`
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
   & .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;
-  }
-
-  /* 개별 책 펼치기  */
-  & .ant-drawer-content {
-    overflow: hidden;
-    background-color: #2fbf40;
-    background-clip: padding-box;
-    border: 0;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
   }
 
   & .PullCustomCircleButton:hover {

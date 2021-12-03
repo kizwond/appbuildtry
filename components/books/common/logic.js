@@ -234,6 +234,8 @@ export default function makeDataSource(
       children: childrenBooks,
       totalBooksNum: categoryBooksLength,
       totalHiddenBooksNum: markedHideListLength,
+      // 테스트용 아래 type: "buy"삭제해야함
+      type: "buy",
     };
 
     return parent;

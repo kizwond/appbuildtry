@@ -15,14 +15,15 @@ import {
   StyledFlexSpaceBetween,
 } from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
+import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
+import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
 import makeDataSource from "../../common/logic";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
-import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
 
 const M_StudyBooksTable = ({
   category,
@@ -278,12 +279,11 @@ const M_StudyBooksTable = ({
               {
                 // _record.total === 0 ? "-" :
                 <StyledProgress
+                  booktype={_record.type}
                   percent={
-                    _index * 30
+                    _index * 20
                     // _record.accuLevel / _record.total
                   }
-                  trailColor="#bbbbbb"
-                  strokeWidth={23}
                 />
               }
             </div>
@@ -341,7 +341,8 @@ const M_StudyBooksTable = ({
                 </div>
               </div>
 
-              <Drawer
+              <StyledBookSettingBarDrawer
+                booktype={_record.type}
                 destroyOnClose={true}
                 className="BookDrawerMenu"
                 placement="right"
@@ -395,7 +396,7 @@ const M_StudyBooksTable = ({
                 >
                   <DoubleRightOutlined />
                 </div>
-              </Drawer>
+              </StyledBookSettingBarDrawer>
             </div>
           ),
           props: {},
@@ -483,14 +484,6 @@ const StyledCard = styled(Card)`
     margin-right: 3px;
   }
   /* 개별 책 펼치기  */
-  & .ant-drawer-content {
-    overflow: hidden;
-    background-color: #2fbf40;
-    background-clip: padding-box;
-    border: 0;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;

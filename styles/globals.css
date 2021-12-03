@@ -519,6 +519,13 @@ p {
   > div {
   background: #e4e0e0;
 }
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr
+  > td.TextAlignCenterColumn
+  > div {
+  justify-content: center;
+}
 
 /* page 책 슬라이드 메뉴 관련 설정 */
 

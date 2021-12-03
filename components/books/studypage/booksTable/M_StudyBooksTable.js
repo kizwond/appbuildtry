@@ -36,7 +36,6 @@ const M_StudyBooksTable = ({
   const [isFoldedMenu, setIsFoldedMenu] = useState();
 
   const checkRef = useRef({});
-  console.log({ isFoldedMenu });
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
@@ -268,7 +267,7 @@ const M_StudyBooksTable = ({
       title: "진도율",
       key: "accuLevel",
       dataIndex: "accuLevel",
-      className: "TableMiddleColumn",
+      className: "TableMiddleColumn TextAlignCenterColumn",
       align: "center",
       width: 60,
       render: (_value, _record, _index) => {
@@ -284,7 +283,7 @@ const M_StudyBooksTable = ({
                     // _record.accuLevel / _record.total
                   }
                   trailColor="#bbbbbb"
-                  strokeWidth={13}
+                  strokeWidth={23}
                 />
               }
             </div>

@@ -1,22 +1,48 @@
-import { Tooltip, Tag } from "antd";
+import { Tag } from "antd";
 import { VerticalAlignBottomOutlined } from "@ant-design/icons";
-import _, { filter } from "lodash";
+import _ from "lodash";
 import { StyledFlexAlignCenter } from "../../common/styledComponent/page";
 
-export default function makeDataSource(myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook) {
+export default function makeDataSource(
+  myBook,
+  category,
+  isShowedHiddenBook,
+  changeIsShowedHiddenBook
+) {
   const noCategoryId = category.find((_cate) => _cate.isFixed === "yes")._id;
-  const noCategoryBooksLength = myBook.filter((_book) => _book.mybook_info.mybookcate_id === noCategoryId).length;
-  const filteredCategory = noCategoryBooksLength > 0 ? category : category.filter((_cate) => _cate.name !== "(미지정)");
+  const noCategoryBooksLength = myBook.filter(
+    (_book) => _book.mybook_info.mybookcate_id === noCategoryId
+  ).length;
+  const filteredCategory =
+    noCategoryBooksLength > 0
+      ? category
+      : category.filter((_cate) => _cate.name !== "(미지정)");
 
-  const studyLikedBoooks = myBook.filter((book) => book.mybook_info.isStudyLike);
-  const studyLikeLength = studyLikedBoooks.length === 0 ? 1 : Math.max(...studyLikedBoooks.map((book) => book.mybook_info.seqInStudyLike)) + 1;
+  const studyLikedBoooks = myBook.filter(
+    (book) => book.mybook_info.isStudyLike
+  );
+  const studyLikeLength =
+    studyLikedBoooks.length === 0
+      ? 1
+      : Math.max(
+          ...studyLikedBoooks.map((book) => book.mybook_info.seqInStudyLike)
+        ) + 1;
   const writeLikedBooks = myBook.filter((book) => book.mybook_info.isWriteLike);
-  const writeLikeLength = writeLikedBooks.length === 0 ? 1 : Math.max(...writeLikedBooks.map((book) => book.mybook_info.seqInWriteLike)) + 1;
+  const writeLikeLength =
+    writeLikedBooks.length === 0
+      ? 1
+      : Math.max(
+          ...writeLikedBooks.map((book) => book.mybook_info.seqInWriteLike)
+        ) + 1;
 
   const dataSource = filteredCategory.map((_cate, _categoryIndex) => {
     const { name, seq } = _cate;
-    const _categoryBooksList = myBook.filter((_book) => _cate._id === _book.mybook_info.mybookcate_id);
-    const categoryBooksList = _categoryBooksList.sort((a, b) => a.mybook_info.seqInCategory - b.mybook_info.seqInCategory);
+    const _categoryBooksList = myBook.filter(
+      (_book) => _cate._id === _book.mybook_info.mybookcate_id
+    );
+    const categoryBooksList = _categoryBooksList.sort(
+      (a, b) => a.mybook_info.seqInCategory - b.mybook_info.seqInCategory
+    );
     const categoryBooksLength = categoryBooksList.length;
     if (categoryBooksLength === 0) {
       return {
@@ -28,9 +54,13 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       };
     }
 
-    const markedShowList = categoryBooksList.filter((_book) => _book.mybook_info.hideOrShow == "show");
+    const markedShowList = categoryBooksList.filter(
+      (_book) => _book.mybook_info.hideOrShow == "show"
+    );
     const markedShowListLength = markedShowList.length;
-    const markedHideList = categoryBooksList.filter((_book) => _book.mybook_info.hideOrShow == "hide");
+    const markedHideList = categoryBooksList.filter(
+      (_book) => _book.mybook_info.hideOrShow == "hide"
+    );
     const markedHideListLength = markedHideList.length;
 
     const isShowedAllBooks = isShowedHiddenBook.includes(_cate._id);
@@ -43,9 +73,15 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       studyHistory: _book.stats?.studyHistory,
       writeHistory: _book.stats?.writeHistory,
       classType:
-        markedHideListLength === 0 && markedShowListLength > 0 && markedShowListLength === _index + 1 && _index % 2 !== 0
+        markedHideListLength === 0 &&
+        markedShowListLength > 0 &&
+        markedShowListLength === _index + 1 &&
+        _index % 2 !== 0
           ? "last-even-book"
-          : markedHideListLength === 0 && markedShowListLength > 0 && markedShowListLength === _index + 1 && _index % 2 === 0
+          : markedHideListLength === 0 &&
+            markedShowListLength > 0 &&
+            markedShowListLength === _index + 1 &&
+            _index % 2 === 0
           ? "last-odd-book"
           : _index % 2 !== 0
           ? "even-book"
@@ -58,12 +94,18 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       _id: _book._id,
       aboveAndBelowBooks: {
         aboveBook: {
-          mybook_id: markedShowList[_index - 1] && markedShowList[_index - 1]._id,
-          seqInCategory: markedShowList[_index - 1] && markedShowList[_index - 1].mybook_info.seqInCategory,
+          mybook_id:
+            markedShowList[_index - 1] && markedShowList[_index - 1]._id,
+          seqInCategory:
+            markedShowList[_index - 1] &&
+            markedShowList[_index - 1].mybook_info.seqInCategory,
         },
         belowBook: {
-          mybook_id: markedShowList[_index + 1] && markedShowList[_index + 1]._id,
-          seqInCategory: markedShowList[_index + 1] && markedShowList[_index + 1].mybook_info.seqInCategory,
+          mybook_id:
+            markedShowList[_index + 1] && markedShowList[_index + 1]._id,
+          seqInCategory:
+            markedShowList[_index + 1] &&
+            markedShowList[_index + 1].mybook_info.seqInCategory,
         },
       },
       studyLikeLength,
@@ -78,9 +120,15 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       studyHistory: _book.stats?.studyHistory,
       writeHistory: _book.stats?.writeHistory,
       classType:
-        markedHideListLength > 0 && isShowedAllBooks && markedHideListLength === _index + 1 && _index % 2 !== 0
+        markedHideListLength > 0 &&
+        isShowedAllBooks &&
+        markedHideListLength === _index + 1 &&
+        _index % 2 !== 0
           ? "last-even-book"
-          : markedHideListLength > 0 && isShowedAllBooks && markedHideListLength === _index + 1 && _index % 2 === 0
+          : markedHideListLength > 0 &&
+            isShowedAllBooks &&
+            markedHideListLength === _index + 1 &&
+            _index % 2 === 0
           ? "last-odd-book"
           : _index % 2 !== 0
           ? "even-book"
@@ -101,26 +149,36 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       title: (
         <>
           <StyledFlexAlignCenter>
-            <div style={{ marginRight: "40px" }}>{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</div>
-            <Tooltip
+            <div
+              style={{ marginRight: "40px" }}
+            >{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</div>
+            {/* <Tooltip
               title={isShowedAllBooks ? "숨긴 책 감추기" : "숨긴 책 표시"}
               color="rgba(7, 164, 237, 0.522)"
               overlayInnerStyle={{ fontSize: "0.65rem", minWidth: "0", minHeight: "0" }}
               overlayStyle={{ alignSelf: "middle" }}
+            > */}
+            <Tag
+              className="HandleOnOffShow"
+              size="small"
+              style={{ fontSize: "0.7rem" }}
+              color={isShowedAllBooks ? "#cec8c8" : "#a9a7a7"}
+              icon={
+                <VerticalAlignBottomOutlined
+                  rotate={isShowedAllBooks ? 180 : 0}
+                />
+              }
+              onClick={() => {
+                changeIsShowedHiddenBook(
+                  isShowedAllBooks,
+                  isShowedHiddenBook,
+                  _cate._id
+                );
+              }}
             >
-              <Tag
-                className="HandleOnOffShow"
-                size="small"
-                style={{ fontSize: "0.7rem" }}
-                color={isShowedAllBooks ? "#cec8c8" : "#a9a7a7"}
-                icon={<VerticalAlignBottomOutlined rotate={isShowedAllBooks ? 180 : 0} />}
-                onClick={() => {
-                  changeIsShowedHiddenBook(isShowedAllBooks, isShowedHiddenBook, _cate._id);
-                }}
-              >
-                {isShowedAllBooks ? "접기" : "보기"}
-              </Tag>
-            </Tooltip>
+              {isShowedAllBooks ? "접기" : "보기"}
+            </Tag>
+            {/* </Tooltip> */}
           </StyledFlexAlignCenter>
         </>
       ),
@@ -136,7 +194,9 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       }
       // 숨긴 책이 1권 일때 (표시 책 0권)
       else if (markedHideListLength === 1) {
-        showedList = !isShowedAllBooks ? [{ ...hiddenBar }] : [{ ...hiddenBar, classType: "middle-hiddenBar" }, ...hiddenList];
+        showedList = !isShowedAllBooks
+          ? [{ ...hiddenBar }]
+          : [{ ...hiddenBar, classType: "middle-hiddenBar" }, ...hiddenList];
       }
     }
     // 전체 책이 2권 이상
@@ -147,11 +207,19 @@ export default function makeDataSource(myBook, category, isShowedHiddenBook, cha
       }
       // 숨긴 책과 표시 책 각각 1권 이상일 때
       else if (markedShowListLength >= 1 && markedHideListLength >= 1) {
-        showedList = !isShowedAllBooks ? [...showList, { ...hiddenBar }] : [...showList, { ...hiddenBar, classType: "middle-hiddenBar" }, ...hiddenList];
+        showedList = !isShowedAllBooks
+          ? [...showList, { ...hiddenBar }]
+          : [
+              ...showList,
+              { ...hiddenBar, classType: "middle-hiddenBar" },
+              ...hiddenList,
+            ];
       }
       // 표시 책이 0권 일때
       else if (markedShowListLength === 0) {
-        showedList = !isShowedAllBooks ? [{ ...hiddenBar }] : [{ ...hiddenBar, classType: "middle-hiddenBar" }, ...hiddenList];
+        showedList = !isShowedAllBooks
+          ? [{ ...hiddenBar }]
+          : [{ ...hiddenBar, classType: "middle-hiddenBar" }, ...hiddenList];
       }
     }
 

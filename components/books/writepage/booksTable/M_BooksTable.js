@@ -254,7 +254,7 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
       title: "카드생성이력",
       key: "writeHistory",
       dataIndex: "writeHistory",
-      className: "TableMiddleColumn",
+      className: "TableMiddleColumn TextAlignCenterColumn",
       align: "center",
       width: 60,
       render: (_value, _record) => {

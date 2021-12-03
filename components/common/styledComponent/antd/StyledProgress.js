@@ -4,7 +4,7 @@ import styled from "styled-components";
 export const StyledProgress = styled.div`
   width: 100%;
   height: 1.4rem;
-  background-color: #bbbbbb;
+  background-color: #919191;
   position: relative;
   width: 100%;
   overflow: hidden;

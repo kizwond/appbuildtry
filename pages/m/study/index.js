@@ -38,6 +38,9 @@ const Writeanother = () => {
     sessionStorage.removeItem("books_selected");
   }, []);
 
+  const directStart = () => {
+    router.push("/m/study/mode/directread");
+  };
   const sesstionStart = () => {
     router.push("/m/study/sessionSetting");
   };
@@ -88,7 +91,7 @@ const Writeanother = () => {
             </Col>
           </StyledRowMaxWidth>
           <StyledBottomBar>
-            <div>바로 보기</div>
+            <div onClick={directStart}>바로 보기</div>
             <div onClick={sesstionStart}>세션 시작</div>
           </StyledBottomBar>
         </M_Layout>

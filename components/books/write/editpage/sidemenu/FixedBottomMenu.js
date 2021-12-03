@@ -1,9 +1,10 @@
+import React, { useEffect, useState } from "react";
 import ImportModal from "../import/ImportModal";
 import M_RightDrawer from "../M_RightDrawer";
 import M_FlagSettingDrawer from "../M_FlagSettingDrawer";
-import { Button } from "antd";
-import { PlusSquareOutlined } from "@ant-design/icons";
-import M_LeftDrawer from "../M_LeftDrawer"
+import { Button, Popover, Space } from "antd";
+import { PlusSquareOutlined, DashOutlined } from "@ant-design/icons";
+import M_LeftDrawer from "../M_LeftDrawer";
 
 const backgroundColor = "black";
 const buttonColor = "white";
@@ -25,6 +26,8 @@ const FloatingMenu = ({
   cardTypeSets,
   cardTypeSetId,
 }) => {
+  const [visible, setVisible] = useState(false);
+
   const addCard = () => {
     setCardId("");
     setEditorOnFromCard("");
@@ -46,6 +49,17 @@ const FloatingMenu = ({
     }
     console.log("clicked!!!");
   };
+
+  const content = (
+    <div>
+      <p>Content</p>
+      <p>Content</p>
+    </div>
+  );
+  const handleVisibleChange = () => {
+    setVisible(!visible);
+  };
+
   return (
     <div style={{ width: "100%", alignItems: "center", position: "fixed", bottom: 0, zIndex: 3, fontSize: "0.8rem" }}>
       <div
@@ -80,9 +94,26 @@ const FloatingMenu = ({
             <PlusSquareOutlined style={{ fontSize: "1.3rem" }} onClick={addCard} />
             카드추가
           </div>
-          <ImportModal indexList={indexList} cardSetId={cardSetId} />
           <M_FlagSettingDrawer cardTypeSets={cardTypeSets} cardTypeSetId={cardTypeSetId} />
           <M_RightDrawer book_id={book_id} />
+          <Popover
+            placement="topRight"
+            content={
+              <>
+                <Space onClick={handleVisibleChange} size={16} style={{ width:"268px", display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap:"wrap" }}>
+                  <ImportModal indexList={indexList} cardSetId={cardSetId} />
+                </Space>
+              </>
+            }
+            trigger="click"
+            visible={visible}
+            onVisibleChange={handleVisibleChange}
+          >
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <DashOutlined style={{ fontSize: "1.3rem" }} />
+              더보기
+            </div>
+          </Popover>
         </div>
       </div>
     </div>

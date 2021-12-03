@@ -189,7 +189,7 @@ const ImportModal = ({ indexList, cardSetId }) => {
 
   return (
     <>
-      <div onClick={showModal} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div onClick={showModal} style={{ width:"46px", display: "flex", flexDirection: "column", alignItems: "center", fontSize:"0.8rem" }}>
         <UploadOutlined style={{ fontSize: "1.3rem" }} onClick={showModal} />
         엑셀임포트
       </div>

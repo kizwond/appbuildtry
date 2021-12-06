@@ -48,8 +48,8 @@ const Writeanother = () => {
     // router.push("/m/study/mode/directread");
     router.push({
       pathname: "/m/study/mode/directread",
-      query: { name: JSON.stringify(selectedBooks) }
-  })
+      query: { name: JSON.stringify(selectedBooks) },
+    });
   };
   const sesstionStart = () => {
     router.push("/m/study/sessionSetting");
@@ -106,7 +106,7 @@ const Writeanother = () => {
           </StyledRowMaxWidth>
           <StyledBottomBar>
             <div onClick={directStart}>바로 보기</div>
-            <div onClick={sesstionStart}>세션 시작</div>
+            <div onClick={sesstionStart}>세션 설정 후 시작</div>
           </StyledBottomBar>
         </M_Layout>
       )}
@@ -123,9 +123,9 @@ const StyledRowMaxWidth = styled.div`
   height: ${(props) => props.height - 76}px;
   overflow: scroll;
 
-  & .ant-card-head {
+  & .ant-card-small > .ant-card-head {
     border-bottom: none;
-    /* border-top: 1px solid #f0f0f0; */
+    padding: 0 8px;
   }
 
   & .ant-checkbox-inner {
@@ -163,7 +163,7 @@ const StyledBottomBar = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
-  height: 32px;
+  height: 4.2rem;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -176,6 +176,8 @@ const StyledBottomBar = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: 500;
+    font-size: 1.2rem;
   }
   & > div:first-child {
     border-right: 1px solid #e1e1e1;

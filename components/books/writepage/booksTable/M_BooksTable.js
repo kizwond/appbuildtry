@@ -96,7 +96,9 @@ const M_BooksTable = ({
         _record.relationship === "parent") ||
       _record.classType === "hiddenBar" ||
       _record.classType === "middle-hiddenBar" ||
-      _record.classType === "empty-category"
+      _record.classType === "empty-category" ||
+      _record.classType === "firstHiddenBar" ||
+      _record.classType === "OnlyShowHiddenBar"
     );
   };
 
@@ -160,7 +162,9 @@ const M_BooksTable = ({
                 }}
               >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" ||
-              _record.classType === "hiddenBar" ? (
+              _record.classType === "hiddenBar" ||
+              _record.classType === "OnlyShowHiddenBar" ||
+              _record.classType === "firstHiddenBar" ? (
               value
             ) : (
               <StyledFlexAlignCenter
@@ -379,6 +383,10 @@ const M_BooksTable = ({
             : !expandedRowKeys.includes(record.key) &&
               record.relationship === "parent"
             ? "FoldedCategoryRow"
+            : record.classType === "OnlyShowHiddenBar"
+            ? "OnlyShowHiddenBar"
+            : record.classType === "firstHiddenBar"
+            ? "FirstHiddenBar"
             : record.classType === "hiddenBar"
             ? "LastHiddenBarRow"
             : record.classType === "middle-hiddenBar"

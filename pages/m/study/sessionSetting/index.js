@@ -97,7 +97,7 @@ const SessionSetting = () => {
         );
         sessionStorage.setItem("study_mode", sessionConfig.studyMode);
         router.push(
-          `/books/study/mode/${sessionConfig.studyMode}/${data.session_createSession.sessions[0]._id}`
+          `/m/study/mode/${sessionConfig.studyMode}/${data.session_createSession.sessions[0]._id}`
         );
       } else if (data.session_createSession.status === "401") {
         router.push("/m/account/login");

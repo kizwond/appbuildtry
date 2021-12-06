@@ -1,13 +1,31 @@
-import { ArrowDownOutlined, ArrowUpOutlined, EditFilled, PlusOutlined } from "@ant-design/icons";
+import {
+  ArrowDownOutlined,
+  ArrowUpOutlined,
+  EditFilled,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { useMutation } from "@apollo/client";
 import { Button, Col, Input, Modal, Row, Table, Tag, Drawer, Form } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { MUTATION_CHANGE_MENTORING_GROUP_ORDER, MUTATION_CREATE_MENTORING_GROUP, MUTATION_DELETE_MENTORING_GROUP, MUTATION_UPDATE_MENTORING_GROUP } from "../../graphql/mutation/mentoring";
-import { StyledFlexAlignCenter, StyledFlexSpaceBetween } from "../common/styledComponent/page";
+import {
+  MUTATION_CHANGE_MENTORING_GROUP_ORDER,
+  MUTATION_CREATE_MENTORING_GROUP,
+  MUTATION_DELETE_MENTORING_GROUP,
+  MUTATION_UPDATE_MENTORING_GROUP,
+} from "../../graphql/mutation/mentoring";
+import { StyledButtonForMainPage } from "../common/styledComponent/buttons";
+import {
+  StyledFlexAlignCenter,
+  StyledFlexSpaceBetween,
+} from "../common/styledComponent/page";
 
-const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisible }) => {
+const M_MenteeGroupTable = ({
+  menteeGroup,
+  drawerMenteeGroupVisible,
+  changevisible,
+}) => {
   const router = useRouter();
 
   const inputRefs = useRef({});
@@ -27,18 +45,21 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     setInputValues(inialValues);
   }, [menteeGroup]);
 
-  const [changeMentoringGroupName] = useMutation(MUTATION_UPDATE_MENTORING_GROUP, {
-    onCompleted: (data) => {
-      if (data.mentoring_updateMentoringGroup.status === "200") {
-        setActivedInput("");
-        console.log("멘토링 그룹 이름 변경 후 받은 데이터", data);
-      } else if (data.mentoring_updateMentoringGroup.status === "401") {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const [changeMentoringGroupName] = useMutation(
+    MUTATION_UPDATE_MENTORING_GROUP,
+    {
+      onCompleted: (data) => {
+        if (data.mentoring_updateMentoringGroup.status === "200") {
+          setActivedInput("");
+          console.log("멘토링 그룹 이름 변경 후 받은 데이터", data);
+        } else if (data.mentoring_updateMentoringGroup.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   async function changeGroupName({ mentoringGroup_id, newMentoringGroupName }) {
     try {
@@ -54,19 +75,22 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     }
   }
 
-  const [createNewMentoringGroupName, { loading }] = useMutation(MUTATION_CREATE_MENTORING_GROUP, {
-    onCompleted: (data) => {
-      if (data.mentoring_createMentoringGroup.status === "200") {
-        resetFields();
-        setNewGroupModalVisible(false);
-        console.log("멘토링 그룹 생성 후 받은 데이터", data);
-      } else if (data.mentoring_createMentoringGroup.status === "401") {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const [createNewMentoringGroupName, { loading }] = useMutation(
+    MUTATION_CREATE_MENTORING_GROUP,
+    {
+      onCompleted: (data) => {
+        if (data.mentoring_createMentoringGroup.status === "200") {
+          resetFields();
+          setNewGroupModalVisible(false);
+          console.log("멘토링 그룹 생성 후 받은 데이터", data);
+        } else if (data.mentoring_createMentoringGroup.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   async function createGroupName({ newGroupName }) {
     try {
@@ -81,17 +105,20 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     }
   }
 
-  const [changeMentoringGroupOrder] = useMutation(MUTATION_CHANGE_MENTORING_GROUP_ORDER, {
-    onCompleted: (data) => {
-      if (data.mentoring_changeMentoringGroupOrder.status === "200") {
-        console.log("멘토링 그룹 순서 변경 후 받은 데이터", data);
-      } else if (data.mentoring_changeMentoringGroupOrder.status === "401") {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const [changeMentoringGroupOrder] = useMutation(
+    MUTATION_CHANGE_MENTORING_GROUP_ORDER,
+    {
+      onCompleted: (data) => {
+        if (data.mentoring_changeMentoringGroupOrder.status === "200") {
+          console.log("멘토링 그룹 순서 변경 후 받은 데이터", data);
+        } else if (data.mentoring_changeMentoringGroupOrder.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   async function changeGroupOrder({ mentoringGroup_id, direction }) {
     try {
@@ -140,30 +167,28 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
     <>
       <DrawerWrapper
         title={
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
             <div>멘티 그룹 관리</div>
             <div>
-              <button
-                className="customButtonForMainPage"
-                type="button"
-                style={{
-                  width: "34px",
-                  height: "16px",
-                  borderRadius: "12px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  border: "none",
-                }}
+              <StyledButtonForMainPage
                 onClick={() => {
                   clearTimeout(newGroupFocus);
                   !newGroupModalVisible && setNewGroupModalVisible(true);
-                  newGroupFocus = setTimeout(() => form.getFieldInstance("menteeGroupName").focus(), 200);
+                  newGroupFocus = setTimeout(
+                    () => form.getFieldInstance("menteeGroupName").focus(),
+                    200
+                  );
                 }}
               >
-                <PlusOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
-              </button>
+                <PlusOutlined className="IconForButton" />
+              </StyledButtonForMainPage>
             </div>
           </div>
         }
@@ -178,7 +203,11 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
       >
         <StyledModal
           visible={newGroupModalVisible}
-          title={<div style={{ fontSize: "1rem", fontWeight: "bold" }}>새 그룹 생성</div>}
+          title={
+            <div style={{ fontSize: "1rem", fontWeight: "bold" }}>
+              새 그룹 생성
+            </div>
+          }
           okButtonProps={{
             size: "small",
             loading: loading,
@@ -212,7 +241,10 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                   message: "그룹 이름은 필수값입니다",
                 },
                 {
-                  validator: (_, value) => (menteeGroup.map((gr) => gr.name).includes(value) ? Promise.reject(new Error("동일한 그룹명이 존재합니다.")) : Promise.resolve()),
+                  validator: (_, value) =>
+                    menteeGroup.map((gr) => gr.name).includes(value)
+                      ? Promise.reject(new Error("동일한 그룹명이 존재합니다."))
+                      : Promise.resolve(),
                 },
               ]}
             >
@@ -224,7 +256,10 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
         <Table
           size="small"
           pagination={false}
-          dataSource={menteeGroup.map((group) => ({ ...group, key: group._id }))}
+          dataSource={menteeGroup.map((group) => ({
+            ...group,
+            key: group._id,
+          }))}
           bordered={false}
           columns={[
             {
@@ -239,7 +274,12 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                           ref={(ref) => (inputRefs.current[record._id] = ref)}
                           size="small"
                           value={inputValues[record._id]}
-                          onChange={(e) => setInputValues({ ...inputValues, [record._id]: e.target.value })}
+                          onChange={(e) =>
+                            setInputValues({
+                              ...inputValues,
+                              [record._id]: e.target.value,
+                            })
+                          }
                           bordered={activedInput.includes(record._id)}
                           disabled={!activedInput.includes(record._id)}
                         />
@@ -250,7 +290,10 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                           if (!activedInput.includes(record._id)) {
                             clearTimeout(focusInput);
                             setActivedInput(record._id);
-                            focusInput = setTimeout(() => inputRefs.current[record._id].focus(), 100);
+                            focusInput = setTimeout(
+                              () => inputRefs.current[record._id].focus(),
+                              100
+                            );
                           }
                         }}
                         style={{ display: "flex", justifyContent: "center" }}
@@ -262,8 +305,15 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                             <div
                               onClick={() => {
                                 // 서버요청보내야함
-                                if (inputValues[record._id] !== "" && value !== inputValues[record._id]) {
-                                  changeGroupName({ mentoringGroup_id: record._id, newMentoringGroupName: inputValues[record._id] });
+                                if (
+                                  inputValues[record._id] !== "" &&
+                                  value !== inputValues[record._id]
+                                ) {
+                                  changeGroupName({
+                                    mentoringGroup_id: record._id,
+                                    newMentoringGroupName:
+                                      inputValues[record._id],
+                                  });
                                 }
                               }}
                             >
@@ -272,7 +322,10 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                             <div
                               onClick={() => {
                                 setActivedInput("");
-                                setInputValues({ ...inputValues, [record._id]: value });
+                                setInputValues({
+                                  ...inputValues,
+                                  [record._id]: value,
+                                });
                               }}
                             >
                               <Tag>취소</Tag>
@@ -283,17 +336,33 @@ const M_MenteeGroupTable = ({ menteeGroup, drawerMenteeGroupVisible, changevisib
                       <Col span={activedInput.includes(record._id) ? 0 : 6}>
                         <StyledFlexAlignCenter>
                           <div
-                            style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}
+                            style={{
+                              width: "100%",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
                             onClick={() => {
-                              changeGroupOrder({ mentoringGroup_id: record._id, direction: "up" });
+                              changeGroupOrder({
+                                mentoringGroup_id: record._id,
+                                direction: "up",
+                              });
                             }}
                           >
                             <ArrowUpOutlined style={{ fontSize: "1rem" }} />
                           </div>
                           <div
-                            style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}
+                            style={{
+                              width: "100%",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
                             onClick={() => {
-                              changeGroupOrder({ mentoringGroup_id: record._id, direction: "down" });
+                              changeGroupOrder({
+                                mentoringGroup_id: record._id,
+                                direction: "down",
+                              });
                             }}
                           >
                             <ArrowDownOutlined style={{ fontSize: "1rem" }} />

@@ -16,6 +16,8 @@ import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledFlexAllCenterDimension100Percent } from "../../../common/styledComponent/page";
+import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 
 const FavoriteBooksTable = ({ category, myBook }) => {
   const [mounted, setMounted] = useState(false);
@@ -121,28 +123,7 @@ const FavoriteBooksTable = ({ category, myBook }) => {
       ),
     },
     {
-      title: (
-        <>
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            카드 수
-          </div>
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            (읽기/뒤집기)
-          </div>
-        </>
-      ),
+      title: "카드수",
       key: "total",
       align: "center",
       dataIndex: "total",
@@ -150,7 +131,9 @@ const FavoriteBooksTable = ({ category, myBook }) => {
       ellipsis: true,
       width: 70,
       render: (_value, _record) => (
-        <div>{`(${_record.read}/${_record.flip})`}</div>
+        <StyledFlexAllCenterDimension100Percent>
+          {_value}
+        </StyledFlexAllCenterDimension100Percent>
       ),
     },
     {
@@ -174,98 +157,9 @@ const FavoriteBooksTable = ({ category, myBook }) => {
       dataIndex: "timeModify",
       className: "TableMiddleColumn",
       width: 60,
-      render: (_value, _record) => {
-        const now = new Date();
-
-        const today = moment(now).format("YYYYMMDD");
-        const todayCards = _record.writeHistory?.filter(
-          (_arr) => _arr.date === today
-        )[0];
-        const todayCreatedCards = todayCards ? todayCards.numCreatedCards : 0;
-
-        const yesterday = moment(now).subtract(1, "days").format("YYYYMMDD");
-        const yesterdayCards = _record.writeHistory?.filter(
-          (_arr) => _arr.date === yesterday
-        )[0];
-        const yesterdayCreatedCards = yesterdayCards
-          ? yesterdayCards.numCreatedCards
-          : 0;
-
-        const theDayBeforeYesterday = moment(now)
-          .subtract(1, "days")
-          .format("YYYYMMDD");
-        const theDayBeforeYesterdayCards = _record.writeHistory?.filter(
-          (_arr) => _arr.date === theDayBeforeYesterday
-        )[0];
-        const theDayBeforeYesterdayCreatedCards = theDayBeforeYesterdayCards
-          ? theDayBeforeYesterdayCards.numCreatedCards
-          : 0;
-
-        return (
-          <div>
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-around" }}>
-                <div className="singleBar">
-                  <div className="graphBar">
-                    <div
-                      className="AchivedCard"
-                      style={{
-                        height:
-                          theDayBeforeYesterdayCreatedCards >= 100
-                            ? "100%"
-                            : `${theDayBeforeYesterdayCreatedCards}%`,
-                      }}
-                    >
-                      <span className="CardCounter">
-                        {theDayBeforeYesterdayCreatedCards}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="singleBar">
-                  <div className="graphBar">
-                    <div
-                      className="AchivedCard"
-                      style={{
-                        height:
-                          yesterdayCreatedCards >= 100
-                            ? "100%"
-                            : `${yesterdayCreatedCards}%`,
-                      }}
-                    >
-                      <span className="CardCounter">
-                        {yesterdayCreatedCards}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="singleBar">
-                  <div className="graphBar">
-                    <div
-                      className="AchivedCard"
-                      style={{
-                        height:
-                          todayCreatedCards >= 100
-                            ? "100%"
-                            : `${todayCreatedCards}%`,
-                      }}
-                    >
-                      <span className="CardCounter">{todayCreatedCards}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                style={{
-                  width: "100%",
-                  height: 1,
-                  borderBottom: "1px solid #c5c6c7",
-                }}
-              ></div>
-            </div>
-          </div>
-        );
-      },
+      render: (_value, _record) => (
+        <WriteHistoryGraphBarComponent _record={_record} />
+      ),
     },
     {
       key: "seqInCategory",
@@ -443,32 +337,5 @@ const StyledCard = styled(Card)`
 
   & .HandleOnOffShow > span {
     font-size: 0.7rem;
-  }
-
-  & .singleBar {
-    width: 18px;
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-  & .graphBar {
-    position: relative;
-    height: 20px;
-    background: rgba(237, 238, 233, 0);
-  }
-
-  & .AchivedCard {
-    position: absolute;
-    bottom: 0;
-    width: 18px;
-    background: #e1e1e1;
-    display: flex;
-    justify-content: center;
-  }
-
-  & .CardCounter {
-    position: absolute;
-    font-size: 0.6rem;
-    bottom: 3px;
-    display: block;
   }
 `;

@@ -46,7 +46,7 @@ const FavoriteBook = ({ record, changeFoldedMenu, tableType }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const like = useMemo(
     () => (tableType === "study" ? isStudyLike : isWriteLike),
-    [tableType]
+    [tableType, isStudyLike, isWriteLike]
   );
 
   return (
@@ -71,7 +71,7 @@ const FavoriteBook = ({ record, changeFoldedMenu, tableType }) => {
             );
           }}
         >
-          <StarOutlined className="writeUnliked" />
+          <StarOutlined className="IconForButton" />
         </div>
       )}
     </>

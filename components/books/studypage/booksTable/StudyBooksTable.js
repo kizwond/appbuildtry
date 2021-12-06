@@ -6,7 +6,10 @@ import moment from "../../../../node_modules/moment/moment";
 import { Table, Card, Space, Drawer, Checkbox, Progress } from "antd";
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
-import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import {
+  StyledFlexAllCenterDimension100Percent,
+  StyledTwoLinesEllipsis,
+} from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import BookOrderButton from "../../common/BookOrderButton";
 import HideOrShowButton from "../../common/HideOrShowButton";
@@ -164,7 +167,11 @@ const StudyBooksTable = ({
       width: 70,
       render: (_value, _record) => {
         const obj = {
-          children: <div>{`(${_record.read}/${_record.flip})`}</div>,
+          children: (
+            <StyledFlexAllCenterDimension100Percent>
+              {_value}
+            </StyledFlexAllCenterDimension100Percent>
+          ),
           props: {
             colSpan: 1,
             rowSpan: 1,

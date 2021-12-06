@@ -12,9 +12,9 @@ export const StyledBookSettingBarDrawer = styled(Drawer)`
     background-color: ${(props) => {
       const bgColor =
         props.booktype === "my"
-          ? "#ff6f56"
-          : props.booktype === "buy"
           ? "#4dadfe"
+          : props.booktype === "buy"
+          ? "#ff6f56"
           : console.log(new Error("책 타입 잘못 설정됨"));
       return bgColor;
     }};

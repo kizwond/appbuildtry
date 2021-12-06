@@ -13,6 +13,7 @@ import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
 import {
   StyledFlexAlignCenter,
+  StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
   StyledTwoLinesEllipsis,
 } from "../../../common/styledComponent/page";
@@ -21,388 +22,283 @@ import CreateBookButton from "../createBook/CreateBookButton";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 
-const FavoriteBooksTable = forwardRef(({ category, myBook }, ref) => {
-  const [mounted, setMounted] = useState(false);
-  const [isFoldedMenu, setIsFoldedMenu] = useState();
-  const [visible, setVisible] = useState(true);
+const FavoriteBooksTable = forwardRef(
+  ({ category, myBook, isFoldedMenu, changeFoldedMenu }, ref) => {
+    const [mounted, setMounted] = useState(false);
+    const [visible, setVisible] = useState(true);
 
-  const router = useRouter();
+    const router = useRouter();
 
-  const changeFoldedMenu = useCallback((_id) => {
-    setIsFoldedMenu(_id);
-  }, []);
+    useEffect(() => {
+      setMounted(true);
+    }, []);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+    if (!mounted) {
+      return null;
+    }
 
-  if (!mounted) {
-    return null;
-  }
+    function movepage(bookid) {
+      localStorage.removeItem("book_id");
+      localStorage.setItem("book_id", bookid);
+      router.push(`/m/write/${bookid}`);
+    }
 
-  function movepage(bookid) {
-    localStorage.removeItem("book_id");
-    localStorage.setItem("book_id", bookid);
-    router.push(`/m/write/${bookid}`);
-  }
-
-  const writeLikedBooksList = myBook.filter(
-    (_book) => _book.mybook_info.isWriteLike
-  );
-  const sortedBook = writeLikedBooksList.sort(
-    (book_A, book_B) =>
-      book_A.mybook_info.seqInWriteLike - book_B.mybook_info.seqInWriteLike
-  );
-  const dataSource = sortedBook.map((_book, _index) => {
-    return {
-      ..._book.mybook_info,
-      ..._book.stats?.numCards,
-      ..._book.stats?.recent,
-      ..._book.stats?.overall,
-      studyHistory: _book.stats?.studyHistory,
-      writeHistory: _book.stats?.writeHistory,
-      categoryName: category.mybookcates.find(
-        (_cate) => _cate._id === _book.mybook_info.mybookcate_id
-      ).name,
-      isFirstBook: _index === 0,
-      isLastBook: writeLikedBooksList.length === _index + 1,
-      key: _book._id,
-      _id: _book._id,
-      aboveAndBelowBooks: {
-        aboveBook: {
-          mybook_id: sortedBook[_index - 1] && sortedBook[_index - 1]._id,
-          seqInWriteLike:
-            sortedBook[_index - 1] &&
-            sortedBook[_index - 1].mybook_info.seqInWriteLike,
+    const writeLikedBooksList = myBook.filter(
+      (_book) => _book.mybook_info.isWriteLike
+    );
+    const sortedBook = writeLikedBooksList.sort(
+      (book_A, book_B) =>
+        book_A.mybook_info.seqInWriteLike - book_B.mybook_info.seqInWriteLike
+    );
+    const dataSource = sortedBook.map((_book, _index) => {
+      return {
+        ..._book.mybook_info,
+        ..._book.stats?.numCards,
+        ..._book.stats?.recent,
+        ..._book.stats?.overall,
+        studyHistory: _book.stats?.studyHistory,
+        writeHistory: _book.stats?.writeHistory,
+        categoryName: category.mybookcates.find(
+          (_cate) => _cate._id === _book.mybook_info.mybookcate_id
+        ).name,
+        isFirstBook: _index === 0,
+        isLastBook: writeLikedBooksList.length === _index + 1,
+        key: _book._id,
+        _id: _book._id,
+        aboveAndBelowBooks: {
+          aboveBook: {
+            mybook_id: sortedBook[_index - 1] && sortedBook[_index - 1]._id,
+            seqInWriteLike:
+              sortedBook[_index - 1] &&
+              sortedBook[_index - 1].mybook_info.seqInWriteLike,
+          },
+          belowBook: {
+            mybook_id: sortedBook[_index + 1] && sortedBook[_index + 1]._id,
+            seqInWriteLike:
+              sortedBook[_index + 1] &&
+              sortedBook[_index + 1].mybook_info.seqInWriteLike,
+          },
         },
-        belowBook: {
-          mybook_id: sortedBook[_index + 1] && sortedBook[_index + 1]._id,
-          seqInWriteLike:
-            sortedBook[_index + 1] &&
-            sortedBook[_index + 1].mybook_info.seqInWriteLike,
-        },
+      };
+    });
+
+    const columns = [
+      {
+        title: "카테고리",
+        key: "categoryName",
+        className: "TableFirstColumn",
+        align: "center",
+        width: 50,
+        dataIndex: "categoryName",
+        render: (_value, _record) => (
+          <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>
+        ),
       },
-    };
-  });
-
-  const columns = [
-    {
-      title: "카테고리",
-      key: "categoryName",
-      className: "TableFirstColumn",
-      align: "center",
-      width: 50,
-      dataIndex: "categoryName",
-      render: (_value, _record) => (
-        <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>
-      ),
-    },
-    {
-      title: "책 제목",
-      key: "title",
-      dataIndex: "title",
-      className: "TableMiddleColumn",
-      align: "center",
-      width: 95,
-      render: (value, _record, index) => (
-        <StyledFlexAlignCenter
-          onClick={() => {
-            movepage(_record._id);
-          }}
-          style={{ cursor: "pointer" }}
-        >
-          <StyledFlexAlignCenter>
-            <StyledBookTypeDiv booktype={_record.type} />
-          </StyledFlexAlignCenter>
-          <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
-        </StyledFlexAlignCenter>
-      ),
-    },
-    {
-      title: "카드수",
-      key: "total",
-      align: "center",
-      dataIndex: "total",
-      className: "TableMiddleColumn TableCardCounterColumn",
-      align: "center",
-      ellipsis: true,
-      width: 26,
-      render: (_value, _record) => (
-        <div style={{ width: "100%" }}>
-          <Popover
-            arrowPointAtCenter
-            content={
-              <>
-                <StyledFlexSpaceBetween>
-                  <div>읽기카드:</div>
-                  <div>{_record.read}</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>뒤집기카드:</div>
-                  <div>{_record.flip}</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>목차카드:</div>
-                  <div>수정必</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>일반카드:</div>
-                  <div>수정必</div>
-                </StyledFlexSpaceBetween>
-              </>
-            }
-            trigger="click"
-            overlayClassName="M-Popover-NumberOfCards"
+      {
+        title: "책 제목",
+        key: "title",
+        dataIndex: "title",
+        className: "TableMiddleColumn",
+        align: "center",
+        width: 95,
+        render: (value, _record, index) => (
+          <StyledFlexAlignCenter
+            onClick={() => {
+              movepage(_record._id);
+            }}
+            style={{ cursor: "pointer" }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                cursor: "pointer",
-                width: "100%",
-              }}
-            >
-              {_value}
-            </div>
-          </Popover>
-        </div>
-      ),
-    },
-
-    {
-      title: "카드생성이력",
-      key: "writeHistory",
-      dataIndex: "writeHistory",
-      className: "TableMiddleColumn TextAlignCenterColumn",
-      align: "center",
-      width: 60,
-      render: (_value, _record) => {
-        const now = new Date();
-
-        const today = moment(now).format("YYYYMMDD");
-        const todayCards = _record.writeHistory?.filter(
-          (_arr) => _arr.date === today
-        )[0];
-        const todayCreatedCards = todayCards ? todayCards.numCreatedCards : 0;
-
-        const yesterday = moment(now).subtract(1, "days").format("YYYYMMDD");
-        const yesterdayCards = _record.writeHistory?.filter(
-          (_arr) => _arr.date === yesterday
-        )[0];
-        const yesterdayCreatedCards = yesterdayCards
-          ? yesterdayCards.numCreatedCards
-          : 0;
-
-        const theDayBeforeYesterday = moment(now)
-          .subtract(1, "days")
-          .format("YYYYMMDD");
-        const theDayBeforeYesterdayCards = _record.writeHistory?.filter(
-          (_arr) => _arr.date === theDayBeforeYesterday
-        )[0];
-        const theDayBeforeYesterdayCreatedCards = theDayBeforeYesterdayCards
-          ? theDayBeforeYesterdayCards.numCreatedCards
-          : 0;
-
-        return (
-          <div>
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-around" }}>
-                <div className="singleBar">
-                  <div className="graphBar">
-                    <div
-                      className="AchivedCard"
-                      style={{
-                        height:
-                          theDayBeforeYesterdayCreatedCards >= 100
-                            ? "100%"
-                            : `${theDayBeforeYesterdayCreatedCards}%`,
-                      }}
-                    >
-                      <span className="CardCounter">
-                        {theDayBeforeYesterdayCreatedCards === 0
-                          ? "-"
-                          : theDayBeforeYesterdayCreatedCards}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="singleBar">
-                  <div className="graphBar">
-                    <div
-                      className="AchivedCard"
-                      style={{
-                        height:
-                          yesterdayCreatedCards >= 100
-                            ? "100%"
-                            : `${yesterdayCreatedCards}%`,
-                      }}
-                    >
-                      <span className="CardCounter">
-                        {yesterdayCreatedCards === 0
-                          ? "-"
-                          : yesterdayCreatedCards}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="singleBar">
-                  <div className="graphBar">
-                    <div
-                      className="AchivedCard"
-                      style={{
-                        height:
-                          todayCreatedCards >= 100
-                            ? "100%"
-                            : `${todayCreatedCards}%`,
-                      }}
-                    >
-                      <span className="CardCounter">
-                        {todayCreatedCards === 0 ? "-" : todayCreatedCards}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                style={{
-                  width: "100%",
-                  height: 1,
-                  borderBottom: "1px solid #c5c6c7",
-                }}
-              ></div>
-            </div>
-          </div>
-        );
+            <StyledFlexAlignCenter>
+              <StyledBookTypeDiv booktype={_record.type} />
+            </StyledFlexAlignCenter>
+            <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
+          </StyledFlexAlignCenter>
+        ),
       },
-    },
-    {
-      // title: "이동",
-      key: "seqInCategory",
-      dataIndex: "seqInCategory",
-      className: "TableLastColumn",
-      align: "right",
-      width: 20,
-      render: (value, _record) => (
-        <div
-          style={{
-            position: "relative",
-          }}
-        >
+      {
+        title: "카드수",
+        key: "total",
+        align: "center",
+        dataIndex: "total",
+        className: "TableMiddleColumn TableCardCounterColumn",
+        align: "center",
+        ellipsis: true,
+        width: 26,
+        render: (_value, _record) => (
+          <div style={{ width: "100%" }}>
+            <Popover
+              arrowPointAtCenter
+              content={
+                <>
+                  <StyledFlexSpaceBetween>
+                    <div>읽기카드:</div>
+                    <div>{_record.read}</div>
+                  </StyledFlexSpaceBetween>
+                  <StyledFlexSpaceBetween>
+                    <div>뒤집기카드:</div>
+                    <div>{_record.flip}</div>
+                  </StyledFlexSpaceBetween>
+                  <StyledFlexSpaceBetween>
+                    <div>목차카드:</div>
+                    <div>수정必</div>
+                  </StyledFlexSpaceBetween>
+                  <StyledFlexSpaceBetween>
+                    <div>일반카드:</div>
+                    <div>수정必</div>
+                  </StyledFlexSpaceBetween>
+                </>
+              }
+              trigger="click"
+              overlayClassName="M-Popover-NumberOfCards"
+            >
+              <StyledFlexAllCenterDimension100Percent>
+                {_value}
+              </StyledFlexAllCenterDimension100Percent>
+            </Popover>
+          </div>
+        ),
+      },
+
+      {
+        title: "카드생성이력",
+        key: "writeHistory",
+        dataIndex: "writeHistory",
+        className: "TableMiddleColumn TextAlignCenterColumn",
+        align: "center",
+        width: 60,
+        render: (_value, _record) => (
+          <WriteHistoryGraphBarComponent _record={_record} />
+        ),
+      },
+      {
+        // title: "이동",
+        key: "seqInCategory",
+        dataIndex: "seqInCategory",
+        className: "TableLastColumn",
+        align: "right",
+        width: 20,
+        render: (value, _record) => (
           <div
             style={{
-              width: "100%",
-              cursor: "pointer",
-              display: "flex",
-              justifyContent: "end",
-            }}
-            onClick={() => {
-              changeFoldedMenu(`favorite${_record._id}`);
+              position: "relative",
             }}
           >
             <div
-              className="PullCustomCircleButton"
               style={{
-                width: "44px",
-                height: "3rem",
+                width: "100%",
+                cursor: "pointer",
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                justifyContent: "end",
               }}
-            >
-              <DoubleLeftOutlined />
-            </div>
-          </div>
-
-          <StyledBookSettingBarDrawer
-            booktype={_record.type}
-            destroyOnClose={true}
-            className="BookDrawerMenu"
-            placement="right"
-            width={"250px"}
-            closable={false}
-            mask={false}
-            visible={`favorite${_record._id}` === isFoldedMenu}
-            getContainer={false}
-          >
-            <Space size={3}>
-              <FavoriteBookOrderButton
-                _record={_record}
-                changeFoldedMenu={changeFoldedMenu}
-                tableType="write"
-              />{" "}
-              |
-              <FavoriteBook
-                record={_record}
-                changeFoldedMenu={changeFoldedMenu}
-                tableType="write"
-              />{" "}
-              |
-              <HideOrShowButton
-                record={_record}
-                changeFoldedMenu={changeFoldedMenu}
-              />{" "}
-              |
-              <MoveToBookSetting mybook_id={_record._id} />
-            </Space>
-            <div
-              className="PushCustomCircleButton"
               onClick={() => {
-                changeFoldedMenu("");
+                changeFoldedMenu(`favorite${_record._id}`);
               }}
             >
-              <DoubleRightOutlined />
+              <div
+                className="PullCustomCircleButton"
+                style={{
+                  width: "44px",
+                  height: "3rem",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <DoubleLeftOutlined />
+              </div>
             </div>
-          </StyledBookSettingBarDrawer>
-        </div>
-      ),
-    },
-  ];
 
-  return (
-    <StyledCard
-      isvisible={toString(visible)}
-      bordered={false}
-      size="small"
-      title={
-        <StyledFlexSpaceBetween>
-          <div onClick={() => setVisible((_prev) => !_prev)}>
-            <span
-              style={{
-                marginRight: "10px",
-                fontSize: "1rem",
-                fontWeight: "bold",
-              }}
+            <StyledBookSettingBarDrawer
+              booktype={_record.type}
+              destroyOnClose={true}
+              className="BookDrawerMenu"
+              placement="right"
+              width={"250px"}
+              closable={false}
+              mask={false}
+              visible={`favorite${_record._id}` === isFoldedMenu}
+              getContainer={false}
             >
-              즐겨찾기
-            </span>
-            <DoubleRightOutlined rotate={visible ? 270 : 90} />
+              <Space size={3}>
+                <FavoriteBookOrderButton
+                  _record={_record}
+                  changeFoldedMenu={changeFoldedMenu}
+                  tableType="write"
+                />{" "}
+                |
+                <FavoriteBook
+                  record={_record}
+                  changeFoldedMenu={changeFoldedMenu}
+                  tableType="write"
+                />{" "}
+                |
+                <HideOrShowButton
+                  record={_record}
+                  changeFoldedMenu={changeFoldedMenu}
+                />{" "}
+                |
+                <MoveToBookSetting mybook_id={_record._id} />
+              </Space>
+              <div
+                className="PushCustomCircleButton"
+                onClick={() => {
+                  changeFoldedMenu("");
+                }}
+              >
+                <DoubleRightOutlined />
+              </div>
+            </StyledBookSettingBarDrawer>
           </div>
-          <div>
-            <Space>
-              <CreateBookButton category={category} />
-              <CategorySettingButton category={category} ref={ref} />
-            </Space>
-          </div>
-        </StyledFlexSpaceBetween>
-      }
-    >
-      {visible && dataSource.length > 0 && (
-        <Table
-          dataSource={dataSource}
-          tableLayout="fixed"
-          columns={columns}
-          size="small"
-          pagination={false}
-          rowClassName={(record, index) =>
-            index % 2 !== 0 ? "EvenNumberRow" : "OddNumberRow"
-          }
-        />
-      )}
-    </StyledCard>
-  );
-});
+        ),
+      },
+    ];
+
+    return (
+      <StyledCard
+        isvisible={toString(visible)}
+        bordered={false}
+        size="small"
+        title={
+          <StyledFlexSpaceBetween>
+            <div onClick={() => setVisible((_prev) => !_prev)}>
+              <span
+                style={{
+                  marginRight: "10px",
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                }}
+              >
+                즐겨찾기
+              </span>
+              <DoubleRightOutlined rotate={visible ? 270 : 90} />
+            </div>
+            <div>
+              <Space>
+                <CreateBookButton category={category} />
+                <CategorySettingButton category={category} ref={ref} />
+              </Space>
+            </div>
+          </StyledFlexSpaceBetween>
+        }
+      >
+        {visible && dataSource.length > 0 && (
+          <Table
+            dataSource={dataSource}
+            tableLayout="fixed"
+            columns={columns}
+            size="small"
+            pagination={false}
+            rowClassName={(record, index) =>
+              index % 2 !== 0 ? "EvenNumberRow" : "OddNumberRow"
+            }
+          />
+        )}
+      </StyledCard>
+    );
+  }
+);
 
 export default FavoriteBooksTable;
 
@@ -430,33 +326,5 @@ const StyledCard = styled(Card)`
 
   & .HandleOnOffShow > span {
     font-size: 0.7rem;
-  }
-
-  & .singleBar {
-    width: 18px;
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-  & .graphBar {
-    position: relative;
-    height: 20px;
-    background: rgba(237, 238, 233, 0);
-  }
-
-  & .AchivedCard {
-    position: absolute;
-    bottom: 0;
-    width: 18px;
-    background: #e1e1e1;
-    display: flex;
-    justify-content: center;
-  }
-
-  & .CardCounter {
-    position: absolute;
-    font-size: 0.6rem;
-    bottom: 3px;
-    display: block;
-    color: #707070;
   }
 `;

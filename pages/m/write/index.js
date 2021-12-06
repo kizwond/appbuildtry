@@ -4,17 +4,20 @@ import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
 
+import { Col } from "antd";
 import styled from "styled-components";
 
-import { Space, Col } from "antd";
 import M_Layout from "../../../components/layout/M_Layout";
-import CreateBookButton from "../../../components/books/writepage/createBook/CreateBookButton";
-import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
 import M_BooksTable from "../../../components/books/writepage/booksTable/M_BooksTable";
 import M_FavoriteBooksTable from "../../../components/books/writepage/booksTable/M_FavoriteBooksTable";
 
 const M_WriteMain = () => {
   const router = useRouter();
+
+  const [isFoldedMenu, setIsFoldedMenu] = useState();
+  const changeFoldedMenu = useCallback((_id) => {
+    setIsFoldedMenu(_id);
+  }, []);
 
   const newCateRef = useRef();
 
@@ -60,6 +63,8 @@ const M_WriteMain = () => {
                 ref={(ref) => (newCateRef.current = ref)}
                 category={category2}
                 myBook={myBook2}
+                isFoldedMenu={isFoldedMenu}
+                changeFoldedMenu={changeFoldedMenu}
               />
             </Col>
             <Col span={24}>
@@ -67,6 +72,8 @@ const M_WriteMain = () => {
                 category={category2}
                 myBook={myBook2}
                 newCateId={newCateRef.current}
+                isFoldedMenu={isFoldedMenu}
+                changeFoldedMenu={changeFoldedMenu}
               />
             </Col>
           </StyledRowMaxWidth>

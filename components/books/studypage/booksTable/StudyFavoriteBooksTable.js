@@ -14,6 +14,7 @@ import DoubleLinesEllipsisContainer from "../../../common/styledComponent/Double
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import { StyledFlexAllCenterDimension100Percent } from "../../../common/styledComponent/page";
 
 const StudyFavoriteBooksTable = ({
   category,
@@ -169,7 +170,9 @@ const StudyFavoriteBooksTable = ({
       ellipsis: true,
       width: 70,
       render: (_value, _record) => (
-        <div>{`(${_record.read}/${_record.flip})`}</div>
+        <StyledFlexAllCenterDimension100Percent>
+          {_value}
+        </StyledFlexAllCenterDimension100Percent>
       ),
     },
     {

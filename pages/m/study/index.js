@@ -14,7 +14,13 @@ import useWindowDimensions from "../../../hooks/useWindowDimensions";
 
 const Writeanother = () => {
   const router = useRouter();
+
   const { height } = useWindowDimensions();
+
+  const [isFoldedMenu, setIsFoldedMenu] = useState();
+  const changeFoldedMenu = useCallback((_id) => {
+    setIsFoldedMenu(_id);
+  }, []);
 
   const [selectedBooks, setSelectedBooks] = useState([]);
 
@@ -78,6 +84,8 @@ const Writeanother = () => {
                 myBook={myBook2}
                 selectedBooks={selectedBooks}
                 changeSelectedBooks={changeSelectedBooks}
+                isFoldedMenu={isFoldedMenu}
+                changeFoldedMenu={changeFoldedMenu}
               />
             </Col>
 
@@ -87,6 +95,8 @@ const Writeanother = () => {
                 myBook={myBook2}
                 selectedBooks={selectedBooks}
                 changeSelectedBooks={changeSelectedBooks}
+                isFoldedMenu={isFoldedMenu}
+                changeFoldedMenu={changeFoldedMenu}
               />
             </Col>
           </StyledRowMaxWidth>

@@ -7,10 +7,20 @@ export const StyledFlexAlignCenter = styled.div`
   align-items: center;
 `;
 
+export const StyledFlexAllCenterDimension100Percent = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+`;
+
 export const StyledFlexSpaceBetween = styled.div`
   display: flex;
   justify-content: space-between;
 `;
+
 // flex 관련 컴포 끝
 
 export const StyledOverFlowHidden = styled.div`

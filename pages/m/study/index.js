@@ -39,7 +39,11 @@ const Writeanother = () => {
   }, []);
 
   const directStart = () => {
-    router.push("/m/study/mode/directread");
+    // router.push("/m/study/mode/directread");
+    router.push({
+      pathname: "/m/study/mode/directread",
+      query: { name: JSON.stringify(selectedBooks) }
+  })
   };
   const sesstionStart = () => {
     router.push("/m/study/sessionSetting");

@@ -13,9 +13,9 @@ export const GetIndex = gql`
         }
         indexes {
           _id
-          name     
-          level 
-          indextype 
+          name
+          level
+          indextype
         }
       }
     }

@@ -14,6 +14,7 @@ import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrde
 import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
 import {
   StyledFlexAlignCenter,
+  StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
 } from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
@@ -22,15 +23,20 @@ import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgr
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 
 const M_StudyFavoriteBooksTable = forwardRef(
-  ({ category, myBook, selectedBooks, changeSelectedBooks }, ref) => {
+  (
+    {
+      category,
+      myBook,
+      selectedBooks,
+      changeSelectedBooks,
+      isFoldedMenu,
+      changeFoldedMenu,
+    },
+    ref
+  ) => {
     const [mounted, setMounted] = useState(false);
-    const [isFoldedMenu, setIsFoldedMenu] = useState();
     const [visible, setVisible] = useState(true);
     const checkRef = useRef({});
-
-    const changeFoldedMenu = useCallback((_id) => {
-      setIsFoldedMenu(_id);
-    }, []);
 
     useEffect(() => {
       setMounted(true);
@@ -173,17 +179,9 @@ const M_StudyFavoriteBooksTable = forwardRef(
               trigger="click"
               overlayClassName="M-Popover-NumberOfCards"
             >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  cursor: "pointer",
-                  width: "100%",
-                }}
-              >
+              <StyledFlexAllCenterDimension100Percent>
                 {_value}
-              </div>
+              </StyledFlexAllCenterDimension100Percent>
             </Popover>
           </div>
         ),

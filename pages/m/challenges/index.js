@@ -2,7 +2,11 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Button, Card, Col, Drawer, Row, Space } from "antd";
 import { useRouter } from "next/router";
 import { FunctionComponent, useState } from "react";
-import { GET_ALL_BUY_BOOKS, GET_USER_ALL_CATEGORY_AND_BOOKS, GET_USER_ALL_MY_BOOKS } from "../../../graphql/query/allQuery";
+import {
+  GET_ALL_BUY_BOOKS,
+  GET_USER_ALL_CATEGORY_AND_BOOKS,
+  GET_USER_ALL_MY_BOOKS,
+} from "../../../graphql/query/allQuery";
 import M_MyBooksTable from "../../../components/challenges/M_MyBooksTable.js";
 import styled from "styled-components";
 import M_Layout from "../../../components/layout/M_Layout.js";
@@ -10,6 +14,7 @@ import { FormOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import { MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK } from "../../../graphql/mutation/buyBook";
 import { StyledFlexSpaceBetween } from "../../../components/common/styledComponent/page";
+import { StyledButtonForMainPage } from "../../../components/common/styledComponent/buttons";
 
 const Challenges = () => {
   const [drawerRegisterBuyBook, setDrawerRegisterBuyBook] = useState(false);
@@ -23,17 +28,22 @@ const Challenges = () => {
     onCompleted: () => console.log("도전출판 북 서버에서 받음"),
   });
 
-  const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
-    onCompleted: (data) => {
-      if (data.mybookcateset_getMybookcatesetByUserID.status === "200") {
-        console.log({ receivedBookDataMentoring: data });
-      } else if (data.mybookcateset_getMybookcatesetByUserID.status === "401") {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(
+    GET_USER_ALL_CATEGORY_AND_BOOKS,
+    {
+      onCompleted: (data) => {
+        if (data.mybookcateset_getMybookcatesetByUserID.status === "200") {
+          console.log({ receivedBookDataMentoring: data });
+        } else if (
+          data.mybookcateset_getMybookcatesetByUserID.status === "401"
+        ) {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   const getAllBooks = async () => {
     try {
@@ -43,17 +53,20 @@ const Challenges = () => {
     }
   };
 
-  const [createMyBookFromBuyBook] = useMutation(MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK, {
-    onCompleted: (_data) => {
-      if (_data.buybook_createMybookFromBuybook.msg == "책 생성 성공적!") {
-        console.log("도전책을 내책으로 데이터", _data);
-      } else if (_data.buybook_createMybookFromBuybook.status === "401") {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const [createMyBookFromBuyBook] = useMutation(
+    MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK,
+    {
+      onCompleted: (_data) => {
+        if (_data.buybook_createMybookFromBuybook.msg == "책 생성 성공적!") {
+          console.log("도전책을 내책으로 데이터", _data);
+        } else if (_data.buybook_createMybookFromBuybook.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
   const createMyBook = async (buybook_id) => {
     try {
       await createMyBookFromBuyBook({
@@ -69,7 +82,10 @@ const Challenges = () => {
               ..._data,
               mybook_getMybookByUserID: {
                 ..._data.mybook_getMybookByUserID,
-                mybooks: [..._data.mybook_getMybookByUserID.mybooks, ...buybook_createMybookFromBuybook.mybooks],
+                mybooks: [
+                  ..._data.mybook_getMybookByUserID.mybooks,
+                  ...buybook_createMybookFromBuybook.mybooks,
+                ],
               },
             },
           });
@@ -93,28 +109,47 @@ const Challenges = () => {
             title={
               <StyledFlexSpaceBetween>
                 <div>
-                  <span style={{ marginRight: "10px", fontSize: "1rem", fontWeight: "bold" }}>도전 출판</span>
+                  <span
+                    style={{
+                      marginRight: "10px",
+                      fontSize: "1rem",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    도전 출판
+                  </span>
                   {/* <DoubleRightOutlined rotate={visible ? 270 : 90} /> */}
                 </div>
                 <div>
-                  <StyledButton
+                  <StyledButtonForMainPage
                     className="customButtonForMainPage"
                     onClick={() => {
                       setDrawerRegisterBuyBook(true);
                       getAllBooks();
                     }}
                   >
-                    <FormOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
-                  </StyledButton>
+                    <FormOutlined className="IconForButton" />
+                  </StyledButtonForMainPage>
                 </div>
               </StyledFlexSpaceBetween>
             }
           >
             {buyBookData.buybook_getAllBuybook.buybooks.map((_book, _index) => (
-              <Card size="small" key={_book._id} bodyStyle={{ padding: "5px 8px 5px 8px" }} style={{ marginBottom: "6px" }} hoverable>
+              <Card
+                size="small"
+                key={_book._id}
+                bodyStyle={{ padding: "5px 8px 5px 8px" }}
+                style={{ marginBottom: "6px" }}
+                hoverable
+              >
                 <Row>
                   <Col span={6}>
-                    <Image src={`/image/bookcover/bookcover${(_index % 6) + 1}.png`} alt={_book.buybook_info.title} width={55} height={75} />
+                    <Image
+                      src={`/image/bookcover/bookcover${(_index % 6) + 1}.png`}
+                      alt={_book.buybook_info.title}
+                      width={55}
+                      height={75}
+                    />
                   </Col>
                   <Col span={12}>
                     <div>카테고리: {_book.buybook_info.buybookcateName}</div>
@@ -139,7 +174,17 @@ const Challenges = () => {
             ))}
           </StyledCard>
           <DrawerWrapper
-            title={<span style={{ marginRight: "10px", fontSize: "1rem", fontWeight: "bold" }}>도전 출판 책 등록</span>}
+            title={
+              <span
+                style={{
+                  marginRight: "10px",
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                }}
+              >
+                도전 출판 책 등록
+              </span>
+            }
             placement="right"
             width={"100%"}
             visible={drawerRegisterBuyBook}
@@ -147,7 +192,9 @@ const Challenges = () => {
             headerStyle={{ padding: "8px 12px 8px 12px" }}
             bodyStyle={{ backgroundColor: "#e9e9e9" }}
           >
-            {drawerRegisterBuyBook && <M_MyBooksTable bookData={data} loading={loading} error={error} />}
+            {drawerRegisterBuyBook && (
+              <M_MyBooksTable bookData={data} loading={loading} error={error} />
+            )}
           </DrawerWrapper>
         </>
       )}
@@ -188,15 +235,4 @@ const DrawerWrapper = styled(Drawer)`
     font-size: 0.8rem;
     line-height: 1.5715;
   }
-`;
-
-const StyledButton = styled.button`
-  width: 34px;
-  height: 16px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  border: none;
 `;

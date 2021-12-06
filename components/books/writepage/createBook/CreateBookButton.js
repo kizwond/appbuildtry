@@ -1,5 +1,6 @@
 import { FormOutlined } from "@ant-design/icons";
 import React, { useCallback, useState } from "react";
+import { StyledButtonForMainPage } from "../../../common/styledComponent/buttons";
 import CreateBookModal from "./CreateBookModal";
 
 const CreateBookButton = ({ category }) => {
@@ -11,26 +12,20 @@ const CreateBookButton = ({ category }) => {
 
   return (
     <>
-      <button
-        className="customButtonForMainPage"
-        type="button"
-        style={{
-          width: "34px",
-          height: "16px",
-          borderRadius: "12px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          cursor: "pointer",
-          border: "none",
-        }}
+      <StyledButtonForMainPage
         onClick={() => {
           setVisible(!visible);
         }}
       >
-        <FormOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
-      </button>
-      {visible && <CreateBookModal visible={visible} changeVisible={changeVisible} category={category} />}
+        <FormOutlined className="IconForButton" />
+      </StyledButtonForMainPage>
+      {visible && (
+        <CreateBookModal
+          visible={visible}
+          changeVisible={changeVisible}
+          category={category}
+        />
+      )}
     </>
   );
 };

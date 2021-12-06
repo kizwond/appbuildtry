@@ -20,23 +20,27 @@ import MoveToBookSetting from "../../common/MoveToBookSetting";
 import makeDataSource from "../../common/logic";
 import {
   StyledFlexAlignCenter,
+  StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
 } from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 
-const M_BooksTable = ({ category, myBook, newCateId }) => {
+const M_BooksTable = ({
+  category,
+  myBook,
+  newCateId,
+  isFoldedMenu,
+  changeFoldedMenu,
+}) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
-  const [isFoldedMenu, setIsFoldedMenu] = useState();
 
   const router = useRouter();
 
-  const changeFoldedMenu = useCallback((_id) => {
-    setIsFoldedMenu(_id);
-  }, []);
   const changeIsShowedHiddenBook = useCallback(
     (isShowedAllBooks, isShowedHiddenBook, id) => {
       if (isShowedAllBooks) {
@@ -157,9 +161,7 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
               >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" ||
               _record.classType === "hiddenBar" ? (
-              <DoubleLinesEllipsisContainer>
-                {value}
-              </DoubleLinesEllipsisContainer>
+              value
             ) : (
               <StyledFlexAlignCenter
                 onClick={() => {
@@ -221,18 +223,9 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
                 trigger="click"
                 overlayClassName="M-Popover-NumberOfCards"
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    width: "100%",
-                  }}
-                >
-                  {/* {_value} */}
-                  5487
-                </div>
+                <StyledFlexAllCenterDimension100Percent>
+                  {_value}
+                </StyledFlexAllCenterDimension100Percent>
               </Popover>
             </div>
           ),
@@ -258,116 +251,8 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
       align: "center",
       width: 60,
       render: (_value, _record) => {
-        const now = new Date();
-
-        const today = moment(now).format("YYYYMMDD");
-        const todayCards = _record.writeHistory?.filter(
-          (_arr) => _arr.date === today
-        )[0];
-        const todayCreatedCards = todayCards ? todayCards.numCreatedCards : 0;
-
-        const yesterday = moment(now).subtract(1, "days").format("YYYYMMDD");
-        const yesterdayCards = _record.writeHistory?.filter(
-          (_arr) => _arr.date === yesterday
-        )[0];
-        const yesterdayCreatedCards = yesterdayCards
-          ? yesterdayCards.numCreatedCards
-          : 0;
-
-        const theDayBeforeYesterday = moment(now)
-          .subtract(1, "days")
-          .format("YYYYMMDD");
-        const theDayBeforeYesterdayCards = _record.writeHistory?.filter(
-          (_arr) => _arr.date === theDayBeforeYesterday
-        )[0];
-        const theDayBeforeYesterdayCreatedCards = theDayBeforeYesterdayCards
-          ? theDayBeforeYesterdayCards.numCreatedCards
-          : 0;
-
         const obj = {
-          children: (
-            <div>
-              <div>
-                <div
-                  style={{ display: "flex", justifyContent: "space-around" }}
-                >
-                  <div className="singleBar">
-                    <div className="graphBar">
-                      <div
-                        className="AchivedCard"
-                        style={{
-                          height:
-                            theDayBeforeYesterdayCreatedCards >= 100
-                              ? "100%"
-                              : "85%",
-                          // `${theDayBeforeYesterdayCreatedCards}%`
-                        }}
-                      >
-                        <span className="CardCounter">
-                          {theDayBeforeYesterdayCreatedCards === 0
-                            ? // "-"
-                              "85"
-                            : theDayBeforeYesterdayCreatedCards}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="singleBar">
-                    <div className="graphBar">
-                      <div
-                        className="AchivedCard"
-                        style={{
-                          height:
-                            yesterdayCreatedCards >= 100
-                              ? "100%"
-                              : //  `${yesterdayCreatedCards}%`
-                                "25%",
-                        }}
-                      >
-                        <span
-                          className="CardCounter"
-                          style={{ fontSize: "6px" }}
-                        >
-                          {yesterdayCreatedCards === 0
-                            ? //  "-"
-                              "25"
-                            : yesterdayCreatedCards}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="singleBar">
-                    <div className="graphBar">
-                      <div
-                        className="AchivedCard"
-                        style={{
-                          height:
-                            todayCreatedCards >= 100
-                              ? "100%"
-                              : // `${todayCreatedCards}%`
-                                "100%",
-                        }}
-                      >
-                        <span className="CardCounter">
-                          {todayCreatedCards === 0
-                            ? // "-"
-                              "100"
-                            : todayCreatedCards}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    width: "100%",
-                    height: 1,
-                    borderBottom: "1px solid #c5c6c7",
-                  }}
-                ></div>
-              </div>
-            </div>
-          ),
+          children: <WriteHistoryGraphBarComponent _record={_record} />,
           props: {
             colSpan: 1,
             rowSpan: 1,
@@ -453,7 +338,7 @@ const M_BooksTable = ({ category, myBook, newCateId }) => {
                 <div
                   className="PushCustomCircleButton"
                   onClick={() => {
-                    setIsFoldedMenu("");
+                    changeFoldedMenu("");
                   }}
                 >
                   <DoubleRightOutlined />
@@ -537,33 +422,5 @@ const StyledCard = styled(Card)`
 
   & .HandleOnOffShow > span {
     font-size: 0.7rem;
-  }
-
-  & .singleBar {
-    width: 18px;
-    margin-left: 3px;
-    margin-right: 3px;
-  }
-  & .graphBar {
-    position: relative;
-    height: 20px;
-    background: rgba(237, 238, 233, 0);
-  }
-
-  & .AchivedCard {
-    position: absolute;
-    bottom: 0;
-    width: 18px;
-    background: #e1e1e1;
-    display: flex;
-    justify-content: center;
-  }
-
-  & .CardCounter {
-    position: absolute;
-    font-size: 0.6rem;
-    bottom: 3px;
-    display: block;
-    color: #707070;
   }
 `;

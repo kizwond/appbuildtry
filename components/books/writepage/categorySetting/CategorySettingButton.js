@@ -1,5 +1,6 @@
 import { OrderedListOutlined } from "@ant-design/icons";
 import React, { forwardRef, useCallback, useState } from "react";
+import { StyledButtonForMainPage } from "../../../common/styledComponent/buttons";
 import CategorySettingModal from "./CategorySettingModal";
 
 // eslint-disable-next-line react/display-name
@@ -11,26 +12,19 @@ const CategorySettingButton = forwardRef(({ category }, ref) => {
 
   return (
     <>
-      <button
-        className="customButtonForMainPage"
-        type="button"
-        style={{
-          width: "34px",
-          height: "16px",
-          borderRadius: "12px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          cursor: "pointer",
-          border: "none",
-        }}
+      <StyledButtonForMainPage
         onClick={() => {
           setVisible(!visible);
         }}
       >
-        <OrderedListOutlined className="writeUnliked" style={{ color: "#DEE2E6" }} />
-      </button>
-      <CategorySettingModal visible={visible} ref={ref} changeVisible={changeVisible} category={category} />
+        <OrderedListOutlined className="IconForButton" />
+      </StyledButtonForMainPage>
+      <CategorySettingModal
+        visible={visible}
+        ref={ref}
+        changeVisible={changeVisible}
+        category={category}
+      />
     </>
   );
 });

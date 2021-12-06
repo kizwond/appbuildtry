@@ -1,7 +1,14 @@
 import { Tag } from "antd";
-import { VerticalAlignBottomOutlined } from "@ant-design/icons";
+import {
+  ArrowsAltOutlined,
+  DoubleRightOutlined,
+  ExpandAltOutlined,
+  ShrinkOutlined,
+  VerticalAlignBottomOutlined,
+} from "@ant-design/icons";
 import _ from "lodash";
 import { StyledFlexAlignCenter } from "../../common/styledComponent/page";
+import styled from "styled-components";
 
 export default function makeDataSource(
   myBook,
@@ -147,40 +154,27 @@ export default function makeDataSource(
       key: `KEY:${_cate._id}HIDDENBAR`,
       classType: "hiddenBar",
       title: (
-        <>
-          <StyledFlexAlignCenter>
+        <div
+          style={{ width: "100%" }}
+          onClick={() => {
+            changeIsShowedHiddenBook(
+              isShowedAllBooks,
+              isShowedHiddenBook,
+              _cate._id
+            );
+          }}
+        >
+          <StyledFlexAlignCenterWidth100>
             <div
-              style={{ marginRight: "40px" }}
+              style={{ marginRight: "20px", textAlign: "start" }}
             >{`총 ${markedHideListLength} 권의 숨김 책이 있습니다.`}</div>
-            {/* <Tooltip
-              title={isShowedAllBooks ? "숨긴 책 감추기" : "숨긴 책 표시"}
-              color="rgba(7, 164, 237, 0.522)"
-              overlayInnerStyle={{ fontSize: "0.65rem", minWidth: "0", minHeight: "0" }}
-              overlayStyle={{ alignSelf: "middle" }}
-            > */}
-            <Tag
-              className="HandleOnOffShow"
-              size="small"
-              style={{ fontSize: "0.7rem" }}
-              color={isShowedAllBooks ? "#cec8c8" : "#a9a7a7"}
-              icon={
-                <VerticalAlignBottomOutlined
-                  rotate={isShowedAllBooks ? 180 : 0}
-                />
-              }
-              onClick={() => {
-                changeIsShowedHiddenBook(
-                  isShowedAllBooks,
-                  isShowedHiddenBook,
-                  _cate._id
-                );
-              }}
-            >
-              {isShowedAllBooks ? "접기" : "보기"}
-            </Tag>
-            {/* </Tooltip> */}
-          </StyledFlexAlignCenter>
-        </>
+
+            <DoubleRightOutlined
+              className="HiddenBooksBar"
+              rotate={isShowedAllBooks ? 270 : 90}
+            />
+          </StyledFlexAlignCenterWidth100>
+        </div>
       ),
     };
 
@@ -243,3 +237,11 @@ export default function makeDataSource(
 
   return dataSource;
 }
+
+const StyledFlexAlignCenterWidth100 = styled(StyledFlexAlignCenter)`
+  width: 100%;
+  & .HiddenBooksBar > svg {
+    font-size: 1.167rem;
+    color: #a3a3a3;
+  }
+`;

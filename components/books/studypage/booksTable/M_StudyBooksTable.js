@@ -12,6 +12,7 @@ import {
 
 import {
   StyledFlexAlignCenter,
+  StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
 } from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
@@ -30,16 +31,14 @@ const M_StudyBooksTable = ({
   myBook,
   selectedBooks,
   changeSelectedBooks,
+  isFoldedMenu,
+  changeFoldedMenu,
 }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
-  const [isFoldedMenu, setIsFoldedMenu] = useState();
 
   const checkRef = useRef({});
-  const changeFoldedMenu = useCallback((_id) => {
-    setIsFoldedMenu(_id);
-  }, []);
 
   const changeIsShowedHiddenBook = useCallback(
     (isShowedAllBooks, isShowedHiddenBook, id) => {
@@ -152,9 +151,7 @@ const M_StudyBooksTable = ({
               >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" ||
               _record.classType === "hiddenBar" ? (
-              <DoubleLinesEllipsisContainer>
-                {value}
-              </DoubleLinesEllipsisContainer>
+              value
             ) : (
               <div
                 onClick={() => {
@@ -235,17 +232,9 @@ const M_StudyBooksTable = ({
                 trigger="click"
                 overlayClassName="M-Popover-NumberOfCards"
               >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    width: "100%",
-                  }}
-                >
-                  {4569}
-                </div>
+                <StyledFlexAllCenterDimension100Percent>
+                  {_value}
+                </StyledFlexAllCenterDimension100Percent>
               </Popover>
             </div>
           ),
@@ -373,7 +362,7 @@ const M_StudyBooksTable = ({
                 <div
                   className="PushCustomCircleButton"
                   onClick={() => {
-                    setIsFoldedMenu("");
+                    changeFoldedMenu("");
                   }}
                 >
                   <DoubleRightOutlined />

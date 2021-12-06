@@ -49,7 +49,10 @@ const Home = () => {
         reset(refreshToken);
       } else {
         console.log("로그인상태입니다.");
-        localStorage.setItem("username", data.me.users[0].user_info.username);
+        if(data.me.users[0] !== null){
+          localStorage.setItem("username", data.me.users[0].user_info.username);
+        }
+        
         setLoginState(true);
         dispatch(logIn(true));
       }

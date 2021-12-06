@@ -14,13 +14,13 @@ const SessionSetting = () => {
     const { query } = useRouter();
     if(query.name){
         var book_ids = JSON.parse(query.name).map((item) => item.book_id);
-        console.log(book_ids);
+        // console.log(book_ids);
     }
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var book_id = JSON.parse(sessionStorage.getItem("books_selected"));
     var book_ids = book_id.map((item) => item.book_id);
-    console.log(book_ids);
+    // console.log(book_ids);
   } 
 
   const [indexChanged, setIndexChanged] = useState();
@@ -45,7 +45,7 @@ const SessionSetting = () => {
       setIndexSetId(data.indexset_getByMybookids.indexsets[0]._id);
       setIndexSets(data.indexset_getByMybookids.indexsets);
     }
-  }, [data, book_ids]);
+  }, [data]);
 
   return (
     <>

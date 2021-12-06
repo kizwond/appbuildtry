@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Popover, Space } from "antd";
 import M_LeftDrawerDirectRead from "../M_LeftDrawerDirectRead";
+import { HighlightOutlined, SettingOutlined, SoundOutlined } from "@ant-design/icons";
 
 const FloatingMenu = ({
   index_changed,
@@ -37,6 +38,19 @@ const FloatingMenu = ({
           }}
         >
           <M_LeftDrawerDirectRead index_changed={index_changed} indexSets={indexSets}/>
+          
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <SoundOutlined style={{ fontSize: "1.3rem" }}/>
+            TTS
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <HighlightOutlined style={{ fontSize: "1.3rem" }}/>
+            도구
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <SettingOutlined style={{ fontSize: "1.3rem" }}/>
+            학습설정
+          </div>
          </div>
       </div>
     </div>

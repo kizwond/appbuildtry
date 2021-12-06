@@ -12,7 +12,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   if (!ISSERVER) {
     var book_id = JSON.parse(sessionStorage.getItem("books_selected"));
     var book_ids = book_id.map((item) => item.book_id);
-    console.log(book_ids);
+    // console.log(book_ids);
     console.log(indexChanged);
 
     var first_index_tmp = localStorage.getItem("first_index");
@@ -21,7 +21,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       if (indexChanged === first_index_tmp) {
         var first_index = first_index_tmp;
       } else {
-        first_index = indexChanged;
+        first_index = first_index_tmp;
       }
     } else {
       var first_index = localStorage.getItem("first_index");
@@ -80,7 +80,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   useEffect(() => {
     if (data1) {
       console.log("최초 로드 data : ", data1);
-      setIndexList(data1.indexset_getByMybookids.indexsets[0].indexes);
+      //   setIndexList(data1.indexset_getByMybookids.indexsets[0].indexes);
       setCardTypeSetId(data1.cardtypeset_getbymybookids.cardtypesets[0]._id);
       setCardTypeSets(data1.cardtypeset_getbymybookids.cardtypesets);
       setCardTypes(data1.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);
@@ -108,15 +108,17 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     } else {
       console.log("why here?");
     }
-  }, [data1, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
+  }, [data1, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
 
   if (cards) {
     var contents = cards.map((content) => {
-      // console.log("카드에 스타일 입히기 시작", cardTypeSets);
-
-      const current_card_style = cardTypeSets[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
-      // console.log(current_card_style);
-
+      console.log("카드에 스타일 입히기 시작", cardTypeSets);
+      console.log(content);
+        const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
+      
+      console.log(current_card_style_set);
+      const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id); 
+      console.log(current_card_style);
       const face_style = current_card_style[0].face_style;
       const row_style = current_card_style[0].row_style;
       const row_font = current_card_style[0].row_font;

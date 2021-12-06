@@ -24,12 +24,12 @@ const LeftDrawer = ({ index_changed, indexSets }) => {
       console.log(info)
     localStorage.removeItem("first_index");
     localStorage.setItem("first_index", info.node.index_id);
-    // index_changed(info.node.index_id);
+    index_changed(info.node.index_id);
   };
   if(indexinfos){
-      console.log("here")
+    //   console.log("here")
     var treeDatas = indexinfos.map((indexinfo)=>{
-        console.log(indexinfo)
+        // console.log(indexinfo)
         let level_all = [];
         indexinfo.indexes.forEach((table, index) => {
           if (table) {
@@ -339,7 +339,7 @@ const LeftDrawer = ({ index_changed, indexSets }) => {
         return level_all;
       })
     
-      console.log(treeDatas)
+    //   console.log(treeDatas)
   }
   
 //   if (indexinfo) {

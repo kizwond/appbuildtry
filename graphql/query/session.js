@@ -81,20 +81,25 @@ export const GetSession = gql`
           seqInCardlist
           card_info {
             mybook_id
+            indexset_id
+            index_id
             cardset_id
             cardtypeset_id
             cardtype_id
             cardtype
             time_created
             hasParent
-            parent_card_id
+            parentCard_id
           }
-          contents {
-            user_flag
-            maker_flag
+          content {
+            userFlag
+            makerFlag {
+              value
+              comment
+            }
             location
-            mycontents_id
-            buycontents_id
+            mycontent_id
+            buycontent_id
           }
           studyStatus {
             statusOriginal

@@ -112,13 +112,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   if (cards) {
     var contents = cards.map((content) => {
-      console.log("카드에 스타일 입히기 시작", cardTypeSets);
-      console.log(content);
-        const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
-      
-      console.log(current_card_style_set);
-      const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id); 
-      console.log(current_card_style);
+    //   console.log("카드에 스타일 입히기 시작", cardTypeSets);
+    //   console.log(content);
+      const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
+
+    //   console.log(current_card_style_set);
+      const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
+    //   console.log(current_card_style);
       const face_style = current_card_style[0].face_style;
       const row_style = current_card_style[0].row_style;
       const row_font = current_card_style[0].row_font;

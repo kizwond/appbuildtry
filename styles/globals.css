@@ -629,3 +629,20 @@ p {
 .ant-radio-button-wrapper:not(:first-child)::before {
   width: 0;
 }
+
+.menu {
+  font-size: 14px;
+  background-color: rgb(245, 245, 245);
+  border: 1px solid lightgrey;
+  border-radius: 2px;
+  padding: 10px 20px;
+  width: 130px;
+  height: auto;
+  margin: 0;
+/* use absolute positioning  */
+  position: absolute;
+  list-style: none;
+  box-shadow: 0 0 7px 0 #ccc;
+  opacity: 1;
+  transition: opacity 0.5s linear;
+}

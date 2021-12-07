@@ -20,6 +20,7 @@ import {
 } from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
 import { Button, Popover, Space } from "antd";
+import ContextMenu from "../../../../../components/books/study/mode/ContextMenu";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -350,7 +351,7 @@ const ReadMode = () => {
             <>
               {content.card_info.cardtype === "read" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px"}}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -1162,6 +1163,7 @@ const ReadMode = () => {
     <StudyLayout>
       <div style={{ width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
         <div>{contents}</div>
+        <ContextMenu />
       </div>
       {data && (
         <>

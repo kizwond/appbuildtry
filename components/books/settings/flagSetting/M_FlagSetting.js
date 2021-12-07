@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { useCallback, useEffect, useState } from "react";
-import { Select, Table, Button } from "antd";
+import { Select, Table, Button, message } from "antd";
 import ColorPicker from "./ColorPicker";
 import FlagIcon from "./FlagIcon";
 import produce from "immer";
@@ -23,16 +23,6 @@ const M_FlagSetting = () => {
           "프래그 설정 데이터(useQuery)",
           data.userflagconfig_get.userflagconfigs[0].details
         );
-        // const flags_array = ["flag1", "flag2", "flag3", "flag4", "flag5"];
-        // const server_flags = data.userflagconfig_get.userflagconfigs[0].details;
-        // const for_flags_data = flags_array.map((flag, index) => ({
-        //   key: index + 1,
-        //   flag_number: flag,
-        //   shape: server_flags[flag].shape,
-        //   color: server_flags[flag].color,
-        // }));
-
-        // setFlag(for_flags_data);
       } else if (data.userflagconfig_get.status === "401") {
         router.push("/account/login");
       } else {
@@ -64,6 +54,7 @@ const M_FlagSetting = () => {
     onCompleted: (data) => {
       if (data.userflagconfig_update.status === "200") {
         console.log("책 플래그 변경 후 받은 데이터", data);
+        message.success("색상표가 변경되었습니다.", 0.7);
       } else if (data.userflagconfig_update.status === "401") {
         router.push("/account/login");
       } else {
@@ -71,6 +62,27 @@ const M_FlagSetting = () => {
       }
     },
   });
+
+  const onChangeColor = useCallback(
+    (_color, index) => {
+      const newData = produce(flag, (draft) => {
+        draft[index].color = _color;
+      });
+      setFlag(newData);
+    },
+    [flag]
+  );
+  const onChangeShape = useCallback(
+    (_shape, index) => {
+      const newData = produce(flag, (draft) => {
+        draft[index].shape = _shape;
+      });
+      setFlag(newData);
+    },
+    [flag]
+  );
+  if (loading) <div>Loading...</div>;
+  if (error) <div>Error...</div>;
 
   const submitFlag = async () => {
     try {
@@ -106,27 +118,9 @@ const M_FlagSetting = () => {
       console.log(error);
     }
   };
-  const onChangeColor = useCallback(
-    (_color, index) => {
-      const newData = produce(flag, (draft) => {
-        draft[index].color = _color;
-      });
-      setFlag(newData);
-    },
-    [flag]
-  );
-  const onChangeShape = useCallback(
-    (_shape, index) => {
-      const newData = produce(flag, (draft) => {
-        draft[index].shape = _shape;
-      });
-      setFlag(newData);
-    },
-    [flag]
-  );
 
   const shape_Option = [
-    "HeartFilled",
+    "heart",
     "HomeFilled",
     "FireFilled",
     "FlagFilled",
@@ -186,27 +180,31 @@ const M_FlagSetting = () => {
 
   return (
     <>
-      <Table
-        columns={columns}
-        dataSource={flag}
-        pagination={false}
-        loading={loading}
-        size="small"
-        rowClassName={(_, index) =>
-          index % 2 === 0 && index === flag.length - 1
-            ? "LastOddNumberRow"
-            : index % 2 === 1 && index === flag.length - 1
-            ? "LastEvenNumberRow"
-            : index % 2 === 0
-            ? "OddNumberRow"
-            : "EvenNumberRow"
-        }
-      />
-      <div style={{ marginTop: "8px", textAlign: "right" }}>
-        <Button onClick={submitFlag} loading={loading}>
-          변경
-        </Button>
-      </div>
+      {data && (
+        <>
+          <Table
+            columns={columns}
+            dataSource={flag}
+            pagination={false}
+            loading={loading}
+            size="small"
+            rowClassName={(_, index) =>
+              index % 2 === 0 && index === flag.length - 1
+                ? "LastOddNumberRow"
+                : index % 2 === 1 && index === flag.length - 1
+                ? "LastEvenNumberRow"
+                : index % 2 === 0
+                ? "OddNumberRow"
+                : "EvenNumberRow"
+            }
+          />
+          <div style={{ marginTop: "8px", textAlign: "right" }}>
+            <Button onClick={submitFlag} loading={loading}>
+              변경
+            </Button>
+          </div>
+        </>
+      )}
     </>
   );
 };

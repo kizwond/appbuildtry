@@ -58,7 +58,7 @@ const FavoriteBook = ({ record, changeFoldedMenu, tableType }) => {
             updateBook(false, null);
           }}
         >
-          <StarFilled className="IconForButton" />
+          <StarFilled className="IconForButton StarFilled" />
         </div>
       ) : (
         <div

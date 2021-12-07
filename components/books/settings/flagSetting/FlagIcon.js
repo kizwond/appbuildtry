@@ -1,27 +1,27 @@
-import React, { memo } from 'react';
+import React, { memo } from "react";
 import {
   HeartFilled,
   HomeFilled,
   FireFilled,
   FlagFilled,
   TagsFilled,
-} from '@ant-design/icons';
+} from "@ant-design/icons";
 
 function flagShape(icon, color) {
   switch (icon) {
-    case 'HeartFilled':
+    case "heart":
       return <HeartFilled style={{ color: color }} />;
       break;
-    case 'HomeFilled':
+    case "HomeFilled":
       return <HomeFilled style={{ color: color }} />;
       break;
-    case 'FireFilled':
+    case "FireFilled":
       return <FireFilled style={{ color: color }} />;
       break;
-    case 'FlagFilled':
+    case "FlagFilled":
       return <FlagFilled style={{ color: color }} />;
       break;
-    case 'TagsFilled':
+    case "TagsFilled":
       return <TagsFilled style={{ color: color }} />;
       break;
     default:

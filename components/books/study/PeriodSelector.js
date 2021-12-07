@@ -1,6 +1,6 @@
-import React, { memo, useCallback } from 'react';
-import produce from 'immer';
-import { Select } from 'antd';
+import React, { memo, useCallback } from "react";
+import produce from "immer";
+import { Select } from "antd";
 
 const PeriodSelector = ({
   period,

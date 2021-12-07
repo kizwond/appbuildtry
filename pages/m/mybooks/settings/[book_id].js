@@ -100,6 +100,7 @@ const BookSetting = () => {
                   defaultValue="study_data_detail"
                   onChange={setSelectedMenu}
                   size="small"
+                  style={{ width: 180 }}
                 >
                   <Select.Option value="study_data_detail">
                     학습 상세 정보 보기

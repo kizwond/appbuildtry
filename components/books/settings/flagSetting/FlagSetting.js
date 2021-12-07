@@ -86,7 +86,7 @@ const FlagSetting = () => {
   );
 
   const shape_Option = [
-    "HeartFilled",
+    "heart",
     "HomeFilled",
     "FireFilled",
     "FlagFilled",
@@ -107,6 +107,7 @@ const FlagSetting = () => {
       render: (shape, record) => (
         <Select
           defaultValue={shape}
+          size="small"
           onChange={(value) => {
             onChangeShape(value, record.key - 1);
           }}

@@ -568,11 +568,12 @@ p {
 .customCircleButton > .anticon-eye > svg,
 .customCircleButton > .anticon-eye-invisible > svg,
 .customCircleButton > .anticon-setting > svg,
+.customCircleButton > .anticon-star.IconForButton > svg,
 .customCircleButton > .anticon-star.IconForButton > svg {
   font-size: 16px;
   color: #eeeeee;
 }
-.customCircleButton > .anticon-star.IconForButton > svg {
+.customCircleButton > .anticon-star.IconForButton.StarFilled > svg {
   font-size: 16px;
   color: #fcc725;
 }

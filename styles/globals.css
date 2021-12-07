@@ -564,14 +564,15 @@ p {
 
 .customCircleButton > .anticon-arrow-up > svg,
 .customCircleButton > .anticon-arrow-down > svg,
-.customCircleButton > .anticon-star.writeUnliked > svg,
+.customCircleButton > .anticon-star.IconForButton > svg,
 .customCircleButton > .anticon-eye > svg,
 .customCircleButton > .anticon-eye-invisible > svg,
-.customCircleButton > .anticon-setting > svg {
+.customCircleButton > .anticon-setting > svg,
+.customCircleButton > .anticon-star.IconForButton > svg {
   font-size: 16px;
   color: #eeeeee;
 }
-.customCircleButton > .anticon-star.writeLiked > svg {
+.customCircleButton > .anticon-star.IconForButton > svg {
   font-size: 16px;
   color: #fcc725;
 }

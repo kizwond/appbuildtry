@@ -4,10 +4,8 @@ import { Select, Table, Button } from "antd";
 import ColorPicker from "./ColorPicker";
 import FlagIcon from "./FlagIcon";
 import produce from "immer";
-import {
-  GET_USER_FLAG_CONFIG,
-  UPDATE_USER_FLAG_CONFIG,
-} from "../../../../graphql/query/book_flag";
+import { MUTATION_UPDATE_USER_FLAG_CONFIG } from "../../../../graphql/mutation/flagConfig";
+import { GET_USER_FLAG_CONFIG } from "../../../../graphql/query/allQuery";
 import { useQuery, useMutation } from "@apollo/client";
 
 const FlagSetting = () => {
@@ -30,7 +28,7 @@ const FlagSetting = () => {
     // notifyOnNetworkStatusChange: true,
   });
 
-  const [userflagconfig_update] = useMutation(UPDATE_USER_FLAG_CONFIG);
+  const [userflagconfig_update] = useMutation(MUTATION_UPDATE_USER_FLAG_CONFIG);
 
   const submitFlag = async () => {
     try {

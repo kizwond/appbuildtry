@@ -4,10 +4,8 @@ import { Select, Table, Button, message } from "antd";
 import ColorPicker from "./ColorPicker";
 import FlagIcon from "./FlagIcon";
 import produce from "immer";
-import {
-  GET_USER_FLAG_CONFIG,
-  UPDATE_USER_FLAG_CONFIG,
-} from "../../../../graphql/query/book_flag";
+import { GET_USER_FLAG_CONFIG } from "../../../../graphql/query/allQuery";
+import { MUTATION_UPDATE_USER_FLAG_CONFIG } from "../../../../graphql/mutation/flagConfig";
 import { useQuery, useMutation } from "@apollo/client";
 import { StyledFlexAlignCenter } from "../../../common/styledComponent/page";
 import { useRouter } from "next/router";
@@ -50,18 +48,21 @@ const M_FlagSetting = () => {
     }
   }, [data]);
 
-  const [userflagconfig_update] = useMutation(UPDATE_USER_FLAG_CONFIG, {
-    onCompleted: (data) => {
-      if (data.userflagconfig_update.status === "200") {
-        console.log("책 플래그 변경 후 받은 데이터", data);
-        message.success("색상표가 변경되었습니다.", 0.7);
-      } else if (data.userflagconfig_update.status === "401") {
-        router.push("/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const [userflagconfig_update] = useMutation(
+    MUTATION_UPDATE_USER_FLAG_CONFIG,
+    {
+      onCompleted: (data) => {
+        if (data.userflagconfig_update.status === "200") {
+          console.log("책 플래그 변경 후 받은 데이터", data);
+          message.success("색상표가 변경되었습니다.", 0.7);
+        } else if (data.userflagconfig_update.status === "401") {
+          router.push("/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   const onChangeColor = useCallback(
     (_color, index) => {

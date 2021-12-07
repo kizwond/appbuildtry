@@ -1,8 +1,8 @@
 /* eslint-disable react/display-name */
 import React, { useCallback, useEffect, useState } from "react";
 import { Select, Table, Button } from "antd";
-import ColorPicker from "../../study/ColorPicker";
-import FlagIcon from "../../study/FlagIcon";
+import ColorPicker from "./ColorPicker";
+import FlagIcon from "./FlagIcon";
 import produce from "immer";
 import {
   GET_USER_FLAG_CONFIG,

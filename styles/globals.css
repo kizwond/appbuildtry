@@ -251,6 +251,14 @@ p {
   > .TableFirstColumn,
 .ant-table.ant-table-small
   .ant-table-tbody
+  > tr.OnlyShowHiddenBar
+  > .TableGroupingColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OnlyShowHiddenBar
+  > .TableFirstColumn,
+.ant-table.ant-table-small
+  .ant-table-tbody
   > tr.LastHiddenBarRow
   > .TableGroupingColumn,
 .ant-table.ant-table-small
@@ -386,7 +394,14 @@ p {
   .ant-table-tbody
   > tr.LastEvenNumberRow
   > .TableFirstColumn
-  > div,
+  > div {
+  background-color: #f5f5f5;
+}
+
+.ant-table.ant-table-small .ant-table-tbody > tr.MiddleHiddenBar > td,
+.ant-table.ant-table-small .ant-table-tbody > tr.LastHiddenBarRow > td {
+  height: 2.2rem;
+}
 .ant-table.ant-table-small
   .ant-table-tbody
   > tr.MiddleHiddenBar
@@ -396,18 +411,14 @@ p {
   .ant-table-tbody
   > tr.LastHiddenBarRow
   > .TableFirstColumn
-  > div,
-.ant-table.ant-table-small
-  .ant-table-tbody
-  > tr.FoldedCategoryRow
-  > .TableFirstColumn
-  > div,
-.ant-table.ant-table-small
-  .ant-table-tbody
-  > tr.EmptyCategoryRow
-  > .TableFirstColumn
   > div {
-  background-color: #f5f5f5;
+  background-color: #fff;
+  margin: 3px 0px;
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+  height: 1.75rem;
+  font-size: 1rem;
 }
 .ant-table.ant-table-small
   .ant-table-tbody
@@ -437,6 +448,16 @@ p {
 .ant-table.ant-table-small
   .ant-table-tbody
   > tr.LastOddNumberRow
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.FirstHiddenBar
+  > .TableFirstColumn
+  > div,
+.ant-table.ant-table-small
+  .ant-table-tbody
+  > tr.OnlyShowHiddenBar
   > .TableFirstColumn
   > div {
   background-color: #fff;
@@ -487,14 +508,15 @@ p {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+
 .ant-table.ant-table-small
   .ant-table-tbody
-  > tr.MiddleHiddenBar
+  > tr.OnlyShowHiddenBar
   > .TableFirstColumn
   > div,
 .ant-table.ant-table-small
   .ant-table-tbody
-  > tr.LastHiddenBarRow
+  > tr.FirstHiddenBar
   > .TableFirstColumn
   > div,
 .ant-table.ant-table-small
@@ -507,14 +529,13 @@ p {
   > tr.FoldedCategoryRow
   > .TableFirstColumn
   > div {
-  border-radius: 8px;
+  background-color: #fff;
   margin: 3px 0px;
   display: flex;
   align-items: center;
   padding-left: 4px;
   height: 3.75rem;
   font-size: 1rem;
-  border: 0.5px solid #dfdfdf;
 }
 
 .ant-table.ant-table-small

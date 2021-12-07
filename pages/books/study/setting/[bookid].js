@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import Layout from "../../../../components/layout/Layout";
 import { Row, Col, Menu, Card, PageHeader } from "antd";
 import styled from "styled-components";
-import FlagSetting from "../../../../components/books/study/FlagSetting";
+import FlagSetting from "../../../../components/books/settings/flagSetting/FlagSetting";
 import LevelAndCycleSetting from "../../../../components/books/study/LevelAndCycleSetting";
 import { Divider } from "../../../../node_modules/antd/lib/index";
 import CategorySetting from "../../../../components/books/study/CategorySetting";
@@ -70,16 +70,35 @@ const BookSetting = () => {
     <Layout>
       <MainWrapper>
         <Row>
-          <StyledCol xs={6} sm={6} md={6} lg={6} xl={5} xxl={4} className="main-menu">
+          <StyledCol
+            xs={6}
+            sm={6}
+            md={6}
+            lg={6}
+            xl={5}
+            xxl={4}
+            className="main-menu"
+          >
             <div>
               <div>
                 <StyledSection className="main-menu-inner">
                   <PageHeader title="학습 설정" />
-                  <Menu mode="inline" className="aside-container" onClick={(e) => setSelectedMenu(e.key)} style={{ borderRight: "none" }}>
-                    <Menu.Item key="study_data_detail">학습 상세 정보 보기</Menu.Item>
+                  <Menu
+                    mode="inline"
+                    className="aside-container"
+                    onClick={(e) => setSelectedMenu(e.key)}
+                    style={{ borderRight: "none" }}
+                  >
+                    <Menu.Item key="study_data_detail">
+                      학습 상세 정보 보기
+                    </Menu.Item>
                     <Menu.Item key="set_flags">플래그 설정</Menu.Item>
-                    <Menu.Item key="cards_progress">카드 학습 상태 관리</Menu.Item>
-                    <Menu.Item key="set_level_and_cycle">레벨 및 복습 주기 설정</Menu.Item>
+                    <Menu.Item key="cards_progress">
+                      카드 학습 상태 관리
+                    </Menu.Item>
+                    <Menu.Item key="set_level_and_cycle">
+                      레벨 및 복습 주기 설정
+                    </Menu.Item>
                     <Menu.Item key="select_category">카테고리 이동</Menu.Item>
                     <Menu.Item key="delete_book">책 삭제</Menu.Item>
                   </Menu>
@@ -104,7 +123,9 @@ const BookSetting = () => {
             <Row>
               <Col xs={22} sm={22} md={22} lg={22} xl={22} xxl={22}>
                 <div style={{ minWidth: "270px" }}>
-                  <StyledCard bordered={false}>{content(selectedMenu)}</StyledCard>
+                  <StyledCard bordered={false}>
+                    {content(selectedMenu)}
+                  </StyledCard>
                 </div>
               </Col>
             </Row>

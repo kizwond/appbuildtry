@@ -23,7 +23,7 @@ export const StyledButtonForMainPage = styled.button`
   align-items: center;
   width: 4.167rem;
   height: 1.57rem;
-  background-color: #55a8f5;
+  background-color: lightgray;
   border-radius: 0.8rem;
   border: none;
   cursor: pointer;
@@ -37,7 +37,7 @@ export const StyledButtonForMainPage = styled.button`
   & > .anticon.anticon-form.IconForButton > svg,
   & > .anticon.anticon-plus.IconForButton > svg,
   & > .anticon.anticon-ordered-list.IconForButton > svg {
-    color: #ffffff;
+    color: gray;
     font-size: 1.333rem;
   }
   &:active > .anticon.anticon-form.IconForButton,

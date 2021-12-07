@@ -53,6 +53,8 @@ const M_WriteMain = () => {
     <>
       <Head>
         <title>Write - CogBook</title>
+      </Head>
+      <Head>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       {myBook2 && category2 && (
@@ -90,9 +92,9 @@ const StyledRowMaxWidth = styled.div`
   position: absolute;
   top: 40px;
 
-  & .ant-card-head {
+  & .ant-card-small > .ant-card-head {
     border-bottom: none;
-    /* border-top: 1px solid #f0f0f0; */
+    padding: 0 8px;
   }
 
   & .ant-checkbox-inner {

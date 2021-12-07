@@ -1,10 +1,13 @@
 /* eslint-disable react/display-name */
 import React, { useCallback, useEffect, useState } from "react";
 import { Select, Table, Button } from "antd";
-import ColorPicker from "./ColorPicker";
-import FlagIcon from "./FlagIcon";
+import ColorPicker from "../../study/ColorPicker";
+import FlagIcon from "../../study/FlagIcon";
 import produce from "immer";
-import { GET_USER_FLAG_CONFIG, UPDATE_USER_FLAG_CONFIG } from "../../../graphql/query/book_flag";
+import {
+  GET_USER_FLAG_CONFIG,
+  UPDATE_USER_FLAG_CONFIG,
+} from "../../../../graphql/query/book_flag";
 import { useQuery, useMutation } from "@apollo/client";
 
 const FlagSetting = () => {
@@ -82,7 +85,13 @@ const FlagSetting = () => {
     [flag]
   );
 
-  const shape_Option = ["HeartFilled", "HomeFilled", "FireFilled", "FlagFilled", "TagsFilled"];
+  const shape_Option = [
+    "HeartFilled",
+    "HomeFilled",
+    "FireFilled",
+    "FlagFilled",
+    "TagsFilled",
+  ];
 
   const columns = [
     {
@@ -116,13 +125,24 @@ const FlagSetting = () => {
       title: "색상",
       dataIndex: "color",
       key: "color",
-      render: (color, record) => <ColorPicker color={color} onChangeColor={onChangeColor} index={record.key - 1} />,
+      render: (color, record) => (
+        <ColorPicker
+          color={color}
+          onChangeColor={onChangeColor}
+          index={record.key - 1}
+        />
+      ),
     },
   ];
 
   return (
     <>
-      <Table columns={columns} dataSource={flag} pagination={false} loading={loading} />
+      <Table
+        columns={columns}
+        dataSource={flag}
+        pagination={false}
+        loading={loading}
+      />
       <Button onClick={submitFlag} loading={loading}>
         변경
       </Button>

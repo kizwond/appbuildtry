@@ -201,9 +201,8 @@ const M_StudyFavoriteBooksTable = forwardRef(
               "-"
             ) : (
               <StyledProgress
+                booktype={_record.type}
                 percent={_record.accuLevel / _record.total}
-                trailColor="#bbbbbb"
-                strokeWidth={13}
               />
             )}
           </div>

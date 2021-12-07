@@ -189,8 +189,8 @@ export default function makeDataSource(
       // 숨긴 책이 1권 일때 (표시 책 0권)
       else if (markedHideListLength === 1) {
         showedList = !isShowedAllBooks
-          ? [{ ...hiddenBar }]
-          : [{ ...hiddenBar, classType: "middle-hiddenBar" }, ...hiddenList];
+          ? [{ ...hiddenBar, classType: "OnlyShowHiddenBar" }]
+          : [{ ...hiddenBar, classType: "firstHiddenBar" }, ...hiddenList];
       }
     }
     // 전체 책이 2권 이상
@@ -212,8 +212,8 @@ export default function makeDataSource(
       // 표시 책이 0권 일때
       else if (markedShowListLength === 0) {
         showedList = !isShowedAllBooks
-          ? [{ ...hiddenBar }]
-          : [{ ...hiddenBar, classType: "middle-hiddenBar" }, ...hiddenList];
+          ? [{ ...hiddenBar, classType: "OnlyShowHiddenBar" }]
+          : [{ ...hiddenBar, classType: "firstHiddenBar" }, ...hiddenList];
       }
     }
 

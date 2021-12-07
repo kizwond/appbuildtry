@@ -6,7 +6,20 @@ import dynamic from "next/dynamic";
 // import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
 import StudyLayout from "../../../../../components/layout/StudyLayout";
 import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../../../../graphql/query/card_contents";
-import { DeleteOutlined, EditOutlined, HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
+import {
+  ControlOutlined,
+  DashOutlined,
+  FormOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  HeartFilled,
+  StarFilled,
+  CheckCircleFilled,
+  PlusOutlined,
+  ApartmentOutlined,
+} from "@ant-design/icons";
+import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
+import { Button, Popover, Space } from "antd";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -14,7 +27,6 @@ const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditor
 
 const ReadMode = () => {
   const { query } = useRouter();
-  console.log(query.sessionid);
 
   const [cardListStudying, setCardListStudying] = useState();
   const [sessionScope, setSessionScope] = useState();
@@ -30,7 +42,6 @@ const ReadMode = () => {
     } else {
       session_id = query.sessionid;
     }
-    console.log(session_id);
   }
 
   const { loading, error, data } = useQuery(GetSession, {
@@ -113,58 +124,13 @@ const ReadMode = () => {
     }
   }, [data, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs, cardtypeset_getbymybookids]);
 
-  // function onCompletedGetSession() {
-  //   console.log("최초 리드모드 데이터 : ", data);
-  //   console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
-  //   console.log("카드리스트스터딩 :", data.session_getSession.sessions[0].cardlistStudying);
-  //   sessionStorage.setItem("cardListStudying", JSON.stringify(data.session_getSession.sessions[0].cardlistStudying));
-  //   setCardListStudying(data.session_getSession.sessions[0].cardlistStudying);
-  //   setSessionScope(data.session_getSession.sessions[0].sessionScope);
-  //   sessionStorage.setItem("card_seq", 0);
-  //   sessionStorage.removeItem("cardlist_to_send");
-  //   const now = new Date();
-  //   sessionStorage.setItem("started", now);
-
-  //   const cardIdList = data.session_getSession.sessions[0].cardlistStudying.map((item) => {
-  //     return item.content.mycontent_id;
-  //   });
-  //   const buyContentsIdsList = data.session_getSession.sessions[0].cardlistStudying.map((item) => {
-  //     return item.content.buycontent_id;
-  //   });
-  //   const mybook_ids = data.session_getSession.sessions[0].sessionScope.map((item) => {
-  //     return item.mybook_id;
-  //   });
-  //   console.log(cardIdList)
-  //   console.log(buyContentsIdsList)
-  //   console.log(mybook_ids)
-  //   mycontent_getMycontentByMycontentIDs({
-  //     variables: {
-  //       mycontent_ids: cardIdList,
-  //     },
-  //   });
-
-  //   buycontent_getBuycontentByBuycontentIDs({
-  //     variables: {
-  //       buycontent_ids: buyContentsIdsList,
-  //     },
-  //   });
-
-  //   cardtypeset_getbymybookids({
-  //     variables: {
-  //       mybook_ids: mybook_ids,
-  //     },
-  //   });
-  // }
-
   if (cardTypeSets.length > 0) {
-    console.log(cardListStudying);
-    console.log(cardTypeSets);
     var contents = cardListStudying.map((content) => {
-      console.log("카드에 스타일 입히기 시작", cardTypeSets);
+      // console.log("카드에 스타일 입히기 시작", cardTypeSets);
       //   console.log(content);
       const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
 
-      console.log(current_card_style_set);
+      // console.log(current_card_style_set);
       const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
       //   console.log(current_card_style);
       const face_style = current_card_style[0].face_style;
@@ -373,12 +339,18 @@ const ReadMode = () => {
               </div>
             </>
           );
-
+          const popoverContent = (
+            <div style={{display:"flex", flexDirection:"column"}}>
+              <Button size="small" style={{fontSize:"0.8rem", marginBottom:"3px"}}>유저플래그설정</Button>
+              <Button size="small" style={{fontSize:"0.8rem", marginBottom:"3px"}}>메모추가</Button>
+              <Button size="small" style={{fontSize:"0.8rem", marginBottom:"3px"}}>새카드생성</Button>
+            </div>
+          );
           return (
             <>
               {content.card_info.cardtype === "read" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -504,12 +476,24 @@ const ReadMode = () => {
                         </div>
                       </div>
                     </div>
+                    {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </>
               )}
               {content.card_info.cardtype === "subject" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -572,13 +556,25 @@ const ReadMode = () => {
                         ))}
                       </div>
                     </div>
+                    {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </>
               )}
               {content.card_info.cardtype === "general" && (
                 <>
                   <div className={`${content._id} child_group other`}>
-                    <div style={{ marginBottom: "5px" }}>
+                    <div style={{ marginBottom: "0px" }}>
                       <div onClick={() => onClickCard(content._id, "general")}>
                         {/* 페이스 스타일 영역 */}
                         {content.content.makerFlag.value !== null && flagArea}
@@ -642,7 +638,18 @@ const ReadMode = () => {
                         </div>
                       </div>
                     </div>
-                    <div style={{ height: "5px" }}></div>
+                    {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </>
               )}
@@ -840,7 +847,18 @@ const ReadMode = () => {
                         </div>
                       </div>
                     </div>
-                    <div style={{ height: "5px" }}></div>
+                    {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </>
               )}
@@ -1033,7 +1051,18 @@ const ReadMode = () => {
                           </div>
                         </div>
                       </div>
-                      <div style={{ height: "5px" }}></div>
+                      {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                     </div>
                   </div>
                 </>
@@ -1045,16 +1074,100 @@ const ReadMode = () => {
       return show_contents;
     });
   }
+
+  const onClickCard = (card_id, from, group) => {
+    if ((from !== "general" && from !== "normal" && from !== "flip" && group === undefined) || null) {
+      console.log("null or undefined");
+      const selected1 = document.getElementsByClassName("child_group");
+      const selected2 = document.getElementsByClassName("other");
+      for (var a = 0; a < selected2.length; a++) {
+        const section1 = selected2.item(a);
+        section1.style.borderLeft = "none";
+      }
+      for (var a = 0; a < selected1.length; a++) {
+        const section2 = selected1.item(a);
+        section2.style.borderLeft = "none";
+      }
+    } else if (from === "general") {
+      console.log("general");
+      const selected1 = document.getElementsByClassName(card_id);
+      const selected2 = document.getElementsByClassName("other");
+      for (var a = 0; a < selected2.length; a++) {
+        const section1 = selected2.item(a);
+        section1.style.borderLeft = "none";
+      }
+      for (var b = 0; b < selected1.length; b++) {
+        const section2 = selected1.item(b);
+        section2.style.borderLeft = "5px solid #4285f4";
+        // section2.style.borderRadius = "4px";
+      }
+    } else if (from === "normal") {
+      const selected1 = document.getElementsByClassName(card_id);
+      const selected2 = document.getElementsByClassName("other");
+      for (var a = 0; a < selected2.length; a++) {
+        const section1 = selected2.item(a);
+        section1.style.borderLeft = "none";
+      }
+      for (var b = 0; b < selected1.length; b++) {
+        const section2 = selected1.item(b);
+        section2.style.borderLeft = "5px solid #4285f4";
+        // section2.style.borderRadius = "4px";
+      }
+    } else if (from === "flip" && group === null) {
+      console.log("flip1");
+      const selected4 = document.getElementsByClassName(card_id);
+      const selected2 = document.getElementsByClassName("other");
+      for (var a = 0; a < selected2.length; a++) {
+        const section1 = selected2.item(a);
+        section1.style.borderLeft = "none";
+      }
+      for (var b = 0; b < selected4.length; b++) {
+        const section4 = selected4.item(b);
+        section4.style.borderLeft = "5px solid #4285f4";
+        // section4.style.borderRadius = "4px";
+      }
+    } else if (from === "flip" && group === undefined) {
+      console.log("flip2");
+      const selected4 = document.getElementsByClassName(card_id);
+      const selected2 = document.getElementsByClassName("other");
+      for (var a = 0; a < selected2.length; a++) {
+        const section1 = selected2.item(a);
+        section1.style.borderLeft = "none";
+      }
+      for (var b = 0; b < selected4.length; b++) {
+        const section4 = selected4.item(b);
+        section4.style.borderLeft = "5px solid #4285f4";
+        // section4.style.borderRadius = "4px";
+      }
+    } else {
+      console.log("parent Id");
+      const selected3 = document.getElementsByClassName(group);
+      const selected2 = document.getElementsByClassName("other");
+      for (var a = 0; a < selected2.length; a++) {
+        const section1 = selected2.item(a);
+        section1.style.borderLeft = "none";
+      }
+      for (var c = 0; c < selected3.length; c++) {
+        const section3 = selected3.item(c);
+        console.log(section3);
+        section3.style.borderLeft = "5px solid #4285f4";
+        // section3.style.borderRadius = "4px";
+      }
+    }
+
+    setCardId(card_id);
+  };
+
   return (
     <StudyLayout>
       <div style={{ width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
         <div>{contents}</div>
       </div>
-      {/* <CardContainer
-        cardListStudying={cardListStudying}
-        sessionScope={sessionScope}
-        ttsFields={ttsFields}
-      /> */}
+      {data && (
+        <>
+          <FixedBottomMenuReadMode />
+        </>
+      )}
     </StudyLayout>
   );
 };

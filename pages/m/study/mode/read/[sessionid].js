@@ -6,8 +6,20 @@ import dynamic from "next/dynamic";
 // import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
 import StudyLayout from "../../../../../components/layout/StudyLayout";
 import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../../../../graphql/query/card_contents";
-import { DeleteOutlined, EditOutlined, HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
+import {
+  ControlOutlined,
+  DashOutlined,
+  FormOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  HeartFilled,
+  StarFilled,
+  CheckCircleFilled,
+  PlusOutlined,
+  ApartmentOutlined,
+} from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
+import { Button, Popover, Space } from "antd";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -327,12 +339,18 @@ const ReadMode = () => {
               </div>
             </>
           );
-
+          const popoverContent = (
+            <div style={{display:"flex", flexDirection:"column"}}>
+              <Button size="small" style={{fontSize:"0.8rem", marginBottom:"3px"}}>유저플래그설정</Button>
+              <Button size="small" style={{fontSize:"0.8rem", marginBottom:"3px"}}>메모추가</Button>
+              <Button size="small" style={{fontSize:"0.8rem", marginBottom:"3px"}}>새카드생성</Button>
+            </div>
+          );
           return (
             <>
               {content.card_info.cardtype === "read" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -458,12 +476,24 @@ const ReadMode = () => {
                         </div>
                       </div>
                     </div>
+                    {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </>
               )}
               {content.card_info.cardtype === "subject" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -526,13 +556,25 @@ const ReadMode = () => {
                         ))}
                       </div>
                     </div>
+                    {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </>
               )}
               {content.card_info.cardtype === "general" && (
                 <>
                   <div className={`${content._id} child_group other`}>
-                    <div style={{ marginBottom: "5px" }}>
+                    <div style={{ marginBottom: "0px" }}>
                       <div onClick={() => onClickCard(content._id, "general")}>
                         {/* 페이스 스타일 영역 */}
                         {content.content.makerFlag.value !== null && flagArea}
@@ -596,7 +638,18 @@ const ReadMode = () => {
                         </div>
                       </div>
                     </div>
-                    <div style={{ height: "5px" }}></div>
+                    {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </>
               )}
@@ -794,7 +847,18 @@ const ReadMode = () => {
                         </div>
                       </div>
                     </div>
-                    <div style={{ height: "5px" }}></div>
+                    {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </>
               )}
@@ -987,7 +1051,18 @@ const ReadMode = () => {
                           </div>
                         </div>
                       </div>
-                      <div style={{ height: "5px" }}></div>
+                      {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                          <div></div>
+                          <div>
+                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
+                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
+                            </Popover>
+                          </div>
+                        </div>
+                      </>
+                    )}
                     </div>
                   </div>
                 </>

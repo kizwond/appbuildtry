@@ -1161,7 +1161,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               {content.card_info.cardtype === "general" && (
                 <>
                   <div className={`${content._id} child_group other`}>
-                    <div style={{ marginBottom: "5px" }}>
+                    <div style={{ marginBottom: "0px" }}>
                       <div onClick={() => onClickCard(content._id, "general")}>
                         {/* 페이스 스타일 영역 */}
                         {content.content.makerFlag.value !== null && flagArea}
@@ -1277,7 +1277,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                         </>
                       )}
                     </div>
-                    <div style={{ height: "5px" }}></div>
+                    <div style={{ height: "0px" }}></div>
                   </div>
                   {content._id === cardId && editMode === "normal" && (
                     <>
@@ -1554,7 +1554,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                         </>
                       )}
                     </div>
-                    <div style={{ height: "5px" }}></div>
+                    <div style={{ height: "0px" }}></div>
                   </div>
                   {content._id === cardId && editMode === "normal" && (
                     <>
@@ -1826,7 +1826,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                           </>
                         )}
                       </div>
-                      <div style={{ height: "5px" }}></div>
+                      <div style={{ height: "0px" }}></div>
                     </div>
                   </div>
                   {content._id === cardId && editMode === "normal" && (

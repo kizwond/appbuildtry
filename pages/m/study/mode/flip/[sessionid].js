@@ -2,8 +2,9 @@ import React, { useState, useEffect, Fragment } from 'react';
 import { GetSession } from '../../../../../graphql/query/session';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-// import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
+import FlipContainer from '../../../../../components/books/study/mode/flip/FlipContainer';
 import StudyLayout from "../../../../../components/layout/StudyLayout";
+import FixedBottomMenuFlipMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuFlipMode";
 
 const FlipMode = () => {
   const { query } = useRouter();
@@ -43,14 +44,14 @@ const FlipMode = () => {
 
   return (
     <StudyLayout>
-       <div style={{width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
-          FlipMode
+       <div style={{width: "90%", margin: "auto",marginTop: "50px" }}>
+       <FlipContainer/>
         </div>
-      {/* <CardContainer
-        cardListStudying={cardListStudying}
-        sessionScope={sessionScope}
-        ttsFields={ttsFields}
-      /> */}
+        {data && (
+        <>
+          <FixedBottomMenuFlipMode />
+        </>
+      )}
     </StudyLayout>
   );
 };

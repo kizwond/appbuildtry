@@ -343,20 +343,20 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
             )}
             {cardType === "subject" && (
               <React.Fragment>
-                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value="face1" style={{ fontSize: "0.8rem" }}>
                   1면
                 </Select.Option>
-                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value="annotation" style={{ fontSize: "0.8rem" }}>
                   주석
                 </Select.Option>
               </React.Fragment>
             )}
             {cardType === "general" && (
               <React.Fragment>
-                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value="face1" style={{ fontSize: "0.8rem" }}>
                   1면
                 </Select.Option>
-                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value="annotation" style={{ fontSize: "0.8rem" }}>
                   주석
                 </Select.Option>
               </React.Fragment>

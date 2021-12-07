@@ -877,7 +877,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             <>
               {content.card_info.cardtype === "read" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
@@ -1050,7 +1050,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
               )}
               {content.card_info.cardtype === "subject" && (
                 <>
-                  <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}

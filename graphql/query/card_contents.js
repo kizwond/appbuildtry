@@ -118,6 +118,290 @@ export const GET_CARD_CONTENT = gql`
     }
   }
 `;
+
+export const GET_CARDTYPESET = gql`
+  query GET_CARDTYPESET($mybook_ids: [ID]) {
+    cardtypeset_getbymybookids(mybook_ids: $mybook_ids) {
+      status
+      msg
+      cardtypesets {
+        _id
+        cardtypeset_info {
+          user_id
+          mybook_id
+        }
+        makerFlag_style {
+          row_style {
+            background {
+              color
+              opacity
+            }
+            outer_margin {
+              top
+              bottom
+              left
+              right
+            }
+            inner_padding {
+              top
+              bottom
+              left
+              right
+            }
+            border {
+              top {
+                bordertype
+                thickness
+                color
+              }
+              bottom {
+                bordertype
+                thickness
+                color
+              }
+              left {
+                bordertype
+                thickness
+                color
+              }
+              right {
+                bordertype
+                thickness
+                color
+              }
+            }
+          }
+          figure_style {
+            shape
+            size
+            color
+          }
+          comment_font {
+            font
+            size
+            color
+            align
+            bold
+            italic
+            underline
+          }
+        }
+        cardtypes {
+          _id
+          cardtype_info {
+            name
+            cardtype
+            num_of_row {
+              face1
+              face2
+              annotation
+            }
+            nick_of_row {
+              face1
+              face2
+              annotation
+            }
+            flip_option {
+              card_direction
+              left_face_ratio
+            }
+          }
+          face_style {
+            background {
+              color
+              opacity
+            }
+            outer_margin {
+              top
+              bottom
+              left
+              right
+            }
+            inner_padding {
+              top
+              bottom
+              left
+              right
+            }
+            border {
+              top {
+                bordertype
+                thickness
+                color
+              }
+              bottom {
+                bordertype
+                thickness
+                color
+              }
+              left {
+                bordertype
+                thickness
+                color
+              }
+              right {
+                bordertype
+                thickness
+                color
+              }
+            }
+          }
+          row_style {
+            face1 {
+              background {
+                color
+                opacity
+              }
+              outer_margin {
+                top
+                bottom
+                left
+                right
+              }
+              inner_padding {
+                top
+                bottom
+                left
+                right
+              }
+              border {
+                top {
+                  bordertype
+                  thickness
+                  color
+                }
+                bottom {
+                  bordertype
+                  thickness
+                  color
+                }
+                left {
+                  bordertype
+                  thickness
+                  color
+                }
+                right {
+                  bordertype
+                  thickness
+                  color
+                }
+              }
+            }
+            face2 {
+              background {
+                color
+                opacity
+              }
+              outer_margin {
+                top
+                bottom
+                left
+                right
+              }
+              inner_padding {
+                top
+                bottom
+                left
+                right
+              }
+              border {
+                top {
+                  bordertype
+                  thickness
+                  color
+                }
+                bottom {
+                  bordertype
+                  thickness
+                  color
+                }
+                left {
+                  bordertype
+                  thickness
+                  color
+                }
+                right {
+                  bordertype
+                  thickness
+                  color
+                }
+              }
+            }
+            annotation {
+              background {
+                color
+                opacity
+              }
+              outer_margin {
+                top
+                bottom
+                left
+                right
+              }
+              inner_padding {
+                top
+                bottom
+                left
+                right
+              }
+              border {
+                top {
+                  bordertype
+                  thickness
+                  color
+                }
+                bottom {
+                  bordertype
+                  thickness
+                  color
+                }
+                left {
+                  bordertype
+                  thickness
+                  color
+                }
+                right {
+                  bordertype
+                  thickness
+                  color
+                }
+              }
+            }
+          }
+          row_font {
+            face1 {
+              font
+              size
+              color
+              align
+              bold
+              italic
+              underline
+            }
+            face2 {
+              font
+              size
+              color
+              align
+              bold
+              italic
+              underline
+            }
+            annotation {
+              font
+              size
+              color
+              align
+              bold
+              italic
+              underline
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 export const GET_BUY_CARD_CONTENT = gql`
   query GET_CARD_CONTENT($buycontent_ids: [ID]) {
     buycontent_getBuycontentByBuycontentIDs(buycontent_ids: $buycontent_ids) {

@@ -1220,6 +1220,7 @@ const ReadMode = () => {
       setCardId(card_id);
     }
     setCardClickMenu(false);
+    setUserFlag(false);
   };
 
   return (

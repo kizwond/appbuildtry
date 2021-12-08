@@ -647,3 +647,15 @@ p {
   opacity: 1;
   transition: opacity 0.5s linear;
 }
+
+/* p {
+  display: block;
+  margin-block-start: 0em !important;
+  margin-block-end: 0em !important;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  line-height: 1.3;
+} */
+/* body{
+  line-height: 1.2 !important;
+} */

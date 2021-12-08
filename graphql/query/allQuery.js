@@ -5,6 +5,7 @@ import { FRAGMENT_MENTORING } from "../fragment/mentoring";
 import { FRAGMENT_MY_CARD_TYPE_SET } from "../fragment/cardTypeSet";
 import { FRAGMENT_CARD_SET } from "../fragment/cardSet";
 import { FRAGMENT_BUY_BOOK } from "../fragment/buyBook";
+import { FRAGMENT_USER_FLAG_CONFIG } from "../fragment/flagConfig";
 
 // 유저 정보 불러오기
 export const GET_USER_MINIMUM_INFORMATION_BY_USER_NAME = gql`
@@ -135,9 +136,9 @@ export const GetFlagStyle = gql`
     cardtypeset_getbymybookids(mybook_ids: $mybook_ids) {
       status
       msg
-      cardtypeset_info{
-        user_id 
-        mybook_id 
+      cardtypeset_info {
+        user_id
+        mybook_id
       }
       cardtypesets {
         _id
@@ -225,6 +226,20 @@ export const GET_ALL_BUY_BOOKS = gql`
       msg
       buybooks {
         ...BuyBookFragment
+      }
+    }
+  }
+`;
+
+// 유저 플래그
+export const GET_USER_FLAG_CONFIG = gql`
+  ${FRAGMENT_USER_FLAG_CONFIG}
+  query {
+    userflagconfig_get {
+      status
+      msg
+      userflagconfigs {
+        ...UserFlagConfigFragment
       }
     }
   }

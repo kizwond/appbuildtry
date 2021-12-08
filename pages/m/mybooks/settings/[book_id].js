@@ -8,10 +8,10 @@ import styled from "styled-components";
 
 import M_Layout from "../../../../components/layout/M_Layout";
 import M_FlagSetting from "../../../../components/books/settings/flagSetting/M_FlagSetting";
-import LevelAndCycleSetting from "../../../../components/books/study/LevelAndCycleSetting";
 import CategorySetting from "../../../../components/books/study/CategorySetting";
 import DeleteBook from "../../../../components/books/study/DeleteBook";
 import { StyledFlexSpaceBetween } from "../../../../components/common/styledComponent/page";
+import M_LevelAndCycleSetting from "../../../../components/books/settings/levelAndCycleSetting/M_LevelAndCycleSetting";
 
 const BookSetting = () => {
   const { query } = useRouter();
@@ -30,7 +30,7 @@ const BookSetting = () => {
         return null;
         break;
       case "set_level_and_cycle":
-        return <LevelAndCycleSetting book_id={query.book_id} />;
+        return <M_LevelAndCycleSetting book_id={query.book_id} />;
         break;
       case "select_category":
         return <CategorySetting book_id={query.book_id} />;

@@ -122,9 +122,9 @@ export default WriteHistoryGraphBarComponent;
 
 const StyledGraphBarWrapper = styled.div`
   width: 100%;
-  min-width: 74px;
-  position: absolute;
-  bottom: 0.6rem;
+  min-width: 70px;
+  /* position: absolute; */
+  /* bottom: 0.7rem; */
 
   & .FlexContainer {
     display: flex;
@@ -143,7 +143,7 @@ const StyledGraphBarWrapper = styled.div`
   }
   & .GraphBar {
     position: relative;
-    height: 2.4rem;
+    height: 2.167rem;
     background: #edeee900;
   }
   & .AchivedCard {
@@ -164,8 +164,8 @@ const StyledGraphBarWrapper = styled.div`
   }
   & .CardCounter {
     position: relative;
-    font-size: 0.6rem;
-    bottom: 0.8rem;
+    font-size: 0.833rem;
+    bottom: 1.1rem;
     display: block;
   }
 `;

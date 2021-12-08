@@ -1,10 +1,7 @@
-import React, { useState, memo, useEffect } from "react";
-import { gql, useMutation } from "@apollo/client";
+import React, { memo } from "react";
+import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
-import { CHANGE_STUDY_LIKE } from "../../../graphql/query/studyPage";
-import { CHANGE_WRITE_LIKE } from "../../../graphql/query/writePage";
 
-import { Tooltip } from "antd";
 import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { useMemo } from "react";
 import { MUTATION_SET_MY_BOOK_LIKE } from "../../../graphql/mutation/myBook";

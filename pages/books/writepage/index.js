@@ -1,19 +1,18 @@
 import Head from "next/head";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_CATEGORY_AND_BOOKS_INFO } from "../../../graphql/query/writePage";
 import { useRouter } from "next/router";
 
-import styled from "styled-components";
-
 import { Space, Col } from "antd";
+import styled from "styled-components";
+import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
+
 import Layout from "../../../components/layout/Layout";
 import CreateBookButton from "../../../components/books/writepage/createBook/CreateBookButton";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
 import BooksTable from "../../../components/books/writepage/booksTable/BooksTable";
 import FavoriteBooksTable from "../../../components/books/writepage/booksTable/FavoriteBooksTable";
 import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
-import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
 
 const WriteMain = () => {
   const router = useRouter();

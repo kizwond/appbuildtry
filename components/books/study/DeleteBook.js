@@ -1,17 +1,11 @@
 import React from "react";
-import { useQuery, useMutation } from "@apollo/client";
-import { Select, Button, Alert, Space } from "antd";
+import { useMutation } from "@apollo/client";
+import { Button, Alert, Space } from "antd";
 import { MUTATION_DELETE_MY_BOOK } from "../../../graphql/mutation/myBook";
 import { useRouter } from "next/router";
 
 const DeleteBook = ({ book_id }) => {
   const { push } = useRouter();
-  // const { data, error, loading } = useQuery(GET_SELECTED_BOOK_INFO_FOR_DELETE, {
-  //   variables: { mybook_id: book_id },
-  //   onCompleted: (_data) => {
-  //     console.log("책정보 불러옴", _data);
-  //   },
-  // });
 
   const [mybook_delete] = useMutation(MUTATION_DELETE_MY_BOOK, {
     onCompleted: (_data) => {

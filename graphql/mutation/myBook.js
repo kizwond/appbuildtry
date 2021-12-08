@@ -52,10 +52,10 @@ export const MUTATION_SET_MY_BOOK_HIDE_OR_SHOW = gql`
     }
   }
 `;
-export const MUTATION_SET_MY_BOOK_HIDE_OR_SHOW = gql`
+export const MUTATION_DELETE_MY_BOOK = gql`
   ${FRAGMENT_MYBOOK}
-  mutation setMyBookHideOrShow($mybook_id: String!, $hideOrShow: String) {
-    mybook_setHideOrShow(mybook_id: $mybook_id, hideOrShow: $hideOrShow) {
+  mutation DeleteMyBook($mybook_id: String!) {
+    mybook_deleteMybook(mybook_id: $mybook_id) {
       status
       msg
       mybooks {

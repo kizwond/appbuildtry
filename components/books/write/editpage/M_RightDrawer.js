@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Drawer, Button, Space, Divider } from "antd";
 import M_CardTypeSettingModal from "../../../../components/books/write/cardtype/M_CardTypeSettingModal";
+import M_CardTypeUpdateModal from "../../../../components/books/write/cardtype/M_CardTypeUpdateModal";
 import CardTypeSetting from "./cardtype/CardTypeSetting";
 import CardtypeContainer from "../../write/editpage/cardtype/CardtypeContainer";
 import { GetCardRelated } from "../../../../graphql/query/allQuery";
@@ -93,6 +94,7 @@ const RightDrawer = () => {
           <div style={{ display: "flex", width: "250px", padding: "10px 10px 2px 10px", alignItems: "center" }}>
             <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
             <M_CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+            <M_CardTypeUpdateModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
           </div>
           {cardTypeDetail && (
             <>

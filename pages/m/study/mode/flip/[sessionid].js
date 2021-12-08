@@ -7,11 +7,6 @@ import FlipContainer from "../../../../../components/books/study/mode/flip/FlipC
 import StudyLayout from "../../../../../components/layout/StudyLayout";
 import FixedBottomMenuFlipMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuFlipMode";
 import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../../../../graphql/query/card_contents";
-import dynamic from "next/dynamic";
-
-const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
-  ssr: false,
-});
 
 const FlipMode = () => {
   const { query } = useRouter();
@@ -119,7 +114,7 @@ const FlipMode = () => {
   return (
     <StudyLayout>
       <div style={{ width: "90%", margin: "auto", marginTop: "50px" }}>
-        <FlipContainer FroalaEditorView={FroalaEditorView} cardListStudying={cardListStudying} contentsList={contentsList} sessionScope={sessionScope} levelConfigs={levelConfigs} cardTypeSets={cardTypeSets}/>
+        <FlipContainer cardListStudying={cardListStudying} contentsList={contentsList} sessionScope={sessionScope} levelConfigs={levelConfigs} cardTypeSets={cardTypeSets}/>
       </div>
       {data && (
         <>

@@ -19,6 +19,9 @@ import {
   MenuFoldOutlined,
   StepForwardOutlined,
   StepBackwardOutlined,
+  SwapRightOutlined,
+  StopOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
 
 import dynamic from "next/dynamic";
@@ -44,7 +47,8 @@ class FlipContainer extends Component {
       confirmOn: "ask",
       cardSeq: 0,
       originCardSeq: 0,
-      onBackMode: false
+      onBackMode: false,
+      popoverClicked: false,
     };
     this.keyCount = 0;
     this.getKey = this.getKey.bind(this);
@@ -56,13 +60,17 @@ class FlipContainer extends Component {
     console.log("here");
   };
 
+  handleClickPopover = (visible) => {
+    this.setState({
+      popoverClicked: visible,
+    });
+  };
+
   onClickNextCard = () => {
     const cardListLength = this.props.cardListStudying.length;
     const cardSeqNum = this.state.cardSeq + 1;
-    console.log(cardListLength)
-    console.log(cardSeqNum)
-    if(cardListLength === cardSeqNum){
-      alert("마지막 카드여~")
+    if (cardListLength === cardSeqNum) {
+      alert("마지막 카드여~");
     } else {
       this.setState((prevState) => ({
         cardSeq: prevState.cardSeq + 1,
@@ -71,46 +79,84 @@ class FlipContainer extends Component {
         clickCount: prevState.clickCount + 1,
       }));
     }
-    
   };
 
-  onClickBeforeCard = () => {
-    const cardSeqNum = this.state.cardSeq;
-    if(cardSeqNum === 0){
-      alert("이전카드 더 없어요~")
-    } else {
+  onClickNextCardInBackMode = () => {
+    if (this.state.originCardSeq === this.state.cardSeq + 1) {
       this.setState({
-        originCardSeq: this.state.cardSeq
-      })
+        onBackMode: false,
+      });
       this.setState((prevState) => ({
-        cardSeq: prevState.cardSeq - 1,
+        cardSeq: prevState.cardSeq + 1,
       }));
+    } else {
       this.setState((prevState) => ({
-        onBackMode: !prevState.onBackMode,
+        cardSeq: prevState.cardSeq + 1,
       }));
       this.setState((prevState) => ({
         clickCount: prevState.clickCount + 1,
       }));
     }
   };
+
+  onClickBeforeCard = () => {
+    const cardSeqNum = this.state.cardSeq;
+    if (this.state.onBackMode === false) {
+      this.setState({
+        originCardSeq: this.state.cardSeq,
+      });
+    }
+    if (cardSeqNum === 0) {
+      alert("이전카드 더 없어요~");
+    } else {
+      this.setState((prevState) => ({
+        cardSeq: prevState.cardSeq - 1,
+      }));
+      this.setState({
+        onBackMode: true,
+      });
+      this.setState((prevState) => ({
+        clickCount: prevState.clickCount + 1,
+      }));
+    }
+  };
   onDiffClickHandler = () => {
-    console.log("난이도 선택하셨네요~")
-    this.setState((prevState) => ({
-      clickCount: prevState.clickCount + 1,
-    }));
-  }
+    console.log("난이도 선택하셨네요~");
+    this.onClickNextCard();
+  };
 
   onClickGoBackToOrigin = () => {
     this.setState({
-      cardSeq: this.state.originCardSeq
-    })
+      cardSeq: this.state.originCardSeq,
+    });
     this.setState((prevState) => ({
       onBackMode: !prevState.onBackMode,
     }));
     this.setState((prevState) => ({
       clickCount: prevState.clickCount + 1,
     }));
-  }
+  };
+
+  onClickPassHandler = () => {
+    this.setState({
+      popoverClicked: false,
+    });
+    this.onClickNextCard();
+  };
+
+  onClickSuspendHandler = () => {
+    this.setState({
+      popoverClicked: false,
+    });
+    this.onClickNextCard();
+  };
+
+  onClickCompletedHandler = () => {
+    this.setState({
+      popoverClicked: false,
+    });
+    this.onClickNextCard();
+  };
   render() {
     if (this.props.levelConfigs) {
       const current_card_book_id = this.props.cardListStudying[this.state.cardSeq].card_info.mybook_id;
@@ -127,7 +173,7 @@ class FlipContainer extends Component {
       const useDiffi = diffi.filter((item) => item.on_off === "on");
       var diffiButtons = useDiffi.map((item) => (
         <>
-          <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id)}>
+          <Button size="small" type="primary" style={{ fontSize: "0.8rem", borderRadius:"3px" }} onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id)}>
             {item.nick}
           </Button>
         </>
@@ -138,6 +184,27 @@ class FlipContainer extends Component {
           <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={this.onClickGoBackToOrigin}>
             원위치에서 학습 이어하기
           </Button>
+        </>
+      );
+
+      const moreMenuContents = (
+        <Space>
+          <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary">
+            통과
+          </Button>
+          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary">
+            보류
+          </Button>
+          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary">
+            졸업
+          </Button>
+        </Space>
+      );
+      var moreMenu = (
+        <>
+          <Popover visible={this.state.popoverClicked} onVisibleChange={this.handleClickPopover} placement="left" content={moreMenuContents} trigger="click">
+            <Button icon={<DashOutlined />} size="small" style={{ fontSize: "1rem" }} type="secondary" />
+          </Popover>
         </>
       );
     }
@@ -588,6 +655,7 @@ class FlipContainer extends Component {
                               </>
                             ))}
                             {content_value.selection &&
+                              content_value.selection.length > 0 &&
                               content_value.selection.map((item, index) => (
                                 <>
                                   <div
@@ -808,47 +876,48 @@ class FlipContainer extends Component {
                                 </>
                               ))}
 
-                            {content_value.selection === null &&
-                              content_value.face2.map((item, index) => (
-                                <>
-                                  <div
-                                    style={{
-                                      backgroundColor: row_style.face2[index].background.color,
-                                      marginTop: row_style.face2[index].outer_margin.top,
-                                      marginBottom: row_style.face2[index].outer_margin.bottom,
-                                      marginLeft: row_style.face2[index].outer_margin.left,
-                                      marginRight: row_style.face2[index].outer_margin.right,
-                                      paddingTop: row_style.face2[index].inner_padding.top,
-                                      paddingBottom: row_style.face2[index].inner_padding.bottom,
-                                      paddingLeft: row_style.face2[index].inner_padding.left,
-                                      paddingRight: row_style.face2[index].inner_padding.right,
-                                      borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
-                                      borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
-                                      borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
-                                      borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
-                                      textAlign: row_font.face2[index].align,
-                                      fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
-                                      color: row_font.face2[index].color,
-                                      fontFamily: `${
-                                        row_font.face2[index].font === "고딕"
-                                          ? `NanumGothic`
-                                          : row_font.face2[index].font === "명조"
-                                          ? `NanumMyeongjo`
-                                          : row_font.face2[index].font === "바탕"
-                                          ? `Gowun Batang, sans-serif`
-                                          : row_font.face2[index].font === "돋움"
-                                          ? `Gowun Dodum, sans-serif`
-                                          : ""
-                                      } `,
-                                      fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
-                                      fontSize: row_font.face2[index].size,
-                                      textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
-                                    }}
-                                  >
-                                    <FroalaEditorView model={item} />
-                                  </div>
-                                </>
-                              ))}
+                            {content_value.selection === null ||
+                              (content_value.selection.length === 0 &&
+                                content_value.face2.map((item, index) => (
+                                  <>
+                                    <div
+                                      style={{
+                                        backgroundColor: row_style.face2[index].background.color,
+                                        marginTop: row_style.face2[index].outer_margin.top,
+                                        marginBottom: row_style.face2[index].outer_margin.bottom,
+                                        marginLeft: row_style.face2[index].outer_margin.left,
+                                        marginRight: row_style.face2[index].outer_margin.right,
+                                        paddingTop: row_style.face2[index].inner_padding.top,
+                                        paddingBottom: row_style.face2[index].inner_padding.bottom,
+                                        paddingLeft: row_style.face2[index].inner_padding.left,
+                                        paddingRight: row_style.face2[index].inner_padding.right,
+                                        borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
+                                        borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
+                                        borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
+                                        borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                                        textAlign: row_font.face2[index].align,
+                                        fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
+                                        color: row_font.face2[index].color,
+                                        fontFamily: `${
+                                          row_font.face2[index].font === "고딕"
+                                            ? `NanumGothic`
+                                            : row_font.face2[index].font === "명조"
+                                            ? `NanumMyeongjo`
+                                            : row_font.face2[index].font === "바탕"
+                                            ? `Gowun Batang, sans-serif`
+                                            : row_font.face2[index].font === "돋움"
+                                            ? `Gowun Dodum, sans-serif`
+                                            : ""
+                                        } `,
+                                        fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
+                                        fontSize: row_font.face2[index].size,
+                                        textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
+                                      }}
+                                    >
+                                      <FroalaEditorView model={item} />
+                                    </div>
+                                  </>
+                                )))}
                           </div>
                         </div>
                       </div>
@@ -882,12 +951,15 @@ class FlipContainer extends Component {
               </div>
             </div>
           </div>
-          <div style={{ margin:"auto", marginBottom: "70px", marginTop: "10px" }}>
-            <Space>
+          <div style={{  width:"100%", textAlign:"center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0, zIndex: 3, }}>
+            <Space style={{width:"95%", justifyContent:"space-between", backgroundColor:"#274c96", borderRadius:"4px", padding:10,boxShadow: "0px 0px 7px -2px black"}}>
               <Button icon={<StepBackwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickBeforeCard} type="secondary" />
               {!this.state.onBackMode && diffiButtons}
+              {!this.state.onBackMode && moreMenu}
               {this.state.onBackMode && goBackToCurrent}
-              <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCard} type="secondary" />
+              {this.state.onBackMode && (
+                <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCardInBackMode} type="secondary" />
+              )}
             </Space>
           </div>
         </div>

@@ -394,21 +394,19 @@ const ReadMode = () => {
                           )}
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
-                        <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
-                        {cardClickMenu && <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
-                              <Button size="small" style={{ fontSize: "0.8rem", height:"1.5rem", marginRight:"5px", borderRadius:"5px"}}>
-                                메모추가
-                              </Button>
-                              <Button size="small" style={{ fontSize: "0.8rem", height:"1.5rem", marginRight:"5px", borderRadius:"5px"}}>
-                                새카드생성
-                              </Button>
-                            </div>}
-                          
+                          <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                            {cardClickMenu && (
+                              <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  메모추가
+                                </Button>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  새카드생성
+                                </Button>
+                              </div>
+                            )}
                             <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
-                            </div>
-                          {/* <Popover placement="left" content={popoverContent} trigger="click">
-                            <ControlOutlined style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
-                          </Popover> */}
+                          </div>
                         </div>
                       </div>
                     </>
@@ -552,6 +550,49 @@ const ReadMode = () => {
               )}
               {content.card_info.cardtype === "subject" && (
                 <>
+                  {content._id === cardId && (
+                    <>
+                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ height: "1.5rem" }}>
+                          <FlagFilled onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: `red` }} />
+                          {userFlag && (
+                            <>
+                              <span style={{ marginLeft: "5px" }}>
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "red" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "orange" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "yellow" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "green" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "blue" }} />
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                            {cardClickMenu && (
+                              <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  메모추가
+                                </Button>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  새카드생성
+                                </Button>
+                              </div>
+                            )}
+                            <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div style={{ padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ backgroundColor: "red", height: "4px", width: "20px", borderRadius: "2px" }}> </div>
+                        <div></div>
+                      </div>
+                    </>
+                  )}
                   <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
@@ -615,23 +656,54 @@ const ReadMode = () => {
                         ))}
                       </div>
                     </div>
-                    {content._id === cardId && (
-                      <>
-                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                          <div></div>
-                          <div>                       
-                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
-                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
-                            </Popover>
-                          </div>
-                        </div>
-                      </>
-                    )}
                   </div>
                 </>
               )}
               {content.card_info.cardtype === "general" && (
                 <>
+                  {content._id === cardId && (
+                    <>
+                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ height: "1.5rem" }}>
+                          <FlagFilled onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: `red` }} />
+                          {userFlag && (
+                            <>
+                              <span style={{ marginLeft: "5px" }}>
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "red" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "orange" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "yellow" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "green" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "blue" }} />
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                            {cardClickMenu && (
+                              <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  메모추가
+                                </Button>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  새카드생성
+                                </Button>
+                              </div>
+                            )}
+                            <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div style={{ padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ backgroundColor: "red", height: "4px", width: "20px", borderRadius: "2px" }}> </div>
+                        <div></div>
+                      </div>
+                    </>
+                  )}
                   <div className={`${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div onClick={() => onClickCard(content._id, "general")}>
@@ -697,23 +769,54 @@ const ReadMode = () => {
                         </div>
                       </div>
                     </div>
-                    {content._id === cardId && (
-                      <>
-                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                          <div></div>
-                          <div>
-                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
-                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
-                            </Popover>
-                          </div>
-                        </div>
-                      </>
-                    )}
                   </div>
                 </>
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "top-bottom" && (
                 <>
+                  {content._id === cardId && (
+                    <>
+                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ height: "1.5rem" }}>
+                          <FlagFilled onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: `red` }} />
+                          {userFlag && (
+                            <>
+                              <span style={{ marginLeft: "5px" }}>
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "red" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "orange" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "yellow" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "green" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "blue" }} />
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                            {cardClickMenu && (
+                              <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  메모추가
+                                </Button>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  새카드생성
+                                </Button>
+                              </div>
+                            )}
+                            <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div style={{ padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ backgroundColor: "red", height: "4px", width: "20px", borderRadius: "2px" }}> </div>
+                        <div></div>
+                      </div>
+                    </>
+                  )}
                   <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
@@ -906,23 +1009,54 @@ const ReadMode = () => {
                         </div>
                       </div>
                     </div>
-                    {content._id === cardId && (
-                      <>
-                        <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                          <div></div>
-                          <div>
-                            <Popover placement="bottomRight" content={popoverContent} trigger="click">
-                              <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
-                            </Popover>
-                          </div>
-                        </div>
-                      </>
-                    )}
                   </div>
                 </>
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "left-right" && (
                 <>
+                  {content._id === cardId && (
+                    <>
+                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ height: "1.5rem" }}>
+                          <FlagFilled onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: `red` }} />
+                          {userFlag && (
+                            <>
+                              <span style={{ marginLeft: "5px" }}>
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "red" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "orange" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "yellow" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "green" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "blue" }} />
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                            {cardClickMenu && (
+                              <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  메모추가
+                                </Button>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  새카드생성
+                                </Button>
+                              </div>
+                            )}
+                            <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div style={{ padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ backgroundColor: "red", height: "4px", width: "20px", borderRadius: "2px" }}> </div>
+                        <div></div>
+                      </div>
+                    </>
+                  )}
                   <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
@@ -1110,18 +1244,6 @@ const ReadMode = () => {
                           </div>
                         </div>
                       </div>
-                      {content._id === cardId && (
-                        <>
-                          <div style={{ padding: "0 0 10px 0", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                            <div></div>
-                            <div>
-                              <Popover placement="bottomRight" content={popoverContent} trigger="click">
-                                <ControlOutlined style={{ fontSize: "1.5rem", color: "grey" }} />
-                              </Popover>
-                            </div>
-                          </div>
-                        </>
-                      )}
                     </div>
                   </div>
                 </>
@@ -1220,6 +1342,7 @@ const ReadMode = () => {
       setCardId(card_id);
     }
     setCardClickMenu(false);
+    setUserFlag(false);
   };
 
   return (

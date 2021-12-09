@@ -244,3 +244,60 @@ export const GET_USER_FLAG_CONFIG = gql`
     }
   }
 `;
+
+export const GET_LEVEL_CONFIG = gql`
+  query GET_LEVEL_CONFIG($mybook_ids: [ID]) {
+    levelconfig_getLevelconfigs(mybook_ids: $mybook_ids) {
+      status
+      msg
+      levelconfigs {
+        _id
+        levelconfig_info {
+          user_id
+          mybook_id
+        }
+        restudy {
+          restudyRatio
+          levelchangeSensitivity
+          option {
+            diffi1 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+            diffi2 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+            diffi3 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+            diffi4 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+            diffi5 {
+              on_off
+              nick
+              period
+              shortcutkey
+              gesture
+            }
+          }
+        }
+      }
+    }
+  }
+`;

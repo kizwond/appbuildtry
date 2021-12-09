@@ -397,6 +397,11 @@ export const GET_CARDTYPESET = gql`
               underline
             }
           }
+          flipAlignOption {
+            alignHorizontal
+            alignVertical
+            fontSizeAdjustment
+          }
         }
       }
     }

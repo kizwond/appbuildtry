@@ -164,7 +164,7 @@ const StyledGraphBarWrapper = styled.div`
   }
   & .CardCounter {
     position: relative;
-    font-size: 0.833rem;
+    font-size: 0.833rem !important;
     bottom: 1.1rem;
     display: block;
   }

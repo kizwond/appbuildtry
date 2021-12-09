@@ -327,9 +327,7 @@ const BooksTable = ({ category, myBook, newCateId }) => {
     <StyledCard
       bordered={false}
       size="small"
-      title={
-        <div style={{ fontSize: "1rem", fontWeight: "bold" }}>나의 책</div>
-      }
+      title={<div className="ForPageMainTitle">나의 책</div>}
     >
       <Table
         dataSource={dataSource}
@@ -378,8 +376,10 @@ export default BooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
-  & * {
-    font-size: 1rem;
+  & .ant-card-body {
+    & * {
+      font-size: 1rem;
+    }
   }
 
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */

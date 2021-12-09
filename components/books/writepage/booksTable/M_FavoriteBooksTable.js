@@ -264,10 +264,9 @@ const FavoriteBooksTable = forwardRef(
           <StyledFlexSpaceBetween>
             <div onClick={() => setVisible((_prev) => !_prev)}>
               <span
+                className="ForPageMainTitle"
                 style={{
                   marginRight: "10px",
-                  fontSize: "1rem",
-                  fontWeight: "bold",
                 }}
               >
                 즐겨찾기
@@ -304,15 +303,15 @@ export default FavoriteBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
-  & * {
-    font-size: 1rem;
-  }
 
   & .ant-card-body {
     padding: ${(props) =>
       props.isvisible === "true"
         ? "0px 8px 12px 8px"
         : "0px 8px 0px 8px !important"};
+    & * {
+      font-size: 1rem;
+    }
   }
 
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */

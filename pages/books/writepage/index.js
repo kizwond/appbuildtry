@@ -87,7 +87,7 @@ export default WriteMain;
 
 const StyledSpace = styled(Space)`
   & * {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
   padding: 12px 12px 0 12px;
 `;

@@ -72,7 +72,10 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
               ..._data,
               mybook_getMybookByUserID: {
                 ..._data.mybook_getMybookByUserID,
-                mybooks: [..._data.mybook_getMybookByUserID.mybooks, ...mybook_createMybook.mybooks],
+                mybooks: [
+                  ..._data.mybook_getMybookByUserID.mybooks,
+                  ...mybook_createMybook.mybooks,
+                ],
               },
             },
           });
@@ -87,7 +90,7 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
     <>
       <StyledModal
         visible={visible}
-        title={<div style={{ fontSize: "1rem", fontWeight: "bold" }}>새 책 만들기</div>}
+        title={<div className="ForPageMainTitle">새 책 만들기</div>}
         cancelText="취소"
         onCancel={() => changeVisible(false)}
         okButtonProps={{
@@ -108,7 +111,9 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
           id="category-editor-form"
           requiredMark={false}
           initialValues={{
-            category: category.mybookcates.filter((cate) => cate.name === "(미지정)")[0]._id,
+            category: category.mybookcates.filter(
+              (cate) => cate.name === "(미지정)"
+            )[0]._id,
           }}
           onFinish={(values) => {
             changeVisible(false);
@@ -160,13 +165,13 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
 export default memo(CreateBookModal);
 
 const StyledModal = styled(Modal)`
-  & * {
-    font-size: 0.8rem;
-  }
   min-width: 300px;
 
   & .ant-modal-body {
     padding: 8px 24px 8px 24px;
+    & * {
+      font-size: 0.8rem;
+    }
   }
 
   & .ant-form-item-label {

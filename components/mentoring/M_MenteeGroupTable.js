@@ -175,7 +175,7 @@ const M_MenteeGroupTable = ({
               width: "100%",
             }}
           >
-            <div>멘티 그룹 관리</div>
+            <div className="ForPageMainTitle">멘티 그룹 관리</div>
             <div>
               <StyledButtonForMainPage
                 onClick={() => {
@@ -203,11 +203,7 @@ const M_MenteeGroupTable = ({
       >
         <StyledModal
           visible={newGroupModalVisible}
-          title={
-            <div style={{ fontSize: "1rem", fontWeight: "bold" }}>
-              새 그룹 생성
-            </div>
-          }
+          title={<div className="ForPageMainTitle">새 그룹 생성</div>}
           okButtonProps={{
             size: "small",
             loading: loading,
@@ -418,6 +414,10 @@ export default M_MenteeGroupTable;
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;
+  & .ant-drawer-body * {
+    font-size: 1rem;
+  }
+
   & .ant-card-actions {
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -429,78 +429,6 @@ const DrawerWrapper = styled(Drawer)`
       justify-content: center;
     }
   }
-  & div,
-  & button,
-  & span,
-  & object,
-  & iframe,
-  & h1,
-  & h2,
-  & h3,
-  & h4,
-  & h5,
-  & h6,
-  & p,
-  & blockquote,
-  & pre,
-  & abbr,
-  & address,
-  & cite,
-  & code,
-  & del,
-  & dfn,
-  & em,
-  & img,
-  & ins,
-  & kbd,
-  & q,
-  & samp,
-  & small,
-  & strong,
-  & sub,
-  & sup,
-  & var,
-  & b,
-  & i,
-  & dl,
-  & dt,
-  & dd,
-  & ol,
-  & ul,
-  & li,
-  & fieldset,
-  & form,
-  & label,
-  & legend,
-  & table,
-  & caption,
-  & tbody,
-  & tfoot,
-  & thead,
-  & tr,
-  & th,
-  & td,
-  & article,
-  & aside,
-  & canvas,
-  & details,
-  & figcaption,
-  & figure,
-  & footer,
-  & header,
-  & hgroup,
-  & menu,
-  & nav,
-  & section,
-  & summary,
-  & time,
-  & mark,
-  & audio,
-  & video,
-  & input {
-    font-size: 1rem;
-  }
-
   & .ant-drawer-header-title {
     justify-content: start;
     width: 100%;
@@ -519,14 +447,14 @@ const DrawerWrapper = styled(Drawer)`
 `;
 
 const StyledModal = styled(Modal)`
-  & * {
-    font-size: 0.8rem;
-  }
   min-width: 330px;
 
   & .ant-modal-body {
     padding: 8px 24px 8px 24px;
     min-height: 64px;
+    & * {
+      font-size: 1rem;
+    }
   }
 
   & .ant-modal-footer {

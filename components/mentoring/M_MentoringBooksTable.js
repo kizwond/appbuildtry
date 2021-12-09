@@ -237,86 +237,14 @@ export default M_Mentoring_BooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
-  /* & * {
-    font-size: 0.8rem;
-  } */
+
+  & .ant-card-body * {
+    font-size: 1rem;
+  }
 
   min-width: 355px;
   height: ${(props) => props.cardheight || "auto"};
   padding: 0 3px;
-
-  & div,
-  & button,
-  & span,
-  & object,
-  & iframe,
-  & h1,
-  & h2,
-  & h3,
-  & h4,
-  & h5,
-  & h6,
-  & p,
-  & blockquote,
-  & pre,
-  & abbr,
-  & address,
-  & cite,
-  & code,
-  & del,
-  & dfn,
-  & em,
-  & img,
-  & ins,
-  & kbd,
-  & q,
-  & samp,
-  & small,
-  & strong,
-  & sub,
-  & sup,
-  & var,
-  & b,
-  & i,
-  & dl,
-  & dt,
-  & dd,
-  & ol,
-  & ul,
-  & li,
-  & fieldset,
-  & form,
-  & label,
-  & legend,
-  & table,
-  & caption,
-  & tbody,
-  & tfoot,
-  & thead,
-  & tr,
-  & th,
-  & td,
-  & article,
-  & aside,
-  & canvas,
-  & details,
-  & figcaption,
-  & figure,
-  & footer,
-  & header,
-  & hgroup,
-  & menu,
-  & nav,
-  & section,
-  & summary,
-  & time,
-  & mark,
-  & audio,
-  & video,
-  & input,
-  & textarea {
-    font-size: 0.8rem;
-  }
 
   & .ant-input.ant-input-sm {
     height: 22px;

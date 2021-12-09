@@ -203,11 +203,7 @@ const M_MenteeGroupTable = ({
       >
         <StyledModal
           visible={newGroupModalVisible}
-          title={
-            <div style={{ fontSize: "1rem", fontWeight: "bold" }}>
-              새 그룹 생성
-            </div>
-          }
+          title={<div className="ForPageMainTitle">새 그룹 생성</div>}
           okButtonProps={{
             size: "small",
             loading: loading,
@@ -519,14 +515,14 @@ const DrawerWrapper = styled(Drawer)`
 `;
 
 const StyledModal = styled(Modal)`
-  & * {
-    font-size: 0.8rem;
-  }
   min-width: 330px;
 
   & .ant-modal-body {
     padding: 8px 24px 8px 24px;
     min-height: 64px;
+    & * {
+      font-size: 1rem;
+    }
   }
 
   & .ant-modal-footer {

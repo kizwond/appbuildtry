@@ -366,9 +366,7 @@ const M_BooksTable = ({
     <StyledCard
       bordered={false}
       size="small"
-      title={
-        <div style={{ fontSize: "1rem", fontWeight: "bold" }}>나의 책</div>
-      }
+      title={<div className="ForPageMainTitle">나의 책</div>}
     >
       <Table
         dataSource={dataSource}
@@ -412,12 +410,12 @@ export default M_BooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
-  & * {
-    font-size: 1rem;
-  }
 
   & .ant-card-body {
     padding: 0px 8px 12px 8px;
+    & * {
+      font-size: 1rem;
+    }
   }
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
   & .ant-table-row-indent + .ant-table-row-expand-icon {

@@ -59,8 +59,6 @@ class FlipContainer extends Component {
   onClickNextCard = () => {
     const cardListLength = this.props.cardListStudying.length;
     const cardSeqNum = this.state.cardSeq + 1;
-    console.log(cardListLength)
-    console.log(cardSeqNum)
     if(cardListLength === cardSeqNum){
       alert("마지막 카드여~")
     } else {
@@ -85,9 +83,9 @@ class FlipContainer extends Component {
       this.setState((prevState) => ({
         cardSeq: prevState.cardSeq - 1,
       }));
-      this.setState((prevState) => ({
-        onBackMode: !prevState.onBackMode,
-      }));
+      this.setState({
+        onBackMode:true
+      });
       this.setState((prevState) => ({
         clickCount: prevState.clickCount + 1,
       }));
@@ -95,9 +93,7 @@ class FlipContainer extends Component {
   };
   onDiffClickHandler = () => {
     console.log("난이도 선택하셨네요~")
-    this.setState((prevState) => ({
-      clickCount: prevState.clickCount + 1,
-    }));
+    this.onClickNextCard();
   }
 
   onClickGoBackToOrigin = () => {
@@ -587,7 +583,7 @@ class FlipContainer extends Component {
                                 </div>
                               </>
                             ))}
-                            {content_value.selection &&
+                            {content_value.selection&& content_value.selection.length > 0 &&
                               content_value.selection.map((item, index) => (
                                 <>
                                   <div
@@ -808,7 +804,7 @@ class FlipContainer extends Component {
                                 </>
                               ))}
 
-                            {content_value.selection === null &&
+                            {content_value.selection === null || content_value.selection.length === 0 &&
                               content_value.face2.map((item, index) => (
                                 <>
                                   <div

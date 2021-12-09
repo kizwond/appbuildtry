@@ -113,7 +113,7 @@ const FlipMode = () => {
 
   return (
     <StudyLayout>
-      <div style={{ width: "90%", margin: "auto", marginTop: "50px" }}>
+      <div style={{ height:"100%", width: "90%", margin: "auto", marginTop: "50px" }}>
         <FlipContainer cardListStudying={cardListStudying} contentsList={contentsList} sessionScope={sessionScope} levelConfigs={levelConfigs} cardTypeSets={cardTypeSets}/>
       </div>
       {data && (

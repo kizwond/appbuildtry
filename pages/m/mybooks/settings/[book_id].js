@@ -11,6 +11,7 @@ import M_FlagSetting from "../../../../components/books/settings/flagSetting/M_F
 import CategorySetting from "../../../../components/books/study/CategorySetting";
 import DeleteBook from "../../../../components/books/study/DeleteBook";
 import {
+  StyledDivEllipsis,
   StyledFlexSpaceBetween,
   StyledTwoLinesEllipsis,
 } from "../../../../components/common/styledComponent/page";
@@ -82,13 +83,6 @@ const BookSetting = () => {
     }
   };
 
-  // const onMouseEnterSelector = () => {
-  //   setIsActive(true);
-  // };
-  // const onMouseLeaveFromSelector = () => {
-  //   setIsActive(false);
-  // };
-
   const items = ["apple", "King of fruits", "Orange"];
 
   return (
@@ -104,112 +98,97 @@ const BookSetting = () => {
           size="small"
           title={
             <>
-              <div
+              <StyledDivEllipsis
                 style={{
-                  fontSize: "1.2rem",
+                  fontSize: "1rem",
                   fontWeight: "bolder",
-                  marginBottom: "8px",
                   color: "#747474",
+                  borderBottom: "1px dashed lightgray",
+                  marginBottom: "4px",
+                  paddingBottom: "4px",
+                  // textAlign: "center",
                 }}
               >
-                <StyledTwoLinesEllipsis>
-                  동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라
-                  만세 무궁화 삼천리 화려 강산, 대한 사람 대한으로 길이 보전하세
-                </StyledTwoLinesEllipsis>
-              </div>
-              <StyledFlexSpaceBetween>
-                <div
-                // onClick={() => setVisible((_prev) => !_prev)}
-                >
-                  <span
-                    style={{
-                      fontSize: "1rem",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    책 상세 설정
-                  </span>
-                </div>
+                책 제목: 동해물과 백두산이 마르고 닳도록 하느님
+              </StyledDivEllipsis>
 
-                <div>
-                  <Select
-                    className="BookSettingSelector"
-                    // defaultValue="study_data_detail"
-                    onChange={setSelectedMenu}
-                    optionLabelProp="label"
-                    placeholder="메뉴를 선택해주세요"
-                    // bordered={isActive}
-                    size="small"
-                    style={{ width: 220 }}
-                    // onMouseEnter={onMouseEnterSelector}
-                    // onMouseLeave={onMouseLeaveFromSelector}
-                  >
-                    <Select.Option
-                      value="study_data_detail"
-                      label="학습 상세 정보 보기"
-                    >
-                      <Space>
-                        <Avatar>
-                          <RiseOutlined />
-                        </Avatar>
-                        학습 상세 정보 보기
-                      </Space>
-                    </Select.Option>
-                    <Select.Option value="set_flags" label="플래그 설정">
-                      <Space>
-                        <Avatar>
-                          <FlagOutlined />
-                        </Avatar>
-                        플래그 설정
-                      </Space>
-                    </Select.Option>
-                    <Select.Option
-                      value="cards_progress"
-                      label="카드 학습 상태 관리"
-                    >
-                      <Space>
-                        <Avatar>
-                          <FundViewOutlined />
-                        </Avatar>
-                        카드 학습 상태 관리
-                      </Space>
-                    </Select.Option>
-                    <Select.Option
-                      value="set_level_and_cycle"
-                      label="레벨 및 복습 주기 설정"
-                    >
-                      <Space>
-                        <Avatar>
-                          <FileSyncOutlined />
-                        </Avatar>
-                        레벨 및 복습 주기 설정
-                      </Space>
-                    </Select.Option>
-                    <Select.Option
-                      value="select_category"
-                      label="카테고리 이동"
-                    >
-                      <Space>
-                        <Avatar>
-                          <AppstoreAddOutlined />
-                        </Avatar>
-                        카테고리 이동
-                      </Space>
-                    </Select.Option>
-                    <Select.Option value="delete_book" label="책 삭제">
-                      <Space>
-                        <Avatar>
-                          <DeleteOutlined />
-                        </Avatar>
-                        책 삭제
-                      </Space>
-                    </Select.Option>
-                  </Select>
-                </div>
-              </StyledFlexSpaceBetween>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  gap: "14px",
+                }}
+              >
+                <div className="ForPageMainTitle">상세 설정</div>
+              </div>
             </>
           }
         >
+          <div>
+            <Select
+              className="BookSettingSelector"
+              onChange={setSelectedMenu}
+              optionLabelProp="label"
+              placeholder="메뉴를 선택해주세요"
+              // size="small"
+              style={{ width: "240px", marginBottom: "8px" }}
+            >
+              <Select.Option
+                value="study_data_detail"
+                label="학습 상세 정보 보기"
+              >
+                <Space>
+                  <Avatar>
+                    <RiseOutlined />
+                  </Avatar>
+                  학습 상세 정보 보기
+                </Space>
+              </Select.Option>
+              <Select.Option value="set_flags" label="플래그 설정">
+                <Space>
+                  <Avatar>
+                    <FlagOutlined />
+                  </Avatar>
+                  플래그 설정
+                </Space>
+              </Select.Option>
+              <Select.Option value="cards_progress" label="카드 학습 상태 관리">
+                <Space>
+                  <Avatar>
+                    <FundViewOutlined />
+                  </Avatar>
+                  카드 학습 상태 관리
+                </Space>
+              </Select.Option>
+              <Select.Option
+                value="set_level_and_cycle"
+                label="레벨 및 복습 주기 설정"
+              >
+                <Space>
+                  <Avatar>
+                    <FileSyncOutlined />
+                  </Avatar>
+                  레벨 및 복습 주기 설정
+                </Space>
+              </Select.Option>
+              <Select.Option value="select_category" label="카테고리 이동">
+                <Space>
+                  <Avatar>
+                    <AppstoreAddOutlined />
+                  </Avatar>
+                  카테고리 이동
+                </Space>
+              </Select.Option>
+              <Select.Option value="delete_book" label="책 삭제">
+                <Space>
+                  <Avatar>
+                    <DeleteOutlined />
+                  </Avatar>
+                  책 삭제
+                </Space>
+              </Select.Option>
+            </Select>
+          </div>
           {content(selectedMenu)}
         </StyledMainPageCard>
       </M_Layout>

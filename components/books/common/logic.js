@@ -241,7 +241,7 @@ export default function makeDataSource(
 const StyledFlexAlignCenterWidth100 = styled(StyledFlexAlignCenter)`
   width: 100%;
   & .HiddenBooksBar > svg {
-    font-size: 1.167rem;
+    font-size: 1.16667rem;
     color: #a3a3a3;
   }
 `;

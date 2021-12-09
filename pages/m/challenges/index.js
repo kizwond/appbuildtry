@@ -176,10 +176,9 @@ const Challenges = () => {
           <DrawerWrapper
             title={
               <span
+                className="ForPageMainTitle"
                 style={{
                   marginRight: "10px",
-                  fontSize: "1rem",
-                  fontWeight: "bold",
                 }}
               >
                 도전 출판 책 등록
@@ -210,19 +209,19 @@ const StyledCard = styled(Card)`
   margin: 0 auto;
   position: absolute;
   top: 40px;
-  & * {
-    font-size: 0.8rem;
+  & .ant-card-body * {
+    font-size: 1rem;
   }
 `;
 
 const DrawerWrapper = styled(Drawer)`
-  & * {
-    font-size: 0.8rem;
-  }
   top: 40px;
 
   & .ant-drawer-title {
     line-height: 16px;
+  }
+  & .ant-drawer-body * {
+    font-size: 1rem;
   }
   & .ant-card-actions {
     border-bottom-left-radius: 10px;

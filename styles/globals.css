@@ -162,6 +162,11 @@ p {
   padding: 8px 15px 8px 15px;
 }
 
+/* 메인페이지 타이틀 메뉴 설정 */
+.ForPageMainTitle {
+  font-size: 1.16667rem;
+  font-weight: 500;
+}
 /* 표 관련 설정 */
 .ant-table table {
   border-collapse: collapse;
@@ -640,7 +645,7 @@ p {
   width: 130px;
   height: auto;
   margin: 0;
-/* use absolute positioning  */
+  /* use absolute positioning  */
   position: absolute;
   list-style: none;
   box-shadow: 0 0 7px 0 #ccc;

@@ -107,7 +107,10 @@ const MentoringHome = () => {
                 setIsMentorEditMode(false);
               }}
             >
-              <Tabs.TabPane tab="멘티" key="멘티">
+              <Tabs.TabPane
+                tab={<div className="ForPageMainTitle">멘티</div>}
+                key="멘티"
+              >
                 <StyledFlexSpaceBetween>
                   <Badge
                     size="small"
@@ -162,7 +165,10 @@ const MentoringHome = () => {
                   }
                 />
               </Tabs.TabPane>
-              <Tabs.TabPane tab="멘토" key="멘토">
+              <Tabs.TabPane
+                tab={<div className="ForPageMainTitle">멘토</div>}
+                key="멘토"
+              >
                 <StyledFlexSpaceBetween>
                   {" "}
                   <Space>
@@ -267,7 +273,7 @@ const MentoringHome = () => {
           </DrawerWrapper>
 
           <DrawerWrapper
-            title="멘토링 요청하기"
+            title={<div className="ForPageMainTitle">멘토링 요청하기</div>}
             placement="right"
             width={"100%"}
             visible={drawerRequestMentoringVisible}
@@ -345,83 +351,16 @@ export default MentoringHome;
 const MentoringWrapper = styled.div`
   position: absolute;
   top: 40px;
-
-  & div,
-  & button,
-  & span,
-  & object,
-  & iframe,
-  & h1,
-  & h2,
-  & h3,
-  & h4,
-  & h5,
-  & h6,
-  & p,
-  & blockquote,
-  & pre,
-  & abbr,
-  & address,
-  & cite,
-  & code,
-  & del,
-  & dfn,
-  & em,
-  & img,
-  & ins,
-  & kbd,
-  & q,
-  & samp,
-  & small,
-  & strong,
-  & sub,
-  & sup,
-  & var,
-  & b,
-  & i,
-  & dl,
-  & dt,
-  & dd,
-  & ol,
-  & ul,
-  & li,
-  & fieldset,
-  & form,
-  & label,
-  & legend,
-  & table,
-  & caption,
-  & tbody,
-  & tfoot,
-  & thead,
-  & tr,
-  & th,
-  & td,
-  & article,
-  & aside,
-  & canvas,
-  & details,
-  & figcaption,
-  & figure,
-  & footer,
-  & header,
-  & hgroup,
-  & menu,
-  & nav,
-  & section,
-  & summary,
-  & time,
-  & mark,
-  & audio,
-  & video,
-  & input {
+  & .ant-tabs-content-holder * {
     font-size: 1rem;
   }
 `;
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;
-
+  & .ant-drawer-body * {
+    font-size: 1rem;
+  }
   & .ant-drawer-wrapper-body {
     height: ${({ setheight }) => setheight || "auto"}px;
   }
@@ -443,77 +382,5 @@ const DrawerWrapper = styled(Drawer)`
         }
       }
     }
-  }
-
-  & div,
-  & button,
-  & span,
-  & object,
-  & iframe,
-  & h1,
-  & h2,
-  & h3,
-  & h4,
-  & h5,
-  & h6,
-  & p,
-  & blockquote,
-  & pre,
-  & abbr,
-  & address,
-  & cite,
-  & code,
-  & del,
-  & dfn,
-  & em,
-  & img,
-  & ins,
-  & kbd,
-  & q,
-  & samp,
-  & small,
-  & strong,
-  & sub,
-  & sup,
-  & var,
-  & b,
-  & i,
-  & dl,
-  & dt,
-  & dd,
-  & ol,
-  & ul,
-  & li,
-  & fieldset,
-  & form,
-  & label,
-  & legend,
-  & table,
-  & caption,
-  & tbody,
-  & tfoot,
-  & thead,
-  & tr,
-  & th,
-  & td,
-  & article,
-  & aside,
-  & canvas,
-  & details,
-  & figcaption,
-  & figure,
-  & footer,
-  & header,
-  & hgroup,
-  & menu,
-  & nav,
-  & section,
-  & summary,
-  & time,
-  & mark,
-  & audio,
-  & video,
-  & input {
-    font-size: 1rem;
   }
 `;

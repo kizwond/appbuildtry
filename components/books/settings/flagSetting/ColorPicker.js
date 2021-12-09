@@ -16,7 +16,6 @@ const ColorPicker = memo(({ color, onChangeColor, index }) => {
 
   const handleChange = (_color) => {
     onChangeColor(_color.hex, index);
-    handleClose(false);
   };
 
   const styles = reactCSS({

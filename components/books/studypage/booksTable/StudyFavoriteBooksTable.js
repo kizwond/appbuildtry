@@ -334,8 +334,8 @@ export default StudyFavoriteBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
-  & * {
-    font-size: 0.8rem;
+  & .ant-card-body * {
+    font-size: 1rem;
   }
 
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */

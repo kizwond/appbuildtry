@@ -298,7 +298,7 @@ export default FavoriteBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
-  & * {
+  & .ant-card-body * {
     font-size: 1rem;
   }
 

@@ -21,7 +21,7 @@ import {
   StepBackwardOutlined,
   SwapRightOutlined,
   StopOutlined,
-  CheckOutlined
+  CheckOutlined,
 } from "@ant-design/icons";
 
 import dynamic from "next/dynamic";
@@ -48,6 +48,7 @@ class FlipContainer extends Component {
       cardSeq: 0,
       originCardSeq: 0,
       onBackMode: false,
+      popoverClicked: false,
     };
     this.keyCount = 0;
     this.getKey = this.getKey.bind(this);
@@ -57,6 +58,12 @@ class FlipContainer extends Component {
   }
   onClickCard = () => {
     console.log("here");
+  };
+
+  handleClickPopover = (visible) => {
+    this.setState({
+      popoverClicked: visible,
+    });
   };
 
   onClickNextCard = () => {
@@ -75,7 +82,7 @@ class FlipContainer extends Component {
   };
 
   onClickNextCardInBackMode = () => {
-    if (this.state.originCardSeq === this.state.cardSeq+1) {
+    if (this.state.originCardSeq === this.state.cardSeq + 1) {
       this.setState({
         onBackMode: false,
       });
@@ -129,6 +136,27 @@ class FlipContainer extends Component {
       clickCount: prevState.clickCount + 1,
     }));
   };
+
+  onClickPassHandler = () => {
+    this.setState({
+      popoverClicked: false,
+    });
+    this.onClickNextCard();
+  };
+
+  onClickSuspendHandler = () => {
+    this.setState({
+      popoverClicked: false,
+    });
+    this.onClickNextCard();
+  };
+
+  onClickCompletedHandler = () => {
+    this.setState({
+      popoverClicked: false,
+    });
+    this.onClickNextCard();
+  };
   render() {
     if (this.props.levelConfigs) {
       const current_card_book_id = this.props.cardListStudying[this.state.cardSeq].card_info.mybook_id;
@@ -145,7 +173,7 @@ class FlipContainer extends Component {
       const useDiffi = diffi.filter((item) => item.on_off === "on");
       var diffiButtons = useDiffi.map((item) => (
         <>
-          <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id)}>
+          <Button size="small" type="primary" style={{ fontSize: "0.8rem", borderRadius:"3px" }} onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id)}>
             {item.nick}
           </Button>
         </>
@@ -161,15 +189,21 @@ class FlipContainer extends Component {
 
       const moreMenuContents = (
         <Space>
-          <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCard} type="primary" >통과</Button>
-          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCard} type="primary" >보류</Button>
-          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCard} type="primary" >졸업</Button>
+          <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary">
+            통과
+          </Button>
+          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary">
+            보류
+          </Button>
+          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary">
+            졸업
+          </Button>
         </Space>
       );
       var moreMenu = (
         <>
-          <Popover placement="left" content={moreMenuContents} trigger="click">
-            <Button icon={<DashOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCard} type="secondary" />
+          <Popover visible={this.state.popoverClicked} onVisibleChange={this.handleClickPopover} placement="left" content={moreMenuContents} trigger="click">
+            <Button icon={<DashOutlined />} size="small" style={{ fontSize: "1rem" }} type="secondary" />
           </Popover>
         </>
       );
@@ -917,14 +951,15 @@ class FlipContainer extends Component {
               </div>
             </div>
           </div>
-          <div style={{ margin: "auto", marginBottom: "70px", marginTop: "10px" }}>
-            <Space>
+          <div style={{  width:"100%", textAlign:"center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0, zIndex: 3, }}>
+            <Space style={{width:"95%", justifyContent:"space-between", backgroundColor:"#274c96", borderRadius:"4px", padding:10,boxShadow: "0px 0px 7px -2px black"}}>
               <Button icon={<StepBackwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickBeforeCard} type="secondary" />
               {!this.state.onBackMode && diffiButtons}
               {!this.state.onBackMode && moreMenu}
               {this.state.onBackMode && goBackToCurrent}
-              {this.state.onBackMode && <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCardInBackMode} type="secondary" />}
-              
+              {this.state.onBackMode && (
+                <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCardInBackMode} type="secondary" />
+              )}
             </Space>
           </div>
         </div>

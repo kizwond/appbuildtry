@@ -3,7 +3,7 @@ import { useMutation, useLazyQuery } from "@apollo/client";
 import { GetContents } from "../../../../../graphql/query/getContents";
 import { GetLevelConfig, UpdateResults } from "../../../../../graphql/query/session";
 import Timer from "./Timer";
-import { Avatar, Menu, Dropdown, Modal, Popover, Select, Button } from "antd";
+import { Avatar, Menu, Dropdown, Modal, Popover, Space, Button } from "antd";
 import ProgressBar from "./ProgressBar";
 import { GetCardTypeSetByMybookIds } from "../../../../../graphql/query/cardtype";
 import {
@@ -17,6 +17,8 @@ import {
   CheckCircleFilled,
   PlusOutlined,
   MenuFoldOutlined,
+  StepForwardOutlined,
+  StepBackwardOutlined,
 } from "@ant-design/icons";
 
 import dynamic from "next/dynamic";
@@ -38,13 +40,11 @@ class FlipContainer extends Component {
       clickCount: 0,
       flag: "white",
       pageStatus: "normal",
-      cardlist_studying: [],
-      contents: [],
-      backContents: [],
       getKnowTime: "",
       confirmOn: "ask",
-      currentCardContent: [],
       cardSeq: 0,
+      originCardSeq: 0,
+      onBackMode: false
     };
     this.keyCount = 0;
     this.getKey = this.getKey.bind(this);
@@ -57,12 +57,91 @@ class FlipContainer extends Component {
   };
 
   onClickNextCard = () => {
-    this.setState((prevState) => ({
-      cardSeq: prevState.cardSeq + 1,
-    }));
+    const cardListLength = this.props.cardListStudying.length;
+    const cardSeqNum = this.state.cardSeq + 1;
+    console.log(cardListLength)
+    console.log(cardSeqNum)
+    if(cardListLength === cardSeqNum){
+      alert("마지막 카드여~")
+    } else {
+      this.setState((prevState) => ({
+        cardSeq: prevState.cardSeq + 1,
+      }));
+      this.setState((prevState) => ({
+        clickCount: prevState.clickCount + 1,
+      }));
+    }
+    
   };
 
+  onClickBeforeCard = () => {
+    const cardSeqNum = this.state.cardSeq;
+    if(cardSeqNum === 0){
+      alert("이전카드 더 없어요~")
+    } else {
+      this.setState({
+        originCardSeq: this.state.cardSeq
+      })
+      this.setState((prevState) => ({
+        cardSeq: prevState.cardSeq - 1,
+      }));
+      this.setState((prevState) => ({
+        onBackMode: !prevState.onBackMode,
+      }));
+      this.setState((prevState) => ({
+        clickCount: prevState.clickCount + 1,
+      }));
+    }
+  };
+  onDiffClickHandler = () => {
+    console.log("난이도 선택하셨네요~")
+    this.setState((prevState) => ({
+      clickCount: prevState.clickCount + 1,
+    }));
+  }
+
+  onClickGoBackToOrigin = () => {
+    this.setState({
+      cardSeq: this.state.originCardSeq
+    })
+    this.setState((prevState) => ({
+      onBackMode: !prevState.onBackMode,
+    }));
+    this.setState((prevState) => ({
+      clickCount: prevState.clickCount + 1,
+    }));
+  }
   render() {
+    if (this.props.levelConfigs) {
+      const current_card_book_id = this.props.cardListStudying[this.state.cardSeq].card_info.mybook_id;
+      const current_card_id = this.props.cardListStudying[this.state.cardSeq].content.mycontent_id;
+      const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
+      const levelconfig_option = current_card_levelconfig[0].restudy.option;
+      const diffi1 = levelconfig_option.diffi1;
+      const diffi2 = levelconfig_option.diffi2;
+      const diffi3 = levelconfig_option.diffi3;
+      const diffi4 = levelconfig_option.diffi4;
+      const diffi5 = levelconfig_option.diffi5;
+      const diffi = [];
+      diffi.push(diffi1, diffi2, diffi3, diffi4, diffi5);
+      const useDiffi = diffi.filter((item) => item.on_off === "on");
+      var diffiButtons = useDiffi.map((item) => (
+        <>
+          <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id)}>
+            {item.nick}
+          </Button>
+        </>
+      ));
+
+      var goBackToCurrent = (
+        <>
+          <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={this.onClickGoBackToOrigin}>
+            원위치에서 학습 이어하기
+          </Button>
+        </>
+      );
+    }
+
     if (this.props.cardTypeSets.length > 0) {
       var makerFlagContent = this.props.cardListStudying.map((content) => {
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
@@ -792,7 +871,7 @@ class FlipContainer extends Component {
               <div style={{ width: "50px", fontSize: "1rem", marginRight: "5px" }}>완료율</div>
               <ProgressBar bgcolor={"#32c41e"} completed={100} />
             </div>
-            <div style={{ fontSize: "1rem" }}>{this.state.cardSeq}</div>
+            <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {this.state.clickCount}</div>
           </div>
           <div style={style_study_layout_bottom}>
             <div style={{ width: "100%", border: "1px solid lightgrey" }}>
@@ -803,10 +882,13 @@ class FlipContainer extends Component {
               </div>
             </div>
           </div>
-          <div style={{ marginBottom: "70px", marginTop: "10px" }}>
-            <Button onClick={this.onClickNextCard} type="primary">
-              임시버튼 다음카드 보기
-            </Button>
+          <div style={{ margin:"auto", marginBottom: "70px", marginTop: "10px" }}>
+            <Space>
+              <Button icon={<StepBackwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickBeforeCard} type="secondary" />
+              {!this.state.onBackMode && diffiButtons}
+              {this.state.onBackMode && goBackToCurrent}
+              <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCard} type="secondary" />
+            </Space>
           </div>
         </div>
       </>

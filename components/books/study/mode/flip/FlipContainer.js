@@ -1001,7 +1001,7 @@ class FlipContainer extends Component {
             </div>
           </div>
           <div style={{ width: "100%", textAlign: "center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0, zIndex: 3 }}>
-            <Space style={{ width: "95%", justifyContent: "space-between", backgroundColor: "#274c96", borderRadius: "4px", padding: 10, boxShadow: "0px 0px 7px -2px black" }}>
+            <Space style={{ width: "95%", justifyContent: "space-between", backgroundColor: "#dadada", borderRadius: "4px", padding: 10, border:"1px solid #bcbcbc" }}>
               <Button icon={<StepBackwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickBeforeCard} type="secondary" />
               {!this.state.onBackMode && diffiButtons}
               {!this.state.onBackMode && moreMenu}

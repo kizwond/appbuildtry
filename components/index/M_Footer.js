@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const backgroundColor = "black";
+const backgroundColor = "#101d3b";
 const buttonColor = "white";
 const logoColor = "#b7b7b7";
 
@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <>
       <div style={{ backgroundColor: backgroundColor }}>
-        <div style={{ color: "#606060", width: "100%", margin: "auto", padding: 20, fontSize: "0.5rem" }}>
+        <div style={{ color: "#646770", width: "100%", margin: "auto", padding: 20, fontSize: "0.5rem" }}>
           <div style={{ display: "flex", flexDirection:"column" }}>
             <div style={{ width: "100%", marginBottom:"10px" }}>
               <div>

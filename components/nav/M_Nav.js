@@ -8,7 +8,8 @@ import { useMutation } from "@apollo/client";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../graphql/query/account";
 
-const backgroundColor = "#565656";
+const backgroundColor = "#428545";
+// const backgroundColor = "#565656";
 const fontColor = "white";
 
 const Nav = () => {
@@ -49,7 +50,9 @@ const Nav = () => {
       <div
         style={{
           position: "relative",
-          background: backgroundColor,
+          // background: backgroundColor,
+          background: "rgb(68,102,209)",
+          background: "linear-gradient(145deg, rgba(68,102,209,1) 0%, rgba(150,189,214,1) 94%, rgba(150,189,214,1) 100%)",
           width: "100%",
           height: 40,
           padding: 10,
@@ -175,9 +178,17 @@ const Nav = () => {
               fontFamily: `Architects Daughter, cursive`,
               fontWeight: 400,
               color: fontColor,
+              position:"relative"
             }}
           >
-            CogBook
+            <span style={{transform:"rotate(320deg)", transformOrigin:"left top", position:"absolute", left: 9, top:3}}><sup style={{fontSize:"11px"}}>I&#39;</sup><sup style={{fontSize:"7px"}}>m </sup></span>
+            <span style={{fontSize:"16px", color:"white"}}>T</span>
+            <span style={{fontSize:"14px", color:"white"}}>h</span>
+            <span style={{fontSize:"14px", color:"white"}}>e</span>
+            <span style={{fontSize:"16px", color:"#ffe400"}}>B</span>
+            <span style={{fontSize:"13px", color:"white"}}>o</span>
+            <span style={{fontSize:"13px", color:"white"}}>o</span>
+            <span style={{fontSize:"14px", color:"white"}}>K</span>
           </a>
         </Link>
         <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem" }}></div>

@@ -49,6 +49,6 @@ export const StyledTwoLinesEllipsis = styled.div`
   -webkit-box-orient: vertical;
   word-wrap: break-word;
   white-space: normal;
-  word-break: keep-all;
+  /* word-break: keep-all; //단어단위로 줄바꿈 설정 */
   text-align: left;
 `;

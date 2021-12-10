@@ -130,7 +130,7 @@ const BookSetting = () => {
               onChange={setSelectedMenu}
               optionLabelProp="label"
               placeholder="메뉴를 선택해주세요"
-              listHeight={300}
+              listHeight={400}
               style={{ width: "240px", marginBottom: "8px" }}
             >
               <Select.Option

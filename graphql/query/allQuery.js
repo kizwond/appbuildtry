@@ -261,6 +261,7 @@ export const GET_LEVEL_CONFIG = gql`
           levelchangeSensitivity
           option {
             diffi1 {
+              name
               on_off
               nick
               period
@@ -268,6 +269,7 @@ export const GET_LEVEL_CONFIG = gql`
               gesture
             }
             diffi2 {
+              name
               on_off
               nick
               period
@@ -275,6 +277,7 @@ export const GET_LEVEL_CONFIG = gql`
               gesture
             }
             diffi3 {
+              name
               on_off
               nick
               period
@@ -282,6 +285,7 @@ export const GET_LEVEL_CONFIG = gql`
               gesture
             }
             diffi4 {
+              name
               on_off
               nick
               period
@@ -289,6 +293,7 @@ export const GET_LEVEL_CONFIG = gql`
               gesture
             }
             diffi5 {
+              name
               on_off
               nick
               period

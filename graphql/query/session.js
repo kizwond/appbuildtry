@@ -109,7 +109,7 @@ export const GetSession = gql`
             userFlagOriginal
             userFlagPrev
             retentionRate
-
+            needStudyTimeTmp
             statusCurrent
             recentKnowTime
             recentStudyResult

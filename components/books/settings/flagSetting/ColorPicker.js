@@ -1,6 +1,6 @@
 import React, { memo, useState } from "react";
 import reactCSS from "reactcss";
-import { CompactPicker, GithubPicker } from "react-color";
+import { CompactPicker } from "react-color";
 import { Button } from "antd";
 
 const ColorPicker = memo(({ color, onChangeColor, index }) => {
@@ -16,23 +16,16 @@ const ColorPicker = memo(({ color, onChangeColor, index }) => {
 
   const handleChange = (_color) => {
     onChangeColor(_color.hex, index);
+    // handleClose();
   };
 
   const styles = reactCSS({
     default: {
       color: {
         width: "50px",
-        // height: "14px",
+        height: "40px",
         borderRadius: "2px",
         background: color,
-      },
-      swatch: {
-        // padding: "5px",
-        background: "#fff",
-        borderRadius: "1px",
-        boxShadow: "0 0 0 1px rgba(0,0,0,.1)",
-        display: "inline-block",
-        cursor: "pointer",
       },
       popover: {
         position: "absolute",
@@ -49,19 +42,35 @@ const ColorPicker = memo(({ color, onChangeColor, index }) => {
   });
   return (
     <div>
-      {/* <div style={styles.swatch} onClick={handleClick}> */}
-      <Button style={styles.color} onClick={handleClick}>
+      <Button
+        className="ForSelectColorPicker"
+        style={styles.color}
+        onClick={handleClick}
+      >
         {" "}
       </Button>
-      {/* </div> */}
       {displayColorPicker ? (
         <div style={styles.popover}>
           <div style={styles.cover} onClick={handleClose} />
           <CompactPicker
+            styles={{
+              default: {
+                compact: {
+                  right: "-25px",
+                  position: "absolute",
+                  bottom: "28px",
+                  background: "#ffffff",
+                  boxShadow:
+                    "rgb(0 0 0 / 12%) 0px 2px 10px, rgb(0 0 0 / 16%) 0px 2px 5px",
+                  borderRadius: "2px",
+                },
+              },
+            }}
             color={color}
             // 기본색 설정 부분
             // colors={['blue', 'yellow', 'green', 'black', 'pink']}
-            onChange={handleChange}
+            // onChange={handleChange}
+            onChangeComplete={handleChange}
           />
         </div>
       ) : null}

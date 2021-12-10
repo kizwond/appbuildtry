@@ -10,7 +10,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import styled from "styled-components";
-import { useMemo } from "react";
 
 const UserFlagIcon = ({
   figure,
@@ -80,7 +79,8 @@ const StyledDiv = styled.span`
   /* font-size: 1rem; */
   width: ${(props) => (props.size > 1.5 ? props.size : 1.5)}rem;
   & > .svg-inline--fa {
-    font-size: ${(props) => (props.size > 1.5 ? props.size : 1.5)}rem;
+    font-size: ${(props) =>
+      props.size > 1.5 ? props.size : 1.5}rem !important;
   }
   & > .svg-inline--fa.fa-star {
     left: -1px;
@@ -97,7 +97,7 @@ const StyledDiv = styled.span`
     font-size: ${(props) =>
       Math.round((parseFloat(props.size) * 1000) / 2) / 1000 > 0.833
         ? Math.round((parseFloat(props.size) * 1000) / 2) / 1000
-        : 0.833}rem;
+        : 0.833}rem !important;
     font-weight: 700;
     font-family: "NanumGothic";
   }

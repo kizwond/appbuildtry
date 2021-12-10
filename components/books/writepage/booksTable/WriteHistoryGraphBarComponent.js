@@ -128,14 +128,14 @@ const StyledGraphBarWrapper = styled.div`
     display: flex;
     justify-content: space-around;
     position: relative;
-    bottom: -0.416rem;
+    bottom: -0.38rem;
   }
   & .BottomLine {
     width: 100%;
     height: 1px;
     border-bottom: 1px solid #c5c6c7;
     position: relative;
-    bottom: -0.416rem;
+    bottom: -0.38rem;
   }
 
   & .SingleBar {

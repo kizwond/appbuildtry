@@ -6,13 +6,32 @@ export const FRAGMENT_USER_FLAG_CONFIG = gql`
     userflagconfig_info {
       user_id
     }
-    figure
-    color {
-      flag1
-      flag2
-      flag3
-      flag4
-      flag5
+    details {
+      flag1 {
+        figure
+        figureColor
+        textColor
+      }
+      flag2 {
+        figure
+        figureColor
+        textColor
+      }
+      flag3 {
+        figure
+        figureColor
+        textColor
+      }
+      flag4 {
+        figure
+        figureColor
+        textColor
+      }
+      flag5 {
+        figure
+        figureColor
+        textColor
+      }
     }
   }
 `;

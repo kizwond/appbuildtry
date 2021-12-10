@@ -130,7 +130,7 @@ const BookSetting = () => {
               onChange={setSelectedMenu}
               optionLabelProp="label"
               placeholder="메뉴를 선택해주세요"
-              // size="small"
+              listHeight={300}
               style={{ width: "240px", marginBottom: "8px" }}
             >
               <Select.Option
@@ -214,5 +214,21 @@ const StyledMainPageCard = styled(Card)`
     & * {
       font-size: 1rem;
     }
+  }
+
+  & .fa-layers.fa-fw {
+  }
+
+  & .compact-picker {
+    width: 280px !important;
+  }
+
+  /* ColorPicker 그림자 설정용 서식 지움 */
+  & .ForSelectColorPicker + div > div:nth-child(2) > div:nth-child(1) {
+    display: none;
+  }
+  .ant-table table {
+    // ColorPicker 잘리는 문제 해결
+    overflow: unset;
   }
 `;

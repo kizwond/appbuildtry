@@ -1,14 +1,15 @@
 /* eslint-disable react/display-name */
 import React, { useCallback, useEffect, useState } from "react";
-import { Select, Table, Button, message, Space } from "antd";
+import { Select, Table, Button, message } from "antd";
 import ColorPicker from "./ColorPicker";
-import FlagIcon from "./FlagIcon";
 import produce from "immer";
 import { GET_USER_FLAG_CONFIG } from "../../../../graphql/query/allQuery";
-import { MUTATION_UPDATE_USER_FLAG_CONFIG } from "../../../../graphql/mutation/flagConfig";
 import { useQuery, useMutation } from "@apollo/client";
 import { StyledFlexAlignCenter } from "../../../common/styledComponent/page";
 import { useRouter } from "next/router";
+import { invertColor } from "../../../common/logic/calculateColor";
+import UserFlagIcon from "../../../common/commonComponent/UserFlagIcon";
+import { MUTATION_UPDATE_USER_FLAG_CONFIG } from "../../../../graphql/mutation/flagConfig";
 
 const M_FlagSetting = () => {
   const router = useRouter();
@@ -19,8 +20,19 @@ const M_FlagSetting = () => {
       if (data.userflagconfig_get.status === "200") {
         console.log(
           "프래그 설정 데이터(useQuery)",
-          data.userflagconfig_get.userflagconfigs[0].details
+          data.userflagconfig_get.userflagconfigs[0]
         );
+        const flags_array = ["flag1", "flag2", "flag3", "flag4", "flag5"];
+        const server_flags = data.userflagconfig_get.userflagconfigs[0].details;
+        const for_flags_data = flags_array.map((flag, index) => ({
+          key: index + 1,
+          flag_number: flag,
+          figure: server_flags[flag].figure,
+          figureColor: server_flags[flag].figureColor,
+          textColor: server_flags[flag].textColor,
+        }));
+
+        setFlag(for_flags_data);
       } else if (data.userflagconfig_get.status === "401") {
         router.push("/account/login");
       } else {
@@ -29,51 +41,46 @@ const M_FlagSetting = () => {
     },
   });
 
-  useEffect(() => {
-    if (data) {
-      console.log(
-        "데이터 변경됨",
-        data.userflagconfig_get.userflagconfigs[0].details
-      );
-      const flags_array = ["flag1", "flag2", "flag3", "flag4", "flag5"];
-      const server_flags = data.userflagconfig_get.userflagconfigs[0].details;
-      const for_flags_data = flags_array.map((flag, index) => ({
-        key: index + 1,
-        flag_number: flag,
-        shape: server_flags[flag].shape,
-        color: server_flags[flag].color,
-      }));
+  // useEffect(() => {
+  //   if (data) {
+  //     console.log(
+  //       "데이터 변경됨",
+  //       data.userflagconfig_get.userflagconfigs[0].details
+  //     );
 
-      setFlag(for_flags_data);
+  //   }
+  // }, [data]);
+
+  const [userflagconfig_update] = useMutation(
+    MUTATION_UPDATE_USER_FLAG_CONFIG,
+    {
+      onCompleted: (data) => {
+        if (data.userflagconfig_update.status === "200") {
+          console.log("책 플래그 변경 후 받은 데이터", data);
+          message.success("색상표가 변경되었습니다.", 0.7);
+        } else if (data.userflagconfig_update.status === "401") {
+          router.push("/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
     }
-  }, [data]);
-
-  const [userflagconfig_update] = useMutation(UPDATE_USER_FLAG_CONFIG, {
-    onCompleted: (data) => {
-      if (data.userflagconfig_update.status === "200") {
-        console.log("책 플래그 변경 후 받은 데이터", data);
-        message.success("색상표가 변경되었습니다.", 0.7);
-      } else if (data.userflagconfig_update.status === "401") {
-        router.push("/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  );
 
   const onChangeColor = useCallback(
-    (_color, index) => {
-      const newData = produce(flag, (draft) => {
-        draft[index].color = _color;
+    async (_figureColor, index) => {
+      const newData = await produce(flag, (draft) => {
+        draft[index].figureColor = _figureColor;
+        draft[index].textColor = invertColor(_figureColor, true);
       });
       setFlag(newData);
     },
     [flag]
   );
-  const onChangeShape = useCallback(
-    (_shape, index) => {
+  const onChangeFigure = useCallback(
+    (_figure, index) => {
       const newData = produce(flag, (draft) => {
-        draft[index].shape = _shape;
+        draft[index].figure = _figure;
       });
       setFlag(newData);
     },
@@ -87,26 +94,32 @@ const M_FlagSetting = () => {
       await userflagconfig_update({
         variables: {
           forUpdateUserflagconfig: {
+            userflagconfig_id: data.userflagconfig_get.userflagconfigs[0]._id,
             details: {
               flag1: {
-                shape: flag[0].shape,
-                color: flag[0].color,
+                figure: flag[0].figure,
+                figureColor: flag[0].figureColor,
+                textColor: flag[0].textColor,
               },
               flag2: {
-                shape: flag[1].shape,
-                color: flag[1].color,
+                figure: flag[1].figure,
+                figureColor: flag[1].figureColor,
+                textColor: flag[1].textColor,
               },
               flag3: {
-                shape: flag[2].shape,
-                color: flag[2].color,
+                figure: flag[2].figure,
+                figureColor: flag[2].figureColor,
+                textColor: flag[2].textColor,
               },
               flag4: {
-                shape: flag[3].shape,
-                color: flag[3].color,
+                figure: flag[3].figure,
+                figureColor: flag[3].figureColor,
+                textColor: flag[3].textColor,
               },
               flag5: {
-                shape: flag[4].shape,
-                color: flag[4].color,
+                figure: flag[4].figure,
+                figureColor: flag[4].figureColor,
+                textColor: flag[4].textColor,
               },
             },
           },
@@ -117,13 +130,7 @@ const M_FlagSetting = () => {
     }
   };
 
-  const shape_Option = [
-    "heart",
-    "HomeFilled",
-    "FireFilled",
-    "FlagFilled",
-    "TagsFilled",
-  ];
+  const figure_Option = ["flag", "star", "heart", "tag", "bookmark"];
 
   const columns = [
     {
@@ -136,23 +143,33 @@ const M_FlagSetting = () => {
     },
     {
       title: "아이콘",
-      dataIndex: "shape",
-      key: "shape",
+      dataIndex: "figure",
+      key: "figure",
       align: "center",
       className: "TableMiddleColumn TextAlignCenterColumn",
       // eslint-disable-next-line react/display-name
-      render: (shape, record) => (
+      render: (figure, record, rowIndex) => (
         <div>
           <Select
-            defaultValue={shape}
+            defaultValue={figure}
+            className="FlagSelector"
             onChange={(value) => {
-              onChangeShape(value, record.key - 1);
+              onChangeFigure(value, record.key - 1);
             }}
+            style={{ width: 80 }}
+            size="large"
+            listHeight={300}
           >
-            {shape_Option.map((item) => {
+            {figure_Option.map((item) => {
               return (
                 <Select.Option value={item} key={item}>
-                  <FlagIcon icon={item} color={flag[record.key - 1].color} />
+                  <UserFlagIcon
+                    figure={item}
+                    color={flag[record.key - 1].figureColor}
+                    textColor={flag[record.key - 1].textColor}
+                    flagNumber={rowIndex}
+                    iconRemSize={2}
+                  />
                 </Select.Option>
               );
             })}
@@ -162,8 +179,8 @@ const M_FlagSetting = () => {
     },
     {
       title: "색상",
-      dataIndex: "color",
-      key: "color",
+      dataIndex: "figureColor",
+      key: "figureColor",
       align: "center",
       className: "TableLastColumn TextAlignCenterColumn",
       render: (color, record) => (

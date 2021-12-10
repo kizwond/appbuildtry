@@ -664,3 +664,9 @@ p {
 /* body{
   line-height: 1.2 !important;
 } */
+
+.ant-select-dropdown .ant-select-item {
+  min-height: 4.2rem;
+  font-size: 1.167rem;
+  line-height: 4rem;
+}

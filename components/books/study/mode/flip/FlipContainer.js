@@ -22,6 +22,7 @@ import {
   SwapRightOutlined,
   StopOutlined,
   CheckOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 
 import dynamic from "next/dynamic";
@@ -30,7 +31,38 @@ const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditor
   ssr: false,
 });
 
-class FlipContainer extends Component {
+const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConfigs, cardTypeSets }) => {
+  const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataposition });
+  function showdataposition(data) {
+    console.log("data", data);
+  }
+
+  const sessionupdateresults = useCallback(
+    async (cardlist_to_send, sessionId) => {
+      try {
+        await session_updateResults({
+          variables: {
+            forUpdateResults: {
+              session_id: sessionId,
+              studyResults: cardlist_to_send,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [session_updateResults]
+  );
+
+  return (
+    <>
+      <Container sessionupdateresults={sessionupdateresults} cardListStudying={cardListStudying} contentsList={contentsList} sessionScope={sessionScope} levelConfigs={levelConfigs} cardTypeSets={cardTypeSets} />
+    </>
+  );
+};
+
+class Container extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,9 +88,58 @@ class FlipContainer extends Component {
   getKey() {
     return this.keyCount++;
   }
-  onClickCard = () => {
-    console.log("here");
+
+  //타이머 설정
+  startTimer = () => {
+    this.setState({
+      isOn: true,
+      time: this.state.time,
+      start: Date.now() - this.state.time,
+    });
+    this.timer = setInterval(
+      () =>
+        this.setState({
+          time: Date.now() - this.state.start,
+        }),
+      1
+    );
   };
+
+  startTimerTotal = () => {
+    this.setState({
+      isOn_total: true,
+      time_total: this.state.time_total,
+      start_total: Date.now() - this.state.time_total,
+    });
+    this.timer_total = setInterval(
+      () =>
+        this.setState({
+          time_total: Date.now() - this.state.start_total,
+        }),
+      1
+    );
+  };
+  stopTimerTotal = () => {
+    this.setState({ isOn_total: false });
+    clearInterval(this.timer_total);
+    clearInterval(this.timer);
+  };
+
+  startTimerResume = () => {
+    this.startTimer();
+    this.startTimerTotal();
+  };
+
+  resetTimer = () => {
+    this.setState({ time: 0, start: 0 }, function () {
+      this.startTimer();
+      this.startTimerTotal();
+    });
+  };
+
+  //타이머 설정 끝
+
+  milliseconds = (h, m, s) => (h * 60 * 60 + m * 60 + s) * 1000;
 
   handleClickPopover = (visible) => {
     this.setState({
@@ -67,14 +148,16 @@ class FlipContainer extends Component {
   };
 
   onClickNextCard = () => {
+    const currentSeq = Number(sessionStorage.getItem("card_seq"));
     const cardListLength = this.props.cardListStudying.length;
-    const cardSeqNum = this.state.cardSeq + 1;
+    const cardSeqNum = currentSeq + 1;
     if (cardListLength === cardSeqNum) {
       alert("마지막 카드여~");
     } else {
-      this.setState((prevState) => ({
-        cardSeq: prevState.cardSeq + 1,
-      }));
+      sessionStorage.setItem("card_seq", currentSeq + 1);
+      // this.setState((prevState) => ({
+      //   cardSeq: prevState.cardSeq + 1,
+      // }));
       this.setState((prevState) => ({
         clickCount: prevState.clickCount + 1,
       }));
@@ -120,9 +203,109 @@ class FlipContainer extends Component {
       }));
     }
   };
-  onDiffClickHandler = () => {
+  onDiffClickHandler = (interval, diffi, current_card_id, timer) => {
     console.log("난이도 선택하셨네요~");
-    this.onClickNextCard();
+    console.log("해당카드 난이도평가", interval, diffi, current_card_id, timer);
+    if (diffi === "diffi5") {
+      console.log(timer);
+      console.log("알겠음 클릭함.");
+      // this.sessionKnowHandler(interval, diffi, current_card_id, timer);
+    } else {
+      console.log(timer);
+      const now = new Date();
+      const now_mili_convert = Date.parse(now);
+      const result = this.milliseconds(0, interval, 0);
+      const need_review_time = now_mili_convert + result;
+      const review_date = new Date(need_review_time);
+      console.log(interval);
+      const card_seq = sessionStorage.getItem("card_seq");
+      sessionStorage.setItem("card_seq", Number(card_seq) + 1);
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      console.log("card_details_session", card_details_session);
+
+      const current_card_info_index = card_details_session.findIndex((item) => item.content.mycontent_id === current_card_id);
+      console.log(current_card_info_index);
+
+      //학습정보 업데이트
+      card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = "";
+      card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = "";
+      card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
+      card_details_session[current_card_info_index].studyStatus.needStudyTime = review_date;
+      card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
+      card_details_session[current_card_info_index].studyStatus.recentSelection = diffi;
+      card_details_session[current_card_info_index].studyStatus.recentStayHour = String(timer);
+      card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi;
+      card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
+      card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing";
+      card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1;
+      card_details_session[current_card_info_index].studyStatus.totalStayHour = String(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
+      card_details_session[current_card_info_index].studyStatus.totalStudyTimes = card_details_session[current_card_info_index].studyStatus.totalStudyTimes + 1;
+
+      //업데이트된 학습정보 세션스토리지에 다시 저장
+      sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
+
+      //서버에 보내기 위한 학습정보 리스트 생성
+      const updateThis = card_details_session[current_card_info_index];
+      const getUpdateThis = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+
+      if (getUpdateThis) {
+        var finalUpdate = getUpdateThis.concat(updateThis);
+      } else {
+        finalUpdate = [updateThis];
+      }
+
+      sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
+      const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+      console.log("cardlist_to_send", cardlist_to_send);
+      if (card_details_session.length - 1 == Number(card_seq)) {
+        
+        finishStudy();
+      } else {
+        console.log(card_details_session.length - 1, "======", Number(card_seq));
+        console.log("아직 안끝");
+        // cardShow();
+        // setTimer(0);
+      }
+    }
+
+    // this.onClickNextCard();
+  };
+  finishStudy = () => {
+    console.log("finishStudy Clicked!!!")
+    // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
+    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+    if (cardlist_to_send) {
+      console.log("서버에 학습데이타를 전송할 시간이다!!!!");
+      sessionStorage.setItem("card_seq", 0);
+      const sessionId = sessionStorage.getItem("session_Id");
+      cardlist_to_send.forEach(function (v) {
+        delete v.__typename;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.card_info.__typename;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.content.__typename;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.content.makerFlag.__typename;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.studyStatus.__typename;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.card_info.index_id;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.card_info.indexset_id;
+      });
+      console.log("cardlist_to_send : ", cardlist_to_send);
+      console.log("sessionId : ", sessionId);
+      console.log(typeof sessionId);
+      this.props.sessionupdateresults(cardlist_to_send, sessionId);
+    } else {
+      console.log("공부끝");
+    }
   };
 
   onClickGoBackToOrigin = () => {
@@ -174,13 +357,13 @@ class FlipContainer extends Component {
 
     // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
     window.speechSynthesis.speak(speechMsg);
-    
   };
 
   render() {
     if (this.props.levelConfigs) {
-      const current_card_book_id = this.props.cardListStudying[this.state.cardSeq].card_info.mybook_id;
-      const current_card_id = this.props.cardListStudying[this.state.cardSeq].content.mycontent_id;
+      const currentSeq = Number(sessionStorage.getItem("card_seq"));
+      const current_card_book_id = this.props.cardListStudying[currentSeq].card_info.mybook_id;
+      const current_card_id = this.props.cardListStudying[currentSeq].content.mycontent_id;
       const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
       const levelconfig_option = current_card_levelconfig[0].restudy.option;
       const diffi1 = levelconfig_option.diffi1;
@@ -193,7 +376,12 @@ class FlipContainer extends Component {
       const useDiffi = diffi.filter((item) => item.on_off === "on");
       var diffiButtons = useDiffi.map((item) => (
         <>
-          <Button size="small" type="primary" style={{ fontSize: "0.8rem", borderRadius: "3px" }} onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id)}>
+          <Button
+            size="small"
+            type="primary"
+            style={{ fontSize: "0.8rem", borderRadius: "3px" }}
+            onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id, this.state.time)}
+          >
             {item.nick}
           </Button>
         </>
@@ -209,14 +397,17 @@ class FlipContainer extends Component {
 
       const moreMenuContents = (
         <Space>
-          <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary">
+          <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary" disabled>
             통과
           </Button>
-          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary">
+          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary" disabled>
             보류
           </Button>
-          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary">
+          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary" disabled>
             졸업
+          </Button>
+          <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
+            학습종료
           </Button>
         </Space>
       );
@@ -231,6 +422,7 @@ class FlipContainer extends Component {
 
     if (this.props.cardTypeSets.length > 0) {
       var makerFlagContent = this.props.cardListStudying.map((content) => {
+        const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
         const cardTypeSets = this.props.cardTypeSets;
@@ -245,7 +437,7 @@ class FlipContainer extends Component {
         // console.log(content);
         // console.log(contentsList);
         const show_contents = contentsList.map((content_value, index) => {
-          if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === this.state.cardSeq) {
+          if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === currentSeq) {
             // console.log(content_value._id, content.content.buycontent_id);
             // console.log("해당카드 정보", content);
             // console.log("해당컨텐츠 정보", content_value);
@@ -445,6 +637,7 @@ class FlipContainer extends Component {
         return show_contents;
       });
       var face1Contents = this.props.cardListStudying.map((content) => {
+        const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
         const cardTypeSets = this.props.cardTypeSets;
@@ -455,7 +648,7 @@ class FlipContainer extends Component {
 
         // console.log(current_card_style_set);
         const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
-        console.log(current_card_style);
+        // console.log(current_card_style);
         const face_style = current_card_style[0].face_style;
         const row_style = current_card_style[0].row_style;
         const row_font = current_card_style[0].row_font;
@@ -468,7 +661,7 @@ class FlipContainer extends Component {
         // console.log(content);
         // console.log(contentsList);
         const show_contents = contentsList.map((content_value, index) => {
-          if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === this.state.cardSeq) {
+          if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === currentSeq) {
             // console.log(content_value._id, content.content.buycontent_id);
             // console.log("해당카드 정보", content);
             // console.log("해당컨텐츠 정보", content_value);
@@ -478,7 +671,6 @@ class FlipContainer extends Component {
                   <>
                     <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
-                        onClick={() => this.onClickCard(content._id, "read")}
                         style={{
                           height: "calc(50vh - 120px)",
                           width: "100%",
@@ -507,7 +699,8 @@ class FlipContainer extends Component {
                         >
                           {content_value.face1.map((item, index) => (
                             <>
-                              <div id={`face1_row${index+1}`}
+                              <div
+                                id={`face1_row${index + 1}`}
                                 style={{
                                   backgroundColor: row_style.face1[index].background.color,
                                   marginTop: row_style.face1[index].outer_margin.top,
@@ -554,9 +747,8 @@ class FlipContainer extends Component {
                   <>
                     <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
-                        onClick={() => this.onClickCard(content._id, "general")}
                         style={{
-                          height: "calc(50vh - 125px)",
+                          height: "calc(50vh - 130px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -630,9 +822,8 @@ class FlipContainer extends Component {
                   <>
                     <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
-                        onClick={() => this.onClickCard(content._id, "flip", content.card_info.parentCard_id)}
                         style={{
-                          height: "calc(50vh - 125px)",
+                          height: "calc(50vh - 130px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -785,6 +976,7 @@ class FlipContainer extends Component {
         return show_contents;
       });
       var face2Contents = this.props.cardListStudying.map((content) => {
+        const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
         const cardTypeSets = this.props.cardTypeSets;
@@ -807,7 +999,7 @@ class FlipContainer extends Component {
         // console.log(content);
         // console.log(contentsList);
         const show_contents = contentsList.map((content_value, index) => {
-          if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === this.state.cardSeq) {
+          if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === currentSeq) {
             // console.log(content_value._id, content.content.buycontent_id);
             // console.log("해당카드 정보", content);
             // console.log("해당컨텐츠 정보", content_value);
@@ -815,161 +1007,162 @@ class FlipContainer extends Component {
               <>
                 {content.card_info.cardtype === "flip" && (
                   <>
-                  <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
-                    <div
-                      onClick={() => this.onClickCard(content._id, "flip", content.card_info.parentCard_id)}
-                      style={{
-                        height: "calc(50vh - 125px)",
+                    <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                      <div
+                        style={{
+                          height: "calc(50vh - 130px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
                           justifyContent: alignHorizontal,
-                      }}
-                    >
-                      {/* 페이스2 스타일 영역 */}
-                      <div
-                        style={{
-                          backgroundColor: face_style[2].background.color,
-                          marginTop: face_style[2].outer_margin.top,
-                          marginBottom: face_style[2].outer_margin.bottom,
-                          marginLeft: face_style[2].outer_margin.left,
-                          marginRight: face_style[2].outer_margin.right,
-                          paddingTop: face_style[2].inner_padding.top,
-                          paddingBottom: face_style[2].inner_padding.bottom,
-                          paddingLeft: face_style[2].inner_padding.left,
-                          paddingRight: face_style[2].inner_padding.right,
-                          borderTop: `${face_style[2].border.top.thickness}px ${face_style[2].border.top.bordertype} ${face_style[2].border.top.color}`,
-                          borderBottom: `${face_style[2].border.bottom.thickness}px ${face_style[2].border.bottom.bordertype} ${face_style[2].border.bottom.color}`,
-                          borderLeft: `${face_style[2].border.left.thickness}px ${face_style[2].border.left.bordertype} ${face_style[2].border.left.color}`,
-                          borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
                         }}
                       >
-                        {content_value.selection !== null &&
-                          content_value.face2.map((item, index) => (
-                            <>
-                              <div id={`face2_row${index+1}`}
-                                style={{
-                                  backgroundColor: row_style.face2[index].background.color,
-                                  marginTop: row_style.face2[index].outer_margin.top,
-                                  marginBottom: row_style.face2[index].outer_margin.bottom,
-                                  marginLeft: row_style.face2[index].outer_margin.left,
-                                  marginRight: row_style.face2[index].outer_margin.right,
-                                  paddingTop: row_style.face2[index].inner_padding.top,
-                                  paddingBottom: row_style.face2[index].inner_padding.bottom,
-                                  paddingLeft: row_style.face2[index].inner_padding.left,
-                                  paddingRight: row_style.face2[index].inner_padding.right,
-                                  borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
-                                  borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
-                                  borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
-                                  borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
-                                  textAlign: row_font.face2[index].align,
-                                  fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
-                                  color: row_font.face2[index].color,
-                                  fontFamily: `${
-                                    row_font.face2[index].font === "고딕"
-                                      ? `NanumGothic`
-                                      : row_font.face2[index].font === "명조"
-                                      ? `NanumMyeongjo`
-                                      : row_font.face2[index].font === "바탕"
-                                      ? `Gowun Batang, sans-serif`
-                                      : row_font.face2[index].font === "돋움"
-                                      ? `Gowun Dodum, sans-serif`
-                                      : ""
-                                  } `,
-                                  fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
-                                  fontSize: row_font.face2[index].size,
-                                  textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
-                                }}
-                              >
-                                {item === "1" && (
-                                  <>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                      <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                      <span style={{ fontSize: "1.5rem" }}>➀</span>
-                                    </div>
-                                  </>
-                                )}
-                                {item === "2" && (
-                                  <>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                      <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                      <span style={{ fontSize: "1.5rem" }}>➁</span>
-                                    </div>
-                                  </>
-                                )}
-                                {item === "3" && (
-                                  <>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                      <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                      <span style={{ fontSize: "1.5rem" }}>➂</span>
-                                    </div>
-                                  </>
-                                )}
-                                {item === "4" && (
-                                  <>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                      <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                      <span style={{ fontSize: "1.5rem" }}>➃</span>
-                                    </div>
-                                  </>
-                                )}
-                                {item === "5" && (
-                                  <>
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                      <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                      <span style={{ fontSize: "1.5rem" }}>➄</span>
-                                    </div>
-                                  </>
-                                )}
+                        {/* 페이스2 스타일 영역 */}
+                        <div
+                          style={{
+                            backgroundColor: face_style[2].background.color,
+                            marginTop: face_style[2].outer_margin.top,
+                            marginBottom: face_style[2].outer_margin.bottom,
+                            marginLeft: face_style[2].outer_margin.left,
+                            marginRight: face_style[2].outer_margin.right,
+                            paddingTop: face_style[2].inner_padding.top,
+                            paddingBottom: face_style[2].inner_padding.bottom,
+                            paddingLeft: face_style[2].inner_padding.left,
+                            paddingRight: face_style[2].inner_padding.right,
+                            borderTop: `${face_style[2].border.top.thickness}px ${face_style[2].border.top.bordertype} ${face_style[2].border.top.color}`,
+                            borderBottom: `${face_style[2].border.bottom.thickness}px ${face_style[2].border.bottom.bordertype} ${face_style[2].border.bottom.color}`,
+                            borderLeft: `${face_style[2].border.left.thickness}px ${face_style[2].border.left.bordertype} ${face_style[2].border.left.color}`,
+                            borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
+                          }}
+                        >
+                          {content_value.selection !== null &&
+                            content_value.face2.map((item, index) => (
+                              <>
+                                <div
+                                  id={`face2_row${index + 1}`}
+                                  style={{
+                                    backgroundColor: row_style.face2[index].background.color,
+                                    marginTop: row_style.face2[index].outer_margin.top,
+                                    marginBottom: row_style.face2[index].outer_margin.bottom,
+                                    marginLeft: row_style.face2[index].outer_margin.left,
+                                    marginRight: row_style.face2[index].outer_margin.right,
+                                    paddingTop: row_style.face2[index].inner_padding.top,
+                                    paddingBottom: row_style.face2[index].inner_padding.bottom,
+                                    paddingLeft: row_style.face2[index].inner_padding.left,
+                                    paddingRight: row_style.face2[index].inner_padding.right,
+                                    borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
+                                    borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
+                                    borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
+                                    borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                                    textAlign: row_font.face2[index].align,
+                                    fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
+                                    color: row_font.face2[index].color,
+                                    fontFamily: `${
+                                      row_font.face2[index].font === "고딕"
+                                        ? `NanumGothic`
+                                        : row_font.face2[index].font === "명조"
+                                        ? `NanumMyeongjo`
+                                        : row_font.face2[index].font === "바탕"
+                                        ? `Gowun Batang, sans-serif`
+                                        : row_font.face2[index].font === "돋움"
+                                        ? `Gowun Dodum, sans-serif`
+                                        : ""
+                                    } `,
+                                    fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
+                                    fontSize: row_font.face2[index].size,
+                                    textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
+                                  }}
+                                >
+                                  {item === "1" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➀</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item === "2" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➁</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item === "3" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➂</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item === "4" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➃</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item === "5" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➄</span>
+                                      </div>
+                                    </>
+                                  )}
 
-                                {index !== 0 && <FroalaEditorView model={item} />}
-                              </div>
-                            </>
-                          ))}
+                                  {index !== 0 && <FroalaEditorView model={item} />}
+                                </div>
+                              </>
+                            ))}
 
-                        {(content_value.selection === null || content_value.selection.length === 0) &&
-                          content_value.face2.map((item, index) => (
-                            <>
-                              <div id={`face2_row${index+1}`}
-                                style={{
-                                  backgroundColor: row_style.face2[index].background.color,
-                                  marginTop: row_style.face2[index].outer_margin.top,
-                                  marginBottom: row_style.face2[index].outer_margin.bottom,
-                                  marginLeft: row_style.face2[index].outer_margin.left,
-                                  marginRight: row_style.face2[index].outer_margin.right,
-                                  paddingTop: row_style.face2[index].inner_padding.top,
-                                  paddingBottom: row_style.face2[index].inner_padding.bottom,
-                                  paddingLeft: row_style.face2[index].inner_padding.left,
-                                  paddingRight: row_style.face2[index].inner_padding.right,
-                                  borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
-                                  borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
-                                  borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
-                                  borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
-                                  textAlign: row_font.face2[index].align,
-                                  fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
-                                  color: row_font.face2[index].color,
-                                  fontFamily: `${
-                                    row_font.face2[index].font === "고딕"
-                                      ? `NanumGothic`
-                                      : row_font.face2[index].font === "명조"
-                                      ? `NanumMyeongjo`
-                                      : row_font.face2[index].font === "바탕"
-                                      ? `Gowun Batang, sans-serif`
-                                      : row_font.face2[index].font === "돋움"
-                                      ? `Gowun Dodum, sans-serif`
-                                      : ""
-                                  } `,
-                                  fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
-                                  fontSize: row_font.face2[index].size,
-                                  textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
-                                }}
-                              >
-                                <FroalaEditorView model={item} />
-                              </div>
-                            </>
-                          ))}
+                          {(content_value.selection === null || content_value.selection.length === 0) &&
+                            content_value.face2.map((item, index) => (
+                              <>
+                                <div
+                                  id={`face2_row${index + 1}`}
+                                  style={{
+                                    backgroundColor: row_style.face2[index].background.color,
+                                    marginTop: row_style.face2[index].outer_margin.top,
+                                    marginBottom: row_style.face2[index].outer_margin.bottom,
+                                    marginLeft: row_style.face2[index].outer_margin.left,
+                                    marginRight: row_style.face2[index].outer_margin.right,
+                                    paddingTop: row_style.face2[index].inner_padding.top,
+                                    paddingBottom: row_style.face2[index].inner_padding.bottom,
+                                    paddingLeft: row_style.face2[index].inner_padding.left,
+                                    paddingRight: row_style.face2[index].inner_padding.right,
+                                    borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
+                                    borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
+                                    borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
+                                    borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                                    textAlign: row_font.face2[index].align,
+                                    fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
+                                    color: row_font.face2[index].color,
+                                    fontFamily: `${
+                                      row_font.face2[index].font === "고딕"
+                                        ? `NanumGothic`
+                                        : row_font.face2[index].font === "명조"
+                                        ? `NanumMyeongjo`
+                                        : row_font.face2[index].font === "바탕"
+                                        ? `Gowun Batang, sans-serif`
+                                        : row_font.face2[index].font === "돋움"
+                                        ? `Gowun Dodum, sans-serif`
+                                        : ""
+                                    } `,
+                                    fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
+                                    fontSize: row_font.face2[index].size,
+                                    textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
+                                  }}
+                                >
+                                  <FroalaEditorView model={item} />
+                                </div>
+                              </>
+                            ))}
+                        </div>
                       </div>
-                    </div>
                     </div>
                   </>
                 )}
@@ -991,6 +1184,17 @@ class FlipContainer extends Component {
             </div>
             <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {this.state.clickCount}</div>
           </div>
+          <div style={{ display: "flex", marginTop: "5px", justifyContent: "space-between", alignItems: "center" }}>
+            <Timer
+              startTimer={this.startTimer}
+              startTimerTotal={this.startTimerTotal}
+              stopTimerTotal={this.stopTimerTotal}
+              startTimerResume={this.startTimerResume}
+              time={this.state.time}
+              time_total={this.state.time_total}
+              isOn_total={this.state.isOn_total}
+            />
+          </div>
           <div style={style_study_layout_bottom}>
             <div style={{ width: "100%", border: "1px solid lightgrey" }}>
               <div style={{ height: "15px", paddingLeft: "5px" }}>{makerFlagContent}</div>
@@ -1001,13 +1205,13 @@ class FlipContainer extends Component {
             </div>
           </div>
           <div style={{ width: "100%", textAlign: "center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0, zIndex: 3 }}>
-            <Space style={{ width: "95%", justifyContent: "space-between", backgroundColor: "#dadada", borderRadius: "4px", padding: 10, border:"1px solid #bcbcbc" }}>
-              <Button icon={<StepBackwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickBeforeCard} type="secondary" />
+            <Space style={{ width: "95%", justifyContent: "space-between", backgroundColor: "#dadada", borderRadius: "4px", padding: 5, border: "1px solid #bcbcbc" }}>
+              <Button icon={<StepBackwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickBeforeCard} type="secondary" disabled />
               {!this.state.onBackMode && diffiButtons}
               {!this.state.onBackMode && moreMenu}
               {this.state.onBackMode && goBackToCurrent}
               {this.state.onBackMode && (
-                <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCardInBackMode} type="secondary" />
+                <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCardInBackMode} type="secondary" disabled />
               )}
             </Space>
           </div>
@@ -1025,7 +1229,7 @@ const style_study_layout_bottom = {
   justifyContent: "space-between",
   width: "100%",
   margin: "auto",
-  marginTop: "10px",
+  marginTop: "5px",
   height: "100%",
 };
 const contentsDisplay = {

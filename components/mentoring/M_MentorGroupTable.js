@@ -5,7 +5,7 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import { useMutation } from "@apollo/client";
-import { Button, Col, Input, Modal, Row, Table, Tag, Drawer, Form } from "antd";
+import { Button, Input, Modal, Table, Drawer, Form } from "antd";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
@@ -16,10 +16,7 @@ import {
   MUTATION_UPDATE_MENTORING_GROUP,
 } from "../../graphql/mutation/mentoring";
 import { StyledButtonForMainPage } from "../common/styledComponent/buttons";
-import {
-  StyledFlexAlignCenter,
-  StyledFlexSpaceBetween,
-} from "../common/styledComponent/page";
+import { StyledFlexAlignCenter } from "../common/styledComponent/page";
 
 const M_MenteeGroupTable = ({
   mentorGroup,
@@ -58,7 +55,7 @@ const M_MenteeGroupTable = ({
     if (activedInput !== "" && inputRefs.current[activedInput]) {
       setTimeout(() => {
         inputRefs.current[activedInput].focus({ cursor: "end" });
-      }, 100);
+      }, 350);
     }
   }, [activedInput]);
 
@@ -272,140 +269,153 @@ const M_MenteeGroupTable = ({
               render: function menteeGroupElement(value, record, index) {
                 return (
                   <>
-                    <Row align="middle">
-                      <Col span={activedInput.includes(record._id) ? 17 : 12}>
-                        <Input
-                          ref={(ref) => (inputRefs.current[record._id] = ref)}
-                          size="small"
-                          value={inputValues[record._id]}
-                          onChange={(e) =>
-                            setInputValues({
-                              ...inputValues,
-                              [record._id]: e.target.value,
-                            })
-                          }
-                          bordered={activedInput.includes(record._id)}
-                          disabled={!activedInput.includes(record._id)}
-                        />
-                      </Col>
-                      <Col
-                        span={activedInput.includes(record._id) ? 7 : 3}
-                        onClick={() => {
-                          if (!activedInput.includes(record._id)) {
-                            setActivedInput(record._id);
-                          }
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginLeft: 8,
+                        marginRight: 8,
+                        gap: activedInput.includes(record._id) ? 8 : 0,
+                      }}
+                    >
+                      <Input
+                        ref={(ref) => (inputRefs.current[record._id] = ref)}
+                        value={inputValues[record._id]}
+                        onChange={(e) =>
+                          setInputValues({
+                            ...inputValues,
+                            [record._id]: e.target.value,
+                          })
+                        }
+                        bordered={activedInput.includes(record._id)}
+                        disabled={!activedInput.includes(record._id)}
+                        style={{
+                          display: "block",
+                          flex: activedInput.includes(record._id)
+                            ? null
+                            : "0 0 50%",
+                          maxWidth: activedInput.includes(record._id)
+                            ? null
+                            : "50%",
                         }}
-                        style={{ display: "flex", justifyContent: "center" }}
-                      >
-                        {!activedInput.includes(record._id) ? (
-                          <EditFilled style={{ fontSize: "1rem" }} />
-                        ) : (
-                          <StyledFlexSpaceBetween>
-                            <div
-                              onClick={() => {
-                                // 서버요청보내야함
-                                if (
-                                  inputValues[record._id] !== "" &&
-                                  value !== inputValues[record._id]
-                                ) {
-                                  changeGroupName({
-                                    mentoringGroup_id: record._id,
-                                    newMentoringGroupName:
-                                      inputValues[record._id],
-                                  });
-                                }
-                              }}
-                            >
-                              <Tag>수정</Tag>
-                            </div>
-                            <div
-                              onClick={() => {
-                                setActivedInput("");
-                                setInputValues({
-                                  ...inputValues,
-                                  [record._id]: value,
+                      />
+                      {activedInput.includes(record._id) && (
+                        <>
+                          <Button
+                            onClick={() => {
+                              // 서버요청보내야함
+                              if (
+                                inputValues[record._id] !== "" &&
+                                value !== inputValues[record._id]
+                              ) {
+                                changeGroupName({
+                                  mentoringGroup_id: record._id,
+                                  newMentoringGroupName:
+                                    inputValues[record._id],
                                 });
-                              }}
-                            >
-                              <Tag>취소</Tag>
-                            </div>
-                          </StyledFlexSpaceBetween>
-                        )}
-                      </Col>
-                      <Col span={activedInput.includes(record._id) ? 0 : 6}>
-                        <StyledFlexAlignCenter>
-                          <div
-                            style={{
-                              width: "100%",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
+                              }
                             }}
+                          >
+                            수정
+                          </Button>
+                          <Button
                             onClick={() => {
-                              changeGroupOrder({
-                                mentoringGroup_id: record._id,
-                                direction: "up",
+                              setActivedInput("");
+                              setInputValues({
+                                ...inputValues,
+                                [record._id]: value,
                               });
                             }}
                           >
-                            <ArrowUpOutlined style={{ fontSize: "1rem" }} />
+                            취소
+                          </Button>
+                        </>
+                      )}
+                      {!activedInput.includes(record._id) && (
+                        <>
+                          <div
+                            onClick={() => {
+                              if (!activedInput.includes(record._id)) {
+                                setActivedInput(record._id);
+                              }
+                            }}
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              flex: "0 0 12.5%",
+                              maxWidth: "12.5%",
+                              position: "relative",
+                            }}
+                          >
+                            <EditFilled style={{ fontSize: "1rem" }} />
                           </div>
                           <div
                             style={{
-                              width: "100%",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                            onClick={() => {
-                              changeGroupOrder({
-                                mentoringGroup_id: record._id,
-                                direction: "down",
-                              });
+                              display: "block",
+                              flex: "0 0 25%",
+                              maxWidth: "25%",
+                              position: "relative",
                             }}
                           >
-                            <ArrowDownOutlined style={{ fontSize: "1rem" }} />
+                            <StyledFlexAlignCenter>
+                              <div
+                                style={{
+                                  width: "100%",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                                onClick={() => {
+                                  changeGroupOrder({
+                                    mentoringGroup_id: record._id,
+                                    direction: "up",
+                                  });
+                                }}
+                              >
+                                <ArrowUpOutlined style={{ fontSize: "1rem" }} />
+                              </div>
+                              <div
+                                style={{
+                                  width: "100%",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                                onClick={() => {
+                                  changeGroupOrder({
+                                    mentoringGroup_id: record._id,
+                                    direction: "down",
+                                  });
+                                }}
+                              >
+                                <ArrowDownOutlined
+                                  style={{ fontSize: "1rem" }}
+                                />
+                              </div>
+                            </StyledFlexAlignCenter>
                           </div>
-                        </StyledFlexAlignCenter>
-                      </Col>
-                      <Col
-                        span={activedInput.includes(record._id) ? 0 : 3}
-                        onClick={() => {
-                          deleteGroup({ currentMentoringGroup_id: record._id });
-                        }}
-                      >
-                        삭제
-                      </Col>
-                    </Row>
+                          <div
+                            onClick={() => {
+                              deleteGroup({
+                                currentMentoringGroup_id: record._id,
+                              });
+                            }}
+                            style={{
+                              display: "block",
+                              flex: "0 0 12.5%",
+                              maxWidth: "12.5%",
+                              position: "relative",
+                            }}
+                          >
+                            삭제
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </>
                 );
               },
             },
-            // {
-            //   title: "그룹명 변경",
-            //   align: "center",
-            //   width: 0,
-            //   colSpan: 0,
-            //   onCell: (record, rowIndex) => {
-            //     return {
-            //       onClick: (event) => {}, // click row
-            //       onDoubleClick: (event) => {}, // double click row
-            //       onContextMenu: (event) => {}, // right button click row
-            //       onMouseEnter: (event) => {}, // mouse enter row
-            //       onMouseLeave: (event) => {}, // mouse leave row
-            //     };
-            //   },
-            // },
-            // {
-            //   title: "상하 이동",
-            //   align: "center",
-            //   width: "30%",
-            // },
-            // {
-            //   title: "삭제",
-            //   align: "center",
-            //   width: "15%",
-            // },
           ]}
         />
       </DrawerWrapper>
@@ -428,77 +438,6 @@ const DrawerWrapper = styled(Drawer)`
       justify-content: center;
     }
   }
-  & div,
-  & button,
-  & span,
-  & object,
-  & iframe,
-  & h1,
-  & h2,
-  & h3,
-  & h4,
-  & h5,
-  & h6,
-  & p,
-  & blockquote,
-  & pre,
-  & abbr,
-  & address,
-  & cite,
-  & code,
-  & del,
-  & dfn,
-  & em,
-  & img,
-  & ins,
-  & kbd,
-  & q,
-  & samp,
-  & small,
-  & strong,
-  & sub,
-  & sup,
-  & var,
-  & b,
-  & i,
-  & dl,
-  & dt,
-  & dd,
-  & ol,
-  & ul,
-  & li,
-  & fieldset,
-  & form,
-  & label,
-  & legend,
-  & table,
-  & caption,
-  & tbody,
-  & tfoot,
-  & thead,
-  & tr,
-  & th,
-  & td,
-  & article,
-  & aside,
-  & canvas,
-  & details,
-  & figcaption,
-  & figure,
-  & footer,
-  & header,
-  & hgroup,
-  & menu,
-  & nav,
-  & section,
-  & summary,
-  & time,
-  & mark,
-  & audio,
-  & video,
-  & input {
-    font-size: 1rem;
-  }
 
   & .ant-drawer-header-title {
     justify-content: start;
@@ -508,10 +447,10 @@ const DrawerWrapper = styled(Drawer)`
   & .ant-drawer-title {
     width: 100%;
   }
-
-  & .ant-input {
-    height: 22px;
+  & .ant-drawer-body * {
+    font-size: 1rem;
   }
+
   & .ant-input[disabled] {
     color: black;
   }

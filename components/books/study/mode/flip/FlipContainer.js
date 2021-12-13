@@ -57,7 +57,14 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
 
   return (
     <>
-      <Container sessionupdateresults={sessionupdateresults} cardListStudying={cardListStudying} contentsList={contentsList} sessionScope={sessionScope} levelConfigs={levelConfigs} cardTypeSets={cardTypeSets} />
+      <Container
+        sessionupdateresults={sessionupdateresults}
+        cardListStudying={cardListStudying}
+        contentsList={contentsList}
+        sessionScope={sessionScope}
+        levelConfigs={levelConfigs}
+        cardTypeSets={cardTypeSets}
+      />
     </>
   );
 };
@@ -258,8 +265,7 @@ class Container extends Component {
       const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
       console.log("cardlist_to_send", cardlist_to_send);
       if (card_details_session.length - 1 == Number(card_seq)) {
-        
-        finishStudy();
+        this.finishStudy();
       } else {
         console.log(card_details_session.length - 1, "======", Number(card_seq));
         console.log("아직 안끝");
@@ -271,7 +277,7 @@ class Container extends Component {
     // this.onClickNextCard();
   };
   finishStudy = () => {
-    console.log("finishStudy Clicked!!!")
+    console.log("finishStudy Clicked!!!");
     // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
     if (cardlist_to_send) {
@@ -299,7 +305,6 @@ class Container extends Component {
 
       console.log("cardlist_to_send : ", cardlist_to_send);
       console.log("sessionId : ", sessionId);
-      console.log(typeof sessionId);
       this.props.sessionupdateresults(cardlist_to_send, sessionId);
     } else {
       console.log("공부끝");

@@ -1,7 +1,7 @@
-import React, { useRef, memo } from 'react';
-import { Input, Tooltip } from 'antd';
-import { useState } from 'react';
-import produce from 'immer';
+import React, { useRef, memo } from "react";
+import { Input, Tooltip } from "antd";
+import { useState } from "react";
+import produce from "immer";
 
 const NickInput = ({
   disabled,
@@ -29,7 +29,7 @@ const NickInput = ({
             const nickArrayExceptMeAndEmptyValue = restudyOption
               .map((item) => item.nick)
               .filter((item, index) => index != recordKey)
-              .filter((i) => i != '');
+              .filter((i) => i != "");
             const isSameKeyInNick = nickArrayExceptMeAndEmptyValue.includes(
               e.target.value
             );
@@ -46,11 +46,8 @@ const NickInput = ({
             }
           }}
           ref={inputRef}
-          // onClick={() => {
-          //   inputRef.current.focus({ cursor: 'all' });
-          // }}
           disabled={disabled}
-          style={{ minWidth: '65px' }}
+          style={{ minWidth: "65px" }}
           maxLength={11}
           onChange={(e) => {
             const newData = produce(restudyOption, (draft) => {
@@ -60,7 +57,6 @@ const NickInput = ({
             if (e.target.value.length > 7) {
               setShowLitmitText(true);
               let timer = setTimeout(() => setShowLitmitText(false), 2000);
-              // clearTimeout(timer);
             } else {
               setShowLitmitText(false);
             }

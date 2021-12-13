@@ -1,47 +1,14 @@
+import { Input, Button } from "antd";
 import React from "react";
-import UserFlagIcon from "../components/common/commonComponent/UserFlagIcon";
-import { Space } from "antd";
 
-const Test = () => {
+const test = () => {
   return (
-    <Space direction="vertical">
-      <UserFlagIcon
-        figure="bookmark"
-        color="orange"
-        textColor="blue"
-        flagNumber="3"
-        iconRemSize="1"
-      />
-      <UserFlagIcon
-        figure="star"
-        color="orange"
-        textColor="blue"
-        flagNumber="5"
-        iconRemSize="1"
-      />
-      <UserFlagIcon
-        figure="heart"
-        color="orange"
-        textColor="blue"
-        flagNumber="6"
-        iconRemSize="1"
-      />
-      <UserFlagIcon
-        figure="tag"
-        color="orange"
-        textColor="blue"
-        flagNumber="2"
-        iconRemSize="1"
-      />
-      <UserFlagIcon
-        figure="flag"
-        color="orange"
-        textColor="blue"
-        flagNumber="2"
-        iconRemSize="1"
-      />
-    </Space>
+    <div style={{ display: "flex", marginLeft: 8, gap: 10, marginRight: 8 }}>
+      <Input />
+      <Button>아</Button>
+      <Button>아</Button>
+    </div>
   );
 };
 
-export default Test;
+export default test;

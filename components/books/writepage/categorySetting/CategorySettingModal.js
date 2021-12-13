@@ -15,14 +15,13 @@ import styled from "styled-components";
 import { Modal, Button, Input, Table, Space } from "antd";
 import {
   EditFilled,
-  CloseCircleFilled,
-  CheckCircleFilled,
   DeleteOutlined,
   ArrowDownOutlined,
   ArrowUpOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import { useEffect } from "react";
 
 const CategorySettingModal = forwardRef(
   ({ category, visible, changeVisible }, ref) => {
@@ -34,6 +33,21 @@ const CategorySettingModal = forwardRef(
 
     const inputRefs = useRef({});
     const newCateRef = useRef({});
+
+    useEffect(() => {
+      if (editingCell.length > 0) {
+        inputRefs.current[editingCell].focus({
+          cursor: "end",
+        });
+      }
+    }, [editingCell]);
+
+    useEffect(() => {
+      if (expandedRowKeys.length > 0) {
+        const [rowKey] = expandedRowKeys;
+        newCateRef.current[rowKey].focus();
+      }
+    }, [expandedRowKeys]);
 
     const [createNewCategory] = useMutation(MUTATION_CREATE_MY_BOOK_CATEGORY, {
       onCompleted: (received_data) => {
@@ -206,71 +220,74 @@ const CategorySettingModal = forwardRef(
                   setExpandedRowKeys([]);
                 }}
               >
-                <div
-                  style={{
-                    display: editingCell === _record.key ? "flex" : "none",
-                    width: "100%",
-                  }}
-                >
-                  <Input
-                    ref={(ref) => (inputRefs.current[_record.key] = ref)}
-                    size="small"
-                    value={cateName}
-                    onChange={(e) => {
-                      setCateName(e.target.value);
-                    }}
-                    style={{ marginRight: "5px" }}
-                  />
-                  <Button
-                    size="small"
-                    type="primary"
-                    disabled={
-                      cateName.length === 0 ||
-                      dataSource.map((_c) => _c.name).includes(cateName)
-                    }
-                    onClick={() => {
-                      updateCategory({
-                        mybookcate_id: _record._id,
-                        name: cateName,
-                      });
-                      setCateName("");
-                      setEditingCell("");
-                    }}
-                    style={{ marginRight: "5px" }}
-                  >
-                    수정
-                  </Button>
-                  <Button
-                    size="small"
-                    type="primary"
-                    onClick={() => {
-                      setCateName("");
-                      setEditingCell("");
+                {editingCell === _record.key ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      width: "100%",
                     }}
                   >
-                    취소
-                  </Button>
-                </div>
-                <div
-                  style={{
-                    display: !(editingCell === _record.key) ? "flex" : "none",
-                    width: "100%",
-                    alignItems: "center",
-                  }}
-                >
-                  <StyledTwoLinesEllipsis>{_value}</StyledTwoLinesEllipsis>
-                  <Button
-                    size="small"
-                    type="text"
-                    icon={<EditFilled />}
-                    disabled={editingCell !== "" || _record.isFixed === "yes"}
-                    onClick={async () => {
-                      await setEditingCell(_record.key);
-                      await setCateName(_record.name);
-                      inputRefs.current[_record.key].focus();
+                    <Input
+                      ref={(ref) => (inputRefs.current[_record.key] = ref)}
+                      size="small"
+                      value={cateName}
+                      onChange={(e) => {
+                        setCateName(e.target.value);
+                      }}
+                      style={{ marginRight: "5px" }}
+                    />
+                    <Button
+                      size="small"
+                      type="primary"
+                      disabled={
+                        cateName.length === 0 ||
+                        dataSource.map((_c) => _c.name).includes(cateName)
+                      }
+                      onClick={() => {
+                        updateCategory({
+                          mybookcate_id: _record._id,
+                          name: cateName,
+                        });
+                        setCateName("");
+                        setEditingCell("");
+                      }}
+                      style={{ marginRight: "5px" }}
+                    >
+                      수정
+                    </Button>
+                    <Button
+                      size="small"
+                      type="primary"
+                      onClick={() => {
+                        setCateName("");
+                        console.log("취소");
+                        setEditingCell("");
+                      }}
+                    >
+                      취소
+                    </Button>
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      width: "100%",
+                      alignItems: "center",
                     }}
-                  />
-                </div>
+                  >
+                    <StyledTwoLinesEllipsis>{_value}</StyledTwoLinesEllipsis>
+                    <Button
+                      size="small"
+                      type="text"
+                      icon={<EditFilled />}
+                      disabled={editingCell !== "" || _record.isFixed === "yes"}
+                      onClick={() => {
+                        setEditingCell(_record.key);
+                        setCateName(_record.name);
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             ),
             props: {},
@@ -438,16 +455,15 @@ const CategorySettingModal = forwardRef(
                 </div>
               ),
               rowExpandable: (_record) => editingCell == "",
-              onExpand: async (ex, re) => {
+              onExpand: (ex, re) => {
                 console.log({ expandedRowKeys });
                 if (!ex) {
                   setExpandedRowKeys([]);
                   setCateName("");
                 }
                 if (ex) {
-                  await setExpandedRowKeys([re.key]);
+                  setExpandedRowKeys([re.key]);
                   console.log(newCateRef);
-                  newCateRef.current[re.key].focus();
                 }
               },
             }}

@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect, useCallback, useRef } from "react";
+import React, { Component, useState, useEffect, useCallback } from "react";
 import { useMutation, useLazyQuery } from "@apollo/client";
 import { GetContents } from "../../../../../graphql/query/getContents";
 import { GetLevelConfig, UpdateResults } from "../../../../../graphql/query/session";
@@ -24,7 +24,7 @@ import {
   CheckOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-
+import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
@@ -32,14 +32,20 @@ const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditor
 });
 
 const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConfigs, cardTypeSets }) => {
+  const router = useRouter();
   const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataposition });
   function showdataposition(data) {
     console.log("data", data);
+    if(data.session_updateResults.status === "200"){
+      router.push("/m/study");
+    }
   }
 
   const sessionupdateresults = useCallback(
     async (cardlist_to_send, sessionId) => {
       try {
+        console.log(sessionId)
+        console.log(cardlist_to_send)
         await session_updateResults({
           variables: {
             forUpdateResults: {
@@ -57,7 +63,14 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
 
   return (
     <>
-      <Container sessionupdateresults={sessionupdateresults} cardListStudying={cardListStudying} contentsList={contentsList} sessionScope={sessionScope} levelConfigs={levelConfigs} cardTypeSets={cardTypeSets} />
+      <Container
+        sessionupdateresults={sessionupdateresults}
+        cardListStudying={cardListStudying}
+        contentsList={contentsList}
+        sessionScope={sessionScope}
+        levelConfigs={levelConfigs}
+        cardTypeSets={cardTypeSets}
+      />
     </>
   );
 };
@@ -227,18 +240,20 @@ class Container extends Component {
       console.log(current_card_info_index);
 
       //학습정보 업데이트
-      card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = "";
-      card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = "";
+      card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = null;
+      card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
       card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
       card_details_session[current_card_info_index].studyStatus.needStudyTime = review_date;
       card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
       card_details_session[current_card_info_index].studyStatus.recentSelection = diffi;
-      card_details_session[current_card_info_index].studyStatus.recentStayHour = String(timer);
+      card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
+      // card_details_session[current_card_info_index].studyStatus.recentStayHour = String(timer);
       card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi;
       card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
       card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing";
       card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1;
-      card_details_session[current_card_info_index].studyStatus.totalStayHour = String(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
+      card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
+      // card_details_session[current_card_info_index].studyStatus.totalStayHour = String(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
       card_details_session[current_card_info_index].studyStatus.totalStudyTimes = card_details_session[current_card_info_index].studyStatus.totalStudyTimes + 1;
 
       //업데이트된 학습정보 세션스토리지에 다시 저장
@@ -257,9 +272,23 @@ class Container extends Component {
       sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
       const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
       console.log("cardlist_to_send", cardlist_to_send);
+
+      //여기다가 새로운 시퀀스 정보를 가공해야함.
+
+      // 카드리스트 스터딩에 needstudytimeTmp를 조회해서 현재시간보다 빠른걸 찾아서 그녀석의 인덱스를 
+      // 새로운 카드 시퀀스로 저장하고, 기존 시퀀스는 다른 곳에 남겨둔다.
+      // currentseq sessitonStorage get item card_seq 를 바꿔치기한다.
+      // sessionStorage setItem 기존 seq로 저장해두고
+      // 위에 로직 실행시 카드가 없으면 기존시퀀스를 불러와서 currentSeq로 덮어치기 한다.
+      // 카드가 있으면 바꿔치기된 카드 seq를 조회해서 뿌려주고
+      // 이후 다음카드에서는 복습카드가 없으면 기존 시퀀스를 불러와서 쿼런트에 또 덮어치기.
+      
+
+      //여기다가 새로운 시퀀스 정보를 가공해야함.
+
+      //남은카드랑 이래저래 해서 학습이 종료되었는지...
       if (card_details_session.length - 1 == Number(card_seq)) {
-        
-        finishStudy();
+        this.finishStudy();
       } else {
         console.log(card_details_session.length - 1, "======", Number(card_seq));
         console.log("아직 안끝");
@@ -271,7 +300,7 @@ class Container extends Component {
     // this.onClickNextCard();
   };
   finishStudy = () => {
-    console.log("finishStudy Clicked!!!")
+    console.log("finishStudy Clicked!!!");
     // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
     if (cardlist_to_send) {
@@ -285,23 +314,20 @@ class Container extends Component {
         delete v.card_info.__typename;
       });
       cardlist_to_send.forEach(function (v) {
-        delete v.content.__typename;
+        delete v.card_info.time_created;
       });
       cardlist_to_send.forEach(function (v) {
-        delete v.content.makerFlag.__typename;
+        delete v._id;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.content;
       });
       cardlist_to_send.forEach(function (v) {
         delete v.studyStatus.__typename;
       });
-      cardlist_to_send.forEach(function (v) {
-        delete v.card_info.index_id;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.card_info.indexset_id;
-      });
+
       console.log("cardlist_to_send : ", cardlist_to_send);
       console.log("sessionId : ", sessionId);
-      console.log(typeof sessionId);
       this.props.sessionupdateresults(cardlist_to_send, sessionId);
     } else {
       console.log("공부끝");

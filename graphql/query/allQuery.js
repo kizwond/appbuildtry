@@ -42,6 +42,18 @@ export const GET_USER_ALL_CATEGORY_AND_BOOKS = gql`
     }
   }
 `;
+export const GET_USER_CATEGORY = gql`
+  ${FRAGMENT_CATEGORYSET}
+  query {
+    mybookcateset_getMybookcatesetByUserID {
+      status
+      msg
+      mybookcatesets {
+        ...MyCategorySetFragment
+      }
+    }
+  }
+`;
 
 export const GET_USER_ALL_MY_BOOKS = gql`
   ${FRAGMENT_MYBOOK}

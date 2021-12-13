@@ -1,11 +1,11 @@
-import { gql } from "@apollo/client";
-import { FRAGMENT_MYBOOK } from "../fragment/book";
-import { FRAGMENT_CATEGORYSET } from "../fragment/categorySet";
-import { FRAGMENT_MENTORING } from "../fragment/mentoring";
-import { FRAGMENT_MY_CARD_TYPE_SET } from "../fragment/cardTypeSet";
-import { FRAGMENT_CARD_SET } from "../fragment/cardSet";
-import { FRAGMENT_BUY_BOOK } from "../fragment/buyBook";
-import { FRAGMENT_USER_FLAG_CONFIG } from "../fragment/flagConfig";
+import { gql } from '@apollo/client';
+import { FRAGMENT_MYBOOK } from '../fragment/book';
+import { FRAGMENT_CATEGORYSET } from '../fragment/categorySet';
+import { FRAGMENT_MENTORING } from '../fragment/mentoring';
+import { FRAGMENT_MY_CARD_TYPE_SET } from '../fragment/cardTypeSet';
+import { FRAGMENT_CARD_SET } from '../fragment/cardSet';
+import { FRAGMENT_BUY_BOOK } from '../fragment/buyBook';
+import { FRAGMENT_USER_FLAG_CONFIG } from '../fragment/flagConfig';
 
 // 유저 정보 불러오기
 export const GET_USER_MINIMUM_INFORMATION_BY_USER_NAME = gql`
@@ -77,6 +77,26 @@ export const GET_MY_BOOKS_BY_BOOK_IDS = gql`
       msg
       mybooks {
         ...MyBookFragment
+      }
+    }
+  }
+`;
+export const GET_MY_BOOK_BY_BOOK_IDS__AND_ALL_BOOK_CATEGORIES = gql`
+  ${FRAGMENT_MYBOOK}
+  ${FRAGMENT_CATEGORYSET}
+  query GetMyBooksByBooksIds($mybook_ids: [ID]) {
+    mybook_getMybookByMybookIDs(mybook_ids: $mybook_ids) {
+      status
+      msg
+      mybooks {
+        ...MyBookFragment
+      }
+    }
+    mybookcateset_getMybookcatesetByUserID {
+      status
+      msg
+      mybookcatesets {
+        ...MyCategorySetFragment
       }
     }
   }

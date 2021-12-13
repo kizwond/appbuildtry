@@ -285,20 +285,18 @@ class Container extends Component {
         delete v.card_info.__typename;
       });
       cardlist_to_send.forEach(function (v) {
-        delete v.content.__typename;
+        delete v.card_info.time_created;
       });
       cardlist_to_send.forEach(function (v) {
-        delete v.content.makerFlag.__typename;
+        delete v._id;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.content;
       });
       cardlist_to_send.forEach(function (v) {
         delete v.studyStatus.__typename;
       });
-      cardlist_to_send.forEach(function (v) {
-        delete v.card_info.index_id;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.card_info.indexset_id;
-      });
+
       console.log("cardlist_to_send : ", cardlist_to_send);
       console.log("sessionId : ", sessionId);
       console.log(typeof sessionId);

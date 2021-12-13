@@ -90,6 +90,7 @@ export const GetSession = gql`
             time_created
             hasParent
             parentCard_id
+            card_id
           }
           content {
             userFlag

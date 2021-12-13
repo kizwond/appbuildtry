@@ -244,6 +244,7 @@ class Container extends Component {
       card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
       card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
       card_details_session[current_card_info_index].studyStatus.needStudyTime = review_date;
+      card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = review_date;
       card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
       card_details_session[current_card_info_index].studyStatus.recentSelection = diffi;
       card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
@@ -252,8 +253,15 @@ class Container extends Component {
       card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
       card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing";
       card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1;
-      card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
-      // card_details_session[current_card_info_index].studyStatus.totalStayHour = String(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
+      if(card_details_session[current_card_info_index].studyStatus.totalStayHour == null){
+        console.log("null timer")
+        // card_details_session[current_card_info_index].studyStatus.totalStayHour = String(timer);
+        card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(timer);
+      } else {
+        console.log("not null")
+        // card_details_session[current_card_info_index].studyStatus.totalStayHour = String(Number(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer);
+        card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(Number(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer);
+      }
       card_details_session[current_card_info_index].studyStatus.totalStudyTimes = card_details_session[current_card_info_index].studyStatus.totalStudyTimes + 1;
 
       //업데이트된 학습정보 세션스토리지에 다시 저장
@@ -274,7 +282,31 @@ class Container extends Component {
       console.log("cardlist_to_send", cardlist_to_send);
 
       //여기다가 새로운 시퀀스 정보를 가공해야함.
-
+      const reviewExist_data = card_details_session.filter(item => {
+        if(item.studyStatus.needStudyTimeTmp !== null){
+          if(new Date(item.studyStatus.needStudyTimeTmp) < now){
+            return item
+          }
+        }
+      })
+      console.log("복습해야 하는 카드", reviewExist_data)
+      if(reviewExist_data){
+        reviewExist_data.sort(function(a, b) { 
+          return a.studyStatus.needStudyTimeTmp > b.studyStatus.needStudyTimeTmp ? 1 : a.studyStatus.needStudyTimeTmp < b.studyStatus.needStudyTimeTmp ? -1 : 0;
+        });
+      }
+      console.log("복습해야 하는 카드", reviewExist_data)
+      if(reviewExist_data.length > 0){
+        const earlist = reviewExist_data[0]
+        console.log("earlist", reviewExist_data[0])
+        const earlist_id = reviewExist_data[0]._id
+        console.log(earlist_id)
+        console.log(card_details_session)
+        const shouldBeSeq = card_details_session.findIndex(item=>item._id == earlist_id)
+        console.log(shouldBeSeq)
+      }
+      
+      
       // 카드리스트 스터딩에 needstudytimeTmp를 조회해서 현재시간보다 빠른걸 찾아서 그녀석의 인덱스를 
       // 새로운 카드 시퀀스로 저장하고, 기존 시퀀스는 다른 곳에 남겨둔다.
       // currentseq sessitonStorage get item card_seq 를 바꿔치기한다.

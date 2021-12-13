@@ -64,9 +64,8 @@ const MentoringHome = () => {
       } catch (error) {
         console.log(error);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
-    []
+    [declineMentorRequest]
   );
 
   const { newData, mentoringData, previousMentoringData } =
@@ -358,6 +357,7 @@ const MentoringWrapper = styled.div`
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;
+
   & .ant-drawer-body * {
     font-size: 1rem;
   }

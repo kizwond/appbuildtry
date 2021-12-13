@@ -45,6 +45,23 @@ const M_MenteeGroupTable = ({
     setInputValues(inialValues);
   }, [mentorGroup]);
 
+  useEffect(() => {
+    if (newGroupModalVisible) {
+      setTimeout(() => {
+        getFieldInstance("mentorGroupName").focus({ cursor: "end" });
+      }, 0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newGroupModalVisible]);
+
+  useEffect(() => {
+    if (activedInput !== "" && inputRefs.current[activedInput]) {
+      setTimeout(() => {
+        inputRefs.current[activedInput].focus({ cursor: "end" });
+      }, 100);
+    }
+  }, [activedInput]);
+
   const [changeMentoringGroupName] = useMutation(
     MUTATION_UPDATE_MENTORING_GROUP,
     {
@@ -160,9 +177,6 @@ const M_MenteeGroupTable = ({
     }
   }
 
-  var focusInput;
-  var newGroupFocus;
-
   return (
     <>
       <DrawerWrapper
@@ -179,12 +193,7 @@ const M_MenteeGroupTable = ({
             <div>
               <StyledButtonForMainPage
                 onClick={() => {
-                  clearTimeout(newGroupFocus);
                   !newGroupModalVisible && setNewGroupModalVisible(true);
-                  newGroupFocus = setTimeout(
-                    () => form.getFieldInstance("menteeGroupName").focus(),
-                    200
-                  );
                 }}
               >
                 <PlusOutlined className="IconForButton" />
@@ -212,7 +221,6 @@ const M_MenteeGroupTable = ({
             size: "small",
           }}
           onCancel={() => {
-            clearTimeout(newGroupFocus);
             setNewGroupModalVisible(false);
             resetFields();
           }}
@@ -220,8 +228,8 @@ const M_MenteeGroupTable = ({
           onOk={() => {
             form
               .validateFields()
-              .then(({ menteeGroupName }) => {
-                createGroupName({ newGroupName: menteeGroupName });
+              .then(({ mentorGroupName }) => {
+                createGroupName({ newGroupName: mentorGroupName });
               })
               .catch((info) => {
                 console.log("Validate Failed:", info);
@@ -230,7 +238,7 @@ const M_MenteeGroupTable = ({
         >
           <Form form={form} id="newMenteeGroupForm">
             <Form.Item
-              name="menteeGroupName"
+              name="mentorGroupName"
               rules={[
                 {
                   required: true,
@@ -284,12 +292,7 @@ const M_MenteeGroupTable = ({
                         span={activedInput.includes(record._id) ? 7 : 3}
                         onClick={() => {
                           if (!activedInput.includes(record._id)) {
-                            clearTimeout(focusInput);
                             setActivedInput(record._id);
-                            focusInput = setTimeout(
-                              () => inputRefs.current[record._id].focus(),
-                              100
-                            );
                           }
                         }}
                         style={{ display: "flex", justifyContent: "center" }}

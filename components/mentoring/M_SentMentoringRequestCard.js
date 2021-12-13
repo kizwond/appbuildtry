@@ -27,6 +27,18 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring, forId }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setTextAreaInputValue(comment), [comment]);
 
+  useEffect(() => {
+    if (!textAreaDisabled) {
+      document
+        .getElementById(forId)
+        .scrollIntoView({ behavior: "smooth", block: "start" });
+      textAreaRef.current.focus({
+        cursor: "end",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [textAreaDisabled]);
+
   // 멘토링 수정 요청 api아직
   const [updateMentoringRequest] = useMutation(
     MUTATION_UPDATE_MENTORING_REQUEST,
@@ -71,16 +83,6 @@ const M_SentMentoringRequestCard = ({ mentor, declineMentoring, forId }) => {
             onClick={() => {
               if (textAreaDisabled) {
                 setTextAreaDisabled(false);
-                setTimeout(() => {
-                  document
-                    .getElementById(forId)
-                    .scrollIntoView({ behavior: "smooth", block: "start" });
-                  // window.scrollY(document.getElementById(forId).offsetTop);
-                  // console.log(document.getElementById(forId));
-                  textAreaRef.current.focus({
-                    cursor: "end",
-                  });
-                }, 100);
               }
               if (!textAreaDisabled) {
                 if (comment !== textAreaInputValue) {

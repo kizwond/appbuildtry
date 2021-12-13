@@ -45,6 +45,24 @@ const M_MenteeGroupTable = ({
     setInputValues(inialValues);
   }, [menteeGroup]);
 
+  useEffect(() => {
+    if (newGroupModalVisible) {
+      setTimeout(() => {
+        getFieldInstance("menteeGroupName").focus({ cursor: "end" });
+      }, 0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newGroupModalVisible]);
+
+  useEffect(() => {
+    if (activedInput !== "" && inputRefs.current[activedInput]) {
+      setTimeout(() => {
+        inputRefs.current[activedInput].focus({ cursor: "end" });
+      }, 100);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activedInput]);
+
   const [changeMentoringGroupName] = useMutation(
     MUTATION_UPDATE_MENTORING_GROUP,
     {
@@ -160,9 +178,6 @@ const M_MenteeGroupTable = ({
     }
   }
 
-  var focusInput;
-  var newGroupFocus;
-
   return (
     <>
       <DrawerWrapper
@@ -179,12 +194,7 @@ const M_MenteeGroupTable = ({
             <div>
               <StyledButtonForMainPage
                 onClick={() => {
-                  clearTimeout(newGroupFocus);
                   !newGroupModalVisible && setNewGroupModalVisible(true);
-                  newGroupFocus = setTimeout(
-                    () => form.getFieldInstance("menteeGroupName").focus(),
-                    200
-                  );
                 }}
               >
                 <PlusOutlined className="IconForButton" />
@@ -212,7 +222,6 @@ const M_MenteeGroupTable = ({
             size: "small",
           }}
           onCancel={() => {
-            clearTimeout(newGroupFocus);
             setNewGroupModalVisible(false);
             resetFields();
           }}
@@ -284,12 +293,7 @@ const M_MenteeGroupTable = ({
                         span={activedInput.includes(record._id) ? 7 : 3}
                         onClick={() => {
                           if (!activedInput.includes(record._id)) {
-                            clearTimeout(focusInput);
                             setActivedInput(record._id);
-                            focusInput = setTimeout(
-                              () => inputRefs.current[record._id].focus(),
-                              100
-                            );
                           }
                         }}
                         style={{ display: "flex", justifyContent: "center" }}
@@ -378,31 +382,6 @@ const M_MenteeGroupTable = ({
                 );
               },
             },
-            // {
-            //   title: "그룹명 변경",
-            //   align: "center",
-            //   width: 0,
-            //   colSpan: 0,
-            //   onCell: (record, rowIndex) => {
-            //     return {
-            //       onClick: (event) => {}, // click row
-            //       onDoubleClick: (event) => {}, // double click row
-            //       onContextMenu: (event) => {}, // right button click row
-            //       onMouseEnter: (event) => {}, // mouse enter row
-            //       onMouseLeave: (event) => {}, // mouse leave row
-            //     };
-            //   },
-            // },
-            // {
-            //   title: "상하 이동",
-            //   align: "center",
-            //   width: "30%",
-            // },
-            // {
-            //   title: "삭제",
-            //   align: "center",
-            //   width: "15%",
-            // },
           ]}
         />
       </DrawerWrapper>

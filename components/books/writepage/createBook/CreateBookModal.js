@@ -170,7 +170,7 @@ const StyledModal = styled(Modal)`
   & .ant-modal-body {
     padding: 8px 24px 8px 24px;
     & * {
-      font-size: 0.8rem;
+      font-size: 1rem;
     }
   }
 

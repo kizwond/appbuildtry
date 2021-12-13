@@ -14,6 +14,13 @@
     "isolatedModules": true,
     "jsx": "preserve"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/m/mentoring/index.js", "components/mentoring/useHooks/useGetMenteeBooks.js", "components/mentoring/useHooks/useGetMentorBooks.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "pages/m/mentoring/index.js",
+    "components/mentoring/useHooks/useGetMenteeBooks.js",
+    "components/mentoring/useHooks/useGetMentorBooks.js"
+  ],
   "exclude": ["node_modules"]
 }

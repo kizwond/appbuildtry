@@ -102,11 +102,13 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
         title: "구분",
         dataIndex: "difficulty",
         key: "difficulty",
+        width: 90,
       },
       {
         title: "별칭",
         dataIndex: "nick",
         key: "nick",
+        width: 90,
         render: (nick, record) => (
           <NickInput
             disabled={restudyOption[record.key].on_off === "on" ? false : true}
@@ -121,7 +123,7 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
         title: "섹션 내 반복 주기",
         dataIndex: "period",
         key: "period",
-        width: 90,
+        width: 50,
         render: (period, record, index) => {
           if (index == 4) {
             return <span style={{ color: "gray" }}>세션 탈출</span>;
@@ -141,7 +143,7 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
         title: "단축키",
         dataIndex: "shortcutkey",
         key: "shortcutkey",
-        width: 40,
+        width: 30,
         render: (short, record) => (
           <Input
             disabled={restudyOption[record.key].on_off === "on" ? false : true}
@@ -196,7 +198,7 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
         title: "제스처",
         dataIndex: "gesture",
         key: "gesture",
-        width: 70,
+        width: 60,
         render: (gesture, record, index) => (
           <GestureSelector
             gesture={gesture}
@@ -211,7 +213,7 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
         title: "사용 여부",
         dataIndex: "on_off",
         key: "on_off",
-        width: 70,
+        width: 30,
         render: (on_off, record, index) => {
           if (index == 4) {
             return (

@@ -117,6 +117,7 @@ const M_StudyFavoriteBooksTable = forwardRef(
               style={{ cursor: "pointer", display: "flex" }}
             >
               <StyledFlexAlignCenter>
+                <StyledBookTypeDiv booktype={_record.type} />
                 <Checkbox
                   ref={(ref) => (checkRef.current[_record.key] = ref)}
                   checked={isSelected}
@@ -136,7 +137,6 @@ const M_StudyFavoriteBooksTable = forwardRef(
                     }
                   }}
                 />
-                <StyledBookTypeDiv booktype={_record.type} />
               </StyledFlexAlignCenter>
               <DoubleLinesEllipsisContainer>
                 {value}

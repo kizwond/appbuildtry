@@ -22,6 +22,7 @@ import {
   ArrowUpOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
+import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 
 const CategorySettingModal = forwardRef(
   ({ category, visible, changeVisible }, ref) => {
@@ -30,6 +31,9 @@ const CategorySettingModal = forwardRef(
     const [expandedRowKeys, setExpandedRowKeys] = useState("");
     const newIdRef = useRef();
     const router = useRouter();
+
+    const inputRefs = useRef({});
+    const newCateRef = useRef({});
 
     const [createNewCategory] = useMutation(MUTATION_CREATE_MY_BOOK_CATEGORY, {
       onCompleted: (received_data) => {
@@ -183,42 +187,39 @@ const CategorySettingModal = forwardRef(
 
     const columns = [
       {
-        title: (
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            카테고리 이름
-          </div>
-        ),
+        title: "카테고리 이름",
         key: "name",
         dataIndex: "name",
         width: 130,
         render: (_value, _record) => {
-          return (
-            <div
-              style={{
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                display: "flex",
-                alignItems: "center",
-              }}
-              onClick={() => {
-                setExpandedRowKeys([]);
-              }}
-            >
-              {editingCell === _record.key ? (
-                <>
+          const obj = {
+            children: (
+              <div
+                style={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                onClick={() => {
+                  setExpandedRowKeys([]);
+                }}
+              >
+                <div
+                  style={{
+                    display: editingCell === _record.key ? "flex" : "none",
+                    width: "100%",
+                  }}
+                >
                   <Input
+                    ref={(ref) => (inputRefs.current[_record.key] = ref)}
                     size="small"
                     value={cateName}
                     onChange={(e) => {
                       setCateName(e.target.value);
                     }}
+                    style={{ marginRight: "5px" }}
                   />
                   <Button
                     size="small"
@@ -235,6 +236,7 @@ const CategorySettingModal = forwardRef(
                       setCateName("");
                       setEditingCell("");
                     }}
+                    style={{ marginRight: "5px" }}
                   >
                     수정
                   </Button>
@@ -248,107 +250,125 @@ const CategorySettingModal = forwardRef(
                   >
                     취소
                   </Button>
-                </>
-              ) : (
-                <>
-                  {_value}
+                </div>
+                <div
+                  style={{
+                    display: !(editingCell === _record.key) ? "flex" : "none",
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                >
+                  <StyledTwoLinesEllipsis>{_value}</StyledTwoLinesEllipsis>
                   <Button
                     size="small"
                     type="text"
                     icon={<EditFilled />}
                     disabled={editingCell !== "" || _record.isFixed === "yes"}
-                    onClick={() => {
-                      setEditingCell(_record.key);
-                      setCateName(_record.name);
+                    onClick={async () => {
+                      await setEditingCell(_record.key);
+                      await setCateName(_record.name);
+                      inputRefs.current[_record.key].focus();
                     }}
                   />
-                </>
-              )}
-            </div>
-          );
+                </div>
+              </div>
+            ),
+            props: {},
+          };
+
+          if (editingCell === _record.key) {
+            obj.props.colSpan = 3;
+          } else {
+            obj.props.colSpan = 1;
+          }
+          return obj;
         },
       },
 
       {
-        title: (
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            순서변경
-          </div>
-        ),
+        title: "순서변경",
         key: "seq",
         dataIndex: "seq",
         width: 50,
         align: "center",
         render: (_value, _record, _index) => {
-          return (
-            <Space>
-              <Button
-                size="small"
-                type="text"
-                icon={<ArrowUpOutlined />}
-                disabled={_record.isFixed === "yes" || _index === 1}
-                onClick={() => {
-                  if (_index > 1) {
+          const obj = {
+            children: (
+              <Space>
+                <Button
+                  size="small"
+                  type="text"
+                  icon={<ArrowUpOutlined />}
+                  disabled={_record.isFixed === "yes" || _index === 1}
+                  onClick={() => {
+                    if (_index > 1) {
+                      changeCategoryPosition({
+                        mybookcate_id: _record._id,
+                        direction: "up",
+                      });
+                    }
+                  }}
+                />
+                <Button
+                  size="small"
+                  type="text"
+                  icon={<ArrowDownOutlined />}
+                  disabled={
+                    _record.isFixed === "yes" ||
+                    _index === dataSource.length - 1
+                  }
+                  onClick={() => {
                     changeCategoryPosition({
                       mybookcate_id: _record._id,
-                      direction: "up",
+                      direction: "down",
                     });
-                  }
-                }}
-              />
-              <Button
-                size="small"
-                type="text"
-                icon={<ArrowDownOutlined />}
-                disabled={
-                  _record.isFixed === "yes" || _index === dataSource.length - 1
-                }
-                onClick={() => {
-                  changeCategoryPosition({
-                    mybookcate_id: _record._id,
-                    direction: "down",
-                  });
-                }}
-              />
-            </Space>
-          );
+                  }}
+                />
+              </Space>
+            ),
+            props: {},
+          };
+
+          if (editingCell === _record.key) {
+            obj.props.colSpan = 0;
+          } else {
+            obj.props.colSpan = 1;
+          }
+
+          return obj;
         },
       },
 
       {
-        title: (
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            삭제
-          </div>
-        ),
+        title: "삭제",
         key: "deleteCategory",
         dataIndex: "deleteCategory",
         width: 50,
         align: "center",
         render: (_value, _record) => {
-          return (
-            <Button
-              size="small"
-              type="text"
-              icon={<DeleteOutlined />}
-              disabled={_record.isFixed === "yes"}
-              onClick={() => {
-                deleteACategory({ mybookcate_id: _record._id });
-              }}
-            />
-          );
+          const obj = {
+            children: (
+              <Button
+                size="small"
+                type="text"
+                icon={<DeleteOutlined />}
+                disabled={_record.isFixed === "yes"}
+                onClick={() => {
+                  setExpandedRowKeys([]);
+                  deleteACategory({ mybookcate_id: _record._id });
+                }}
+              />
+            ),
+            props: {},
+          };
+
+          if (editingCell === _record.key) {
+            obj.props.colSpan = 0;
+          } else {
+            obj.props.colSpan = 1;
+          }
+
+          return obj;
         },
       },
     ];
@@ -381,6 +401,7 @@ const CategorySettingModal = forwardRef(
                 <div style={{ margin: "0 10px", display: "flex" }}>
                   <Input
                     size="small"
+                    ref={(ref) => (newCateRef.current[_record.key] = ref)}
                     value={cateName}
                     onChange={(e) => {
                       setCateName(e.target.value);
@@ -390,7 +411,6 @@ const CategorySettingModal = forwardRef(
                   <Button
                     size="small"
                     type="primary"
-                    icon={<CheckCircleFilled />}
                     disabled={
                       cateName.length === 0 ||
                       dataSource.map((_c) => _c.name).includes(cateName)
@@ -408,7 +428,6 @@ const CategorySettingModal = forwardRef(
                   <Button
                     size="small"
                     type="primary"
-                    icon={<CloseCircleFilled />}
                     onClick={() => {
                       setCateName("");
                       setExpandedRowKeys([]);
@@ -419,14 +438,16 @@ const CategorySettingModal = forwardRef(
                 </div>
               ),
               rowExpandable: (_record) => editingCell == "",
-              onExpand: (ex, re) => {
+              onExpand: async (ex, re) => {
                 console.log({ expandedRowKeys });
                 if (!ex) {
                   setExpandedRowKeys([]);
                   setCateName("");
                 }
                 if (ex) {
-                  setExpandedRowKeys([re.key]);
+                  await setExpandedRowKeys([re.key]);
+                  console.log(newCateRef);
+                  newCateRef.current[re.key].focus();
                 }
               },
             }}
@@ -446,7 +467,10 @@ const StyledModal = styled(Modal)`
   & .ant-modal-body {
     padding: 8px 24px 8px 24px;
     & * {
-      font-size: 0.8rem;
+      font-size: 1rem;
+    }
+    & .anticon > svg {
+      font-size: 1.333rem;
     }
   }
 
@@ -458,32 +482,17 @@ const StyledModal = styled(Modal)`
     padding: 10px 24px;
   }
 
-  & .AddNewCategory {
-    width: 25px;
-    height: 25px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: "pointer";
-  }
-  & .AddNewCategory:hover {
-    background-color: #a9a9a9;
-  }
-  & .AddNewCategory > .anticon-plus > svg {
-    font-size: 14px;
-  }
-  & .AddNewCategory:hover > .anticon-plus > svg {
-    font-size: 18px;
-    color: #fff;
+  .ant-table table {
+    // ColorPicker 잘리는 문제 해결
+    overflow: unset;
   }
 
   & .ant-table-expand-icon-col {
-    width: 2px;
+    width: 1px;
   }
   & .ant-table-row-expand-icon {
     top: 20px;
-    left: -10px;
+    left: -15px;
     z-index: 9999;
   }
 `;

@@ -164,6 +164,7 @@ const M_StudyBooksTable = ({
                 style={{ cursor: "pointer", display: "flex" }}
               >
                 <StyledFlexAlignCenter>
+                  <StyledBookTypeDiv booktype={_record.type} />
                   <Checkbox
                     ref={(ref) => (checkRef.current[_record.key] = ref)}
                     checked={isSelected}
@@ -183,7 +184,6 @@ const M_StudyBooksTable = ({
                       }
                     }}
                   />
-                  <StyledBookTypeDiv booktype={_record.type} />
                 </StyledFlexAlignCenter>
                 <DoubleLinesEllipsisContainer>
                   {value}

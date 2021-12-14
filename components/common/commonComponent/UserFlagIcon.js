@@ -99,6 +99,6 @@ const StyledDiv = styled.span`
         ? Math.round((parseFloat(props.size) * 1000) / 2) / 1000
         : 0.833}rem !important;
     font-weight: 700;
-    font-family: "NanumGothic";
+    font-family: "Noto Sans KR";
   }
 `;

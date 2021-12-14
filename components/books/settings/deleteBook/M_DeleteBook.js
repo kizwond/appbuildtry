@@ -3,6 +3,10 @@ import { useMutation } from "@apollo/client";
 import { Button, Alert, message } from "antd";
 import { MUTATION_DELETE_MY_BOOK } from "../../../../graphql/mutation/myBook";
 import { useRouter } from "next/router";
+import {
+  GET_MY_BOOKS_BY_BOOK_IDS,
+  GET_USER_ALL_MY_BOOKS,
+} from "../../../../graphql/query/allQuery";
 
 const DeleteBook = ({ book_id }) => {
   const { push, back } = useRouter();
@@ -26,6 +30,42 @@ const DeleteBook = ({ book_id }) => {
       await mybook_delete({
         variables: {
           mybook_id: book_id,
+        },
+        update(cache, { data }) {
+          const bookData = cache.readQuery({
+            query: GET_USER_ALL_MY_BOOKS,
+          });
+          const bookData2 = cache.readQuery({
+            query: GET_MY_BOOKS_BY_BOOK_IDS,
+            variables: {
+              mybook_ids: [book_id],
+            },
+          });
+          cache.writeQuery({
+            query: GET_USER_ALL_MY_BOOKS,
+            data: {
+              ...bookData,
+              mybook_getMybookByUserID: {
+                ...bookData.mybook_getMybookByUserID,
+                mybooks: bookData.mybook_getMybookByUserID.mybooks.filter(
+                  (book) => book._id !== book_id
+                ),
+              },
+            },
+          });
+          cache.writeQuery({
+            query: GET_MY_BOOKS_BY_BOOK_IDS,
+            variables: {
+              mybook_ids: [book_id],
+            },
+            data: {
+              ...bookData2,
+              mybook_getMybookByMybookIDs: {
+                ...bookData2.mybook_getMybookByMybookIDs,
+                mybooks: null,
+              },
+            },
+          });
         },
       });
     } catch (error) {

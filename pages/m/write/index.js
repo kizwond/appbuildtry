@@ -52,7 +52,7 @@ const M_WriteMain = () => {
   return (
     <>
       <Head>
-        <title>I'm 더북</title>
+        <title>Im더북</title>
       </Head>
 
       {myBook2 && category2 && (

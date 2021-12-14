@@ -41,16 +41,6 @@ const M_FlagSetting = () => {
     },
   });
 
-  // useEffect(() => {
-  //   if (data) {
-  //     console.log(
-  //       "데이터 변경됨",
-  //       data.userflagconfig_get.userflagconfigs[0].details
-  //     );
-
-  //   }
-  // }, [data]);
-
   const [userflagconfig_update] = useMutation(
     MUTATION_UPDATE_USER_FLAG_CONFIG,
     {
@@ -167,7 +157,7 @@ const M_FlagSetting = () => {
                     figure={item}
                     color={flag[record.key - 1].figureColor}
                     textColor={flag[record.key - 1].textColor}
-                    flagNumber={rowIndex}
+                    flagNumber={rowIndex + 1}
                     iconRemSize={2}
                   />
                 </Select.Option>

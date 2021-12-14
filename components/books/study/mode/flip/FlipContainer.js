@@ -36,7 +36,7 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
   const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataposition });
   function showdataposition(data) {
     console.log("data", data);
-    if(data.session_updateResults.status === "200"){
+    if (data.session_updateResults.status === "200") {
       router.push("/m/study");
     }
   }
@@ -44,8 +44,8 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
   const sessionupdateresults = useCallback(
     async (cardlist_to_send, sessionId) => {
       try {
-        console.log(sessionId)
-        console.log(cardlist_to_send)
+        console.log(sessionId);
+        console.log(cardlist_to_send);
         await session_updateResults({
           variables: {
             forUpdateResults: {
@@ -216,13 +216,104 @@ class Container extends Component {
       }));
     }
   };
+  Diffi5Handler = (diffi, current_card_id, timer) => {
+    console.log("diffi5 clicked!!!");
+    console.log("timer:", timer);
+    if (timer > 10000) {
+      timer = timer / 1000;
+    } else {
+      timer = 10000 / 1000;
+    }
+    const now = new Date();
+    const now_mili_convert = Date.parse(now);
+    const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const current_card_info_index = card_details_session.findIndex((item) => item.content.mycontent_id === current_card_id);
+    const current_card_book_id = card_details_session[current_card_info_index].card_info.mybook_id;
+    const current_card_levelconfig = this.props.levelconfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
+
+    card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime =
+      (now_mili_convert - Date.parse(card_details_session[current_card_info_index].studyStatus.recentKnowTime)) / 1000;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour + timer;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
+
+    if (card_details_session[current_card_info_index].studyStatus.recentKnowTime === null) {
+      //첫 know 처리  
+      const a_r = -0.275;
+      const b_r = 1.1242;
+      const n_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes;
+      const h_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour;
+      const h_e = card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime;
+      const s = current_card_levelconfig[0].restudy.levelchangeSensitivity;
+      const l_prev = card_details_session[current_card_info_index].studyStatus.levelCurrent;
+      const r_restudy = current_card_levelconfig[0].restudy.restudyRatio;
+      const r_0 = a_r * Math.log(n_s * Math.log(h_s)) + b_r;
+      const w_firstknow = 20;
+      const t_now = Date.parse(now) / 1000;
+      console.log(timer, n_s, h_s);
+      var l_apply = s * w_firstknow * (1 / (n_s * Math.log(h_s)));
+      var t_next = t_now + ((5400 * Math.pow(2, l_apply - 1)) / Math.log(0.8)) * Math.log(r_restudy);
+      var t_next_to_date = new Date(t_next * 1000);
+      console.log(l_apply);
+      console.log("첫 know 처리 ", t_next_to_date);
+      //첫 know 처리
+    } else {
+      //복습주기 로직
+      const a_r = -0.275;
+      const b_r = 1.1242;
+      const n_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes;
+      const h_s = card_details_session[current_card_info_index].studyStatus.currentLevStudyHour;
+      const h_e = card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime;
+      const s = current_card_levelconfig[0].restudy.levelchangeSensitivity;
+      const l_prev = card_details_session[current_card_info_index].studyStatus.levelCurrent;
+      const r_restudy = current_card_levelconfig[0].restudy.restudyRatio;
+      const t_now = Date.parse(now) / 1000;
+      const r_0 = a_r * Math.log(n_s * Math.log(h_s)) + b_r;
+      const l_theo = Math.log((Math.log(0.8) * h_e) / (5400 * Math.log(r_0))) / Math.log(2) + 1;
+      var l_apply = l_prev + s * (l_theo - l_prev);
+      var t_next = t_now + ((5400 * Math.pow(2, l_apply - 1)) / Math.log(0.8)) * Math.log(r_restudy);
+      console.log("복습주기 로직", t_next);
+      //복습주기 로직
+    }
+
+    card_details_session[current_card_info_index].studyStatus.levelOriginal = card_details_session[current_card_info_index].studyStatus.levelCurrent;
+    card_details_session[current_card_info_index].studyStatus.levelCurrent = l_apply;
+    card_details_session[current_card_info_index].studyStatus.needStudyTime = new Date(t_next * 1000);
+    card_details_session[current_card_info_index].studyStatus.recentKnowTime = now;
+    card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
+    card_details_session[current_card_info_index].studyStatus.recentSelection = diffi;
+    card_details_session[current_card_info_index].studyStatus.recentStayHour = String(timer);
+    card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi;
+    card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
+    // card_details_session[current_card_info_index].studyStatus.retentionRate =
+    card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing";
+    // card_details_session[current_card_info_index].studyStatus.statusOriginal =
+    // card_details_session[current_card_info_index].studyStatus.statusPrev =
+    card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1;
+    card_details_session[current_card_info_index].studyStatus.totalStayHour = String(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
+    card_details_session[current_card_info_index].studyStatus.totalStudyTimes = card_details_session[current_card_info_index].studyStatus.totalStudyTimes + 1;
+
+    console.log(card_details_session);
+
+    //서버에 보내기 위한 학습정보 리스트 생성
+    this.generateStudyStatus(card_details_session,current_card_info_index)
+    //업데이트된 학습정보 세션스토리지에 다시 저장
+    card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = null;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 0;
+    sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
+
+    //여기다가 새로운 시퀀스 정보를 가공해야함.
+    this.generateCardSeq(card_details_session, now);
+
+  };
+
+
   onDiffClickHandler = (interval, diffi, current_card_id, timer) => {
     console.log("난이도 선택하셨네요~");
     console.log("해당카드 난이도평가", interval, diffi, current_card_id, timer);
     if (diffi === "diffi5") {
-      console.log(timer);
       console.log("알겠음 클릭함.");
-      // this.sessionKnowHandler(interval, diffi, current_card_id, timer);
+      // this.Diffi5Handler( diffi, current_card_id, timer);
     } else {
       console.log(timer);
       const now = new Date();
@@ -231,7 +322,7 @@ class Container extends Component {
       const need_review_time = now_mili_convert + result;
       const review_date = new Date(need_review_time);
       console.log(interval);
-      
+
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       console.log("card_details_session", card_details_session);
 
@@ -239,7 +330,12 @@ class Container extends Component {
       console.log(current_card_info_index);
 
       //학습정보 업데이트
-      card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = null;
+      if(card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime !== null){
+        const newValue = new Date(Number(card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime) + timer)
+        card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = newValue;
+      } else {
+        card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = new Date(timer);;
+      }
       card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
       card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
       card_details_session[current_card_info_index].studyStatus.needStudyTime = review_date;
@@ -247,18 +343,13 @@ class Container extends Component {
       card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
       card_details_session[current_card_info_index].studyStatus.recentSelection = diffi;
       card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
-      // card_details_session[current_card_info_index].studyStatus.recentStayHour = String(timer);
       card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi;
       card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
       card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing";
       card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1;
-      if(card_details_session[current_card_info_index].studyStatus.totalStayHour == null){
-        console.log("null timer")
-        // card_details_session[current_card_info_index].studyStatus.totalStayHour = String(timer);
+      if (card_details_session[current_card_info_index].studyStatus.totalStayHour == null) {
         card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(timer);
       } else {
-        console.log("not null")
-        // card_details_session[current_card_info_index].studyStatus.totalStayHour = String(Number(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer);
         card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(Number(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer);
       }
       card_details_session[current_card_info_index].studyStatus.totalStudyTimes = card_details_session[current_card_info_index].studyStatus.totalStudyTimes + 1;
@@ -267,74 +358,67 @@ class Container extends Component {
       sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
 
       //서버에 보내기 위한 학습정보 리스트 생성
-      const updateThis = card_details_session[current_card_info_index];
-      const getUpdateThis = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
-
-      if (getUpdateThis) {
-        var finalUpdate = getUpdateThis.concat(updateThis);
-      } else {
-        finalUpdate = [updateThis];
-      }
-
-      sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
-      const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
-      console.log("cardlist_to_send", cardlist_to_send);
+      this.generateStudyStatus(card_details_session,current_card_info_index)
 
       //여기다가 새로운 시퀀스 정보를 가공해야함.
-      const reviewExist_data = card_details_session.filter(item => {
-        if(item.studyStatus.needStudyTimeTmp !== null){
-          if(new Date(item.studyStatus.needStudyTimeTmp) < now){
-            return item
-          }
-        }
-      })
-      console.log("복습해야 하는 카드", reviewExist_data)
-      if(reviewExist_data){
-        reviewExist_data.sort(function(a, b) { 
-          return a.studyStatus.needStudyTimeTmp > b.studyStatus.needStudyTimeTmp ? 1 : a.studyStatus.needStudyTimeTmp < b.studyStatus.needStudyTimeTmp ? -1 : 0;
-        });
-      }
-      console.log("복습해야 하는 카드 after sort : ", reviewExist_data)
-      if(reviewExist_data.length > 0){
-        console.log("earlist", reviewExist_data[0])
-        const earlist_id = reviewExist_data[0]._id
-        console.log(earlist_id)
-        console.log(card_details_session)
-        const shouldBeSeq = card_details_session.findIndex(item=>item._id == earlist_id)
-        console.log(shouldBeSeq)
-        // const origin_seq = sessionStorage.getItem("origin_seq");
-        // sessionStorage.setItem("origin_seq", Number(origin_seq) + 1)
-        sessionStorage.setItem("card_seq", shouldBeSeq)
-      } else {
-        const origin_seq = sessionStorage.getItem("origin_seq");
-        sessionStorage.setItem("origin_seq", Number(origin_seq) + 1);
-        sessionStorage.setItem("card_seq", Number(origin_seq) + 1)
-      }
-      const card_seq = sessionStorage.getItem("card_seq")
-      // 카드리스트 스터딩에 needstudytimeTmp를 조회해서 현재시간보다 빠른걸 찾아서 그녀석의 인덱스를 
-      // 새로운 카드 시퀀스로 저장하고, 기존 시퀀스는 다른 곳에 남겨둔다.
-      // currentseq sessitonStorage get item card_seq 를 바꿔치기한다.
-      // sessionStorage setItem 기존 seq로 저장해두고
-      // 위에 로직 실행시 카드가 없으면 기존시퀀스를 불러와서 currentSeq로 덮어치기 한다.
-      // 카드가 있으면 바꿔치기된 카드 seq를 조회해서 뿌려주고
-      // 이후 다음카드에서는 복습카드가 없으면 기존 시퀀스를 불러와서 쿼런트에 또 덮어치기.
-      
-
-      //여기다가 새로운 시퀀스 정보를 가공해야함.
+      this.generateCardSeq(card_details_session, now);
 
       //남은카드랑 이래저래 해서 학습이 종료되었는지...
+      const card_seq = sessionStorage.getItem("card_seq");
       if (card_details_session.length - 1 == Number(card_seq)) {
         this.finishStudy();
       } else {
         console.log(card_details_session.length - 1, "======", Number(card_seq));
         console.log("아직 안끝");
-        // cardShow();
-        // setTimer(0);
+        // this.setTimer(0);
       }
     }
-
-    // this.onClickNextCard();
   };
+
+  //상황에따른 새로운 카드 시쿼스 생성
+  generateCardSeq = (card_details_session, now) => {
+    const reviewExist_data = card_details_session.filter((item) => {
+      if (item.studyStatus.needStudyTimeTmp !== null) {
+        if (new Date(item.studyStatus.needStudyTimeTmp) < now) {
+          return item;
+        }
+      }
+    });
+    console.log("복습해야 하는 카드", reviewExist_data);
+    if (reviewExist_data) {
+      reviewExist_data.sort(function (a, b) {
+        return a.studyStatus.needStudyTimeTmp > b.studyStatus.needStudyTimeTmp ? 1 : a.studyStatus.needStudyTimeTmp < b.studyStatus.needStudyTimeTmp ? -1 : 0;
+      });
+    }
+    console.log("복습해야 하는 카드 after sort : ", reviewExist_data);
+    if (reviewExist_data.length > 0) {
+      console.log("earlist", reviewExist_data[0]);
+      const earlist_id = reviewExist_data[0]._id;
+      console.log(earlist_id);
+      console.log(card_details_session);
+      const shouldBeSeq = card_details_session.findIndex((item) => item._id == earlist_id);
+      console.log(shouldBeSeq);
+      // const origin_seq = sessionStorage.getItem("origin_seq");
+      // sessionStorage.setItem("origin_seq", Number(origin_seq) + 1)
+      sessionStorage.setItem("card_seq", shouldBeSeq);
+    } else {
+      const origin_seq = sessionStorage.getItem("origin_seq");
+      sessionStorage.setItem("origin_seq", Number(origin_seq) + 1);
+      sessionStorage.setItem("card_seq", Number(origin_seq) + 1);
+    }
+  }
+
+  //서버에 보내기 위한 학습정보생성
+  generateStudyStatus = (card_details_session,current_card_info_index) => {
+    const updateThis = card_details_session[current_card_info_index];
+    const getUpdateThis = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+    if (getUpdateThis) {
+      var finalUpdate = getUpdateThis.concat(updateThis);
+    } else {
+      finalUpdate = [updateThis];
+    }
+    sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
+  }
   finishStudy = () => {
     console.log("finishStudy Clicked!!!");
     // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");

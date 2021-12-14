@@ -171,9 +171,6 @@ class Container extends Component {
       // this.setState((prevState) => ({
       //   cardSeq: prevState.cardSeq + 1,
       // }));
-      this.setState((prevState) => ({
-        clickCount: prevState.clickCount + 1,
-      }));
     }
   };
 
@@ -188,9 +185,6 @@ class Container extends Component {
     } else {
       this.setState((prevState) => ({
         cardSeq: prevState.cardSeq + 1,
-      }));
-      this.setState((prevState) => ({
-        clickCount: prevState.clickCount + 1,
       }));
     }
   };
@@ -211,9 +205,6 @@ class Container extends Component {
       this.setState({
         onBackMode: true,
       });
-      this.setState((prevState) => ({
-        clickCount: prevState.clickCount + 1,
-      }));
     }
   };
   Diffi5Handler = (diffi, current_card_id, timer) => {
@@ -408,28 +399,21 @@ class Container extends Component {
       reviewExist_data.sort(function (a, b) {
         return a.studyStatus.needStudyTimeTmp > b.studyStatus.needStudyTimeTmp ? 1 : a.studyStatus.needStudyTimeTmp < b.studyStatus.needStudyTimeTmp ? -1 : 0;
       });
-
-      console.log("복습해야 하는 카드 after sort : ", reviewExist_data);
-      console.log("earlist : ", reviewExist_data[0]);
       const earlist_id = reviewExist_data[0]._id;
-      console.log(earlist_id);
-      console.log(card_details_session);
       const shouldBeSeq = card_details_session.findIndex((item) => item._id == earlist_id);
-      console.log(shouldBeSeq);
-      // const origin_seq = sessionStorage.getItem("origin_seq");
-      // sessionStorage.setItem("origin_seq", Number(origin_seq) + 1)
       sessionStorage.setItem("card_seq", shouldBeSeq);
     } else {
       const origin_seq = sessionStorage.getItem("origin_seq");
       sessionStorage.setItem("origin_seq", Number(origin_seq) + 1);
       sessionStorage.setItem("card_seq", Number(origin_seq) + 1);
     }
+    this.stopTimerTotal();
+    this.resetTimer();
   };
 
   // 학습로그는 화면에 뿌려진 카드의 _id값을 array로 세션스토리지에 저장한다.
   // 백을 누르면 로그에 저장된 마지막 id를 카드리스트에서 조회해서 해당 시퀀스를 card_seq로 덮어치기를 한다.
   // 원래자리에서 공부하기 버튼을 누르면 오리지널 시퀀스에서 card_seq를 덮어치기한다.
-  //
 
   //서버에 보내기 위한 학습정보생성
   generateStudyStatus = (card_details_session, current_card_info_index) => {
@@ -529,6 +513,12 @@ class Container extends Component {
   };
 
   render() {
+    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+    if (cardlist_to_send) {
+      var clickCount = cardlist_to_send.length;
+    } else {
+      var clickCount = 0;
+    }
     if (this.props.levelConfigs) {
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
       const current_card_book_id = this.props.cardListStudying[currentSeq].card_info.mybook_id;
@@ -1358,7 +1348,7 @@ class Container extends Component {
               <div style={{ width: "50px", fontSize: "1rem", marginRight: "5px" }}>완료율</div>
               <ProgressBar bgcolor={"#32c41e"} completed={100} />
             </div>
-            <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {this.state.clickCount}</div>
+            <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {clickCount}</div>
           </div>
           <div style={{ display: "flex", marginTop: "5px", justifyContent: "space-between", alignItems: "center" }}>
             <Timer

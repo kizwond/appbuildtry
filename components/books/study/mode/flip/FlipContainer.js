@@ -229,7 +229,7 @@ class Container extends Component {
     const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const current_card_info_index = card_details_session.findIndex((item) => item.content.mycontent_id === current_card_id);
     const current_card_book_id = card_details_session[current_card_info_index].card_info.mybook_id;
-    const current_card_levelconfig = this.props.levelconfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
+    const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
 
     card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime =
       (now_mili_convert - Date.parse(card_details_session[current_card_info_index].studyStatus.recentKnowTime)) / 1000;
@@ -253,7 +253,8 @@ class Container extends Component {
       var l_apply = s * w_firstknow * (1 / (n_s * Math.log(h_s)));
       var t_next = t_now + ((5400 * Math.pow(2, l_apply - 1)) / Math.log(0.8)) * Math.log(r_restudy);
       var t_next_to_date = new Date(t_next * 1000);
-      console.log(l_apply);
+      console.log("t_next : ", t_next);
+      console.log("l_apply : " , l_apply);
       console.log("첫 know 처리 ", t_next_to_date);
       //첫 know 처리
     } else {
@@ -285,9 +286,9 @@ class Container extends Component {
     card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi;
     card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
     // card_details_session[current_card_info_index].studyStatus.retentionRate =
+    card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent
     card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing";
-    // card_details_session[current_card_info_index].studyStatus.statusOriginal =
-    // card_details_session[current_card_info_index].studyStatus.statusPrev =
+    card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent
     card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1;
     card_details_session[current_card_info_index].studyStatus.totalStayHour = String(card_details_session[current_card_info_index].studyStatus.totalStayHour + timer);
     card_details_session[current_card_info_index].studyStatus.totalStudyTimes = card_details_session[current_card_info_index].studyStatus.totalStudyTimes + 1;
@@ -313,7 +314,7 @@ class Container extends Component {
     console.log("해당카드 난이도평가", interval, diffi, current_card_id, timer);
     if (diffi === "diffi5") {
       console.log("알겠음 클릭함.");
-      // this.Diffi5Handler( diffi, current_card_id, timer);
+      this.Diffi5Handler( diffi, current_card_id, timer);
     } else {
       console.log(timer);
       const now = new Date();
@@ -345,6 +346,7 @@ class Container extends Component {
       card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
       card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi;
       card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
+      card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent
       card_details_session[current_card_info_index].studyStatus.statusCurrent = "ing";
       card_details_session[current_card_info_index].studyStatus.studyTimesInSession = card_details_session[current_card_info_index].studyStatus.studyTimesInSession + 1;
       if (card_details_session[current_card_info_index].studyStatus.totalStayHour == null) {
@@ -520,9 +522,10 @@ class Container extends Component {
       const diffi = [];
       diffi.push(diffi1, diffi2, diffi3, diffi4, diffi5);
       const useDiffi = diffi.filter((item) => item.on_off === "on");
-      var diffiButtons = useDiffi.map((item) => (
+      var diffiButtons = useDiffi.map((item, index) => (
         <>
           <Button
+            key={`diffiButton_${item.name}`}
             size="small"
             type="primary"
             style={{ fontSize: "0.8rem", borderRadius: "3px" }}
@@ -846,6 +849,7 @@ class Container extends Component {
                           {content_value.face1.map((item, index) => (
                             <>
                               <div
+                                key={`face1_row${index + 1}`}
                                 id={`face1_row${index + 1}`}
                                 style={{
                                   backgroundColor: row_style.face1[index].background.color,
@@ -922,6 +926,7 @@ class Container extends Component {
                           {content_value.face1.map((item, index) => (
                             <>
                               <div
+                                key={`face1_row${index + 1}`}
                                 style={{
                                   backgroundColor: row_style.face1[index].background.color,
                                   marginTop: row_style.face1[index].outer_margin.top,
@@ -996,6 +1001,7 @@ class Container extends Component {
                           {content_value.face1.map((item, index) => (
                             <>
                               <div
+                                key={`face1_row${index + 1}`}
                                 style={{
                                   backgroundColor: row_style.face1[index].background.color,
                                   marginTop: row_style.face1[index].outer_margin.top,
@@ -1037,6 +1043,7 @@ class Container extends Component {
                             content_value.selection.map((item, index) => (
                               <>
                                 <div
+                                  key={`selection${index + 1}`}
                                   style={{
                                     backgroundColor: row_style.face1[row_style.face1.length - 1].background.color,
                                     marginTop: row_style.face1[row_style.face1.length - 1].outer_margin.top,
@@ -1185,6 +1192,7 @@ class Container extends Component {
                             content_value.face2.map((item, index) => (
                               <>
                                 <div
+                                key={`face2_row${index + 1}`}
                                   id={`face2_row${index + 1}`}
                                   style={{
                                     backgroundColor: row_style.face2[index].background.color,
@@ -1269,6 +1277,7 @@ class Container extends Component {
                             content_value.face2.map((item, index) => (
                               <>
                                 <div
+                                key={`face2_row${index + 1}`}
                                   id={`face2_row${index + 1}`}
                                   style={{
                                     backgroundColor: row_style.face2[index].background.color,

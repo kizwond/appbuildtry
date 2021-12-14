@@ -282,7 +282,7 @@ class Container extends Component {
     card_details_session[current_card_info_index].studyStatus.recentKnowTime = now;
     card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
     card_details_session[current_card_info_index].studyStatus.recentSelection = diffi;
-    card_details_session[current_card_info_index].studyStatus.recentStayHour = String(timer);
+    card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
     card_details_session[current_card_info_index].studyStatus.recentStudyResult = diffi;
     card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
     // card_details_session[current_card_info_index].studyStatus.retentionRate =

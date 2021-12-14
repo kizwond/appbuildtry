@@ -52,11 +52,9 @@ const M_WriteMain = () => {
   return (
     <>
       <Head>
-        <title>Write - CogBook</title>
+        <title>I'm 더북</title>
       </Head>
-      <Head>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-      </Head>
+
       {myBook2 && category2 && (
         <M_Layout>
           <StyledRowMaxWidth>

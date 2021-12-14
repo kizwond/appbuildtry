@@ -268,16 +268,14 @@ const M_StudyBooksTable = ({
           children: (
             <div>
               {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-              {
-                // _record.total === 0 ? "-" :
+              {_record.total === 0 ? (
+                "-"
+              ) : (
                 <StyledProgress
                   booktype={_record.type}
-                  percent={
-                    _index * 20
-                    // _record.accuLevel / _record.total
-                  }
+                  percent={_record.accuLevel / _record.total}
                 />
-              }
+              )}
             </div>
           ),
           props: {

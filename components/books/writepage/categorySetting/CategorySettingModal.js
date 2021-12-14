@@ -12,7 +12,7 @@ import {
 import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 
 import styled from "styled-components";
-import { Modal, Button, Input, Table, Space } from "antd";
+import { Modal, Button, Input, Table, Space, Empty } from "antd";
 import {
   EditFilled,
   DeleteOutlined,
@@ -22,6 +22,7 @@ import {
 import { useRouter } from "next/router";
 import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 import { useEffect } from "react";
+import _, { map, filter } from "lodash";
 
 const CategorySettingModal = forwardRef(
   ({ category, visible, changeVisible }, ref) => {
@@ -193,11 +194,12 @@ const CategorySettingModal = forwardRef(
       }
     }
 
-    const dataSource = category.mybookcates.map((_cate) => ({
-      ..._cate,
-      _id: _cate._id,
-      key: _cate._id,
-    }));
+    const dataSource = category.mybookcates
+      .filter((a) => a.isFixed !== "yes")
+      .map((_cate) => ({
+        ..._cate,
+        key: _cate._id,
+      }));
 
     const columns = [
       {
@@ -316,9 +318,9 @@ const CategorySettingModal = forwardRef(
                   size="small"
                   type="text"
                   icon={<ArrowUpOutlined />}
-                  disabled={_record.isFixed === "yes" || _index === 1}
+                  disabled={_index === 0}
                   onClick={() => {
-                    if (_index > 1) {
+                    if (_index > 0) {
                       changeCategoryPosition({
                         mybookcate_id: _record._id,
                         direction: "up",
@@ -330,10 +332,7 @@ const CategorySettingModal = forwardRef(
                   size="small"
                   type="text"
                   icon={<ArrowDownOutlined />}
-                  disabled={
-                    _record.isFixed === "yes" ||
-                    _index === dataSource.length - 1
-                  }
+                  disabled={_index === dataSource.length - 1}
                   onClick={() => {
                     changeCategoryPosition({
                       mybookcate_id: _record._id,
@@ -369,7 +368,6 @@ const CategorySettingModal = forwardRef(
                 size="small"
                 type="text"
                 icon={<DeleteOutlined />}
-                disabled={_record.isFixed === "yes"}
                 onClick={() => {
                   setExpandedRowKeys([]);
                   deleteACategory({ mybookcate_id: _record._id });
@@ -412,6 +410,16 @@ const CategorySettingModal = forwardRef(
             tableLayout="fixed"
             columns={columns}
             size="small"
+            locale={{
+              emptyText: (
+                <Empty
+                  description="등록된 카테고리가 없습니다."
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                >
+                  <Button type="primary">새 카테고리 만들기</Button>
+                </Empty>
+              ),
+            }}
             expandable={{
               expandedRowKeys,
               expandedRowRender: (_record, _index) => (

@@ -56,14 +56,12 @@ const WriteHistoryGraphBarComponent = ({ _record }) => {
                   height:
                     theDayBeforeYesterdayCreatedCards >= 100
                       ? "100%"
-                      : // `${theDayBeforeYesterdayCreatedCards}%`
-                        "10%",
+                      : `${theDayBeforeYesterdayCreatedCards}%`,
                 }}
               >
                 <span className="CardCounter">
                   {theDayBeforeYesterdayCreatedCards === 0
-                    ? // "-"
-                      10
+                    ? "-"
                     : theDayBeforeYesterdayCreatedCards}
                 </span>
               </div>
@@ -77,15 +75,11 @@ const WriteHistoryGraphBarComponent = ({ _record }) => {
                   height:
                     yesterdayCreatedCards >= 100
                       ? "100%"
-                      : //  `${yesterdayCreatedCards}%`
-                        "50%",
+                      : `${yesterdayCreatedCards}%`,
                 }}
               >
                 <span className="CardCounter">
-                  {yesterdayCreatedCards === 0
-                    ? // "-"
-                      50
-                    : yesterdayCreatedCards}
+                  {yesterdayCreatedCards === 0 ? "-" : yesterdayCreatedCards}
                 </span>
               </div>
             </div>
@@ -96,17 +90,11 @@ const WriteHistoryGraphBarComponent = ({ _record }) => {
                 className="AchivedCard"
                 style={{
                   height:
-                    todayCreatedCards >= 100
-                      ? "100%"
-                      : //  `${todayCreatedCards}%`
-                        "100%",
+                    todayCreatedCards >= 100 ? "100%" : `${todayCreatedCards}%`,
                 }}
               >
                 <span className="CardCounter">
-                  {todayCreatedCards === 0
-                    ? // "-"
-                      100
-                    : todayCreatedCards}
+                  {todayCreatedCards === 0 ? "-" : todayCreatedCards}
                 </span>
               </div>
             </div>

@@ -75,6 +75,7 @@ const FlipMode = () => {
       setCardListStudying(data.session_getSession.sessions[0].cardlistStudying);
       setSessionScope(data.session_getSession.sessions[0].sessionScope);
       sessionStorage.setItem("card_seq", 0);
+      sessionStorage.setItem("origin_seq", 0);
       sessionStorage.removeItem("cardlist_to_send");
       const now = new Date();
       sessionStorage.setItem("started", now);

@@ -160,20 +160,6 @@ class Container extends Component {
     });
   };
 
-  onClickNextCard = () => {
-    const currentSeq = Number(sessionStorage.getItem("card_seq"));
-    const cardListLength = this.props.cardListStudying.length;
-    const cardSeqNum = currentSeq + 1;
-    if (cardListLength === cardSeqNum) {
-      alert("마지막 카드여~");
-    } else {
-      sessionStorage.setItem("card_seq", currentSeq + 1);
-      // this.setState((prevState) => ({
-      //   cardSeq: prevState.cardSeq + 1,
-      // }));
-    }
-  };
-
   onClickNextCardInBackMode = () => {
     if (this.state.originCardSeq === this.state.cardSeq + 1) {
       this.setState({

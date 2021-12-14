@@ -231,8 +231,7 @@ class Container extends Component {
       const need_review_time = now_mili_convert + result;
       const review_date = new Date(need_review_time);
       console.log(interval);
-      const card_seq = sessionStorage.getItem("card_seq");
-      sessionStorage.setItem("card_seq", Number(card_seq) + 1);
+      
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       console.log("card_details_session", card_details_session);
 
@@ -295,18 +294,23 @@ class Container extends Component {
           return a.studyStatus.needStudyTimeTmp > b.studyStatus.needStudyTimeTmp ? 1 : a.studyStatus.needStudyTimeTmp < b.studyStatus.needStudyTimeTmp ? -1 : 0;
         });
       }
-      console.log("복습해야 하는 카드", reviewExist_data)
+      console.log("복습해야 하는 카드 after sort : ", reviewExist_data)
       if(reviewExist_data.length > 0){
-        const earlist = reviewExist_data[0]
         console.log("earlist", reviewExist_data[0])
         const earlist_id = reviewExist_data[0]._id
         console.log(earlist_id)
         console.log(card_details_session)
         const shouldBeSeq = card_details_session.findIndex(item=>item._id == earlist_id)
         console.log(shouldBeSeq)
+        // const origin_seq = sessionStorage.getItem("origin_seq");
+        // sessionStorage.setItem("origin_seq", Number(origin_seq) + 1)
+        sessionStorage.setItem("card_seq", shouldBeSeq)
+      } else {
+        const origin_seq = sessionStorage.getItem("origin_seq");
+        sessionStorage.setItem("origin_seq", Number(origin_seq) + 1);
+        sessionStorage.setItem("card_seq", Number(origin_seq) + 1)
       }
-      
-      
+      const card_seq = sessionStorage.getItem("card_seq")
       // 카드리스트 스터딩에 needstudytimeTmp를 조회해서 현재시간보다 빠른걸 찾아서 그녀석의 인덱스를 
       // 새로운 카드 시퀀스로 저장하고, 기존 시퀀스는 다른 곳에 남겨둔다.
       // currentseq sessitonStorage get item card_seq 를 바꿔치기한다.

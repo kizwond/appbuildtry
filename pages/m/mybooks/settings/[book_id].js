@@ -10,6 +10,7 @@ import Head from "next/head";
 import { Card, Select, Space, Avatar } from "antd";
 import {
   AppstoreAddOutlined,
+  CloseOutlined,
   DeleteOutlined,
   FileSyncOutlined,
   FlagOutlined,
@@ -27,7 +28,7 @@ import M_LevelAndCycleSetting from "../../../../components/books/settings/levelA
 import M_ReAssignBookToAnotherCategory from "../../../../components/books/settings/reasignBookToAnotherCategory/M_ReAssignBookToAnotherCategory";
 
 const BookSetting = () => {
-  const { query, push } = useRouter();
+  const { query, push, back } = useRouter();
 
   const [selectedMenu, setSelectedMenu] = useState("");
 
@@ -103,7 +104,6 @@ const BookSetting = () => {
       <Head>
         <title>콕북 - 책 상세 설정</title>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       {data &&
         data.mybook_getMybookByMybookIDs.mybooks &&
@@ -115,23 +115,25 @@ const BookSetting = () => {
                 size="small"
                 title={
                   <>
-                    <StyledDivEllipsis
-                      style={{
-                        fontSize: "1rem",
-                        fontWeight: "bolder",
-                        color: "#747474",
-                        borderBottom: "1px dashed lightgray",
-                        marginBottom: "4px",
-                        paddingBottom: "4px",
-                        // textAlign: "center",
-                      }}
-                    >
-                      책 제목:{" "}
-                      {
-                        data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
-                          .title
-                      }
-                    </StyledDivEllipsis>
+                    <StyledForHeader>
+                      <EllipsisTitle>
+                        책 제목:{" "}
+                        {
+                          data.mybook_getMybookByMybookIDs.mybooks[0]
+                            .mybook_info.title
+                        }
+                      </EllipsisTitle>
+                      <button
+                        type="button"
+                        aria-label="Close"
+                        className="ForCloseButton"
+                        onClick={() => {
+                          back();
+                        }}
+                      >
+                        <CloseOutlined />
+                      </button>
+                    </StyledForHeader>
 
                     <div
                       style={{
@@ -260,4 +262,35 @@ const StyledMainPageCard = styled(Card)`
     // ColorPicker 잘리는 문제 해결
     overflow: unset;
   }
+`;
+
+const StyledForHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  padding-bottom: 4px;
+  border-bottom: 1px dashed lightgray;
+  & .ForCloseButton {
+    display: inline-block;
+    color: rgba(0, 0, 0, 0.45);
+    font-weight: 700;
+    font-size: 16px;
+    font-style: normal;
+    line-height: 1;
+    text-align: center;
+    text-transform: none;
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    cursor: pointer;
+    -webkit-transition: color 0.3s;
+    transition: color 0.3s;
+    text-rendering: auto;
+  }
+`;
+const EllipsisTitle = styled(StyledDivEllipsis)`
+  font-size: 1rem;
+  color: #747474;
 `;

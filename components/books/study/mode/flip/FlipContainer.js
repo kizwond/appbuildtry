@@ -94,6 +94,8 @@ class Container extends Component {
       originCardSeq: 0,
       onBackMode: false,
       popoverClicked: false,
+      backModeSeq: 0,
+      firstBackModeSeq: 0,
     };
     this.keyCount = 0;
     this.getKey = this.getKey.bind(this);
@@ -160,39 +162,6 @@ class Container extends Component {
     });
   };
 
-  onClickNextCardInBackMode = () => {
-    if (this.state.originCardSeq === this.state.cardSeq + 1) {
-      this.setState({
-        onBackMode: false,
-      });
-      this.setState((prevState) => ({
-        cardSeq: prevState.cardSeq + 1,
-      }));
-    } else {
-      this.setState((prevState) => ({
-        cardSeq: prevState.cardSeq + 1,
-      }));
-    }
-  };
-
-  onClickBeforeCard = () => {
-    const cardSeqNum = this.state.cardSeq;
-    if (this.state.onBackMode === false) {
-      this.setState({
-        originCardSeq: this.state.cardSeq,
-      });
-    }
-    if (cardSeqNum === 0) {
-      alert("이전카드 더 없어요~");
-    } else {
-      this.setState((prevState) => ({
-        cardSeq: prevState.cardSeq - 1,
-      }));
-      this.setState({
-        onBackMode: true,
-      });
-    }
-  };
   Diffi5Handler = (diffi, current_card_id, timer) => {
     console.log("diffi5 clicked!!!");
     console.log("timer:", timer);
@@ -292,10 +261,11 @@ class Container extends Component {
     card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
     card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 0;
     card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null;
+    //recent know time 여기서 리셋
     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
 
     //여기다가 새로운 시퀀스 정보를 가공해야함.
-    this.generateCardSeq(card_details_session, now);
+    this.generateCardSeq(card_details_session, now, current_card_id);
   };
 
   onDiffClickHandler = (interval, diffi, current_card_id, timer) => {
@@ -357,7 +327,7 @@ class Container extends Component {
       this.generateStudyStatus(card_details_session, current_card_info_index);
 
       //여기다가 새로운 시퀀스 정보를 가공해야함.
-      this.generateCardSeq(card_details_session, now);
+      this.generateCardSeq(card_details_session, now, current_card_id);
 
       //남은카드랑 이래저래 해서 학습이 종료되었는지...
       const card_seq = sessionStorage.getItem("card_seq");
@@ -372,7 +342,7 @@ class Container extends Component {
   };
 
   //상황에따른 새로운 카드 시쿼스 생성
-  generateCardSeq = (card_details_session, now) => {
+  generateCardSeq = (card_details_session, now, current_card_id) => {
     const reviewExist_data = card_details_session.filter((item) => {
       if (item.studyStatus.needStudyTimeTmp !== null) {
         if (new Date(item.studyStatus.needStudyTimeTmp) < now) {
@@ -393,58 +363,133 @@ class Container extends Component {
       sessionStorage.setItem("origin_seq", Number(origin_seq) + 1);
       sessionStorage.setItem("card_seq", Number(origin_seq) + 1);
     }
+
+    //study log 생성
+    const current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info);
+    const currentCardId = current_card_info[0]._id;
+    const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
+    if (studyLogCardIds === null) {
+      sessionStorage.setItem("studyLogCardIds", JSON.stringify([currentCardId]));
+    } else {
+      const cardIds = studyLogCardIds.concat(currentCardId);
+      sessionStorage.setItem("studyLogCardIds", JSON.stringify(cardIds));
+    }
+
     this.stopTimerTotal();
     this.resetTimer();
   };
 
-  // 학습로그는 화면에 뿌려진 카드의 _id값을 array로 세션스토리지에 저장한다.
-  // 백을 누르면 로그에 저장된 마지막 id를 카드리스트에서 조회해서 해당 시퀀스를 card_seq로 덮어치기를 한다.
-  // 원래자리에서 공부하기 버튼을 누르면 오리지널 시퀀스에서 card_seq를 덮어치기한다.
+  // 이전카드 보기
+  onClickBeforeCard = () => {
+    if (this.state.onBackMode === false) {
+      this.setState({
+        onBackMode: true,
+      });
+      const origin_seq = sessionStorage.getItem("origin_seq");
+      this.setState({
+        firstBackModeSeq: Number(origin_seq),
+      });
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
 
-  //서버에 보내기 위한 학습정보생성
-  generateStudyStatus = (card_details_session, current_card_info_index) => {
-    const updateThis = card_details_session[current_card_info_index];
-    const getUpdateThis = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
-    if (getUpdateThis) {
-      var finalUpdate = getUpdateThis.concat(updateThis);
+      console.log(studyLogCardIds);
+      const lastCardId = studyLogCardIds.slice(-1);
+      console.log(lastCardId[0]);
+      const backModeSeq = studyLogCardIds.findIndex((item) => item === lastCardId[0]);
+      console.log(backModeSeq);
+      this.setState({
+        backModeSeq: backModeSeq,
+      });
+
+      const shouldBeSeq = card_details_session.findIndex((item) => item._id === lastCardId[0]);
+      console.log(shouldBeSeq);
+      this.generateBackModeStudyStatus(lastCardId[0]);
+      sessionStorage.setItem("card_seq", shouldBeSeq);
     } else {
-      finalUpdate = [updateThis];
+      const currentBackSeq = this.state.backModeSeq;
+      console.log(currentBackSeq);
+      const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
+      const shouldBeBackModeDataId = studyLogCardIds[currentBackSeq - 1];
+
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const shouldBeSeq = card_details_session.findIndex((item) => item._id === shouldBeBackModeDataId);
+      console.log(shouldBeSeq);
+      if (shouldBeSeq === -1) {
+        alert("이전카드 더이상 없어요~");
+      } else {
+        this.setState((prevState) => ({
+          backModeSeq: prevState.backModeSeq - 1,
+        }));
+        this.generateBackModeStudyStatus(shouldBeBackModeDataId);
+        sessionStorage.setItem("card_seq", shouldBeSeq);
+      }
     }
-    sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
   };
-  finishStudy = () => {
-    console.log("finishStudy Clicked!!!");
-    // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
-    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
-    if (cardlist_to_send) {
-      console.log("서버에 학습데이타를 전송할 시간이다!!!!");
-      sessionStorage.setItem("card_seq", 0);
-      const sessionId = sessionStorage.getItem("session_Id");
-      cardlist_to_send.forEach(function (v) {
-        delete v.__typename;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.card_info.__typename;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.card_info.time_created;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v._id;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.content;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.studyStatus.__typename;
-      });
 
-      console.log("cardlist_to_send : ", cardlist_to_send);
-      console.log("sessionId : ", sessionId);
-      this.props.sessionupdateresults(cardlist_to_send, sessionId);
+  // 백모드에서 앞으로가기
+  onClickNextCardInBackMode = () => {
+    const currentBackSeq = this.state.backModeSeq;
+    console.log(currentBackSeq);
+    const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
+    const shouldBeBackModeDataId = studyLogCardIds[currentBackSeq + 1];
+
+    console.log("이거랑", currentBackSeq + 1);
+    console.log("저거랑", this.state.firstBackModeSeq);
+    if (currentBackSeq + 1 === this.state.firstBackModeSeq) {
+      const origin_seq = sessionStorage.getItem("origin_seq");
+      sessionStorage.setItem("card_seq", origin_seq);
+      this.setState({
+        onBackMode: false,
+      });
     } else {
-      console.log("공부끝");
+      this.setState((prevState) => ({
+        backModeSeq: prevState.backModeSeq + 1,
+      }));
+
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const shouldBeSeq = card_details_session.findIndex((item) => item._id === shouldBeBackModeDataId);
+      console.log(shouldBeSeq);
+      if (shouldBeSeq === 0) {
+        alert("이전카드 더이상 없어요~");
+      } else {
+        this.generateBackModeStudyStatus(shouldBeBackModeDataId);
+        sessionStorage.setItem("card_seq", shouldBeSeq);
+      }
     }
+  };
+
+  // 백모드에서 학습정보 생성
+  generateBackModeStudyStatus = (current_card_id) => {
+    const timer = this.state.time;
+    const now = new Date();
+
+    const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    console.log("card_details_session", card_details_session);
+
+    const current_card_info_index = card_details_session.findIndex((item) => item._id === current_card_id);
+    console.log(current_card_info_index);
+
+    //학습정보 업데이트
+    card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
+    card_details_session[current_card_info_index].studyStatus.recentSelection = "move";
+    card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
+    if (card_details_session[current_card_info_index].studyStatus.totalStayHour == null) {
+      card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(timer);
+    } else {
+      card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(
+        Date.parse(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer
+      );
+    }
+
+    //업데이트된 학습정보 세션스토리지에 다시 저장
+    sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
+
+    //서버에 보내기 위한 학습정보 리스트 생성
+    this.generateStudyStatus(card_details_session, current_card_info_index);
+
+    this.stopTimerTotal();
+    this.resetTimer();
   };
 
   onClickGoBackToOrigin = () => {
@@ -498,6 +543,51 @@ class Container extends Component {
     window.speechSynthesis.speak(speechMsg);
   };
 
+  //서버에 보내기 위한 학습정보생성
+  generateStudyStatus = (card_details_session, current_card_info_index) => {
+    const updateThis = card_details_session[current_card_info_index];
+    const getUpdateThis = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+    if (getUpdateThis) {
+      var finalUpdate = getUpdateThis.concat(updateThis);
+    } else {
+      finalUpdate = [updateThis];
+    }
+    sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
+  };
+  finishStudy = () => {
+    console.log("finishStudy Clicked!!!");
+    // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
+    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+    if (cardlist_to_send) {
+      console.log("서버에 학습데이타를 전송할 시간이다!!!!");
+      sessionStorage.setItem("card_seq", 0);
+      const sessionId = sessionStorage.getItem("session_Id");
+      cardlist_to_send.forEach(function (v) {
+        delete v.__typename;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.card_info.__typename;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.card_info.time_created;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v._id;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.content;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.studyStatus.__typename;
+      });
+
+      console.log("cardlist_to_send : ", cardlist_to_send);
+      console.log("sessionId : ", sessionId);
+      this.props.sessionupdateresults(cardlist_to_send, sessionId);
+    } else {
+      console.log("공부끝");
+    }
+  };
   render() {
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
     if (cardlist_to_send) {
@@ -1358,12 +1448,12 @@ class Container extends Component {
           </div>
           <div style={{ width: "100%", textAlign: "center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0, zIndex: 3 }}>
             <Space style={{ width: "95%", justifyContent: "space-between", backgroundColor: "#dadada", borderRadius: "4px", padding: 5, border: "1px solid #bcbcbc" }}>
-              <Button icon={<StepBackwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickBeforeCard} type="secondary" disabled />
+              <Button icon={<StepBackwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickBeforeCard} type="secondary" />
               {!this.state.onBackMode && diffiButtons}
               {!this.state.onBackMode && moreMenu}
               {this.state.onBackMode && goBackToCurrent}
               {this.state.onBackMode && (
-                <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCardInBackMode} type="secondary" disabled />
+                <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickNextCardInBackMode} type="secondary" />
               )}
             </Space>
           </div>

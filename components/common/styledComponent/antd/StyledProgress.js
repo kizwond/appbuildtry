@@ -20,7 +20,7 @@ export const StyledProgress = styled.div`
     position: absolute;
     left: 10%;
     color: #020202;
-    z-index: 2;
+    z-index: 1;
   }
   &:after {
     content: "";
@@ -28,7 +28,9 @@ export const StyledProgress = styled.div`
     width: ${(props) => (props.percent > 100 ? 100 : props.percent)}%;
     background-color: ${(props) => {
       const bgColor =
-        props.booktype === "my"
+        props.booktype === "any"
+          ? "#4dadfe"
+          : props.booktype === "my"
           ? "#4dadfe"
           : props.booktype === "buy"
           ? "#ff6f56"
@@ -38,6 +40,6 @@ export const StyledProgress = styled.div`
     border-radius: 100px;
     position: absolute;
     left: 0;
-    z-index: 1;
+    z-index: 0;
   }
 `;

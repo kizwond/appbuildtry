@@ -9,25 +9,34 @@ export default function summaryAll(cardsList, checkedKeys) {
 
     return finalObj;
   }
-
-  const summary = cardsList
+  const flattenSelectedIndexes = cardsList
     .map((card) =>
       card.session_getNumCardsbyIndex.indexsets[0].indexes //
         .filter((index) =>
-          card.session_getNumCardsbyIndex.indexsets[0].indexset_info.checkedIndex
-            ? card.session_getNumCardsbyIndex.indexsets[0].indexset_info.checkedIndex.includes(index._id)
-            : checkedKeys[card.session_getNumCardsbyIndex.indexsets[0].indexset_info.mybook_id].includes(index._id)
+          card.session_getNumCardsbyIndex.indexsets[0].indexset_info
+            .checkedIndex
+            ? card.session_getNumCardsbyIndex.indexsets[0].indexset_info.checkedIndex.includes(
+                index._id
+              )
+            : checkedKeys[
+                card.session_getNumCardsbyIndex.indexsets[0].indexset_info
+                  .mybook_id
+              ].includes(index._id)
         )
     )
-    .flat()
+    .flat();
+  const summary = flattenSelectedIndexes
     .map((item) => ({
       progress_for_total_card: item.numCards.total.progress,
       total_cards_number_for_total_card: item.numCards.total.total,
       yet_cards_number_for_total_card: item.numCards.total.yet,
       total_on_study_cards_number_for_total_card: item.numCards.total.ing.total,
-      until_today_on_study_cards_number_for_total_card: item.numCards.total.ing.untilToday,
-      until_now_on_study_cards_number_for_total_card: item.numCards.total.ing.untilNow,
-      from_tomorrow_on_study_cards_number_for_total_card: item.numCards.total.ing.afterTomorrow,
+      until_today_on_study_cards_number_for_total_card:
+        item.numCards.total.ing.untilToday,
+      until_now_on_study_cards_number_for_total_card:
+        item.numCards.total.ing.untilNow,
+      from_tomorrow_on_study_cards_number_for_total_card:
+        item.numCards.total.ing.afterTomorrow,
       completed_cards_number_for_total_card: item.numCards.total.completed,
       holding_cards_number_for_total_card: item.numCards.total.hold,
     }))
@@ -43,6 +52,10 @@ export default function summaryAll(cardsList, checkedKeys) {
       holding_cards_number_for_total_card: 0,
     });
 
-  console.log({ summary });
-  return { ...summary, progress_for_total_card: summary.progress_for_total_card / summary.length };
+  console.log(Object.values(summary).reduce((a, b) => a + b, 0));
+  return {
+    ...summary,
+    progress_for_total_card:
+      summary.progress_for_total_card / flattenSelectedIndexes.length || 0,
+  };
 }

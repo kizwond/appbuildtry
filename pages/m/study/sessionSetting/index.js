@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
@@ -11,7 +11,6 @@ import { Col, Tabs, Row, Typography, Button, Space } from "antd";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
-import { StyledRowMaxWidth } from "../../../../components/common/styledComponent/page";
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import summaryAll from "../../../../components/books/study/sessionnSetting/session-config/common/business/getIndexesSummary";
 
@@ -224,14 +223,12 @@ const SessionSetting = () => {
                 <Col span={14} style={{ display: "flex" }}>
                   <StyledPointer
                     activated={visualCompo}
-                    style={{ cursor: "pointer" }}
                     onClick={() => setVisualCompo("index")}
                   >
                     목차 설정
                   </StyledPointer>
                   <StyledPointer
                     activated={visualCompo}
-                    style={{ cursor: "pointer" }}
                     onClick={() => setVisualCompo("config")}
                   >
                     세션 설정
@@ -250,12 +247,12 @@ const SessionSetting = () => {
                     }
                     style={{
                       height: "2rem",
-                      fontSize: "0.95rem !important",
+                      // fontSize: "0.95rem !important",
                       fontWeight: "600",
                       marginLeft: "5px",
                     }}
                   >
-                    <span style={{ fontSize: "0.95rem " }}>
+                    <span style={{ fontSize: "1.16667rem" }}>
                       {visualCompo === "index" ? "다음" : "이전"}
                     </span>
                   </Button>
@@ -273,7 +270,7 @@ const SessionSetting = () => {
                       color: visualCompo === "config" ? "white" : null,
                     }}
                   >
-                    <span style={{ fontSize: "0.95rem " }}>시작</span>
+                    <span style={{ fontSize: "1.16667rem" }}>시작</span>
                   </Button>
                 </Col>
               </Row>
@@ -392,7 +389,7 @@ const StyledDiv = styled.div`
   } */
 
   & * {
-    font-size: 0.7rem;
+    font-size: 1rem;
   }
   margin: 0 auto;
   max-width: 1440px;
@@ -452,22 +449,14 @@ const StyledDivSecond = styled.div`
   }
 
   & .ant-table-tbody > tr.ant-table-row-selected > td {
-    background: initial;
-    border-color: #f0f0f0;
+    background: white;
+  }
+  & .ant-table-tbody > tr.SelectedIndexCardsInfo > td {
+    border-bottom: 1px solid #f0f0f0;
   }
 
-  & table tr td.ant-table-selection-column {
-    padding: 4px 2px !important;
-    text-align: center;
-    width: 32px;
-    min-width: 32px;
-  }
-
-  & .ant-table-cell.TableRowTitle.ant-table-cell-with-append {
-    padding: 4px 5px 4px 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
+    padding: 4px;
   }
 
   & .ant-table-row-indent + .ant-table-row-expand-icon {
@@ -491,8 +480,9 @@ const StyledPointer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.95rem;
+  font-size: 1.16667rem;
   font-weight: 700;
+  cursor: pointer;
 
   &:hover {
     background: #dfa4a4;

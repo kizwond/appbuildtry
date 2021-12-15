@@ -404,7 +404,10 @@ class Container extends Component {
 
       const shouldBeSeq = card_details_session.findIndex((item) => item._id === lastCardId[0]);
       console.log(shouldBeSeq);
-      this.generateBackModeStudyStatus(lastCardId[0]);
+
+      const beforeBackModeCard = card_details_session[origin_seq]
+      console.log(beforeBackModeCard)
+      this.generateBackModeStudyStatus(beforeBackModeCard._id);
       sessionStorage.setItem("card_seq", shouldBeSeq);
     } else {
       const currentBackSeq = this.state.backModeSeq;
@@ -493,15 +496,16 @@ class Container extends Component {
   };
 
   onClickGoBackToOrigin = () => {
-    this.setState({
-      cardSeq: this.state.originCardSeq,
-    });
-    this.setState((prevState) => ({
-      onBackMode: !prevState.onBackMode,
-    }));
-    this.setState((prevState) => ({
-      clickCount: prevState.clickCount + 1,
-    }));
+    const currentBackSeq = this.state.backModeSeq;
+    console.log(currentBackSeq);
+    const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
+    const shouldBeBackModeDataId = studyLogCardIds[currentBackSeq];
+    this.generateBackModeStudyStatus(shouldBeBackModeDataId);
+     const origin_seq = sessionStorage.getItem("origin_seq");
+      sessionStorage.setItem("card_seq", origin_seq);
+      this.setState({
+        onBackMode: false,
+      });
   };
 
   onClickPassHandler = () => {

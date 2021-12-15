@@ -415,7 +415,7 @@ const StyledDivFirst = styled.div`
   }
   & .ant-input-number-sm {
     font-size: 0.7rem;
-    width: 32px;
+    width: 2.3rem;
   }
   & .ant-input-number-sm input {
     height: 20px;

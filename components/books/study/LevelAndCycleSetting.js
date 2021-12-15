@@ -1,54 +1,56 @@
 /* eslint-disable react/display-name */
-import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Checkbox, Divider, Input, Select, Table, Tooltip } from 'antd';
-import {
-  GET_LEVEL_CONFIG,
-  UPDATE_LEVEL_CONFIG,
-} from '../../../graphql/query/levelconfig';
-import { useQuery, useMutation } from '@apollo/client';
-import produce from 'immer';
-import NickInput from './NickInput';
-import PeriodSelector from './PeriodSelector';
-import GestureSelector from './GestureSelector';
-import { InputNumber, PageHeader } from '../../../node_modules/antd/lib/index';
-import RateSlider from './RateSlider';
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, Checkbox, Divider, Input, Select, Table, Tooltip } from "antd";
+import { UPDATE_LEVEL_CONFIG } from "../../../graphql/query/levelconfig";
+import { QUERY_BOOK_STUDY_LEVEL_CONFIG_BY_BOOK_IDS } from "../../../graphql/query/allQuery";
+
+import { useQuery, useMutation } from "@apollo/client";
+import produce from "immer";
+import NickInput from "./NickInput";
+import PeriodSelector from "./PeriodSelector";
+import GestureSelector from "./GestureSelector";
+import { InputNumber, PageHeader } from "../../../node_modules/antd/lib/index";
+import RateSlider from "./RateSlider";
 
 const LevelAndCycleSetting = ({ book_id }) => {
   const [restudyOption, setRestudyOption] = useState([]);
   const [levelchangeSensitivity, setLevelchangeSensitivity] = useState(80);
   const [restudyRatio, setRestudyRatio] = useState(80);
 
-  const { loading, error, data } = useQuery(GET_LEVEL_CONFIG, {
-    variables: { mybook_id: book_id },
-    onCompleted: (data) => funcOnCompletedUseQuery(data, 'get'),
-  });
+  const { loading, error, data } = useQuery(
+    QUERY_BOOK_STUDY_LEVEL_CONFIG_BY_BOOK_IDS,
+    {
+      variables: { mybook_ids: [book_id] },
+      onCompleted: (data) => funcOnCompletedUseQuery(data, "get"),
+    }
+  );
 
   const [levelconfig_update] = useMutation(UPDATE_LEVEL_CONFIG, {
-    onCompleted: (data) => console.log('뮤태 후', data),
+    onCompleted: (data) => console.log("뮤태 후", data),
   });
 
   const funcOnCompletedUseQuery = (data, method) => {
     const restudy = data[`levelconfig_${method}`].levelconfigs[0].restudy;
-    console.log('useQuery데이터', data);
+    console.log("useQuery데이터", data);
     const restudy_option = restudy.option;
     const tableData = Object.keys(restudy_option)
-      .filter((diffi) => diffi != '__typename')
+      .filter((diffi) => diffi != "__typename")
       .map((diffi, index) => ({
         key: index,
         periodOption: [],
         diffi: diffi,
         difficulty:
-          diffi == 'diffi1'
-            ? '모르겠음'
-            : diffi == 'diffi2'
-            ? '거의 모르겠음'
-            : diffi == 'diffi3'
-            ? '애매함'
-            : diffi == 'diffi4'
-            ? '거의 알겠음'
-            : diffi == 'diffi5'
-            ? '알겠음'
-            : 'Error', //구분
+          diffi == "diffi1"
+            ? "모르겠음"
+            : diffi == "diffi2"
+            ? "거의 모르겠음"
+            : diffi == "diffi3"
+            ? "애매함"
+            : diffi == "diffi4"
+            ? "거의 알겠음"
+            : diffi == "diffi5"
+            ? "알겠음"
+            : "Error", //구분
         nick: restudy_option[diffi].nick,
         period: restudy_option[diffi].period, // 세션 내 반복 주기
         shortcutkey: restudy_option[diffi].shortcutkey, //단축키
@@ -99,17 +101,17 @@ const LevelAndCycleSetting = ({ book_id }) => {
   if (data) {
     columns = [
       {
-        title: '구분',
-        dataIndex: 'difficulty',
-        key: 'difficulty',
+        title: "구분",
+        dataIndex: "difficulty",
+        key: "difficulty",
       },
       {
-        title: '별칭',
-        dataIndex: 'nick',
-        key: 'nick',
+        title: "별칭",
+        dataIndex: "nick",
+        key: "nick",
         render: (nick, record) => (
           <NickInput
-            disabled={restudyOption[record.key].on_off === 'on' ? false : true}
+            disabled={restudyOption[record.key].on_off === "on" ? false : true}
             restudyOption={restudyOption}
             placeholder={nick}
             onChangeRestudyOption={onChangeRestudyOption}
@@ -118,13 +120,13 @@ const LevelAndCycleSetting = ({ book_id }) => {
         ),
       },
       {
-        title: '섹션 내 반복 주기',
-        dataIndex: 'period',
-        key: 'period',
+        title: "섹션 내 반복 주기",
+        dataIndex: "period",
+        key: "period",
         width: 90,
         render: (period, record, index) => {
           if (index == 4) {
-            return <span style={{ color: 'gray' }}>세션 탈출</span>;
+            return <span style={{ color: "gray" }}>세션 탈출</span>;
           }
           return (
             <PeriodSelector
@@ -138,25 +140,25 @@ const LevelAndCycleSetting = ({ book_id }) => {
         },
       },
       {
-        title: '단축키',
-        dataIndex: 'shortcutkey',
-        key: 'shortcutkey',
+        title: "단축키",
+        dataIndex: "shortcutkey",
+        key: "shortcutkey",
         width: 40,
         render: (short, record) => (
           <Input
-            disabled={restudyOption[record.key].on_off === 'on' ? false : true}
+            disabled={restudyOption[record.key].on_off === "on" ? false : true}
             value={short}
             allowClear
             maxLength={1}
             style={{ width: 55 }}
             onClick={(e) => {
-              e.target.value = '';
+              e.target.value = "";
             }}
             onChange={(e) => {
               const shortcutKyesArrayExceptMeAndEmptyValue = restudyOption
                 .map((item) => item.shortcutkey)
                 .filter((item, index) => index != record.key)
-                .filter((i) => i != '');
+                .filter((i) => i != "");
               const isSameKeyInShortcutKyes =
                 shortcutKyesArrayExceptMeAndEmptyValue.includes(e.target.value);
 
@@ -193,9 +195,9 @@ const LevelAndCycleSetting = ({ book_id }) => {
         ),
       },
       {
-        title: '제스처',
-        dataIndex: 'gesture',
-        key: 'gesture',
+        title: "제스처",
+        dataIndex: "gesture",
+        key: "gesture",
         width: 70,
         render: (gesture, record, index) => (
           <GestureSelector
@@ -208,9 +210,9 @@ const LevelAndCycleSetting = ({ book_id }) => {
         ),
       },
       {
-        title: '사용 여부',
-        dataIndex: 'on_off',
-        key: 'on_off',
+        title: "사용 여부",
+        dataIndex: "on_off",
+        key: "on_off",
         width: 70,
         render: (on_off, record, index) => {
           if (index == 4) {
@@ -222,12 +224,12 @@ const LevelAndCycleSetting = ({ book_id }) => {
           }
           return (
             <Checkbox
-              defaultChecked={on_off == 'on' ? true : false}
+              defaultChecked={on_off == "on" ? true : false}
               onChange={(e) => {
                 console.log(e.target.checked);
                 setRestudyOption(
                   produce(restudyOption, (draft) => {
-                    draft[index].on_off = e.target.checked ? 'on' : 'off';
+                    draft[index].on_off = e.target.checked ? "on" : "off";
                   })
                 );
               }}
@@ -282,7 +284,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
   return (
     <div>
       <div
-        style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '4px' }}
+        style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "4px" }}
       >
         섹션 내 반복 주기
       </div>
@@ -294,7 +296,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
         pagination={false}
       />
       <div
-        style={{ fontSize: '16px', fontWeight: 'bold', margin: '20px 0 4px 0' }}
+        style={{ fontSize: "16px", fontWeight: "bold", margin: "20px 0 4px 0" }}
       >
         복습 시작 기억량
       </div>
@@ -307,7 +309,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
             value={restudyRatio}
             onChange={onChangeRestudyRatio}
             formatter={(value) => `${value}%`}
-            parser={(value) => value.replace('%', '')}
+            parser={(value) => value.replace("%", "")}
           />
           <RateSlider
             configured={
@@ -322,10 +324,10 @@ const LevelAndCycleSetting = ({ book_id }) => {
       )}
       <div
         style={{
-          fontSize: '16px',
-          fontWeight: 'bold',
-          margin: '0 0 4px 0',
-          paddingTop: '10px',
+          fontSize: "16px",
+          fontWeight: "bold",
+          margin: "0 0 4px 0",
+          paddingTop: "10px",
         }}
       >
         레벨 민감도
@@ -339,7 +341,7 @@ const LevelAndCycleSetting = ({ book_id }) => {
             value={levelchangeSensitivity}
             onChange={onChangeLevelchangeSensitivity}
             formatter={(value) => `${value}%`}
-            parser={(value) => value.replace('%', '')}
+            parser={(value) => value.replace("%", "")}
           />
           <RateSlider
             configured={

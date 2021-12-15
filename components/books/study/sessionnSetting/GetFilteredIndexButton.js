@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
-import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID } from "../../../../graphql/query/studySessionSetting";
+import { useLazyQuery } from "@apollo/client";
+import { QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER } from "../../../../graphql/query/allQuery";
 import { CloudSyncOutlined } from "@ant-design/icons";
 
 const GetFilteredIndexButton = ({
@@ -15,27 +15,30 @@ const GetFilteredIndexButton = ({
   const [counter, setCounter] = useState(0);
   const [isOnProcessing, setIsOnProcessing] = useState(true);
 
-  const [loadFilteredData, { loading, error, data }] = useLazyQuery(GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, {
-    onCompleted: (received_data) => {
-      console.log("데이터받았음");
-      if (counter == 0) {
-        onChangeAFButtonClick();
-        onChangeAFCardList([received_data]);
-        setIsOnProcessing(true);
-      } else {
-        onChangeAFCardList([...AFCardList, received_data]);
-      }
-      if (counter == book_ids.length - 1) {
-        setIsOnProcessing(false);
-        setCounter(0);
-      }
-      if (counter < book_ids.length - 1) {
-        console.log("카운터설정");
-        setCounter((prev) => prev + 1);
-      }
-      console.log(received_data);
-    },
-  });
+  const [loadFilteredData, { loading, error, data }] = useLazyQuery(
+    QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
+    {
+      onCompleted: (received_data) => {
+        console.log("데이터받았음");
+        if (counter == 0) {
+          onChangeAFButtonClick();
+          onChangeAFCardList([received_data]);
+          setIsOnProcessing(true);
+        } else {
+          onChangeAFCardList([...AFCardList, received_data]);
+        }
+        if (counter == book_ids.length - 1) {
+          setIsOnProcessing(false);
+          setCounter(0);
+        }
+        if (counter < book_ids.length - 1) {
+          console.log("카운터설정");
+          setCounter((prev) => prev + 1);
+        }
+        console.log(received_data);
+      },
+    }
+  );
 
   const variables = {
     forGetNumCardsbyIndex: {
@@ -63,10 +66,14 @@ const GetFilteredIndexButton = ({
   useEffect(() => {
     if (isOnProcessing) {
       if (data?.session_getNumCardsbyIndex?.indexsets[0]) {
-        const bookIndexIdsList = data.session_getNumCardsbyIndex.indexsets[0].indexes.map((item) => item._id);
+        const bookIndexIdsList =
+          data.session_getNumCardsbyIndex.indexsets[0].indexes.map(
+            (item) => item._id
+          );
         onChangeIndexesOfAFCardList({
           ...advancedFilteredCheckedIndexes,
-          [data.session_getNumCardsbyIndex.indexsets[0].indexset_info.mybook_id]: bookIndexIdsList,
+          [data.session_getNumCardsbyIndex.indexsets[0].indexset_info
+            .mybook_id]: bookIndexIdsList,
         });
       }
     }

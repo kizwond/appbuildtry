@@ -3,9 +3,9 @@ import { Button, Card, Col, Drawer, Row, Space } from "antd";
 import { useRouter } from "next/router";
 import { FunctionComponent, useState } from "react";
 import {
-  GET_ALL_BUY_BOOKS,
-  GET_USER_ALL_CATEGORY_AND_BOOKS,
-  GET_USER_ALL_MY_BOOKS,
+  QUERY_BUY_BOOKS,
+  QUERY_USER_CATEGORIES_AND_USER_BOOKS,
+  QUERY_USER_BOOKS,
 } from "../../../graphql/query/allQuery";
 import M_MyBooksTable from "../../../components/challenges/M_MyBooksTable.js";
 import styled from "styled-components";
@@ -24,12 +24,12 @@ const Challenges = () => {
     data: buyBookData,
     error: buyBookError,
     loading: buyBookLoading,
-  } = useQuery(GET_ALL_BUY_BOOKS, {
+  } = useQuery(QUERY_BUY_BOOKS, {
     onCompleted: () => console.log("도전출판 북 서버에서 받음"),
   });
 
   const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(
-    GET_USER_ALL_CATEGORY_AND_BOOKS,
+    QUERY_USER_CATEGORIES_AND_USER_BOOKS,
     {
       onCompleted: (data) => {
         if (data.mybookcateset_getMybookcatesetByUserID.status === "200") {
@@ -73,11 +73,11 @@ const Challenges = () => {
         variables: { buybook_id },
         update: (cache, { data: { buybook_createMybookFromBuybook } }) => {
           const _data = cache.readQuery({
-            query: GET_USER_ALL_MY_BOOKS,
+            query: QUERY_USER_BOOKS,
           });
           console.log({ _data, buybook_createMybookFromBuybook });
           cache.writeQuery({
-            query: GET_USER_ALL_MY_BOOKS,
+            query: QUERY_USER_BOOKS,
             data: {
               ..._data,
               mybook_getMybookByUserID: {

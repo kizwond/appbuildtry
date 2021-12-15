@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Select, Table, Button, message } from "antd";
 import ColorPicker from "./ColorPicker";
 import produce from "immer";
-import { GET_USER_FLAG_CONFIG } from "../../../../graphql/query/allQuery";
+import { QUERY_USER_FLAG_CONFIG } from "../../../../graphql/query/allQuery";
 import { useQuery, useMutation } from "@apollo/client";
 import { StyledFlexAlignCenter } from "../../../common/styledComponent/page";
 import { useRouter } from "next/router";
@@ -15,7 +15,7 @@ const M_FlagSetting = () => {
   const router = useRouter();
   const [flag, setFlag] = useState([]);
 
-  const { loading, error, data } = useQuery(GET_USER_FLAG_CONFIG, {
+  const { loading, error, data } = useQuery(QUERY_USER_FLAG_CONFIG, {
     onCompleted: (data) => {
       if (data.userflagconfig_get.status === "200") {
         console.log(

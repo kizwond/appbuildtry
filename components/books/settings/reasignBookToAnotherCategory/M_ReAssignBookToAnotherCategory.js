@@ -4,7 +4,7 @@ import { BOOK_CHANGE_CATEGORY_MUTATION } from "../../../../graphql/query/studyCa
 import { MUTATION_REASSIGN_MY_BOOK_TO_ANOTHER_CATEGORY } from "../../../../graphql/mutation/myBook";
 
 import { Select, Button, Alert, Space, message } from "antd";
-import { GET_USER_ALL_MY_BOOKS } from "../../../../graphql/query/allQuery";
+import { QUERY_USER_BOOKS } from "../../../../graphql/query/allQuery";
 import _ from "lodash";
 import { useRouter } from "next/router";
 
@@ -21,7 +21,7 @@ const M_ReAssignBookToAnotherCategory = ({
     setSelectedCategory(cateIdNow);
   }, [cateIdNow]);
 
-  const { data } = useQuery(GET_USER_ALL_MY_BOOKS, {
+  const { data } = useQuery(QUERY_USER_BOOKS, {
     onCompleted: (_data) => {
       if (_data.mybook_getMybookByUserID.status === "200") {
         console.log("모든 책 정보 받음", _data);

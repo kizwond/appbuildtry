@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
+import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
 import { useRouter } from "next/router";
 
 import styled from "styled-components";
@@ -26,21 +26,24 @@ const Writeanother = () => {
 
   const [selectedBooks, setSelectedBooks] = useState([]);
 
-  const { loading, error, data } = useQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
-    onCompleted: (received_data) => {
-      console.log("received_data", received_data);
-      if (
-        received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
-      ) {
-      } else if (
-        received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
-      ) {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const { loading, error, data } = useQuery(
+    QUERY_USER_CATEGORIES_AND_USER_BOOKS,
+    {
+      onCompleted: (received_data) => {
+        console.log("received_data", received_data);
+        if (
+          received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
+        ) {
+        } else if (
+          received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
+        ) {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   useEffect(() => {
     sessionStorage.removeItem("books_selected");

@@ -1,18 +1,4 @@
 import { gql } from "@apollo/client";
-import { MENTORING_FRAGMENT } from "../../src/fragments";
-
-export const GET_MENTORING = gql`
-  ${MENTORING_FRAGMENT}
-  query {
-    mentoring_getMentoring {
-      status
-      msg
-      mentorings {
-        ...mentoringFragment
-      }
-    }
-  }
-`;
 
 export const GET_BOOKS_INFO = gql`
   query GetBooksInfo($mybook_ids: [ID]) {
@@ -69,7 +55,9 @@ export const SEARCH_USER_INFO = gql`
 
 export const REQUEST_MENTORING = gql`
   mutation RequestMentoring($forCreateMentoringReq: forCreateMentoringReq) {
-    mentoring_createMentoringReq(forCreateMentoringReq: $forCreateMentoringReq) {
+    mentoring_createMentoringReq(
+      forCreateMentoringReq: $forCreateMentoringReq
+    ) {
       status
       msg
       mentorings {

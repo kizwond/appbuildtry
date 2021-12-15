@@ -5,13 +5,13 @@ import ColorPicker from "./ColorPicker";
 import FlagIcon from "./FlagIcon";
 import produce from "immer";
 import { MUTATION_UPDATE_USER_FLAG_CONFIG } from "../../../../graphql/mutation/flagConfig";
-import { GET_USER_FLAG_CONFIG } from "../../../../graphql/query/allQuery";
+import { QUERY_USER_FLAG_CONFIG } from "../../../../graphql/query/allQuery";
 import { useQuery, useMutation } from "@apollo/client";
 
 const FlagSetting = () => {
   const [flag, setFlag] = useState([]);
 
-  const { loading, error, data } = useQuery(GET_USER_FLAG_CONFIG, {
+  const { loading, error, data } = useQuery(QUERY_USER_FLAG_CONFIG, {
     onCompleted: (data) => {
       console.log("유즈", data.userflagconfig_get.userflagconfigs[0].details);
       const flags_array = ["flag1", "flag2", "flag3", "flag4", "flag5"];

@@ -2,7 +2,7 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { Card, Col, Form, Input, Row } from "antd";
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { GET_USER_MINIMUM_INFORMATION_BY_USER_NAME } from "../../graphql/query/allQuery";
+import { QUERY_USER_MINIMUM_INFORMATION_BY_USER_NAME } from "../../graphql/query/allQuery";
 import { MUTATION_REQUEST_MENTORING } from "../../graphql/mutation/mentoring";
 
 const { Search, TextArea } = Input;
@@ -37,7 +37,7 @@ const M_RequestMetoringCard = ({
   }, [cardVisible]);
 
   const [requestUserInfomation, { data, loading, error, variables }] =
-    useLazyQuery(GET_USER_MINIMUM_INFORMATION_BY_USER_NAME, {
+    useLazyQuery(QUERY_USER_MINIMUM_INFORMATION_BY_USER_NAME, {
       onCompleted: (data) => {
         if (data.user_getUserMinInfo.status === "200") {
           console.log("유저 정보 요청후 받은 데이터", data);

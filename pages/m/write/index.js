@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
-import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
+import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
 
 import { Col } from "antd";
 import styled from "styled-components";
@@ -21,21 +21,24 @@ const M_WriteMain = () => {
 
   const newCateRef = useRef();
 
-  const { loading, error, data } = useQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
-    onCompleted: (received_data) => {
-      console.log("received_data", received_data);
-      if (
-        received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
-      ) {
-      } else if (
-        received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
-      ) {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const { loading, error, data } = useQuery(
+    QUERY_USER_CATEGORIES_AND_USER_BOOKS,
+    {
+      onCompleted: (received_data) => {
+        console.log("received_data", received_data);
+        if (
+          received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
+        ) {
+        } else if (
+          received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
+        ) {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   const myBook2 = data && data.mybook_getMybookByUserID.mybooks;
   const category2 =

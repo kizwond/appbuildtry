@@ -11,7 +11,7 @@ import CategorySettingButton from "../../../components/books/writepage/categoryS
 import StudyBooksTable from "../../../components/books/studypage/booksTable/StudyBooksTable";
 import StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/StudyFavoriteBooksTable";
 import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
-import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
+import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
 
 const StudyPage = () => {
   const router = useRouter();
@@ -22,22 +22,25 @@ const StudyPage = () => {
 
   const [selectedBooks, setSelectedBooks] = useState([]);
 
-  const { loading, error, data } = useQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
-    onCompleted: (received_data) => {
-      console.log("received_data", received_data);
-      if (
-        received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
-      ) {
-        setIsReceivedData(true);
-      } else if (
-        received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
-      ) {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const { loading, error, data } = useQuery(
+    QUERY_USER_CATEGORIES_AND_USER_BOOKS,
+    {
+      onCompleted: (received_data) => {
+        console.log("received_data", received_data);
+        if (
+          received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
+        ) {
+          setIsReceivedData(true);
+        } else if (
+          received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
+        ) {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   const myBook2 = useMemo(() => data?.mybook_getMybookByUserID.mybooks, [data]);
   const category2 = useMemo(

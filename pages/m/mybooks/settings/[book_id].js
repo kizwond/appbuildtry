@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 import { useQuery } from "@apollo/client";
-import { GET_MY_BOOK_BY_BOOK_IDS__AND_ALL_BOOK_CATEGORIES } from "../../../../graphql/query/allQuery";
+import { QUERY_USER_BOOKS_BY_BOOK_IDS__WITH_USER_CATEGORIES } from "../../../../graphql/query/allQuery";
 
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -33,7 +33,7 @@ const BookSetting = () => {
   const [selectedMenu, setSelectedMenu] = useState("");
 
   const { data, loading, error } = useQuery(
-    GET_MY_BOOK_BY_BOOK_IDS__AND_ALL_BOOK_CATEGORIES,
+    QUERY_USER_BOOKS_BY_BOOK_IDS__WITH_USER_CATEGORIES,
     {
       onCompleted: (_data) => {
         if (

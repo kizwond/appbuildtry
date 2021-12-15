@@ -9,7 +9,7 @@ import {
   StyledTwoLinesEllipsis,
 } from "../common/styledComponent/page";
 import { MUTATION_CREATE_BUY_BOOK_FROM_MY_BOOK } from "../../graphql/mutation/buyBook";
-import { GET_ALL_BUY_BOOKS } from "../../graphql/query/allQuery";
+import { QUERY_BUY_BOOKS } from "../../graphql/query/allQuery";
 import { useMutation } from "@apollo/client";
 
 const M_MyBooksTable = ({ bookData, loading, error }) => {
@@ -48,11 +48,11 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
         },
         update: (cache, { data: { buybook_createBuybook } }) => {
           const _data = cache.readQuery({
-            query: GET_ALL_BUY_BOOKS,
+            query: QUERY_BUY_BOOKS,
           });
           console.log({ _data, buybook_createBuybook });
           cache.writeQuery({
-            query: GET_ALL_BUY_BOOKS,
+            query: QUERY_BUY_BOOKS,
             data: {
               ..._data,
               buybook_getAllBuybook: {

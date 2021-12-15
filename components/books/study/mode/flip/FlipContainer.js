@@ -23,6 +23,7 @@ import {
   StopOutlined,
   CheckOutlined,
   CheckCircleOutlined,
+  RollbackOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
@@ -510,21 +511,24 @@ class Container extends Component {
     this.setState({
       popoverClicked: false,
     });
-    this.onClickNextCard();
   };
 
   onClickSuspendHandler = () => {
     this.setState({
       popoverClicked: false,
     });
-    this.onClickNextCard();
   };
 
   onClickCompletedHandler = () => {
     this.setState({
       popoverClicked: false,
     });
-    this.onClickNextCard();
+  };
+
+  onClickRestoreHandler = () => {
+    this.setState({
+      popoverClicked: false,
+    });
   };
   speakText = () => {
     if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
@@ -556,8 +560,34 @@ class Container extends Component {
     }
     sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
   };
+  generateOnFinishStudyStatus = () => {
+    const card_seq = sessionStorage.getItem("card_seq");
+
+    const timer = this.state.time;
+    const now = new Date();
+
+    const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    console.log("card_details_session", card_details_session);
+
+    //학습정보 업데이트
+    card_details_session[card_seq].studyStatus.recentSelectTime = now;
+    card_details_session[card_seq].studyStatus.recentSelection = "finish";
+    card_details_session[card_seq].studyStatus.recentStayHour = new Date(timer);
+    if (card_details_session[card_seq].studyStatus.totalStayHour == null) {
+      card_details_session[card_seq].studyStatus.totalStayHour = new Date(timer);
+    } else {
+      card_details_session[card_seq].studyStatus.totalStayHour = new Date(Date.parse(card_details_session[card_seq].studyStatus.totalStayHour) + timer);
+    }
+
+    //업데이트된 학습정보 세션스토리지에 다시 저장
+    sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
+
+    //서버에 보내기 위한 학습정보 리스트 생성
+    this.generateStudyStatus(card_details_session, card_seq);
+  };
   finishStudy = () => {
     console.log("finishStudy Clicked!!!");
+    this.generateOnFinishStudyStatus();
     // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
     if (cardlist_to_send) {
@@ -599,6 +629,8 @@ class Container extends Component {
     }
     if (this.props.levelConfigs) {
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
+      const recentStudyResult = this.props.cardListStudying[currentSeq].studyStatus.recentStudyResult;
+
       const current_card_book_id = this.props.cardListStudying[currentSeq].card_info.mybook_id;
       const current_card_id = this.props.cardListStudying[currentSeq].content.mycontent_id;
       const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
@@ -611,25 +643,69 @@ class Container extends Component {
       const diffi = [];
       diffi.push(diffi1, diffi2, diffi3, diffi4, diffi5);
       const useDiffi = diffi.filter((item) => item.on_off === "on");
-      var diffiButtons = useDiffi.map((item, index) => (
-        <>
-          <Button
-            key={`diffiButton_${item.name}`}
-            size="small"
-            type="primary"
-            style={{ fontSize: "0.8rem", borderRadius: "3px" }}
-            onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id, this.state.time)}
-          >
-            {item.nick}
-          </Button>
-        </>
-      ));
 
+      if (recentStudyResult === "completed" || recentStudyResult === "hold") {
+        var diffiButtons = (
+          <>
+            <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickRestoreHandler} type="primary" disabled>
+              복원
+            </Button>
+            <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary" disabled>
+              통과
+            </Button>
+          </>
+        );
+      } else {
+        var diffiButtons = useDiffi.map((item, index) => (
+          <>
+            <Button
+              key={`diffiButton_${item.name}`}
+              size="small"
+              type="primary"
+              style={{ fontSize: "0.8rem", borderRadius: "3px" }}
+              onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id, this.state.time)}
+            >
+              {item.nick}
+            </Button>
+          </>
+        ));
+      }
+
+      const backModeMoreMenuContents = (
+        <Space>
+          {recentStudyResult === "completed" || recentStudyResult === "hold" ? (
+            <>
+              <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickRestoreHandler} type="primary" disabled>
+                복원
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary" disabled>
+                통과
+              </Button>
+              <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary" disabled>
+                보류
+              </Button>
+              <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary" disabled>
+                졸업
+              </Button>
+            </>
+          )}
+
+          <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
+            학습종료
+          </Button>
+        </Space>
+      );
       var goBackToCurrent = (
         <>
           <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={this.onClickGoBackToOrigin}>
             원위치에서 학습 이어하기
           </Button>
+          <Popover visible={this.state.popoverClicked} onVisibleChange={this.handleClickPopover} placement="left" content={backModeMoreMenuContents} trigger="click">
+            <Button icon={<DashOutlined />} size="small" style={{ fontSize: "1rem" }} type="secondary" />
+          </Popover>
         </>
       );
 

@@ -4,9 +4,19 @@ import ToggleTag from "./ToggleTag";
 
 const attr = (i) => i === 0 && { first: "yes" };
 
-const NewToggleTag = ({ children, option, index, value, changeValue, tagname }) => {
+const NewToggleTag = ({
+  children,
+  option,
+  index,
+  value,
+  changeValue,
+  tagname,
+}) => {
   const isArray = Array.isArray(value);
-  const verifyIsChecked = useCallback((option) => (isArray ? value.includes(option) : value === option), [value, isArray]);
+  const verifyIsChecked = useCallback(
+    (option) => (isArray ? value.includes(option) : value === option),
+    [value, isArray]
+  );
   const attrTagName = tagname && { tagname: "ing" };
 
   const attr2 = isArray
@@ -25,19 +35,32 @@ const NewToggleTag = ({ children, option, index, value, changeValue, tagname }) 
     : { onClick: () => changeValue(option) };
 
   return (
-    <ToggleTag checked={verifyIsChecked(option)} {...attr(index)} {...attr2} {...attrTagName}>
+    <ToggleTag
+      checked={verifyIsChecked(option)}
+      {...attr(index)}
+      {...attr2}
+      {...attrTagName}
+    >
       {children}
     </ToggleTag>
   );
 };
 
 const ToggleTags = ({ value, changeValue, tagname, tags, af }) => {
-  const makeAttrTagName = (option) => tagname && option === "ing" && { tagname };
+  const makeAttrTagName = (option) =>
+    tagname && option === "ing" && { tagname };
   const makeAttrAF = af && { forfilter: "yes" };
   return (
     <RowForLevelTwo {...makeAttrAF}>
       {tags.map((tag, i) => (
-        <NewToggleTag key={tag.option} option={tag.option} index={i} value={value} changeValue={changeValue} {...makeAttrTagName(tag.option)}>
+        <NewToggleTag
+          key={tag.option}
+          option={tag.option}
+          index={i}
+          value={value}
+          changeValue={changeValue}
+          {...makeAttrTagName(tag.option)}
+        >
           {tag.title}
         </NewToggleTag>
       ))}
@@ -48,5 +71,5 @@ const ToggleTags = ({ value, changeValue, tagname, tags, af }) => {
 export default memo(ToggleTags);
 
 const RowForLevelTwo = styled.div`
-  margin-left: ${({ forfilter }) => (forfilter === "yes" ? "0" : "10px")};
+  margin-left: ${({ forfilter }) => (forfilter === "yes" ? "0" : "6px")};
 `;

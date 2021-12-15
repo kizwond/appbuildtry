@@ -387,7 +387,7 @@ const StyledDiv = styled.div`
   }
   margin: 0 auto;
   max-width: 1440px;
-  min-width: 363px;
+  min-width: 360px;
 
   display: flex;
   @media screen and (min-width: 992px) {

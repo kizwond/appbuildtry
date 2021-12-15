@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const StyledFilteMenuWrapper = styled.div`
-  padding: 0px 8px 0px 10px;
+  padding: 0px 6px 0px 6px;
 `;
 
 export const StyledDivConfigRow = styled.div`

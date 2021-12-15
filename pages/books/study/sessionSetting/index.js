@@ -1,6 +1,10 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, SESSION_CREATE_SESSION, GET_SESSTION_CONFIG } from "../../../../graphql/query/studySessionSetting";
+import {
+  GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
+  SESSION_CREATE_SESSION,
+  GET_SESSTION_CONFIG,
+} from "../../../../graphql/query/studySessionSetting";
 import Layout from "../../../../components/layout/Layout";
 import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
 import { Col, Tabs, Row, Typography, Button, Space } from "antd";
@@ -30,8 +34,13 @@ const SessionSetting = () => {
 
   const [visualCompo, setVisualCompo] = useState("index");
 
-  const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState([]);
-  const [isAdvancedFilteredCardListShowed, setIsAdvancedFilteredCardListShowed] = useState(false);
+  const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState(
+    []
+  );
+  const [
+    isAdvancedFilteredCardListShowed,
+    setIsAdvancedFilteredCardListShowed,
+  ] = useState(false);
 
   const {
     // 모드
@@ -80,8 +89,13 @@ const SessionSetting = () => {
 
   const [session_createSession] = useMutation(SESSION_CREATE_SESSION, {
     onCompleted: (data) => {
-      sessionStorage.setItem("session_Id", data.session_createSession.sessions[0]._id);
-      router.push(`/books/study/mode/flip/${data.session_createSession.sessions[0]._id}`);
+      sessionStorage.setItem(
+        "session_Id",
+        data.session_createSession.sessions[0]._id
+      );
+      router.push(
+        `/books/study/mode/flip/${data.session_createSession.sessions[0]._id}`
+      );
     },
   });
 
@@ -105,36 +119,43 @@ const SessionSetting = () => {
     }
   };
 
-  const [loadData, { loading, error, data, variables }] = useLazyQuery(GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID, {
-    variables: {
-      forGetNumCardsbyIndex: {
-        mybook_id: bookList[counter]?.book_id,
-        advancedFilter: null,
+  const [loadData, { loading, error, data, variables }] = useLazyQuery(
+    GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
+    {
+      variables: {
+        forGetNumCardsbyIndex: {
+          mybook_id: bookList[counter]?.book_id,
+          advancedFilter: null,
+        },
       },
-    },
-    onCompleted: (received_data) => {
-      if (received_data.session_getNumCardsbyIndex.status === "200") {
-        console.log({ received_data });
-        if (counter < bookList.length - 1) {
-          console.log("카운터설정");
-          setCounter((prev) => prev + 1);
-        }
+      onCompleted: (received_data) => {
+        if (received_data.session_getNumCardsbyIndex.status === "200") {
+          console.log({ received_data });
+          if (counter < bookList.length - 1) {
+            console.log("카운터설정");
+            setCounter((prev) => prev + 1);
+          }
 
-        setCardsList([...cardsList, received_data]);
-      } else if (received_data.session_getNumCardsbyIndex.status === "401") {
-        router.push("/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+          setCardsList([...cardsList, received_data]);
+        } else if (received_data.session_getNumCardsbyIndex.status === "401") {
+          router.push("/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   useEffect(() => {
     if (data?.session_getNumCardsbyIndex?.indexsets[0]) {
-      const bookIndexIdsList = data.session_getNumCardsbyIndex.indexsets[0].indexes.map((item) => item._id);
+      const bookIndexIdsList =
+        data.session_getNumCardsbyIndex.indexsets[0].indexes.map(
+          (item) => item._id
+        );
       setCheckedKeys({
         ...checkedKeys,
-        [data.session_getNumCardsbyIndex.indexsets[0].indexset_info.mybook_id]: bookIndexIdsList,
+        [data.session_getNumCardsbyIndex.indexsets[0].indexset_info.mybook_id]:
+          bookIndexIdsList,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,7 +175,10 @@ const SessionSetting = () => {
     return <div>에러발생</div>;
   }
 
-  const onCheckIndexesCheckedKeys = (checkedKeysValueOfBook, selectedBookId) => {
+  const onCheckIndexesCheckedKeys = (
+    checkedKeysValueOfBook,
+    selectedBookId
+  ) => {
     setCheckedKeys({
       ...checkedKeys,
       [selectedBookId]: checkedKeysValueOfBook,
@@ -190,10 +214,18 @@ const SessionSetting = () => {
             <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
               <Row>
                 <Col span={14} style={{ display: "flex" }}>
-                  <StyledPointer activated={visualCompo} style={{ cursor: "pointer" }} onClick={() => setVisualCompo("index")}>
+                  <StyledPointer
+                    activated={visualCompo}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setVisualCompo("index")}
+                  >
                     목차 설정
                   </StyledPointer>
-                  <StyledPointer activated={visualCompo} style={{ cursor: "pointer" }} onClick={() => setVisualCompo("config")}>
+                  <StyledPointer
+                    activated={visualCompo}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setVisualCompo("config")}
+                  >
                     세션 설정
                   </StyledPointer>
                 </Col>
@@ -203,10 +235,21 @@ const SessionSetting = () => {
                     block
                     disabled={"on" === "off"}
                     size="small"
-                    onClick={() => (visualCompo === "index" ? setVisualCompo("config") : setVisualCompo("index"))}
-                    style={{ height: "2rem", fontSize: "0.95rem !important", fontWeight: "600", marginLeft: "5px" }}
+                    onClick={() =>
+                      visualCompo === "index"
+                        ? setVisualCompo("config")
+                        : setVisualCompo("index")
+                    }
+                    style={{
+                      height: "2rem",
+                      fontSize: "0.95rem !important",
+                      fontWeight: "600",
+                      marginLeft: "5px",
+                    }}
                   >
-                    <span style={{ fontSize: "0.95rem " }}>{visualCompo === "index" ? "다음" : "이전"}</span>
+                    <span style={{ fontSize: "0.95rem " }}>
+                      {visualCompo === "index" ? "다음" : "이전"}
+                    </span>
                   </Button>
                   <Button
                     block
@@ -217,7 +260,8 @@ const SessionSetting = () => {
                       height: "2rem",
                       fontWeight: "600",
                       marginLeft: "5px",
-                      backgroundColor: visualCompo === "config" ? "green" : null,
+                      backgroundColor:
+                        visualCompo === "config" ? "green" : null,
                       color: visualCompo === "config" ? "white" : null,
                     }}
                   >
@@ -233,13 +277,22 @@ const SessionSetting = () => {
                 <Typography.Title level={4}>목차 설정</Typography.Title>
               </Col>
             </Row>
-            <Tabs type="card" tabPosition="top" size="small" tabBarStyle={{ margin: 0 }} defaultActiveKey={bookList[0].book_id}>
+            <Tabs
+              type="card"
+              tabPosition="top"
+              size="small"
+              tabBarStyle={{ margin: 0 }}
+              defaultActiveKey={bookList[0].book_id}
+            >
               {!isAdvancedFilteredCardListShowed &&
                 bookList.map((book, index) => (
                   <Tabs.TabPane tab={book.book_title} key={book.book_id}>
                     <StyledDivTabContentWrapper>
                       <IndexTree
-                        bookIndexInfo={cardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
+                        bookIndexInfo={
+                          cardsList[index]?.session_getNumCardsbyIndex
+                            ?.indexsets[0]?.indexes
+                        }
                         checkedKeys={checkedKeys[book.book_id]}
                         summaryAll={summary}
                         selectedbookId={book.book_id}
@@ -255,7 +308,10 @@ const SessionSetting = () => {
                   <Tabs.TabPane tab={book.book_title} key={book.book_id}>
                     <StyledDivTabContentWrapper>
                       <IndexTree
-                        bookIndexInfo={advancedFilteredCardsList[index]?.session_getNumCardsbyIndex?.indexsets[0]?.indexes}
+                        bookIndexInfo={
+                          advancedFilteredCardsList[index]
+                            ?.session_getNumCardsbyIndex?.indexsets[0]?.indexes
+                        }
                         checkedKeys={checkedKeys[book.book_id]}
                         selectedbookId={book.book_id}
                         onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
@@ -267,7 +323,10 @@ const SessionSetting = () => {
                 ))}
             </Tabs>
           </StyledDivSecond>
-          <StyledDivFirst isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed} visualCompo={visualCompo}>
+          <StyledDivFirst
+            isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}
+            visualCompo={visualCompo}
+          >
             <Row>
               <Col xs={0} sm={0} md={0} lg={18} xl={18} xxl={18}>
                 <Typography.Title level={4}>세션 설정</Typography.Title>
@@ -385,8 +444,7 @@ const StyledDivSecond = styled.div`
   }
 
   & .ant-table-tbody > tr.ant-table-row-selected > td {
-    background: initial;
-    border-color: #f0f0f0;
+    background: white;
   }
 
   & table tr td.ant-table-selection-column {
@@ -447,21 +505,29 @@ const StyledPointer = styled.div`
 
   &:nth-of-type(1) {
     z-index: 2;
-    background: ${(props) => (props.activated === "index" ? "#322a64" : "#efedfc")};
+    background: ${(props) =>
+      props.activated === "index" ? "#322a64" : "#efedfc"};
     color: ${(props) => (props.activated === "index" ? "white" : "black")};
   }
   &:nth-of-type(1):before {
-    border-left: ${(props) => (props.activated === "index" ? "1rem solid #322a64" : "1rem solid #efedfc")};
+    border-left: ${(props) =>
+      props.activated === "index"
+        ? "1rem solid #322a64"
+        : "1rem solid #efedfc"};
   }
 
   &:nth-of-type(2) {
     z-index: 1;
-    background: ${(props) => (props.activated === "config" ? "#322a64" : "#efedfc")};
+    background: ${(props) =>
+      props.activated === "config" ? "#322a64" : "#efedfc"};
     color: ${(props) => (props.activated === "config" ? "white" : "black")};
     left: 5px;
   }
   &:nth-of-type(2):before {
-    border-left: ${(props) => (props.activated === "config" ? "1rem solid #322a64" : "1rem solid #efedfc")};
+    border-left: ${(props) =>
+      props.activated === "config"
+        ? "1rem solid #322a64"
+        : "1rem solid #efedfc"};
   }
   &:nth-of-type(2):after {
     content: "";

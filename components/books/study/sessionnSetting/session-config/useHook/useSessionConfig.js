@@ -3,21 +3,24 @@ import React, { useState, useCallback } from "react";
 export default function useSessionConfig() {
   const [mode, setMode] = useState("exam");
 
-  const [flipNeedStudyTimeCondition, setFlipNeedStudyTimeCondition] = useState("");
+  const [flipNeedStudyTimeCondition, setFlipNeedStudyTimeCondition] =
+    useState("");
   const [flipNeedStudyTimeRange, setFlipNeedStudyTimeRange] = useState([]);
   const [flipNumStartCards, setFlipNumStartCards] = useState([]);
   const [flipSortOption, setFlipSortOption] = useState("");
   const [flipUseCardType, setFlipUseCardType] = useState([]);
   const [flipUseStatus, setFlipUseStatus] = useState([]);
   // read 모드설정
-  const [readNeedStudyTimeCondition, setReadNeedStudyTimeCondition] = useState("");
+  const [readNeedStudyTimeCondition, setReadNeedStudyTimeCondition] =
+    useState("");
   const [readNeedStudyTimeRange, setReadNeedStudyTimeRange] = useState([]);
   const [readNumStartCards, setReadNumStartCards] = useState([]);
   const [readSortOption, setReadSortOption] = useState("");
   const [readUseCardType, setReadUseCardType] = useState([]);
   const [readUseStatus, setReadUseStatus] = useState([]);
   // exam 모드설정
-  const [examNeedStudyTimeCondition, setExamNeedStudyTimeCondition] = useState("");
+  const [examNeedStudyTimeCondition, setExamNeedStudyTimeCondition] =
+    useState("");
   const [examNeedStudyTimeRange, setExamNeedStudyTimeRange] = useState([]);
   const [examNumStartCards, setExamNumStartCards] = useState([]);
   const [examSortOption, setExamSortOption] = useState("");
@@ -218,7 +221,11 @@ export default function useSessionConfig() {
   };
 
   const updateData = useCallback((received_data) => {
-    const sessionconfigs = received_data.session_getSessionConfig.sessionConfigs[0];
+    const sessionconfigs =
+      received_data.session_getSessionConfig.sessionConfigs[0];
+    if (sessionconfigs === null) {
+      return;
+    }
     const {
       cardMaker, //
       examResult,
@@ -253,7 +260,14 @@ export default function useSessionConfig() {
 
     // 아래부터 state 쪼개기 작업
     if (sessionconfigs.flip) {
-      const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.flip;
+      const {
+        needStudyTimeCondition,
+        needStudyTimeRange,
+        numStartCards,
+        sortOption,
+        useCardtype,
+        useStatus,
+      } = sessionconfigs.flip;
       const copyNumStartCards = { ...numStartCards };
       delete copyNumStartCards.__typename;
       setFlipNeedStudyTimeCondition(needStudyTimeCondition);
@@ -264,7 +278,14 @@ export default function useSessionConfig() {
       setFlipUseStatus(useStatus);
     }
     if (sessionconfigs.read) {
-      const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.read;
+      const {
+        needStudyTimeCondition,
+        needStudyTimeRange,
+        numStartCards,
+        sortOption,
+        useCardtype,
+        useStatus,
+      } = sessionconfigs.read;
       const copyNumStartCards = { ...numStartCards };
       delete copyNumStartCards.__typename;
       setReadNeedStudyTimeCondition(needStudyTimeCondition);
@@ -275,7 +296,14 @@ export default function useSessionConfig() {
       setReadUseStatus(useStatus);
     }
     if (sessionconfigs.exam) {
-      const { needStudyTimeCondition, needStudyTimeRange, numStartCards, sortOption, useCardtype, useStatus } = sessionconfigs.exam;
+      const {
+        needStudyTimeCondition,
+        needStudyTimeRange,
+        numStartCards,
+        sortOption,
+        useCardtype,
+        useStatus,
+      } = sessionconfigs.exam;
       const copyNumStartCards = { ...numStartCards };
       delete copyNumStartCards.__typename;
       setExamNeedStudyTimeCondition(needStudyTimeCondition);
@@ -345,11 +373,23 @@ export default function useSessionConfig() {
 
   const sessionConfig =
     mode === "read"
-      ? { studyMode: "read", detailedOption: readDetailedOption, advancedFilter }
+      ? {
+          studyMode: "read",
+          detailedOption: readDetailedOption,
+          advancedFilter,
+        }
       : mode === "flip"
-      ? { studyMode: "flip", detailedOption: flipDetailedOption, advancedFilter }
+      ? {
+          studyMode: "flip",
+          detailedOption: flipDetailedOption,
+          advancedFilter,
+        }
       : mode === "exam"
-      ? { studyMode: "exam", detailedOption: examDetailedOption, advancedFilter }
+      ? {
+          studyMode: "exam",
+          detailedOption: examDetailedOption,
+          advancedFilter,
+        }
       : new Error("Unhandled studyConfig Mode");
 
   return {

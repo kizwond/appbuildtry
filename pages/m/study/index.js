@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
 import { useRouter } from "next/router";
@@ -21,6 +21,8 @@ const Writeanother = () => {
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
+
+  const newCateRef = useRef();
 
   const [selectedBooks, setSelectedBooks] = useState([]);
 

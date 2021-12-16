@@ -1,14 +1,17 @@
-import { gql } from '@apollo/client';
-import { FRAGMENT_MYBOOK } from '../fragment/book';
-import { FRAGMENT_CATEGORYSET } from '../fragment/categorySet';
-import { FRAGMENT_MENTORING } from '../fragment/mentoring';
-import { FRAGMENT_MY_CARD_TYPE_SET } from '../fragment/cardTypeSet';
-import { FRAGMENT_CARD_SET } from '../fragment/cardSet';
-import { FRAGMENT_BUY_BOOK } from '../fragment/buyBook';
-import { FRAGMENT_USER_FLAG_CONFIG } from '../fragment/flagConfig';
+import { gql } from "@apollo/client";
+import { FRAGMENT_MYBOOK } from "../fragment/book";
+import { FRAGMENT_CATEGORYSET } from "../fragment/categorySet";
+import { FRAGMENT_MENTORING } from "../fragment/mentoring";
+import { FRAGMENT_MY_CARD_TYPE_SET } from "../fragment/cardTypeSet";
+import { FRAGMENT_CARD_SET } from "../fragment/cardSet";
+import { FRAGMENT_BUY_BOOK } from "../fragment/buyBook";
+import { FRAGMENT_USER_FLAG_CONFIG } from "../fragment/flagConfig";
+import { FRAGMENT_SESSION_CONFIG } from "../fragment/sessionConfig";
+import { FRAGMENT_INDEX_SET } from "../fragment/indexSet";
+import { FRAGMENT_BOOK_STUDY_LEVEL_CONFIG } from "../fragment/bookStudyLevelConfig";
 
 // 유저 정보 불러오기
-export const GET_USER_MINIMUM_INFORMATION_BY_USER_NAME = gql`
+export const QUERY_USER_MINIMUM_INFORMATION_BY_USER_NAME = gql`
   query GetUserMinimumInfomationByUserName($username: String) {
     user_getUserMinInfo(username: $username) {
       status
@@ -22,7 +25,7 @@ export const GET_USER_MINIMUM_INFORMATION_BY_USER_NAME = gql`
 `;
 
 // 책정보 및 카테고리 정보 불러오기
-export const GET_USER_ALL_CATEGORY_AND_BOOKS = gql`
+export const QUERY_USER_CATEGORIES_AND_USER_BOOKS = gql`
   ${FRAGMENT_MYBOOK}
   ${FRAGMENT_CATEGORYSET}
   query {
@@ -42,7 +45,7 @@ export const GET_USER_ALL_CATEGORY_AND_BOOKS = gql`
     }
   }
 `;
-export const GET_USER_CATEGORY = gql`
+export const QUERY_USER_CATEGORIES = gql`
   ${FRAGMENT_CATEGORYSET}
   query {
     mybookcateset_getMybookcatesetByUserID {
@@ -55,7 +58,7 @@ export const GET_USER_CATEGORY = gql`
   }
 `;
 
-export const GET_USER_ALL_MY_BOOKS = gql`
+export const QUERY_USER_BOOKS = gql`
   ${FRAGMENT_MYBOOK}
   query {
     mybook_getMybookByUserID {
@@ -69,7 +72,7 @@ export const GET_USER_ALL_MY_BOOKS = gql`
 `;
 
 // 책 정보 불러오기
-export const GET_MY_BOOKS_BY_BOOK_IDS = gql`
+export const QUERY_USER_BOOKS_BY_BOOK_IDS = gql`
   ${FRAGMENT_MYBOOK}
   query GetMyBooksByBooksIds($mybook_ids: [ID]) {
     mybook_getMybookByMybookIDs(mybook_ids: $mybook_ids) {
@@ -81,7 +84,7 @@ export const GET_MY_BOOKS_BY_BOOK_IDS = gql`
     }
   }
 `;
-export const GET_MY_BOOK_BY_BOOK_IDS__AND_ALL_BOOK_CATEGORIES = gql`
+export const QUERY_USER_BOOKS_BY_BOOK_IDS__WITH_USER_CATEGORIES = gql`
   ${FRAGMENT_MYBOOK}
   ${FRAGMENT_CATEGORYSET}
   query GetMyBooksByBooksIds($mybook_ids: [ID]) {
@@ -236,7 +239,7 @@ export const GetFlagStyle = gql`
 `;
 
 // 멘토링
-export const GET_MENTORING = gql`
+export const QUERY_MENTORING = gql`
   ${FRAGMENT_MENTORING}
   query {
     mentoring_getMentoring {
@@ -250,7 +253,7 @@ export const GET_MENTORING = gql`
 `;
 
 // 도전출판
-export const GET_ALL_BUY_BOOKS = gql`
+export const QUERY_BUY_BOOKS = gql`
   ${FRAGMENT_BUY_BOOK}
   query {
     buybook_getAllBuybook {
@@ -264,7 +267,7 @@ export const GET_ALL_BUY_BOOKS = gql`
 `;
 
 // 유저 플래그
-export const GET_USER_FLAG_CONFIG = gql`
+export const QUERY_USER_FLAG_CONFIG = gql`
   ${FRAGMENT_USER_FLAG_CONFIG}
   query {
     userflagconfig_get {
@@ -277,63 +280,44 @@ export const GET_USER_FLAG_CONFIG = gql`
   }
 `;
 
-export const GET_LEVEL_CONFIG = gql`
-  query GET_LEVEL_CONFIG($mybook_ids: [ID]) {
+// 세션 설정
+export const QUERY_SESSION_CONFIG = gql`
+  ${FRAGMENT_SESSION_CONFIG}
+  query getSessionCardsDataByBooksId($mybook_ids: [ID]) {
+    session_getSessionConfig(mybook_ids: $mybook_ids) {
+      status
+      msg
+      sessionConfigs {
+        ...SessionConfigFragment
+      }
+    }
+  }
+`;
+
+// 책 목차 정보
+export const QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER = gql`
+  ${FRAGMENT_INDEX_SET}
+  query getSessionCardsDataByBooksId(
+    $forGetNumCardsbyIndex: forGetNumCardsbyIndex
+  ) {
+    session_getNumCardsbyIndex(forGetNumCardsbyIndex: $forGetNumCardsbyIndex) {
+      status
+      msg
+      indexsets {
+        ...IndexSetFragment
+      }
+    }
+  }
+`;
+
+export const QUERY_BOOK_STUDY_LEVEL_CONFIG_BY_BOOK_IDS = gql`
+  ${FRAGMENT_BOOK_STUDY_LEVEL_CONFIG}
+  query QUERY_BOOK_STUDY_LEVEL_CONFIG_BY_BOOK_IDS($mybook_ids: [ID]) {
     levelconfig_getLevelconfigs(mybook_ids: $mybook_ids) {
       status
       msg
       levelconfigs {
-        _id
-        levelconfig_info {
-          user_id
-          mybook_id
-        }
-        restudy {
-          restudyRatio
-          levelchangeSensitivity
-          option {
-            diffi1 {
-              name
-              on_off
-              nick
-              period
-              shortcutkey
-              gesture
-            }
-            diffi2 {
-              name
-              on_off
-              nick
-              period
-              shortcutkey
-              gesture
-            }
-            diffi3 {
-              name
-              on_off
-              nick
-              period
-              shortcutkey
-              gesture
-            }
-            diffi4 {
-              name
-              on_off
-              nick
-              period
-              shortcutkey
-              gesture
-            }
-            diffi5 {
-              name
-              on_off
-              nick
-              period
-              shortcutkey
-              gesture
-            }
-          }
-        }
+        ...BookStudyLeveConfig
       }
     }
   }

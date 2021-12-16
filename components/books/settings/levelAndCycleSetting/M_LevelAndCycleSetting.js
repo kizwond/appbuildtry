@@ -1,10 +1,8 @@
 /* eslint-disable react/display-name */
 import React, { useCallback, useState } from "react";
 import { Button, Checkbox, Input, Table, Tooltip, InputNumber } from "antd";
-import {
-  GET_LEVEL_CONFIG,
-  UPDATE_LEVEL_CONFIG,
-} from "../../../../graphql/query/levelconfig";
+import { UPDATE_LEVEL_CONFIG } from "../../../../graphql/query/levelconfig";
+import { QUERY_BOOK_STUDY_LEVEL_CONFIG_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
 
 import { useQuery, useMutation } from "@apollo/client";
 import produce from "immer";
@@ -18,17 +16,20 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
   const [levelchangeSensitivity, setLevelchangeSensitivity] = useState(80);
   const [restudyRatio, setRestudyRatio] = useState(80);
 
-  const { loading, error, data } = useQuery(GET_LEVEL_CONFIG, {
-    variables: { mybook_id: book_id },
-    onCompleted: (data) => funcOnCompletedUseQuery(data, "get"),
-  });
+  const { loading, error, data } = useQuery(
+    QUERY_BOOK_STUDY_LEVEL_CONFIG_BY_BOOK_IDS,
+    {
+      variables: { mybook_ids: [book_id] },
+      onCompleted: (data) => funcOnCompletedUseQuery(data),
+    }
+  );
 
   const [levelconfig_update] = useMutation(UPDATE_LEVEL_CONFIG, {
     onCompleted: (data) => console.log("뮤태 후", data),
   });
 
-  const funcOnCompletedUseQuery = (data, method) => {
-    const restudy = data[`levelconfig_${method}`].levelconfigs[0].restudy;
+  const funcOnCompletedUseQuery = (data) => {
+    const restudy = data.levelconfig_getLevelconfigs.levelconfigs[0].restudy;
     console.log("useQuery데이터", data);
     const restudy_option = restudy.option;
     const tableData = Object.keys(restudy_option)
@@ -313,7 +314,8 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
           />
           <RateSlider
             configured={
-              data.levelconfig_get.levelconfigs[0].restudy.restudyRatio
+              data.levelconfig_getLevelconfigs.levelconfigs[0].restudy
+                .restudyRatio
             }
             selected={restudyRatio}
             onChange={onChangeRestudyRatio}
@@ -345,7 +347,7 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
           />
           <RateSlider
             configured={
-              data.levelconfig_get.levelconfigs[0].restudy
+              data.levelconfig_getLevelconfigs.levelconfigs[0].restudy
                 .levelchangeSensitivity
             }
             selected={levelchangeSensitivity}

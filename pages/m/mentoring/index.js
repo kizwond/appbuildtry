@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import _, { divide } from "lodash";
 
-import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
+import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
 import { MUTATION_CANCEL_MENTORING_REQUEST } from "../../../graphql/mutation/mentoring";
 
 import useWindowDimensions from "../../../hooks/useWindowDimensions";
@@ -71,7 +71,7 @@ const MentoringHome = () => {
   const { newData, mentoringData, previousMentoringData } =
     useGetMentoringAndMenteeBooks();
   const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(
-    GET_USER_ALL_CATEGORY_AND_BOOKS,
+    QUERY_USER_CATEGORIES_AND_USER_BOOKS,
     {
       onCompleted: (data) => {
         if (data.mybookcateset_getMybookcatesetByUserID.status === "200") {

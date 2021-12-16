@@ -1,17 +1,16 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
-  GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
-  SESSION_CREATE_SESSION,
-  GET_SESSTION_CONFIG,
-} from "../../../../graphql/query/studySessionSetting";
+  QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
+  QUERY_SESSION_CONFIG,
+} from "../../../../graphql/query/allQuery";
+import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
 import Layout from "../../../../components/layout/Layout";
 import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
 import { Col, Tabs, Row, Typography, Button, Space } from "antd";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
-import { StyledRowMaxWidth } from "../../../../components/common/styledComponent/page";
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import summaryAll from "../../../../components/books/study/sessionnSetting/session-config/common/business/getIndexesSummary";
 
@@ -61,7 +60,7 @@ const SessionSetting = () => {
     data: data2,
     loading: loading2,
     error: error2,
-  } = useQuery(GET_SESSTION_CONFIG, {
+  } = useQuery(QUERY_SESSION_CONFIG, {
     variables: {
       mybook_ids: bookList.map((book) => book.book_id),
     },
@@ -87,7 +86,7 @@ const SessionSetting = () => {
     setBookList(book_list);
   }, []);
 
-  const [session_createSession] = useMutation(SESSION_CREATE_SESSION, {
+  const [session_createSession] = useMutation(MUTATION_CREATE_SESSION, {
     onCompleted: (data) => {
       sessionStorage.setItem(
         "session_Id",
@@ -120,7 +119,7 @@ const SessionSetting = () => {
   };
 
   const [loadData, { loading, error, data, variables }] = useLazyQuery(
-    GET_SESSTION_CARDS_DATA_IN_INDEXES_BY_SELECTED_BOOKS_ID,
+    QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
     {
       variables: {
         forGetNumCardsbyIndex: {
@@ -388,7 +387,7 @@ const StyledDiv = styled.div`
   }
   margin: 0 auto;
   max-width: 1440px;
-  min-width: 363px;
+  min-width: 360px;
 
   display: flex;
   @media screen and (min-width: 992px) {
@@ -410,7 +409,7 @@ const StyledDivFirst = styled.div`
   }
   & .ant-input-number-sm {
     font-size: 0.7rem;
-    width: 32px;
+    width: 2.3rem;
   }
   & .ant-input-number-sm input {
     height: 20px;

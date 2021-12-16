@@ -31,9 +31,10 @@ export default memo(NumStartCards);
 
 const StyledDiv = styled.div`
   display: inline-block;
-  margin: ${({ first }) => (first === "yes" ? "3px 3px 3px 0" : "3px 3px 3px 3px")};
+  margin: ${({ first }) =>
+    first === "yes" ? "3px 3px 3px 0" : "3px 3px 3px 3px"};
 `;
 
 const RowForLevelTwo = styled.div`
-  margin-left: 10px;
+  margin-left: 6px;
 `;

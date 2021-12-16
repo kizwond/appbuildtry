@@ -1,11 +1,12 @@
 import styled from "styled-components";
 
 export const StyledFilteMenuWrapper = styled.div`
-  padding: 0px 8px 0px 10px;
+  padding: 0px 6px 0px 6px;
 `;
 
 export const StyledDivConfigRow = styled.div`
   display: flex;
+  padding-bottom: 5px;
   flex-wrap: nowrap;
   align-items: center;
   & > div:nth-child(1):not(.FilterSubTitleCol) {
@@ -41,7 +42,6 @@ export const StyledDivConfigRow = styled.div`
   }
 
   & .ConifgTitle {
-    font-size: 0.9rem;
     font-weight: 700;
   }
 `;
@@ -50,7 +50,6 @@ export const StyledDivConfigCol = styled.div`
   display: flex;
   flex-wrap: nowrap;
   & .ConifgTitle {
-    font-size: 0.8rem;
     font-weight: 700;
   }
 `;
@@ -72,22 +71,19 @@ export const StyledDivConfigMenuWrapper = styled.div`
   padding: 3px 3px 3px 0;
 `;
 
-export const StyledSpanConfigTitle = styled(({ onOff, children, ...rest }) => <span {...rest}>{children}</span>)`
+export const StyledSpanConfigTitle = styled(({ onOff, children, ...rest }) => (
+  <span {...rest}>{children}</span>
+))`
   color: ${({ onOff }) => (onOff ? "black" : "#0000003f")};
   margin-right: 10px;
-  font-size: 0.9rem !important;
+  /* font-size: 1rem !important; */
   font-weight: 700;
 `;
 
-export const StyledSpanFilterSubTitle = styled(({ onOff, children, ...rest }) => <span {...rest}>{children}</span>)`
+export const StyledSpanFilterSubTitle = styled(
+  ({ onOff, children, ...rest }) => <span {...rest}>{children}</span>
+)`
   color: ${({ onOff }) => (onOff ? "black" : "#0000003f")};
   margin-right: 10px;
   font-weight: 550;
-  font-size: 0.8rem;
-  @media screen and (max-width: 765px) {
-    font-size: 0.85rem;
-  }
-  @media screen and (max-width: 620px) {
-    font-size: 0.9rem;
-  }
 `;

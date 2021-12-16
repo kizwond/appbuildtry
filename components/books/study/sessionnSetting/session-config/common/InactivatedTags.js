@@ -20,7 +20,8 @@ export default memo(InactivatedTags);
 
 const StyledTag = styled(Tag)`
   color: #00000071;
-  margin: ${({ first }) => (first === "yes" ? "3px 3px 3px 0" : "3px 3px 3px 3px")};
+  margin: ${({ first }) =>
+    first === "yes" ? "2px 2px 2px 0" : "2px 2px 2px 2px"};
   border: 1px solid #d9d9d9;
   cursor: not-allowed;
 `;

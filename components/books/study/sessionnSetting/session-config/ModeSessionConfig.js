@@ -1,15 +1,33 @@
 import React, { memo } from "react";
 import styled from "styled-components";
 import { Switch } from "antd";
-import { StyledDivConfigColStartCards, StyledDivConfigRow, StyledSpanConfigTitle } from "./common/StyledComponent";
+import {
+  StyledDivConfigColStartCards,
+  StyledDivConfigRow,
+  StyledSpanConfigTitle,
+} from "./common/StyledComponent";
 import NumStartCards from "./NumStartCards";
 import StudyTimeCondition from "./StudyTimeCondition";
 import ToggleTags from "./common/ToggleTags";
 import tags from "./common/tags";
 
 const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
-  const { changeSortOption, changeNeedStudyTimeRange, changeNeedStudyTimeCondition, changeUseCardType, changeUseStatus, changeNumStartCards } = changeProps;
-  const { sortOption, useCardtype, useStatus, needStudyTimeCondition, needStudyTimeRange, numStartCards } = detailedOption;
+  const {
+    changeSortOption,
+    changeNeedStudyTimeRange,
+    changeNeedStudyTimeCondition,
+    changeUseCardType,
+    changeUseStatus,
+    changeNumStartCards,
+  } = changeProps;
+  const {
+    sortOption,
+    useCardtype,
+    useStatus,
+    needStudyTimeCondition,
+    needStudyTimeRange,
+    numStartCards,
+  } = detailedOption;
   const { sortOptionTags, useCardTypeTags, useStatusTags } = tags;
   return (
     <StyledDivConfigWrapper>
@@ -18,7 +36,11 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
           <span className="ConifgTitle">보기 순서</span>
         </div>
         <div>
-          <ToggleTags changeValue={changeSortOption} value={sortOption} tags={sortOptionTags} />
+          <ToggleTags
+            changeValue={changeSortOption}
+            value={sortOption}
+            tags={sortOptionTags}
+          />
         </div>
       </StyledDivConfigRow>
 
@@ -27,7 +49,11 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
           <span className="ConifgTitle">카드종류</span>
         </div>
         <div>
-          <ToggleTags changeValue={changeUseCardType} value={useCardtype} tags={useCardTypeTags} />
+          <ToggleTags
+            changeValue={changeUseCardType}
+            value={useCardtype}
+            tags={useCardTypeTags}
+          />
         </div>
       </StyledDivConfigRow>
 
@@ -37,7 +63,12 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
         </div>
         <div>
           <div>
-            <ToggleTags changeValue={changeUseStatus} value={useStatus} tags={useStatusTags} tagname />
+            <ToggleTags
+              changeValue={changeUseStatus}
+              value={useStatus}
+              tags={useStatusTags}
+              tagname
+            />
 
             {/* <UseStatusTag changeUseStatus={changeUseStatus} useStatus={useStatus} /> */}
           </div>
@@ -56,7 +87,9 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
 
       <StyledDivConfigRow>
         <StyledDivConfigColStartCards>
-          <StyledSpanConfigTitle onOff={numStartCards.onOff === "on"}>학습량</StyledSpanConfigTitle>
+          <StyledSpanConfigTitle onOff={numStartCards.onOff === "on"}>
+            학습량
+          </StyledSpanConfigTitle>
           <Switch
             className="TitleSwitchButton"
             size="small"
@@ -73,7 +106,10 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
           />
         </StyledDivConfigColStartCards>
         <div>
-          <NumStartCards numStartCards={numStartCards} changeNumStartCards={changeNumStartCards} />
+          <NumStartCards
+            numStartCards={numStartCards}
+            changeNumStartCards={changeNumStartCards}
+          />
         </div>
       </StyledDivConfigRow>
       {children}
@@ -97,7 +133,7 @@ const StyledDivConfigWrapper = styled.div`
 `;
 
 const StyledDivToggleStudying = styled.div`
-  margin-left: 20px;
+  margin-left: 6px;
   background-color: #f5cdbf;
   padding: 1px 6px 3px 4px;
   margin-bottom: 3px;

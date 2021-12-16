@@ -1,7 +1,10 @@
 import React, { memo, useState } from "react";
 import { Switch } from "antd";
 import styled from "styled-components";
-import { StyledDivConfigColStartCards, StyledSpanConfigTitle } from "./common/StyledComponent";
+import {
+  StyledDivConfigColStartCards,
+  StyledSpanConfigTitle,
+} from "./common/StyledComponent";
 import GetFilteredIndexButton from "../GetFilteredIndexButton";
 import FilterSubMenu from "./common/FilterSubMenu";
 import RecentStudyTime from "./RecentStudyTime";
@@ -11,7 +14,16 @@ import ToggleTags from "./common/ToggleTags";
 import { filterTags } from "./common/tags";
 import InactivatedTags from "./common/InactivatedTags";
 
-const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeIndexesOfAFCardList, onChangeAFCardList, AFCardList, onToggleIsAFilter, changeAdvancedFilter, advancedFilter }) => {
+const AdvancedFilter = ({
+  book_ids,
+  advancedFilteredCheckedIndexes,
+  onChangeIndexesOfAFCardList,
+  onChangeAFCardList,
+  AFCardList,
+  onToggleIsAFilter,
+  changeAdvancedFilter,
+  advancedFilter,
+}) => {
   const [counterForButtonClick, setCounterForButtonClick] = useState(false);
   const onChangeAFButtonClick = (_falsy) => {
     setCounterForButtonClick(_falsy);
@@ -37,18 +49,36 @@ const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeInde
     changeStudyTimesOnOff,
   } = changeAdvancedFilter;
 
-  const { onOff, cardMaker, examResult, level, makerFlag, userFlag, recentDifficulty, recentStudyTime, studyTimes } = advancedFilter;
+  const {
+    onOff,
+    cardMaker,
+    examResult,
+    level,
+    makerFlag,
+    userFlag,
+    recentDifficulty,
+    recentStudyTime,
+    studyTimes,
+  } = advancedFilter;
 
   const { flagTags, recentDifficultyTags, examResultTags } = filterTags;
   return (
     <StyledDivWrapper>
       <StyledDivTitleRow>
         <StyledDivConfigColStartCards>
-          <StyledSpanConfigTitle onOff={onOff === "on"}>고급필터</StyledSpanConfigTitle>
+          <StyledSpanConfigTitle onOff={onOff === "on"}>
+            고급필터
+          </StyledSpanConfigTitle>
           <Switch
             className="TitleSwitchButton"
             size="small"
-            checked={onOff === "on" ? true : onOff === "off" ? false : new Error("고급필터 스위치 에러")}
+            checked={
+              onOff === "on"
+                ? true
+                : onOff === "off"
+                ? false
+                : new Error("고급필터 스위치 에러")
+            }
             onChange={(checked) => {
               if (checked) {
                 changeAdvancedFilterOnOff("on");
@@ -79,27 +109,103 @@ const AdvancedFilter = ({ book_ids, advancedFilteredCheckedIndexes, onChangeInde
       </StyledDivTitleRow>
       {onOff === "on" && (
         <>
-          <FilterSubMenu title="사용자 플래그" changeOnOff={changeUserFlagOnOff} onOff={userFlag.onOff}>
-            {userFlag.onOff === "on" ? <ToggleTags changeValue={changeUserFlag} value={userFlag.value} tags={flagTags} af /> : <InactivatedTags tags={flagTags} />}
+          <FilterSubMenu
+            title="사용자 플래그"
+            changeOnOff={changeUserFlagOnOff}
+            onOff={userFlag.onOff}
+          >
+            {userFlag.onOff === "on" ? (
+              <ToggleTags
+                changeValue={changeUserFlag}
+                value={userFlag.value}
+                tags={flagTags}
+                af
+              />
+            ) : (
+              <InactivatedTags tags={flagTags} />
+            )}
           </FilterSubMenu>
-          <FilterSubMenu title="제작자 플래그" changeOnOff={changeMakerFlagOnOff} onOff={makerFlag.onOff}>
-            {makerFlag.onOff === "on" ? <ToggleTags changeValue={changeMakerFlag} value={makerFlag.value} tags={flagTags} af /> : <InactivatedTags tags={flagTags} />}
+          <FilterSubMenu
+            title="제작자 플래그"
+            changeOnOff={changeMakerFlagOnOff}
+            onOff={makerFlag.onOff}
+          >
+            {makerFlag.onOff === "on" ? (
+              <ToggleTags
+                changeValue={changeMakerFlag}
+                value={makerFlag.value}
+                tags={flagTags}
+                af
+              />
+            ) : (
+              <InactivatedTags tags={flagTags} />
+            )}
           </FilterSubMenu>
-          <FilterSubMenu title="최근 학습 시점" changeOnOff={changeRecentStudyTimeOnOff} onOff={recentStudyTime.onOff}>
-            <RecentStudyTime onOff={recentStudyTime.onOff} recentStudyTime={recentStudyTime.value} changeRecentStudyTime={changeRecentStudyTime} />
+          <FilterSubMenu
+            title="최근 학습 시점"
+            changeOnOff={changeRecentStudyTimeOnOff}
+            onOff={recentStudyTime.onOff}
+          >
+            <RecentStudyTime
+              onOff={recentStudyTime.onOff}
+              recentStudyTime={recentStudyTime.value}
+              changeRecentStudyTime={changeRecentStudyTime}
+            />
           </FilterSubMenu>
-          <FilterSubMenu title="카드 레벨" changeOnOff={changeLevelOnOff} onOff={level.onOff}>
-            <CardLevel onOff={level.onOff} level={level.value} changeLevel={changeLevel} />
+          <FilterSubMenu
+            title="카드 레벨"
+            changeOnOff={changeLevelOnOff}
+            onOff={level.onOff}
+          >
+            <CardLevel
+              onOff={level.onOff}
+              level={level.value}
+              changeLevel={changeLevel}
+            />
           </FilterSubMenu>
-          <FilterSubMenu title="학습 횟수" changeOnOff={changeStudyTimesOnOff} onOff={studyTimes.onOff}>
-            <StudyTimes onOff={studyTimes.onOff} studyTimes={studyTimes.value} changeStudyTimes={changeStudyTimes} />
+          <FilterSubMenu
+            title="학습 횟수"
+            changeOnOff={changeStudyTimesOnOff}
+            onOff={studyTimes.onOff}
+          >
+            <StudyTimes
+              onOff={studyTimes.onOff}
+              studyTimes={studyTimes.value}
+              changeStudyTimes={changeStudyTimes}
+            />
           </FilterSubMenu>
 
-          <FilterSubMenu title="최근 선택 난이도" changeOnOff={changeRecentDifficultyOnOff} onOff={recentDifficulty.onOff}>
-            {recentDifficulty.onOff === "on" ? <ToggleTags changeValue={changeRecentDifficulty} value={recentDifficulty.value} tags={recentDifficultyTags} af /> : <InactivatedTags tags={recentDifficultyTags} />}
+          <FilterSubMenu
+            title="최근 선택 난이도"
+            changeOnOff={changeRecentDifficultyOnOff}
+            onOff={recentDifficulty.onOff}
+          >
+            {recentDifficulty.onOff === "on" ? (
+              <ToggleTags
+                changeValue={changeRecentDifficulty}
+                value={recentDifficulty.value}
+                tags={recentDifficultyTags}
+                af
+              />
+            ) : (
+              <InactivatedTags tags={recentDifficultyTags} />
+            )}
           </FilterSubMenu>
-          <FilterSubMenu title="최근 시험 결과" changeOnOff={changeExamResultOnOff} onOff={examResult.onOff}>
-            {examResult.onOff === "on" ? <ToggleTags changeValue={changeExamResult} value={examResult.value} tags={examResultTags} af /> : <InactivatedTags tags={examResultTags} />}
+          <FilterSubMenu
+            title="최근 시험 결과"
+            changeOnOff={changeExamResultOnOff}
+            onOff={examResult.onOff}
+          >
+            {examResult.onOff === "on" ? (
+              <ToggleTags
+                changeValue={changeExamResult}
+                value={examResult.value}
+                tags={examResultTags}
+                af
+              />
+            ) : (
+              <InactivatedTags tags={examResultTags} />
+            )}
           </FilterSubMenu>
         </>
       )}
@@ -131,5 +237,5 @@ const StyledDivWrapper = styled.div`
 `;
 
 const RowForLevelTwo = styled.div`
-  margin-left: 10px;
+  margin-left: 6px;
 `;

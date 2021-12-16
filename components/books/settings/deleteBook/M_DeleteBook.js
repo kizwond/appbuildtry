@@ -4,8 +4,8 @@ import { Button, Alert, message } from "antd";
 import { MUTATION_DELETE_MY_BOOK } from "../../../../graphql/mutation/myBook";
 import { useRouter } from "next/router";
 import {
-  GET_MY_BOOKS_BY_BOOK_IDS,
-  GET_USER_ALL_MY_BOOKS,
+  QUERY_USER_BOOKS_BY_BOOK_IDS,
+  QUERY_USER_BOOKS,
 } from "../../../../graphql/query/allQuery";
 
 const DeleteBook = ({ book_id }) => {
@@ -33,16 +33,16 @@ const DeleteBook = ({ book_id }) => {
         },
         update(cache, { data }) {
           const bookData = cache.readQuery({
-            query: GET_USER_ALL_MY_BOOKS,
+            query: QUERY_USER_BOOKS,
           });
           const bookData2 = cache.readQuery({
-            query: GET_MY_BOOKS_BY_BOOK_IDS,
+            query: QUERY_USER_BOOKS_BY_BOOK_IDS,
             variables: {
               mybook_ids: [book_id],
             },
           });
           cache.writeQuery({
-            query: GET_USER_ALL_MY_BOOKS,
+            query: QUERY_USER_BOOKS,
             data: {
               ...bookData,
               mybook_getMybookByUserID: {
@@ -54,7 +54,7 @@ const DeleteBook = ({ book_id }) => {
             },
           });
           cache.writeQuery({
-            query: GET_MY_BOOKS_BY_BOOK_IDS,
+            query: QUERY_USER_BOOKS_BY_BOOK_IDS,
             variables: {
               mybook_ids: [book_id],
             },

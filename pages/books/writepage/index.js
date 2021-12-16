@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 import { Space, Col } from "antd";
 import styled from "styled-components";
-import { GET_USER_ALL_CATEGORY_AND_BOOKS } from "../../../graphql/query/allQuery";
+import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
 
 import Layout from "../../../components/layout/Layout";
 import CreateBookButton from "../../../components/books/writepage/createBook/CreateBookButton";
@@ -19,21 +19,24 @@ const WriteMain = () => {
 
   const newCateRef = useRef();
 
-  const { loading, error, data } = useQuery(GET_USER_ALL_CATEGORY_AND_BOOKS, {
-    onCompleted: (received_data) => {
-      console.log("received_data", received_data);
-      if (
-        received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
-      ) {
-      } else if (
-        received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
-      ) {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const { loading, error, data } = useQuery(
+    QUERY_USER_CATEGORIES_AND_USER_BOOKS,
+    {
+      onCompleted: (received_data) => {
+        console.log("received_data", received_data);
+        if (
+          received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
+        ) {
+        } else if (
+          received_data.mybookcateset_getMybookcatesetByUserID.status === "401"
+        ) {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   const myBook2 = useMemo(() => data?.mybook_getMybookByUserID.mybooks, [data]);
   const category2 = useMemo(

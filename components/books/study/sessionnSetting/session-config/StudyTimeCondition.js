@@ -16,7 +16,12 @@ const breakPoint = [
   },
 ];
 
-const StudyTimeCondition = ({ needStudyTimeCondition, changeNeedStudyTimeCondition, needStudyTimeRange, changeNeedStudyTimeRange }) => {
+const StudyTimeCondition = ({
+  needStudyTimeCondition,
+  changeNeedStudyTimeCondition,
+  needStudyTimeRange,
+  changeNeedStudyTimeRange,
+}) => {
   const onChange = useCallback(
     (date, dateString) => {
       const now = new Date();
@@ -26,11 +31,21 @@ const StudyTimeCondition = ({ needStudyTimeCondition, changeNeedStudyTimeConditi
       const today = moment(`${year}-${month}-${day}`, "YYYY-MM-DD");
 
       const startYear = date[0]._d.getFullYear();
-      const selectedStartDate = moment(`${startYear}-${dateString[0]}`, "YYYY-MM-DD");
-      const differenceFromStart = moment.duration(selectedStartDate.diff(today)).asDays();
+      const selectedStartDate = moment(
+        `${startYear}-${dateString[0]}`,
+        "YYYY-MM-DD"
+      );
+      const differenceFromStart = moment
+        .duration(selectedStartDate.diff(today))
+        .asDays();
       const endYear = date[1]._d.getFullYear();
-      const selectedEndDate = moment(`${endYear}-${dateString[1]}`, "YYYY-MM-DD");
-      const differenceFromEnd = moment.duration(selectedEndDate.diff(today)).asDays();
+      const selectedEndDate = moment(
+        `${endYear}-${dateString[1]}`,
+        "YYYY-MM-DD"
+      );
+      const differenceFromEnd = moment
+        .duration(selectedEndDate.diff(today))
+        .asDays();
 
       changeNeedStudyTimeRange([differenceFromStart, differenceFromEnd]);
     },
@@ -42,7 +57,11 @@ const StudyTimeCondition = ({ needStudyTimeCondition, changeNeedStudyTimeConditi
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <Radio.Group onChange={handlerRadioChange} value={needStudyTimeCondition} size="small">
+    <Radio.Group
+      onChange={handlerRadioChange}
+      value={needStudyTimeCondition}
+      size="small"
+    >
       <StyledRow wrap={false}>
         <Col {...breakPoint[0]}>
           <StyledRadio value="all">전체</StyledRadio>
@@ -63,7 +82,14 @@ const StudyTimeCondition = ({ needStudyTimeCondition, changeNeedStudyTimeConditi
                 <StyledDatePicker
                   placeholder={["시작", "종료"]}
                   format="MM-DD"
-                  value={[needStudyTimeRange[0] == 0 ? moment() : moment().add(needStudyTimeRange[0], "days"), needStudyTimeRange[1] == 0 ? moment() : moment().add(needStudyTimeRange[1], "days")]}
+                  value={[
+                    needStudyTimeRange[0] == 0
+                      ? moment()
+                      : moment().add(needStudyTimeRange[0], "days"),
+                    needStudyTimeRange[1] == 0
+                      ? moment()
+                      : moment().add(needStudyTimeRange[1], "days"),
+                  ]}
                   onChange={onChange}
                   size="small"
                 />
@@ -83,7 +109,6 @@ const StyledRadio = styled(Radio)`
     padding-right: 0px;
     padding-left: 3px;
     align-self: center;
-    font-size: xx-small;
   }
 `;
 const StyledRow = styled(Row)`

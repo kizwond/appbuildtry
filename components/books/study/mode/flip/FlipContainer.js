@@ -528,16 +528,70 @@ class Container extends Component {
     this.generateCardSeq(card_details_session, now, current_card_id);
   };
 
-  onClickSuspendHandler = () => {
+  onClickSuspendHandler = (current_card_id) => {
+    console.log(current_card_id)
+    const now = new Date();
     this.setState({
       popoverClicked: false,
     });
+    const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info);
+    const currentCardId = current_card_info[0]._id;
+
+    this.generateHoldCompletedtudyStatus(currentCardId, "hold");
+    
+    this.generateCardSeq(card_details_session, now, current_card_id);
   };
 
-  onClickCompletedHandler = () => {
+  generateHoldCompletedtudyStatus = (current_card_id, selection) => {
+    const timer = this.state.time;
+    const now = new Date();
+
+    const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    console.log("card_details_session", card_details_session);
+
+    const current_card_info_index = card_details_session.findIndex((item) => item._id === current_card_id);
+    console.log(current_card_info_index);
+
+    //학습정보 업데이트
+    card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent ;
+    card_details_session[current_card_info_index].studyStatus.statusCurrent = selection;
+    card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
+    card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
+    card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
+    if (card_details_session[current_card_info_index].studyStatus.totalStayHour == null) {
+      card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(timer);
+    } else {
+      card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(
+        Date.parse(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer
+      );
+    }
+
+    //업데이트된 학습정보 세션스토리지에 다시 저장
+    sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
+
+    //서버에 보내기 위한 학습정보 리스트 생성
+    this.generateStudyStatus(card_details_session, current_card_info_index);
+
+    this.stopTimerTotal();
+    this.resetTimer();
+  };
+
+  onClickCompletedHandler = (current_card_id) => {
+    console.log(current_card_id)
+    const now = new Date();
     this.setState({
       popoverClicked: false,
     });
+    const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info);
+    const currentCardId = current_card_info[0]._id;
+
+    this.generateHoldCompletedtudyStatus(currentCardId, "completed");
+    
+    this.generateCardSeq(card_details_session, now, current_card_id);
   };
 
   onClickRestoreHandler = () => {
@@ -705,9 +759,6 @@ class Container extends Component {
             </>
           ) : (
             <>
-              <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary" >
-                통과
-              </Button>
               <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary" >
                 보류
               </Button>
@@ -738,10 +789,10 @@ class Container extends Component {
           <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary" >
             통과
           </Button>
-          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary" >
+          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickSuspendHandler(current_card_id)} type="primary" >
             보류
           </Button>
-          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary" >
+          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id)} type="primary" >
             졸업
           </Button>
           <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">

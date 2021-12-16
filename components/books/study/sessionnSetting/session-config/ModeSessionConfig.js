@@ -33,7 +33,7 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
     <StyledDivConfigWrapper>
       <StyledDivConfigRow>
         <div>
-          <span className="ConifgTitle">보기 순서</span>
+          <span className="ConfigTitle">보기 순서</span>
         </div>
         <div>
           <ToggleTags
@@ -46,7 +46,7 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
 
       <StyledDivConfigRow>
         <div>
-          <span className="ConifgTitle">카드종류</span>
+          <span className="ConfigTitle">카드종류</span>
         </div>
         <div>
           <ToggleTags
@@ -59,7 +59,7 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
 
       <StyledDivConfigRow>
         <div>
-          <span className="ConifgTitle">카드상태</span>
+          <span className="ConfigTitle">카드상태</span>
         </div>
         <div>
           <div>
@@ -120,8 +120,8 @@ const ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
 export default memo(ModeSessionConfig);
 
 const StyledDivConfigWrapper = styled.div`
-  border-left: 1px solid #f0f0f0;
-  border-right: 1px solid #f0f0f0;
+  border-left: 1px solid #1890ff;
+  border-right: 1px solid #1890ff;
   padding: 5px 5px 0 5px;
   background-color: white;
   display: flex;

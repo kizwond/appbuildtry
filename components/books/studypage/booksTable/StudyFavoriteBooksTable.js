@@ -12,7 +12,7 @@ import FavoriteBook from "../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
-import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
+import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import { StyledFlexAllCenterDimension100Percent } from "../../../common/styledComponent/page";
 

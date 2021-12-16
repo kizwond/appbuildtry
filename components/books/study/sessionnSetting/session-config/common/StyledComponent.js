@@ -41,16 +41,18 @@ export const StyledDivConfigRow = styled.div`
     }
   }
 
-  & .ConifgTitle {
-    font-weight: 700;
+  & .ConfigTitle {
+    font-weight: 500;
+    font-size: 1.16667rem;
   }
 `;
 
 export const StyledDivConfigCol = styled.div`
   display: flex;
   flex-wrap: nowrap;
-  & .ConifgTitle {
-    font-weight: 700;
+  & .ConfigTitle {
+    font-weight: 500;
+    font-size: 1.16667rem;
   }
 `;
 
@@ -76,8 +78,8 @@ export const StyledSpanConfigTitle = styled(({ onOff, children, ...rest }) => (
 ))`
   color: ${({ onOff }) => (onOff ? "black" : "#0000003f")};
   margin-right: 10px;
-  /* font-size: 1rem !important; */
-  font-weight: 700;
+  font-size: 1.16667rem !important;
+  font-weight: 500;
 `;
 
 export const StyledSpanFilterSubTitle = styled(

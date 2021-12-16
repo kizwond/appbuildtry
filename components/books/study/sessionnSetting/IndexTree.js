@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table } from "antd";
 import { Progress } from "../../../../node_modules/antd/lib/index";
 import styled from "styled-components";
-import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
+import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
 import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 
 const IndexTree = ({
@@ -294,7 +294,7 @@ const IndexTree = ({
           title={() => (
             <StyledDivTitle>
               <div className="FirstRow">
-                <div className="TableMainTitle">목차 내 카드정보</div>
+                <div className="TableMainTitle">목차 정보</div>
               </div>
               <div className="SecondRow">
                 <div className="HelpDescription">

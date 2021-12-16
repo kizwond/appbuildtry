@@ -98,15 +98,6 @@ const StyledRowMaxWidth = styled.div`
     padding: 0 8px;
   }
 
-  & .ant-checkbox-inner {
-    width: 12px;
-    height: 12px;
-  }
-  & .ant-checkbox-inner::after {
-    width: 4px;
-    height: 7px;
-  }
-
   /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
 
   & .PullCustomCircleButton > .anticon-double-left > svg {

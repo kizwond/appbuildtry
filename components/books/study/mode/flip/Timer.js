@@ -54,7 +54,8 @@ class Timer extends Component {
               height: "20px",
             }}
           >
-            {ms(this.props.time, { colonNotation: false, secondsDecimalDigits: 0 })}
+            {this.props.time > 1000 && ms(this.props.time, { colonNotation: false, secondsDecimalDigits: 0 })}
+            {this.props.time < 1000 && <>0s</>}
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "flex", alignItems: "center" }}>
@@ -72,7 +73,8 @@ class Timer extends Component {
               height: "20px",
             }}
           >
-            {ms(this.props.time_total, { colonNotation: false, secondsDecimalDigits: 0 })}
+            {this.props.time_total > 1000 && ms(this.props.time_total, { colonNotation: false, secondsDecimalDigits: 0 })}
+            {this.props.time_total < 1000 && <>0s</>}
           </div>
         </div>
         {stop_total}

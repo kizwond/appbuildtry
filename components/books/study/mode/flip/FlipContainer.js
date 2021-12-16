@@ -76,6 +76,8 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
   );
 };
 
+export default FlipContainer;
+
 class Container extends Component {
   constructor(props) {
     super(props);
@@ -633,13 +635,22 @@ class Container extends Component {
       console.log("공부끝");
     }
   };
-  render() {
+  componentDidMount(){
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
     if (cardlist_to_send) {
       var clickCount = cardlist_to_send.length;
+      this.setState({
+        clickCount
+      })
     } else {
       var clickCount = 0;
+      this.setState({
+        clickCount
+      })
     }
+  }
+  render() {
+    
     if (this.props.levelConfigs) {
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
       const recentStudyResult = this.props.cardListStudying[currentSeq].studyStatus.recentStudyResult;
@@ -1515,7 +1526,7 @@ class Container extends Component {
               <div style={{ width: "50px", fontSize: "1rem", marginRight: "5px" }}>완료율</div>
               <ProgressBar bgcolor={"#32c41e"} completed={100} />
             </div>
-            <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {clickCount}</div>
+            <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {this.state.clickCount}</div>
           </div>
           <div style={{ display: "flex", marginTop: "5px", justifyContent: "space-between", alignItems: "center" }}>
             <Timer
@@ -1554,7 +1565,7 @@ class Container extends Component {
   }
 }
 
-export default FlipContainer;
+
 
 const style_study_layout_bottom = {
   display: "flex",

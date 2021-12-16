@@ -384,32 +384,35 @@ class Container extends Component {
   // 이전카드 보기
   onClickBeforeCard = () => {
     if (this.state.onBackMode === false) {
-      this.setState({
-        onBackMode: true,
-      });
-      const origin_seq = sessionStorage.getItem("origin_seq");
-      this.setState({
-        firstBackModeSeq: Number(origin_seq),
-      });
-      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
-
-      console.log(studyLogCardIds);
-      const lastCardId = studyLogCardIds.slice(-1);
-      console.log(lastCardId[0]);
-      const backModeSeq = studyLogCardIds.findIndex((item) => item === lastCardId[0]);
-      console.log(backModeSeq);
-      this.setState({
-        backModeSeq: backModeSeq,
-      });
-
-      const shouldBeSeq = card_details_session.findIndex((item) => item._id === lastCardId[0]);
-      console.log(shouldBeSeq);
-
-      const beforeBackModeCard = card_details_session[origin_seq];
-      console.log(beforeBackModeCard);
-      this.generateBackModeStudyStatus(beforeBackModeCard._id);
-      sessionStorage.setItem("card_seq", shouldBeSeq);
+      if(studyLogCardIds === null){
+        alert("이전 카드가 없습니다.")
+      } else {
+        this.setState({
+          onBackMode: true,
+        });
+        const origin_seq = sessionStorage.getItem("origin_seq");
+        this.setState({
+          firstBackModeSeq: Number(origin_seq),
+        });
+        const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+        const lastCardId = studyLogCardIds.slice(-1);
+        console.log(lastCardId[0]);
+        const backModeSeq = studyLogCardIds.findIndex((item) => item === lastCardId[0]);
+        console.log(backModeSeq);
+        this.setState({
+          backModeSeq: backModeSeq,
+        });
+  
+        const shouldBeSeq = card_details_session.findIndex((item) => item._id === lastCardId[0]);
+        console.log(shouldBeSeq);
+  
+        const beforeBackModeCard = card_details_session[origin_seq];
+        console.log(beforeBackModeCard);
+        this.generateBackPassModeStudyStatus(beforeBackModeCard._id, "move");
+        sessionStorage.setItem("card_seq", shouldBeSeq);
+      }
+      
     } else {
       const currentBackSeq = this.state.backModeSeq;
       console.log(currentBackSeq);
@@ -426,7 +429,7 @@ class Container extends Component {
         this.setState((prevState) => ({
           backModeSeq: prevState.backModeSeq - 1,
         }));
-        this.generateBackModeStudyStatus(currentBeBackModeDataId);
+        this.generateBackPassModeStudyStatus(currentBeBackModeDataId, "move");
         sessionStorage.setItem("card_seq", shouldBeSeq);
       }
     }
@@ -456,13 +459,13 @@ class Container extends Component {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       const shouldBeSeq = card_details_session.findIndex((item) => item._id === shouldBeBackModeDataId);
       console.log(shouldBeSeq);
-      this.generateBackModeStudyStatus(currentBackModeDataId);
+      this.generateBackPassModeStudyStatus(currentBackModeDataId, "move");
       sessionStorage.setItem("card_seq", shouldBeSeq);
     }
   };
 
   // 백모드에서 학습정보 생성
-  generateBackModeStudyStatus = (current_card_id) => {
+  generateBackPassModeStudyStatus = (current_card_id, selection) => {
     const timer = this.state.time;
     const now = new Date();
 
@@ -474,7 +477,7 @@ class Container extends Component {
 
     //학습정보 업데이트
     card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
-    card_details_session[current_card_info_index].studyStatus.recentSelection = "move";
+    card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
     card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
     if (card_details_session[current_card_info_index].studyStatus.totalStayHour == null) {
       card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(timer);
@@ -499,7 +502,7 @@ class Container extends Component {
     console.log(currentBackSeq);
     const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
     const shouldBeBackModeDataId = studyLogCardIds[currentBackSeq];
-    this.generateBackModeStudyStatus(shouldBeBackModeDataId);
+    this.generateBackPassModeStudyStatus(shouldBeBackModeDataId, "move");
     const origin_seq = sessionStorage.getItem("origin_seq");
     sessionStorage.setItem("card_seq", origin_seq);
     this.setState({
@@ -507,10 +510,20 @@ class Container extends Component {
     });
   };
 
-  onClickPassHandler = () => {
+  onClickPassHandler = (current_card_id) => {
+    console.log(current_card_id)
+    const now = new Date();
     this.setState({
       popoverClicked: false,
     });
+    const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info);
+    const currentCardId = current_card_info[0]._id;
+
+    this.generateBackPassModeStudyStatus(currentCardId, "pass");
+    
+    this.generateCardSeq(card_details_session, now, current_card_id);
   };
 
   onClickSuspendHandler = () => {
@@ -647,10 +660,10 @@ class Container extends Component {
       if (recentStudyResult === "completed" || recentStudyResult === "hold") {
         var diffiButtons = (
           <>
-            <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickRestoreHandler} type="primary" disabled>
+            <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickRestoreHandler} type="primary" >
               복원
             </Button>
-            <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary" disabled>
+            <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary" >
               통과
             </Button>
           </>
@@ -675,19 +688,19 @@ class Container extends Component {
         <Space>
           {recentStudyResult === "completed" || recentStudyResult === "hold" ? (
             <>
-              <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickRestoreHandler} type="primary" disabled>
+              <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickRestoreHandler} type="primary" >
                 복원
               </Button>
             </>
           ) : (
             <>
-              <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary" disabled>
+              <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary" >
                 통과
               </Button>
-              <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary" disabled>
+              <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary" >
                 보류
               </Button>
-              <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary" disabled>
+              <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary" >
                 졸업
               </Button>
             </>
@@ -711,13 +724,13 @@ class Container extends Component {
 
       const moreMenuContents = (
         <Space>
-          <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickPassHandler} type="primary" disabled>
+          <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary" >
             통과
           </Button>
-          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary" disabled>
+          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickSuspendHandler} type="primary" >
             보류
           </Button>
-          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary" disabled>
+          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary" >
             졸업
           </Button>
           <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">

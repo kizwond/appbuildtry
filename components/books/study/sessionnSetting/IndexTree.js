@@ -15,7 +15,6 @@ const IndexTree = ({
   changeSelectedCardsInfo,
 }) => {
   const [treeData, setTreeData] = useState([]);
-  console.log("필터인덱스트리");
 
   useEffect(() => {
     let mounted = false;

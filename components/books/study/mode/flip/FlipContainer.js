@@ -557,6 +557,7 @@ class Container extends Component {
     //학습정보 업데이트
     card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent ;
     card_details_session[current_card_info_index].studyStatus.statusCurrent = selection;
+    card_details_session[current_card_info_index].studyStatus.needStudyTime = null;
     card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
     card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
     card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
@@ -707,7 +708,7 @@ class Container extends Component {
     
     if (this.props.levelConfigs) {
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
-      const recentStudyResult = this.props.cardListStudying[currentSeq].studyStatus.recentStudyResult;
+      const recentSelection = this.props.cardListStudying[currentSeq].studyStatus.recentSelection;
 
       const current_card_book_id = this.props.cardListStudying[currentSeq].card_info.mybook_id;
       const current_card_id = this.props.cardListStudying[currentSeq].content.mycontent_id;
@@ -722,7 +723,7 @@ class Container extends Component {
       diffi.push(diffi1, diffi2, diffi3, diffi4, diffi5);
       const useDiffi = diffi.filter((item) => item.on_off === "on");
 
-      if (recentStudyResult === "completed" || recentStudyResult === "hold") {
+      if (recentSelection === "completed" || recentSelection === "hold") {
         var diffiButtons = (
           <>
             <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickRestoreHandler} type="primary" >
@@ -751,7 +752,7 @@ class Container extends Component {
 
       const backModeMoreMenuContents = (
         <Space>
-          {recentStudyResult === "completed" || recentStudyResult === "hold" ? (
+          {recentSelection === "completed" || recentSelection === "hold" ? (
             <>
               <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickRestoreHandler} type="primary" >
                 복원

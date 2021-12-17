@@ -277,6 +277,7 @@ class Container extends Component {
 
   onDiffClickHandler = (interval, diffi, current_card_id, timer) => {
     console.log("난이도 선택하셨네요~");
+    calculateStat("diffi1")
     console.log("해당카드 난이도평가", interval, diffi, current_card_id, timer);
     if (diffi === "diffi5") {
       console.log("알겠음 클릭함.");

@@ -6,16 +6,12 @@ import { useRouter } from "next/router";
 
 import styled from "styled-components";
 
-import { Col, Button } from "antd";
 import M_Layout from "../../../components/layout/M_Layout";
 import M_StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/M_StudyFavoriteBooksTable";
 import M_StudyBooksTable from "../../../components/books/studypage/booksTable/M_StudyBooksTable";
-import useWindowDimensions from "../../../hooks/useWindowDimensions";
 
 const Writeanother = () => {
   const router = useRouter();
-
-  const { height } = useWindowDimensions();
 
   const [isFoldedMenu, setIsFoldedMenu] = useState();
   const changeFoldedMenu = useCallback((_id) => {
@@ -57,7 +53,7 @@ const Writeanother = () => {
     });
   };
   const sesstionStart = () => {
-    router.push("/m/study/sessionSetting");
+    router.push("/m/study/sessionConfig");
   };
 
   const changeSelectedBooks = useCallback((_booksArray) => {
@@ -85,8 +81,8 @@ const Writeanother = () => {
       </Head>
       {myBook2 && category2 && (
         <M_Layout>
-          <StyledRowMaxWidth height={height}>
-            <Col span={24}>
+          <StyledRowMaxWidth>
+            <div>
               <M_StudyFavoriteBooksTable
                 ref={(ref) => (newCateRef.current = ref)}
                 category={category2}
@@ -96,9 +92,9 @@ const Writeanother = () => {
                 isFoldedMenu={isFoldedMenu}
                 changeFoldedMenu={changeFoldedMenu}
               />
-            </Col>
+            </div>
 
-            <Col span={24}>
+            <div>
               <M_StudyBooksTable
                 category={category2}
                 myBook={myBook2}
@@ -107,7 +103,7 @@ const Writeanother = () => {
                 isFoldedMenu={isFoldedMenu}
                 changeFoldedMenu={changeFoldedMenu}
               />
-            </Col>
+            </div>
           </StyledRowMaxWidth>
           <StyledBottomBar>
             <div onClick={directStart}>바로 보기</div>
@@ -125,7 +121,7 @@ const StyledRowMaxWidth = styled.div`
   margin: 0 auto;
   position: absolute;
   top: 40px;
-  height: ${(props) => props.height - 76}px;
+  height: calc(100vh - 76px);
   overflow: scroll;
 
   & .ant-card-small > .ant-card-head {
@@ -133,14 +129,14 @@ const StyledRowMaxWidth = styled.div`
     padding: 0 8px;
   }
 
-  & .ant-checkbox-inner {
+  /* & .ant-checkbox-inner {
     width: 12px;
     height: 12px;
-  }
-  & .ant-checkbox-inner::after {
+  } */
+  /* & .ant-checkbox-inner::after {
     width: 4px;
     height: 7px;
-  }
+  } */
 
   /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
 

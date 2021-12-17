@@ -16,7 +16,7 @@ import HideOrShowButton from "../../common/HideOrShowButton";
 import FavoriteBook from "../../common/FavoriteBook";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import makeDataSource from "../../common/logic";
-import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
+import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 
 const StudyBooksTable = ({

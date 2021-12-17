@@ -1,20 +1,24 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/router";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
 import {
   QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
   QUERY_SESSION_CONFIG,
 } from "../../../../graphql/query/allQuery";
-import M_Layout from "../../../../components/layout/M_Layout";
-import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
-import { Col, Tabs, Row, Typography, Button } from "antd";
+
+import { Tabs } from "antd";
+import { StyledAntTabs } from "../../../../components/common/styledComponent/antd/StyledAntdTabs";
 import styled from "styled-components";
-import { useRouter } from "next/router";
+
+import M_Layout from "../../../../components/layout/M_Layout";
+import M_SessionNavigationBar from "../../../../components/books/studypage/sessionConfig/M_SessionNavigationBar";
+import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import summaryAll from "../../../../components/books/study/sessionnSetting/session-config/common/business/getIndexesSummary";
 
-const SessionSetting = () => {
+const StudySessionConfig = () => {
   const router = useRouter();
 
   const [cardsList, setCardsList] = useState([]);
@@ -31,7 +35,10 @@ const SessionSetting = () => {
     setSelectedCardsInfo(summary);
   }, []);
 
-  const [visualCompo, setVisualCompo] = useState("index");
+  const [activatedComponent, setActivatedComponent] = useState("index");
+  const changeActivatedComponent = useCallback((_type) => {
+    setActivatedComponent(_type);
+  }, []);
 
   const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState(
     []
@@ -60,6 +67,7 @@ const SessionSetting = () => {
     data: data2,
     loading: loading2,
     error: error2,
+    refetch,
   } = useQuery(QUERY_SESSION_CONFIG, {
     variables: {
       mybook_ids: bookList.map((book) => book.book_id),
@@ -106,7 +114,7 @@ const SessionSetting = () => {
     },
   });
 
-  const submitCreateSessionConfigToServer = async () => {
+  const submitCreateSessionConfigToServer = useCallback(async () => {
     const keysArray = Object.keys(checkedKeys);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
@@ -124,7 +132,8 @@ const SessionSetting = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkedKeys, sessionConfig]);
 
   const [loadData, { loading, error, data, variables }] = useLazyQuery(
     QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
@@ -217,72 +226,17 @@ const SessionSetting = () => {
     return (
       <M_Layout>
         <StyledDiv>
-          <Row style={{ padding: "8px" }}>
-            <Col xs={24} sm={24} md={24} lg={0} xl={0} xxl={0}>
-              <Row>
-                <Col span={14} style={{ display: "flex" }}>
-                  <StyledPointer
-                    activated={visualCompo}
-                    onClick={() => setVisualCompo("index")}
-                  >
-                    목차 설정
-                  </StyledPointer>
-                  <StyledPointer
-                    activated={visualCompo}
-                    onClick={() => setVisualCompo("config")}
-                  >
-                    세션 설정
-                  </StyledPointer>
-                </Col>
-                <Col span={3}></Col>
-                <Col span={7} style={{ display: "flex" }}>
-                  <Button
-                    block
-                    disabled={"on" === "off"}
-                    size="small"
-                    onClick={() =>
-                      visualCompo === "index"
-                        ? setVisualCompo("config")
-                        : setVisualCompo("index")
-                    }
-                    style={{
-                      height: "2rem",
-                      // fontSize: "0.95rem !important",
-                      fontWeight: "600",
-                      marginLeft: "5px",
-                    }}
-                  >
-                    <span style={{ fontSize: "1.16667rem" }}>
-                      {visualCompo === "index" ? "다음" : "이전"}
-                    </span>
-                  </Button>
-                  <Button
-                    block
-                    disabled={visualCompo === "index"}
-                    size="small"
-                    onClick={submitCreateSessionConfigToServer}
-                    style={{
-                      height: "2rem",
-                      fontWeight: "600",
-                      marginLeft: "5px",
-                      backgroundColor:
-                        visualCompo === "config" ? "green" : null,
-                      color: visualCompo === "config" ? "white" : null,
-                    }}
-                  >
-                    <span style={{ fontSize: "1.16667rem" }}>시작</span>
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-          <StyledDivSecond visualCompo={visualCompo}>
-            <Row>
-              <Col xs={0} sm={0} md={0} lg={24} xl={24} xxl={24}>
-                <Typography.Title level={4}>목차 설정</Typography.Title>
-              </Col>
-            </Row>
-            <Tabs
+          <M_SessionNavigationBar
+            activatedComponent={activatedComponent}
+            changeActivatedComponent={changeActivatedComponent}
+            submitCreateSessionConfigToServer={
+              submitCreateSessionConfigToServer
+            }
+          />
+
+          <StyledDivSecond activatedComponent={activatedComponent}>
+            <StyledAntTabs
+              width="20%"
               type="card"
               tabPosition="top"
               size="small"
@@ -326,33 +280,12 @@ const SessionSetting = () => {
                     </StyledDivTabContentWrapper>
                   </Tabs.TabPane>
                 ))}
-            </Tabs>
+            </StyledAntTabs>
           </StyledDivSecond>
           <StyledDivFirst
             isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}
-            visualCompo={visualCompo}
+            activatedComponent={activatedComponent}
           >
-            <Row>
-              <Col xs={0} sm={0} md={0} lg={18} xl={18} xxl={18}>
-                <Typography.Title level={4}>세션 설정</Typography.Title>
-              </Col>
-              <Col xs={0} sm={0} md={0} lg={6} xl={6} xxl={6}>
-                <Button
-                  block
-                  size="small"
-                  onClick={submitCreateSessionConfigToServer}
-                  style={{
-                    height: "2rem",
-                    fontWeight: "600",
-                    marginLeft: "5px",
-                    backgroundColor: "green",
-                    color: "white",
-                  }}
-                >
-                  <span style={{ fontSize: "0.95rem " }}>시작</span>
-                </Button>
-              </Col>
-            </Row>
             {bookList.length - 1 === counter && (
               <SessionConfig
                 onToggleIsAFilter={onToggleIsAFilter}
@@ -376,109 +309,76 @@ const SessionSetting = () => {
 
   return <></>;
 };
-export default SessionSetting;
+export default StudySessionConfig;
 
 const StyledDiv = styled.div`
-  /* 스크롤바 숨김 */
-  /* overflow-y: scroll;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  } */
-
-  & * {
-    font-size: 1rem;
-  }
   margin: 0 auto;
   max-width: 1440px;
   min-width: 360px;
+  padding-top: 40px;
 
-  display: flex;
-
-  & .ant-tabs-tab-btn {
-    font-size: 1.16667rem;
-  }
-
-  & .ant-tabs-tab-active {
-  }
-  @media screen and (min-width: 992px) {
-    flex-direction: row;
-  }
-  @media screen and (min-width: 100px) and (max-width: 991px) {
-    flex-direction: column;
-  }
-
-  @media screen and (min-width: 100px) and (max-width: 768px) {
-    padding-top: 40px;
+  * {
+    font-size: 1rem;
   }
 `;
-const StyledDivFirst = styled.div`
-  padding: 8px;
 
-  & .ant-radio-group {
+const StyledDivFirst = styled.div`
+  display: ${(props) =>
+    props.activatedComponent === "config" ? "block" : "none"};
+  margin: 8px;
+
+  .ant-radio-group {
     display: block;
   }
-  & .ant-input-number-sm {
-    font-size: 0.7rem;
-    width: 2.3rem;
-  }
-  & .ant-input-number-sm input {
+
+  .ant-input-number-input {
     height: 20px;
     padding: 0 3px;
   }
-  & .ant-input-number-handler-wrap {
+  .ant-input-number-sm {
+    width: 2.3rem;
+    line-height: 1;
+  }
+
+  .ant-input-number-handler-wrap {
     width: 0px;
     visibility: hidden;
   }
-  @media screen and (min-width: 992px) {
-    min-width: 400px;
-  }
-  @media screen and (min-width: 100px) and (max-width: 991px) {
-    display: ${(props) => (props.visualCompo === "config" ? "block" : "none")};
-  }
 `;
 const StyledDivSecond = styled.div`
-  padding: 8px;
+  display: ${(props) =>
+    props.activatedComponent === "index" ? "block" : "none"};
+  margin: 8px;
 
-  @media screen and (min-width: 992px) {
-    flex: auto;
-  }
-  @media screen and (min-width: 100px) and (max-width: 991px) {
-    flex: auto;
-    display: ${(props) => (props.visualCompo === "index" ? "block" : "none")};
-  }
-
-  & .ant-table.ant-table-small .ant-table-title {
+  .ant-table.ant-table-small .ant-table-title {
     padding: reset;
     padding: 0px 8px 3px 8px;
   }
 
-  & .ant-table-tbody > tr.ant-table-row-selected > td {
+  .ant-table-tbody > tr.ant-table-row-selected > td {
     background: white;
   }
-  & .ant-table-tbody > tr.SelectedIndexCardsInfo > td {
+  .ant-table-tbody > tr.SelectedIndexCardsInfo > td {
     border-bottom: 1px solid #f0f0f0;
   }
 
-  & .ant-table.ant-table-small .ant-table-tbody > tr > td {
+  .ant-table.ant-table-small .ant-table-tbody > tr > td {
     padding: 4px;
   }
 
-  & .ant-table-row-indent + .ant-table-row-expand-icon {
+  .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;
   }
 `;
 
 const StyledDivTabContentWrapper = styled.div`
-  border: 1px solid #f0f0f0;
+  border: 1px solid #1890ff;
   border-top: none;
   padding: 5px;
 `;
 
 const StyledPointer = styled.div`
-  width: 100%;
+  width: 8.333rem;
   min-width: 70px;
   height: 2rem;
   position: relative;

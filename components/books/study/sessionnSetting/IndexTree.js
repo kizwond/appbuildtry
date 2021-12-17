@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table } from "antd";
 import { Progress } from "../../../../node_modules/antd/lib/index";
 import styled from "styled-components";
-import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
+import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
 import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 
 const IndexTree = ({
@@ -15,88 +15,99 @@ const IndexTree = ({
   changeSelectedCardsInfo,
 }) => {
   const [treeData, setTreeData] = useState([]);
-  console.log("필터인덱스트리");
+
   useEffect(() => {
-    function sumOfObjects(Obj1, Obj2) {
-      var finalObj = {};
-      Object.keys(Obj1).forEach((value) => {
-        if (Obj2.hasOwnProperty(value)) {
-          finalObj[value] = Obj1[value] + Obj2[value];
-        }
+    let mounted = false;
+
+    const getIndexes = async () => {
+      function sumOfObjects(Obj1, Obj2) {
+        var finalObj = {};
+        Object.keys(Obj1).forEach((value) => {
+          if (Obj2.hasOwnProperty(value)) {
+            finalObj[value] = Obj1[value] + Obj2[value];
+          }
+        });
+
+        return finalObj;
+      }
+      const rawIndexes = bookIndexInfo.map((item, index) => ({
+        title: item.name,
+        key: item._id,
+        level: item.level,
+        index: index,
+        progress_for_total_card: item.numCards.total.progress,
+        total_cards_number_for_total_card: item.numCards.total.total,
+        yet_cards_number_for_total_card: item.numCards.total.yet,
+        total_on_study_cards_number_for_total_card:
+          item.numCards.total.ing.total,
+        until_today_on_study_cards_number_for_total_card:
+          item.numCards.total.ing.untilToday,
+        until_now_on_study_cards_number_for_total_card:
+          item.numCards.total.ing.untilNow,
+        from_tomorrow_on_study_cards_number_for_total_card:
+          item.numCards.total.ing.afterTomorrow,
+        completed_cards_number_for_total_card: item.numCards.total.completed,
+        holding_cards_number_for_total_card: item.numCards.total.hold,
+        selectedIndex: checkedKeys.includes(item._id),
+      }));
+
+      const selectedIndexes = rawIndexes.filter(
+        (bookIndex) => bookIndex.selectedIndex
+      );
+      const summaryData = selectedIndexes.reduce(sumOfObjects, {
+        title: 0,
+        key: 0,
+        level: 0,
+        index: 0,
+        progress_for_total_card: 0,
+        total_cards_number_for_total_card: 0,
+        yet_cards_number_for_total_card: 0,
+        total_on_study_cards_number_for_total_card: 0,
+        until_today_on_study_cards_number_for_total_card: 0,
+        until_now_on_study_cards_number_for_total_card: 0,
+        from_tomorrow_on_study_cards_number_for_total_card: 0,
+        completed_cards_number_for_total_card: 0,
+        holding_cards_number_for_total_card: 0,
+        selectedIndex: 0,
       });
-
-      return finalObj;
-    }
-    const rawIndexes = bookIndexInfo.map((item, index) => ({
-      title: item.name,
-      key: item._id,
-      level: item.level,
-      index: index,
-      progress_for_total_card: item.numCards.total.progress,
-      total_cards_number_for_total_card: item.numCards.total.total,
-      yet_cards_number_for_total_card: item.numCards.total.yet,
-      total_on_study_cards_number_for_total_card: item.numCards.total.ing.total,
-      until_today_on_study_cards_number_for_total_card:
-        item.numCards.total.ing.untilToday,
-      until_now_on_study_cards_number_for_total_card:
-        item.numCards.total.ing.untilNow,
-      from_tomorrow_on_study_cards_number_for_total_card:
-        item.numCards.total.ing.afterTomorrow,
-      completed_cards_number_for_total_card: item.numCards.total.completed,
-      holding_cards_number_for_total_card: item.numCards.total.hold,
-      selectedIndex: checkedKeys.includes(item._id),
-    }));
-
-    const selectedIndexes = rawIndexes.filter(
-      (bookIndex) => bookIndex.selectedIndex
-    );
-    const summaryData = selectedIndexes.reduce(sumOfObjects, {
-      title: 0,
-      key: 0,
-      level: 0,
-      index: 0,
-      progress_for_total_card: 0,
-      total_cards_number_for_total_card: 0,
-      yet_cards_number_for_total_card: 0,
-      total_on_study_cards_number_for_total_card: 0,
-      until_today_on_study_cards_number_for_total_card: 0,
-      until_now_on_study_cards_number_for_total_card: 0,
-      from_tomorrow_on_study_cards_number_for_total_card: 0,
-      completed_cards_number_for_total_card: 0,
-      holding_cards_number_for_total_card: 0,
-      selectedIndex: 0,
-    });
-    let data_for_tree_level_one = rawIndexes.filter((item) => item.level == 1);
-    let data_for_tree_level_two = rawIndexes.filter((item) => item.level == 2);
-    let data_for_tree_level_three = rawIndexes.filter(
-      (item) => item.level == 3
-    );
-    let data_for_tree_level_four = rawIndexes.filter((item) => item.level == 4);
-    let data_for_tree_level_five = rawIndexes.filter((item) => item.level == 5);
-    const generatorForChildrens = (parents, son) => {
-      for (let i = 0; i < parents.length; i++) {
-        for (let k = 0; k < son.length; k++) {
-          if (parents[i].index < son[k].index) {
-            if (i + 1 == parents.length) {
-              if (parents[i].children == undefined) {
-                parents[i].children = [son[k]];
-              } else {
-                parents[i].children = [...parents[i].children, son[k]];
-              }
-            } else if (parents[i + 1].index > son[k].index) {
-              if (parents[i].children == undefined) {
-                parents[i].children = [son[k]];
-              } else {
-                parents[i].children = [...parents[i].children, son[k]];
+      let data_for_tree_level_one = rawIndexes.filter(
+        (item) => item.level == 1
+      );
+      let data_for_tree_level_two = rawIndexes.filter(
+        (item) => item.level == 2
+      );
+      let data_for_tree_level_three = rawIndexes.filter(
+        (item) => item.level == 3
+      );
+      let data_for_tree_level_four = rawIndexes.filter(
+        (item) => item.level == 4
+      );
+      let data_for_tree_level_five = rawIndexes.filter(
+        (item) => item.level == 5
+      );
+      const generatorForChildrens = (parents, son) => {
+        for (let i = 0; i < parents.length; i++) {
+          for (let k = 0; k < son.length; k++) {
+            if (parents[i].index < son[k].index) {
+              if (i + 1 == parents.length) {
+                if (parents[i].children == undefined) {
+                  parents[i].children = [son[k]];
+                } else {
+                  parents[i].children = [...parents[i].children, son[k]];
+                }
+              } else if (parents[i + 1].index > son[k].index) {
+                if (parents[i].children == undefined) {
+                  parents[i].children = [son[k]];
+                } else {
+                  parents[i].children = [...parents[i].children, son[k]];
+                }
               }
             }
           }
         }
-      }
-      return parents;
-    };
+        return parents;
+      };
 
-    const getIndexes = async () => {
       const level4 = await generatorForChildrens(
         data_for_tree_level_four,
         data_for_tree_level_five
@@ -113,27 +124,36 @@ const IndexTree = ({
         data_for_tree_level_one,
         level2
       );
-      const summaryIndexes = {
+      const summaryIndexes = await {
         ...summaryData,
         title: "현재 책 기준",
         key: "selectedIndexCardsInfo",
         progress_for_total_card:
           summaryData.progress_for_total_card / selectedIndexes.length || 0,
       };
-      changeSelectedCardsInfo({
-        ...selectedCardsInfo,
-        [selectedbookId]: summaryIndexes,
-      });
-      setTreeData([
-        { ...summaryAll, key: "allSummary", title: "전체 책 기준" },
-        summaryIndexes,
-        ...level1,
-      ]);
+      return {
+        cardsInfo: {
+          ...selectedCardsInfo,
+          [selectedbookId]: summaryIndexes,
+        },
+        treeData: [
+          { ...summaryAll, key: "allSummary", title: "전체 책 기준" },
+          summaryIndexes,
+          ...level1,
+        ],
+      };
     };
 
-    const wrappUp = getIndexes();
+    const result = getIndexes();
 
-    return wrappUp;
+    result
+      .then((data) => {
+        setTreeData(data.treeData);
+        changeSelectedCardsInfo(data.cardsInfo);
+      })
+      .catch((e) => console.log(e));
+
+    return () => (mounted = false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookIndexInfo, checkedKeys]);
 
@@ -294,7 +314,7 @@ const IndexTree = ({
           title={() => (
             <StyledDivTitle>
               <div className="FirstRow">
-                <div className="TableMainTitle">목차 내 카드정보</div>
+                <div className="TableMainTitle">목차 정보</div>
               </div>
               <div className="SecondRow">
                 <div className="HelpDescription">

@@ -3,6 +3,7 @@ import React, { memo } from "react";
 import { Tabs } from "../../../../node_modules/antd/lib/index";
 import ModeSessionConfig from "./session-config/ModeSessionConfig";
 import AdvancedFilter from "./session-config/AdvancedFilter";
+import { StyledAntTabs } from "../../../common/styledComponent/antd/StyledAntdTabs";
 
 const SessionConfig = ({
   book_ids,
@@ -17,21 +18,43 @@ const SessionConfig = ({
   advancedFilter,
   changeAdvancedFilter,
 }) => {
-  const { readDetailedOption, changeReadProps, flipDetailedOption, changeFlipProps, examDetailedOption, changeExamProps } = modeOption;
+  const {
+    readDetailedOption,
+    changeReadProps,
+    flipDetailedOption,
+    changeFlipProps,
+    examDetailedOption,
+    changeExamProps,
+  } = modeOption;
 
   return (
     <div>
-      <Tabs activeKey={mode} type="card" size="small" onTabClick={(key) => changeMode(key)} tabBarStyle={{ margin: 0 }}>
+      <StyledAntTabs
+        activeKey={mode}
+        type="card"
+        size="small"
+        onTabClick={(key) => changeMode(key)}
+        tabBarStyle={{ margin: 0 }}
+      >
         <Tabs.TabPane tab="읽기모드" key="read">
-          <ModeSessionConfig detailedOption={readDetailedOption} changeProps={changeReadProps}></ModeSessionConfig>
+          <ModeSessionConfig
+            detailedOption={readDetailedOption}
+            changeProps={changeReadProps}
+          ></ModeSessionConfig>
         </Tabs.TabPane>
         <Tabs.TabPane tab="뒤집기모드" key="flip">
-          <ModeSessionConfig detailedOption={flipDetailedOption} changeProps={changeFlipProps}></ModeSessionConfig>
+          <ModeSessionConfig
+            detailedOption={flipDetailedOption}
+            changeProps={changeFlipProps}
+          ></ModeSessionConfig>
         </Tabs.TabPane>
         <Tabs.TabPane tab="시험모드" key="exam">
-          <ModeSessionConfig detailedOption={examDetailedOption} changeProps={changeExamProps}></ModeSessionConfig>
+          <ModeSessionConfig
+            detailedOption={examDetailedOption}
+            changeProps={changeExamProps}
+          ></ModeSessionConfig>
         </Tabs.TabPane>
-      </Tabs>
+      </StyledAntTabs>
       <AdvancedFilter
         book_ids={book_ids}
         advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}

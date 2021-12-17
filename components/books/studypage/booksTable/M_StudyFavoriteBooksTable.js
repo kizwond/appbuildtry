@@ -19,7 +19,7 @@ import {
 } from "../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledProgress } from "../../../common/styledComponent/antd/StyledProgress";
+import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 
 const M_StudyFavoriteBooksTable = forwardRef(

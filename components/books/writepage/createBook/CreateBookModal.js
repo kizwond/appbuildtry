@@ -112,7 +112,7 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
           requiredMark={false}
           initialValues={{
             category: category.mybookcates.filter(
-              (cate) => cate.name === "(미지정)"
+              (cate) => cate.name === "(임시)"
             )[0]._id,
           }}
           onFinish={(values) => {

@@ -26,7 +26,7 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
       setCardTypeSetId(data.cardtypeset_getbymybookids.cardtypesets[0]._id);
       setCardTypes(data.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);
     } else {
-      console.log("why here?"); 
+      console.log("why here?");
     }
   }, [data]);
 
@@ -92,6 +92,9 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
     } else if (type === "general") {
       face1 = face1Num;
       face2 = 0;
+    } else if (type === "share") {
+      face1 = face1Num;
+      face2 = 0;
     }
 
     addCardType({ name: name, type: type, face1: face1, face2: face2 });
@@ -113,6 +116,11 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
   };
 
   const shareStudyOnchange = (e) => {
+    console.log("shareStudyOnchange checked", e.target.value);
+    setType(e.target.value);
+  };
+
+  const generalStudyOnchange = (e) => {
     console.log("shareStudyOnchange checked", e.target.value);
     setType(e.target.value);
   };
@@ -159,11 +167,15 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
                   <QuestionCircleOutlined />
                 </Tooltip>
               </Radio>
+              <Radio style={radioStyle} onChange={generalStudyOnchange} value="general">
+                <span style={{ fontSize: "0.8rem", marginRight: "10px" }}>비학습 - 일반카드</span>
+              </Radio>
               <Radio style={radioStyle} onChange={noneStudyOnchange} value="subject">
                 <span style={{ fontSize: "0.8rem", marginRight: "10px" }}>비학습 - 제목카드</span>
               </Radio>
-              <Radio style={radioStyle} onChange={shareStudyOnchange} value="general">
-                <span style={{ fontSize: "0.8rem", marginRight: "10px" }}>비학습 - 일반카드</span>
+
+              <Radio style={radioStyle} onChange={shareStudyOnchange} value="share">
+                <span style={{ fontSize: "0.8rem", marginRight: "10px" }}>비학습 - 공통지문카드</span>
                 <Tooltip title="지시문, 공통지문으로 사용가능" color="#2db7f5">
                   <QuestionCircleOutlined />
                 </Tooltip>
@@ -186,24 +198,27 @@ const NewCardTemplete = ({ book_id, getUpdatedCardTypeList }) => {
               )}
             </div>
           </div>
-          {type === "read" && <div style={{ fontStyle: "italic", fontSize: "0.8rem", marginLeft: "20px", marginTop:"10px" }}>※ 읽기카드는 단면으로 된 카드입니다.</div>}
+          {type === "read" && <div style={{ fontStyle: "italic", fontSize: "0.8rem", marginLeft: "20px", marginTop: "10px" }}>※ 읽기카드는 단면으로 된 카드입니다.</div>}
 
           {type === "flip" && (
-            <div style={{ fontStyle: "italic", fontSize: "0.8rem", marginLeft: "20px", marginTop:"10px" }}>
+            <div style={{ fontStyle: "italic", fontSize: "0.8rem", marginLeft: "20px", marginTop: "10px" }}>
               ※ 뒤집기카드는 양면으로 구성된 카드입니다. 앞면과 뒷면을 활용하여 다양한 학습기능을 사용하실 수 있습니다.
             </div>
           )}
 
           {type === "subject" && (
-            <div style={{ fontStyle: "italic", fontSize: "0.8rem", marginLeft: "20px", marginTop:"10px" }}>
+            <div style={{ fontStyle: "italic", fontSize: "0.8rem", marginLeft: "20px", marginTop: "10px" }}>
               ※ 비학습카드는 학습과 무관한 단면카드입니다. 제목카드나 ... 용도로 사용하실 수 있습니다.
             </div>
           )}
 
-          {type === "general" && (
-            <div style={{ fontStyle: "italic", fontSize: "0.8rem", marginLeft: "20px", marginTop:"10px" }}>
+          {type === "share" && (
+            <div style={{ fontStyle: "italic", fontSize: "0.8rem", marginLeft: "20px", marginTop: "10px" }}>
               ※ 공통지문카드는 단면카드입니다. 이 카드를 활용하여 1개의 지문에 여러 문제를 추가하실 수 있습니다.
             </div>
+          )}
+          {type === "general" && (
+            <div style={{ fontStyle: "italic", fontSize: "0.8rem", marginLeft: "20px", marginTop: "10px" }}>※ 안내사항이나 블라블라 비학습카드, 단순 정보제공? 카드</div>
           )}
         </div>
       </Modal>

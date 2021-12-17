@@ -27,6 +27,8 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+import {calculateStat} from "./FlipContainerSub"
+
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -190,7 +192,7 @@ class Container extends Component {
       );
     } else {
       card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = null;
-    }
+    }     
     if (card_details_session[current_card_info_index].studyStatus.currentLevStudyHour !== null) {
       card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = new Date(
         Date.parse(card_details_session[current_card_info_index].studyStatus.currentLevStudyHour) + timer
@@ -296,13 +298,7 @@ class Container extends Component {
 
       //학습정보 업데이트
       if (card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime !== null) {
-        console.log(card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime);
-        const newValue = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime) + timer);
-        console.log(newValue);
-        card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = newValue;
-      } else {
-        console.log(new Date(timer));
-        card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = new Date(timer);
+        card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime += new Date() - card_details_session[current_card_info_index].studyStatus.recentKnowTime;
       }
       card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
       card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
@@ -553,7 +549,13 @@ class Container extends Component {
 
     this.generateHoldCompletedRestoretudyStatus(currentCardId, "hold");
     if (from === "back") {
-      console.log("여기다가 뭔 짓을 해야하는데....")
+      this.setState({
+        backModeRestore: false,
+      });
+      console.log("여기다가 뭔 짓을 해야하는데....");
+      //back모드에서 보류를 눌렀어. 그러면 학습 데이터는 넘어가는거고
+      //화면은 그대로잖아. 시간은 리셋 되었고, 그러면 더보기 버튼에 내용이 바뀌어야 해.
+      // 그럴려면
     } else {
       this.generateCardSeq(card_details_session, now, current_card_id);
     }
@@ -594,7 +596,7 @@ class Container extends Component {
     this.resetTimer();
   };
 
-  onClickCompletedHandler = (current_card_id) => {
+  onClickCompletedHandler = (current_card_id, from) => {
     console.log(current_card_id);
     const now = new Date();
     this.setState({
@@ -606,8 +608,17 @@ class Container extends Component {
     const currentCardId = current_card_info[0]._id;
 
     this.generateHoldCompletedRestoretudyStatus(currentCardId, "completed");
-
-    this.generateCardSeq(card_details_session, now, current_card_id);
+    if (from === "back") {
+      this.setState({
+        backModeRestore: false,
+      });
+      console.log("여기다가 뭔 짓을 해야하는데....");
+      //back모드에서 보류를 눌렀어. 그러면 학습 데이터는 넘어가는거고
+      //화면은 그대로잖아. 시간은 리셋 되었고, 그러면 더보기 버튼에 내용이 바뀌어야 해.
+      // 그럴려면
+    } else {
+      this.generateCardSeq(card_details_session, now, current_card_id);
+    }
   };
 
   onClickRestoreHandler = (current_card_id, from) => {
@@ -741,11 +752,12 @@ class Container extends Component {
   }
   render() {
     if (this.props.levelConfigs) {
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
-      const recentSelection = this.props.cardListStudying[currentSeq].studyStatus.recentSelection;
-
-      const current_card_book_id = this.props.cardListStudying[currentSeq].card_info.mybook_id;
-      const current_card_id = this.props.cardListStudying[currentSeq].content.mycontent_id;
+      const statusCurrent = card_details_session[currentSeq].studyStatus.statusCurrent;
+      
+      const current_card_book_id = card_details_session[currentSeq].card_info.mybook_id;
+      const current_card_id = card_details_session[currentSeq].content.mycontent_id;
       const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
       const levelconfig_option = current_card_levelconfig[0].restudy.option;
       const diffi1 = levelconfig_option.diffi1;
@@ -757,7 +769,7 @@ class Container extends Component {
       diffi.push(diffi1, diffi2, diffi3, diffi4, diffi5);
       const useDiffi = diffi.filter((item) => item.on_off === "on");
 
-      if (recentSelection === "completed" || recentSelection === "hold") {
+      if (statusCurrent === "completed" || statusCurrent === "hold") {
         var diffiButtons = (
           <>
             <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickRestoreHandler(current_card_id)} type="primary">
@@ -799,7 +811,7 @@ class Container extends Component {
 
       const backModeMoreMenuContents = (
         <Space>
-          {recentSelection === "completed" || recentSelection === "hold" ? (
+          {statusCurrent === "completed" || statusCurrent === "hold" ? (
             <>
               <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickRestoreHandler(current_card_id, "back")} type="primary">
                 복원
@@ -810,7 +822,7 @@ class Container extends Component {
               <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickSuspendHandler(current_card_id, "back")} type="primary">
                 보류
               </Button>
-              <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary">
+              <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id, "back")} type="primary">
                 졸업
               </Button>
             </>
@@ -828,7 +840,7 @@ class Container extends Component {
             <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickSuspendHandler(current_card_id, "back")} type="primary">
               보류
             </Button>
-            <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.onClickCompletedHandler} type="primary">
+            <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id, "back")} type="primary">
               졸업
             </Button>
           </>
@@ -886,7 +898,8 @@ class Container extends Component {
     }
 
     if (this.props.cardTypeSets.length > 0) {
-      var makerFlagContent = this.props.cardListStudying.map((content) => {
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      var makerFlagContent = card_details_session.map((content) => {
         const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
@@ -1101,7 +1114,7 @@ class Container extends Component {
         });
         return show_contents;
       });
-      var face1Contents = this.props.cardListStudying.map((content) => {
+      var face1Contents = card_details_session.map((content) => {
         const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
@@ -1444,7 +1457,7 @@ class Container extends Component {
         });
         return show_contents;
       });
-      var face2Contents = this.props.cardListStudying.map((content) => {
+      var face2Contents = card_details_session.map((content) => {
         const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);

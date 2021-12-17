@@ -322,10 +322,7 @@ const SessionSetting = () => {
                 ))}
             </Tabs>
           </StyledDivSecond>
-          <StyledDivFirst
-            isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}
-            visualCompo={visualCompo}
-          >
+          <StyledDivFirst visualCompo={visualCompo}>
             <Row>
               <Col xs={0} sm={0} md={0} lg={18} xl={18} xxl={18}>
                 <Typography.Title level={4}>세션 설정</Typography.Title>

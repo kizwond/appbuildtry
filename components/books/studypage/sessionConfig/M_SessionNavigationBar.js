@@ -93,7 +93,7 @@ const StyledSessionNavigationBar = styled.div`
       height: 2rem;
       display: flex;
       align-items: center;
-      font-weight: 600;
+      font-weight: 450;
       margin-left: 5px;
       & > span {
         font-size: 1.16667rem;
@@ -115,8 +115,7 @@ const NavigationButton = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.16667rem;
-  font-weight: 700;
+  font-weight: 450;
   cursor: pointer;
 
   &:hover {
@@ -138,6 +137,7 @@ const NavigationButton = styled.div`
   }
 
   &.GoToIndex {
+    font-size: 1.16667rem;
     z-index: 2;
     background: ${(props) =>
       props.activated === "index" ? "#322a64" : "#efedfc"};
@@ -151,6 +151,7 @@ const NavigationButton = styled.div`
   }
 
   &.GoToSession {
+    font-size: 1.16667rem;
     z-index: 1;
     background: ${(props) =>
       props.activated === "config" ? "#322a64" : "#efedfc"};

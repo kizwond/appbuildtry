@@ -52,7 +52,6 @@ export default function summaryAll(cardsList, checkedKeys) {
       holding_cards_number_for_total_card: 0,
     });
 
-  console.log(Object.values(summary).reduce((a, b) => a + b, 0));
   return {
     ...summary,
     progress_for_total_card:

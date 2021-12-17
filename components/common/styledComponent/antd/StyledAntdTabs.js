@@ -53,4 +53,11 @@ export const StyledAntTabs = styled(Tabs)`
       }
     }
   }
+
+  /* 탭 콘텐츠 부분 css */
+  .ant-tabs-tabpane.ant-tabs-tabpane-active > .SessionTabContentWrapper {
+    border: 1px solid #1890ff;
+    border-top: none;
+    padding: 5px;
+  }
 `;

@@ -7,7 +7,7 @@ import {
 } from "../../../../graphql/query/allQuery";
 import M_Layout from "../../../../components/layout/M_Layout";
 import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
-import { Col, Tabs, Row, Typography, Button } from "antd";
+import { Tabs, Button } from "antd";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
@@ -61,6 +61,7 @@ const SessionSetting = () => {
     data: data2,
     loading: loading2,
     error: error2,
+    refetch,
   } = useQuery(QUERY_SESSION_CONFIG, {
     variables: {
       mybook_ids: bookList.map((book) => book.book_id),
@@ -244,7 +245,7 @@ const SessionSetting = () => {
                     : setVisualCompo("index")
                 }
               >
-                <span style={{ fontSize: "1.16667rem" }}>
+                <span className="ButtonText">
                   {visualCompo === "index" ? "다음" : "이전"}
                 </span>
               </Button>
@@ -259,7 +260,7 @@ const SessionSetting = () => {
                 size="small"
                 onClick={submitCreateSessionConfigToServer}
               >
-                <span style={{ fontSize: "1.16667rem" }}>시작</span>
+                <span className="ButtonText">시작</span>
               </Button>
             </div>
           </div>
@@ -358,14 +359,17 @@ const StyledDiv = styled.div`
 
   .FlexWrapper {
     display: flex;
-  }
-  .NextStageButton {
-    height: 2rem;
-    font-weight: 600;
-    margin-left: 5px;
-    &.GreenLight {
-      background-color: green;
-      color: #fff;
+    .NextStageButton {
+      height: 2rem;
+      font-weight: 600;
+      margin-left: 5px;
+      &.GreenLight {
+        background-color: green;
+        color: #fff;
+      }
+      .ButtonText {
+        font-size: 1.16667rem;
+      }
     }
   }
 `;

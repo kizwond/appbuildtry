@@ -1,21 +1,24 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/router";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
 import {
   QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
   QUERY_SESSION_CONFIG,
 } from "../../../../graphql/query/allQuery";
-import M_Layout from "../../../../components/layout/M_Layout";
-import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
-import { Tabs, Button } from "antd";
+
+import { Tabs } from "antd";
+import { StyledAntTabs } from "../../../../components/common/styledComponent/antd/StyledAntdTabs";
 import styled from "styled-components";
-import { useRouter } from "next/router";
+
+import M_Layout from "../../../../components/layout/M_Layout";
+import M_SessionNavigationBar from "../../../../components/books/studypage/sessionConfig/M_SessionNavigationBar";
+import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import summaryAll from "../../../../components/books/study/sessionnSetting/session-config/common/business/getIndexesSummary";
-import { StyledAntTabs } from "../../../../components/common/styledComponent/antd/StyledAntdTabs";
 
-const SessionSetting = () => {
+const StudySessionConfig = () => {
   const router = useRouter();
 
   const [cardsList, setCardsList] = useState([]);
@@ -32,7 +35,10 @@ const SessionSetting = () => {
     setSelectedCardsInfo(summary);
   }, []);
 
-  const [visualCompo, setVisualCompo] = useState("index");
+  const [activatedComponent, setActivatedComponent] = useState("index");
+  const changeActivatedComponent = useCallback((_type) => {
+    setActivatedComponent(_type);
+  }, []);
 
   const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState(
     []
@@ -108,7 +114,7 @@ const SessionSetting = () => {
     },
   });
 
-  const submitCreateSessionConfigToServer = async () => {
+  const submitCreateSessionConfigToServer = useCallback(async () => {
     const keysArray = Object.keys(checkedKeys);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
@@ -126,7 +132,8 @@ const SessionSetting = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkedKeys, sessionConfig]);
 
   const [loadData, { loading, error, data, variables }] = useLazyQuery(
     QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
@@ -219,52 +226,15 @@ const SessionSetting = () => {
     return (
       <M_Layout>
         <StyledDiv>
-          <div className="ConfigNavigationWrapper">
-            <div className="FlexWrapper">
-              <StyledPointer
-                activated={visualCompo}
-                onClick={() => setVisualCompo("index")}
-              >
-                목차 설정
-              </StyledPointer>
-              <StyledPointer
-                activated={visualCompo}
-                onClick={() => setVisualCompo("config")}
-              >
-                세션 설정
-              </StyledPointer>
-            </div>
-            <div className="FlexWrapper">
-              <Button
-                className="NextStageButton"
-                block
-                size="small"
-                onClick={() =>
-                  visualCompo === "index"
-                    ? setVisualCompo("config")
-                    : setVisualCompo("index")
-                }
-              >
-                <span className="ButtonText">
-                  {visualCompo === "index" ? "다음" : "이전"}
-                </span>
-              </Button>
-              <Button
-                className={
-                  visualCompo === "config"
-                    ? "NextStageButton GreenLight"
-                    : "NextStageButton"
-                }
-                block
-                disabled={visualCompo === "index"}
-                size="small"
-                onClick={submitCreateSessionConfigToServer}
-              >
-                <span className="ButtonText">시작</span>
-              </Button>
-            </div>
-          </div>
-          <StyledDivSecond visualCompo={visualCompo}>
+          <M_SessionNavigationBar
+            activatedComponent={activatedComponent}
+            changeActivatedComponent={changeActivatedComponent}
+            submitCreateSessionConfigToServer={
+              submitCreateSessionConfigToServer
+            }
+          />
+
+          <StyledDivSecond activatedComponent={activatedComponent}>
             <StyledAntTabs
               width="20%"
               type="card"
@@ -314,7 +284,7 @@ const SessionSetting = () => {
           </StyledDivSecond>
           <StyledDivFirst
             isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}
-            visualCompo={visualCompo}
+            activatedComponent={activatedComponent}
           >
             {bookList.length - 1 === counter && (
               <SessionConfig
@@ -339,7 +309,7 @@ const SessionSetting = () => {
 
   return <></>;
 };
-export default SessionSetting;
+export default StudySessionConfig;
 
 const StyledDiv = styled.div`
   margin: 0 auto;
@@ -350,31 +320,11 @@ const StyledDiv = styled.div`
   * {
     font-size: 1rem;
   }
-
-  .ConfigNavigationWrapper {
-    margin: 8px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .FlexWrapper {
-    display: flex;
-    .NextStageButton {
-      height: 2rem;
-      font-weight: 600;
-      margin-left: 5px;
-      &.GreenLight {
-        background-color: green;
-        color: #fff;
-      }
-      .ButtonText {
-        font-size: 1.16667rem;
-      }
-    }
-  }
 `;
+
 const StyledDivFirst = styled.div`
-  display: ${(props) => (props.visualCompo === "config" ? "block" : "none")};
+  display: ${(props) =>
+    props.activatedComponent === "config" ? "block" : "none"};
   margin: 8px;
 
   .ant-radio-group {
@@ -396,7 +346,8 @@ const StyledDivFirst = styled.div`
   }
 `;
 const StyledDivSecond = styled.div`
-  display: ${(props) => (props.visualCompo === "index" ? "block" : "none")};
+  display: ${(props) =>
+    props.activatedComponent === "index" ? "block" : "none"};
   margin: 8px;
 
   .ant-table.ant-table-small .ant-table-title {

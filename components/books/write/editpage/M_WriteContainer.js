@@ -126,19 +126,19 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }, [data1, updateStatus, indexChanged, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
 
-  const cardTypeInfo = (cardtype_info, from, parentId, generalCardId, selections, mycontent, card_info) => {
+  const cardTypeInfo = (cardtype_info, from, parentId, shareCardId, selections, mycontent, card_info) => {
     sessionStorage.setItem("cardtype_info", JSON.stringify(cardtype_info));
     sessionStorage.setItem("from", from);
     sessionStorage.setItem("parentId", parentId);
-    sessionStorage.setItem("generalCardId", generalCardId);
+    sessionStorage.setItem("shareCardId", shareCardId);
 
     console.log("cardTypeInfo fired!!!! editor on process");
     console.log(selections);
-    // console.log("generalCardId", generalCardId);
+    // console.log("shareCardId", shareCardId);
     // console.log(cardId);
-    if (generalCardId) {
+    if (shareCardId) {
       const childs = cards.filter((item) => {
-        if (item.card_info.parentCard_id === generalCardId) {
+        if (item.card_info.parentCard_id === shareCardId) {
           return item;
         }
       });
@@ -360,9 +360,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     const cardtype_info = JSON.parse(sessionStorage.getItem("cardtype_info"));
     const from = sessionStorage.getItem("from");
     const parentId = sessionStorage.getItem("parentId");
-    const generalCardId = sessionStorage.getItem("generalCardId");
+    const shareCardId = sessionStorage.getItem("shareCardId");
 
-    cardTypeInfo(cardtype_info, from, parentId, generalCardId, num_selection);
+    cardTypeInfo(cardtype_info, from, parentId, shareCardId, num_selection);
   }
 
   function removeSelection() {
@@ -376,10 +376,10 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     const cardtype_info = JSON.parse(sessionStorage.getItem("cardtype_info"));
     const from = sessionStorage.getItem("from");
     const parentId = sessionStorage.getItem("parentId");
-    const generalCardId = sessionStorage.getItem("generalCardId");
+    const shareCardId = sessionStorage.getItem("shareCardId");
 
     sessionStorage.setItem("lastSelectionRemoving", true);
-    cardTypeInfo(cardtype_info, from, parentId, generalCardId, num_selection);
+    cardTypeInfo(cardtype_info, from, parentId, shareCardId, num_selection);
   }
 
   useEffect(() => {
@@ -605,19 +605,19 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }
 
-  function onClickCardAdd(from, generalCardId) {
+  function onClickCardAdd(from, shareCardId) {
     sessionStorage.setItem("selections", 0);
     setEditorOn("");
     setEditMode("normal");
     if (selectedCardType === undefined) {
       setSelectedCardType(cardTypes[0].cardtype_info);
-      cardTypeInfo(cardTypes[0].cardtype_info, "inCard", null, generalCardId);
+      cardTypeInfo(cardTypes[0].cardtype_info, "inCard", null, shareCardId);
       sessionStorage.setItem("cardtype", cardTypes[0].cardtype_info.cardtype);
     } else {
       const hello = cardTypes.filter((item) => item.cardtype_info.name === selectedCardType.name);
       setSelectedCardType(hello[0].cardtype_info);
       sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
-      cardTypeInfo(hello[0].cardtype_info, "inCard", null, generalCardId);
+      cardTypeInfo(hello[0].cardtype_info, "inCard", null, shareCardId);
     }
   }
 
@@ -649,7 +649,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
       sessionStorage.setItem("selectedCardTypeId", hello[0]._id);
       cardTypeInfo(hello[0].cardtype_info, "inCard", parentId);
-    } else if (from === "general") {
+    } else if (from === "share") {
       const hello = cardTypes.filter((item) => item.cardtype_info.cardtype === "flip");
       console.log(hello);
       setSelectedCardType(hello[0].cardtype_info);
@@ -1048,6 +1048,179 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                   )}
                 </>
               )}
+              {content.card_info.cardtype === "general" && (
+                <>
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
+                    <div onClick={() => onClickCard(content._id, "normal")}>
+                      {/* 페이스 스타일 영역 */}
+                      {content.content.makerFlag.value !== null && flagArea}
+                      <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+                        <div
+                          style={{
+                            width: "80%",
+                            backgroundColor: face_style[0].background.color,
+                            marginTop: face_style[0].outer_margin.top,
+                            marginBottom: face_style[0].outer_margin.bottom,
+                            marginLeft: face_style[0].outer_margin.left,
+                            marginRight: face_style[0].outer_margin.right,
+                            paddingTop: face_style[0].inner_padding.top,
+                            paddingBottom: face_style[0].inner_padding.bottom,
+                            paddingLeft: face_style[0].inner_padding.left,
+                            paddingRight: face_style[0].inner_padding.right,
+                            borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
+                            borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
+                            borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
+                            borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
+                          }}
+                        >
+                          {content_value.face1.map((item, index) => (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: row_style.face1[index].background.color,
+                                  marginTop: row_style.face1[index].outer_margin.top,
+                                  marginBottom: row_style.face1[index].outer_margin.bottom,
+                                  marginLeft: row_style.face1[index].outer_margin.left,
+                                  marginRight: row_style.face1[index].outer_margin.right,
+                                  paddingTop: row_style.face1[index].inner_padding.top,
+                                  paddingBottom: row_style.face1[index].inner_padding.bottom,
+                                  paddingLeft: row_style.face1[index].inner_padding.left,
+                                  paddingRight: row_style.face1[index].inner_padding.right,
+                                  borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
+                                  borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
+                                  borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
+                                  borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                                  textAlign: row_font.face1[index].align,
+                                  fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
+                                  color: row_font.face1[index].color,
+                                  fontFamily: `${
+                                    row_font.face1[index].font === "고딕"
+                                      ? `NanumGothic`
+                                      : row_font.face1[index].font === "명조"
+                                      ? `NanumMyeongjo`
+                                      : row_font.face1[index].font === "바탕"
+                                      ? `Gowun Batang, sans-serif`
+                                      : row_font.face1[index].font === "돋움"
+                                      ? `Gowun Dodum, sans-serif`
+                                      : ""
+                                  } `,
+                                  fontStyle: `${row_font.face1[index].italic === "on" ? "italic" : "normal"}`,
+                                  fontSize: row_font.face1[index].size,
+                                  textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
+                                }}
+                              >
+                                <FroalaEditorView model={item} />
+                              </div>
+                            </>
+                          ))}
+                        </div>
+                        <div
+                          style={{
+                            width: "20%",
+                            backgroundColor: face_style[1].background.color,
+                            marginTop: face_style[1].outer_margin.top,
+                            marginBottom: face_style[1].outer_margin.bottom,
+                            marginLeft: face_style[1].outer_margin.left,
+                            marginRight: face_style[1].outer_margin.right,
+                            paddingTop: face_style[1].inner_padding.top,
+                            paddingBottom: face_style[1].inner_padding.bottom,
+                            paddingLeft: face_style[1].inner_padding.left,
+                            paddingRight: face_style[1].inner_padding.right,
+                            borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
+                            borderBottom: `${face_style[1].border.bottom.thickness}px ${face_style[1].border.bottom.bordertype} ${face_style[1].border.bottom.color}`,
+                            borderLeft: `${face_style[1].border.left.thickness}px ${face_style[1].border.left.bordertype} ${face_style[1].border.left.color}`,
+                            borderRight: `${face_style[1].border.right.thickness}px ${face_style[1].border.right.bordertype} ${face_style[1].border.right.color}`,
+                          }}
+                        >
+                          {content_value.annotation.length > 0 &&
+                            content_value.annotation.map((item, index) => (
+                              <>
+                                <div
+                                  style={{
+                                    backgroundColor: row_style.annotation[index].background.color,
+                                    marginTop: row_style.annotation[index].outer_margin.top,
+                                    marginBottom: row_style.annotation[index].outer_margin.bottom,
+                                    marginLeft: row_style.annotation[index].outer_margin.left,
+                                    marginRight: row_style.annotation[index].outer_margin.right,
+                                    paddingTop: row_style.annotation[index].inner_padding.top,
+                                    paddingBottom: row_style.annotation[index].inner_padding.bottom,
+                                    paddingLeft: row_style.annotation[index].inner_padding.left,
+                                    paddingRight: row_style.annotation[index].inner_padding.right,
+                                    borderTop: `${row_style.annotation[index].border.top.thickness}px ${row_style.annotation[index].border.top.bordertype} ${row_style.annotation[index].border.top.color}`,
+                                    borderBottom: `${row_style.annotation[index].border.bottom.thickness}px ${row_style.annotation[index].border.bottom.bordertype} ${row_style.annotation[index].border.bottom.color}`,
+                                    borderLeft: `${row_style.annotation[index].border.left.thickness}px ${row_style.annotation[index].border.left.bordertype} ${row_style.annotation[index].border.left.color}`,
+                                    borderRight: `${row_style.annotation[index].border.right.thickness}px ${row_style.annotation[index].border.right.bordertype} ${row_style.annotation[index].border.right.color}`,
+                                    textAlign: row_font.annotation[index].align,
+                                    fontWeight: `${row_font.annotation[index].bold === "on" ? 700 : 400}`,
+                                    color: row_font.annotation[index].color,
+                                    fontFamily: `${
+                                      row_font.annotation[index].font === "고딕"
+                                        ? `NanumGothic`
+                                        : row_font.annotation[index].font === "명조"
+                                        ? `NanumMyeongjo`
+                                        : row_font.annotation[index].font === "바탕"
+                                        ? `Gowun Batang, sans-serif`
+                                        : row_font.annotation[index].font === "돋움"
+                                        ? `Gowun Dodum, sans-serif`
+                                        : ""
+                                    } `,
+                                    fontStyle: `${row_font.annotation[index].italic === "on" ? "italic" : "normal"}`,
+                                    fontSize: row_font.annotation[index].size,
+                                    textDecoration: `${row_font.annotation[index].underline === "on" ? "underline" : "none"}`,
+                                  }}
+                                >
+                                  <FroalaEditorView model={item} />
+                                </div>
+                              </>
+                            ))}
+                        </div>
+                      </div>
+                    </div>
+                    {content._id === cardId && (
+                      <>
+                        <div style={{ padding: "5px", fontSize: "0.8rem", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+                          <div>
+                            <Button icon={<PlusOutlined />} size="small" type="primary" onClick={onClickCardAdd} style={{ fontSize: "0.75rem", borderRadius: "5px" }}>
+                              다음카드
+                            </Button>
+                          </div>
+                          <div>
+                            <Space style={{ display: "flex", alignItems: "center" }}>
+                              <Button
+                                icon={<EditOutlined />}
+                                onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
+                                size="small"
+                                type="secondary"
+                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                              >
+                                내용편집
+                              </Button>
+                              <Button
+                                icon={<DeleteOutlined />}
+                                onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                size="small"
+                                type="secondary"
+                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                              ></Button>
+                            </Space>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  {content._id === cardId && editMode === "normal" && (
+                    <>
+                      <div>{editorOnFromCard}</div>
+                    </>
+                  )}
+
+                  {content._id === cardId && editMode === "update" && (
+                    <>
+                      <div>{editorOnForUpdate}</div>
+                    </>
+                  )}
+                </>
+              )}
               {content.card_info.cardtype === "subject" && (
                 <>
                   <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
@@ -1158,11 +1331,11 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                   )}
                 </>
               )}
-              {content.card_info.cardtype === "general" && (
+              {content.card_info.cardtype === "share" && (
                 <>
                   <div className={`${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
-                      <div onClick={() => onClickCard(content._id, "general")}>
+                      <div onClick={() => onClickCard(content._id, "share")}>
                         {/* 페이스 스타일 영역 */}
                         {content.content.makerFlag.value !== null && flagArea}
                         <div
@@ -1234,7 +1407,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                     icon={<PlusOutlined />}
                                     size="small"
                                     type="primary"
-                                    onClick={() => onClickCardAdd("general", content._id)}
+                                    onClick={() => onClickCardAdd("share", content._id)}
                                     style={{ fontSize: "0.75rem", borderRadius: "5px" }}
                                   >
                                     다음카드
@@ -1245,7 +1418,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                     icon={<ApartmentOutlined />}
                                     size="small"
                                     type="primary"
-                                    onClick={() => onClickCardAddChild("general", content._id)}
+                                    onClick={() => onClickCardAddChild("share", content._id)}
                                     style={{ fontSize: "0.75rem", borderRadius: "5px" }}
                                   >
                                     자식카드
@@ -1855,7 +2028,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     console.log("from", from);
     console.log("parent", group);
     setEditMode("normal");
-    if ((from !== "general" && from !== "normal" && from !== "flip" && group === undefined) || null) {
+    if ((from !== "share" && from !== "normal" && from !== "flip" && group === undefined) || null) {
       console.log("null or undefined");
       const selected1 = document.getElementsByClassName("child_group");
       const selected2 = document.getElementsByClassName("other");
@@ -1867,8 +2040,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
         const section2 = selected1.item(a);
         section2.style.borderLeft = "none";
       }
-    } else if (from === "general") {
-      console.log("general");
+    } else if (from === "share") {
+      console.log("share");
       const selected1 = document.getElementsByClassName(card_id);
       const selected2 = document.getElementsByClassName("other");
       for (var a = 0; a < selected2.length; a++) {

@@ -293,6 +293,17 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               </React.Fragment>
             )}
 
+            {cardType === "share" && (
+              <React.Fragment>
+                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
+                  1면
+                </Select.Option>
+                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
+                  주석
+                </Select.Option>
+              </React.Fragment>
+            )}
+
             {cardType === "flip" && (
               <React.Fragment>
                 <Select.Option value="0" style={{ fontSize: "0.8rem" }}>

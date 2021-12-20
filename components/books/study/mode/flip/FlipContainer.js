@@ -103,6 +103,8 @@ class Container extends Component {
       firstBackModeSeq: 0,
       restore: false,
       backModeRestore: false,
+      ttsOn:false,
+      firstTimeTts:true
     };
     this.keyCount = 0;
     this.getKey = this.getKey.bind(this);
@@ -269,7 +271,35 @@ class Container extends Component {
     });
     this.stopTimerTotal();
     this.resetTimer();
+    
+    this.setState({
+      ttsOn:true
+    })
   };
+
+  componentDidMount() {
+    console.log("did mount")
+    if(this.state.firstTimeTts === true){
+      console.log("false to true")
+      this.setState({
+        firstTimeTts:false
+      })
+    }
+  }
+
+  componentDidUpdate(_prevProps, prevState){
+    
+    if(prevState.firstTimeTts !== this.state.firstTimeTts){
+      console.log("did update")
+      this.speakText()
+    }
+    if(this.state.ttsOn){
+      this.speakText()
+      this.setState({
+        ttsOn:false
+      })
+    }
+  }
 
   // 이전카드 보기
   onClickBeforeCard = () => {
@@ -504,23 +534,55 @@ class Container extends Component {
     // this.generateCardSeq(card_details_session, now, current_card_id);
   };
   speakText = () => {
+    console.log("tts")
+    const hello = async () => this.speakTextFace1()
+    hello().then(this.speakTextFace2())
+  };
+  speakTextFace1 = () => {
     if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
       alert("이 브라우저는 음성 합성을 지원하지 않습니다.");
       return;
     }
 
-    window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
+    // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
 
-    const text = document.getElementById("face2_row1");
-    const speechMsg = new SpeechSynthesisUtterance();
-    speechMsg.rate = 1; // 속도: 0.1 ~ 10
-    speechMsg.pitch = 1; // 음높이: 0 ~ 2
-    speechMsg.lang = "en";
-    speechMsg.text = text.innerHTML;
+    const text = document.getElementById("face1_row1");
+    // const text2 = document.getElementById("face2_row1");
+    console.log(text)
+    if(text !== null){
+      const speechMsg = new SpeechSynthesisUtterance();
+      speechMsg.rate = 1; // 속도: 0.1 ~ 10
+      speechMsg.pitch = 1; // 음높이: 0 ~ 2
+      speechMsg.lang = "en";
+      speechMsg.text = text.innerText;
+  
+      // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
+      window.speechSynthesis.speak(speechMsg)
+    }
+  }
 
-    // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
-    window.speechSynthesis.speak(speechMsg);
-  };
+  speakTextFace2 = () =>{
+    if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+      alert("이 브라우저는 음성 합성을 지원하지 않습니다.");
+      return;
+    }
+
+    // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
+
+    // const text = document.getElementById("face1_row1");
+    const text2 = document.getElementById("face2_row1");
+    console.log(text2)
+    if(text2 !== null){
+      const speechMsg = new SpeechSynthesisUtterance();
+      speechMsg.rate = 1; // 속도: 0.1 ~ 10
+      speechMsg.pitch = 1; // 음높이: 0 ~ 2
+      speechMsg.lang = "en";
+      speechMsg.text = text2.innerText;
+  
+      // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
+      window.speechSynthesis.speak(speechMsg);
+    }
+  }
 
   //서버에 보내기 위한 학습정보생성
   generateStudyStatus = (card_details_session, current_card_info_index) => {
@@ -593,20 +655,8 @@ class Container extends Component {
       console.log("공부끝");
     }
   };
-  componentDidMount() {
-    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
-    if (cardlist_to_send) {
-      var clickCount = cardlist_to_send.length;
-      this.setState({
-        clickCount,
-      });
-    } else {
-      var clickCount = 0;
-      this.setState({
-        clickCount,
-      });
-    }
-  }
+  
+
   render() {
     if (this.props.levelConfigs) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
@@ -752,6 +802,7 @@ class Container extends Component {
           </Popover>
         </>
       );
+      
     }
 
     if (this.props.cardTypeSets.length > 0) {
@@ -1220,6 +1271,7 @@ class Container extends Component {
                                   textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                 }}
                               >
+                                <div id={`face1_row${index + 1}`} style={{display:"none"}} readOnly>{item.replace(/<\/?[^>]+(>|$)/g, "")}</div>
                                 <FroalaEditorView model={item} />
                               </div>
                             </>
@@ -1464,7 +1516,8 @@ class Container extends Component {
                               <>
                                 <div
                                   key={`face2_row${index + 1}`}
-                                  id={`face2_row${index + 1}`}
+                                  // id={`face2_row${index + 1}`}
+                                  value={item}
                                   style={{
                                     backgroundColor: row_style.face2[index].background.color,
                                     marginTop: row_style.face2[index].outer_margin.top,
@@ -1498,6 +1551,7 @@ class Container extends Component {
                                     textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
                                   }}
                                 >
+                                  <div id={`face2_row${index + 1}`} style={{display:"none"}} readOnly>{item.replace(/<\/?[^>]+(>|$)/g, "")}</div>
                                   <FroalaEditorView model={item} />
                                 </div>
                               </>

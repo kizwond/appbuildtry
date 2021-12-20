@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "antd";
+import { Checkbox, Table } from "antd";
 import { Progress } from "../../../../node_modules/antd/lib/index";
 import styled from "styled-components";
 import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
@@ -108,23 +108,14 @@ const IndexTree = ({
         return parents;
       };
 
-      const level4 = await generatorForChildrens(
+      const level4 = generatorForChildrens(
         data_for_tree_level_four,
         data_for_tree_level_five
       );
-      const level3 = await generatorForChildrens(
-        data_for_tree_level_three,
-        level4
-      );
-      const level2 = await generatorForChildrens(
-        data_for_tree_level_two,
-        level3
-      );
-      const level1 = await generatorForChildrens(
-        data_for_tree_level_one,
-        level2
-      );
-      const summaryIndexes = await {
+      const level3 = generatorForChildrens(data_for_tree_level_three, level4);
+      const level2 = generatorForChildrens(data_for_tree_level_two, level3);
+      const level1 = generatorForChildrens(data_for_tree_level_one, level2);
+      const summaryIndexes = {
         ...summaryData,
         title: "현재 책 기준",
         key: "selectedIndexCardsInfo",
@@ -167,7 +158,7 @@ const IndexTree = ({
               title: "목차",
               dataIndex: "title",
               key: "title",
-              width: 110,
+              width: 140,
               className: "TableRowTitle",
               fixed: true,
               align: "center",
@@ -178,6 +169,8 @@ const IndexTree = ({
                   record.key === "selectedIndexCardsInfo" ? (
                     <div style={{ textAlign: "left" }}>{v}</div>
                   ) : (
+                    // <div style={{ display: "flex", alignItems: "center" }}>
+                    //   <Checkbox checked={checkedKeys.includes(record.key)} />
                     <StyledTwoLinesEllipsis
                       onClick={() => {
                         if (checkedKeys.includes(record.key)) {
@@ -196,7 +189,43 @@ const IndexTree = ({
                     >
                       {v}
                     </StyledTwoLinesEllipsis>
+                    // </div>
                   )}
+                </>
+              ),
+            },
+            {
+              // title: "목차",
+              dataIndex: "key",
+              key: "key",
+              width: 30,
+              className: "TableRowTitle",
+              fixed: true,
+              onCell: (record, rowIndex) => {
+                return {
+                  onClick: () => {
+                    if (checkedKeys.includes(record.key)) {
+                      onCheckIndexesCheckedKeys(
+                        checkedKeys.filter((k) => k !== record.key),
+                        selectedbookId
+                      );
+                    }
+                    if (!checkedKeys.includes(record.key)) {
+                      onCheckIndexesCheckedKeys(
+                        [...checkedKeys, record.key],
+                        selectedbookId
+                      );
+                    }
+                  },
+                };
+              },
+              align: "center",
+              render: (v, record) => (
+                <>
+                  {!(
+                    record.key === "allSummary" ||
+                    record.key === "selectedIndexCardsInfo"
+                  ) && <Checkbox checked={checkedKeys.includes(record.key)} />}
                 </>
               ),
             },
@@ -204,7 +233,7 @@ const IndexTree = ({
               title: "진도율",
               dataIndex: "progress_for_total_card",
               key: "progress_for_total_card",
-              width: 110,
+              width: 80,
               align: "center",
               // eslint-disable-next-line react/display-name
               render: (text) => (
@@ -283,30 +312,38 @@ const IndexTree = ({
               : null
           }
           rowSelection={{
-            onChange: (selectedRowKeys, selectedRows) => {
-              console.log("selectedRowKeys: ", selectedRowKeys);
-              onCheckIndexesCheckedKeys(selectedRowKeys, selectedbookId);
-              console.log("selectedRows: ", selectedRows);
-            },
+            // onChange: (selectedRowKeys, selectedRows) => {
+            //   console.log("selectedRowKeys: ", selectedRowKeys);
+            //   onCheckIndexesCheckedKeys(
+            //     selectedRowKeys.filter(
+            //       (key) =>
+            //         key !== "selectedIndexCardsInfo" || key !== "allSummary"
+            //     ),
+            //     selectedbookId
+            //   );
+            //   console.log("selectedRows: ", selectedRows);
+            // },
 
-            getCheckboxProps: (record) => {
-              return {
-                style: {
-                  display:
-                    record.key === "selectedIndexCardsInfo"
-                      ? "none"
-                      : record.key === "allSummary"
-                      ? "none"
-                      : null,
-                },
-              };
-            },
+            // getCheckboxProps: (record) => {
+            //   return {
+            //     style: {
+            //       display:
+            //         record.key === "selectedIndexCardsInfo"
+            //           ? "none"
+            //           : record.key === "allSummary"
+            //           ? "none"
+            //           : null,
+            //     },
+            //   };
+            // },
             onSelectAll: (selected, selectedRows, changeRows) => {
               console.log(selected, selectedRows, changeRows);
             },
             selectedRowKeys: checkedKeys,
-            checkStrictly: true,
-            columnWidth: 20,
+            checkStrictly: false, // 부모 체크박스 누르면 아래도 다 선택
+            columnWidth: 0,
+            hideSelectAll: true,
+            renderCell: () => null,
           }}
           size="small"
           scroll={{ x: 720 }}

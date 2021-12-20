@@ -74,7 +74,7 @@ const StudySessionConfig = () => {
     },
     onCompleted: (received_data) => {
       if (received_data.session_getSessionConfig.status === "200") {
-        console.log({ useQueryData: received_data });
+        console.log("세션 설정 데이터 받음", received_data);
         updateData(received_data);
       } else if (received_data.session_getSessionConfig.status === "401") {
         router.push("/m/account/login");
@@ -146,9 +146,12 @@ const StudySessionConfig = () => {
       },
       onCompleted: (received_data) => {
         if (received_data.session_getNumCardsbyIndex.status === "200") {
-          console.log({ received_data });
+          console.log(
+            `${bookList[counter].book_id} 책 정보 받음`,
+            received_data
+          );
           if (counter < bookList.length - 1) {
-            console.log("카운터설정");
+            console.log("책 정보 받은 후 카운터설정", counter + 1);
             setCounter((prev) => prev + 1);
           }
 
@@ -223,6 +226,7 @@ const StudySessionConfig = () => {
             completed_cards_number_for_total_card: 0,
             holding_cards_number_for_total_card: 0,
           };
+    const [firstBook, ...restBooks] = bookList;
     return (
       <M_Layout>
         <StyledDiv>
@@ -243,13 +247,33 @@ const StudySessionConfig = () => {
               tabBarStyle={{ margin: 0 }}
               defaultActiveKey={bookList[0].book_id}
             >
+              <Tabs.TabPane
+                tab={bookList[0].book_title}
+                key={bookList[0].book_id}
+              >
+                <div className="SessionTabContentWrapper">
+                  <IndexTree
+                    bookIndexInfo={
+                      cardsList[0]?.session_getNumCardsbyIndex?.indexsets[0]
+                        ?.indexes
+                    }
+                    checkedKeys={checkedKeys[bookList[0].book_id]}
+                    summaryAll={summary}
+                    selectedbookId={bookList[0].book_id}
+                    onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
+                    selectedCardsInfo={selectedCardsInfo}
+                    changeSelectedCardsInfo={changeSelectedCardsInfo}
+                  />
+                </div>
+              </Tabs.TabPane>
               {!isAdvancedFilteredCardListShowed &&
-                bookList.map((book, index) => (
+                counter === cardsList.length - 1 &&
+                restBooks.map((book, index) => (
                   <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                    <StyledDivTabContentWrapper>
+                    <div className="SessionTabContentWrapper">
                       <IndexTree
                         bookIndexInfo={
-                          cardsList[index]?.session_getNumCardsbyIndex
+                          cardsList[index + 1]?.session_getNumCardsbyIndex
                             ?.indexsets[0]?.indexes
                         }
                         checkedKeys={checkedKeys[book.book_id]}
@@ -259,13 +283,13 @@ const StudySessionConfig = () => {
                         selectedCardsInfo={selectedCardsInfo}
                         changeSelectedCardsInfo={changeSelectedCardsInfo}
                       />
-                    </StyledDivTabContentWrapper>
+                    </div>
                   </Tabs.TabPane>
                 ))}
               {isAdvancedFilteredCardListShowed &&
                 bookList.map((book, index) => (
                   <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                    <StyledDivTabContentWrapper>
+                    <div className="SessionTabContentWrapper">
                       <IndexTree
                         bookIndexInfo={
                           advancedFilteredCardsList[index]
@@ -277,15 +301,12 @@ const StudySessionConfig = () => {
                         selectedCardsInfo={selectedCardsInfo}
                         changeSelectedCardsInfo={changeSelectedCardsInfo}
                       />
-                    </StyledDivTabContentWrapper>
+                    </div>
                   </Tabs.TabPane>
                 ))}
             </StyledAntTabs>
           </StyledDivSecond>
-          <StyledDivFirst
-            isAdvancedFilteredCardListShowed={isAdvancedFilteredCardListShowed}
-            activatedComponent={activatedComponent}
-          >
+          <StyledDivFirst activatedComponent={activatedComponent}>
             {bookList.length - 1 === counter && (
               <SessionConfig
                 onToggleIsAFilter={onToggleIsAFilter}
@@ -368,82 +389,5 @@ const StyledDivSecond = styled.div`
 
   .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;
-  }
-`;
-
-const StyledDivTabContentWrapper = styled.div`
-  border: 1px solid #1890ff;
-  border-top: none;
-  padding: 5px;
-`;
-
-const StyledPointer = styled.div`
-  width: 8.333rem;
-  min-width: 70px;
-  height: 2rem;
-  position: relative;
-  background: #efedfc;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.16667rem;
-  font-weight: 700;
-  cursor: pointer;
-
-  &:hover {
-    background: #dfa4a4;
-  }
-  &:before {
-    content: "";
-    position: absolute;
-    right: -1rem;
-    bottom: 0;
-    width: 0;
-    height: 0;
-    border-left: 1rem solid #efedfc;
-    border-top: 1rem solid transparent;
-    border-bottom: 1rem solid transparent;
-  }
-  &:hover:before {
-    border-left: 1rem solid #dfa4a4;
-  }
-
-  &:nth-of-type(1) {
-    z-index: 2;
-    background: ${(props) =>
-      props.activated === "index" ? "#322a64" : "#efedfc"};
-    color: ${(props) => (props.activated === "index" ? "white" : "black")};
-  }
-  &:nth-of-type(1):before {
-    border-left: ${(props) =>
-      props.activated === "index"
-        ? "1rem solid #322a64"
-        : "1rem solid #efedfc"};
-  }
-
-  &:nth-of-type(2) {
-    z-index: 1;
-    background: ${(props) =>
-      props.activated === "config" ? "#322a64" : "#efedfc"};
-    color: ${(props) => (props.activated === "config" ? "white" : "black")};
-    left: 5px;
-  }
-  &:nth-of-type(2):before {
-    border-left: ${(props) =>
-      props.activated === "config"
-        ? "1rem solid #322a64"
-        : "1rem solid #efedfc"};
-  }
-  &:nth-of-type(2):after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 0;
-    border-left: 1rem solid white;
-    border-top: 1rem solid transparent;
-    border-bottom: 1rem solid transparent;
   }
 `;

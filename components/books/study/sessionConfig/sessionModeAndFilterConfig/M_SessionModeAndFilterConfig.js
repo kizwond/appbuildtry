@@ -1,11 +1,11 @@
 import React, { memo } from "react";
 
-import { Tabs } from "../../../../node_modules/antd/lib/index";
-import ModeSessionConfig from "./session-config/ModeSessionConfig";
-import AdvancedFilter from "./session-config/AdvancedFilter";
-import { StyledAntTabs } from "../../../common/styledComponent/antd/StyledAntdTabs";
+import { Tabs } from "antd";
+import M_ModeSessionConfig from "./modeConfig/M_ModeSessionConfig";
+import M_AdvancedFilter from "./advancedFilter/M_AdvancedFilter";
+import { StyledAntTabs } from "../../../../common/styledComponent/antd/StyledAntdTabs";
 
-const SessionConfig = ({
+const M_SessionModeAndFilterConfig = ({
   book_ids,
   onToggleIsAFilter,
   onChangeAFCardList,
@@ -37,25 +37,25 @@ const SessionConfig = ({
         tabBarStyle={{ margin: 0 }}
       >
         <Tabs.TabPane tab="읽기모드" key="read">
-          <ModeSessionConfig
+          <M_ModeSessionConfig
             detailedOption={readDetailedOption}
             changeProps={changeReadProps}
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="뒤집기모드" key="flip">
-          <ModeSessionConfig
+          <M_ModeSessionConfig
             detailedOption={flipDetailedOption}
             changeProps={changeFlipProps}
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="시험모드" key="exam">
-          <ModeSessionConfig
+          <M_ModeSessionConfig
             detailedOption={examDetailedOption}
             changeProps={changeExamProps}
           />
         </Tabs.TabPane>
       </StyledAntTabs>
-      {/* <AdvancedFilter
+      <M_AdvancedFilter
         book_ids={book_ids}
         advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
         onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
@@ -64,9 +64,9 @@ const SessionConfig = ({
         onToggleIsAFilter={onToggleIsAFilter}
         changeAdvancedFilter={changeAdvancedFilter}
         advancedFilter={advancedFilter}
-      /> */}
+      />
     </div>
   );
 };
 
-export default memo(SessionConfig);
+export default memo(M_SessionModeAndFilterConfig);

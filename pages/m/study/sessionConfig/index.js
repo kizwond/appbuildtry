@@ -7,16 +7,14 @@ import {
   QUERY_SESSION_CONFIG,
 } from "../../../../graphql/query/allQuery";
 
-import { Tabs } from "antd";
-import { StyledAntTabs } from "../../../../components/common/styledComponent/antd/StyledAntdTabs";
 import styled from "styled-components";
 
 import M_Layout from "../../../../components/layout/M_Layout";
 import M_SessionNavigationBar from "../../../../components/books/studypage/sessionConfig/M_SessionNavigationBar";
-import M_InformationTableForIndexesOfBooks from "../../../../components/books/study/sessionConfig/M_InformationTableForIndexesOfBooks";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
-import summaryAll from "../../../../components/books/study/sessionnSetting/session-config/common/business/getIndexesSummary";
+import M_TabsOfBooksForInfromationTable from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
+import M_SessionModeAndFilterConfig from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
 
 const StudySessionConfig = () => {
   const router = useRouter();
@@ -211,24 +209,9 @@ const StudySessionConfig = () => {
     setAdvancedFilteredCardsList(value);
   };
 
-  if (!error && !loading && cardsList.length > 0) {
-    const summary =
-      counter === bookList.length - 1
-        ? summaryAll(cardsList, checkedKeys)
-        : {
-            progress_for_total_card: 0,
-            total_cards_number_for_total_card: 0,
-            yet_cards_number_for_total_card: 0,
-            total_on_study_cards_number_for_total_card: 0,
-            until_today_on_study_cards_number_for_total_card: 0,
-            until_now_on_study_cards_number_for_total_card: 0,
-            from_tomorrow_on_study_cards_number_for_total_card: 0,
-            completed_cards_number_for_total_card: 0,
-            holding_cards_number_for_total_card: 0,
-          };
-    const [firstBook, ...restBooks] = bookList;
-    return (
-      <M_Layout>
+  return (
+    <M_Layout>
+      {!error && !loading && cardsList.length > 0 && (
         <StyledDiv>
           <M_SessionNavigationBar
             activatedComponent={activatedComponent}
@@ -238,77 +221,26 @@ const StudySessionConfig = () => {
             }
           />
 
-          <StyledDivSecond activatedComponent={activatedComponent}>
-            <StyledAntTabs
-              width="20%"
-              type="card"
-              tabPosition="top"
-              size="small"
-              tabBarStyle={{ margin: 0 }}
-              defaultActiveKey={bookList[0].book_id}
-            >
-              <Tabs.TabPane
-                tab={bookList[0].book_title}
-                key={bookList[0].book_id}
-              >
-                <div className="SessionTabContentWrapper">
-                  <M_InformationTableForIndexesOfBooks
-                    bookIndexInfo={
-                      cardsList[0]?.session_getNumCardsbyIndex?.indexsets[0]
-                        ?.indexes
-                    }
-                    checkedKeys={checkedKeys[bookList[0].book_id]}
-                    summaryAll={summary}
-                    selectedbookId={bookList[0].book_id}
-                    onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
-                    selectedCardsInfo={selectedCardsInfo}
-                    changeSelectedCardsInfo={changeSelectedCardsInfo}
-                  />
-                </div>
-              </Tabs.TabPane>
-              {!isAdvancedFilteredCardListShowed &&
-                counter === cardsList.length - 1 &&
-                restBooks.map((book, index) => (
-                  <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                    <div className="SessionTabContentWrapper">
-                      <M_InformationTableForIndexesOfBooks
-                        bookIndexInfo={
-                          cardsList[index + 1]?.session_getNumCardsbyIndex
-                            ?.indexsets[0]?.indexes
-                        }
-                        checkedKeys={checkedKeys[book.book_id]}
-                        summaryAll={summary}
-                        selectedbookId={book.book_id}
-                        onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
-                        selectedCardsInfo={selectedCardsInfo}
-                        changeSelectedCardsInfo={changeSelectedCardsInfo}
-                      />
-                    </div>
-                  </Tabs.TabPane>
-                ))}
-              {isAdvancedFilteredCardListShowed &&
-                bookList.map((book, index) => (
-                  <Tabs.TabPane tab={book.book_title} key={book.book_id}>
-                    <div className="SessionTabContentWrapper">
-                      <M_InformationTableForIndexesOfBooks
-                        bookIndexInfo={
-                          advancedFilteredCardsList[index]
-                            ?.session_getNumCardsbyIndex?.indexsets[0]?.indexes
-                        }
-                        checkedKeys={checkedKeys[book.book_id]}
-                        selectedbookId={book.book_id}
-                        onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
-                        selectedCardsInfo={selectedCardsInfo}
-                        changeSelectedCardsInfo={changeSelectedCardsInfo}
-                      />
-                    </div>
-                  </Tabs.TabPane>
-                ))}
-            </StyledAntTabs>
-          </StyledDivSecond>
-          <StyledDivFirst activatedComponent={activatedComponent}>
+          <StyledForTabsOfBooks activatedComponent={activatedComponent}>
+            <M_TabsOfBooksForInfromationTable
+              bookList={bookList}
+              cardsList={cardsList}
+              checkedKeys={checkedKeys}
+              onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
+              selectedCardsInfo={selectedCardsInfo}
+              changeSelectedCardsInfo={changeSelectedCardsInfo}
+              isAdvancedFilteredCardListShowed={
+                isAdvancedFilteredCardListShowed
+              }
+              advancedFilteredCardsList={advancedFilteredCardsList}
+              activatedComponent={activatedComponent}
+              counter={counter}
+            />
+          </StyledForTabsOfBooks>
+
+          <StyledSessionConfig activatedComponent={activatedComponent}>
             {bookList.length - 1 === counter && (
-              <SessionConfig
+              <M_SessionModeAndFilterConfig
                 onToggleIsAFilter={onToggleIsAFilter}
                 onChangeAFCardList={onChangeAFCardList}
                 AFCardList={advancedFilteredCardsList}
@@ -322,13 +254,11 @@ const StudySessionConfig = () => {
                 changeAdvancedFilter={changeAdvancedFilter}
               />
             )}
-          </StyledDivFirst>
+          </StyledSessionConfig>
         </StyledDiv>
-      </M_Layout>
-    );
-  }
-
-  return <></>;
+      )}
+    </M_Layout>
+  );
 };
 export default StudySessionConfig;
 
@@ -343,7 +273,7 @@ const StyledDiv = styled.div`
   }
 `;
 
-const StyledDivFirst = styled.div`
+const StyledSessionConfig = styled.div`
   display: ${(props) =>
     props.activatedComponent === "config" ? "block" : "none"};
   margin: 8px;
@@ -366,7 +296,7 @@ const StyledDivFirst = styled.div`
     visibility: hidden;
   }
 `;
-const StyledDivSecond = styled.div`
+const StyledForTabsOfBooks = styled.div`
   display: ${(props) =>
     props.activatedComponent === "index" ? "block" : "none"};
   margin: 8px;

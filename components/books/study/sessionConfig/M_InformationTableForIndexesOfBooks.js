@@ -200,11 +200,9 @@ const IndexTree = ({
               },
             },
             {
-              // title: "목차",
               dataIndex: "key",
               key: "key",
               width: 30,
-              // className: "TableRowTitle",
               fixed: true,
               align: "center",
               onCell: handleCheckbox,

@@ -27,8 +27,8 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-import {calculateStudyStatus} from "./FlipContainerSub"
-import { detect, detectAll } from 'tinyld'
+import { calculateStudyStatus } from "./FlipContainerSub";
+import { detect, detectAll } from "tinyld";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -103,8 +103,8 @@ class Container extends Component {
       firstBackModeSeq: 0,
       restore: false,
       backModeRestore: false,
-      ttsOn:false,
-      firstTimeTts:true
+      ttsOn: false,
+      firstTimeTts: true,
     };
     this.keyCount = 0;
     this.getKey = this.getKey.bind(this);
@@ -178,7 +178,7 @@ class Container extends Component {
     const current_card_book_id = card_details_session_origin[current_card_info_index].card_info.mybook_id;
     const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
 
-    const card_details_session = calculateStudyStatus(null, diffi, current_card_info_index, timer, current_card_levelconfig[0])
+    const card_details_session = calculateStudyStatus(null, diffi, current_card_info_index, timer, current_card_levelconfig[0]);
 
     console.log(card_details_session);
 
@@ -198,7 +198,7 @@ class Container extends Component {
 
   onDiffClickHandler = (interval, diffi, current_card_id, timer) => {
     console.log("난이도 선택하셨네요~");
-    
+
     console.log("해당카드 난이도평가", interval, diffi, current_card_id, timer);
     if (diffi === "diffi5") {
       console.log("알겠음 클릭함.");
@@ -209,24 +209,25 @@ class Container extends Component {
       const current_card_info_index = card_details_session_origin.findIndex((item) => item.content.mycontent_id === current_card_id);
       console.log(current_card_info_index);
 
-      const card_details_session = calculateStudyStatus(interval, diffi, current_card_info_index, timer)
-      
+      const card_details_session = calculateStudyStatus(interval, diffi, current_card_info_index, timer);
+
       //업데이트된 학습정보 세션스토리지에 다시 저장
       sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
 
       //서버에 보내기 위한 학습정보 리스트 생성
       this.generateStudyStatus(card_details_session, current_card_info_index);
 
-      //여기다가 새로운 시퀀스 정보를 가공해야함.
-      this.generateCardSeq(card_details_session, now, current_card_id);
-
       //남은카드랑 이래저래 해서 학습이 종료되었는지...
       const card_seq = sessionStorage.getItem("card_seq");
       if (card_details_session.length - 1 == Number(card_seq)) {
-        this.finishStudy();
+        console.log("원래는 끝난거!!!")
+        // this.finishStudy();
       } else {
         console.log(card_details_session.length - 1, "======", Number(card_seq));
         console.log("아직 안끝");
+        //여기다가 새로운 시퀀스 정보를 가공해야함.
+        this.generateCardSeq(card_details_session, now, current_card_id);
+
         // this.setTimer(0);
       }
     }
@@ -271,33 +272,43 @@ class Container extends Component {
     });
     this.stopTimerTotal();
     this.resetTimer();
-    
+
     this.setState({
-      ttsOn:true
-    })
+      ttsOn: true,
+    });
   };
 
-  componentDidMount() {
-    console.log("did mount")
-    if(this.state.firstTimeTts === true){
-      console.log("false to true")
-      this.setState({
-        firstTimeTts:false
-      })
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.contentsList !== prevProps.contentsList) {
+      console.log(this.props.contentsList);
+      if(this.props.contentsList.length === 0){
+        alert("학습할 카드가 없습니다. 학습메인으로")
+        window.location.href = "/m/study";
+      }
+      if (this.props.contentsList.length > 0) {
+        if(this.state.firstTimeTts === true){
+          console.log(this.props.contentsList);
+          const show_contents = this.props.contentsList[0];
+          console.log(show_contents);
+          const face1_tmp = show_contents.face1[0].replace(/<\/?[^>]+(>|$)/g, "");
+          const face2_tmp = show_contents.face2[0].replace(/<\/?[^>]+(>|$)/g, "");
+          const face1 = face1_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
+          const face2 = face2_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
+          console.log(face1);
+          console.log(face2);
+          this.speakText(face1, face2);
+          this.setState({
+            firstTimeTts : false
+          })
+        }
+        
+      }
     }
-  }
-
-  componentDidUpdate(_prevProps, prevState){
-    
-    if(prevState.firstTimeTts !== this.state.firstTimeTts){
-      console.log("did update")
-      this.speakText()
-    }
-    if(this.state.ttsOn){
-      this.speakText()
+    if (this.state.ttsOn) {
+      this.speakText();
       this.setState({
-        ttsOn:false
-      })
+        ttsOn: false,
+      });
     }
   }
 
@@ -399,8 +410,8 @@ class Container extends Component {
     const current_card_info_index = card_details_session_origin.findIndex((item) => item._id === current_card_id);
     console.log(current_card_info_index);
 
-    const card_details_session = calculateStudyStatus(selection, current_card_info_index, timer)
-    
+    const card_details_session = calculateStudyStatus(selection, current_card_info_index, timer);
+
     //업데이트된 학습정보 세션스토리지에 다시 저장
     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
 
@@ -471,7 +482,7 @@ class Container extends Component {
     const current_card_info_index = card_details_session_origin.findIndex((item) => item._id === current_card_id);
     console.log(current_card_info_index);
 
-    const card_details_session = calculateStudyStatus(null, selection, current_card_info_index, timer)
+    const card_details_session = calculateStudyStatus(null, selection, current_card_info_index, timer);
 
     //업데이트된 학습정보 세션스토리지에 다시 저장
     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
@@ -533,71 +544,68 @@ class Container extends Component {
 
     // this.generateCardSeq(card_details_session, now, current_card_id);
   };
-  speakText = () => {
-    console.log("tts")
-    const hello = async () => this.speakTextFace1()
-    hello().then(this.speakTextFace2())
+  speakText = (face1, face2) => {
+    console.log("tts");
+    const hello = async () => this.speakTextFace1(face1);
+    hello().then(this.speakTextFace2(face2));
   };
-  speakTextFace1 = () => {
+  speakTextFace1 = (face1) => {
     if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
       alert("이 브라우저는 음성 합성을 지원하지 않습니다.");
       return;
     }
-
+    if (face1) {
+      var text = face1;
+    } else {
+      const text_tmp = document.getElementById("face1_row1").innerText;
+      text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
+    }
     // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
 
-    const text = document.getElementById("face1_row1");
-    // const text2 = document.getElementById("face2_row1");
-    console.log(text)
-    if(text !== null){
-      const detected = detect(text.innerText)
-      console.log(detected)
-      // if(detected.length > 0){
-      //   var lang = "en"
-      // } else {
-      //   lang = "ko"
-      // }
-      
+    console.log(text);
+    if (text !== null) {
+      const detected = detect(text);
+      console.log(detected);
+
       const speechMsg = new SpeechSynthesisUtterance();
       speechMsg.rate = 1; // 속도: 0.1 ~ 10
       speechMsg.pitch = 1; // 음높이: 0 ~ 2
       speechMsg.lang = detected;
-      speechMsg.text = text.innerText;
-  
-      // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
-      window.speechSynthesis.speak(speechMsg)
-    }
-  }
+      speechMsg.text = text;
 
-  speakTextFace2 = () =>{
-    if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
-      alert("이 브라우저는 음성 합성을 지원하지 않습니다.");
-      return;
-    }
-
-    // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
-
-    // const text = document.getElementById("face1_row1");
-    const text2 = document.getElementById("face2_row1");
-    console.log(text2)
-    if(text2 !== null){
-      const detected = detect(text2.innerText)
-      console.log(detected)
-      // if(detected.length > 0){
-      //   var lang = "en"
-      // } else {
-      //   lang = "ko"
-      // }
-      const speechMsg = new SpeechSynthesisUtterance();
-      speechMsg.rate = 1; // 속도: 0.1 ~ 10
-      speechMsg.pitch = 1; // 음높이: 0 ~ 2
-      speechMsg.lang = detected;
-      speechMsg.text = text2.innerText;
-  
       // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
       window.speechSynthesis.speak(speechMsg);
     }
-  }
+  };
+
+  speakTextFace2 = (face2) => {
+    if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+      alert("이 브라우저는 음성 합성을 지원하지 않습니다.");
+      return;
+    }
+    if (face2) {
+      var text = face2;
+    } else {
+      const text_tmp = document.getElementById("face2_row1").innerText;
+      text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
+    }
+    // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
+
+    console.log(text);
+    if (text !== null) {
+      const detected = detect(text);
+      console.log(detected);
+
+      const speechMsg = new SpeechSynthesisUtterance();
+      speechMsg.rate = 1; // 속도: 0.1 ~ 10
+      speechMsg.pitch = 1; // 음높이: 0 ~ 2
+      speechMsg.lang = detected;
+      speechMsg.text = text;
+
+      // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
+      window.speechSynthesis.speak(speechMsg);
+    }
+  };
 
   //서버에 보내기 위한 학습정보생성
   generateStudyStatus = (card_details_session, current_card_info_index) => {
@@ -670,14 +678,13 @@ class Container extends Component {
       console.log("공부끝");
     }
   };
-  
 
   render() {
     if (this.props.levelConfigs) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
       const statusCurrent = card_details_session[currentSeq].studyStatus.statusCurrent;
-      
+
       const current_card_book_id = card_details_session[currentSeq].card_info.mybook_id;
       const current_card_id = card_details_session[currentSeq].content.mycontent_id;
       const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
@@ -817,7 +824,6 @@ class Container extends Component {
           </Popover>
         </>
       );
-      
     }
 
     if (this.props.cardTypeSets.length > 0) {
@@ -1286,7 +1292,9 @@ class Container extends Component {
                                   textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                 }}
                               >
-                                <div id={`face1_row${index + 1}`} style={{display:"none"}} readOnly>{item.replace(/<\/?[^>]+(>|$)/g, "")}</div>
+                                <div id={`face1_row${index + 1}`} style={{ display: "none" }} readOnly>
+                                  {item.replace(/<\/?[^>]+(>|$)/g, "")}
+                                </div>
                                 <FroalaEditorView model={item} />
                               </div>
                             </>
@@ -1566,7 +1574,9 @@ class Container extends Component {
                                     textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
                                   }}
                                 >
-                                  <div id={`face2_row${index + 1}`} style={{display:"none"}} readOnly>{item.replace(/<\/?[^>]+(>|$)/g, "")}</div>
+                                  <div id={`face2_row${index + 1}`} style={{ display: "none" }} readOnly>
+                                    {item.replace(/<\/?[^>]+(>|$)/g, "")}
+                                  </div>
                                   <FroalaEditorView model={item} />
                                 </div>
                               </>

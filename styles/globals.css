@@ -181,7 +181,7 @@ p {
 
 .ant-table-tbody > tr.ant-table-row:hover > td,
 .ant-table-tbody > tr > td.ant-table-cell-row-hover {
-  background: none;
+  background: #fff;
 }
 .ant-table.ant-table-small .ant-table-thead > tr > th {
   padding: 4px;

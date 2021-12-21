@@ -13,7 +13,7 @@ import styled from "styled-components";
 
 import M_Layout from "../../../../components/layout/M_Layout";
 import M_SessionNavigationBar from "../../../../components/books/studypage/sessionConfig/M_SessionNavigationBar";
-import IndexTree from "../../../../components/books/study/sessionnSetting/IndexTree";
+import M_InformationTableForIndexesOfBooks from "../../../../components/books/study/sessionConfig/M_InformationTableForIndexesOfBooks";
 import SessionConfig from "../../../../components/books/study/sessionnSetting/SessionConfig";
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import summaryAll from "../../../../components/books/study/sessionnSetting/session-config/common/business/getIndexesSummary";
@@ -252,7 +252,7 @@ const StudySessionConfig = () => {
                 key={bookList[0].book_id}
               >
                 <div className="SessionTabContentWrapper">
-                  <IndexTree
+                  <M_InformationTableForIndexesOfBooks
                     bookIndexInfo={
                       cardsList[0]?.session_getNumCardsbyIndex?.indexsets[0]
                         ?.indexes
@@ -271,7 +271,7 @@ const StudySessionConfig = () => {
                 restBooks.map((book, index) => (
                   <Tabs.TabPane tab={book.book_title} key={book.book_id}>
                     <div className="SessionTabContentWrapper">
-                      <IndexTree
+                      <M_InformationTableForIndexesOfBooks
                         bookIndexInfo={
                           cardsList[index + 1]?.session_getNumCardsbyIndex
                             ?.indexsets[0]?.indexes
@@ -290,7 +290,7 @@ const StudySessionConfig = () => {
                 bookList.map((book, index) => (
                   <Tabs.TabPane tab={book.book_title} key={book.book_id}>
                     <div className="SessionTabContentWrapper">
-                      <IndexTree
+                      <M_InformationTableForIndexesOfBooks
                         bookIndexInfo={
                           advancedFilteredCardsList[index]
                             ?.session_getNumCardsbyIndex?.indexsets[0]?.indexes

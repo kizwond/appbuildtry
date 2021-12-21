@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Checkbox, Table } from "antd";
-import { Progress } from "../../../../node_modules/antd/lib/index";
 import styled from "styled-components";
 import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
 import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import { getAllChildrenKeys } from "../../../common/logic/getAllChildrenKeysForTable";
 
 const IndexTree = ({
   bookIndexInfo,
@@ -150,6 +150,27 @@ const IndexTree = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookIndexInfo, checkedKeys]);
 
+  const handleCheckbox = (record) => {
+    return {
+      onClick: () => {
+        const allChildrenKeys = getAllChildrenKeys(treeData, "key", record.key);
+
+        if (checkedKeys.includes(record.key)) {
+          onCheckIndexesCheckedKeys(
+            checkedKeys.filter((key) => !allChildrenKeys.includes(key)),
+            selectedbookId
+          );
+        }
+        if (!checkedKeys.includes(record.key)) {
+          onCheckIndexesCheckedKeys(
+            [...checkedKeys, ...allChildrenKeys],
+            selectedbookId
+          );
+        }
+      },
+    };
+  };
+
   return (
     <>
       {treeData.length > 0 ? (
@@ -164,72 +185,41 @@ const IndexTree = ({
               className: "TableRowTitle",
               fixed: true,
               align: "center",
-              // eslint-disable-next-line react/display-name
-              render: (v, record) => (
-                <>
-                  {record.key === "allSummary" ||
-                  record.key === "selectedIndexCardsInfo" ? (
-                    <div style={{ textAlign: "left" }}>{v}</div>
-                  ) : (
-                    // <div style={{ display: "flex", alignItems: "center" }}>
-                    //   <Checkbox checked={checkedKeys.includes(record.key)} />
-                    <StyledTwoLinesEllipsis
-                      onClick={() => {
-                        if (checkedKeys.includes(record.key)) {
-                          onCheckIndexesCheckedKeys(
-                            checkedKeys.filter((k) => k !== record.key),
-                            selectedbookId
-                          );
-                        }
-                        if (!checkedKeys.includes(record.key)) {
-                          onCheckIndexesCheckedKeys(
-                            [...checkedKeys, record.key],
-                            selectedbookId
-                          );
-                        }
-                      }}
-                    >
-                      {v}
-                    </StyledTwoLinesEllipsis>
-                    // </div>
-                  )}
-                </>
-              ),
+              onCell: handleCheckbox,
+              render: function ForTitle(v, record) {
+                return (
+                  <>
+                    {record.key === "allSummary" ||
+                    record.key === "selectedIndexCardsInfo" ? (
+                      <div style={{ textAlign: "left" }}>{v}</div>
+                    ) : (
+                      <StyledTwoLinesEllipsis>{v}</StyledTwoLinesEllipsis>
+                    )}
+                  </>
+                );
+              },
             },
             {
               // title: "목차",
               dataIndex: "key",
               key: "key",
               width: 30,
-              className: "TableRowTitle",
+              // className: "TableRowTitle",
               fixed: true,
-              onCell: (record, rowIndex) => {
-                return {
-                  onClick: () => {
-                    if (checkedKeys.includes(record.key)) {
-                      onCheckIndexesCheckedKeys(
-                        checkedKeys.filter((k) => k !== record.key),
-                        selectedbookId
-                      );
-                    }
-                    if (!checkedKeys.includes(record.key)) {
-                      onCheckIndexesCheckedKeys(
-                        [...checkedKeys, record.key],
-                        selectedbookId
-                      );
-                    }
-                  },
-                };
-              },
               align: "center",
-              render: (v, record) => (
-                <>
-                  {!(
-                    record.key === "allSummary" ||
-                    record.key === "selectedIndexCardsInfo"
-                  ) && <Checkbox checked={checkedKeys.includes(record.key)} />}
-                </>
-              ),
+              onCell: handleCheckbox,
+              render: function ForCheckbox(v, record) {
+                return (
+                  <>
+                    {!(
+                      record.key === "allSummary" ||
+                      record.key === "selectedIndexCardsInfo"
+                    ) && (
+                      <Checkbox checked={checkedKeys.includes(record.key)} />
+                    )}
+                  </>
+                );
+              },
             },
             {
               title: "진도율",
@@ -237,12 +227,14 @@ const IndexTree = ({
               key: "progress_for_total_card",
               width: 80,
               align: "center",
-              // eslint-disable-next-line react/display-name
-              render: (text) => (
-                <>
-                  <StyledProgress booktype="any" percent={text} />
-                </>
-              ),
+              onCell: handleCheckbox,
+              render: function ForProgress(text) {
+                return (
+                  <>
+                    <StyledProgress booktype="any" percent={text} />
+                  </>
+                );
+              },
             },
             {
               title: "합계",
@@ -313,39 +305,8 @@ const IndexTree = ({
               ? "SelectedIndexCardsInfo"
               : null
           }
-          rowSelection={{
-            // onChange: (selectedRowKeys, selectedRows) => {
-            //   console.log("selectedRowKeys: ", selectedRowKeys);
-            //   onCheckIndexesCheckedKeys(
-            //     selectedRowKeys.filter(
-            //       (key) =>
-            //         key !== "selectedIndexCardsInfo" || key !== "allSummary"
-            //     ),
-            //     selectedbookId
-            //   );
-            //   console.log("selectedRows: ", selectedRows);
-            // },
-
-            // getCheckboxProps: (record) => {
-            //   return {
-            //     style: {
-            //       display:
-            //         record.key === "selectedIndexCardsInfo"
-            //           ? "none"
-            //           : record.key === "allSummary"
-            //           ? "none"
-            //           : null,
-            //     },
-            //   };
-            // },
-            onSelectAll: (selected, selectedRows, changeRows) => {
-              console.log(selected, selectedRows, changeRows);
-            },
-            selectedRowKeys: checkedKeys,
-            checkStrictly: false, // 부모 체크박스 누르면 아래도 다 선택
-            columnWidth: 0,
-            hideSelectAll: true,
-            renderCell: () => null,
+          expandable={{
+            indentSize: 5,
           }}
           size="small"
           scroll={{ x: 720 }}
@@ -392,6 +353,7 @@ const StyledDivTitle = styled.div`
   }
   & .TableMainTitle {
     font-weight: 500;
+    font-size: 1.16667rem;
   }
   & .HelpDescription {
     font-size: 10px;

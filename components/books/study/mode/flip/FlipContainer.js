@@ -28,7 +28,7 @@ import {
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import {calculateStudyStatus} from "./FlipContainerSub"
-
+import { detect, detectAll } from 'tinyld'
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -550,10 +550,18 @@ class Container extends Component {
     // const text2 = document.getElementById("face2_row1");
     console.log(text)
     if(text !== null){
+      const detected = detect(text.innerText)
+      console.log(detected)
+      // if(detected.length > 0){
+      //   var lang = "en"
+      // } else {
+      //   lang = "ko"
+      // }
+      
       const speechMsg = new SpeechSynthesisUtterance();
       speechMsg.rate = 1; // 속도: 0.1 ~ 10
       speechMsg.pitch = 1; // 음높이: 0 ~ 2
-      speechMsg.lang = "en";
+      speechMsg.lang = detected;
       speechMsg.text = text.innerText;
   
       // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
@@ -573,10 +581,17 @@ class Container extends Component {
     const text2 = document.getElementById("face2_row1");
     console.log(text2)
     if(text2 !== null){
+      const detected = detect(text2.innerText)
+      console.log(detected)
+      // if(detected.length > 0){
+      //   var lang = "en"
+      // } else {
+      //   lang = "ko"
+      // }
       const speechMsg = new SpeechSynthesisUtterance();
       speechMsg.rate = 1; // 속도: 0.1 ~ 10
       speechMsg.pitch = 1; // 음높이: 0 ~ 2
-      speechMsg.lang = "en";
+      speechMsg.lang = detected;
       speechMsg.text = text2.innerText;
   
       // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행

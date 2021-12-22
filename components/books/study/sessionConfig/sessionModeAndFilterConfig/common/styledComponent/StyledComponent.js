@@ -70,7 +70,7 @@ export const StyledDivConfigColStartCards = styled(StyledDivConfigCol)`
 `;
 
 export const StyledDivConfigMenuWrapper = styled.div`
-  padding: 3px 3px 3px 0;
+  padding: 2px 3px 2px 0;
 `;
 
 export const StyledSpanConfigTitle = styled(({ onOff, children, ...rest }) => (

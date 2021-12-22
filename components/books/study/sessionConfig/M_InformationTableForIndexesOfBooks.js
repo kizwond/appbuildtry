@@ -304,7 +304,7 @@ const IndexTree = ({
               : null
           }
           expandable={{
-            indentSize: 5,
+            indentSize: 10,
           }}
           size="small"
           scroll={{ x: 720 }}

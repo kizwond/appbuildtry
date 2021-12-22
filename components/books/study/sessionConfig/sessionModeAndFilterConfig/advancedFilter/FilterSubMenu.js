@@ -1,11 +1,12 @@
 import React, { memo } from "react";
+import { Card } from "antd";
 import {
   StyledFilteMenuWrapper,
   StyledDivConfigRow,
   StyledDivConfigColStartCards,
   StyledDivConfigCol,
   StyledSpanFilterSubTitle,
-} from "./StyledComponent";
+} from "../common/styledComponent/StyledComponent";
 import SubTitleSwitch from "./SubTitleSwitch";
 
 const FilterSubMenu = ({ children, changeOnOff, onOff, title }) => {

@@ -59,3 +59,18 @@ export const FRAGMENT_INDEX_SET = gql`
     }
   }
 `;
+export const FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER = gql`
+  fragment IndexSetWithoutCardNumberFragment on Indexset {
+    _id
+    indexset_info {
+      mybook_id
+      user_id
+    }
+    indexes {
+      _id
+      name
+      level
+      indextype
+    }
+  }
+`;

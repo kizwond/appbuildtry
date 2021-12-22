@@ -3,8 +3,10 @@ import { useRouter } from "next/router";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
 import {
+  QUERY_INDEX_SET_AND_CARD_SET_BY_BOOK_IDS,
   QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
   QUERY_SESSION_CONFIG,
+  QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
 } from "../../../../graphql/query/allQuery";
 
 import styled from "styled-components";
@@ -14,6 +16,7 @@ import M_SessionNavigationBar from "../../../../components/books/studypage/sessi
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import M_TabsOfBooksForInfromationTable from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
+import { getNumCardsbyIndex } from "./indexSub";
 
 const StudySessionConfig = () => {
   const router = useRouter();
@@ -60,27 +63,27 @@ const StudySessionConfig = () => {
     sessionConfig,
   } = useSessionConfig();
 
-  const {
-    data: data2,
-    loading: loading2,
-    error: error2,
-    refetch,
-  } = useQuery(QUERY_SESSION_CONFIG, {
-    variables: {
-      mybook_ids: bookList.map((book) => book.book_id),
-    },
-    onCompleted: (received_data) => {
-      if (received_data.session_getSessionConfig.status === "200") {
-        console.log("세션 설정 데이터 받음", received_data);
-        updateData(received_data);
-      } else if (received_data.session_getSessionConfig.status === "401") {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-    fetchPolicy: "network-only",
-  });
+  const [getSessionConfig, { data: data2, loading: loading2, error: error2 }] =
+    useLazyQuery(QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS, {
+      onCompleted: (received_data) => {
+        if (received_data.session_getSessionConfig.status === "200") {
+          console.log("세션 설정 데이터 받음", received_data);
+          updateData(received_data);
+          loadData();
+          getNumCardsbyIndex({
+            indexsets: received_data.indexset_getByMybookids.indexsets,
+            cardsets: received_data.cardset_getByMybookIDs.cardsets,
+            sessionconfig:
+              received_data.session_getSessionConfig.sessionConfigs[0],
+          });
+        } else if (received_data.session_getSessionConfig.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+      fetchPolicy: "network-only",
+    });
 
   useEffect(() => {
     const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
@@ -89,7 +92,15 @@ const StudySessionConfig = () => {
       book_title: book.book_title,
       seq: index,
     }));
-    setBookList(book_list);
+    if (book_list.length > 0) {
+      setBookList(book_list);
+      getSessionConfig({
+        variables: {
+          mybook_ids: book_list.map((book) => book.book_id),
+        },
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [session_createSession] = useMutation(MUTATION_CREATE_SESSION, {
@@ -181,11 +192,11 @@ const StudySessionConfig = () => {
 
   useEffect(() => {
     if (bookList.length > 0) {
-      if (counter < bookList.length) {
+      if (data2 && counter !== 0 && counter < bookList.length) {
         loadData();
       }
     }
-  }, [bookList, loadData, counter]);
+  }, [bookList, loadData, counter, data2]);
 
   if (error) {
     console.log("에러", error);

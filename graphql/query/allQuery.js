@@ -7,7 +7,10 @@ import { FRAGMENT_CARD_SET } from "../fragment/cardSet";
 import { FRAGMENT_BUY_BOOK } from "../fragment/buyBook";
 import { FRAGMENT_USER_FLAG_CONFIG } from "../fragment/flagConfig";
 import { FRAGMENT_SESSION_CONFIG } from "../fragment/sessionConfig";
-import { FRAGMENT_INDEX_SET } from "../fragment/indexSet";
+import {
+  FRAGMENT_INDEX_SET,
+  FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER,
+} from "../fragment/indexSet";
 import { FRAGMENT_BOOK_STUDY_LEVEL_CONFIG } from "../fragment/bookStudyLevelConfig";
 
 // 유저 정보 불러오기
@@ -293,6 +296,34 @@ export const QUERY_SESSION_CONFIG = gql`
     }
   }
 `;
+export const QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS = gql`
+  ${FRAGMENT_SESSION_CONFIG}
+  ${FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER}
+  ${FRAGMENT_CARD_SET}
+  query getSessionConfigAndIndexSetAndCardSet($mybook_ids: [ID]) {
+    session_getSessionConfig(mybook_ids: $mybook_ids) {
+      status
+      msg
+      sessionConfigs {
+        ...SessionConfigFragment
+      }
+    }
+    indexset_getByMybookids(mybook_ids: $mybook_ids) {
+      status
+      msg
+      indexsets {
+        ...IndexSetWithoutCardNumberFragment
+      }
+    }
+    cardset_getByMybookIDs(mybook_ids: $mybook_ids) {
+      status
+      msg
+      cardsets {
+        ...MyCardSetFragment
+      }
+    }
+  }
+`;
 
 // 책 목차 정보
 export const QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER = gql`
@@ -305,6 +336,26 @@ export const QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER = gql`
       msg
       indexsets {
         ...IndexSetFragment
+      }
+    }
+  }
+`;
+export const QUERY_INDEX_SET_AND_CARD_SET_BY_BOOK_IDS = gql`
+  ${FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER}
+  ${FRAGMENT_CARD_SET}
+  query getIndexSetByBooksIds($mybook_ids: [ID]) {
+    indexset_getByMybookids(mybook_ids: $mybook_ids) {
+      status
+      msg
+      indexsets {
+        ...IndexSetWithoutCardNumberFragment
+      }
+    }
+    cardset_getByMybookIDs(mybook_ids: $mybook_ids) {
+      status
+      msg
+      cardsets {
+        ...MyCardSetFragment
       }
     }
   }

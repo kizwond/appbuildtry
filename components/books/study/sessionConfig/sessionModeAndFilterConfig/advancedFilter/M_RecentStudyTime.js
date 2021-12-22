@@ -58,6 +58,7 @@ const M_RecentStudyTime = ({
   return (
     <StyledDivConfigMenuWrapper>
       <StyledAntdDatePicker
+        allowClear={false}
         disabled={!isOn}
         placeholder={["시작", "종료"]}
         format="MM-DD"

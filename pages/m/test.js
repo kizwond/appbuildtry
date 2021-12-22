@@ -7,12 +7,32 @@ class Test extends Component {
     super(props);
     this.state = {};
   }
+  getSelectionText = () => {
+    var text = {}
+    if (window.getSelection) {
+      text = window.getSelection().getRangeAt(0)
+    } else if (document.selection && document.selection.type != "Control") {
+      text = document.selection.createRange().text;
+    }
+    return text;
+  };
+  hide = () => {
+    const textSelected = this.getSelectionText();
+    console.log(textSelected);
+    console.log(JSON.parse(textSelected));
+    // console.log(textSelected.startContainer);
+  };
   render() {
-    const hello = "abcdefg  : 나는 누구일까요?begeegegg: 그러는 너는 누구냐? 철수              : 영희야 너 내일 뭐하냐? 영희 : 몰라임마";
-    const result = hello.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "") 
-    console.log(result)
-    return <><div style={{ width: "300px", margin: "auto", marginTop: "100px" }}>{hello}</div>
-    <div>{result}</div></>;
+    const hello = `<div style={{ width: "300px", margin: "auto", marginTop: "100px" }}>안녕하세요 <span>나는</span> 누구일까요?</div>`;
+
+    return (
+      <>
+        <div style={{ width: "300px", margin: "auto", marginTop: "100px" }} id={`face2row1`} dangerouslySetInnerHTML={{ __html: hello }}></div>
+        <button id="temp" onClick={this.hide}>
+          버튼
+        </button>
+      </>
+    );
   }
 }
 

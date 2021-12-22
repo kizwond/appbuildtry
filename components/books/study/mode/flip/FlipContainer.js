@@ -291,9 +291,13 @@ class Container extends Component {
           const show_contents = this.props.contentsList[0];
           console.log(show_contents);
           const face1_tmp = show_contents.face1[0].replace(/<\/?[^>]+(>|$)/g, "");
-          const face2_tmp = show_contents.face2[0].replace(/<\/?[^>]+(>|$)/g, "");
+          if(show_contents.face2[0]){
+            const face2_tmp = show_contents.face2[0].replace(/<\/?[^>]+(>|$)/g, "");
+            var face2 = face2_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
+          }
+          
           const face1 = face1_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
-          const face2 = face2_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
+          
           console.log(face1);
           console.log(face2);
           this.speakText(face1, face2);
@@ -546,8 +550,14 @@ class Container extends Component {
   };
   speakText = (face1, face2) => {
     console.log("tts");
-    const hello = async () => this.speakTextFace1(face1);
-    hello().then(this.speakTextFace2(face2));
+    if(face2){
+      const hello = async () => this.speakTextFace1(face1);
+      hello().then(this.speakTextFace2(face2));
+    } else {
+      const hello = async () => this.speakTextFace1(face1);
+      hello()
+    }
+    
   };
   speakTextFace1 = (face1) => {
     if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {

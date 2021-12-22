@@ -894,7 +894,8 @@ const ReadMode = () => {
                                     textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                   }}
                                 >
-                                  <FroalaEditorView model={item} />
+                                  {/* <FroalaEditorView model={item} /> */}
+                                  <div id={`face1row${index+1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
                                 </div>
                               </>
                             ))}
@@ -1001,7 +1002,8 @@ const ReadMode = () => {
                                     textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
                                   }}
                                 >
-                                  <FroalaEditorView model={item} />
+                                  {/* <FroalaEditorView model={item} /> */}
+                                  <div id={`face2row${index+1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
                                 </div>
                               </>
                             ))}

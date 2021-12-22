@@ -3,10 +3,12 @@ import { gql } from "@apollo/client";
 export const FRAGMENT_MYBOOK = gql`
   fragment MyBookFragment on Mybook {
     _id
+    recentStudyIndexes
     mybook_info {
       title
       type
       user_id
+      author_id
       mybookcateset_id
       mybookcate_id
       seqInCategory

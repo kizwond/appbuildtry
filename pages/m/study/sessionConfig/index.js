@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
 import {
   QUERY_INDEX_SET_AND_CARD_SET_BY_BOOK_IDS,
@@ -92,6 +92,7 @@ const StudySessionConfig = () => {
       book_title: book.book_title,
       seq: index,
     }));
+    const checkedKeys = JSON.parse(sessionStorage.getItem("forCheckedKeys"));
     if (book_list.length > 0) {
       setBookList(book_list);
       getSessionConfig({
@@ -99,11 +100,13 @@ const StudySessionConfig = () => {
           mybook_ids: book_list.map((book) => book.book_id),
         },
       });
+      setCheckedKeys(checkedKeys);
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [session_createSession] = useMutation(MUTATION_CREATE_SESSION, {
+  const [session_createSession, {}] = useMutation(MUTATION_CREATE_SESSION, {
     onCompleted: (data) => {
       if (data.session_createSession.status === "200") {
         console.log("세션 생성 요청 후 받은 데이터", data);
@@ -137,6 +140,22 @@ const StudySessionConfig = () => {
             sessionScope,
             sessionConfig,
           },
+        },
+        update: (cache) => {
+          keysArray.forEach((item) => {
+            console.log(`Mybook:${item}`);
+            cache.writeFragment({
+              id: `Mybook:${item}`,
+              fragment: gql`
+                fragment MyBookRecenctStudyIndexesFragment on Mybook {
+                  recentStudyIndexes
+                }
+              `,
+              data: {
+                recentStudyIndexes: checkedKeys[item],
+              },
+            });
+          });
         },
       });
     } catch (error) {
@@ -174,21 +193,6 @@ const StudySessionConfig = () => {
       },
     }
   );
-
-  useEffect(() => {
-    if (data?.session_getNumCardsbyIndex?.indexsets[0]) {
-      const bookIndexIdsList =
-        data.session_getNumCardsbyIndex.indexsets[0].indexes.map(
-          (item) => item._id
-        );
-      setCheckedKeys({
-        ...checkedKeys,
-        [data.session_getNumCardsbyIndex.indexsets[0].indexset_info.mybook_id]:
-          bookIndexIdsList,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
 
   useEffect(() => {
     if (bookList.length > 0) {

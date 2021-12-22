@@ -80,6 +80,7 @@ const StudySessionConfig = () => {
         console.log("어떤 문제가 발생함");
       }
     },
+    fetchPolicy: "network-only",
   });
 
   useEffect(() => {
@@ -112,10 +113,6 @@ const StudySessionConfig = () => {
     },
   });
 
-  useEffect(() => {
-    console.log(sessionConfig);
-  }, [sessionConfig]);
-
   const submitCreateSessionConfigToServer = useCallback(async () => {
     const keysArray = Object.keys(checkedKeys);
     const sessionScope = keysArray.map((item) => ({
@@ -135,7 +132,8 @@ const StudySessionConfig = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [checkedKeys, sessionConfig, session_createSession]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkedKeys, sessionConfig]);
 
   const [loadData, { loading, error, data, variables }] = useLazyQuery(
     QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,

@@ -7,17 +7,11 @@ const M_SessionNavigationBar = ({
   changeActivatedComponent,
   submitCreateSessionConfigToServer,
 }) => {
-  const hanlderForNaviButton = (e) => {
-    changeActivatedComponent(e.target.dataset.component);
-  };
-  const hanlderForAntdNaviButton = () => {
-    activatedComponent === "index"
-      ? changeActivatedComponent("config")
-      : changeActivatedComponent("index");
-  };
-
-  const arrowButtonNode = useMemo(
-    () => (
+  const arrowButtonNode = useMemo(() => {
+    const hanlderForNaviButton = (e) => {
+      changeActivatedComponent(e.target.dataset.component);
+    };
+    return (
       <div className="FlexWrapper">
         <NavigationButton
           className="NavigationButton GoToIndex"
@@ -38,13 +32,16 @@ const M_SessionNavigationBar = ({
           세션 설정
         </NavigationButton>
       </div>
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activatedComponent]
-  );
+    );
+  }, [activatedComponent, changeActivatedComponent]);
 
-  const antdButtonNode = useMemo(
-    () => (
+  const antdButtonNode = useMemo(() => {
+    const hanlderForAntdNaviButton = () => {
+      activatedComponent === "index"
+        ? changeActivatedComponent("config")
+        : changeActivatedComponent("index");
+    };
+    return (
       <div className="FlexWrapper">
         <Button
           className="NextStageButton"
@@ -68,10 +65,12 @@ const M_SessionNavigationBar = ({
           시작
         </Button>
       </div>
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [activatedComponent]
-  );
+    );
+  }, [
+    activatedComponent,
+    changeActivatedComponent,
+    submitCreateSessionConfigToServer,
+  ]);
 
   return (
     <StyledSessionNavigationBar>

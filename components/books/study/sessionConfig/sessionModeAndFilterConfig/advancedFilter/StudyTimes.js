@@ -22,6 +22,7 @@ const StudyTimes = ({ onOff, studyTimes, changeStudyTimes }) => {
     <StyledDivConfigMenuWrapper>
       <Space>
         <InputNumber
+          className="AdvancedFilterInputNumber"
           disabled={!isOn}
           size="small"
           min={0}
@@ -31,6 +32,7 @@ const StudyTimes = ({ onOff, studyTimes, changeStudyTimes }) => {
         />
         ~
         <InputNumber
+          className="AdvancedFilterInputNumber"
           disabled={!isOn}
           size="small"
           min={studyTimes[1] == null ? 2 : studyTimes[0] + 1}

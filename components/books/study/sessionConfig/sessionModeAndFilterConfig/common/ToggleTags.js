@@ -10,12 +10,10 @@ const ToggleTag = memo((props) => {
   );
   return (
     <Wrapper {...attr(props)}>
-      <CheckableTag {...props} />
+      <CheckableTag className="CheckableTag" {...props} />
     </Wrapper>
   );
 });
-
-const attr = (i) => i === 0 && { first: "yes" };
 
 const NewToggleTag = ({
   children,
@@ -48,12 +46,7 @@ const NewToggleTag = ({
     : { onClick: () => changeValue(option) };
 
   return (
-    <ToggleTag
-      checked={verifyIsChecked(option)}
-      {...attr(index)}
-      {...attr2}
-      {...attrTagName}
-    >
+    <ToggleTag checked={verifyIsChecked(option)} {...attr2} {...attrTagName}>
       {children}
     </ToggleTag>
   );
@@ -86,8 +79,7 @@ export default memo(ToggleTags);
 const CheckableTag = styled(Tag.CheckableTag)`
   border: ${({ checked }) =>
     checked ? "1px solid #1890ff" : "1px solid #d9d9d9"};
-  margin: ${({ first }) =>
-    first === "yes" ? "3px 3px 3px 0" : "3px 3px 3px 3px"};
+  margin: 2px 2px 2px 2px;
 `;
 const Wrapper = styled.div`
   background-color: ${({ checked, tagname }) =>
@@ -95,6 +87,9 @@ const Wrapper = styled.div`
   display: inline-block;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
+  &:first-of-type > .CheckableTag {
+    margin: 2px 2px 2px 0;
+  }
 `;
 
 const RowForLevelTwo = styled.div`

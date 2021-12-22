@@ -222,14 +222,18 @@ const IndexTree = ({
                 };
               },
               align: "center",
-              render: (v, record) => (
-                <>
-                  {!(
-                    record.key === "allSummary" ||
-                    record.key === "selectedIndexCardsInfo"
-                  ) && <Checkbox checked={checkedKeys.includes(record.key)} />}
-                </>
-              ),
+              render: function ForDisplayName(v, record) {
+                return (
+                  <>
+                    {!(
+                      record.key === "allSummary" ||
+                      record.key === "selectedIndexCardsInfo"
+                    ) && (
+                      <Checkbox checked={checkedKeys.includes(record.key)} />
+                    )}
+                  </>
+                );
+              },
             },
             {
               title: "진도율",

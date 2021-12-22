@@ -10,6 +10,7 @@ const StyledDatePicker = (props) => {
 export default StyledDatePicker;
 
 const StyledWapper = styled(DatePicker.RangePicker)`
+  width: 145px;
   &.ant-picker.ant-picker-range.ant-picker-small {
     height: 22px;
   }

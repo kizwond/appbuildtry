@@ -112,17 +112,22 @@ const StudySessionConfig = () => {
     },
   });
 
+  useEffect(() => {
+    console.log(sessionConfig);
+  }, [sessionConfig]);
+
   const submitCreateSessionConfigToServer = useCallback(async () => {
     const keysArray = Object.keys(checkedKeys);
     const sessionScope = keysArray.map((item) => ({
       mybook_id: item,
       index_ids: checkedKeys[item],
     }));
+    console.log({ sessionScope, sessionConfig });
     try {
       await session_createSession({
         variables: {
           forCreateSession: {
-            sessionScope: sessionScope,
+            sessionScope,
             sessionConfig,
           },
         },
@@ -130,8 +135,7 @@ const StudySessionConfig = () => {
     } catch (error) {
       console.log(error);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkedKeys, sessionConfig]);
+  }, [checkedKeys, sessionConfig, session_createSession]);
 
   const [loadData, { loading, error, data, variables }] = useLazyQuery(
     QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
@@ -288,6 +292,10 @@ const StyledSessionConfig = styled.div`
   }
   .ant-input-number-sm {
     width: 2.3rem;
+    line-height: 1;
+  }
+  .ant-input-number-sm.AdvancedFilterInputNumber {
+    width: 60px;
     line-height: 1;
   }
 

@@ -22,6 +22,7 @@ const CardLevel = ({ onOff, level, changeLevel }) => {
     <StyledDivConfigMenuWrapper>
       <Space>
         <InputNumber
+          className="AdvancedFilterInputNumber"
           disabled={!isOn}
           size="small"
           min={1}
@@ -31,6 +32,7 @@ const CardLevel = ({ onOff, level, changeLevel }) => {
         />
         ~
         <InputNumber
+          className="AdvancedFilterInputNumber"
           disabled={!isOn}
           size="small"
           min={level[0] == null ? null : level[0] + 1}

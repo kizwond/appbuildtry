@@ -76,28 +76,28 @@ const M_ConditionOfReviewTime = ({
           <Row>
             <StyledRadio value="custom">직접입력</StyledRadio>
           </Row>
-          <Row wrap={false}>
-            {needStudyTimeCondition === "custom" && (
-              <>
-                <StyledAntdDatePicker
-                  placeholder={["시작", "종료"]}
-                  format="MM-DD"
-                  value={[
-                    needStudyTimeRange[0] == 0
-                      ? moment()
-                      : moment().add(needStudyTimeRange[0], "days"),
-                    needStudyTimeRange[1] == 0
-                      ? moment()
-                      : moment().add(needStudyTimeRange[1], "days"),
-                  ]}
-                  onChange={onChange}
-                  size="small"
-                />
-              </>
-            )}
-          </Row>
         </Col>
       </StyledRow>
+      <Row wrap={false} justify="end">
+        {needStudyTimeCondition === "custom" && (
+          <Col>
+            <StyledAntdDatePicker
+              placeholder={["시작", "종료"]}
+              format="MM-DD"
+              value={[
+                needStudyTimeRange[0] == 0
+                  ? moment()
+                  : moment().add(needStudyTimeRange[0], "days"),
+                needStudyTimeRange[1] == 0
+                  ? moment()
+                  : moment().add(needStudyTimeRange[1], "days"),
+              ]}
+              onChange={onChange}
+              size="small"
+            />
+          </Col>
+        )}
+      </Row>
     </Radio.Group>
   );
 };

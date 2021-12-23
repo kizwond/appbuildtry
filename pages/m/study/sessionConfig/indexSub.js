@@ -75,19 +75,19 @@ export const getNumCardsbyIndex = async ({
   //       indexset.indexes[index_order].numCards.total.progress +=
   //         indexset.indexes[index_order].numCards[cardtype].progress;
   //       indexset.indexes[index_order].numCards.total[status] += 1;
-  //       indexset.indexes[index_order].numCards[cardtype].ing.total += 1;
+  //       indexset.indexes[index_order].numCards[cardtype].ingTotal += 1;
   //       indexset.indexes[index_order].numCards[cardtype].ing.progress +=
   //         indexset.indexes[index_order].numCards[cardtype].progress;
   //       if (needStudyTime < current_time) {
-  //         indexset.indexes[index_order].numCards[cardtype].ing.untilNow += 1;
+  //         indexset.indexes[index_order].numCards[cardtype].ingUntilNow += 1;
   //       }
   //       if (needStudyTime < todayMidnight) {
-  //         indexset.indexes[index_order].numCards[cardtype].ing.untilToday += 1;
+  //         indexset.indexes[index_order].numCards[cardtype].ingUntilToday += 1;
   //       }
   //       if (needStudyTime >= todayMidnight) {
   //         indexset.indexes[index_order].numCards[
   //           cardtype
-  //         ].ing.afterTomorrow += 1;
+  //         ].ingAfterTomorrow += 1;
   //       }
   //     } else {
   //       indexset.indexes[index_order].numCards.total.total += 1;

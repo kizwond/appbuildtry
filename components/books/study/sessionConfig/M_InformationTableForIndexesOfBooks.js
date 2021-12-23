@@ -36,17 +36,17 @@ const IndexTree = ({
           key: item._id,
           level: item.level,
           index: index,
-          progress_for_total_card: item.numCards.total.progress,
+          levelAverage_for_total_card: item.numCards.total.averageLevel,
           total_cards_number_for_total_card: item.numCards.total.total,
           yet_cards_number_for_total_card: item.numCards.total.yet,
           total_on_study_cards_number_for_total_card:
-            item.numCards.total.ing.total,
+            item.numCards.total.ingTotal,
           until_today_on_study_cards_number_for_total_card:
-            item.numCards.total.ing.untilToday,
+            item.numCards.total.ingUntilToday,
           until_now_on_study_cards_number_for_total_card:
-            item.numCards.total.ing.untilNow,
+            item.numCards.total.ingUntilNow,
           from_tomorrow_on_study_cards_number_for_total_card:
-            item.numCards.total.ing.afterTomorrow,
+            item.numCards.total.ingAfterTomorrow,
           completed_cards_number_for_total_card: item.numCards.total.completed,
           holding_cards_number_for_total_card: item.numCards.total.hold,
           selectedIndex: checkedKeys.includes(item._id),
@@ -60,7 +60,7 @@ const IndexTree = ({
           key: 0,
           level: 0,
           index: 0,
-          progress_for_total_card: 0,
+          levelAverage_for_total_card: 0,
           total_cards_number_for_total_card: 0,
           yet_cards_number_for_total_card: 0,
           total_on_study_cards_number_for_total_card: 0,
@@ -120,8 +120,9 @@ const IndexTree = ({
           ...summaryData,
           title: "현재 책 기준",
           key: "selectedIndexCardsInfo",
-          progress_for_total_card:
-            summaryData.progress_for_total_card / selectedIndexes.length || 0,
+          levelAverage_for_total_card:
+            summaryData.levelAverage_for_total_card / selectedIndexes.length ||
+            0,
         };
         return {
           cardsInfo: {
@@ -220,9 +221,9 @@ const IndexTree = ({
               },
             },
             {
-              title: "진도율",
-              dataIndex: "progress_for_total_card",
-              key: "progress_for_total_card",
+              title: "평균 레벨",
+              dataIndex: "levelAverage_for_total_card",
+              key: "levelAverage_for_total_card",
               width: 80,
               align: "center",
               onCell: handleCheckbox,

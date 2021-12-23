@@ -204,7 +204,7 @@ const SessionSetting = () => {
       counter === bookList.length - 1
         ? summaryAll(cardsList, checkedKeys)
         : {
-            progress_for_total_card: 0,
+            levelAverage_for_total_card: 0,
             total_cards_number_for_total_card: 0,
             yet_cards_number_for_total_card: 0,
             total_on_study_cards_number_for_total_card: 0,

@@ -61,7 +61,7 @@ export const GetLevelConfig = gql`
     }
   }
 `;
-export const GetSession = gql`
+export const  GetSession = gql`
   query GetSession($session_id: ID) {
     session_getSession(session_id: $session_id) {
       status

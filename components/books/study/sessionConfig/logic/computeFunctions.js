@@ -1,5 +1,21 @@
 import _ from "lodash";
 
+function sumOfObjects(Obj1, Obj2) {
+  var finalObj = {};
+  Object.keys(Obj1).forEach((value) => {
+    if (Obj2.hasOwnProperty(value)) {
+      finalObj[value] = Obj1[value] + Obj2[value];
+    }
+  });
+
+  return finalObj;
+}
+
+const currentTime = new Date();
+let todayMidnight = new Date();
+todayMidnight.setDate(todayMidnight.getDate() + 1);
+todayMidnight.setHours(0, 0, 0, 0);
+
 export const getNumCardsbyIndex = async ({
   indexsets,
   cardsets,
@@ -14,6 +30,7 @@ export const getNumCardsbyIndex = async ({
           cardset.cardset_info.index_id == jindexsets[i].indexes[j]._id
       );
 
+      console.log(cardsetPosition);
       const currentTime = new Date();
       let todayMidnight = new Date();
       todayMidnight.setDate(todayMidnight.getDate() + 1);
@@ -83,6 +100,7 @@ export const getNumCardsbyIndex = async ({
     }
   }
   console.log("종료", jindexsets);
+
   return jindexsets;
 };
 
@@ -267,6 +285,78 @@ export const getNumCardsAppliedAdvancedFilter = async ({
       }
     }
   }
+
   console.log("종료", jindexsets);
   return jindexsets;
+};
+
+export const computeNumberOfCardsPerBook = async ({
+  indexsets,
+  cardsets,
+  sessionConfig,
+  selectedBook,
+  selectedIndex,
+}) => {
+  console.log({
+    indexsets,
+    cardsets,
+    sessionConfig,
+    selectedBook,
+    selectedIndex,
+  });
+
+  // 카드 배열 생성 뒤 뒤집기, 읽기 카드만 필터
+  // 필터해야하는 부분은 다 여기서 처리하면 될 것 같다. - 아직 테스트 안됨
+  const flattenCards = cardsets
+    .flatMap((cardset) => cardset.cards)
+    .filter((card) => ["flip", "read"].includes(card.card_info.cardtype));
+
+  const normalizationBooksData = {};
+
+  indexsets.forEach((indexSet) => {
+    // normalizationBooksData에 책 아이디를 키로 설정하여 프로퍼티 생성
+    normalizationBooksData[indexSet.indexset_info.mybook_id] =
+      indexSet.indexes.map((index) => ({
+        title: index.name,
+        id: index._id,
+        levelForTableData: index.level,
+        //  map 과 reduce 활용하여 카드 배열을  다음 키와 값을 가진 프로퍼티로 변환 (카드종류: 합계)
+        ...flattenCards
+          .filter((card) => card.card_info.index_id === index._id)
+          .map((card) => ({
+            totalNumberOfAllCards: 1,
+            totalNumberOfYetCards:
+              card.studyStatus.statusCurrent === "yet" ? 1 : 0,
+            totalNumberOfHoldCards:
+              card.studyStatus.statusCurrent === "hold" ? 1 : 0,
+            totalNumberOfCompletedCards:
+              card.studyStatus.statusCurrent === "Completed" ? 1 : 0,
+            totalLevelOfAllCards: card.studyStatus.levelCurrent,
+            totalNumberOfAllCardsOnStudyStage:
+              card.studyStatus.statusCurrent === "ing" ? 1 : 0,
+            totalNumberOfUntilNowCardsOnStudyStage:
+              card.studyStatus.statusCurrent === "ing" &&
+              card.studyStatus.needStudyTimes < currentTime
+                ? 1
+                : 0,
+            totalNumberOfUntilTodayCardsOnStudyStage:
+              card.studyStatus.statusCurrent === "ing" &&
+              card.studyStatus.needStudyTimes < todayMidnight
+                ? 1
+                : 0,
+          }))
+          .reduce(sumOfObjects, {
+            totalNumberOfAllCards: 0,
+            totalNumberOfYetCards: 0,
+            totalNumberOfHoldCards: 0,
+            totalNumberOfCompletedCards: 0,
+            totalLevelOfAllCards: 0,
+            totalNumberOfAllCardsOnStudyStage: 0,
+            totalNumberOfUntilNowCardsOnStudyStage: 0,
+            totalNumberOfUntilTodayCardsOnStudyStage: 0,
+          }),
+      }));
+  });
+
+  console.log({ normalizationBooksData });
 };

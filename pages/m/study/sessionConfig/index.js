@@ -16,7 +16,10 @@ import M_SessionNavigationBar from "../../../../components/books/studypage/sessi
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import M_TabsOfBooksForInfromationTable from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
-import { getNumCardsbyIndex } from "../../../../components/books/study/sessionConfig/logic/computeFunctions";
+import {
+  computeNumberOfCardsPerBook,
+  getNumCardsbyIndex,
+} from "../../../../components/books/study/sessionConfig/logic/computeFunctions";
 
 const StudySessionConfig = () => {
   const router = useRouter();
@@ -75,6 +78,13 @@ const StudySessionConfig = () => {
             cardsets: received_data.cardset_getByMybookIDs.cardsets,
             sessionConfig:
               received_data.session_getSessionConfig.sessionConfigs[0],
+          });
+          computeNumberOfCardsPerBook({
+            indexsets: received_data.indexset_getByMybookids.indexsets,
+            cardsets: received_data.cardset_getByMybookIDs.cardsets,
+            sessionConfig,
+            selectedBook: bookList,
+            selectedIndex: checkedKeys,
           });
         } else if (received_data.session_getSessionConfig.status === "401") {
           router.push("/m/account/login");

@@ -82,6 +82,7 @@ const M_ConditionOfReviewTime = ({
         {needStudyTimeCondition === "custom" && (
           <Col>
             <StyledAntdDatePicker
+              allowClear={false}
               placeholder={["시작", "종료"]}
               format="MM-DD"
               value={[

@@ -22,7 +22,7 @@ const WriteHistoryGraphBarComponent = ({ _record }) => {
       : 0;
 
     const theDayBeforeYesterday = moment(now)
-      .subtract(1, "days")
+      .subtract(2, "days")
       .format("YYYYMMDD");
     const theDayBeforeYesterdayCards = _record.writeHistory?.filter(
       (_arr) => _arr.date === theDayBeforeYesterday

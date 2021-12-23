@@ -52,7 +52,18 @@ const Writeanother = () => {
       query: { name: JSON.stringify(selectedBooks) },
     });
   };
-  const sesstionStart = () => {
+  const sesstionStart = async () => {
+    let forCheckedKeys = {};
+    data.mybook_getMybookByUserID.mybooks
+      .filter((_book) =>
+        selectedBooks.map((book) => book.book_id).includes(_book._id)
+      )
+      .forEach((book) => {
+        forCheckedKeys[book._id] = book.recentStudyIndexes;
+      });
+
+    console.log(forCheckedKeys);
+    sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
     router.push("/m/study/sessionConfig");
   };
 

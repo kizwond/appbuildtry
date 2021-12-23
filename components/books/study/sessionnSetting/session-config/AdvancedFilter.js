@@ -229,9 +229,9 @@ const StyledDivTitleRow = styled.div`
 `;
 
 const StyledDivWrapper = styled.div`
-  border-left: 1px solid #1890ff;
-  border-right: 1px solid #1890ff;
-  border-bottom: 1px solid #1890ff;
+  border-left: 1px solid #9bcfff;
+  border-right: 1px solid #9bcfff;
+  border-bottom: 1px solid #9bcfff;
   padding: 0 5px 5px 5px;
   background-color: white;
 `;

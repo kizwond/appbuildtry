@@ -8,7 +8,7 @@ export const StyledAntTabs = styled(Tabs)`
 
   &.ant-tabs-card > .ant-tabs-nav {
     &::before {
-      border-bottom: 1px solid #1890ff;
+      border-bottom: 1px solid #9bcfff;
     }
     .ant-tabs-nav-wrap > .ant-tabs-nav-list {
       width: ${({ width }) => (width && "100%") || null};
@@ -27,7 +27,7 @@ export const StyledAntTabs = styled(Tabs)`
         right: 0;
         left: -1px;
         content: "";
-        border-bottom: 1px solid #1890ff;
+        border-bottom: 1px solid #9bcfff;
         transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
       }
       .ant-tabs-tab-btn {
@@ -39,7 +39,7 @@ export const StyledAntTabs = styled(Tabs)`
     }
 
     .ant-tabs-tab-active {
-      border: 1px solid #1890ff;
+      border: 1px solid #9bcfff;
       border-bottom: none;
       &::before {
         position: absolute;
@@ -56,7 +56,7 @@ export const StyledAntTabs = styled(Tabs)`
 
   /* 탭 콘텐츠 부분 css */
   .ant-tabs-tabpane.ant-tabs-tabpane-active > .SessionTabContentWrapper {
-    border: 1px solid #1890ff;
+    border: 1px solid #9bcfff;
     border-top: none;
     padding: 5px;
   }

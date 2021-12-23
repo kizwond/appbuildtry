@@ -5,6 +5,7 @@ export const getNumCardsbyIndex = async ({indexsets, cardsets}) => {
     indexsets,
     cardsets,
   });
+<<<<<<< HEAD
   const jindexsets =_.cloneDeep(indexsets)
 
   for (let i=0; i<jindexsets.length; i++){

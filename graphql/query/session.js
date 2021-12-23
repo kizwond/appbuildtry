@@ -98,6 +98,9 @@ export const GetSession = gql`
               value
               comment
             }
+            hidden
+            underline
+            highlight
             location
             mycontent_id
             buycontent_id

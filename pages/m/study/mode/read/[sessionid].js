@@ -359,19 +359,25 @@ const ReadMode = () => {
               </div>
             </>
           );
-          // const popoverContent = (
-          //   <div style={{ display: "flex", flexDirection: "row" }}>
-          //     <Button size="small" style={{ fontSize: "0.8rem", marginBottom: "3px" }}>
-          //       유저플래그설정
-          //     </Button>
-          //     <Button size="small" style={{ fontSize: "0.8rem", marginBottom: "3px" }}>
-          //       메모추가
-          //     </Button>
-          //     <Button size="small" style={{ fontSize: "0.8rem", marginBottom: "3px" }}>
-          //       새카드생성
-          //     </Button>
-          //   </div>
-          // );
+          const hideContents = (
+            <div>
+              <p>Content</p>
+              <p>Content</p>
+            </div>
+          );
+          const highlightContents = (
+            <div>
+              <p>Content</p>
+              <p>Content</p>
+            </div>
+          );
+          const underlineContents = (
+            <div>
+              <p>Content</p>
+              <p>Content</p>
+            </div>
+          );
+
           return (
             <>
               {content.card_info.cardtype === "read" && (
@@ -397,12 +403,27 @@ const ReadMode = () => {
                           <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
                             {cardClickMenu && (
                               <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
-                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
                                   메모추가
                                 </Button>
-                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
                                   새카드생성
                                 </Button>
+                                <Popover placement="bottomRight" title={"가리기 목록"} content={hideContents} trigger="click">
+                                  <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
+                                    가리기
+                                  </Button>
+                                </Popover>
+                                <Popover placement="bottomRight" title={"형광펜 목록"} content={highlightContents} trigger="click">
+                                  <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
+                                    형광펜
+                                  </Button>
+                                </Popover>
+                                <Popover placement="bottomRight" title={"밑줄 목록"} content={underlineContents} trigger="click">
+                                  <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
+                                    밑줄
+                                  </Button>
+                                </Popover>
                               </div>
                             )}
                             <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
@@ -548,7 +569,7 @@ const ReadMode = () => {
                   </div>
                 </>
               )}
-              {content.card_info.cardtype === "subject" && (
+              {/* {content.card_info.cardtype === "common" && (
                 <>
                   {content._id === cardId && (
                     <>
@@ -595,7 +616,180 @@ const ReadMode = () => {
                   )}
                   <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
-                      {/* 페이스 스타일 영역 */}
+                      {content.content.makerFlag.value !== null && flagArea}
+                      <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
+                        <div
+                          style={{
+                            width: "80%",
+                            backgroundColor: face_style[0].background.color,
+                            marginTop: face_style[0].outer_margin.top,
+                            marginBottom: face_style[0].outer_margin.bottom,
+                            marginLeft: face_style[0].outer_margin.left,
+                            marginRight: face_style[0].outer_margin.right,
+                            paddingTop: face_style[0].inner_padding.top,
+                            paddingBottom: face_style[0].inner_padding.bottom,
+                            paddingLeft: face_style[0].inner_padding.left,
+                            paddingRight: face_style[0].inner_padding.right,
+                            borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
+                            borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
+                            borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
+                            borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
+                          }}
+                        >
+                          {content_value.face1.map((item, index) => (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: row_style.face1[index].background.color,
+                                  marginTop: row_style.face1[index].outer_margin.top,
+                                  marginBottom: row_style.face1[index].outer_margin.bottom,
+                                  marginLeft: row_style.face1[index].outer_margin.left,
+                                  marginRight: row_style.face1[index].outer_margin.right,
+                                  paddingTop: row_style.face1[index].inner_padding.top,
+                                  paddingBottom: row_style.face1[index].inner_padding.bottom,
+                                  paddingLeft: row_style.face1[index].inner_padding.left,
+                                  paddingRight: row_style.face1[index].inner_padding.right,
+                                  borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
+                                  borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
+                                  borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
+                                  borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                                  textAlign: row_font.face1[index].align,
+                                  fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
+                                  color: row_font.face1[index].color,
+                                  fontFamily: `${
+                                    row_font.face1[index].font === "고딕"
+                                      ? `NanumGothic`
+                                      : row_font.face1[index].font === "명조"
+                                      ? `NanumMyeongjo`
+                                      : row_font.face1[index].font === "바탕"
+                                      ? `Gowun Batang, sans-serif`
+                                      : row_font.face1[index].font === "돋움"
+                                      ? `Gowun Dodum, sans-serif`
+                                      : ""
+                                  } `,
+                                  fontStyle: `${row_font.face1[index].italic === "on" ? "italic" : "normal"}`,
+                                  fontSize: row_font.face1[index].size,
+                                  textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
+                                }}
+                              >
+                                <FroalaEditorView model={item} />
+                              </div>
+                            </>
+                          ))}
+                        </div>
+                        <div
+                          style={{
+                            width: "20%",
+                            backgroundColor: face_style[1].background.color,
+                            marginTop: face_style[1].outer_margin.top,
+                            marginBottom: face_style[1].outer_margin.bottom,
+                            marginLeft: face_style[1].outer_margin.left,
+                            marginRight: face_style[1].outer_margin.right,
+                            paddingTop: face_style[1].inner_padding.top,
+                            paddingBottom: face_style[1].inner_padding.bottom,
+                            paddingLeft: face_style[1].inner_padding.left,
+                            paddingRight: face_style[1].inner_padding.right,
+                            borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
+                            borderBottom: `${face_style[1].border.bottom.thickness}px ${face_style[1].border.bottom.bordertype} ${face_style[1].border.bottom.color}`,
+                            borderLeft: `${face_style[1].border.left.thickness}px ${face_style[1].border.left.bordertype} ${face_style[1].border.left.color}`,
+                            borderRight: `${face_style[1].border.right.thickness}px ${face_style[1].border.right.bordertype} ${face_style[1].border.right.color}`,
+                          }}
+                        >
+                          {content_value.annotation.length > 0 &&
+                            content_value.annotation.map((item, index) => (
+                              <>
+                                <div
+                                  style={{
+                                    backgroundColor: row_style.annotation[index].background.color,
+                                    marginTop: row_style.annotation[index].outer_margin.top,
+                                    marginBottom: row_style.annotation[index].outer_margin.bottom,
+                                    marginLeft: row_style.annotation[index].outer_margin.left,
+                                    marginRight: row_style.annotation[index].outer_margin.right,
+                                    paddingTop: row_style.annotation[index].inner_padding.top,
+                                    paddingBottom: row_style.annotation[index].inner_padding.bottom,
+                                    paddingLeft: row_style.annotation[index].inner_padding.left,
+                                    paddingRight: row_style.annotation[index].inner_padding.right,
+                                    borderTop: `${row_style.annotation[index].border.top.thickness}px ${row_style.annotation[index].border.top.bordertype} ${row_style.annotation[index].border.top.color}`,
+                                    borderBottom: `${row_style.annotation[index].border.bottom.thickness}px ${row_style.annotation[index].border.bottom.bordertype} ${row_style.annotation[index].border.bottom.color}`,
+                                    borderLeft: `${row_style.annotation[index].border.left.thickness}px ${row_style.annotation[index].border.left.bordertype} ${row_style.annotation[index].border.left.color}`,
+                                    borderRight: `${row_style.annotation[index].border.right.thickness}px ${row_style.annotation[index].border.right.bordertype} ${row_style.annotation[index].border.right.color}`,
+                                    textAlign: row_font.annotation[index].align,
+                                    fontWeight: `${row_font.annotation[index].bold === "on" ? 700 : 400}`,
+                                    color: row_font.annotation[index].color,
+                                    fontFamily: `${
+                                      row_font.annotation[index].font === "고딕"
+                                        ? `NanumGothic`
+                                        : row_font.annotation[index].font === "명조"
+                                        ? `NanumMyeongjo`
+                                        : row_font.annotation[index].font === "바탕"
+                                        ? `Gowun Batang, sans-serif`
+                                        : row_font.annotation[index].font === "돋움"
+                                        ? `Gowun Dodum, sans-serif`
+                                        : ""
+                                    } `,
+                                    fontStyle: `${row_font.annotation[index].italic === "on" ? "italic" : "normal"}`,
+                                    fontSize: row_font.annotation[index].size,
+                                    textDecoration: `${row_font.annotation[index].underline === "on" ? "underline" : "none"}`,
+                                  }}
+                                >
+                                  <FroalaEditorView model={item} />
+                                </div>
+                              </>
+                            ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )} */}
+              {/* {content.card_info.cardtype === "subject" && (
+                <>
+                  {content._id === cardId && (
+                    <>
+                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ height: "1.5rem" }}>
+                          <FlagFilled onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: `red` }} />
+                          {userFlag && (
+                            <>
+                              <span style={{ marginLeft: "5px" }}>
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "red" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "orange" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "yellow" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "green" }} />
+                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "blue" }} />
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                            {cardClickMenu && (
+                              <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  메모추가
+                                </Button>
+                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
+                                  새카드생성
+                                </Button>
+                              </div>
+                            )}
+                            <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div style={{ padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
+                        <div style={{ backgroundColor: "red", height: "4px", width: "20px", borderRadius: "2px" }}> </div>
+                        <div></div>
+                      </div>
+                    </>
+                  )}
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
+                    <div onClick={() => onClickCard(content._id, "normal")}>
+                    
                       {content.content.makerFlag.value !== null && flagArea}
                       <div
                         style={{
@@ -658,8 +852,8 @@ const ReadMode = () => {
                     </div>
                   </div>
                 </>
-              )}
-              {content.card_info.cardtype === "general" && (
+              )} */}
+              {content.card_info.cardtype === "share" && (
                 <>
                   {content._id === cardId && (
                     <>
@@ -706,7 +900,7 @@ const ReadMode = () => {
                   )}
                   <div className={`${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
-                      <div onClick={() => onClickCard(content._id, "general")}>
+                      <div onClick={() => onClickCard(content._id, "share")}>
                         {/* 페이스 스타일 영역 */}
                         {content.content.makerFlag.value !== null && flagArea}
                         <div
@@ -895,7 +1089,7 @@ const ReadMode = () => {
                                   }}
                                 >
                                   {/* <FroalaEditorView model={item} /> */}
-                                  <div id={`face1row${index+1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
+                                  <div id={`face1row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
                                 </div>
                               </>
                             ))}
@@ -1003,7 +1197,7 @@ const ReadMode = () => {
                                   }}
                                 >
                                   {/* <FroalaEditorView model={item} /> */}
-                                  <div id={`face2row${index+1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
+                                  <div id={`face2row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
                                 </div>
                               </>
                             ))}
@@ -1259,7 +1453,7 @@ const ReadMode = () => {
   }
 
   const onClickCard = (card_id, from, group) => {
-    // if ((from !== "general" && from !== "normal" && from !== "flip" && group === undefined) || null) {
+    // if ((from !== "share" && from !== "normal" && from !== "flip" && group === undefined) || null) {
     //   console.log("null or undefined");
     //   const selected1 = document.getElementsByClassName("child_group");
     //   const selected2 = document.getElementsByClassName("other");
@@ -1271,8 +1465,8 @@ const ReadMode = () => {
     //     const section2 = selected1.item(a);
     //     section2.style.borderLeft = "none";
     //   }
-    // } else if (from === "general") {
-    //   console.log("general");
+    // } else if (from === "share") {
+    //   console.log("share");
     //   const selected1 = document.getElementsByClassName(card_id);
     //   const selected2 = document.getElementsByClassName("other");
     //   for (var a = 0; a < selected2.length; a++) {

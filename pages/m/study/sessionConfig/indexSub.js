@@ -1,11 +1,7 @@
 import _ from "lodash";
 
-export const getNumCardsbyIndex = async ({indexsets, cardsets}) => {
-  console.log({   
-    indexsets,
-    cardsets,
-  });
-  
+export const getNumCardsbyIndex = async ({indexsets, cardsets, sessionConfig}) => {  
+  console.log('test', sessionConfig)
   const jindexsets =_.cloneDeep(indexsets)
 
   for (let i=0; i<jindexsets.length; i++){
@@ -36,14 +32,14 @@ export const getNumCardsbyIndex = async ({indexsets, cardsets}) => {
           jindexsets[i].indexes[j].numCards.total.averageLevel += cardsets[cardsetPosition].cards[k].studyStatus.levelCurrent;
           jindexsets[i].indexes[j].numCards.total.total += 1;
           jindexsets[i].indexes[j].numCards.total.ingTotal += 1;
-          if (needStudyTime < current_time) {jindexsets[i].indexes[j].numCards.total.ingUntilNow += 1;}
+          if (needStudyTime < currentTime) {jindexsets[i].indexes[j].numCards.total.ingUntilNow += 1;}
           if (needStudyTime < todayMidnight) {jindexsets[i].indexes[j].numCards.total.ingUntilToday += 1;}            
           if (needStudyTime >= todayMidnight) {jindexsets[i].indexes[j].numCards.total.ingAfterTomorrow += 1;}
           
           jindexsets[i].indexes[j].numCards[cardtype].total += 1;
           jindexsets[i].indexes[j].numCards[cardtype].averageLevel += cardsets[cardsetPosition].cards[k].studyStatus.levelCurrent;
           jindexsets[i].indexes[j].numCards[cardtype].ingTotal += 1;          
-          if (needStudyTime < current_time) {jindexsets[i].indexes[j].numCards[cardtype].ingUntilNow += 1;}
+          if (needStudyTime < currentTime) {jindexsets[i].indexes[j].numCards[cardtype].ingUntilNow += 1;}
           if (needStudyTime < todayMidnight) {jindexsets[i].indexes[j].numCards[cardtype].ingUntilToday += 1;}
           if (needStudyTime >= todayMidnight) {jindexsets[i].indexes[j].numCards[cardtype].ingAfterTomorrow += 1;}          
         }
@@ -60,12 +56,7 @@ export const getNumCardsbyIndex = async ({indexsets, cardsets}) => {
 }
 
 
-export const getNumCardsWithAdvancedFilter = async ({mybooks, indexsets, cardsets, sessionConfig}) => {
-  console.log({   
-    indexsets,
-    cardsets,
-    sessionConfig,
-  });
+export const getNumCardsAppliedAdvancedFilter = async ({indexsets, cardsets, sessionConfig}) => {
 
   const jindexsets =_.cloneDeep(indexsets)
 
@@ -81,6 +72,9 @@ export const getNumCardsWithAdvancedFilter = async ({mybooks, indexsets, cardset
 
       for (let k=0; k<cardsets[cardsetPosition].cards.length; k++){        
         if (!["flip", "read"].includes(cardsets[cardsetPosition].cards[k].card_info.cardtype)) {break};                   
+        // if (sessionConfig.)
+
+
         if (advancedFilter == null) {
           if ((advancedFilter.userFlag.onOff = "on")) {
             if (!advancedFilter.userFlag.value.includes(cardsets[cardsetPosition].cards[k].content.userFlag.value)) {break;}

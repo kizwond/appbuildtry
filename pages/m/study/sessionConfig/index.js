@@ -16,7 +16,7 @@ import M_SessionNavigationBar from "../../../../components/books/studypage/sessi
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import M_TabsOfBooksForInfromationTable from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
-import { getNumCardsbyIndex } from "./indexSub";
+import { getNumCardsbyIndex } from "../../../../components/books/study/sessionConfig/logic/computeFunctions";
 
 const StudySessionConfig = () => {
   const router = useRouter();

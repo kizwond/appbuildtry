@@ -73,7 +73,7 @@ const StudySessionConfig = () => {
           getNumCardsbyIndex({
             indexsets: received_data.indexset_getByMybookids.indexsets,
             cardsets: received_data.cardset_getByMybookIDs.cardsets,
-            sessionconfig:
+            sessionConfig:
               received_data.session_getSessionConfig.sessionConfigs[0],
           });
         } else if (received_data.session_getSessionConfig.status === "401") {
@@ -261,8 +261,6 @@ const StudySessionConfig = () => {
                 onChangeAFCardList={onChangeAFCardList}
                 AFCardList={advancedFilteredCardsList}
                 book_ids={bookList.map((book) => book.book_id)}
-                advancedFilteredCheckedIndexes={checkedKeys}
-                onChangeIndexesOfAFCardList={onInputCheckedKeys}
                 mode={mode}
                 changeMode={changeMode}
                 modeOption={modeOption}

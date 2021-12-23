@@ -298,7 +298,7 @@ export const QUERY_SESSION_CONFIG = gql`
 `;
 export const QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS = gql`
   ${FRAGMENT_SESSION_CONFIG}
-  ${FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER}
+  ${FRAGMENT_INDEX_SET}
   ${FRAGMENT_CARD_SET}
   query getSessionConfigAndIndexSetAndCardSet($mybook_ids: [ID]) {
     session_getSessionConfig(mybook_ids: $mybook_ids) {
@@ -312,7 +312,7 @@ export const QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS = gql`
       status
       msg
       indexsets {
-        ...IndexSetWithoutCardNumberFragment
+        ...IndexSetFragment
       }
     }
     cardset_getByMybookIDs(mybook_ids: $mybook_ids) {

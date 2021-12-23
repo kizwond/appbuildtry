@@ -74,6 +74,9 @@ const M_ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
           </div>
           {useStatus.includes("ing") && (
             <StyledDivToggleStudying>
+              <div className="HelperForConditionOfReviewTime">
+                ※ 복습 필요 시점이 ...
+              </div>
               <M_ConditionOfReviewTime
                 needStudyTimeCondition={needStudyTimeCondition}
                 changeNeedStudyTimeCondition={changeNeedStudyTimeCondition}
@@ -138,4 +141,9 @@ const StyledDivToggleStudying = styled.div`
   padding: 1px 6px 3px 4px;
   margin-bottom: 3px;
   border-radius: 2px;
+
+  .HelperForConditionOfReviewTime {
+    margin-left: 3px;
+    color: #797979;
+  }
 `;

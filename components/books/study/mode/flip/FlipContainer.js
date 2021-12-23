@@ -221,7 +221,7 @@ class Container extends Component {
       const card_seq = sessionStorage.getItem("card_seq");
       if (card_details_session.length - 1 == Number(card_seq)) {
         console.log("원래는 끝난거!!!")
-        // this.finishStudy();
+        this.finishStudy();
       } else {
         console.log(card_details_session.length - 1, "======", Number(card_seq));
         console.log("아직 안끝");

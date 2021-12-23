@@ -14,44 +14,35 @@ export const FRAGMENT_INDEX_SET = gql`
       indextype
       numCards {
         total {
-          progress
+          averageLevel
           total
           yet
-          ing {
-            total
-            notStudying
-            untilNow
-            untilToday
-            afterTomorrow
-          }
+          ingTotal
+          ingUntilNow
+          ingUntilToday
+          ingAfterTomorrow
           hold
           completed
         }
         read {
-          progress
+          averageLevel
           total
           yet
-          ing {
-            total
-            notStudying
-            untilNow
-            untilToday
-            afterTomorrow
-          }
+          ingTotal
+          ingUntilNow
+          ingUntilToday
+          ingAfterTomorrow
           hold
           completed
         }
         flip {
-          progress
+          averageLevel
           total
           yet
-          ing {
-            total
-            notStudying
-            untilNow
-            untilToday
-            afterTomorrow
-          }
+          ingTotal
+          ingUntilNow
+          ingUntilToday
+          ingAfterTomorrow
           hold
           completed
         }

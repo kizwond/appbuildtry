@@ -11,7 +11,6 @@ const GetFilteredIndexButton = ({
   onChangeAFButtonClick,
 }) => {
   const [counter, setCounter] = useState(0);
-  const [isOnProcessing, setIsOnProcessing] = useState(true);
 
   const [loadFilteredData, { loading, error, data }] = useLazyQuery(
     QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
@@ -27,7 +26,6 @@ const GetFilteredIndexButton = ({
           console.log("카운터설정");
           setCounter((prev) => prev + 1);
         } else if (counter == book_ids.length - 1) {
-          setIsOnProcessing(false);
           setCounter(0);
         }
         console.log(received_data);

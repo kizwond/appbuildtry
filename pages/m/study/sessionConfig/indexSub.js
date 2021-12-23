@@ -83,7 +83,7 @@ export const getNumCardsAppliedAdvancedFilter = async ({indexsets, cardsets, ses
         }
 
 
-        if (advancedFilter == null) {
+        if (advancedFilter.onOff == 'on') {
           if ((advancedFilter.userFlag.onOff = "on")) {
             if (!advancedFilter.userFlag.value.includes(cardsets[cardsetPosition].cards[k].content.userFlag.value)) {break;}
           }

@@ -15,14 +15,7 @@ const ToggleTag = memo((props) => {
   );
 });
 
-const NewToggleTag = ({
-  children,
-  option,
-  index,
-  value,
-  changeValue,
-  tagname,
-}) => {
+const NewToggleTag = ({ children, option, value, changeValue, tagname }) => {
   const isArray = Array.isArray(value);
   const verifyIsChecked = useCallback(
     (option) => (isArray ? value.includes(option) : value === option),
@@ -58,11 +51,10 @@ const ToggleTags = ({ value, changeValue, tagname, tags, af }) => {
   const makeAttrAF = af && { forfilter: "yes" };
   return (
     <RowForLevelTwo {...makeAttrAF}>
-      {tags.map((tag, i) => (
+      {tags.map((tag) => (
         <NewToggleTag
           key={tag.option}
           option={tag.option}
-          index={i}
           value={value}
           changeValue={changeValue}
           {...makeAttrTagName(tag.option)}

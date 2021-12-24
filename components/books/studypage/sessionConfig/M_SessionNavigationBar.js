@@ -77,6 +77,7 @@ const M_SessionNavigationBar = ({
     activatedComponent,
     changeActivatedComponent,
     submitCreateSessionConfigToServer,
+    numberOfFilteredCards,
   ]);
 
   return (

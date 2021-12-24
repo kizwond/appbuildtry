@@ -46,16 +46,7 @@ const IndexTree = ({
           align: "center",
           onCell: handleCheckbox,
           render: function ForTitle(v, record) {
-            return (
-              <>
-                {record.key === "SummaryForAllBooks" ||
-                record.key === "SummaryForBook" ? (
-                  <div style={{ textAlign: "left" }}>{v}</div>
-                ) : (
-                  <StyledTwoLinesEllipsis>{v}</StyledTwoLinesEllipsis>
-                )}
-              </>
-            );
+            return <StyledTwoLinesEllipsis>{v}</StyledTwoLinesEllipsis>;
           },
         },
         {

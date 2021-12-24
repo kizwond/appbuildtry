@@ -73,12 +73,12 @@ const StudySessionConfig = () => {
           console.log("세션 설정 데이터 받음", received_data);
           updateData(received_data);
           loadData();
-          getNumCardsbyIndex({
-            indexsets: received_data.indexset_getByMybookids.indexsets,
-            cardsets: received_data.cardset_getByMybookIDs.cardsets,
-            sessionConfig:
-              received_data.session_getSessionConfig.sessionConfigs[0],
-          });
+          // getNumCardsbyIndex({
+          //   indexsets: received_data.indexset_getByMybookids.indexsets,
+          //   cardsets: received_data.cardset_getByMybookIDs.cardsets,
+          //   sessionConfig:
+          //     received_data.session_getSessionConfig.sessionConfigs[0],
+          // });
           computeNumberOfCardsPerBook({
             indexsets: received_data.indexset_getByMybookids.indexsets,
             cardsets: received_data.cardset_getByMybookIDs.cardsets,

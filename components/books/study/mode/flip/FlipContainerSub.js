@@ -44,7 +44,7 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
 };
 
 const calculateNormalStudy = (interval, selection, current_card_info_index, timer) => {
-  
+  console.log('냐하하하하', current_card_info_index)
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
 
@@ -77,11 +77,10 @@ const calculateNormalStudy = (interval, selection, current_card_info_index, time
 
 
 
-const calculatePassMoveFinish = (interval, selection, current_card_info_index, timer) => {
-
+const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
+  console.log('냐하하하하', current_card_info_index)
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-  console.log('card_details_session[current_card_info_index].studyStatus',card_details_session[current_card_info_index].studyStatus)
   
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  

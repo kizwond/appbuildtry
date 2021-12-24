@@ -17,7 +17,10 @@ import M_SessionNavigationBar from "../../../../components/books/studypage/sessi
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import M_TabsOfBooksForInfromationTable from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
-import { computeNumberOfCardsPerBook } from "../../../../components/books/study/sessionConfig/logic/computeFunctions";
+import {
+  computeNumberOfAllFilteredCards,
+  computeNumberOfCardsPerBook,
+} from "../../../../components/books/study/sessionConfig/logic/computeFunctions";
 
 const StudySessionConfig = () => {
   const router = useRouter();
@@ -71,20 +74,29 @@ const StudySessionConfig = () => {
     }
   );
 
-  const bookData = useMemo(() => {
-    const result =
+  const bookData = useMemo(
+    () =>
       data &&
       computeNumberOfCardsPerBook({
         indexsets: data.indexset_getByMybookids.indexsets,
         cardsets: data.cardset_getByMybookIDs.cardsets,
-        sessionConfig,
-        selectedBook: bookList.current,
-        selectedIndex: checkedKeys,
-      });
+      }),
 
-    return result;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, checkedKeys, bookList]);
+    [data]
+  );
+
+  const numberOfFilteredCards = useMemo(
+    () =>
+      data &&
+      computeNumberOfAllFilteredCards({
+        cardsets: data.cardset_getByMybookIDs.cardsets,
+        checkedKeys,
+        sessionConfig,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, checkedKeys, sessionConfig]
+  );
 
   useEffect(() => {
     const booklist = JSON.parse(sessionStorage.getItem("books_selected"));

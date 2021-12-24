@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Checkbox, Table } from "antd";
 import styled from "styled-components";
 import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
@@ -6,155 +6,15 @@ import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 import { getAllChildrenKeys } from "../../../common/logic/getAllChildrenKeysForTable";
 
 const IndexTree = ({
-  bookIndexInfo,
-  summaryAll,
   onCheckIndexesCheckedKeys,
   checkedKeys,
   selectedbookId,
-  selectedCardsInfo,
-  changeSelectedCardsInfo,
+  bookData,
 }) => {
-  const [treeData, setTreeData] = useState([]);
-
-  useEffect(() => {
-    let mounted = true;
-
-    if (mounted) {
-      const getIndexes = async () => {
-        function sumOfObjects(Obj1, Obj2) {
-          var finalObj = {};
-          Object.keys(Obj1).forEach((value) => {
-            if (Obj2.hasOwnProperty(value)) {
-              finalObj[value] = Obj1[value] + Obj2[value];
-            }
-          });
-
-          return finalObj;
-        }
-        const rawIndexes = bookIndexInfo.map((item, index) => ({
-          title: item.name,
-          key: item._id,
-          level: item.level,
-          index: index,
-          levelAverage_for_total_card: item.numCards.total.averageLevel,
-          total_cards_number_for_total_card: item.numCards.total.total,
-          yet_cards_number_for_total_card: item.numCards.total.yet,
-          total_on_study_cards_number_for_total_card:
-            item.numCards.total.ingTotal,
-          until_today_on_study_cards_number_for_total_card:
-            item.numCards.total.ingUntilToday,
-          until_now_on_study_cards_number_for_total_card:
-            item.numCards.total.ingUntilNow,
-          from_tomorrow_on_study_cards_number_for_total_card:
-            item.numCards.total.ingAfterTomorrow,
-          completed_cards_number_for_total_card: item.numCards.total.completed,
-          holding_cards_number_for_total_card: item.numCards.total.hold,
-          selectedIndex: checkedKeys.includes(item._id),
-        }));
-
-        const selectedIndexes = rawIndexes.filter(
-          (bookIndex) => bookIndex.selectedIndex
-        );
-        const summaryData = selectedIndexes.reduce(sumOfObjects, {
-          title: 0,
-          key: 0,
-          level: 0,
-          index: 0,
-          levelAverage_for_total_card: 0,
-          total_cards_number_for_total_card: 0,
-          yet_cards_number_for_total_card: 0,
-          total_on_study_cards_number_for_total_card: 0,
-          until_today_on_study_cards_number_for_total_card: 0,
-          until_now_on_study_cards_number_for_total_card: 0,
-          from_tomorrow_on_study_cards_number_for_total_card: 0,
-          completed_cards_number_for_total_card: 0,
-          holding_cards_number_for_total_card: 0,
-          selectedIndex: 0,
-        });
-        let data_for_tree_level_one = rawIndexes.filter(
-          (item) => item.level == 1
-        );
-        let data_for_tree_level_two = rawIndexes.filter(
-          (item) => item.level == 2
-        );
-        let data_for_tree_level_three = rawIndexes.filter(
-          (item) => item.level == 3
-        );
-        let data_for_tree_level_four = rawIndexes.filter(
-          (item) => item.level == 4
-        );
-        let data_for_tree_level_five = rawIndexes.filter(
-          (item) => item.level == 5
-        );
-        const generatorForChildrens = (parents, son) => {
-          for (let i = 0; i < parents.length; i++) {
-            for (let k = 0; k < son.length; k++) {
-              if (parents[i].index < son[k].index) {
-                if (i + 1 == parents.length) {
-                  if (parents[i].children == undefined) {
-                    parents[i].children = [son[k]];
-                  } else {
-                    parents[i].children = [...parents[i].children, son[k]];
-                  }
-                } else if (parents[i + 1].index > son[k].index) {
-                  if (parents[i].children == undefined) {
-                    parents[i].children = [son[k]];
-                  } else {
-                    parents[i].children = [...parents[i].children, son[k]];
-                  }
-                }
-              }
-            }
-          }
-          return parents;
-        };
-
-        const level4 = generatorForChildrens(
-          data_for_tree_level_four,
-          data_for_tree_level_five
-        );
-        const level3 = generatorForChildrens(data_for_tree_level_three, level4);
-        const level2 = generatorForChildrens(data_for_tree_level_two, level3);
-        const level1 = generatorForChildrens(data_for_tree_level_one, level2);
-        const summaryIndexes = {
-          ...summaryData,
-          title: "현재 책 기준",
-          key: "selectedIndexCardsInfo",
-          levelAverage_for_total_card:
-            summaryData.levelAverage_for_total_card / selectedIndexes.length ||
-            0,
-        };
-        return {
-          cardsInfo: {
-            ...selectedCardsInfo,
-            [selectedbookId]: summaryIndexes,
-          },
-          treeData: [
-            { ...summaryAll, key: "allSummary", title: "전체 책 기준" },
-            summaryIndexes,
-            ...level1,
-          ],
-        };
-      };
-
-      const result = getIndexes();
-
-      result
-        .then((data) => {
-          setTreeData(data.treeData);
-          changeSelectedCardsInfo(data.cardsInfo);
-        })
-        .catch((e) => console.log(e));
-    }
-
-    return () => (mounted = false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookIndexInfo, checkedKeys]);
-
   const handleCheckbox = (record) => {
     return {
       onClick: () => {
-        const allChildrenKeys = getAllChildrenKeys(treeData, "key", record.key);
+        const allChildrenKeys = getAllChildrenKeys(bookData, "key", record.key);
 
         if (checkedKeys.includes(record.key)) {
           onCheckIndexesCheckedKeys(
@@ -173,167 +33,166 @@ const IndexTree = ({
   };
 
   return (
-    <>
-      {treeData.length > 0 ? (
-        <Table
-          sticky
-          columns={[
-            {
-              title: "목차",
-              dataIndex: "title",
-              key: "title",
-              width: 140,
-              className: "TableRowTitle",
-              fixed: true,
-              align: "center",
-              onCell: handleCheckbox,
-              render: function ForTitle(v, record) {
-                return (
-                  <>
-                    {record.key === "allSummary" ||
-                    record.key === "selectedIndexCardsInfo" ? (
-                      <div style={{ textAlign: "left" }}>{v}</div>
-                    ) : (
-                      <StyledTwoLinesEllipsis>{v}</StyledTwoLinesEllipsis>
-                    )}
-                  </>
-                );
-              },
-            },
-            {
-              dataIndex: "key",
-              key: "key",
-              width: 30,
-              fixed: true,
-              align: "center",
-              onCell: handleCheckbox,
-              render: function ForCheckbox(v, record) {
-                return (
-                  <>
-                    {!(
-                      record.key === "allSummary" ||
-                      record.key === "selectedIndexCardsInfo"
-                    ) && (
-                      <Checkbox checked={checkedKeys.includes(record.key)} />
-                    )}
-                  </>
-                );
-              },
-            },
-            {
-              title: "평균 레벨",
-              dataIndex: "levelAverage_for_total_card",
-              key: "levelAverage_for_total_card",
-              width: 80,
-              align: "center",
-              onCell: handleCheckbox,
-              render: function ForProgress(text) {
-                return (
-                  <>
-                    <StyledProgress booktype="any" percent={text} />
-                  </>
-                );
-              },
-            },
+    <Table
+      sticky
+      columns={[
+        {
+          title: "목차",
+          dataIndex: "title",
+          key: "title",
+          width: 140,
+          className: "TableRowTitle",
+          fixed: true,
+          align: "center",
+          onCell: handleCheckbox,
+          render: function ForTitle(v, record) {
+            return (
+              <>
+                {record.key === "SummaryForAllBooks" ||
+                record.key === "SummaryForBook" ? (
+                  <div style={{ textAlign: "left" }}>{v}</div>
+                ) : (
+                  <StyledTwoLinesEllipsis>{v}</StyledTwoLinesEllipsis>
+                )}
+              </>
+            );
+          },
+        },
+        {
+          dataIndex: "key",
+          key: "key",
+          width: 30,
+          fixed: true,
+          align: "center",
+          onCell: handleCheckbox,
+          render: function ForCheckbox(v, record) {
+            return (
+              <>
+                {!(
+                  record.key === "SummaryForAllBooks" ||
+                  record.key === "SummaryForBook"
+                ) && <Checkbox checked={checkedKeys.includes(record.key)} />}
+              </>
+            );
+          },
+        },
+        {
+          title: "평균 레벨",
+          dataIndex: "totalLevelOfAllCards",
+          key: "totalLevelOfAllCards",
+          width: 80,
+          align: "center",
+          onCell: handleCheckbox,
+          render: function ForProgress(level, { totalNumberOfAllCards }) {
+            return (
+              <>
+                <StyledProgress
+                  booktype="any"
+                  percent={
+                    totalNumberOfAllCards === 0
+                      ? 0
+                      : level / totalNumberOfAllCards
+                  }
+                />
+              </>
+            );
+          },
+        },
+        {
+          title: "합계",
+          dataIndex: "totalNumberOfAllCards",
+          key: "totalNumberOfAllCards",
+          align: "center",
+          width: 60,
+        },
+        {
+          title: "미학습",
+          dataIndex: "totalNumberOfYetCards",
+          key: "totalNumberOfYetCards",
+          align: "center",
+          width: 60,
+        },
+        {
+          title: "학습중",
+          children: [
             {
               title: "합계",
-              dataIndex: "total_cards_number_for_total_card",
-              key: "total_cards_number_for_total_card",
+              dataIndex: "totalNumberOfAllCardsOnStudyStage",
+              key: "totalNumberOfAllCardsOnStudyStage",
               align: "center",
               width: 60,
             },
             {
-              title: "미학습",
-              dataIndex: "yet_cards_number_for_total_card",
-              key: "yet_cards_number_for_total_card",
+              title: "현재이전",
+              dataIndex: "totalNumberOfUntilNowCardsOnStudyStage",
+              key: "totalNumberOfUntilNowCardsOnStudyStage",
               align: "center",
               width: 60,
             },
             {
-              title: "학습중",
-              children: [
-                {
-                  title: "합계",
-                  dataIndex: "total_on_study_cards_number_for_total_card",
-                  key: "total_on_study_cards_number_for_total_card",
-                  align: "center",
-                  width: 60,
-                },
-                {
-                  title: "현재이전",
-                  dataIndex: "until_now_on_study_cards_number_for_total_card",
-                  key: "until_now_on_study_cards_number_for_total_card",
-                  align: "center",
-                  width: 60,
-                },
-                {
-                  title: "오늘이전",
-                  dataIndex: "until_today_on_study_cards_number_for_total_card",
-                  key: "until_today_on_study_cards_number_for_total_card",
-                  align: "center",
-                  width: 60,
-                },
-                {
-                  title: "내일이후",
-                  dataIndex:
-                    "from_tomorrow_on_study_cards_number_for_total_card",
-                  key: "from_tomorrow_on_study_cards_number_for_total_card",
-                  align: "center",
-                  width: 60,
-                },
-              ],
-            },
-            {
-              title: "완료",
-              dataIndex: "completed_cards_number_for_total_card",
-              key: "completed_cards_number_for_total_card",
+              title: "오늘이전",
+              dataIndex: "totalNumberOfUntilTodayCardsOnStudyStage",
+              key: "totalNumberOfUntilTodayCardsOnStudyStage",
               align: "center",
               width: 60,
             },
             {
-              title: "보류",
-              dataIndex: "holding_cards_number_for_total_card",
-              key: "holding_cards_number_for_total_card",
+              title: "내일이후",
+              dataIndex: "totalNumberOfFromTomorrowCardsOnStudyStage",
+              key: "totalNumberOfFromTomorrowCardsOnStudyStage",
               align: "center",
               width: 60,
             },
-          ]}
-          dataSource={treeData}
-          rowClassName={(record) =>
-            record.key === "selectedIndexCardsInfo"
-              ? "SelectedIndexCardsInfo"
-              : null
-          }
-          expandable={{
-            indentSize: 10,
-          }}
-          size="small"
-          scroll={{ x: 720 }}
-          pagination={false}
-          title={() => (
-            <StyledDivTitle>
-              <div className="FirstRow">
-                <div className="TableMainTitle">목차 정보</div>
-              </div>
-              <div className="SecondRow">
-                <div className="HelpDescription">
-                  * 카드 개수는 학습 카드(읽기 카드와 뒤집기 카드)의 개수만
-                  표시됩니다.
-                </div>
-                <div className="HelpDescription">
-                  * 학습중 카드는 복습 필요 시점 기준으로 개수를 확인하실 수
-                  있습니다.
-                </div>
-                <div className="HelpDescription">
-                  * 오늘이전 복습 필요 카드는 현재 이전 복습 필요 카드를
-                  포함합니다.
-                </div>
-              </div>
-            </StyledDivTitle>
-          )}
-        />
-      ) : null}
-    </>
+          ],
+        },
+        {
+          title: "완료",
+          dataIndex: "totalNumberOfCompletedCards",
+          key: "totalNumberOfCompletedCards",
+          align: "center",
+          width: 60,
+        },
+        {
+          title: "보류",
+          dataIndex: "totalNumberOfHoldCards",
+          key: "totalNumberOfHoldCards",
+          align: "center",
+          width: 60,
+        },
+      ]}
+      dataSource={bookData}
+      rowClassName={(record) =>
+        record.key === "selectedIndexCardsInfo"
+          ? "SelectedIndexCardsInfo"
+          : null
+      }
+      expandable={{
+        indentSize: 10,
+      }}
+      size="small"
+      scroll={{ x: 720 }}
+      pagination={false}
+      title={() => (
+        <StyledDivTitle>
+          <div className="FirstRow">
+            <div className="TableMainTitle">목차 정보</div>
+          </div>
+          <div className="SecondRow">
+            <div className="HelpDescription">
+              * 카드 개수는 학습 카드(읽기 카드와 뒤집기 카드)의 개수만
+              표시됩니다.
+            </div>
+            <div className="HelpDescription">
+              * 학습중 카드는 복습 필요 시점 기준으로 개수를 확인하실 수
+              있습니다.
+            </div>
+            <div className="HelpDescription">
+              * 오늘이전 복습 필요 카드는 현재 이전 복습 필요 카드를 포함합니다.
+            </div>
+          </div>
+        </StyledDivTitle>
+      )}
+    />
   );
 };
 

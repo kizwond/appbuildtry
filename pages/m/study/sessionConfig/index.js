@@ -1,13 +1,14 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import { useRouter } from "next/router";
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
-import {
-  QUERY_INDEX_SET_AND_CARD_SET_BY_BOOK_IDS,
-  QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
-  QUERY_SESSION_CONFIG,
-  QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
-} from "../../../../graphql/query/allQuery";
+import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
 
 import styled from "styled-components";
 
@@ -16,27 +17,14 @@ import M_SessionNavigationBar from "../../../../components/books/studypage/sessi
 import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
 import M_TabsOfBooksForInfromationTable from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
-import {
-  computeNumberOfCardsPerBook,
-  getNumCardsbyIndex,
-} from "../../../../components/books/study/sessionConfig/logic/computeFunctions";
+import { computeNumberOfCardsPerBook } from "../../../../components/books/study/sessionConfig/logic/computeFunctions";
 
 const StudySessionConfig = () => {
   const router = useRouter();
 
-  const [cardsList, setCardsList] = useState([]);
   const [checkedKeys, setCheckedKeys] = useState([]);
-  const onInputCheckedKeys = useCallback((value) => {
-    setCheckedKeys(value);
-  }, []);
 
-  const [counter, setCounter] = useState(0);
-  const [bookList, setBookList] = useState([]);
-
-  const [selectedCardsInfo, setSelectedCardsInfo] = useState({});
-  const changeSelectedCardsInfo = useCallback((summary) => {
-    setSelectedCardsInfo(summary);
-  }, []);
+  const bookList = useRef();
 
   const [activatedComponent, setActivatedComponent] = useState("index");
   const changeActivatedComponent = useCallback((_type) => {
@@ -66,26 +54,13 @@ const StudySessionConfig = () => {
     sessionConfig,
   } = useSessionConfig();
 
-  const [getSessionConfig, { data: data2, loading: loading2, error: error2 }] =
-    useLazyQuery(QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS, {
+  const [getSessionConfig, { data, loading, error }] = useLazyQuery(
+    QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
+    {
       onCompleted: (received_data) => {
         if (received_data.session_getSessionConfig.status === "200") {
           console.log("세션 설정 데이터 받음", received_data);
           updateData(received_data);
-          loadData();
-          // getNumCardsbyIndex({
-          //   indexsets: received_data.indexset_getByMybookids.indexsets,
-          //   cardsets: received_data.cardset_getByMybookIDs.cardsets,
-          //   sessionConfig:
-          //     received_data.session_getSessionConfig.sessionConfigs[0],
-          // });
-          computeNumberOfCardsPerBook({
-            indexsets: received_data.indexset_getByMybookids.indexsets,
-            cardsets: received_data.cardset_getByMybookIDs.cardsets,
-            sessionConfig,
-            selectedBook: bookList,
-            selectedIndex: checkedKeys,
-          });
         } else if (received_data.session_getSessionConfig.status === "401") {
           router.push("/m/account/login");
         } else {
@@ -93,7 +68,23 @@ const StudySessionConfig = () => {
         }
       },
       fetchPolicy: "network-only",
-    });
+    }
+  );
+
+  const bookData = useMemo(() => {
+    const result =
+      data &&
+      computeNumberOfCardsPerBook({
+        indexsets: data.indexset_getByMybookids.indexsets,
+        cardsets: data.cardset_getByMybookIDs.cardsets,
+        sessionConfig,
+        selectedBook: bookList.current,
+        selectedIndex: checkedKeys,
+      });
+
+    return result;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, checkedKeys, bookList]);
 
   useEffect(() => {
     const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
@@ -104,7 +95,7 @@ const StudySessionConfig = () => {
     }));
     const checkedKeys = JSON.parse(sessionStorage.getItem("forCheckedKeys"));
     if (book_list.length > 0) {
-      setBookList(book_list);
+      bookList.current = book_list;
       getSessionConfig({
         variables: {
           mybook_ids: book_list.map((book) => book.book_id),
@@ -142,7 +133,6 @@ const StudySessionConfig = () => {
       mybook_id: item,
       index_ids: checkedKeys[item],
     }));
-    console.log({ sessionScope, sessionConfig });
     try {
       await session_createSession({
         variables: {
@@ -153,7 +143,6 @@ const StudySessionConfig = () => {
         },
         update: (cache) => {
           keysArray.forEach((item) => {
-            console.log(`Mybook:${item}`);
             cache.writeFragment({
               id: `Mybook:${item}`,
               fragment: gql`
@@ -173,44 +162,6 @@ const StudySessionConfig = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedKeys, sessionConfig]);
-
-  const [loadData, { loading, error, data, variables }] = useLazyQuery(
-    QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER,
-    {
-      variables: {
-        forGetNumCardsbyIndex: {
-          mybook_id: bookList[counter]?.book_id,
-          advancedFilter: null,
-        },
-      },
-      onCompleted: (received_data) => {
-        if (received_data.session_getNumCardsbyIndex.status === "200") {
-          console.log(
-            `${bookList[counter].book_id} 책 정보 받음`,
-            received_data
-          );
-          if (counter < bookList.length - 1) {
-            console.log("책 정보 받은 후 카운터설정", counter + 1);
-            setCounter((prev) => prev + 1);
-          }
-
-          setCardsList([...cardsList, received_data]);
-        } else if (received_data.session_getNumCardsbyIndex.status === "401") {
-          router.push("m/account/login");
-        } else {
-          console.log("어떤 문제가 발생함");
-        }
-      },
-    }
-  );
-
-  useEffect(() => {
-    if (bookList.length > 0) {
-      if (data2 && counter !== 0 && counter < bookList.length) {
-        loadData();
-      }
-    }
-  }, [bookList, loadData, counter, data2]);
 
   if (error) {
     console.log("에러", error);
@@ -237,7 +188,7 @@ const StudySessionConfig = () => {
 
   return (
     <M_Layout>
-      {!error && !loading && cardsList.length > 0 && (
+      {!error && !loading && bookData && (
         <StyledDiv>
           <M_SessionNavigationBar
             activatedComponent={activatedComponent}
@@ -249,35 +200,32 @@ const StudySessionConfig = () => {
 
           <StyledForTabsOfBooks activatedComponent={activatedComponent}>
             <M_TabsOfBooksForInfromationTable
-              bookList={bookList}
-              cardsList={cardsList}
+              bookData={bookData}
+              bookList={bookList.current}
               checkedKeys={checkedKeys}
               onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
-              selectedCardsInfo={selectedCardsInfo}
-              changeSelectedCardsInfo={changeSelectedCardsInfo}
               isAdvancedFilteredCardListShowed={
                 isAdvancedFilteredCardListShowed
               }
               advancedFilteredCardsList={advancedFilteredCardsList}
               activatedComponent={activatedComponent}
-              counter={counter}
             />
           </StyledForTabsOfBooks>
 
           <StyledSessionConfig activatedComponent={activatedComponent}>
-            {bookList.length - 1 === counter && (
+            {
               <M_SessionModeAndFilterConfig
                 onToggleIsAFilter={onToggleIsAFilter}
                 onChangeAFCardList={onChangeAFCardList}
                 AFCardList={advancedFilteredCardsList}
-                book_ids={bookList.map((book) => book.book_id)}
+                book_ids={bookList.current.map((book) => book.book_id)}
                 mode={mode}
                 changeMode={changeMode}
                 modeOption={modeOption}
                 advancedFilter={advancedFilter}
                 changeAdvancedFilter={changeAdvancedFilter}
               />
-            )}
+            }
           </StyledSessionConfig>
         </StyledDiv>
       )}

@@ -279,7 +279,7 @@ import _ from "lodash";
 //   return jindexsets;
 // };
 
-export const computeNumberOfCardsPerBook = async ({
+export const computeNumberOfCardsPerBook = ({
   indexsets,
   cardsets,
   sessionConfig,
@@ -329,6 +329,11 @@ export const computeNumberOfCardsPerBook = async ({
           card.studyStatus.needStudyTimes < todayMidnight
             ? 1
             : 0,
+        totalNumberOfFromTomorrowCardsOnStudyStage:
+          card.studyStatus.statusCurrent === "ing" &&
+          card.studyStatus.needStudyTimes >= todayMidnight
+            ? 1
+            : 0,
       }))
       .reduce(sumOfObjects, {
         totalNumberOfAllCards: 0,
@@ -339,6 +344,7 @@ export const computeNumberOfCardsPerBook = async ({
         totalNumberOfAllCardsOnStudyStage: 0,
         totalNumberOfUntilNowCardsOnStudyStage: 0,
         totalNumberOfUntilTodayCardsOnStudyStage: 0,
+        totalNumberOfFromTomorrowCardsOnStudyStage: 0,
       });
 
   // 카드 배열 생성 뒤 뒤집기, 읽기 카드만 필터
@@ -385,7 +391,23 @@ export const computeNumberOfCardsPerBook = async ({
             children: (levels[level] = []),
           })
       );
-
+      result.forEach((a) => {
+        if (a.children.length === 0) {
+          delete a.children;
+        } else {
+          a.children.map((a) => {
+            if (a.children.length === 0) {
+              delete a.children;
+            } else {
+              a.children.map((a) => {
+                if (a.children.length === 0) {
+                  delete a.children;
+                }
+              });
+            }
+          });
+        }
+      });
       return result;
     };
 
@@ -395,7 +417,7 @@ export const computeNumberOfCardsPerBook = async ({
       {
         title: "현재 책 기준",
         id: indexSet.indexset_info.mybook_id,
-        key: indexSet.indexset_info.mybook_id,
+        key: "SummaryForBook",
         ...getNumberOfCards(
           flattenCards.filter(
             (card) =>
@@ -410,7 +432,7 @@ export const computeNumberOfCardsPerBook = async ({
     ];
   });
 
-  console.log({ normalizationBooksData });
-
   console.timeEnd("a");
+
+  return normalizationBooksData;
 };

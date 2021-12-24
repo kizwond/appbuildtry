@@ -12,6 +12,7 @@ import SubTitleSwitch from "./SubTitleSwitch";
 const FilterSubMenu = ({ children, changeOnOff, onOff, title }) => {
   const booleanOnOff =
     onOff === "on" ? true : onOff === "off" ? false : new Error("에러발생");
+
   return (
     <StyledFilteMenuWrapper>
       <StyledDivConfigRow>

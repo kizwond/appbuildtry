@@ -1,8 +1,12 @@
 import _ from "lodash";
 
-export const computeNumberOfCardsPerBook = ({ indexsets, cardsets }) => {
+export const computeNumberOfCardsPerBook = ({
+  indexsets,
+  cardsets,
+  bookList,
+}) => {
   console.time("a");
-
+  console.log(bookList);
   function sumOfObjects(Obj1, Obj2) {
     var finalObj = {};
     Object.keys(Obj1).forEach((value) => {
@@ -107,7 +111,11 @@ export const computeNumberOfCardsPerBook = ({ indexsets, cardsets }) => {
     // normalizationBooksData에 책 아이디를 키로 설정하여 프로퍼티 생성
     normalizationBooksData[indexSet.indexset_info.mybook_id] = [
       {
-        title: "현재 책 기준",
+        title: `책 제목: ${
+          bookList.find(
+            (book) => book.book_id === indexSet.indexset_info.mybook_id
+          ).book_title
+        }`,
         id: indexSet.indexset_info.mybook_id,
         key: "SummaryForBook",
         ...getNumberOfCards(
@@ -132,33 +140,62 @@ export const computeNumberOfAllFilteredCards = ({
   sessionConfig,
 }) => {
   console.log({ cardsets, checkedKeys, sessionConfig });
+
+  const currentTime = new Date();
+  let todayMidnight = new Date();
+  todayMidnight.setDate(todayMidnight.getDate() + 1);
+  todayMidnight.setHours(0, 0, 0, 0);
+
   const {
     detailedOption: {
       needStudyTimeCondition,
       needStudyTimeRange,
-      numStartCards,
-      sortOption,
       useCardtype,
       useStatus,
     },
   } = sessionConfig;
 
-  console.log({
-    needStudyTimeCondition,
-    needStudyTimeRange,
-    numStartCards,
-    useCardtype,
-    useStatus,
-  });
-
   const flattenCards = cardsets
     .flatMap((cardset) => cardset.cards)
-    .filter(
-      (card) =>
-        useCardtype.includes(card.card_info.cardtype) &&
-        useStatus.includes(card.studyStatus.statusCurrent)
-    );
+    .filter((card) => {
+      const conditionOfCardType = useCardtype.includes(card.card_info.cardtype);
+      const conditionOfCardStatus = (() => {
+        if (card.studyStatus.statusCurrent !== "ing") {
+          return useStatus.includes(card.studyStatus.statusCurrent);
+        }
+        if (needStudyTimeCondition === "all") {
+          return useStatus.includes(card.studyStatus.statusCurrent);
+        }
+        if (needStudyTimeCondition === "unitlNow") {
+          return (
+            useStatus.includes(card.studyStatus.statusCurrent) &&
+            card.studyStatus.needStudyTime < currentTime
+          );
+        }
+        if (needStudyTimeCondition === "unitlToday") {
+          return (
+            useStatus.includes(card.studyStatus.statusCurrent) &&
+            card.studyStatus.needStudyTime < todayMidnight
+          );
+        }
+        if (needStudyTimeCondition === "custom") {
+          const needStudyTimePosition =
+            (card.studyStatus.needStudyTime - todayMidnight) / 24 / 3600;
 
-  console.log(flattenCards.length);
-  flattenCards && flattenCards.length > 0 && console.log(flattenCards[0]);
+          return (
+            useStatus.includes(card.studyStatus.statusCurrent) &&
+            (needStudyTimePosition > needStudyTimeRange[0] ||
+              needStudyTimePosition < needStudyTimeRange[1])
+          );
+        }
+      })();
+
+      return (
+        conditionOfCardType &&
+        useStatus.includes(card.studyStatus.statusCurrent) &&
+        conditionOfCardStatus
+      );
+    });
+
+  return flattenCards.length;
 };

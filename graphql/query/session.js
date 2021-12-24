@@ -120,6 +120,7 @@ export const  GetSession = gql`
             recentStudyResult
             recentStudyTime
             recentStudyHour
+            totalStudyHour
             totalStudyTimes
             recentKnowTime
             needStudyTime

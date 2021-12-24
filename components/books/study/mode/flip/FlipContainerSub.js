@@ -16,6 +16,7 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
   card_details_session[current_card_info_index].studyStatus.recentStudyHour = new Date(timer);
   card_details_session[current_card_info_index].studyStatus.totalStudyHour = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.totalStudyHour) + timer);
+  console.log('card_details_session[current_card_info_index].studyStatus.totalStudyTimes', card_details_session[current_card_info_index].studyStatus.totalStudyTimes)
   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
   card_details_session[current_card_info_index].studyStatus.studyTimesInSession += 1;
   
@@ -80,6 +81,7 @@ const calculatePassMoveFinish = (interval, selection, current_card_info_index, t
 
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+  console.log('card_details_session[current_card_info_index].studyStatus',card_details_session[current_card_info_index].studyStatus)
   
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
@@ -100,8 +102,7 @@ const calculateHoldCompletedRestore = (selection, current_card_info_index, timer
   card_details_session[current_card_info_index].studyStatus.statusCurrent = selection;
   card_details_session[current_card_info_index].studyStatus.needStudyTime = null;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
-  card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
-  card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
+  card_details_session[current_card_info_index].studyStatus.recentSelection = selection;  
   if (card_details_session[current_card_info_index].studyStatus.totalStayHour == null) {
     card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(timer);
   } else {
@@ -119,7 +120,6 @@ const calculateHoldCompletedRestore = (selection, current_card_info_index, timer
 //   //학습정보 업데이트
 //   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
 //   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
-//   card_details_session[current_card_info_index].studyStatus.recentStayHour = new Date(timer);
 //   if (card_details_session[current_card_info_index].studyStatus.totalStayHour == null) {
 //     card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(timer);
 //   } else {
@@ -129,6 +129,7 @@ const calculateHoldCompletedRestore = (selection, current_card_info_index, timer
 //   return card_details_session;
 // };
 exports.calculateStudyStatus = (interval, selection, current_card_info_index, timer, levelConfigs) => {  
+  console.log('selection', selection)
   switch (selection) {
     case "diffi1":
     case "diffi2":
@@ -149,11 +150,7 @@ exports.calculateStudyStatus = (interval, selection, current_card_info_index, ti
       card_details_session = calculateHoldCompletedRestore(selection, current_card_info_index, timer);
       break;
     case "pass":
-        card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer);
-      break;
     case "move":
-        card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer);
-      break;
     case "finish":
         card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer);
       break;

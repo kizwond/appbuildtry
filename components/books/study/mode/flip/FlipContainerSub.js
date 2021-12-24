@@ -105,8 +105,8 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null;
   // 일단 커런트레벨 관련 변수를 리셋해보자
-  card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = 0
-  card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = 0
+  card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = new Date(0)
+  card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = new Date(0)
   card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 0
   // 리셋 완료
   

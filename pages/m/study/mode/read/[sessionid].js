@@ -1310,26 +1310,26 @@ const ReadMode = () => {
     elem.innerHTML = replaced;
   };
   if (!ISSERVER) {
-    document.addEventListener("selectionchange", () => {
-      // console.log(document.getSelection());
-      sessionStorage.setItem("selectionText", document.getSelection().anchorNode.data);
-      var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
-      var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
-      var parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.attributes;
+    window.addEventListener("selectionchange", () => {
+      console.log(window.getSelection());
+      sessionStorage.setItem("selectionText", window.getSelection().anchorNode.data);
+      var parentNode = window.getSelection().anchorNode.parentNode.parentNode.outerHTML;
+      var parentNodeInnerHtml = window.getSelection().anchorNode.parentNode.parentNode.innerHTML;
+      var parentNodeattributes = window.getSelection().anchorNode.parentNode.parentNode.attributes;
       if (parentNodeattributes.length > 0) {
-        var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[1].nodeValue;
-        var card_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[2].nodeValue;
+        var cardset_id = window.getSelection().anchorNode.parentNode.parentNode.attributes[1].nodeValue;
+        var card_id = window.getSelection().anchorNode.parentNode.parentNode.attributes[2].nodeValue;
       }
       // console.log(parentNodeInnerHtml);
       var parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
       if (parentId === null) {
-        parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
-        parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
-        parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes;
+        parentNode = window.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
+        parentNodeInnerHtml = window.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
+        parentNodeattributes = window.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes;
         if (parentNodeattributes.length > 0) {
           // console.log(parentNodeattributes);
-          var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
-          var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
+          var cardset_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
+          var card_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
         }
         parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
         // console.log(parentId);
@@ -1339,13 +1339,13 @@ const ReadMode = () => {
           sessionStorage.setItem("selectionTextCardSetId", cardset_id);
           sessionStorage.setItem("selectionTextCardId", card_id);
         } else {
-          parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
-          parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
-          parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes;
+          parentNode = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+          parentNodeInnerHtml = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+          parentNodeattributes = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes;
         if (parentNodeattributes.length > 0) {
           // console.log(parentNodeattributes);
-          var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
-          var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
+          var cardset_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
+          var card_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
         }
           parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
           // console.log(parentId);

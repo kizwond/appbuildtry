@@ -629,29 +629,18 @@ class Container extends Component {
     sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
   };
   generateOnFinishStudyStatus = () => {
-    const card_seq = sessionStorage.getItem("card_seq");
+    const current_card_info_index = sessionStorage.getItem("card_seq");
 
     const timer = this.state.time;
     const now = new Date();
 
-    const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    console.log("card_details_session", card_details_session);
-
-    //학습정보 업데이트
-    card_details_session[card_seq].studyStatus.recentSelectTime = now;
-    card_details_session[card_seq].studyStatus.recentSelection = "finish";
-    card_details_session[card_seq].studyStatus.recentStayHour = new Date(timer);
-    if (card_details_session[card_seq].studyStatus.totalStayHour == null) {
-      card_details_session[card_seq].studyStatus.totalStayHour = new Date(timer);
-    } else {
-      card_details_session[card_seq].studyStatus.totalStayHour = new Date(Date.parse(card_details_session[card_seq].studyStatus.totalStayHour) + timer);
-    }
+    const card_details_session = calculateStudyStatus(null, "finish", current_card_info_index, timer);
 
     //업데이트된 학습정보 세션스토리지에 다시 저장
     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
 
     //서버에 보내기 위한 학습정보 리스트 생성
-    this.generateStudyStatus(card_details_session, card_seq);
+    this.generateStudyStatus(card_details_session, current_card_info_index);
   };
   finishStudy = () => {
     console.log("finishStudy Clicked!!!");

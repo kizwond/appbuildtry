@@ -360,12 +360,16 @@ const ReadMode = () => {
               </div>
             </>
           );
-          const hideContents = (
-            <div>
-              <p>Content</p>
-              <p>Content</p>
-            </div>
-          );
+          const hideContents = content.content.hidden.map((item) => {
+            return (
+              <>
+                <div>
+                  
+                {item}
+                </div>
+              </>
+            );
+          });
           const highlightContents = (
             <div>
               <p>Content</p>
@@ -501,12 +505,18 @@ const ReadMode = () => {
                                 }}
                               >
                                 {/* <FroalaEditorView model={item} /> */}
-                                <div
-                                  id={`${content._id}face1row${index + 1}`}
-                                  cardsetid={content.card_info.cardset_id}
-                                  cardid={content.card_info.card_id}
-                                  dangerouslySetInnerHTML={{ __html: item }}
-                                ></div>
+                                {content.content.hidden.length > 0 ? (
+                                  <Alter content={content} item={item} index={index} />
+                                ) : (
+                                  <>
+                                    <div
+                                      id={`${content._id}face1row${index + 1}`}
+                                      cardsetid={content.card_info.cardset_id}
+                                      cardid={content.card_info.card_id}
+                                      dangerouslySetInnerHTML={{ __html: item }}
+                                    ></div>
+                                  </>
+                                )}
                               </div>
                             </>
                           ))}
@@ -1274,6 +1284,7 @@ const ReadMode = () => {
   const [cardset_addEffect] = useMutation(ForAddEffect, { onCompleted: showdataaftereffectfetch });
   function showdataaftereffectfetch(data) {
     console.log("data", data);
+    // setCardListStudying(data.showdataaftereffectfetch.cardlistStudying);
   }
 
   const cardsetAddEffect = useCallback(
@@ -1304,32 +1315,31 @@ const ReadMode = () => {
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
     const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
     // console.log(replaced);
-    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText)
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText);
     var elem = document.getElementById(parentIdOfSelection);
     // console.log(elem);
     elem.innerHTML = replaced;
   };
   if (!ISSERVER) {
-    window.addEventListener("selectionchange", () => {
-      console.log(window.getSelection());
-      sessionStorage.setItem("selectionText", window.getSelection().anchorNode.data);
-      var parentNode = window.getSelection().anchorNode.parentNode.parentNode.outerHTML;
-      var parentNodeInnerHtml = window.getSelection().anchorNode.parentNode.parentNode.innerHTML;
-      var parentNodeattributes = window.getSelection().anchorNode.parentNode.parentNode.attributes;
+    document.addEventListener("selectionchange", () => {
+      sessionStorage.setItem("selectionText", document.getSelection().toString());
+      var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
+      var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
+      var parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.attributes;
       if (parentNodeattributes.length > 0) {
-        var cardset_id = window.getSelection().anchorNode.parentNode.parentNode.attributes[1].nodeValue;
-        var card_id = window.getSelection().anchorNode.parentNode.parentNode.attributes[2].nodeValue;
+        var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[1].nodeValue;
+        var card_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[2].nodeValue;
       }
       // console.log(parentNodeInnerHtml);
       var parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
       if (parentId === null) {
-        parentNode = window.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
-        parentNodeInnerHtml = window.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
-        parentNodeattributes = window.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes;
+        parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
+        parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
+        parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes;
         if (parentNodeattributes.length > 0) {
           // console.log(parentNodeattributes);
-          var cardset_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
-          var card_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
+          var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
+          var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
         }
         parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
         // console.log(parentId);
@@ -1339,14 +1349,14 @@ const ReadMode = () => {
           sessionStorage.setItem("selectionTextCardSetId", cardset_id);
           sessionStorage.setItem("selectionTextCardId", card_id);
         } else {
-          parentNode = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
-          parentNodeInnerHtml = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
-          parentNodeattributes = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes;
-        if (parentNodeattributes.length > 0) {
-          // console.log(parentNodeattributes);
-          var cardset_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
-          var card_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
-        }
+          parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+          parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+          parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes;
+          if (parentNodeattributes.length > 0) {
+            // console.log(parentNodeattributes);
+            var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
+            var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
+          }
           parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
           // console.log(parentId);
           if (parentId !== null) {
@@ -1377,6 +1387,27 @@ const ReadMode = () => {
         </>
       )}
     </StudyLayout>
+  );
+};
+
+const Alter = ({ content, item, index }) => {
+  if (content.content.hidden.length > 0) {
+    console.log("here");
+    var altered = item;
+    content.content.hidden.map((element) => {
+      console.log(element);
+      altered = altered.replace(element, `<span style="visibility:hidden;">${element}</span>`);
+    });
+  }
+  return (
+    <>
+      <div
+        id={`${content._id}face1row${index + 1}`}
+        cardsetid={content.card_info.cardset_id}
+        cardid={content.card_info.card_id}
+        dangerouslySetInnerHTML={{ __html: altered }}
+      ></div>
+    </>
   );
 };
 

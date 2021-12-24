@@ -220,7 +220,7 @@ class Container extends Component {
       //남은카드랑 이래저래 해서 학습이 종료되었는지...
       const card_seq = sessionStorage.getItem("card_seq");
       if (card_details_session.length - 1 == Number(card_seq)) {
-        console.log("원래는 끝난거!!!")
+        console.log("원래는 끝난거!!!");
         this.finishStudy();
       } else {
         console.log(card_details_session.length - 1, "======", Number(card_seq));
@@ -281,31 +281,30 @@ class Container extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.props.contentsList !== prevProps.contentsList) {
       console.log(this.props.contentsList);
-      if(this.props.contentsList.length === 0){
-        alert("학습할 카드가 없습니다. 학습메인으로")
+      if (this.props.contentsList.length === 0) {
+        alert("학습할 카드가 없습니다. 학습메인으로");
         window.location.href = "/m/study";
       }
       if (this.props.contentsList.length > 0) {
-        if(this.state.firstTimeTts === true){
+        if (this.state.firstTimeTts === true) {
           console.log(this.props.contentsList);
           const show_contents = this.props.contentsList[0];
           console.log(show_contents);
           const face1_tmp = show_contents.face1[0].replace(/<\/?[^>]+(>|$)/g, "");
-          if(show_contents.face2[0]){
+          if (show_contents.face2[0]) {
             const face2_tmp = show_contents.face2[0].replace(/<\/?[^>]+(>|$)/g, "");
-            var face2 = face2_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
+            var face2 = face2_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
           }
-          
-          const face1 = face1_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
-          
+
+          const face1 = face1_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
+
           console.log(face1);
           console.log(face2);
-          this.speakText(face1, face2);
+          this.speakTextFirstCard(face1, face2);
           this.setState({
-            firstTimeTts : false
-          })
+            firstTimeTts: false,
+          });
         }
-        
       }
     }
     if (this.state.ttsOn) {
@@ -548,16 +547,20 @@ class Container extends Component {
 
     // this.generateCardSeq(card_details_session, now, current_card_id);
   };
-  speakText = (face1, face2) => {
+  speakTextFirstCard = (face1, face2) => {
     console.log("tts");
-    if(face2){
+    if (face2) {
       const hello = async () => this.speakTextFace1(face1);
       hello().then(this.speakTextFace2(face2));
     } else {
       const hello = async () => this.speakTextFace1(face1);
-      hello()
+      hello();
     }
-    
+  };
+  speakText = () => {
+    console.log("tts");
+    const hello = async () => this.speakTextFace1(face1);
+    hello().then(this.speakTextFace2(face2));
   };
   speakTextFace1 = (face1) => {
     if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
@@ -568,7 +571,7 @@ class Container extends Component {
       var text = face1;
     } else {
       const text_tmp = document.getElementById("face1_row1").innerText;
-      text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
+      text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
     }
     // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
 
@@ -597,7 +600,7 @@ class Container extends Component {
       var text = face2;
     } else {
       const text_tmp = document.getElementById("face2_row1").innerText;
-      text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "")
+      text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
     }
     // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
 

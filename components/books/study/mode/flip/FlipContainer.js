@@ -559,8 +559,8 @@ class Container extends Component {
   };
   speakText = () => {
     console.log("tts");
-    const hello = async () => this.speakTextFace1(face1);
-    hello().then(this.speakTextFace2(face2));
+    const hello = async () => this.speakTextFace1();
+    hello().then(this.speakTextFace2());
   };
   speakTextFace1 = (face1) => {
     if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
@@ -599,7 +599,12 @@ class Container extends Component {
     if (face2) {
       var text = face2;
     } else {
-      const text_tmp = document.getElementById("face2_row1").innerText;
+      const text_id = document.getElementById("face2_row1");
+      if(text_id === null){
+        return;
+      } else {
+        var text_tmp = document.getElementById("face2_row1").innerText;
+      }
       text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
     }
     // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화

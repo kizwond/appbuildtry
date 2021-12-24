@@ -364,7 +364,7 @@ const ReadMode = () => {
             return (
               <>
                 <div>
-                  
+
                 {item}
                 </div>
               </>
@@ -1321,7 +1321,8 @@ const ReadMode = () => {
     elem.innerHTML = replaced;
   };
   if (!ISSERVER) {
-    document.addEventListener("selectionchange", () => {
+    document.addEventListener("selectstart", () => {
+      console.log(document.getSelection())
       sessionStorage.setItem("selectionText", document.getSelection().toString());
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
       var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
@@ -1378,7 +1379,7 @@ const ReadMode = () => {
   return (
     <StudyLayout>
       <div style={{ width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
-        <div>{contents}</div>
+        <div id="contents">{contents}</div>
         <ContextMenu hide={hide} />
       </div>
       {data && (

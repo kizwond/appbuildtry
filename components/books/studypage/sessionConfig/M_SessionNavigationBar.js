@@ -1,5 +1,5 @@
 import { memo, useMemo } from "react";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import styled from "styled-components";
 
 const M_SessionNavigationBar = ({
@@ -65,7 +65,7 @@ const M_SessionNavigationBar = ({
             if (numberOfFilteredCards > 0) {
               submitCreateSessionConfigToServer();
             } else {
-              alert("현재 선택한 카드가 없습니다");
+              message.error("선택하신 카드가 없습니다.", 0.7);
             }
           }}
         >

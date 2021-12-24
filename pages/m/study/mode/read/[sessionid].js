@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { GetSession } from "../../../../../graphql/query/session";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 // import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
@@ -21,6 +21,7 @@ import {
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
 import { Button, Popover, Space } from "antd";
 import ContextMenu from "../../../../../components/books/study/mode/ContextMenu";
+import { ForAddEffect } from "../../../../../graphql/mutation/studyUtils";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -499,7 +500,13 @@ const ReadMode = () => {
                                   textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                 }}
                               >
-                                <FroalaEditorView model={item} />
+                                {/* <FroalaEditorView model={item} /> */}
+                                <div
+                                  id={`${content._id}face1row${index + 1}`}
+                                  cardsetid={content.card_info.cardset_id}
+                                  cardid={content.card_info.card_id}
+                                  dangerouslySetInnerHTML={{ __html: item }}
+                                ></div>
                               </div>
                             </>
                           ))}
@@ -559,7 +566,13 @@ const ReadMode = () => {
                                     textDecoration: `${row_font.annotation[index].underline === "on" ? "underline" : "none"}`,
                                   }}
                                 >
-                                  <FroalaEditorView model={item} />
+                                  {/* <FroalaEditorView model={item} /> */}
+                                  <div
+                                    id={`${content._id}face1annot${index + 1}`}
+                                    cardsetid={content.card_info.cardset_id}
+                                    cardid={content.card_info.card_id}
+                                    dangerouslySetInnerHTML={{ __html: item }}
+                                  ></div>
                                 </div>
                               </>
                             ))}
@@ -569,290 +582,7 @@ const ReadMode = () => {
                   </div>
                 </>
               )}
-              {/* {content.card_info.cardtype === "common" && (
-                <>
-                  {content._id === cardId && (
-                    <>
-                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
-                        <div style={{ height: "1.5rem" }}>
-                          <FlagFilled onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: `red` }} />
-                          {userFlag && (
-                            <>
-                              <span style={{ marginLeft: "5px" }}>
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "red" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "orange" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "yellow" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "green" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "blue" }} />
-                              </span>
-                            </>
-                          )}
-                        </div>
-                        <div style={{ lineHeight: "1.5rem" }}>
-                          <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
-                            {cardClickMenu && (
-                              <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
-                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
-                                  메모추가
-                                </Button>
-                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
-                                  새카드생성
-                                </Button>
-                              </div>
-                            )}
-                            <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  {content._id !== cardId && (
-                    <>
-                      <div style={{ padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
-                        <div style={{ backgroundColor: "red", height: "4px", width: "20px", borderRadius: "2px" }}> </div>
-                        <div></div>
-                      </div>
-                    </>
-                  )}
-                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
-                    <div onClick={() => onClickCard(content._id, "normal")}>
-                      {content.content.makerFlag.value !== null && flagArea}
-                      <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
-                        <div
-                          style={{
-                            width: "80%",
-                            backgroundColor: face_style[0].background.color,
-                            marginTop: face_style[0].outer_margin.top,
-                            marginBottom: face_style[0].outer_margin.bottom,
-                            marginLeft: face_style[0].outer_margin.left,
-                            marginRight: face_style[0].outer_margin.right,
-                            paddingTop: face_style[0].inner_padding.top,
-                            paddingBottom: face_style[0].inner_padding.bottom,
-                            paddingLeft: face_style[0].inner_padding.left,
-                            paddingRight: face_style[0].inner_padding.right,
-                            borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
-                            borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
-                            borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
-                            borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
-                          }}
-                        >
-                          {content_value.face1.map((item, index) => (
-                            <>
-                              <div
-                                style={{
-                                  backgroundColor: row_style.face1[index].background.color,
-                                  marginTop: row_style.face1[index].outer_margin.top,
-                                  marginBottom: row_style.face1[index].outer_margin.bottom,
-                                  marginLeft: row_style.face1[index].outer_margin.left,
-                                  marginRight: row_style.face1[index].outer_margin.right,
-                                  paddingTop: row_style.face1[index].inner_padding.top,
-                                  paddingBottom: row_style.face1[index].inner_padding.bottom,
-                                  paddingLeft: row_style.face1[index].inner_padding.left,
-                                  paddingRight: row_style.face1[index].inner_padding.right,
-                                  borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
-                                  borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
-                                  borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
-                                  borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
-                                  textAlign: row_font.face1[index].align,
-                                  fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
-                                  color: row_font.face1[index].color,
-                                  fontFamily: `${
-                                    row_font.face1[index].font === "고딕"
-                                      ? `NanumGothic`
-                                      : row_font.face1[index].font === "명조"
-                                      ? `NanumMyeongjo`
-                                      : row_font.face1[index].font === "바탕"
-                                      ? `Gowun Batang, sans-serif`
-                                      : row_font.face1[index].font === "돋움"
-                                      ? `Gowun Dodum, sans-serif`
-                                      : ""
-                                  } `,
-                                  fontStyle: `${row_font.face1[index].italic === "on" ? "italic" : "normal"}`,
-                                  fontSize: row_font.face1[index].size,
-                                  textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
-                                }}
-                              >
-                                <FroalaEditorView model={item} />
-                              </div>
-                            </>
-                          ))}
-                        </div>
-                        <div
-                          style={{
-                            width: "20%",
-                            backgroundColor: face_style[1].background.color,
-                            marginTop: face_style[1].outer_margin.top,
-                            marginBottom: face_style[1].outer_margin.bottom,
-                            marginLeft: face_style[1].outer_margin.left,
-                            marginRight: face_style[1].outer_margin.right,
-                            paddingTop: face_style[1].inner_padding.top,
-                            paddingBottom: face_style[1].inner_padding.bottom,
-                            paddingLeft: face_style[1].inner_padding.left,
-                            paddingRight: face_style[1].inner_padding.right,
-                            borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
-                            borderBottom: `${face_style[1].border.bottom.thickness}px ${face_style[1].border.bottom.bordertype} ${face_style[1].border.bottom.color}`,
-                            borderLeft: `${face_style[1].border.left.thickness}px ${face_style[1].border.left.bordertype} ${face_style[1].border.left.color}`,
-                            borderRight: `${face_style[1].border.right.thickness}px ${face_style[1].border.right.bordertype} ${face_style[1].border.right.color}`,
-                          }}
-                        >
-                          {content_value.annotation.length > 0 &&
-                            content_value.annotation.map((item, index) => (
-                              <>
-                                <div
-                                  style={{
-                                    backgroundColor: row_style.annotation[index].background.color,
-                                    marginTop: row_style.annotation[index].outer_margin.top,
-                                    marginBottom: row_style.annotation[index].outer_margin.bottom,
-                                    marginLeft: row_style.annotation[index].outer_margin.left,
-                                    marginRight: row_style.annotation[index].outer_margin.right,
-                                    paddingTop: row_style.annotation[index].inner_padding.top,
-                                    paddingBottom: row_style.annotation[index].inner_padding.bottom,
-                                    paddingLeft: row_style.annotation[index].inner_padding.left,
-                                    paddingRight: row_style.annotation[index].inner_padding.right,
-                                    borderTop: `${row_style.annotation[index].border.top.thickness}px ${row_style.annotation[index].border.top.bordertype} ${row_style.annotation[index].border.top.color}`,
-                                    borderBottom: `${row_style.annotation[index].border.bottom.thickness}px ${row_style.annotation[index].border.bottom.bordertype} ${row_style.annotation[index].border.bottom.color}`,
-                                    borderLeft: `${row_style.annotation[index].border.left.thickness}px ${row_style.annotation[index].border.left.bordertype} ${row_style.annotation[index].border.left.color}`,
-                                    borderRight: `${row_style.annotation[index].border.right.thickness}px ${row_style.annotation[index].border.right.bordertype} ${row_style.annotation[index].border.right.color}`,
-                                    textAlign: row_font.annotation[index].align,
-                                    fontWeight: `${row_font.annotation[index].bold === "on" ? 700 : 400}`,
-                                    color: row_font.annotation[index].color,
-                                    fontFamily: `${
-                                      row_font.annotation[index].font === "고딕"
-                                        ? `NanumGothic`
-                                        : row_font.annotation[index].font === "명조"
-                                        ? `NanumMyeongjo`
-                                        : row_font.annotation[index].font === "바탕"
-                                        ? `Gowun Batang, sans-serif`
-                                        : row_font.annotation[index].font === "돋움"
-                                        ? `Gowun Dodum, sans-serif`
-                                        : ""
-                                    } `,
-                                    fontStyle: `${row_font.annotation[index].italic === "on" ? "italic" : "normal"}`,
-                                    fontSize: row_font.annotation[index].size,
-                                    textDecoration: `${row_font.annotation[index].underline === "on" ? "underline" : "none"}`,
-                                  }}
-                                >
-                                  <FroalaEditorView model={item} />
-                                </div>
-                              </>
-                            ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )} */}
-              {/* {content.card_info.cardtype === "subject" && (
-                <>
-                  {content._id === cardId && (
-                    <>
-                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
-                        <div style={{ height: "1.5rem" }}>
-                          <FlagFilled onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: `red` }} />
-                          {userFlag && (
-                            <>
-                              <span style={{ marginLeft: "5px" }}>
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "red" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "orange" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "yellow" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "green" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "blue" }} />
-                              </span>
-                            </>
-                          )}
-                        </div>
-                        <div style={{ lineHeight: "1.5rem" }}>
-                          <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
-                            {cardClickMenu && (
-                              <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
-                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
-                                  메모추가
-                                </Button>
-                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "5px" }}>
-                                  새카드생성
-                                </Button>
-                              </div>
-                            )}
-                            <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  {content._id !== cardId && (
-                    <>
-                      <div style={{ padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
-                        <div style={{ backgroundColor: "red", height: "4px", width: "20px", borderRadius: "2px" }}> </div>
-                        <div></div>
-                      </div>
-                    </>
-                  )}
-                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
-                    <div onClick={() => onClickCard(content._id, "normal")}>
-                    
-                      {content.content.makerFlag.value !== null && flagArea}
-                      <div
-                        style={{
-                          backgroundColor: face_style[0].background.color,
-                          marginTop: face_style[0].outer_margin.top,
-                          marginBottom: face_style[0].outer_margin.bottom,
-                          marginLeft: face_style[0].outer_margin.left,
-                          marginRight: face_style[0].outer_margin.right,
-                          paddingTop: face_style[0].inner_padding.top,
-                          paddingBottom: face_style[0].inner_padding.bottom,
-                          paddingLeft: face_style[0].inner_padding.left,
-                          paddingRight: face_style[0].inner_padding.right,
-                          borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
-                          borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
-                          borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
-                          borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
-                        }}
-                      >
-                        {content_value.face1.map((item, index) => (
-                          <>
-                            <div
-                              style={{
-                                backgroundColor: row_style.face1[index].background.color,
-                                marginTop: row_style.face1[index].outer_margin.top,
-                                marginBottom: row_style.face1[index].outer_margin.bottom,
-                                marginLeft: row_style.face1[index].outer_margin.left,
-                                marginRight: row_style.face1[index].outer_margin.right,
-                                paddingTop: row_style.face1[index].inner_padding.top,
-                                paddingBottom: row_style.face1[index].inner_padding.bottom,
-                                paddingLeft: row_style.face1[index].inner_padding.left,
-                                paddingRight: row_style.face1[index].inner_padding.right,
-                                borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
-                                borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
-                                borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
-                                borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
-                                textAlign: row_font.face1[index].align,
-                                fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
-                                color: row_font.face1[index].color,
-                                fontFamily: `${
-                                  row_font.face1[index].font === "고딕"
-                                    ? `NanumGothic`
-                                    : row_font.face1[index].font === "명조"
-                                    ? `NanumMyeongjo`
-                                    : row_font.face1[index].font === "바탕"
-                                    ? `Gowun Batang, sans-serif`
-                                    : row_font.face1[index].font === "돋움"
-                                    ? `Gowun Dodum, sans-serif`
-                                    : ""
-                                } `,
-                                fontStyle: `${row_font.face1[index].italic === "on" ? "italic" : "normal"}`,
-                                fontSize: row_font.face1[index].size,
-                                textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
-                              }}
-                            >
-                              <FroalaEditorView model={item} />
-                            </div>
-                          </>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )} */}
+
               {content.card_info.cardtype === "share" && (
                 <>
                   {content._id === cardId && (
@@ -1541,11 +1271,105 @@ const ReadMode = () => {
     setUserFlag(false);
   };
 
+  const [cardset_addEffect] = useMutation(ForAddEffect, { onCompleted: showdataaftereffectfetch });
+  function showdataaftereffectfetch(data) {
+    console.log("data", data);
+  }
+
+  const cardsetAddEffect = useCallback(
+    async (cardset_id, card_id, effectType, targetWord) => {
+      try {
+        await cardset_addEffect({
+          variables: {
+            forAddEffect: {
+              cardset_id,
+              card_id,
+              effectType,
+              targetWord,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_addEffect]
+  );
+
+  const hide = () => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    // console.log(replaced);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText)
+    var elem = document.getElementById(parentIdOfSelection);
+    // console.log(elem);
+    elem.innerHTML = replaced;
+  };
+  if (!ISSERVER) {
+    window.addEventListener("selectionchange", () => {
+      console.log(window.getSelection());
+      sessionStorage.setItem("selectionText", window.getSelection().anchorNode.data);
+      var parentNode = window.getSelection().anchorNode.parentNode.parentNode.outerHTML;
+      var parentNodeInnerHtml = window.getSelection().anchorNode.parentNode.parentNode.innerHTML;
+      var parentNodeattributes = window.getSelection().anchorNode.parentNode.parentNode.attributes;
+      if (parentNodeattributes.length > 0) {
+        var cardset_id = window.getSelection().anchorNode.parentNode.parentNode.attributes[1].nodeValue;
+        var card_id = window.getSelection().anchorNode.parentNode.parentNode.attributes[2].nodeValue;
+      }
+      // console.log(parentNodeInnerHtml);
+      var parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+      if (parentId === null) {
+        parentNode = window.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
+        parentNodeInnerHtml = window.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
+        parentNodeattributes = window.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes;
+        if (parentNodeattributes.length > 0) {
+          // console.log(parentNodeattributes);
+          var cardset_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
+          var card_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
+        }
+        parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+        // console.log(parentId);
+        if (parentId !== null) {
+          sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+          sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+          sessionStorage.setItem("selectionTextCardSetId", cardset_id);
+          sessionStorage.setItem("selectionTextCardId", card_id);
+        } else {
+          parentNode = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+          parentNodeInnerHtml = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+          parentNodeattributes = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes;
+        if (parentNodeattributes.length > 0) {
+          // console.log(parentNodeattributes);
+          var cardset_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
+          var card_id = window.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
+        }
+          parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+          // console.log(parentId);
+          if (parentId !== null) {
+            sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+            sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+            sessionStorage.setItem("selectionTextCardSetId", cardset_id);
+            sessionStorage.setItem("selectionTextCardId", card_id);
+          }
+        }
+      } else {
+        sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+        sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+        sessionStorage.setItem("selectionTextCardSetId", cardset_id);
+        sessionStorage.setItem("selectionTextCardId", card_id);
+      }
+    });
+  }
+
   return (
     <StudyLayout>
       <div style={{ width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
         <div>{contents}</div>
-        <ContextMenu />
+        <ContextMenu hide={hide} />
       </div>
       {data && (
         <>

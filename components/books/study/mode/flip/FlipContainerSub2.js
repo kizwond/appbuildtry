@@ -1,47 +1,37 @@
 
 
 
-exports.calculateNeedStudyTime = (recentKnowTime,currentLevElapsedTime, currentLevStudyTimes, levelConfigs) => {
+exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,currentLevElapsedTime, currentLevStudyTimes, levelConfigs) => {
     
     console.log(recentKnowTime,currentLevElapsedTime, currentLevStudyTimes, levelConfigs)
+    const {levelChanageSensitivity, reStudyRatio} = levelConfigs.restudy
+    const initialMaxLevel = 5
     const lev10StudyTimes = 10
     const levelCoverWidth = 5
     const studyTimesCoeff = Math.round(lev10StudyTimes / Math.pow(levelCoverWidth, 0.5)*1000)/1000
-    const {levelChanageSensitivity, reStudyRatio} = levelConfigs.restudy
-
-    if (recentKnowTime == null){
-        return {
-            levelCurrent : 1, 
-            needStudyTime : new Date()
-        }
+    const weightFromLevelCurrent = Math.round(Math.pow(Math.max(1-levelCurrent/100, 0), 2)/4 *1000)/1000
+    const averageElapsedTime = Math.round (currentLevElapsedTime / currentLevStudyTimes / 24 / 3600000 *1000 ) /1000
+    const gapBetweenLevelCurrentAndElapsedTime = Math.abs(levelCurrent - averageElapsedTime)
+    const factorAppliedGap = gapBetweenLevelCurrentAndElapsedTime * (1000-Math.pow(11-currentLevStudyTimes, 3)/1000)
+    const maxElapsedTime = Math.max(levelCurrent,averageElapsedTime )
+    let baseElapsedTime
+    if (currentLevStudyTimes == 1){
+        baseElapsedTime = Math.round(maxElapsedTime * ( 1+ weightFromLevelCurrent * levelChanageSensitivity) * 1000)/1000
+    } else {
+        baseElapsedTime = Math.round((maxElapsedTime-factorAppliedGap) * ( 1+ weightFromLevelCurrent * levelChanageSensitivity) * 1000)/1000
     }
 
+    // const calculate
 
-    return
-
-    // const thisTurnElapsedTime = new Date() - recentKnowTime
-    // const averageElapsedTimeByDay = Math.round((currentLevElapsedTime+thisTurnElapsedTime) / (currentLevStudyTimes+1) /3600000 *10000) /10000    
-
-    // const averageElapsedTimeStandardized = Math.round((Math.log2(averageElapsedTimeByDay/periodCoeff)+1)*100)/100    
-
-    // let retentionRate = Math.round((15+averageElapsedTimeStandardized*1-currentLevStudyTimes*1)/30*10000)/10000
-    // if (retentionRate < 0.001) { retentionRate = 0.001}
-    // if (retentionRate > 0.999) { retentionRate = 0.999}    
-
-    // let newLevel = Math.round((Math.log2(Math.log(0.8)*averageElapsedTimeByDay/periodCoeff/Math.log(retentionRate))+1)*10000)/10000
-    // // 한번에 알겠음 했는데 오히려 레벨이 떨어지는 경우
-    // if (currentLevStudyTimes == 1){
-    //     if (newLevel < levelCurrent){newLevel = levelCurrent}
-    // }
-    // if (newLevel < 0.1) { newLevel = 0.1}
-    // if (newLevel > 10) { newLevel = 10}    
-
-    // const pendingPeriod = Math.round(periodCoeff * Math.pow(2, newLevel-1) * Math.log(restudyRatio) / Math.log(0.8) * 3600000)    
-
-    // const needStudyTime = new Date (Date.now() + pendingPeriod)    
-
-    // return {newLevel, needStudyTime}
-
-
+    let levelCurrent, needStudyTime
+    if (recentKnowTime == null){
+        levelCurrent = Math.round(initialMaxLevel / currentLevStudyTimes * 1000) / 1000
+        needStudyTime =  Date.now() + Math.round(levelCurrent* (Math.pow(reStudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000 *1000 )/1000
+        return {levelCurrent, needStudyTime}
+    } else {
+        levelCurrent = Math.round((Math.pow(studyTimesCoeff,2)*baseElapsedTime)/(Math.pow(currentLevStudyTimes,2)+Math.pow(studyTimesCoeff,2))*1000)/1000
+        needStudyTime =  Date.now() + Math.round(levelCurrent* (Math.pow(reStudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000 *1000 )/1000
+        return {levelCurrent, needStudyTime}
+    }
 
 }

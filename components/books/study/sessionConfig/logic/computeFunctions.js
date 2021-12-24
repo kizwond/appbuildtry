@@ -146,6 +146,9 @@ export const computeNumberOfAllFilteredCards = ({
   todayMidnight.setDate(todayMidnight.getDate() + 1);
   todayMidnight.setHours(0, 0, 0, 0);
 
+  const flattenCheckedKeys = Object.keys(checkedKeys).flatMap(
+    (key) => checkedKeys[key]
+  );
   const {
     detailedOption: {
       needStudyTimeCondition,
@@ -158,6 +161,9 @@ export const computeNumberOfAllFilteredCards = ({
   const flattenCards = cardsets
     .flatMap((cardset) => cardset.cards)
     .filter((card) => {
+      const conditionOfCheckedIndexes = flattenCheckedKeys.includes(
+        card.card_info.index_id
+      );
       const conditionOfCardType = useCardtype.includes(card.card_info.cardtype);
       const conditionOfCardStatus = (() => {
         if (card.studyStatus.statusCurrent !== "ing") {
@@ -191,6 +197,7 @@ export const computeNumberOfAllFilteredCards = ({
       })();
 
       return (
+        conditionOfCheckedIndexes &&
         conditionOfCardType &&
         useStatus.includes(card.studyStatus.statusCurrent) &&
         conditionOfCardStatus

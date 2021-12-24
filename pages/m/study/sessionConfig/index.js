@@ -209,8 +209,8 @@ const StudySessionConfig = () => {
             submitCreateSessionConfigToServer={
               submitCreateSessionConfigToServer
             }
+            numberOfFilteredCards={numberOfFilteredCards}
           />
-
           <StyledForTabsOfBooks activatedComponent={activatedComponent}>
             <M_TabsOfBooksForInfromationTable
               bookData={bookData}

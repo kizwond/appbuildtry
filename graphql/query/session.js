@@ -107,30 +107,29 @@ export const  GetSession = gql`
           }
           studyStatus {
             statusOriginal
-            statusPrev
             levelOriginal
-            studyTimesInSession
             userFlagOriginal
             userFlagPrev
-            retentionRate
+            statusPrev
+            studyTimesInSession
             needStudyTimeTmp
             statusCurrent
-            recentKnowTime
-            recentStudyResult
-            recentExamResult
-            recentExamTime
-            recentStudyTime
             recentSelection
             recentSelectTime
-            needStudyTime
-            currentLevStudyTimes
-            currentLevElapsedTime
-            currentLevStudyHour
-            totalStudyTimes
-            totalExamTimes
-            recentStayHour
             totalStayHour
+            recentStudyResult
+            recentStudyTime
+            recentStudyHour
+            totalStudyTimes
+            recentKnowTime
+            needStudyTime
             levelCurrent
+            recentExamResult
+            recentExamTime
+            totalExamTimes
+            currentLevStudyTimes
+            currentLevStudyHour
+            currentLevElapsedTime
           }
         }
       }

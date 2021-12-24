@@ -23,15 +23,15 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,curre
 
     // const calculate
 
-    let levelCurrent, needStudyTime
+    let newLevel, needStudyTime
     if (recentKnowTime == null){
-        levelCurrent = Math.round(initialMaxLevel / currentLevStudyTimes * 1000) / 1000
+        newLevel = Math.round(initialMaxLevel / currentLevStudyTimes * 1000) / 1000
         needStudyTime =  Date.now() + Math.round(levelCurrent* (Math.pow(reStudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000 *1000 )/1000
-        return {levelCurrent, needStudyTime}
+        return {newLevel, needStudyTime}
     } else {
-        levelCurrent = Math.round((Math.pow(studyTimesCoeff,2)*baseElapsedTime)/(Math.pow(currentLevStudyTimes,2)+Math.pow(studyTimesCoeff,2))*1000)/1000
+        newLevel = Math.round((Math.pow(studyTimesCoeff,2)*baseElapsedTime)/(Math.pow(currentLevStudyTimes,2)+Math.pow(studyTimesCoeff,2))*1000)/1000
         needStudyTime =  Date.now() + Math.round(levelCurrent* (Math.pow(reStudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000 *1000 )/1000
-        return {levelCurrent, needStudyTime}
+        return {newLevel, needStudyTime}
     }
 
 }

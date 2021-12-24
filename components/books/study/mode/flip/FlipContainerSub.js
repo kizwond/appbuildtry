@@ -5,7 +5,7 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
 
-  card_details_session[current_card_info_index].studyStatus.statusPrev = statusCurrent;
+  card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
   card_details_session[current_card_info_index].studyStatus.statusCurrent = 'ing';
   
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
@@ -26,9 +26,9 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes += 1;
   
   let {levelCurrent, recentKnowTime,currentLevElapsedTime, currentLevStudyTimes}=card_details_session[current_card_info_index].studyStatus
-  let {levelCurrent, needStudyTime} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentKnowTime,currentLevElapsedTime, currentLevStudyTimes, levelConfigs)  
-  console.log('정상적으로 생성됐나?', levelCurrent, needStudyTime)  
-  card_details_session[current_card_info_index].studyStatus.levelCurrent = levelCurrent
+  let {newLevel, needStudyTime} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentKnowTime,currentLevElapsedTime, currentLevStudyTimes, levelConfigs)  
+  console.log('정상적으로 생성됐나?', newLevel, needStudyTime)  
+  card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
   card_details_session[current_card_info_index].studyStatus.recentKnowTime = now
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null;
@@ -47,7 +47,7 @@ const calculateNormalStudy = (interval, selection, current_card_info_index, time
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
 
-  card_details_session[current_card_info_index].studyStatus.statusPrev = statusCurrent;
+  card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
   card_details_session[current_card_info_index].studyStatus.statusCurrent = 'ing';
   
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;

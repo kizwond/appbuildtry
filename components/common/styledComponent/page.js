@@ -16,6 +16,12 @@ export const StyledFlexAllCenterDimension100Percent = styled.div`
   cursor: pointer;
 `;
 
+export const StyledFlexAllCenter = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const StyledFlexSpaceBetween = styled.div`
   display: flex;
   justify-content: space-between;

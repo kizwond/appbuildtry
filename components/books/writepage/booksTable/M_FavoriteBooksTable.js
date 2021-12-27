@@ -10,7 +10,7 @@ import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 import HideOrShowButton from "../../common/HideOrShowButton";
 import MoveToBookSetting from "../../common/MoveToBookSetting";
 import FavoriteBook from "../../common/FavoriteBook";
-import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
+import FavoriteBookOrderButton from "../../common/FavoriteBookOrderButton";
 import {
   StyledFlexAlignCenter,
   StyledFlexAllCenterDimension100Percent,
@@ -261,25 +261,10 @@ const FavoriteBooksTable = forwardRef(
         bordered={false}
         size="small"
         title={
-          <StyledFlexSpaceBetween>
-            <div onClick={() => setVisible((_prev) => !_prev)}>
-              <span
-                className="ForPageMainTitle"
-                style={{
-                  marginRight: "10px",
-                }}
-              >
-                즐겨찾기
-              </span>
-              <DoubleRightOutlined rotate={visible ? 270 : 90} />
-            </div>
-            <div>
-              <Space>
-                <CreateBookButton category={category} />
-                <CategorySettingButton category={category} ref={ref} />
-              </Space>
-            </div>
-          </StyledFlexSpaceBetween>
+          <Space onClick={() => setVisible((_prev) => !_prev)}>
+            <div className="ForPageMainTitle">즐겨찾기</div>
+            <DoubleRightOutlined rotate={visible ? 270 : 90} />
+          </Space>
         }
       >
         {visible && dataSource.length > 0 && (

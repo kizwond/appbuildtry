@@ -17,8 +17,6 @@ import { StyledRowMaxWidth } from "../../../components/common/styledComponent/pa
 const WriteMain = () => {
   const router = useRouter();
 
-  const newCateRef = useRef();
-
   const { loading, error, data } = useQuery(
     QUERY_USER_CATEGORIES_AND_USER_BOOKS,
     {
@@ -74,11 +72,7 @@ const WriteMain = () => {
             <FavoriteBooksTable category={category2} myBook={myBook2} />
           </Col>
           <Col span={24}>
-            <BooksTable
-              category={category2}
-              myBook={myBook2}
-              newCateId={newCateRef.current}
-            />
+            <BooksTable category={category2} myBook={myBook2} />
           </Col>
         </StyledRowMaxWidth>
       </Layout>

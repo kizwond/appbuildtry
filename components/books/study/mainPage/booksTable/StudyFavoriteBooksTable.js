@@ -1,35 +1,38 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 import moment from "moment";
 
-import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from "antd";
+import { Table, Card, Space, Drawer, Checkbox, Popover } from "antd";
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
 import HideOrShowButton from "../../../common/HideOrShowButton";
 import MoveToBookSetting from "../../../common/MoveToBookSetting";
 import FavoriteBook from "../../../common/FavoriteBook";
-import FavoriteBookOrderButton from "../../../writepage/booksTable/FavoriteBookOrderButton";
-import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import FavoriteBookOrderButton from "../../../common/FavoriteBookOrderButton";
+import {
+  StyledFlexAlignCenter,
+  StyledFlexAllCenter,
+  StyledFlexAllCenterDimension100Percent,
+  StyledFlexSpaceBetween,
+} from "../../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledProgress } from "../../../../common/styledComponent/StyledProgress";
 import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
-import { StyledFlexAllCenterDimension100Percent } from "../../../../common/styledComponent/page";
 
-const StudyFavoriteBooksTable = ({
+const M_StudyFavoriteBooksTable = ({
   category,
   myBook,
   selectedBooks,
   changeSelectedBooks,
+  isFoldedMenu,
+  changeFoldedMenu,
 }) => {
   const [mounted, setMounted] = useState(false);
-  const [isFoldedMenu, setIsFoldedMenu] = useState();
   const [visible, setVisible] = useState(true);
-
-  const changeFoldedMenu = useCallback((_id) => {
-    setIsFoldedMenu(_id);
-  }, []);
-  console.log("마운트 윗 코드");
+  const checkRef = useRef({});
 
   useEffect(() => {
     setMounted(true);
@@ -39,12 +42,10 @@ const StudyFavoriteBooksTable = ({
     return null;
   }
 
-  console.log("마운트 아래 코드");
-
-  const studyLikedBooksList = myBook.filter(
+  const likedBooksList = myBook.filter(
     (_book) => _book.mybook_info.isStudyLike
   );
-  const sortedBook = studyLikedBooksList.sort(
+  const sortedBook = likedBooksList.sort(
     (book_A, book_B) =>
       book_A.mybook_info.seqInStudyLike - book_B.mybook_info.seqInStudyLike
   );
@@ -60,7 +61,7 @@ const StudyFavoriteBooksTable = ({
         (_cate) => _cate._id === _book.mybook_info.mybookcate_id
       ).name,
       isFirstBook: _index === 0,
-      isLastBook: studyLikedBooksList.length === _index + 1,
+      isLastBook: likedBooksList.length === _index + 1,
       key: _book._id,
       _id: _book._id,
       aboveAndBelowBooks: {
@@ -84,7 +85,7 @@ const StudyFavoriteBooksTable = ({
     {
       title: "카테고리",
       key: "categoryName",
-      className: "TableGroupingColumn",
+      className: "TableFirstColumn",
       align: "center",
       width: 50,
       dataIndex: "categoryName",
@@ -96,7 +97,7 @@ const StudyFavoriteBooksTable = ({
       title: "책 제목",
       key: "title",
       dataIndex: "title",
-      className: "TableFirstColumn",
+      className: "TableMiddleColumn",
       align: "center",
       width: 95,
       render: (value, _record, index) => {
@@ -106,14 +107,15 @@ const StudyFavoriteBooksTable = ({
 
         return (
           <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
+            onClick={() => {
+              checkRef.current[_record.key].props.onChange();
             }}
+            style={{ cursor: "pointer", display: "flex" }}
           >
-            <Space>
+            <StyledFlexAlignCenter>
+              <StyledBookTypeDiv booktype={_record.type} />
               <Checkbox
+                ref={(ref) => (checkRef.current[_record.key] = ref)}
                 checked={isSelected}
                 onChange={() => {
                   if (isSelected) {
@@ -131,81 +133,87 @@ const StudyFavoriteBooksTable = ({
                   }
                 }}
               />
-              <div>
-                <StyledBookTypeDiv booktype={_record.type} />
-                {value}
-              </div>
-            </Space>
+            </StyledFlexAlignCenter>
+            <DoubleLinesEllipsisContainer>{value}</DoubleLinesEllipsisContainer>
           </div>
         );
       },
     },
     {
-      title: (
-        <>
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            카드 수
-          </div>
-          <div
-            style={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            (읽기/뒤집기)
-          </div>
-        </>
-      ),
+      title: "카드수",
       key: "total",
-      align: "center",
       dataIndex: "total",
-      className: "TableMiddleColumn",
-      ellipsis: true,
-      width: 70,
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 26,
       render: (_value, _record) => (
-        <StyledFlexAllCenterDimension100Percent>
-          {_value}
-        </StyledFlexAllCenterDimension100Percent>
+        <div style={{ width: "100%" }}>
+          <Popover
+            arrowPointAtCenter
+            content={
+              <>
+                <StyledFlexSpaceBetween>
+                  <div>읽기카드:</div>
+                  <div>{_record.read}</div>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
+                  <div>뒤집기카드:</div>
+                  <div>{_record.flip}</div>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
+                  <div>목차카드:</div>
+                  <div>수정必</div>
+                </StyledFlexSpaceBetween>
+                <StyledFlexSpaceBetween>
+                  <div>일반카드:</div>
+                  <div>수정必</div>
+                </StyledFlexSpaceBetween>
+              </>
+            }
+            trigger="click"
+            overlayClassName="M-Popover-NumberOfCards"
+          >
+            <StyledFlexAllCenterDimension100Percent>
+              {_value}
+            </StyledFlexAllCenterDimension100Percent>
+          </Popover>
+        </div>
       ),
     },
+
     {
-      title: "수정일",
-      key: "timeModify",
+      title: "최근학습일",
+      key: "timeStudy",
+      dataIndex: "timeStudy",
       align: "center",
-      dataIndex: "timeModify",
       className: "TableMiddleColumn",
       width: 45,
       render: (_value, _record) => {
         const newDate = new Date(Number(_value));
         const DateString = moment(newDate).format("YY.MM.DD");
-
-        return <div>{_value === null ? "-" : DateString}</div>;
+        return (
+          <StyledFlexAllCenter>
+            {_value === null ? "-" : DateString}
+          </StyledFlexAllCenter>
+        );
       },
     },
     {
       title: "진도율",
       key: "timeModify",
-      align: "center",
       dataIndex: "timeModify",
-      className: "TableMiddleColumn",
+      className: "TableMiddleColumn TextAlignCenterColumn",
+      align: "center",
       width: 60,
       render: (_value, _record) => (
-        <div style={{ paddingLeft: "5px", paddingRight: "5px" }}>
+        <div>
           {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
           {_record.total === 0 ? (
             "-"
           ) : (
             <StyledProgress
+              booktype={_record.type}
               percent={_record.accuLevel / _record.total}
-              trailColor="#bbbbbb"
-              strokeWidth={13}
             />
           )}
         </div>
@@ -216,7 +224,7 @@ const StudyFavoriteBooksTable = ({
       dataIndex: "seqInCategory",
       className: "TableLastColumn",
       align: "right",
-      width: 35,
+      width: 20,
       render: (value, _record, index) => (
         <div
           style={{
@@ -264,20 +272,23 @@ const StudyFavoriteBooksTable = ({
                 _record={_record}
                 tableType="study"
                 changeFoldedMenu={changeFoldedMenu}
+                isPc
               />{" "}
               |
               <FavoriteBook
                 record={_record}
                 changeFoldedMenu={changeFoldedMenu}
                 tableType="study"
+                isPc
               />{" "}
               |
               <HideOrShowButton
                 record={_record}
                 changeFoldedMenu={changeFoldedMenu}
+                isPc
               />{" "}
               |
-              <MoveToBookSetting mybook_id={_record._id} />
+              <MoveToBookSetting mybook_id={_record._id} isPc />
             </Space>
             <div
               className="PushCustomCircleButton"
@@ -292,26 +303,16 @@ const StudyFavoriteBooksTable = ({
       ),
     },
   ];
-
   return (
     <StyledCard
+      isvisible={visible ? "true" : "false"}
       bordered={false}
       size="small"
       title={
-        <div>
-          <span
-            style={{
-              marginRight: "30px",
-              fontSize: "1rem",
-              fontWeight: "bold",
-            }}
-          >
-            즐겨찾기
-          </span>
-          <Button onClick={() => setVisible((_prev) => !_prev)} size="small">
-            {visible ? "접기" : "펼치기"}
-          </Button>
-        </div>
+        <Space onClick={() => setVisible((_prev) => !_prev)}>
+          <div className="ForPageMainTitle">즐겨찾기</div>
+          <DoubleRightOutlined rotate={visible ? 270 : 90} />
+        </Space>
       }
     >
       {visible && dataSource.length > 0 && (
@@ -329,13 +330,24 @@ const StudyFavoriteBooksTable = ({
     </StyledCard>
   );
 };
-
-export default StudyFavoriteBooksTable;
+export default M_StudyFavoriteBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
-  & .ant-card-body * {
-    font-size: 1rem;
+
+  & .ant-card-body {
+    padding: ${(props) =>
+      props.isvisible === "true"
+        ? "0px 8px 12px 8px"
+        : "0px 8px 0px 8px !important"};
+    & * {
+      font-size: 1rem;
+    }
+  }
+
+  /* 체크박스 오른쪽 여백 */
+  & .ant-checkbox-wrapper {
+    margin-right: 3px;
   }
 
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
@@ -345,20 +357,6 @@ const StyledCard = styled(Card)`
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
-  & .anticon-double-right > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-
-  & .anticon-double-left > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
-    color: #fff;
   }
 
   & .HandleOnOffShow > span {

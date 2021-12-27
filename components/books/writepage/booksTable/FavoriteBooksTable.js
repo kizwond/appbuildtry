@@ -2,22 +2,24 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "../../../../node_modules/moment/moment";
+import moment from "moment";
 
-import { Table, Button, Card, Tooltip, Space, Drawer } from "antd";
+import { Table, Button, Card, Space, Drawer } from "antd";
 import {
   DollarCircleFilled,
   DoubleLeftOutlined,
   DoubleRightOutlined,
 } from "@ant-design/icons";
 
-import HideOrShowButton from "../../common/HideOrShowButton";
-import MoveToBookSetting from "../../common/MoveToBookSetting";
-import FavoriteBook from "../../common/FavoriteBook";
-import FavoriteBookOrderButton from "./FavoriteBookOrderButton";
-import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import WriteHistoryGraphBarComponent /*--------*/ from "./WriteHistoryGraphBarComponent";
+
+import HideOrShowButton /*---------------------*/ from "../../common/HideOrShowButton";
+import MoveToBookSetting /*--------------------*/ from "../../common/MoveToBookSetting";
+import FavoriteBook /*-------------------------*/ from "../../common/FavoriteBook";
+import FavoriteBookOrderButton /*--------------*/ from "../../common/FavoriteBookOrderButton";
+
+import DoubleLinesEllipsisContainer /*---------*/ from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledFlexAllCenterDimension100Percent } from "../../../common/styledComponent/page";
-import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 
 const FavoriteBooksTable = ({ category, myBook }) => {
   const [mounted, setMounted] = useState(false);

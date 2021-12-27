@@ -17,7 +17,7 @@ const FavoriteBook = ({ record, changeFoldedMenu, tableType }) => {
         changeFoldedMenu("");
         console.log("책 즐겨찾기 설정 후 받은 데이터", received_data);
       } else if (received_data.mybook_setLike.status === "401") {
-        router.push("/m/account/login");
+        router.push(isPc ? "/account/login" : "/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }

@@ -1,11 +1,5 @@
 import { Tag } from "antd";
-import {
-  ArrowsAltOutlined,
-  DoubleRightOutlined,
-  ExpandAltOutlined,
-  ShrinkOutlined,
-  VerticalAlignBottomOutlined,
-} from "@ant-design/icons";
+import { DoubleRightOutlined } from "@ant-design/icons";
 import _ from "lodash";
 import { StyledFlexAlignCenter } from "../../common/styledComponent/page";
 import styled from "styled-components";

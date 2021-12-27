@@ -8,8 +8,8 @@ import styled from "styled-components";
 import { Space, Col, Button } from "antd";
 import Layout from "../../../components/layout/Layout";
 import CategorySettingButton from "../../../components/books/writepage/categorySetting/CategorySettingButton";
-import StudyBooksTable from "../../../components/books/study/index/booksTable/StudyBooksTable";
-import StudyFavoriteBooksTable from "../../../components/books/study/index/booksTable/StudyFavoriteBooksTable";
+import StudyBooksTable from "../../../components/books/study/mainPage/booksTable/StudyBooksTable";
+import StudyFavoriteBooksTable from "../../../components/books/study/mainPage/booksTable/StudyFavoriteBooksTable";
 import { StyledRowMaxWidth } from "../../../components/common/styledComponent/page";
 import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
 

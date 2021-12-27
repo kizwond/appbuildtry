@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "../../../../node_modules/moment/moment";
+import moment from "moment";
 
 import { Table, Card, Space, Drawer } from "antd";
 import {
@@ -11,21 +11,20 @@ import {
   DoubleRightOutlined,
 } from "@ant-design/icons";
 
+import WriteHistoryGraphBarComponent /*--------*/ from "./WriteHistoryGraphBarComponent";
+
+import HideOrShowButton /*---------------------*/ from "../../common/HideOrShowButton";
+import MoveToBookSetting /*--------------------*/ from "../../common/MoveToBookSetting";
+import FavoriteBook /*-------------------------*/ from "../../common/FavoriteBook";
+import makeDataSource /*-----------------------*/ from "../../common/logic";
+
 import {
   StyledFlexAllCenterDimension100Percent,
   StyledTwoLinesEllipsis,
-} from "../../../common/styledComponent/page";
-import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+} from /*-------------------------------------------*/ "../../../common/styledComponent/page";
+import { StyledBookSettingBarDrawer } from /*-------*/ "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 
-import BookOrderButton from "../../common/BookOrderButton";
-import HideOrShowButton from "../../common/HideOrShowButton";
-import FavoriteBook from "../../common/FavoriteBook";
-import MoveToBookSetting from "../../common/MoveToBookSetting";
-
-import makeDataSource from "../../common/logic";
-import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
-
-const BooksTable = ({ category, myBook, newCateId }) => {
+const BooksTable = ({ category, myBook }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -49,11 +48,6 @@ const BooksTable = ({ category, myBook, newCateId }) => {
     },
     []
   );
-
-  useEffect(() => {
-    setExpandedRowKeys([...expandedRowKeys, `KEY:${newCateId}INDEX:0`]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newCateId]);
 
   useEffect(() => {
     setExpandedRowKeys(

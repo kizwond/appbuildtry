@@ -19,8 +19,6 @@ const M_WriteMain = () => {
     setIsFoldedMenu(_id);
   }, []);
 
-  const newCateRef = useRef();
-
   const { loading, error, data } = useQuery(
     QUERY_USER_CATEGORIES_AND_USER_BOOKS,
     {
@@ -63,7 +61,6 @@ const M_WriteMain = () => {
           <StyledRowMaxWidth>
             <Col span={24}>
               <M_FavoriteBooksTable
-                ref={(ref) => (newCateRef.current = ref)}
                 category={category2}
                 myBook={myBook2}
                 isFoldedMenu={isFoldedMenu}
@@ -72,9 +69,9 @@ const M_WriteMain = () => {
             </Col>
             <Col span={24}>
               <M_BooksTable
+                ref={(ref) => (newCateRef.current = ref)}
                 category={category2}
                 myBook={myBook2}
-                newCateId={newCateRef.current}
                 isFoldedMenu={isFoldedMenu}
                 changeFoldedMenu={changeFoldedMenu}
               />

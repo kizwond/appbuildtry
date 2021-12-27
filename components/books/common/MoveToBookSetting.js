@@ -10,7 +10,11 @@ const MoveToBookSetting = ({ mybook_id }) => {
     <div
       className="customCircleButton"
       onClick={() => {
-        router.push(`/m/mybooks/settings/${mybook_id}`);
+        router.push(
+          isPc
+            ? `/mybooks/settings/${mybook_id}`
+            : `/m/mybooks/settings/${mybook_id}`
+        );
       }}
     >
       <SettingOutlined />

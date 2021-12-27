@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "moment";
 
 import { Table, Card, Space, Drawer, Popover } from "antd";
 import {
@@ -27,17 +26,24 @@ import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
+import CreateBookButton from "../createBook/CreateBookButton";
+import CategorySettingButton from "../categorySetting/CategorySettingButton";
 
-const M_BooksTable = ({
-  category,
-  myBook,
-  newCateId,
-  isFoldedMenu,
-  changeFoldedMenu,
-}) => {
+const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
+
+  const [newCategoryId, setNewCategoryId] = useState(null);
+  const addNewCategoryIdOnExpandedRowKeys = useCallback((id) => {
+    setNewCategoryId(id);
+  }, []);
+  useEffect(() => {
+    if (newCategoryId !== null) {
+      setExpandedRowKeys([...expandedRowKeys, `KEY:${newCategoryId}INDEX:0`]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newCategoryId]);
 
   const router = useRouter();
 
@@ -54,11 +60,6 @@ const M_BooksTable = ({
     },
     []
   );
-
-  useEffect(() => {
-    setExpandedRowKeys([...expandedRowKeys, `KEY:${newCateId}INDEX:0`]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newCateId]);
 
   useEffect(() => {
     setExpandedRowKeys(
@@ -366,7 +367,18 @@ const M_BooksTable = ({
     <StyledCard
       bordered={false}
       size="small"
-      title={<div className="ForPageMainTitle">나의 책</div>}
+      title={
+        <Space>
+          <div className="ForPageMainTitle">나의책</div>
+          <CreateBookButton category={category} />
+          <CategorySettingButton
+            category={category}
+            addNewCategoryIdOnExpandedRowKeys={
+              addNewCategoryIdOnExpandedRowKeys
+            }
+          />
+        </Space>
+      }
     >
       <Table
         dataSource={dataSource}

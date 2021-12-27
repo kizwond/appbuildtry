@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 
 import M_Layout from "../../../components/layout/M_Layout";
-import M_StudyFavoriteBooksTable from "../../../components/books/study/index/booksTable/M_StudyFavoriteBooksTable";
-import M_StudyBooksTable from "../../../components/books/study/index/booksTable/M_StudyBooksTable";
+import M_StudyFavoriteBooksTable from "../../../components/books/study/mainPage/booksTable/M_StudyFavoriteBooksTable";
+import M_StudyBooksTable from "../../../components/books/study/mainPage/booksTable/M_StudyBooksTable";
 
 const Writeanother = () => {
   const router = useRouter();
@@ -17,8 +17,6 @@ const Writeanother = () => {
   const changeFoldedMenu = useCallback((_id) => {
     setIsFoldedMenu(_id);
   }, []);
-
-  const newCateRef = useRef();
 
   const [selectedBooks, setSelectedBooks] = useState([]);
 
@@ -95,7 +93,6 @@ const Writeanother = () => {
           <StyledRowMaxWidth>
             <div>
               <M_StudyFavoriteBooksTable
-                ref={(ref) => (newCateRef.current = ref)}
                 category={category2}
                 myBook={myBook2}
                 selectedBooks={selectedBooks}

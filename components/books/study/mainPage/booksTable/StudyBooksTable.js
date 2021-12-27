@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { Table, Card, Space, Drawer, Checkbox, Progress, Popover } from "antd";
+import { Table, Card, Space, Checkbox, Popover } from "antd";
 import {
   DoubleLeftOutlined,
   DoubleRightOutlined,
@@ -12,6 +12,7 @@ import {
 
 import {
   StyledFlexAlignCenter,
+  StyledFlexAllCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
 } from "../../../../common/styledComponent/page";
@@ -25,8 +26,10 @@ import HideOrShowButton from "../../../common/HideOrShowButton";
 import FavoriteBook from "../../../common/FavoriteBook";
 import makeDataSource from "../../../common/logic";
 import MoveToBookSetting from "../../../common/MoveToBookSetting";
+import moment from "moment";
+import CategorySettingButton from "../../../writepage/categorySetting/CategorySettingButton";
 
-const M_StudyBooksTable = ({
+const StudyBooksTable = ({
   category,
   myBook,
   selectedBooks,
@@ -37,6 +40,17 @@ const M_StudyBooksTable = ({
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
+
+  const [newCategoryId, setNewCategoryId] = useState(null);
+  const addNewCategoryIdOnExpandedRowKeys = useCallback((id) => {
+    setNewCategoryId(id);
+  }, []);
+  useEffect(() => {
+    if (newCategoryId !== null) {
+      setExpandedRowKeys([...expandedRowKeys, `KEY:${newCategoryId}INDEX:0`]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newCategoryId]);
 
   const checkRef = useRef({});
 
@@ -257,6 +271,35 @@ const M_StudyBooksTable = ({
     },
 
     {
+      title: "최근학습일",
+      key: "timeStudy",
+      dataIndex: "timeStudy",
+      align: "center",
+      className: "TableMiddleColumn",
+      width: 45,
+      render: (_value, _record) => {
+        const newDate = new Date(Number(_value));
+        const DateString = moment(newDate).format("YY.MM.DD");
+        const obj = {
+          children: (
+            <StyledFlexAllCenter>
+              {_value === null ? "-" : DateString}
+            </StyledFlexAllCenter>
+          ),
+          props: {
+            colSpan: 1,
+            rowSpan: 1,
+          },
+        };
+        if (getConditionValue(_record)) {
+          obj.props.colSpan = 0;
+        } else {
+          obj.props.colSpan = 1;
+        }
+        return obj;
+      },
+    },
+    {
       title: "진도율",
       key: "accuLevel",
       dataIndex: "accuLevel",
@@ -292,7 +335,6 @@ const M_StudyBooksTable = ({
       },
     },
     {
-      // title: "이동",
       key: "seqInCategory",
       dataIndex: "seqInCategory",
       className: "TableLastColumn",
@@ -346,20 +388,23 @@ const M_StudyBooksTable = ({
                   <BookOrderButton
                     _record={_record}
                     changeFoldedMenu={changeFoldedMenu}
+                    isPc
                   />{" "}
                   |
                   <FavoriteBook
                     record={_record}
                     changeFoldedMenu={changeFoldedMenu}
                     tableType="study"
+                    isPc
                   />{" "}
                   |
                   <HideOrShowButton
                     record={_record}
                     changeFoldedMenu={changeFoldedMenu}
+                    isPc
                   />{" "}
                   |
-                  <MoveToBookSetting mybook_id={_record._id} />
+                  <MoveToBookSetting mybook_id={_record._id} isPc />
                 </Space>
                 <div
                   className="PushCustomCircleButton"
@@ -388,7 +433,20 @@ const M_StudyBooksTable = ({
     <StyledCard
       bordered={false}
       size="small"
-      title={<div className="ForPageMainTitle">나의 책</div>}
+      // title={<div className="ForPageMainTitle">나의 책</div>}
+      title={
+        <Space>
+          <div className="ForPageMainTitle">나의책</div>
+          <div>
+            <CategorySettingButton
+              category={category}
+              addNewCategoryIdOnExpandedRowKeys={
+                addNewCategoryIdOnExpandedRowKeys
+              }
+            />
+          </div>
+        </Space>
+      }
     >
       <Table
         dataSource={dataSource}
@@ -397,9 +455,6 @@ const M_StudyBooksTable = ({
         size="small"
         rowKey={(record) => record.key}
         pagination={false}
-        // bordered
-        // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
-        // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
         rowClassName={(record, index) =>
           record.classType === "empty-category"
             ? "EmptyCategoryRow"
@@ -422,12 +477,6 @@ const M_StudyBooksTable = ({
             ? "EvenNumberRow"
             : "OddNumberRow"
         }
-        // rowSelection={{
-        //   hideSelectAll: true,
-        // }}
-        // scroll={{
-        //   y: 370,
-        // }}
         expandable={{
           expandedRowKeys,
           expandIcon: () => null,
@@ -437,7 +486,7 @@ const M_StudyBooksTable = ({
   );
 };
 
-export default M_StudyBooksTable;
+export default StudyBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */

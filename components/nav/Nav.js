@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { ShoppingCartOutlined, BellOutlined, UserOutlined} from "@ant-design/icons";
+import {
+  ShoppingCartOutlined,
+  BellOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { Drawer, Button } from "antd";
 import { useMutation } from "@apollo/client";
@@ -37,7 +41,14 @@ const Nav = () => {
           }}
         >
           <Link href="/">
-            <a style={{ marginRight: "30px", fontFamily: `Architects Daughter, cursive`, fontWeight: 900, color: fontColor }}>
+            <a
+              style={{
+                marginRight: "30px",
+                fontFamily: `Architects Daughter, cursive`,
+                fontWeight: 900,
+                color: fontColor,
+              }}
+            >
               {/* <Image src={profilePic} width="100px" height="50px" alt="logo" /> */}
               CogBook
             </a>
@@ -50,7 +61,7 @@ const Nav = () => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
-              <Link href="/books/studypage">
+              <Link href="/books/study">
                 <a style={linkStyle}>학습</a>
               </Link>
               <Link href="/books/writepage">
@@ -66,7 +77,12 @@ const Nav = () => {
             <div style={{ display: "flex", alignItems: "center" }}>
               {isLogged && (
                 <>
-                  <Button size="small" shape="round" style={{ fontSize: "0.75rem" }} onClick={() => onClickLogout()}>
+                  <Button
+                    size="small"
+                    shape="round"
+                    style={{ fontSize: "0.75rem" }}
+                    onClick={() => onClickLogout()}
+                  >
                     로그아웃
                   </Button>
                 </>

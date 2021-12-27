@@ -122,6 +122,7 @@ const StudySessionConfig = () => {
           data.session_createSession.sessions[0]._id
         );
         sessionStorage.setItem("study_mode", sessionConfig.studyMode);
+        sessionStorage.removeItem("cardListStudying");
         router.push(
           `/m/study/mode/${sessionConfig.studyMode}/${data.session_createSession.sessions[0]._id}`
         );

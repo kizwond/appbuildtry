@@ -3,10 +3,10 @@ import { useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import { MUTATION_CHANGE_BOOK_ORDER } from "../../../graphql/mutation/myBook";
 
-import { Space, Tooltip } from "antd";
+import { Space } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
-const BookOrderButton = ({ _record, changeFoldedMenu }) => {
+const BookOrderButton = ({ _record, changeFoldedMenu, isPc }) => {
   const router = useRouter();
   let timer;
   const [rePosition] = useMutation(MUTATION_CHANGE_BOOK_ORDER, {
@@ -18,7 +18,7 @@ const BookOrderButton = ({ _record, changeFoldedMenu }) => {
           changeFoldedMenu("");
         }, 300);
       } else if (received_data.mybook_modifySeq.status === "401") {
-        router.push("/account/login");
+        router.push(isPc ? "/account/login" : "/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }

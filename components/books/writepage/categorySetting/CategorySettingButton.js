@@ -4,7 +4,10 @@ import { StyledButtonForMainPage } from "../../../common/styledComponent/buttons
 import CategorySettingModal from "./CategorySettingModal";
 
 // eslint-disable-next-line react/display-name
-const CategorySettingButton = forwardRef(({ category }, ref) => {
+const CategorySettingButton = ({
+  category,
+  addNewCategoryIdOnExpandedRowKeys,
+}) => {
   const [visible, setVisible] = useState(false);
   const changeVisible = useCallback((_boolean) => {
     setVisible(_boolean);
@@ -21,12 +24,12 @@ const CategorySettingButton = forwardRef(({ category }, ref) => {
       </StyledButtonForMainPage>
       <CategorySettingModal
         visible={visible}
-        ref={ref}
+        addNewCategoryIdOnExpandedRowKeys={addNewCategoryIdOnExpandedRowKeys}
         changeVisible={changeVisible}
         category={category}
       />
     </>
   );
-});
+};
 
 export default CategorySettingButton;

@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { memo } from "react";
 import { useRouter } from "next/router";
-import { MUTATION_CHANGE_BOOK_ORDER } from "../../../../graphql/mutation/myBook";
+import { MUTATION_CHANGE_BOOK_ORDER } from "../../../graphql/mutation/myBook";
 
 import { Space } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";

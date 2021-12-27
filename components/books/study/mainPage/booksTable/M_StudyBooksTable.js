@@ -1,38 +1,56 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import moment from "moment";
 
-import { Table, Card, Space, Drawer, Checkbox, Progress } from "antd";
-import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import { Table, Card, Space, Checkbox, Popover } from "antd";
+import {
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  DownOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
 import {
+  StyledFlexAlignCenter,
   StyledFlexAllCenterDimension100Percent,
-  StyledTwoLinesEllipsis,
+  StyledFlexSpaceBetween,
 } from "../../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import { StyledProgress } from "../../../../common/styledComponent/StyledProgress";
+import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
+
 import BookOrderButton from "../../../common/BookOrderButton";
 import HideOrShowButton from "../../../common/HideOrShowButton";
 import FavoriteBook from "../../../common/FavoriteBook";
-import MoveToBookSetting from "../../../common/MoveToBookSetting";
 import makeDataSource from "../../../common/logic";
-import { StyledProgress } from "../../../../common/styledComponent/StyledProgress";
-import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import MoveToBookSetting from "../../../common/MoveToBookSetting";
+import CategorySettingButton from "../../../writepage/categorySetting/CategorySettingButton";
 
-const StudyBooksTable = ({
+const M_StudyBooksTable = ({
   category,
   myBook,
   selectedBooks,
   changeSelectedBooks,
+  isFoldedMenu,
+  changeFoldedMenu,
 }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
-  const [isFoldedMenu, setIsFoldedMenu] = useState();
 
-  const changeFoldedMenu = useCallback((_id) => {
-    setIsFoldedMenu(_id);
+  const checkRef = useRef({});
+
+  const [newCategoryId, setNewCategoryId] = useState(null);
+  const addNewCategoryIdOnExpandedRowKeys = useCallback((id) => {
+    setNewCategoryId(id);
   }, []);
+  useEffect(() => {
+    if (newCategoryId !== null) {
+      setExpandedRowKeys([...expandedRowKeys, `KEY:${newCategoryId}INDEX:0`]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newCategoryId]);
 
   const changeIsShowedHiddenBook = useCallback(
     (isShowedAllBooks, isShowedHiddenBook, id) => {
@@ -77,7 +95,9 @@ const StudyBooksTable = ({
         _record.relationship === "parent") ||
       _record.classType === "hiddenBar" ||
       _record.classType === "middle-hiddenBar" ||
-      _record.classType === "empty-category"
+      _record.classType === "empty-category" ||
+      _record.classType === "firstHiddenBar" ||
+      _record.classType === "OnlyShowHiddenBar"
     );
   };
 
@@ -91,7 +111,27 @@ const StudyBooksTable = ({
       dataIndex: "categoryName",
       render: (_value, _record) =>
         _record.relationship === "parent" ? (
-          <StyledTwoLinesEllipsis>{_value}</StyledTwoLinesEllipsis>
+          <StyledFlexAlignCenter
+            onClick={() => {
+              if (expandedRowKeys.includes(_record.key)) {
+                setExpandedRowKeys(
+                  expandedRowKeys.filter((key) => key !== _record.key)
+                );
+              }
+              if (!expandedRowKeys.includes(_record.key)) {
+                setExpandedRowKeys([...expandedRowKeys, _record.key]);
+              }
+            }}
+          >
+            {expandedRowKeys.includes(_record.key) ? (
+              <DownOutlined />
+            ) : (
+              <RightOutlined />
+            )}
+            <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>
+              {_value}
+            </DoubleLinesEllipsisContainer>
+          </StyledFlexAlignCenter>
         ) : null,
     },
     {
@@ -111,36 +151,56 @@ const StudyBooksTable = ({
               <div>빈 칸테고리</div>
             ) : _record.relationship === "parent" &&
               !expandedRowKeys.includes(_record.key) ? (
-              <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
+              <div
+                onClick={() => {
+                  if (expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys(
+                      expandedRowKeys.filter((key) => key !== _record.key)
+                    );
+                  }
+                  if (!expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys([...expandedRowKeys, _record.key]);
+                  }
+                }}
+              >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
             ) : _record.classType === "middle-hiddenBar" ||
-              _record.classType === "hiddenBar" ? (
-              <StyledTwoLinesEllipsis>{value}</StyledTwoLinesEllipsis>
+              _record.classType === "hiddenBar" ||
+              _record.classType === "OnlyShowHiddenBar" ||
+              _record.classType === "firstHiddenBar" ? (
+              value
             ) : (
-              <Space>
-                <Checkbox
-                  checked={isSelected}
-                  onChange={() => {
-                    if (isSelected) {
-                      changeSelectedBooks(
-                        selectedBooks.filter(
-                          (_book) => _book.book_id !== _record._id
-                        )
-                      );
-                    }
-                    if (!isSelected) {
-                      changeSelectedBooks([
-                        ...selectedBooks,
-                        { book_id: _record._id, book_title: _record.title },
-                      ]);
-                    }
-                  }}
-                />
-                <div>
+              <div
+                onClick={() => {
+                  checkRef.current[_record.key].props.onChange();
+                }}
+                style={{ cursor: "pointer", display: "flex" }}
+              >
+                <StyledFlexAlignCenter>
                   <StyledBookTypeDiv booktype={_record.type} />
-
-                  <StyledTwoLinesEllipsis>{value}</StyledTwoLinesEllipsis>
-                </div>
-              </Space>
+                  <Checkbox
+                    ref={(ref) => (checkRef.current[_record.key] = ref)}
+                    checked={isSelected}
+                    onChange={() => {
+                      if (isSelected) {
+                        changeSelectedBooks(
+                          selectedBooks.filter(
+                            (_book) => _book.book_id !== _record._id
+                          )
+                        );
+                      }
+                      if (!isSelected) {
+                        changeSelectedBooks([
+                          ...selectedBooks,
+                          { book_id: _record._id, book_title: _record.title },
+                        ]);
+                      }
+                    }}
+                  />
+                </StyledFlexAlignCenter>
+                <DoubleLinesEllipsisContainer>
+                  {value}
+                </DoubleLinesEllipsisContainer>
+              </div>
             ),
           props: {},
         };
@@ -153,24 +213,46 @@ const StudyBooksTable = ({
       },
     },
     {
-      title: (
-        <>
-          <div>카드 수</div>
-          <div>(읽기/뒤집기)</div>
-        </>
-      ),
+      title: "카드수",
       key: "total",
-      align: "center",
       dataIndex: "total",
-      className: "TableMiddleColumn",
-      ellipsis: true,
-      width: 70,
-      render: (_value, _record) => {
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 26,
+      render: (_value, _record, _index) => {
         const obj = {
           children: (
-            <StyledFlexAllCenterDimension100Percent>
-              {_value}
-            </StyledFlexAllCenterDimension100Percent>
+            <div style={{ width: "100%" }}>
+              <Popover
+                arrowPointAtCenter
+                content={
+                  <>
+                    <StyledFlexSpaceBetween>
+                      <div>읽기카드:</div>
+                      <div>{_record.read}</div>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
+                      <div>뒤집기카드:</div>
+                      <div>{_record.flip}</div>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
+                      <div>목차카드:</div>
+                      <div>수정必</div>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
+                      <div>일반카드:</div>
+                      <div>수정必</div>
+                    </StyledFlexSpaceBetween>
+                  </>
+                }
+                trigger="click"
+                overlayClassName="M-Popover-NumberOfCards"
+              >
+                <StyledFlexAllCenterDimension100Percent>
+                  {_value}
+                </StyledFlexAllCenterDimension100Percent>
+              </Popover>
+            </div>
           ),
           props: {
             colSpan: 1,
@@ -185,39 +267,15 @@ const StudyBooksTable = ({
         return obj;
       },
     },
-    {
-      title: "최근학습일",
-      key: "timeStudy",
-      dataIndex: "timeStudy",
-      align: "center",
-      className: "TableMiddleColumn",
-      width: 45,
-      render: (_value, _record) => {
-        const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format("YY.MM.DD");
-        const obj = {
-          children: <div>{_value === null ? "-" : DateString}</div>,
-          props: {
-            colSpan: 1,
-            rowSpan: 1,
-          },
-        };
-        if (getConditionValue(_record)) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
+
     {
       title: "진도율",
-      key: "timeModify",
-      dataIndex: "timeModify",
+      key: "accuLevel",
+      dataIndex: "accuLevel",
+      className: "TableMiddleColumn TextAlignCenterColumn",
       align: "center",
-      className: "TableMiddleColumn",
       width: 60,
-      render: (_value, _record) => {
+      render: (_value, _record, _index) => {
         const obj = {
           children: (
             <div>
@@ -226,9 +284,8 @@ const StudyBooksTable = ({
                 "-"
               ) : (
                 <StyledProgress
+                  booktype={_record.type}
                   percent={_record.accuLevel / _record.total}
-                  trailColor="#bbbbbb"
-                  strokeWidth={13}
                 />
               )}
             </div>
@@ -251,7 +308,7 @@ const StudyBooksTable = ({
       dataIndex: "seqInCategory",
       className: "TableLastColumn",
       align: "right",
-      width: 35,
+      width: 20,
       render: (value, _record, index) => {
         const obj = {
           children: (
@@ -318,7 +375,7 @@ const StudyBooksTable = ({
                 <div
                   className="PushCustomCircleButton"
                   onClick={() => {
-                    setIsFoldedMenu("");
+                    changeFoldedMenu("");
                   }}
                 >
                   <DoubleRightOutlined />
@@ -342,7 +399,17 @@ const StudyBooksTable = ({
     <StyledCard
       bordered={false}
       size="small"
-      title={<div className="ForPageMainTitle">나의 책</div>}
+      title={
+        <Space>
+          <div className="ForPageMainTitle">나의책</div>
+          <CategorySettingButton
+            category={category}
+            addNewCategoryIdOnExpandedRowKeys={
+              addNewCategoryIdOnExpandedRowKeys
+            }
+          />
+        </Space>
+      }
     >
       <Table
         dataSource={dataSource}
@@ -360,6 +427,10 @@ const StudyBooksTable = ({
             : !expandedRowKeys.includes(record.key) &&
               record.relationship === "parent"
             ? "FoldedCategoryRow"
+            : record.classType === "OnlyShowHiddenBar"
+            ? "OnlyShowHiddenBar"
+            : record.classType === "firstHiddenBar"
+            ? "FirstHiddenBar"
             : record.classType === "hiddenBar"
             ? "LastHiddenBarRow"
             : record.classType === "middle-hiddenBar"
@@ -380,30 +451,22 @@ const StudyBooksTable = ({
         // }}
         expandable={{
           expandedRowKeys,
-          // 아래 클래스이름 지정하는 것은 나중에 selected checkbox css 할 때 해보자
-          expandedRowClassName: (record, index, indent) => "",
-          onExpand: (ex, re) => {
-            if (!ex) {
-              setExpandedRowKeys(
-                expandedRowKeys.filter((key) => key !== re.key)
-              );
-            }
-            if (ex) {
-              setExpandedRowKeys([...expandedRowKeys, re.key]);
-            }
-          },
+          expandIcon: () => null,
         }}
       />
     </StyledCard>
   );
 };
-
-export default StudyBooksTable;
+export default M_StudyBooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
-  & .ant-card-body * {
-    font-size: 1rem;
+
+  & .ant-card-body {
+    padding: 0px 8px 12px 8px;
+    & * {
+      font-size: 1rem;
+    }
   }
 
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
@@ -411,22 +474,13 @@ const StyledCard = styled(Card)`
     margin-right: 2px;
   }
 
+  /* 체크박스 오른쪽 여백 */
+  & .ant-checkbox-wrapper {
+    margin-right: 3px;
+  }
+
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
-  & .anticon-double-right > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-
-  & .anticon-double-left > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
-    color: #fff;
   }
 
   & .HandleOnOffShow > span {

@@ -21,7 +21,7 @@ export const computeNumberOfCardsPerBook = ({
     return finalObj;
   }
 
-  console.log({ currentTime, todayMidnight });
+  console.log({ currentTime, todayMidnight: todayMidnight / 24 / 3600 });
   //  map 과 reduce 활용하여 카드 배열을  다음 키와 값을 가진 프로퍼티로 변환 (카드종류: 합계)
   const getNumberOfCards = (cards) =>
     cards
@@ -164,7 +164,7 @@ export const computeNumberOfAllFilteredCards = ({
 
   const flattenCards = cardsets
     .flatMap((cardset) => cardset.cards)
-    .filter((card) => {
+    .filter((card, i) => {
       const conditionOfCheckedIndexes = flattenCheckedKeys.includes(
         card.card_info.index_id
       );
@@ -176,13 +176,13 @@ export const computeNumberOfAllFilteredCards = ({
         if (needStudyTimeCondition === "all") {
           return useStatus.includes(card.studyStatus.statusCurrent);
         }
-        if (needStudyTimeCondition === "unitlNow") {
+        if (needStudyTimeCondition === "untilNow") {
           return (
             useStatus.includes(card.studyStatus.statusCurrent) &&
             Date.parse(card.studyStatus.needStudyTime) < currentTime
           );
         }
-        if (needStudyTimeCondition === "unitlToday") {
+        if (needStudyTimeCondition === "untilToday") {
           return (
             useStatus.includes(card.studyStatus.statusCurrent) &&
             Date.parse(card.studyStatus.needStudyTime) < todayMidnight
@@ -192,12 +192,12 @@ export const computeNumberOfAllFilteredCards = ({
           const needStudyTimePosition =
             (Date.parse(card.studyStatus.needStudyTime) - todayMidnight) /
             24 /
-            3600;
+            3600000;
 
           return (
             useStatus.includes(card.studyStatus.statusCurrent) &&
-            (needStudyTimePosition > needStudyTimeRange[0] ||
-              needStudyTimePosition < needStudyTimeRange[1])
+            needStudyTimePosition > needStudyTimeRange[0] - 1 &&
+            needStudyTimePosition < needStudyTimeRange[1]
           );
         }
       })();

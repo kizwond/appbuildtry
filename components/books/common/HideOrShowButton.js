@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { MUTATION_SET_MY_BOOK_HIDE_OR_SHOW } from "../../../graphql/mutation/myBook";
 
-const HideOrShowButton = ({ record, changeFoldedMenu }) => {
+const HideOrShowButton = ({ record, changeFoldedMenu, isPc }) => {
   const { _id, hideOrShow } = record;
   const isShowed = hideOrShow === "show";
 

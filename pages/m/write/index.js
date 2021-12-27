@@ -69,7 +69,6 @@ const M_WriteMain = () => {
             </Col>
             <Col span={24}>
               <M_BooksTable
-                ref={(ref) => (newCateRef.current = ref)}
                 category={category2}
                 myBook={myBook2}
                 isFoldedMenu={isFoldedMenu}

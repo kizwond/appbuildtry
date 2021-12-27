@@ -6,7 +6,7 @@ import { StarFilled, StarOutlined } from "@ant-design/icons";
 import { useMemo } from "react";
 import { MUTATION_SET_MY_BOOK_LIKE } from "../../../graphql/mutation/myBook";
 
-const FavoriteBook = ({ record, changeFoldedMenu, tableType }) => {
+const FavoriteBook = ({ record, changeFoldedMenu, tableType, isPc }) => {
   const { _id, isWriteLike, isStudyLike, studyLikeLength, writeLikeLength } =
     record;
 

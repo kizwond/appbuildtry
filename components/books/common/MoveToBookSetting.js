@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import { SettingOutlined } from "@ant-design/icons";
 
-const MoveToBookSetting = ({ mybook_id }) => {
+const MoveToBookSetting = ({ mybook_id, isPc }) => {
   const router = useRouter();
 
   return (

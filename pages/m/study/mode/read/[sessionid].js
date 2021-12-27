@@ -6,17 +6,31 @@ import dynamic from "next/dynamic";
 // import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
 import StudyLayout from "../../../../../components/layout/StudyLayout";
 import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../../../../graphql/query/card_contents";
+import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import {
   ControlOutlined,
   DashOutlined,
   FormOutlined,
   DeleteOutlined,
+  ProfileOutlined,
   FlagFilled,
   HeartFilled,
   StarFilled,
   CheckCircleFilled,
   PlusOutlined,
   MenuFoldOutlined,
+  CopyOutlined,
+  SearchOutlined,
+  HighlightOutlined,
+  MessageOutlined,
+  UnderlineOutlined,
+  TagOutlined,
+  PicRightOutlined,
+  PlusSquareOutlined,
+  QuestionCircleOutlined,
+  DragOutlined,
+  EyeInvisibleOutlined,
+  FlagOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
 import { Button, Popover, Space } from "antd";
@@ -35,7 +49,9 @@ const ReadMode = () => {
   const [contentsList, setContentsList] = useState([]);
   const [cardTypeSets, setCardTypeSets] = useState([]);
   const [cardId, setCardId] = useState("");
+  const [cardInfo, setCardInfo] = useState("");
   const [userFlag, setUserFlag] = useState();
+  const [userFlagDetails, setUserFlagDetails] = useState();
   const [cardClickMenu, setCardClickMenu] = useState(false);
 
   const ISSERVER = typeof window === "undefined";
@@ -81,14 +97,49 @@ const ReadMode = () => {
     console.log(data);
     setCardTypeSets(data.cardtypeset_getbymybookids.cardtypesets);
   }
+
+  //userflag update
+  const [cardset_updateUserFlag] = useMutation(MUTATION_UPDATE_USER_FLAG, { onCompleted: afterupdateuserflag });
+  function afterupdateuserflag(data) {
+    console.log("data", data);
+
+    //여기서 주대리가 작업을 도와야한다.
+  }
+
+  const updateUserFlag = useCallback(
+    async (cardset_id, card_id, flag) => {
+      try {
+        await cardset_updateUserFlag({
+          variables: {
+            forUpdateUserFlag: {
+              cardset_id,
+              card_id,
+              value: Number(flag),
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_updateUserFlag]
+  );
+
   useEffect(() => {
     if (data) {
       console.log("최초 리드모드 데이터 : ", data);
       console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
       console.log("카드리스트스터딩 :", data.session_getSession.sessions[0].cardlistStudying);
-      sessionStorage.setItem("cardListStudying", JSON.stringify(data.session_getSession.sessions[0].cardlistStudying));
-      setCardListStudying(data.session_getSession.sessions[0].cardlistStudying);
+      
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"))
+      if(cardListStudying) {
+        setCardListStudying(cardListStudying);
+      } else {
+        sessionStorage.setItem("cardListStudying", JSON.stringify(data.session_getSession.sessions[0].cardlistStudying));
+        setCardListStudying(data.session_getSession.sessions[0].cardlistStudying);
+      }
       setSessionScope(data.session_getSession.sessions[0].sessionScope);
+      setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);
       sessionStorage.setItem("card_seq", 0);
       sessionStorage.removeItem("cardlist_to_send");
       const now = new Date();
@@ -134,8 +185,10 @@ const ReadMode = () => {
     setCardClickMenu(false);
   }
 
-  function userFlagChange() {
+  function userFlagChange(flag) {
     console.log("userFlagChangeClicked!!!");
+    console.log(flag);
+    updateUserFlag(cardInfo.cardset_id, cardInfo.card_id, flag)
     setUserFlag(false);
   }
 
@@ -144,7 +197,47 @@ const ReadMode = () => {
     setCardClickMenu(!cardClickMenu);
     setUserFlag(false);
   }
+  const getSelectionText = () => {
+    var text = {};
+    if (window.getSelection) {
+      text = window.getSelection().getRangeAt(0);
+    } else if (document.selection && document.selection.type != "Control") {
+      text = document.selection.createRange().text;
+    }
+    return text;
+  };
+  const getSelectionText2 = () => {
+    var text = "";
+    if (window.getSelection) {
+      text = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != "Control") {
+      text = document.selection.createRange().text;
+    }
+    return text;
+  };
+  const hide = () => {
+    console.log("hide clicked!!!!");
+    const textSelected = getSelectionText();
+    const element_tmp = getSelectionText2();
 
+    console.log(textSelected);
+    console.log(textSelected.startContainer);
+    console.log(textSelected.startContainer.parentNode.parentNode);
+    const parentId_tmp = textSelected.startContainer.parentNode.parentNode.outerHTML;
+    console.log(parentId_tmp);
+    const parentId = parentId_tmp.match(/(?<=id=\")\w{1,50}/gi); // parentNode에 id값을 찾는 표현식
+    console.log(parentId[0]);
+
+    const htmlNode = document.getElementById(parentId[0]).innerHTML;
+    console.log(htmlNode);
+    console.log(element_tmp);
+    const replaced = htmlNode.replace(element_tmp, `<span style="visibility:hidden;">${element_tmp}</span>`);
+    console.log(replaced);
+
+    var elem = document.getElementById(parentId[0]);
+    console.log(elem);
+    elem.innerHTML = replaced;
+  };
   if (cardTypeSets.length > 0) {
     var contents = cardListStudying.map((content) => {
       // console.log("카드에 스타일 입히기 시작", cardTypeSets);
@@ -363,10 +456,7 @@ const ReadMode = () => {
           const hideContents = content.content.hidden.map((item) => {
             return (
               <>
-                <div>
-
-                {item}
-                </div>
+                <div>{item}</div>
               </>
             );
           });
@@ -382,57 +472,82 @@ const ReadMode = () => {
               <p>Content</p>
             </div>
           );
-
+          const userFlags = (
+            <>
+              <FlagOutlined
+                onClick={() => userFlagChange("0")}
+                style={{ border: "1px solid lightgrey", background: "white", cursor: "pointer", fontSize: "1.5rem", color: "white" }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("1")}
+                style={{ border: "1px solid lightgrey", background: "white", cursor: "pointer", fontSize: "1.5rem", color: `${userFlagDetails.flag1.figureColor}` }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("2")}
+                style={{ border: "1px solid lightgrey", background: "white", cursor: "pointer", fontSize: "1.5rem", color: `${userFlagDetails.flag2.figureColor}` }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("3")}
+                style={{ border: "1px solid lightgrey", background: "white", cursor: "pointer", fontSize: "1.5rem", color: `${userFlagDetails.flag3.figureColor}` }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("4")}
+                style={{ border: "1px solid lightgrey", background: "white", cursor: "pointer", fontSize: "1.5rem", color: `${userFlagDetails.flag4.figureColor}` }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("5")}
+                style={{ border: "1px solid lightgrey", background: "white", cursor: "pointer", fontSize: "1.5rem", color: `${userFlagDetails.flag5.figureColor}` }}
+              />
+            </>
+          );
           return (
             <>
               {content.card_info.cardtype === "read" && (
                 <>
                   {content._id === cardId && (
                     <>
-                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
-                        <div style={{ height: "1.5rem" }}>
-                          <FlagFilled onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: `red` }} />
+                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                        <div style={{ height: "1.5rem", position: "relative" }}>
+                          {content.content.userFlag === 0 && (
+                            <>
+                              <FlagOutlined onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: "white", border: "1px solid lightgrey" }} />
+                            </>
+                          )}
+                          {content.content.userFlag !== 0 && (
+                            <>
+                              <FlagFilled
+                                onClick={onClickUserFlag}
+                                style={{ cursor: "pointer", fontSize: "1.5rem", color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}` }}
+                              />
+                            </>
+                          )}
+
                           {userFlag && (
                             <>
-                              <span style={{ marginLeft: "5px" }}>
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "red" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "orange" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "yellow" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "green" }} />
-                                <FlagFilled onClick={userFlagChange} style={{ cursor: "pointer", fontSize: "1.5rem", color: "blue" }} />
-                              </span>
+                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
                             </>
                           )}
                         </div>
+                        <div>
+                          <Button size="small" icon={<PlusOutlined />}></Button>
+                          <Button size="small" icon={<TagOutlined />}></Button>
+                          <Button size="small" icon={<EyeInvisibleOutlined onClick={hide} />}></Button>
+                          <Button size="small" icon={<UnderlineOutlined />}></Button>
+                          <Button size="small" icon={<HighlightOutlined />}></Button>
+                          <Button size="small" icon={<ProfileOutlined />}></Button>
+                          <Button size="small" icon={<QuestionCircleOutlined />}></Button>
+                        </div>
                         <div style={{ lineHeight: "1.5rem" }}>
-                          <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
-                            {cardClickMenu && (
-                              <div style={{ display: "flex", flexDirection: "row", alignItems: "end" }}>
-                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
-                                  메모추가
-                                </Button>
-                                <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
-                                  새카드생성
-                                </Button>
-                                <Popover placement="bottomRight" title={"가리기 목록"} content={hideContents} trigger="click">
-                                  <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
-                                    가리기
-                                  </Button>
-                                </Popover>
-                                <Popover placement="bottomRight" title={"형광펜 목록"} content={highlightContents} trigger="click">
-                                  <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
-                                    형광펜
-                                  </Button>
-                                </Popover>
-                                <Popover placement="bottomRight" title={"밑줄 목록"} content={underlineContents} trigger="click">
-                                  <Button size="small" style={{ fontSize: "0.8rem", height: "1.5rem", marginRight: "5px", borderRadius: "3px" }}>
-                                    밑줄
-                                  </Button>
-                                </Popover>
-                              </div>
-                            )}
-                            <MenuFoldOutlined onClick={onClickCardMenu} style={{ fontSize: "1.5rem", color: "grey", lineHeight: "1px" }} />
-                          </div>
+                          {content.content.memo !== null && (
+                            <>
+                              <Button size="small" icon={<MessageOutlined />}></Button>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <Button size="small" icon={<PicRightOutlined />}></Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     </>
@@ -440,13 +555,43 @@ const ReadMode = () => {
                   {content._id !== cardId && (
                     <>
                       <div style={{ padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
-                        <div style={{ backgroundColor: "red", height: "4px", width: "20px", borderRadius: "2px" }}> </div>
-                        <div></div>
+                        {content.content.userFlag === 0 && (
+                          <>
+                            <div style={{ backgroundColor: "white", height: "2px", width: "20px", borderRadius: "2px" }}> </div>
+                          </>
+                        )}
+                        {content.content.userFlag !== 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+
+                        <div style={{ display: "flex", alignItems: "end" }}>
+                          {content.content.memo !== null && (
+                            <>
+                              <div style={{ backgroundColor: "#50d663", height: "2px", width: "20px", borderRadius: "2px" }}> </div>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <div style={{ backgroundColor: "blue", height: "2px", width: "20px", borderRadius: "2px" }}> </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </>
                   )}
                   <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
-                    <div onClick={() => onClickCard(content._id, "normal")}>
+                    <div onClick={() => onClickCard(content._id, "normal", null, content.card_info)}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
                       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
@@ -521,7 +666,7 @@ const ReadMode = () => {
                             </>
                           ))}
                         </div>
-                        <div
+                        {/* <div
                           style={{
                             width: "20%",
                             backgroundColor: face_style[1].background.color,
@@ -576,7 +721,6 @@ const ReadMode = () => {
                                     textDecoration: `${row_font.annotation[index].underline === "on" ? "underline" : "none"}`,
                                   }}
                                 >
-                                  {/* <FroalaEditorView model={item} /> */}
                                   <div
                                     id={`${content._id}face1annot${index + 1}`}
                                     cardsetid={content.card_info.cardset_id}
@@ -586,7 +730,7 @@ const ReadMode = () => {
                                 </div>
                               </>
                             ))}
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -1192,7 +1336,7 @@ const ReadMode = () => {
     });
   }
 
-  const onClickCard = (card_id, from, group) => {
+  const onClickCard = (card_id, from, group, card_info) => {
     // if ((from !== "share" && from !== "normal" && from !== "flip" && group === undefined) || null) {
     //   console.log("null or undefined");
     //   const selected1 = document.getElementsByClassName("child_group");
@@ -1274,8 +1418,10 @@ const ReadMode = () => {
 
     if (cardId === card_id) {
       setCardId("");
+      setCardset_id("")
     } else {
       setCardId(card_id);
+      setCardInfo(card_info)
     }
     setCardClickMenu(false);
     setUserFlag(false);
@@ -1307,80 +1453,78 @@ const ReadMode = () => {
     [cardset_addEffect]
   );
 
-  const hide = () => {
-    const selectionText = sessionStorage.getItem("selectionText");
-    const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
-    const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
-    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
-    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
-    const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
-    // console.log(replaced);
-    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText);
-    var elem = document.getElementById(parentIdOfSelection);
-    // console.log(elem);
-    elem.innerHTML = replaced;
-  };
-  if (!ISSERVER) {
-    document.addEventListener("selectstart", () => {
-      console.log(document.getSelection())
-      sessionStorage.setItem("selectionText", document.getSelection().toString());
-      var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
-      var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
-      var parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.attributes;
-      if (parentNodeattributes.length > 0) {
-        var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[1].nodeValue;
-        var card_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[2].nodeValue;
-      }
-      // console.log(parentNodeInnerHtml);
-      var parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-      if (parentId === null) {
-        parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
-        parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
-        parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes;
-        if (parentNodeattributes.length > 0) {
-          // console.log(parentNodeattributes);
-          var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
-          var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
-        }
-        parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-        // console.log(parentId);
-        if (parentId !== null) {
-          sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-          sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-          sessionStorage.setItem("selectionTextCardSetId", cardset_id);
-          sessionStorage.setItem("selectionTextCardId", card_id);
-        } else {
-          parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
-          parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
-          parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes;
-          if (parentNodeattributes.length > 0) {
-            // console.log(parentNodeattributes);
-            var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
-            var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
-          }
-          parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-          // console.log(parentId);
-          if (parentId !== null) {
-            sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-            sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-            sessionStorage.setItem("selectionTextCardSetId", cardset_id);
-            sessionStorage.setItem("selectionTextCardId", card_id);
-          }
-        }
-      } else {
-        sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-        sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-        sessionStorage.setItem("selectionTextCardSetId", cardset_id);
-        sessionStorage.setItem("selectionTextCardId", card_id);
-      }
-    });
-  }
+  // const hide = () => {
+  //   const selectionText = sessionStorage.getItem("selectionText");
+  //   const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+  //   const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+  //   const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+  //   const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+  //   const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+
+  //   cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText);
+  //   var elem = document.getElementById(parentIdOfSelection);
+
+  //   elem.innerHTML = replaced;
+  // };
+  // if (!ISSERVER) {
+  //   document.addEventListener("selectstart", () => {
+  //     console.log(document.getSelection());
+  //     sessionStorage.setItem("selectionText", document.getSelection().toString());
+  //     var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
+  //     var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
+  //     var parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.attributes;
+  //     if (parentNodeattributes.length > 0) {
+  //       var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[1].nodeValue;
+  //       var card_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[2].nodeValue;
+  //     }
+
+  //     var parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+  //     if (parentId === null) {
+  //       parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
+  //       parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
+  //       parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes;
+  //       if (parentNodeattributes.length > 0) {
+  //         var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
+  //         var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
+  //       }
+  //       parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+
+  //       if (parentId !== null) {
+  //         sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+  //         sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+  //         sessionStorage.setItem("selectionTextCardSetId", cardset_id);
+  //         sessionStorage.setItem("selectionTextCardId", card_id);
+  //       } else {
+  //         parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+  //         parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+  //         parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes;
+  //         if (parentNodeattributes.length > 0) {
+  //           var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
+  //           var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
+  //         }
+  //         parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+
+  //         if (parentId !== null) {
+  //           sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+  //           sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+  //           sessionStorage.setItem("selectionTextCardSetId", cardset_id);
+  //           sessionStorage.setItem("selectionTextCardId", card_id);
+  //         }
+  //       }
+  //     } else {
+  //       sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+  //       sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+  //       sessionStorage.setItem("selectionTextCardSetId", cardset_id);
+  //       sessionStorage.setItem("selectionTextCardId", card_id);
+  //     }
+  //   });
+  // }
 
   return (
     <StudyLayout>
       <div style={{ width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
         <div id="contents">{contents}</div>
-        <ContextMenu hide={hide} />
+        {/* <ContextMenu hide={hide} /> */}
       </div>
       {data && (
         <>

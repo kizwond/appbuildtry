@@ -61,8 +61,41 @@ export const GetLevelConfig = gql`
     }
   }
 `;
-export const  GetSession = gql`
+export const GetSession = gql`
   query GetSession($session_id: ID) {
+    userflagconfig_get {
+      userflagconfigs {
+        _id
+        details {
+          flag1 {
+            figure
+            figureColor
+            textColor
+          }
+          flag2 {
+            figure
+            figureColor
+            textColor
+          }
+          flag3 {
+            figure
+            figureColor
+            textColor
+          }
+          flag4 {
+            figure
+            figureColor
+            textColor
+          }
+          flag5 {
+            figure
+            figureColor
+            textColor
+          }
+        }
+      }
+    }
+
     session_getSession(session_id: $session_id) {
       status
       msg
@@ -104,6 +137,7 @@ export const  GetSession = gql`
             location
             mycontent_id
             buycontent_id
+            memo
           }
           studyStatus {
             statusOriginal

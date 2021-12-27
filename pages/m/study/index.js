@@ -7,8 +7,8 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 
 import M_Layout from "../../../components/layout/M_Layout";
-import M_StudyFavoriteBooksTable from "../../../components/books/studypage/booksTable/M_StudyFavoriteBooksTable";
-import M_StudyBooksTable from "../../../components/books/studypage/booksTable/M_StudyBooksTable";
+import M_StudyFavoriteBooksTable from "../../../components/books/study/index/booksTable/M_StudyFavoriteBooksTable";
+import M_StudyBooksTable from "../../../components/books/study/index/booksTable/M_StudyBooksTable";
 
 const Writeanother = () => {
   const router = useRouter();

@@ -14,17 +14,17 @@ import {
   StyledFlexAlignCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
-} from "../../../common/styledComponent/page";
-import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
-import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
-import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
-import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
+} from "../../../../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import { StyledProgress } from "../../../../common/styledComponent/StyledProgress";
+import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
-import BookOrderButton from "../../common/BookOrderButton";
-import HideOrShowButton from "../../common/HideOrShowButton";
-import FavoriteBook from "../../common/FavoriteBook";
-import makeDataSource from "../../common/logic";
-import MoveToBookSetting from "../../common/MoveToBookSetting";
+import BookOrderButton from "../../../common/BookOrderButton";
+import HideOrShowButton from "../../../common/HideOrShowButton";
+import FavoriteBook from "../../../common/FavoriteBook";
+import makeDataSource from "../../../common/logic";
+import MoveToBookSetting from "../../../common/MoveToBookSetting";
 
 const M_StudyBooksTable = ({
   category,

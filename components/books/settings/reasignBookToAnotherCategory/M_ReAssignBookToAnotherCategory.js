@@ -1,6 +1,5 @@
 import React, { memo, useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { BOOK_CHANGE_CATEGORY_MUTATION } from "../../../../graphql/query/studyCategory";
 import { MUTATION_REASSIGN_MY_BOOK_TO_ANOTHER_CATEGORY } from "../../../../graphql/mutation/myBook";
 
 import { Select, Button, Alert, Space, message } from "antd";

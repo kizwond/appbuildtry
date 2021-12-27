@@ -81,15 +81,16 @@ const M_SessionNavigationBar = ({
   ]);
 
   return (
-    <div>
+    <StyledDiv>
       <StyledSessionNavigationBar>
         {arrowButtonNode}
         {antdButtonNode}
       </StyledSessionNavigationBar>
-      <StyledDiv>
-        학습 시작 예정 카드는 <b>{numberOfFilteredCards}</b>장 입니다.
-      </StyledDiv>
-    </div>
+      <div className="SummaryForNumberOfAllBooksCards">
+        학습 시작 예정 카드는{" "}
+        <span className="NumberOfCards">{numberOfFilteredCards}장</span> 입니다.
+      </div>
+    </StyledDiv>
   );
 };
 
@@ -190,5 +191,15 @@ const NavigationButton = styled.div`
 `;
 
 const StyledDiv = styled.div`
-  margin: 8px;
+  .SummaryForNumberOfAllBooksCards {
+    margin: 8px;
+    padding: 4px;
+    border: 1px dashed #9bcfff;
+    background-color: #9bffff;
+    font-size: 1.16667rem;
+    & .NumberOfCards {
+      font-size: 1.16667rem;
+      font-weight: 600;
+    }
+  }
 `;

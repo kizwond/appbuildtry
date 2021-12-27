@@ -10,17 +10,18 @@ import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
 import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
 
-import styled from "styled-components";
-
-import M_Layout from "../../../../components/layout/M_Layout";
-import M_SessionNavigationBar from "../../../../components/books/studypage/sessionConfig/M_SessionNavigationBar";
-import useSessionConfig from "../../../../components/books/study/sessionnSetting/session-config/useHook/useSessionConfig";
-import M_TabsOfBooksForInfromationTable from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
-import M_SessionModeAndFilterConfig from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
 import {
   computeNumberOfAllFilteredCards,
   computeNumberOfCardsPerBook,
-} from "../../../../components/books/study/sessionConfig/logic/computeFunctions";
+} from /* --------------- */ "../../../../components/books/study/sessionConfig/logic/computeFunctions";
+import useSessionConfig from "../../../../components/books/study/sessionConfig/useHook/useSessionConfig";
+
+import styled from "styled-components";
+
+import M_Layout from "../../../../components/layout/M_Layout";
+import M_SessionNavigationBar /* ----------- */ from "../../../../components/books/study/sessionConfig/M_SessionNavigationBar";
+import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
+import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
 
 const StudySessionConfig = () => {
   const router = useRouter();

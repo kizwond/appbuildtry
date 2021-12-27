@@ -7,20 +7,20 @@ import moment from "moment";
 import { Table, Card, Space, Drawer, Checkbox, Popover } from "antd";
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
-import HideOrShowButton from "../../common/HideOrShowButton";
-import MoveToBookSetting from "../../common/MoveToBookSetting";
-import FavoriteBook from "../../common/FavoriteBook";
-import FavoriteBookOrderButton from "../../writepage/booksTable/FavoriteBookOrderButton";
-import CategorySettingButton from "../../writepage/categorySetting/CategorySettingButton";
+import HideOrShowButton from "../../../common/HideOrShowButton";
+import MoveToBookSetting from "../../../common/MoveToBookSetting";
+import FavoriteBook from "../../../common/FavoriteBook";
+import FavoriteBookOrderButton from "../../../writepage/booksTable/FavoriteBookOrderButton";
+import CategorySettingButton from "../../../writepage/categorySetting/CategorySettingButton";
 import {
   StyledFlexAlignCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
-} from "../../../common/styledComponent/page";
-import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
-import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
-import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+} from "../../../../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledProgress } from "../../../../common/styledComponent/StyledProgress";
+import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 
 const M_StudyFavoriteBooksTable = forwardRef(
   (

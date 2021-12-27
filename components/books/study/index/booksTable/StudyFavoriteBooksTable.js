@@ -6,15 +6,15 @@ import moment from "moment";
 import { Table, Button, Card, Space, Drawer, Checkbox, Progress } from "antd";
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
 
-import HideOrShowButton from "../../../../common/HideOrShowButton";
-import MoveToBookSetting from "../../../../common/MoveToBookSetting";
-import FavoriteBook from "../../../../common/FavoriteBook";
-import FavoriteBookOrderButton from "../../../../writepage/booksTable/FavoriteBookOrderButton";
-import DoubleLinesEllipsisContainer from "../../../../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledBookTypeDiv } from "../../../../../../common/styledComponent/buttons";
-import { StyledProgress } from "../../../../../../common/styledComponent/StyledProgress";
-import { StyledBookSettingBarDrawer } from "../../../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
-import { StyledFlexAllCenterDimension100Percent } from "../../../../../../common/styledComponent/page";
+import HideOrShowButton from "../../../common/HideOrShowButton";
+import MoveToBookSetting from "../../../common/MoveToBookSetting";
+import FavoriteBook from "../../../common/FavoriteBook";
+import FavoriteBookOrderButton from "../../../writepage/booksTable/FavoriteBookOrderButton";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import { StyledProgress } from "../../../../common/styledComponent/StyledProgress";
+import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import { StyledFlexAllCenterDimension100Percent } from "../../../../common/styledComponent/page";
 
 const StudyFavoriteBooksTable = ({
   category,

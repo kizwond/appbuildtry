@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import moment from "../../../../../../node_modules/moment/moment";
+import moment from "moment";
 
 import { Table, Card, Space, Drawer, Checkbox, Progress } from "antd";
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";

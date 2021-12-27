@@ -6,7 +6,10 @@ export const computeNumberOfCardsPerBook = ({
   bookList,
 }) => {
   console.time("a");
-  console.log(bookList);
+  const currentTime = new Date();
+  let todayMidnight = new Date();
+  todayMidnight.setDate(todayMidnight.getDate() + 1);
+  todayMidnight.setHours(0, 0, 0, 0);
   function sumOfObjects(Obj1, Obj2) {
     var finalObj = {};
     Object.keys(Obj1).forEach((value) => {
@@ -18,6 +21,7 @@ export const computeNumberOfCardsPerBook = ({
     return finalObj;
   }
 
+  console.log({ currentTime, todayMidnight });
   //  map 과 reduce 활용하여 카드 배열을  다음 키와 값을 가진 프로퍼티로 변환 (카드종류: 합계)
   const getNumberOfCards = (cards) =>
     cards
@@ -33,17 +37,17 @@ export const computeNumberOfCardsPerBook = ({
           card.studyStatus.statusCurrent === "ing" ? 1 : 0,
         totalNumberOfUntilNowCardsOnStudyStage:
           card.studyStatus.statusCurrent === "ing" &&
-          card.studyStatus.needStudyTimes < currentTime
+          Date.parse(card.studyStatus.needStudyTime) < currentTime
             ? 1
             : 0,
         totalNumberOfUntilTodayCardsOnStudyStage:
           card.studyStatus.statusCurrent === "ing" &&
-          card.studyStatus.needStudyTimes < todayMidnight
+          Date.parse(card.studyStatus.needStudyTime) < todayMidnight
             ? 1
             : 0,
         totalNumberOfFromTomorrowCardsOnStudyStage:
           card.studyStatus.statusCurrent === "ing" &&
-          card.studyStatus.needStudyTimes >= todayMidnight
+          Date.parse(card.studyStatus.needStudyTime) >= todayMidnight
             ? 1
             : 0,
       }))
@@ -175,18 +179,20 @@ export const computeNumberOfAllFilteredCards = ({
         if (needStudyTimeCondition === "unitlNow") {
           return (
             useStatus.includes(card.studyStatus.statusCurrent) &&
-            card.studyStatus.needStudyTime < currentTime
+            Date.parse(card.studyStatus.needStudyTime) < currentTime
           );
         }
         if (needStudyTimeCondition === "unitlToday") {
           return (
             useStatus.includes(card.studyStatus.statusCurrent) &&
-            card.studyStatus.needStudyTime < todayMidnight
+            Date.parse(card.studyStatus.needStudyTime) < todayMidnight
           );
         }
         if (needStudyTimeCondition === "custom") {
           const needStudyTimePosition =
-            (card.studyStatus.needStudyTime - todayMidnight) / 24 / 3600;
+            (Date.parse(card.studyStatus.needStudyTime) - todayMidnight) /
+            24 /
+            3600;
 
           return (
             useStatus.includes(card.studyStatus.statusCurrent) &&

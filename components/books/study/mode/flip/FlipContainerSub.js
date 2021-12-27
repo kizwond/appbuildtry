@@ -84,6 +84,50 @@ const calculateNormalStudy = (interval, selection, current_card_info_index, time
 
 
 
+const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
+  // 기존 레벨은 남겨둔다.
+  // 복습 필요시점은 null로 바꿔준다.
+  const now = new Date();  
+  const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+
+  card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
+  card_details_session[current_card_info_index].studyStatus.statusCurrent = selection;
+  
+  card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
+  card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
+  card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer);
+
+  card_details_session[current_card_info_index].studyStatus.needStudyTime = null
+  card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null
+
+  
+  return card_details_session;
+};
+
+const calculateRestore = (selection, current_card_info_index, timer) => {
+  // 원복시킬때, 기존의 상태(status, 레벨)로 돌리는 대신
+  // 복습 필요시점은 현재로 바꿔준다. (null값일 것임)
+  const now = new Date();  
+  const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+
+  card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
+  if (card_details_session[current_card_info_index].studyStatus.recentStudyResult == null){
+    card_details_session[current_card_info_index].studyStatus.statusCurrent = 'yet';
+  } else {
+    card_details_session[current_card_info_index].studyStatus.statusCurrent = 'ing';    
+  }
+  
+  card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
+  card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
+  card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer);
+  
+  card_details_session[current_card_info_index].studyStatus.needStudyTime = now;
+  card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = now;
+  
+  return card_details_session;
+};
+
+
 const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
   console.log('냐하하하하', current_card_info_index)
   const now = new Date();  
@@ -98,54 +142,27 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
 
 
 
-const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
-  const now = new Date();  
-  const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-
-  card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
-  card_details_session[current_card_info_index].studyStatus.statusCurrent = selection;
-  
-  card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
-  card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
-  card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer);
-
-  if (selection == 'completed'){
-    // 레벨을 바꿔줄 필요가 있습니다. 없나요?
-  }
-  
-  return card_details_session;
+const modifyToDiffi5 = (selection, current_card_info_index, timer) => {
+  console.log('고민되네');
+  return
 };
 
-const calculateRestore = (selection, current_card_info_index, timer) => {
-  const now = new Date();  
-  const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-
-  card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
-  card_details_session[current_card_info_index].studyStatus.statusCurrent = 'ing';
-  
-  
-  card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
-  card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
-  card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer);
-  
-  card_details_session[current_card_info_index].studyStatus.needStudyTime = now;
-  card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = now;
-  
-  return card_details_session;
+const modifyToNormalDiffi = (selection, current_card_info_index, timer) => {
+  console.log('고민되네');
+  return 
 };
-
 
 exports.calculateStudyStatus = (interval, selection, current_card_info_index, timer, levelConfigs) => {  
   console.log('selection', selection)
   switch (selection) {
+    case "diffi5":
+      card_details_session = calculateKnowCase(selection, current_card_info_index, timer, levelConfigs);
+      break;
     case "diffi1":
     case "diffi2":
     case "diffi3":
     case "diffi4":
       card_details_session = calculateNormalStudy(interval, selection, current_card_info_index, timer);
-      break;
-    case "diffi5":
-      card_details_session = calculateKnowCase(selection, current_card_info_index, timer, levelConfigs);
       break;
     case "hold":
     case "completed":
@@ -155,7 +172,7 @@ exports.calculateStudyStatus = (interval, selection, current_card_info_index, ti
       break;
     case "pass":
     case "move":
-    case "finish":
+    case "finish":    
         card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer);
       break;
   }

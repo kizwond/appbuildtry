@@ -80,6 +80,7 @@ const StudySessionConfig = () => {
       computeNumberOfCardsPerBook({
         indexsets: data.indexset_getByMybookids.indexsets,
         cardsets: data.cardset_getByMybookIDs.cardsets,
+        bookList: bookList.current,
       }),
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -208,8 +209,8 @@ const StudySessionConfig = () => {
             submitCreateSessionConfigToServer={
               submitCreateSessionConfigToServer
             }
+            numberOfFilteredCards={numberOfFilteredCards}
           />
-
           <StyledForTabsOfBooks activatedComponent={activatedComponent}>
             <M_TabsOfBooksForInfromationTable
               bookData={bookData}

@@ -1,11 +1,12 @@
 import { memo, useMemo } from "react";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import styled from "styled-components";
 
 const M_SessionNavigationBar = ({
   activatedComponent,
   changeActivatedComponent,
   submitCreateSessionConfigToServer,
+  numberOfFilteredCards,
 }) => {
   const arrowButtonNode = useMemo(() => {
     const hanlderForNaviButton = (e) => {
@@ -60,7 +61,13 @@ const M_SessionNavigationBar = ({
           block
           disabled={activatedComponent === "index"}
           size="small"
-          onClick={submitCreateSessionConfigToServer}
+          onClick={() => {
+            if (numberOfFilteredCards > 0) {
+              submitCreateSessionConfigToServer();
+            } else {
+              message.error("선택하신 카드가 없습니다.", 0.7);
+            }
+          }}
         >
           시작
         </Button>
@@ -70,13 +77,19 @@ const M_SessionNavigationBar = ({
     activatedComponent,
     changeActivatedComponent,
     submitCreateSessionConfigToServer,
+    numberOfFilteredCards,
   ]);
 
   return (
-    <StyledSessionNavigationBar>
-      {arrowButtonNode}
-      {antdButtonNode}
-    </StyledSessionNavigationBar>
+    <div>
+      <StyledSessionNavigationBar>
+        {arrowButtonNode}
+        {antdButtonNode}
+      </StyledSessionNavigationBar>
+      <StyledDiv>
+        학습 시작 예정 카드는 <b>{numberOfFilteredCards}</b>장 입니다.
+      </StyledDiv>
+    </div>
   );
 };
 
@@ -174,4 +187,8 @@ const NavigationButton = styled.div`
     border-top: 1rem solid transparent;
     border-bottom: 1rem solid transparent;
   }
+`;
+
+const StyledDiv = styled.div`
+  margin: 8px;
 `;

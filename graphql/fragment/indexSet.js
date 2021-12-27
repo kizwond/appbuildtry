@@ -12,41 +12,6 @@ export const FRAGMENT_INDEX_SET = gql`
       name
       level
       indextype
-      numCards {
-        total {
-          averageLevel
-          total
-          yet
-          ingTotal
-          ingUntilNow
-          ingUntilToday
-          ingAfterTomorrow
-          hold
-          completed
-        }
-        read {
-          averageLevel
-          total
-          yet
-          ingTotal
-          ingUntilNow
-          ingUntilToday
-          ingAfterTomorrow
-          hold
-          completed
-        }
-        flip {
-          averageLevel
-          total
-          yet
-          ingTotal
-          ingUntilNow
-          ingUntilToday
-          ingAfterTomorrow
-          hold
-          completed
-        }
-      }
     }
   }
 `;

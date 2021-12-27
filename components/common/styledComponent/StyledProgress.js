@@ -10,7 +10,7 @@ export const StyledProgress = styled.div`
   border-radius: 100px;
 
   &:before {
-    content: "${(props) => props.percent}%";
+    content: "${(props) => props.percent}";
     text-align: left;
     height: 1.4rem;
     width: 50%;

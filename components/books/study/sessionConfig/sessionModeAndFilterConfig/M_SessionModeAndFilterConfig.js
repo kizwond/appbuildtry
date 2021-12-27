@@ -6,12 +6,6 @@ import M_AdvancedFilter from "./advancedFilter/M_AdvancedFilter";
 import { StyledAntTabs } from "../../../../common/styledComponent/antd/StyledAntdTabs";
 
 const M_SessionModeAndFilterConfig = ({
-  book_ids,
-  onToggleIsAFilter,
-  onChangeAFCardList,
-  AFCardList,
-  advancedFilteredCheckedIndexes,
-  onChangeIndexesOfAFCardList,
   mode,
   changeMode,
   modeOption,
@@ -56,12 +50,6 @@ const M_SessionModeAndFilterConfig = ({
         </Tabs.TabPane>
       </StyledAntTabs>
       <M_AdvancedFilter
-        book_ids={book_ids}
-        advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
-        onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
-        onChangeAFCardList={onChangeAFCardList}
-        AFCardList={AFCardList}
-        onToggleIsAFilter={onToggleIsAFilter}
         changeAdvancedFilter={changeAdvancedFilter}
         advancedFilter={advancedFilter}
       />

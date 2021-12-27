@@ -82,7 +82,7 @@ const IndexTree = ({
                   percent={
                     totalNumberOfAllCards === 0
                       ? 0
-                      : level / totalNumberOfAllCards
+                      : (level / totalNumberOfAllCards).toFixed(2)
                   }
                 />
               </>

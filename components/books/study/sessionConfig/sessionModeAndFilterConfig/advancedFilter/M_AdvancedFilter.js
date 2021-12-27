@@ -5,7 +5,6 @@ import {
   StyledDivConfigColStartCards,
   StyledSpanConfigTitle,
 } from "../common/styledComponent/StyledComponent";
-import GetFilteredIndexButton from "./GetFilteredIndexButton";
 import FilterSubMenu from "./FilterSubMenu";
 import M_RecentStudyTime from "./M_RecentStudyTime";
 import CardLevel from "./CardLevel";
@@ -14,21 +13,7 @@ import ToggleTags from "../common/ToggleTags";
 import { filterTags } from "../common/dataForContainer";
 import InactivatedTags from "../common/InactivatedTags";
 
-const M_AdvancedFilter = ({
-  book_ids,
-  advancedFilteredCheckedIndexes,
-  onChangeIndexesOfAFCardList,
-  onChangeAFCardList,
-  AFCardList,
-  onToggleIsAFilter,
-  changeAdvancedFilter,
-  advancedFilter,
-}) => {
-  const [counterForButtonClick, setCounterForButtonClick] = useState(false);
-  const onChangeAFButtonClick = (_falsy) => {
-    setCounterForButtonClick(_falsy);
-  };
-
+const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
   const {
     changeAdvancedFilterOnOff,
     changeUserFlag,
@@ -82,30 +67,12 @@ const M_AdvancedFilter = ({
             onChange={(checked) => {
               if (checked) {
                 changeAdvancedFilterOnOff("on");
-                if (counterForButtonClick) {
-                  onToggleIsAFilter(true);
-                }
               } else {
                 changeAdvancedFilterOnOff("off");
-                onToggleIsAFilter(false);
               }
             }}
           />
         </StyledDivConfigColStartCards>
-        {onOff === "on" && (
-          <RowForLevelTwo>
-            <GetFilteredIndexButton
-              book_ids={book_ids}
-              advancedFilter={advancedFilter}
-              onChangeAFCardList={onChangeAFCardList}
-              AFCardList={AFCardList}
-              onToggleIsAFilter={onToggleIsAFilter}
-              advancedFilteredCheckedIndexes={advancedFilteredCheckedIndexes}
-              onChangeIndexesOfAFCardList={onChangeIndexesOfAFCardList}
-              onChangeAFButtonClick={onChangeAFButtonClick}
-            />
-          </RowForLevelTwo>
-        )}
       </StyledDivTitleRow>
       {onOff === "on" && (
         <>

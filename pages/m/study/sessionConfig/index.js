@@ -35,14 +35,6 @@ const StudySessionConfig = () => {
     setActivatedComponent(_type);
   }, []);
 
-  const [advancedFilteredCardsList, setAdvancedFilteredCardsList] = useState(
-    []
-  );
-  const [
-    isAdvancedFilteredCardListShowed,
-    setIsAdvancedFilteredCardListShowed,
-  ] = useState(false);
-
   const {
     // 모드
     mode,
@@ -193,13 +185,6 @@ const StudySessionConfig = () => {
     });
   };
 
-  const onToggleIsAFilter = (falsy) => {
-    setIsAdvancedFilteredCardListShowed(falsy);
-  };
-  const onChangeAFCardList = (value) => {
-    setAdvancedFilteredCardsList(value);
-  };
-
   return (
     <M_Layout>
       {!error && !loading && bookData && (
@@ -218,21 +203,12 @@ const StudySessionConfig = () => {
               bookList={bookList.current}
               checkedKeys={checkedKeys}
               onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
-              isAdvancedFilteredCardListShowed={
-                isAdvancedFilteredCardListShowed
-              }
-              advancedFilteredCardsList={advancedFilteredCardsList}
-              activatedComponent={activatedComponent}
             />
           </StyledForTabsOfBooks>
 
           <StyledSessionConfig activatedComponent={activatedComponent}>
             {
               <M_SessionModeAndFilterConfig
-                onToggleIsAFilter={onToggleIsAFilter}
-                onChangeAFCardList={onChangeAFCardList}
-                AFCardList={advancedFilteredCardsList}
-                book_ids={bookList.current.map((book) => book.book_id)}
                 mode={mode}
                 changeMode={changeMode}
                 modeOption={modeOption}

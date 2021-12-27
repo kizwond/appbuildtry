@@ -189,6 +189,12 @@ const ReadMode = () => {
     console.log("userFlagChangeClicked!!!");
     console.log(flag);
     updateUserFlag(cardInfo.cardset_id, cardInfo.card_id, flag)
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"))
+    const filtered = cardListStudying.findIndex(item=> item.card_info.card_id === cardInfo.card_id)
+    console.log(filtered)
+    cardListStudying[0].content.userFlag = Number(flag)
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
     setUserFlag(false);
   }
 

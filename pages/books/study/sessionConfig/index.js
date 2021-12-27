@@ -190,25 +190,23 @@ const StudySessionConfig = () => {
     <Layout>
       {!error && !loading && bookData && (
         <StyledDiv>
-          {/* <M_SessionNavigationBar
-            activatedComponent={activatedComponent}
-            changeActivatedComponent={changeActivatedComponent}
-            submitCreateSessionConfigToServer={
-              submitCreateSessionConfigToServer
-            }
-            numberOfFilteredCards={numberOfFilteredCards}
-          /> */}
-          <StyledForTabsOfBooks>
-            <M_TabsOfBooksForInfromationTable
-              bookData={bookData}
-              bookList={bookList.current}
-              checkedKeys={checkedKeys}
-              onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
-            />
-          </StyledForTabsOfBooks>
+          <div className="SummaryForNumberOfAllBooksCards">
+            학습 시작 예정 카드는{" "}
+            <span className="NumberOfCards">{numberOfFilteredCards}장</span>{" "}
+            입니다.
+          </div>
 
-          <StyledSessionConfig>
-            {
+          <div className="ContentsBoxWrapper">
+            <StyledForTabsOfBooks>
+              <M_TabsOfBooksForInfromationTable
+                bookData={bookData}
+                bookList={bookList.current}
+                checkedKeys={checkedKeys}
+                onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
+              />
+            </StyledForTabsOfBooks>
+
+            <StyledSessionConfig>
               <M_SessionModeAndFilterConfig
                 mode={mode}
                 changeMode={changeMode}
@@ -216,8 +214,8 @@ const StudySessionConfig = () => {
                 advancedFilter={advancedFilter}
                 changeAdvancedFilter={changeAdvancedFilter}
               />
-            }
-          </StyledSessionConfig>
+            </StyledSessionConfig>
+          </div>
         </StyledDiv>
       )}
     </Layout>
@@ -231,6 +229,22 @@ const StyledDiv = styled.div`
   min-width: 360px;
   * {
     font-size: 1rem;
+  }
+
+  .SummaryForNumberOfAllBooksCards {
+    margin: 8px;
+    padding: 4px;
+    border: 1px dashed #9bcfff;
+    background-color: #9bffff;
+    font-size: 1.16667rem;
+    & .NumberOfCards {
+      font-size: 1.16667rem;
+      font-weight: 600;
+    }
+  }
+
+  .ContentsBoxWrapper {
+    display: flex;
   }
 `;
 

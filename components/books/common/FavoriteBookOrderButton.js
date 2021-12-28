@@ -6,7 +6,12 @@ import { MUTATION_CHANGE_BOOK_ORDER } from "../../../graphql/mutation/myBook";
 import { Space } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
-const FavoriteBookOrderButton = ({ _record, tableType, changeFoldedMenu }) => {
+const FavoriteBookOrderButton = ({
+  _record,
+  tableType,
+  changeFoldedMenu,
+  isPc,
+}) => {
   const router = useRouter();
   let timer;
   const [rePosition, { loading }] = useMutation(MUTATION_CHANGE_BOOK_ORDER, {
@@ -18,7 +23,7 @@ const FavoriteBookOrderButton = ({ _record, tableType, changeFoldedMenu }) => {
           changeFoldedMenu("");
         }, 200);
       } else if (received_data.mybook_modifySeq.status === "401") {
-        router.push("/account/login");
+        router.push(isPc ? "/account/login" : "/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }

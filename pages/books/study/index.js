@@ -61,7 +61,7 @@ const StudyPage = () => {
       });
 
     sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
-    router.push("/study/sessionConfig");
+    router.push("/books/study/sessionConfig");
   };
 
   const changeSelectedBooks = useCallback((_booksArray) => {

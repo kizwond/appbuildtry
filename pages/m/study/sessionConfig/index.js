@@ -126,6 +126,7 @@ const StudySessionConfig = () => {
         );
         sessionStorage.setItem("study_mode", sessionConfig.studyMode);
         sessionStorage.removeItem("cardListStudying");
+        console.time("카드스터딩넣기");
         sessionStorage.setItem(
           "cardListStudying2",
           JSON.stringify(
@@ -136,6 +137,7 @@ const StudySessionConfig = () => {
             })
           )
         );
+        console.timeEnd("카드스터딩넣기");
 
         // sortCardlistTotal(
         //   getAllFilteredCards({
@@ -146,9 +148,9 @@ const StudySessionConfig = () => {
         //   sessionConfig.detailedOption.sortOption
         // ).forEach((c) => console.log(c.studyStatus.needStudyTime));
 
-        // router.push(
-        //   `/m/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
-        // );
+        router.push(
+          `/m/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
+        );
       } else if (_data.session_createSession.status === "401") {
         router.push("/m/account/login");
       } else {

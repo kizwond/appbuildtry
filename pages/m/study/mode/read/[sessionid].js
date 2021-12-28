@@ -130,9 +130,9 @@ const ReadMode = () => {
       console.log("최초 리드모드 데이터 : ", data);
       console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
       console.log("카드리스트스터딩 :", data.session_getSession.sessions[0].cardlistStudying);
-      
-      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"))
-      if(cardListStudying) {
+
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      if (cardListStudying) {
         setCardListStudying(cardListStudying);
       } else {
         sessionStorage.setItem("cardListStudying", JSON.stringify(data.session_getSession.sessions[0].cardlistStudying));
@@ -188,11 +188,11 @@ const ReadMode = () => {
   function userFlagChange(flag) {
     console.log("userFlagChangeClicked!!!");
     console.log(flag);
-    updateUserFlag(cardInfo.cardset_id, cardInfo.card_id, flag)
-    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"))
-    const filtered = cardListStudying.findIndex(item=> item.card_info.card_id === cardInfo.card_id)
-    console.log(filtered)
-    cardListStudying[0].content.userFlag = Number(flag)
+    updateUserFlag(cardInfo.cardset_id, cardInfo.card_id, flag);
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const filtered = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    console.log(filtered);
+    cardListStudying[0].content.userFlag = Number(flag);
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
     setUserFlag(false);
@@ -250,9 +250,9 @@ const ReadMode = () => {
       //   console.log(content);
       const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
 
-      // console.log(current_card_style_set);
+      console.log(current_card_style_set);
       const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
-      //   console.log(current_card_style);
+        // console.log(current_card_style);
       const face_style = current_card_style[0].face_style;
       const row_style = current_card_style[0].row_style;
       const row_font = current_card_style[0].row_font;
@@ -512,11 +512,23 @@ const ReadMode = () => {
                 <>
                   {content._id === cardId && (
                     <>
-                      <div style={{ height: "1.5rem", padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                      <div
+                        style={{
+                          backgroundColor: "#f0f0f0",
+                          height: "28px",
+                          padding: "0 3px 0 3px",
+                          boxShadow: "0px 1px 2px 1px #eeeeee",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          border: "1px solid gainsboro"
+                        }}
+                      >
                         <div style={{ height: "1.5rem", position: "relative" }}>
                           {content.content.userFlag === 0 && (
                             <>
-                              <FlagOutlined onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: "white", border: "1px solid lightgrey" }} />
+                              <FlagOutlined onClick={onClickUserFlag} style={{ cursor: "pointer", fontSize: "1.5rem", color: "#f0f0f0", border: "1px solid lightgrey" }} />
                             </>
                           )}
                           {content.content.userFlag !== 0 && (
@@ -534,24 +546,26 @@ const ReadMode = () => {
                             </>
                           )}
                         </div>
-                        <div>
-                          <Button size="small" icon={<PlusOutlined />}></Button>
-                          <Button size="small" icon={<TagOutlined />}></Button>
-                          <Button size="small" icon={<EyeInvisibleOutlined onClick={hide} />}></Button>
-                          <Button size="small" icon={<UnderlineOutlined />}></Button>
-                          <Button size="small" icon={<HighlightOutlined />}></Button>
-                          <Button size="small" icon={<ProfileOutlined />}></Button>
-                          <Button size="small" icon={<QuestionCircleOutlined />}></Button>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          <Space>
+                            <Button size="small" style={{ border: "none", backgroundColor:"#f0f0f0" }} icon={<PlusOutlined />}></Button>
+                            <Button size="small" style={{ border: "none", backgroundColor:"#f0f0f0" }} icon={<TagOutlined />}></Button>
+                            <Button size="small" style={{ border: "none", backgroundColor:"#f0f0f0" }} icon={<EyeInvisibleOutlined onClick={hide} />}></Button>
+                            <Button size="small" style={{ border: "none", backgroundColor:"#f0f0f0" }} icon={<UnderlineOutlined />}></Button>
+                            <Button size="small" style={{ border: "none", backgroundColor:"#f0f0f0" }} icon={<HighlightOutlined />}></Button>
+                            <Button size="small" style={{ border: "none", backgroundColor:"#f0f0f0" }} icon={<ProfileOutlined />}></Button>
+                            <Button size="small" style={{ border: "none", backgroundColor:"#f0f0f0" }} icon={<QuestionCircleOutlined />}></Button>
+                          </Space>
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
                           {content.content.memo !== null && (
                             <>
-                              <Button size="small" icon={<MessageOutlined />}></Button>
+                              <Button size="small" style={{ border: "none", backgroundColor:"#f0f0f0" }} icon={<MessageOutlined />}></Button>
                             </>
                           )}
                           {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
                             <>
-                              <Button size="small" icon={<PicRightOutlined />}></Button>
+                              <Button size="small" style={{ border: "none", backgroundColor:"#f0f0f0" }} icon={<PicRightOutlined />}></Button>
                             </>
                           )}
                         </div>
@@ -1424,10 +1438,10 @@ const ReadMode = () => {
 
     if (cardId === card_id) {
       setCardId("");
-      setCardset_id("")
+      setCardInfo("");
     } else {
       setCardId(card_id);
-      setCardInfo(card_info)
+      setCardInfo(card_info);
     }
     setCardClickMenu(false);
     setUserFlag(false);
@@ -1528,7 +1542,7 @@ const ReadMode = () => {
 
   return (
     <StudyLayout>
-      <div style={{ width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
+      <div style={{ width: "95%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
         <div id="contents">{contents}</div>
         {/* <ContextMenu hide={hide} /> */}
       </div>

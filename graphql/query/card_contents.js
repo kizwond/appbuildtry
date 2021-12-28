@@ -130,6 +130,20 @@ export const GET_CARDTYPESET = gql`
           user_id
           mybook_id
         }
+        studyTool {
+          hidden {
+            toolType
+            color
+          }
+          highlight {
+            toolType
+            color
+          }
+          underline {
+            toolType
+            color
+          }
+        }
         makerFlag_style {
           row_style {
             background {

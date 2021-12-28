@@ -22,6 +22,7 @@ import Layout from "../../../../components/layout/Layout";
 import M_SessionNavigationBar /* ----------- */ from "../../../../components/books/study/sessionConfig/M_SessionNavigationBar";
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
+import { Col, Row } from "antd";
 
 const StudySessionConfig = () => {
   const router = useRouter();
@@ -196,8 +197,8 @@ const StudySessionConfig = () => {
             입니다.
           </div>
 
-          <div className="ContentsBoxWrapper">
-            <StyledForTabsOfBooks>
+          <StyledRow>
+            <StyledForTabsOfBooks flex="auto">
               <M_TabsOfBooksForInfromationTable
                 bookData={bookData}
                 bookList={bookList.current}
@@ -206,7 +207,7 @@ const StudySessionConfig = () => {
               />
             </StyledForTabsOfBooks>
 
-            <StyledSessionConfig>
+            <StyledSessionConfig flex="420px">
               <M_SessionModeAndFilterConfig
                 mode={mode}
                 changeMode={changeMode}
@@ -215,7 +216,7 @@ const StudySessionConfig = () => {
                 changeAdvancedFilter={changeAdvancedFilter}
               />
             </StyledSessionConfig>
-          </div>
+          </StyledRow>
         </StyledDiv>
       )}
     </Layout>
@@ -248,7 +249,7 @@ const StyledDiv = styled.div`
   }
 `;
 
-const StyledSessionConfig = styled.div`
+const StyledSessionConfig = styled(Col)`
   margin: 8px;
 
   .ant-radio-group {
@@ -273,7 +274,7 @@ const StyledSessionConfig = styled.div`
     visibility: hidden;
   }
 `;
-const StyledForTabsOfBooks = styled.div`
+const StyledForTabsOfBooks = styled(Col)`
   margin: 8px;
 
   .ant-table.ant-table-small .ant-table-title {
@@ -296,3 +297,5 @@ const StyledForTabsOfBooks = styled.div`
     margin-right: 2px;
   }
 `;
+
+const StyledRow = styled(Row)``;

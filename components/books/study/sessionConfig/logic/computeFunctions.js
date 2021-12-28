@@ -310,8 +310,9 @@ export const getAllFilteredCards = ({
   if (sortOption === "time") {
     console.time("시간순");
     const distantFuture = new Date(8640000000000000);
-    const newCards = produce(flattenCards, (draft) =>
-      draft.sort((a, b) => {
+    const newCards =
+      //  produce(flattenCards, (draft) =>
+      flattenCards.sort((a, b) => {
         let dateA = a.studyStatus.needStudyTime
           ? new Date(a.studyStatus.needStudyTime)
           : distantFuture;
@@ -320,8 +321,8 @@ export const getAllFilteredCards = ({
           : distantFuture;
 
         return dateA.getTime() - dateB.getTime();
-      })
-    );
+      });
+    // );
     console.timeEnd("시간순");
     return newCards;
   }

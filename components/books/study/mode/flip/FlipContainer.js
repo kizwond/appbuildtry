@@ -36,11 +36,11 @@ const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditor
 
 const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConfigs, cardTypeSets }) => {
   const router = useRouter();
-  const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataposition });
-  function showdataposition(data) {
+  const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
+  function showdataafterupdateresult(data) {
     console.log("data", data);
     if (data.session_updateResults.status === "200") {
-      router.push("/m/study");
+      router.push("/m/study/result");
     }
   }
 

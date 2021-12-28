@@ -13,6 +13,8 @@ import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../..
 import {
   computeNumberOfAllFilteredCards,
   computeNumberOfCardsPerBook,
+  getAllFilteredCards,
+  sortCardlistTotal,
 } from /* --------------- */ "../../../../components/books/study/sessionConfig/logic/computeFunctions";
 import useSessionConfig from "../../../../components/books/study/sessionConfig/useHook/useSessionConfig";
 
@@ -88,6 +90,7 @@ const StudySessionConfig = () => {
         checkedKeys,
         sessionConfig,
       }),
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, checkedKeys, sessionConfig]
   );
@@ -114,19 +117,39 @@ const StudySessionConfig = () => {
   }, []);
 
   const [session_createSession, {}] = useMutation(MUTATION_CREATE_SESSION, {
-    onCompleted: (data) => {
-      if (data.session_createSession.status === "200") {
-        console.log("세션 생성 요청 후 받은 데이터", data);
+    onCompleted: (_data) => {
+      if (_data.session_createSession.status === "200") {
+        console.log("세션 생성 요청 후 받은 데이터", _data);
         sessionStorage.setItem(
           "session_Id",
-          data.session_createSession.sessions[0]._id
+          _data.session_createSession.sessions[0]._id
         );
         sessionStorage.setItem("study_mode", sessionConfig.studyMode);
         sessionStorage.removeItem("cardListStudying");
-        router.push(
-          `/m/study/mode/${sessionConfig.studyMode}/${data.session_createSession.sessions[0]._id}`
+        sessionStorage.setItem(
+          "cardListStudying2",
+          JSON.stringify(
+            getAllFilteredCards({
+              cardsets: data.cardset_getByMybookIDs.cardsets,
+              checkedKeys,
+              sessionConfig,
+            })
+          )
         );
-      } else if (data.session_createSession.status === "401") {
+
+        // sortCardlistTotal(
+        //   getAllFilteredCards({
+        //     cardsets: data.cardset_getByMybookIDs.cardsets,
+        //     checkedKeys,
+        //     sessionConfig,
+        //   }),
+        //   sessionConfig.detailedOption.sortOption
+        // ).forEach((c) => console.log(c.studyStatus.needStudyTime));
+
+        // router.push(
+        //   `/m/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
+        // );
+      } else if (_data.session_createSession.status === "401") {
         router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");

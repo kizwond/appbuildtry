@@ -1,3 +1,4 @@
+import produce from "immer";
 import _ from "lodash";
 
 export const computeNumberOfCardsPerBook = ({
@@ -21,7 +22,6 @@ export const computeNumberOfCardsPerBook = ({
     return finalObj;
   }
 
-  console.log({ currentTime, todayMidnight: todayMidnight / 24 / 3600 });
   //  map 과 reduce 활용하여 카드 배열을  다음 키와 값을 가진 프로퍼티로 변환 (카드종류: 합계)
   const getNumberOfCards = (cards) =>
     cards
@@ -143,8 +143,6 @@ export const computeNumberOfAllFilteredCards = ({
   checkedKeys,
   sessionConfig,
 }) => {
-  console.log({ cardsets, checkedKeys, sessionConfig });
-
   const currentTime = new Date();
   let todayMidnight = new Date();
   todayMidnight.setDate(todayMidnight.getDate() + 1);
@@ -211,4 +209,163 @@ export const computeNumberOfAllFilteredCards = ({
     });
 
   return flattenCards.length;
+};
+export const getAllFilteredCards = ({
+  cardsets,
+  checkedKeys,
+  sessionConfig,
+}) => {
+  console.time("필터링된 데이터");
+
+  const currentTime = new Date();
+  let todayMidnight = new Date();
+  todayMidnight.setDate(todayMidnight.getDate() + 1);
+  todayMidnight.setHours(0, 0, 0, 0);
+
+  const flattenCheckedKeys = Object.keys(checkedKeys).flatMap(
+    (key) => checkedKeys[key]
+  );
+  const {
+    detailedOption: {
+      needStudyTimeCondition,
+      needStudyTimeRange,
+      useCardtype,
+      useStatus,
+      sortOption,
+    },
+  } = sessionConfig;
+
+  const flattenCards = cardsets
+    .flatMap((cardset) => cardset.cards)
+    .filter((card, i) => {
+      const conditionOfCheckedIndexes = flattenCheckedKeys.includes(
+        card.card_info.index_id
+      );
+      const conditionOfCardType = useCardtype.includes(card.card_info.cardtype);
+      const conditionOfCardStatus = (() => {
+        if (card.studyStatus.statusCurrent !== "ing") {
+          return useStatus.includes(card.studyStatus.statusCurrent);
+        }
+        if (needStudyTimeCondition === "all") {
+          return useStatus.includes(card.studyStatus.statusCurrent);
+        }
+        if (needStudyTimeCondition === "untilNow") {
+          return (
+            useStatus.includes(card.studyStatus.statusCurrent) &&
+            Date.parse(card.studyStatus.needStudyTime) < currentTime
+          );
+        }
+        if (needStudyTimeCondition === "untilToday") {
+          return (
+            useStatus.includes(card.studyStatus.statusCurrent) &&
+            Date.parse(card.studyStatus.needStudyTime) < todayMidnight
+          );
+        }
+        if (needStudyTimeCondition === "custom") {
+          const needStudyTimePosition =
+            (Date.parse(card.studyStatus.needStudyTime) - todayMidnight) /
+            24 /
+            3600000;
+
+          return (
+            useStatus.includes(card.studyStatus.statusCurrent) &&
+            needStudyTimePosition > needStudyTimeRange[0] - 1 &&
+            needStudyTimePosition < needStudyTimeRange[1]
+          );
+        }
+      })();
+
+      return (
+        conditionOfCheckedIndexes &&
+        conditionOfCardType &&
+        useStatus.includes(card.studyStatus.statusCurrent) &&
+        conditionOfCardStatus
+      );
+    })
+    .map((card) => ({
+      ...card,
+      seqInCardlist: null,
+      card_info: {
+        ...card.card_info,
+        card_id: card._id,
+      },
+      studyStatus: {
+        ...card.studyStatus,
+        statusOriginal: card.studyStatus.statusCurret,
+        statusPrev: card.studyStatus.statusCurrent,
+        levelOriginal: card.studyStatus.levelCurrent,
+        userFlagOriginal: card.content.userFlag,
+        userFlagPrev: card.content.userFlag,
+        studyTimesInSession: 0,
+        studyHourInSession: 0,
+        needStudyTimeTmp: null,
+      },
+    }));
+  console.timeEnd("필터링된 데이터");
+
+  if (sortOption === "standard") {
+    return flattenCards;
+  }
+
+  if (sortOption === "time") {
+    console.time("시간순");
+    const distantFuture = new Date(8640000000000000);
+    const newCards = produce(flattenCards, (draft) =>
+      draft.sort((a, b) => {
+        let dateA = a.studyStatus.needStudyTime
+          ? new Date(a.studyStatus.needStudyTime)
+          : distantFuture;
+        let dateB = b.studyStatus.needStudyTime
+          ? new Date(b.studyStatus.needStudyTime)
+          : distantFuture;
+
+        return dateA.getTime() - dateB.getTime();
+      })
+    );
+    console.timeEnd("시간순");
+    return newCards;
+  }
+
+  if (sortOption === "random") {
+    console.time("랜덤순");
+    const random = _.shuffle(flattenCards); // Creates an array of shuffled values, using a version of the Fisher-Yates shuffle. immutable
+    console.timeEnd("랜덤순");
+    return random;
+  }
+
+  if (!["random", "time", "standard"].includes(sortOption)) {
+    throw new Error(`선택한 ${sortOption}정렬 옵션이 없습니다.`);
+  }
+};
+
+export const sortCardlistTotal = (cards, sortOption) => {
+  const result = produce(cards, (draft) => {
+    switch (sortOption) {
+      case "standard":
+        break;
+      case "time":
+        draft.sort((a, b) => {
+          let dateA = a.studyStatus.needStudyTime
+            ? new Date(a.studyStatus.needStudyTime)
+            : distantFuture;
+          let dateB = b.studyStatus.needStudyTime
+            ? new Date(b.studyStatus.needStudyTime)
+            : distantFuture;
+          return dateA.getTime() - dateB.getTime();
+        });
+
+        break;
+      case "random":
+        for (let i = draft.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1)); // 무작위 인덱스(0 이상 i 미만)
+          [draft[i], draft[j]] = [draft[j], draft[i]];
+        }
+        break;
+    }
+    for (let i = 0; i < draft.length; i++) {
+      draft[i].seqInCardlist = i;
+    }
+  });
+
+  return result;
 };

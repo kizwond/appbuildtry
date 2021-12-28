@@ -33,9 +33,21 @@ export const ForAddEffect = gql`
               value
               comment
             }
-            hidden
-            underline
-            highlight
+            hidden {
+              targetWord
+              toolType
+              color
+            }
+            underline {
+              targetWord
+              toolType
+              color
+            }
+            highlight {
+              targetWord
+              toolType
+              color
+            }
             location
             mycontent_id
             buycontent_id

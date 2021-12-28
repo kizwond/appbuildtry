@@ -376,3 +376,5 @@ export const QUERY_BOOK_STUDY_LEVEL_CONFIG_BY_BOOK_IDS = gql`
     }
   }
 `;
+
+// 카드셋 정보

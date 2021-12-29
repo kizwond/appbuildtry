@@ -29,9 +29,13 @@ export const FRAGMENT_CARD_SET = gql`
           value
           comment
         }
+        hidden
+        underline
+        highlight
         location
         mycontent_id
         buycontent_id
+        memo
       }
       studyStatus {
         statusCurrent

@@ -1,4 +1,3 @@
-import produce from "immer";
 import _ from "lodash";
 
 export const computeNumberOfCardsPerBook = ({
@@ -6,6 +5,7 @@ export const computeNumberOfCardsPerBook = ({
   cardsets,
   bookList,
 }) => {
+  console.log("나나");
   const currentTime = new Date();
   let todayMidnight = new Date();
   todayMidnight.setDate(todayMidnight.getDate() + 1);
@@ -260,6 +260,7 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
 };
 
 export const getCardsByNumber = ({ sortedCards, numStartCards }) => {
+  console.log("카드 수량");
   const { yet, ing, hold, completed } = numStartCards;
   const yetCards = sortedCards.filter(
     (card) => card.studyStatus.statusCurrent === "yet"

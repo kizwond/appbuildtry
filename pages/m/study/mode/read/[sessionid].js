@@ -106,8 +106,6 @@ const ReadMode = () => {
   const [cardset_updateUserFlag] = useMutation(MUTATION_UPDATE_USER_FLAG, { onCompleted: afterupdateuserflag });
   function afterupdateuserflag(data) {
     console.log("data", data);
-
-    //여기서 주대리가 작업을 도와야한다.
   }
 
   const updateUserFlag = useCallback(
@@ -132,16 +130,10 @@ const ReadMode = () => {
   useEffect(() => {
     if (data) {
       console.log("최초 리드모드 데이터 : ", data);
-      console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
-      console.log("카드리스트스터딩 :", data.session_getSession.sessions[0].cardlistStudying);
 
       const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
-      if (cardListStudying) {
-        setCardListStudying(cardListStudying);
-      } else {
-        sessionStorage.setItem("cardListStudying", JSON.stringify(data.session_getSession.sessions[0].cardlistStudying));
-        setCardListStudying(data.session_getSession.sessions[0].cardlistStudying);
-      }
+      setCardListStudying(cardListStudying);
+
       setSessionScope(data.session_getSession.sessions[0].sessionScope);
       setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);
       sessionStorage.setItem("card_seq", 0);
@@ -149,10 +141,10 @@ const ReadMode = () => {
       const now = new Date();
       sessionStorage.setItem("started", now);
 
-      const cardIdList = data.session_getSession.sessions[0].cardlistStudying.map((item) => {
+      const cardIdList = cardListStudying.map((item) => {
         return item.content.mycontent_id;
       });
-      const buyContentsIdsList = data.session_getSession.sessions[0].cardlistStudying.map((item) => {
+      const buyContentsIdsList = cardListStudying.map((item) => {
         return item.content.buycontent_id;
       });
       const mybook_ids = data.session_getSession.sessions[0].sessionScope.map((item) => {
@@ -891,71 +883,7 @@ const ReadMode = () => {
                             </>
                           ))}
                         </div>
-                        {/* <div
-                          style={{
-                            width: "20%",
-                            backgroundColor: face_style[1].background.color,
-                            marginTop: face_style[1].outer_margin.top,
-                            marginBottom: face_style[1].outer_margin.bottom,
-                            marginLeft: face_style[1].outer_margin.left,
-                            marginRight: face_style[1].outer_margin.right,
-                            paddingTop: face_style[1].inner_padding.top,
-                            paddingBottom: face_style[1].inner_padding.bottom,
-                            paddingLeft: face_style[1].inner_padding.left,
-                            paddingRight: face_style[1].inner_padding.right,
-                            borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
-                            borderBottom: `${face_style[1].border.bottom.thickness}px ${face_style[1].border.bottom.bordertype} ${face_style[1].border.bottom.color}`,
-                            borderLeft: `${face_style[1].border.left.thickness}px ${face_style[1].border.left.bordertype} ${face_style[1].border.left.color}`,
-                            borderRight: `${face_style[1].border.right.thickness}px ${face_style[1].border.right.bordertype} ${face_style[1].border.right.color}`,
-                          }}
-                        >
-                          {content_value.annotation.length > 0 &&
-                            content_value.annotation.map((item, index) => (
-                              <>
-                                <div
-                                  style={{
-                                    backgroundColor: row_style.annotation[index].background.color,
-                                    marginTop: row_style.annotation[index].outer_margin.top,
-                                    marginBottom: row_style.annotation[index].outer_margin.bottom,
-                                    marginLeft: row_style.annotation[index].outer_margin.left,
-                                    marginRight: row_style.annotation[index].outer_margin.right,
-                                    paddingTop: row_style.annotation[index].inner_padding.top,
-                                    paddingBottom: row_style.annotation[index].inner_padding.bottom,
-                                    paddingLeft: row_style.annotation[index].inner_padding.left,
-                                    paddingRight: row_style.annotation[index].inner_padding.right,
-                                    borderTop: `${row_style.annotation[index].border.top.thickness}px ${row_style.annotation[index].border.top.bordertype} ${row_style.annotation[index].border.top.color}`,
-                                    borderBottom: `${row_style.annotation[index].border.bottom.thickness}px ${row_style.annotation[index].border.bottom.bordertype} ${row_style.annotation[index].border.bottom.color}`,
-                                    borderLeft: `${row_style.annotation[index].border.left.thickness}px ${row_style.annotation[index].border.left.bordertype} ${row_style.annotation[index].border.left.color}`,
-                                    borderRight: `${row_style.annotation[index].border.right.thickness}px ${row_style.annotation[index].border.right.bordertype} ${row_style.annotation[index].border.right.color}`,
-                                    textAlign: row_font.annotation[index].align,
-                                    fontWeight: `${row_font.annotation[index].bold === "on" ? 700 : 400}`,
-                                    color: row_font.annotation[index].color,
-                                    fontFamily: `${
-                                      row_font.annotation[index].font === "고딕"
-                                        ? `NanumGothic`
-                                        : row_font.annotation[index].font === "명조"
-                                        ? `NanumMyeongjo`
-                                        : row_font.annotation[index].font === "바탕"
-                                        ? `Gowun Batang, sans-serif`
-                                        : row_font.annotation[index].font === "돋움"
-                                        ? `Gowun Dodum, sans-serif`
-                                        : ""
-                                    } `,
-                                    fontStyle: `${row_font.annotation[index].italic === "on" ? "italic" : "normal"}`,
-                                    fontSize: row_font.annotation[index].size,
-                                    textDecoration: `${row_font.annotation[index].underline === "on" ? "underline" : "none"}`,
-                                  }}
-                                >
-                                  <div
-                                    id={`${content._id}face1annot${index + 1}`}
-                                    cardsetid={content.card_info.cardset_id}
-                                    cardid={content.card_info.card_id}
-                                    dangerouslySetInnerHTML={{ __html: item }}
-                                  ></div>
-                                </div>
-                              </>
-                            ))}
-                        </div> */}
+                        
                       </div>
                     </div>
                   </div>

@@ -14,6 +14,7 @@ import {
 import WriteHistoryGraphBarComponent /*--------*/ from "./WriteHistoryGraphBarComponent";
 
 import HideOrShowButton /*---------------------*/ from "../../common/HideOrShowButton";
+import BookOrderButton /*---------------------*/ from "../../common/BookOrderButton";
 import MoveToBookSetting /*--------------------*/ from "../../common/MoveToBookSetting";
 import FavoriteBook /*-------------------------*/ from "../../common/FavoriteBook";
 import makeDataSource /*-----------------------*/ from "../../common/logic";
@@ -276,10 +277,10 @@ const BooksTable = ({ category, myBook }) => {
                 getContainer={false}
               >
                 <Space size={3}>
-                  {/* <BookOrderButton
+                  <BookOrderButton
                     _record={_record}
                     changeFoldedMenu={changeFoldedMenu}
-                  />{" "} */}
+                  />{" "}
                   |
                   <FavoriteBook
                     record={_record}

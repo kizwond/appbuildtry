@@ -11,7 +11,7 @@ import M_Layout from "../../../components/layout/M_Layout";
 import M_BooksTable from "../../../components/books/writepage/booksTable/M_BooksTable";
 import M_FavoriteBooksTable from "../../../components/books/writepage/booksTable/M_FavoriteBooksTable";
 
-const M_WriteMain = () => {
+const M_WriteMainPage = () => {
   const router = useRouter();
 
   const [isFoldedMenu, setIsFoldedMenu] = useState();
@@ -35,6 +35,7 @@ const M_WriteMain = () => {
           console.log("어떤 문제가 발생함");
         }
       },
+      fetchPolicy: "network-only",
     }
   );
 
@@ -82,7 +83,7 @@ const M_WriteMain = () => {
   );
 };
 
-export default M_WriteMain;
+export default M_WriteMainPage;
 
 const StyledRowMaxWidth = styled.div`
   margin: 0 auto;

@@ -70,9 +70,8 @@ const FlipMode = () => {
     if (data) {
       console.log("최초 리드모드 데이터 : ", data);
       console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
-      console.log("카드리스트스터딩 :", data.session_getSession.sessions[0].cardlistStudying);
-      sessionStorage.setItem("cardListStudying", JSON.stringify(data.session_getSession.sessions[0].cardlistStudying));
-      setCardListStudying(data.session_getSession.sessions[0].cardlistStudying);
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      setCardListStudying(cardListStudying);
       setSessionScope(data.session_getSession.sessions[0].sessionScope);
       sessionStorage.setItem("card_seq", 0);
       sessionStorage.setItem("origin_seq", 0);
@@ -80,10 +79,10 @@ const FlipMode = () => {
       sessionStorage.removeItem("studyLogCardIds");
       const now = new Date();
       sessionStorage.setItem("started", now);
-      const cardIdList = data.session_getSession.sessions[0].cardlistStudying.map((item) => {
+      const cardIdList = cardListStudying.map((item) => {
         return item.content.mycontent_id;
       });
-      const buyContentsIdsList = data.session_getSession.sessions[0].cardlistStudying.map((item) => {
+      const buyContentsIdsList = cardListStudying.map((item) => {
         return item.content.buycontent_id;
       });
       mycontent_getMycontentByMycontentIDs({

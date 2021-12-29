@@ -140,11 +140,14 @@ export const computeNumberOfAllFilteredCards = ({
   checkedKeys,
   sessionConfig,
 }) => {
+  if (sessionConfig.detailedOption.sortOption === "") {
+    return [];
+  }
   const currentTime = new Date();
   let todayMidnight = new Date();
   todayMidnight.setDate(todayMidnight.getDate() + 1);
   todayMidnight.setHours(0, 0, 0, 0);
-
+  console.log("실행됨");
   const flattenCheckedKeys = Object.keys(checkedKeys).flatMap(
     (key) => checkedKeys[key]
   );

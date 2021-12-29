@@ -83,16 +83,18 @@ const StudySessionConfig = () => {
   );
 
   const numberOfFilteredCards = useMemo(
-    () =>
-      data &&
-      computeNumberOfAllFilteredCards({
-        cardsets: data.cardset_getByMybookIDs.cardsets,
-        checkedKeys,
-        sessionConfig,
-      }),
+    () => {
+      if (data) {
+        return computeNumberOfAllFilteredCards({
+          cardsets: data.cardset_getByMybookIDs.cardsets,
+          checkedKeys,
+          sessionConfig,
+        });
+      }
+    },
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, checkedKeys, sessionConfig]
+    [checkedKeys, sessionConfig]
   );
 
   useEffect(() => {
@@ -137,20 +139,20 @@ const StudySessionConfig = () => {
             numStartCards: sessionConfig.detailedOption.numStartCards,
           });
           sessionStorage.setItem(
-            "cardListStudying2",
+            "cardListStudying",
             JSON.stringify(studyingCards)
           );
           sessionStorage.setItem(
-            "cardlistRemained",
+            "cardListRemained",
             JSON.stringify(remainedCards)
           );
         } else {
           sessionStorage.setItem(
-            "cardListStudying2",
+            "cardListStudying",
             JSON.stringify(sortedCards)
           );
           sessionStorage.setItem(
-            "cardlistRemained",
+            "cardListRemained",
             JSON.stringify({
               yet: [],
               ing: [],
@@ -208,21 +210,22 @@ const StudySessionConfig = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedKeys, sessionConfig]);
 
+  const onCheckIndexesCheckedKeys = useCallback(
+    (checkedKeysValueOfBook, selectedBookId) => {
+      setCheckedKeys({
+        ...checkedKeys,
+        [selectedBookId]: checkedKeysValueOfBook,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   if (error) {
     console.log("에러", error);
     console.log(variables);
     return <div>에러발생</div>;
   }
-
-  const onCheckIndexesCheckedKeys = (
-    checkedKeysValueOfBook,
-    selectedBookId
-  ) => {
-    setCheckedKeys({
-      ...checkedKeys,
-      [selectedBookId]: checkedKeysValueOfBook,
-    });
-  };
 
   return (
     <M_Layout>

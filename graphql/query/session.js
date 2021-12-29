@@ -104,83 +104,12 @@ export const GetSession = gql`
         session_info {
           user_id
           isFinished
+          timeStarted
+          timeFinished
         }
         sessionScope {
           mybook_id
           index_ids
-        }
-        cardlistStudying {
-          _id
-          seqInCardlist
-          card_info {
-            mybook_id
-            indexset_id
-            index_id
-            cardset_id
-            cardtypeset_id
-            cardtype_id
-            cardtype
-            time_created
-            hasParent
-            parentCard_id
-            card_id
-          }
-          content {
-            userFlag
-            makerFlag {
-              value
-              comment
-            }
-            hidden {
-              _id
-              color
-              targetWord
-              toolType
-            }
-            underline {
-              _id
-              color
-              targetWord
-              toolType
-            }
-            highlight {
-              _id
-              color
-              targetWord
-              toolType
-            }
-            location
-            mycontent_id
-            buycontent_id
-            memo
-          }
-          studyStatus {
-            statusOriginal
-            levelOriginal
-            userFlagOriginal
-            userFlagPrev
-            statusPrev
-            studyTimesInSession
-            needStudyTimeTmp
-            statusCurrent
-            recentSelection
-            recentSelectTime
-            totalStayHour
-            recentStudyResult
-            recentStudyTime
-            recentStudyHour
-            totalStudyHour
-            totalStudyTimes
-            recentKnowTime
-            needStudyTime
-            levelCurrent
-            recentExamResult
-            recentExamTime
-            totalExamTimes
-            currentLevStudyTimes
-            currentLevStudyHour
-            currentLevElapsedTime
-          }
         }
       }
     }

@@ -134,6 +134,7 @@ const StudySessionConfig = () => {
           numberOfFilteredCards,
           sortOption: sessionConfig.detailedOption.sortOption,
         });
+
         if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
           const { studyingCards, remainedCards } = getCardsByNumber({
             sortedCards,

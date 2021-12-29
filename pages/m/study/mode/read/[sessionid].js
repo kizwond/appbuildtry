@@ -32,11 +32,12 @@ import {
   EyeInvisibleOutlined,
   FlagOutlined,
   SettingOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
 import { Button, Modal, Space, Tag } from "antd";
 import ContextMenu from "../../../../../components/books/study/mode/ContextMenu";
-import { ForAddEffect } from "../../../../../graphql/mutation/studyUtils";
+import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -55,6 +56,7 @@ const ReadMode = () => {
   const [userFlagDetails, setUserFlagDetails] = useState();
   const [cardClickMenu, setCardClickMenu] = useState(false);
   const [hiddenToggle, setHiddenToggle] = useState(false);
+  const [underlineToggle, setUnderlineToggle] = useState(false);
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -205,16 +207,6 @@ const ReadMode = () => {
     setCardClickMenu(!cardClickMenu);
     setUserFlag(false);
   }
-  // const getSelectionText = () => {
-  //   var text = {};
-  //   if (document.getSelection) {
-  //     text = document.getSelection().getRangeAt(0);
-  //   } else if (document.selection && document.selection.type != "Control") {
-  //     text = document.selection.createRange().text;
-  //   }
-  //   console.log(text)
-  //   return text;
-  // };
 
   const getSelectionText2 = () => {
     var text = "";
@@ -255,49 +247,62 @@ const ReadMode = () => {
     }
   };
 
-  // const hide = () => {
-  //   console.log("hide clicked!!!!");
-  //   const textSelected = getSelectionText();
-  //   const element_tmp = getSelectionText2();
-  //   console.log(element_tmp);
-  //   console.log(textSelected);
-  //   console.log(textSelected.startContainer);
-  //   console.log(textSelected.startContainer.parentNode.parentNode);
-  //   const parentId_tmp = textSelected.startContainer.parentNode.parentNode.outerHTML;
-  //   console.log(parentId_tmp);
-  //   const parentId = parentId_tmp.match(/(?<=id=\")\w{1,50}/gi); // parentNode에 id값을 찾는 표현식
-  //   console.log(parentId[0]);
-
-  //   const htmlNode = document.getElementById(parentId[0]).innerHTML;
-  //   console.log(htmlNode);
-  //   console.log(element_tmp);
-  //   const replaced = htmlNode.replace(element_tmp, `<span style="visibility:hidden;">${element_tmp}</span>`);
-  //   console.log(replaced);
-
-  //   var elem = document.getElementById(parentId[0]);
-  //   console.log(elem);
-  //   elem.innerHTML = replaced;
-  // };
-
   const hide = (color) => {
     const selectionText = sessionStorage.getItem("selectionText");
-    const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
-    const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
     const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
-    const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
-
+    // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    const newHiddenValue = { color: color, targetWord: selectionText, toolTpe: null };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.hidden.push(newHiddenValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
     cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null, color);
     console.log(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null, color);
-    var elem = document.getElementById(parentIdOfSelection);
+    // var elem = document.getElementById(parentIdOfSelection);
 
-    elem.innerHTML = replaced;
+    // elem.innerHTML = replaced;
+  };
+
+  const underline = (color, toolType) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    const newUnderlineValue = { color: color, targetWord: selectionText, toolType: toolType };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.underline.push(newUnderlineValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType, color);
+    console.log(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType, color);
+    // var elem = document.getElementById(parentIdOfSelection);
+
+    // elem.innerHTML = replaced;
   };
 
   const hiddenToggleHandler = () => {
     console.log("userflagclicked!!!");
     setHiddenToggle(!hiddenToggle);
-    setCardClickMenu(false);
+  };
+
+  const underlineToggleHandler = () => {
+    console.log("underlineToggleHandler!!!");
+    setUnderlineToggle(!underlineToggle);
   };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -315,9 +320,38 @@ const ReadMode = () => {
     setIsModalVisible(true);
     // setHiddenToggle(!hiddenToggle);
   };
+  const underlineEffectDeleteModal = () => {
+    console.log("hiddenEffectDeleteHandler!!!");
+    setIsModalVisible(true);
+    // setHiddenToggle(!hiddenToggle);
+  };
 
-  function hiddenElementTagHandler(e) {
-    console.log(e);
+  function hiddenElementTagHandler(word) {
+    console.log(word);
+    console.log(cardInfo);
+
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    const newHiddenArray = cardListStudying[needToBeChangedIndex].content.hidden.filter((item) => item.targetWord !== word);
+    console.log(newHiddenArray);
+    cardListStudying[needToBeChangedIndex].content.hidden = newHiddenArray;
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "hidden", word);
+  }
+
+  function underlineElementTagHandler(word) {
+    console.log(word);
+    console.log(cardInfo);
+
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    const newUnderlineArray = cardListStudying[needToBeChangedIndex].content.underline.filter((item) => item.targetWord !== word);
+    console.log(newUnderlineArray);
+    cardListStudying[needToBeChangedIndex].content.underline = newUnderlineArray;
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "underline", word);
   }
 
   if (cardTypeSets.length > 0) {
@@ -328,8 +362,8 @@ const ReadMode = () => {
 
       console.log(current_card_style_set);
       const hiddenSettings = current_card_style_set[0].studyTool.hidden;
-      const highlightSettings = current_card_style_set[0].studyTool.hidden;
-      const underlineSettings = current_card_style_set[0].studyTool.hidden;
+      const highlightSettings = current_card_style_set[0].studyTool.highlight;
+      const underlineSettings = current_card_style_set[0].studyTool.underline;
       const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
       // console.log(current_card_style);
       const face_style = current_card_style[0].face_style;
@@ -578,6 +612,19 @@ const ReadMode = () => {
               </>
             );
           });
+
+          const underlineButtons = underlineSettings.map((item, index) => {
+            return (
+              <>
+                <div
+                  onClick={() => underline(item.color, item.toolType)}
+                  style={{ border: "1px solid lightgrey", cursor: "pointer", width: "24px", height: "24px", backgroundColor: item.color }}
+                >
+                  {item.toolType}px
+                </div>
+              </>
+            );
+          });
           return (
             <>
               {content.card_info.cardtype === "read" && (
@@ -589,7 +636,7 @@ const ReadMode = () => {
                           backgroundColor: "#f0f0f0",
                           height: "28px",
                           padding: "0 3px 0 3px",
-                          boxShadow: "0px 1px 2px 1px #eeeeee",
+                          boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-between",
@@ -647,8 +694,13 @@ const ReadMode = () => {
                                           content.content.hidden.map((item) => {
                                             return (
                                               <>
-                                                <Tag closable onClose={() => hiddenElementTagHandler(item.targetWord)}>
-                                                  {item.targetWord}
+                                                <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
+                                                  <div style={{ display: "flex", alignItems: "center" }}>
+                                                    <span>{item.targetWord}</span>
+                                                    <span style={{ marginLeft: "3px", color: "grey" }}>
+                                                      <CloseOutlined />
+                                                    </span>
+                                                  </div>
                                                 </Tag>
                                               </>
                                             );
@@ -660,7 +712,50 @@ const ReadMode = () => {
                               )}
                             </div>
 
-                            <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<UnderlineOutlined />}></Button>
+                            {/* underline */}
+                            <div unselectable="on" style={{ position: "relative" }}>
+                              <Button
+                                unselectable="on"
+                                className="underlineButton"
+                                onClick={underlineToggleHandler}
+                                size="small"
+                                style={{ border: "none", backgroundColor: "#f0f0f0" }}
+                                icon={<UnderlineOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                              ></Button>
+                              {underlineToggle && (
+                                <>
+                                  <div unselectable="on" style={{ position: "absolute", right: 0, boxShadow: "0px 1px 2px 1px #eeeeee" }}>
+                                    {underlineButtons}
+                                    <div style={{ border: "1px solid lightgrey", cursor: "pointer", width: "24px", height: "24px" }}>
+                                      <Button
+                                        size="small"
+                                        style={{ width: "22px", height: "22px", border: "none", backgroundColor: "#f0f0f0" }}
+                                        icon={<SettingOutlined />}
+                                        onClick={underlineEffectDeleteModal}
+                                      ></Button>
+                                      <Modal title="가리기 해제" footer={null} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                                        {content.content.underline &&
+                                          content.content.underline.map((item) => {
+                                            return (
+                                              <>
+                                                <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                                                  <div style={{ display: "flex", alignItems: "center" }}>
+                                                    <span>{item.targetWord}</span>
+                                                    <span style={{ marginLeft: "3px", color: "grey" }}>
+                                                      <CloseOutlined />
+                                                    </span>
+                                                  </div>
+                                                </Tag>
+                                              </>
+                                            );
+                                          })}
+                                      </Modal>
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            {/* <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<UnderlineOutlined />}></Button> */}
                             <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<HighlightOutlined />}></Button>
                             <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<ProfileOutlined />}></Button>
                             <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<QuestionCircleOutlined />}></Button>
@@ -686,7 +781,7 @@ const ReadMode = () => {
                       <div style={{ padding: "0px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "end" }}>
                         {content.content.userFlag === 0 && (
                           <>
-                            <div style={{ backgroundColor: "white", height: "2px", width: "20px", borderRadius: "2px" }}> </div>
+                            <div style={{ backgroundColor: "#ffffff00", height: "2px", width: "20px", borderRadius: "2px" }}> </div>
                           </>
                         )}
                         {content.content.userFlag !== 0 && (
@@ -779,7 +874,7 @@ const ReadMode = () => {
                                 }}
                               >
                                 {/* <FroalaEditorView model={item} /> */}
-                                {content.content.hidden.length > 0 ? (
+                                {content.content.hidden.length > 0 || content.content.underline.length > 0 ? (
                                   <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} />
                                 ) : (
                                   <>
@@ -1467,90 +1562,31 @@ const ReadMode = () => {
   }
 
   const onClickCard = (card_id, from, group, card_info) => {
-    // if ((from !== "share" && from !== "normal" && from !== "flip" && group === undefined) || null) {
-    //   console.log("null or undefined");
-    //   const selected1 = document.getElementsByClassName("child_group");
-    //   const selected2 = document.getElementsByClassName("other");
-    //   for (var a = 0; a < selected2.length; a++) {
-    //     const section1 = selected2.item(a);
-    //     section1.style.borderLeft = "none";
-    //   }
-    //   for (var a = 0; a < selected1.length; a++) {
-    //     const section2 = selected1.item(a);
-    //     section2.style.borderLeft = "none";
-    //   }
-    // } else if (from === "share") {
-    //   console.log("share");
-    //   const selected1 = document.getElementsByClassName(card_id);
-    //   const selected2 = document.getElementsByClassName("other");
-    //   for (var a = 0; a < selected2.length; a++) {
-    //     const section1 = selected2.item(a);
-    //     section1.style.borderLeft = "none";
-    //   }
-    //   for (var b = 0; b < selected1.length; b++) {
-    //     const section2 = selected1.item(b);
-    //     section2.style.borderLeft = "5px solid #4285f4";
-    //     // section2.style.borderRadius = "4px";
-    //   }
-    // } else if (from === "normal") {
-    //   const selected1 = document.getElementsByClassName(card_id);
-    //   const selected2 = document.getElementsByClassName("other");
-    //   for (var a = 0; a < selected2.length; a++) {
-    //     const section1 = selected2.item(a);
-    //     section1.style.borderLeft = "none";
-    //   }
-    //   for (var b = 0; b < selected1.length; b++) {
-    //     const section2 = selected1.item(b);
-    //     section2.style.borderLeft = "5px solid #4285f4";
-    //     // section2.style.borderRadius = "4px";
-    //   }
-    // } else if (from === "flip" && group === null) {
-    //   console.log("flip1");
-    //   const selected4 = document.getElementsByClassName(card_id);
-    //   const selected2 = document.getElementsByClassName("other");
-    //   for (var a = 0; a < selected2.length; a++) {
-    //     const section1 = selected2.item(a);
-    //     section1.style.borderLeft = "none";
-    //   }
-    //   for (var b = 0; b < selected4.length; b++) {
-    //     const section4 = selected4.item(b);
-    //     section4.style.borderLeft = "5px solid #4285f4";
-    //     // section4.style.borderRadius = "4px";
-    //   }
-    // } else if (from === "flip" && group === undefined) {
-    //   console.log("flip2");
-    //   const selected4 = document.getElementsByClassName(card_id);
-    //   const selected2 = document.getElementsByClassName("other");
-    //   for (var a = 0; a < selected2.length; a++) {
-    //     const section1 = selected2.item(a);
-    //     section1.style.borderLeft = "none";
-    //   }
-    //   for (var b = 0; b < selected4.length; b++) {
-    //     const section4 = selected4.item(b);
-    //     section4.style.borderLeft = "5px solid #4285f4";
-    //     // section4.style.borderRadius = "4px";
-    //   }
-    // } else {
-    //   console.log("parent Id");
-    //   const selected3 = document.getElementsByClassName(group);
-    //   const selected2 = document.getElementsByClassName("other");
-    //   for (var a = 0; a < selected2.length; a++) {
-    //     const section1 = selected2.item(a);
-    //     section1.style.borderLeft = "none";
-    //   }
-    //   for (var c = 0; c < selected3.length; c++) {
-    //     const section3 = selected3.item(c);
-    //     console.log(section3);
-    //     section3.style.borderLeft = "5px solid #4285f4";
-    //     // section3.style.borderRadius = "4px";
-    //   }
-    // }
+    const selected1 = document.getElementsByClassName(card_id);
+    const selected2 = document.getElementsByClassName("other");
+
+    for (var a = 0; a < selected2.length; a++) {
+      const section = selected2.item(a);
+      section.style.border = "none";
+      section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
+    }
+    for (var a = 0; a < selected1.length; a++) {
+      const section = selected1.item(a);
+      section.style.border = "1px solid gainsboro";
+      section.style.borderTop = "none";
+      section.style.boxShadow = "#eeeeee 0px 1px 2px 1px";
+    }
 
     sessionStorage.setItem("selectionTextCardSetId", card_info.cardset_id);
     sessionStorage.setItem("selectionTextCardId", card_info.card_id);
     if (cardId === card_id) {
       setCardId("");
       setCardInfo("");
+      for (var a = 0; a < selected2.length; a++) {
+        const section = selected2.item(a);
+        section.style.border = "none";
+        section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
+      }
     } else {
       setCardId(card_id);
       setCardInfo(card_info);
@@ -1588,74 +1624,31 @@ const ReadMode = () => {
     [cardset_addEffect]
   );
 
-  // const hide = () => {
-  //   const selectionText = sessionStorage.getItem("selectionText");
-  //   const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
-  //   const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
-  //   const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
-  //   const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
-  //   const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+  const [cardset_deleteEffect] = useMutation(ForDeleteEffect, { onCompleted: showdataafterdeleteeffect });
+  function showdataafterdeleteeffect(data) {
+    console.log("data", data);
+    // setCardListStudying(data.showdataaftereffectfetch.cardlistStudying);
+  }
 
-  //   cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText);
-  //   var elem = document.getElementById(parentIdOfSelection);
-
-  //   elem.innerHTML = replaced;
-  // };
-  // if (!ISSERVER) {
-  //   document.addEventListener("selectstart", () => {
-  //     const taggg = document.querySelector(`.${cardId}`);
-  //     console.log(taggg);
-  //     console.log(document.getSelection());
-  //     sessionStorage.setItem("selectionText", document.getSelection().toString());
-  //     var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
-  //     var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
-  //     var parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.attributes;
-  //     if (parentNodeattributes.length > 0) {
-  //       var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[1].nodeValue;
-  //       var card_id = document.getSelection().anchorNode.parentNode.parentNode.attributes[2].nodeValue;
-  //     }
-
-  //     var parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-  //     if (parentId === null) {
-  //       parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
-  //       parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
-  //       parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes;
-  //       if (parentNodeattributes.length > 0) {
-  //         var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
-  //         var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
-  //       }
-  //       parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-
-  //       if (parentId !== null) {
-  //         sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-  //         sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-  //         sessionStorage.setItem("selectionTextCardSetId", cardset_id);
-  //         sessionStorage.setItem("selectionTextCardId", card_id);
-  //       } else {
-  //         parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
-  //         parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
-  //         parentNodeattributes = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes;
-  //         if (parentNodeattributes.length > 0) {
-  //           var cardset_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[1].nodeValue;
-  //           var card_id = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.attributes[2].nodeValue;
-  //         }
-  //         parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-
-  //         if (parentId !== null) {
-  //           sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-  //           sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-  //           sessionStorage.setItem("selectionTextCardSetId", cardset_id);
-  //           sessionStorage.setItem("selectionTextCardId", card_id);
-  //         }
-  //       }
-  //     } else {
-  //       sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-  //       sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-  //       sessionStorage.setItem("selectionTextCardSetId", cardset_id);
-  //       sessionStorage.setItem("selectionTextCardId", card_id);
-  //     }
-  //   });
-  // }
+  const cardsetDeleteEffect = useCallback(
+    async (cardset_id, card_id, effectType, targetWord) => {
+      try {
+        await cardset_deleteEffect({
+          variables: {
+            forDeleteEffect: {
+              cardset_id,
+              card_id,
+              effectType,
+              targetWord,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_deleteEffect]
+  );
 
   // if (!ISSERVER) {
   //   const bodyTag = document.querySelector("body");
@@ -1694,13 +1687,16 @@ const ReadMode = () => {
 };
 
 const Alter = ({ content, item, index, getSelectionText2 }) => {
+  var altered = item;
   if (content.content.hidden.length > 0) {
-    console.log("here");
-    console.log(content.content.hidden);
-    var altered = item;
     content.content.hidden.map((element) => {
+      altered = altered.replace(element.targetWord, `<span style="background-color:${element.color}; color:${element.color}">${element.targetWord}</span>`);
+    });
+  }
+  if (content.content.underline.length > 0) {
+    content.content.underline.map((element) => {
       console.log(element);
-      altered = altered.replace(element.targetWord, `<span style="visibility:hidden;">${element.targetWord}</span>`);
+      altered = altered.replace(element.targetWord, `<span style="display:inline-block; border-bottom: ${element.toolType}px solid ${element.color}">${element.targetWord}</span>`);
     });
   }
   return (

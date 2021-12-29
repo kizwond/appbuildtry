@@ -5,17 +5,9 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 // import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
 import StudyLayout from "../../../../../components/layout/StudyLayout";
-import {
-  GET_CARD_CONTENT,
-  GET_BUY_CARD_CONTENT,
-  GET_CARDTYPESET,
-} from "../../../../../graphql/query/card_contents";
+import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../../../../graphql/query/card_contents";
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import {
-  ControlOutlined,
-  DashOutlined,
-  FormOutlined,
-  DeleteOutlined,
   ProfileOutlined,
   FlagFilled,
   HeartFilled,
@@ -23,16 +15,12 @@ import {
   CheckCircleFilled,
   PlusOutlined,
   MenuFoldOutlined,
-  CopyOutlined,
-  SearchOutlined,
   HighlightOutlined,
   MessageOutlined,
   UnderlineOutlined,
   TagOutlined,
   PicRightOutlined,
-  PlusSquareOutlined,
   QuestionCircleOutlined,
-  DragOutlined,
   EyeInvisibleOutlined,
   FlagOutlined,
   SettingOutlined,
@@ -40,18 +28,11 @@ import {
 } from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
 import { Button, Modal, Space, Tag } from "antd";
-import ContextMenu from "../../../../../components/books/study/mode/ContextMenu";
-import {
-  ForAddEffect,
-  ForDeleteEffect,
-} from "../../../../../graphql/mutation/studyUtils";
+import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 
-const FroalaEditorView = dynamic(
-  () => import("react-froala-wysiwyg/FroalaEditorView"),
-  {
-    ssr: false,
-  }
-);
+const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
+  ssr: false,
+});
 
 const ReadMode = () => {
   const { query } = useRouter();
@@ -70,6 +51,7 @@ const ReadMode = () => {
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
+    console.log(ISSERVER)
     var session_id_temp = sessionStorage.getItem("session_Id");
     if (query.sessionid === undefined) {
       var session_id = session_id_temp;
@@ -83,44 +65,27 @@ const ReadMode = () => {
     // onCompleted: onCompletedGetSession,
   });
 
-  const [
-    mycontent_getMycontentByMycontentIDs,
-    { loading: loading2, error: error2, data: myContents },
-  ] = useLazyQuery(GET_CARD_CONTENT, { onCompleted: afterGetContent });
-  const [
-    buycontent_getBuycontentByBuycontentIDs,
-    { loading: loading3, error: error3, data: buyContents },
-  ] = useLazyQuery(GET_BUY_CARD_CONTENT, {
+  const [mycontent_getMycontentByMycontentIDs, { loading: loading2, error: error2, data: myContents }] = useLazyQuery(GET_CARD_CONTENT, { onCompleted: afterGetContent });
+  const [buycontent_getBuycontentByBuycontentIDs, { loading: loading3, error: error3, data: buyContents }] = useLazyQuery(GET_BUY_CARD_CONTENT, {
     onCompleted: afterGetBuyContent,
   });
-  const [
-    cardtypeset_getbymybookids,
-    { loading: loading4, error: error4, data: cardtypeset },
-  ] = useLazyQuery(GET_CARDTYPESET, {
+  const [cardtypeset_getbymybookids, { loading: loading4, error: error4, data: cardtypeset }] = useLazyQuery(GET_CARDTYPESET, {
     onCompleted: afterGetCardTypeSet,
   });
 
   function afterGetContent(data) {
     console.log(data);
     // console.log(contentsList);
-    const newArray = contentsList.concat(
-      data.mycontent_getMycontentByMycontentIDs.mycontents
-    );
-    var uniq = newArray.filter(
-      (v, i, a) => a.findIndex((t) => t._id === v._id) === i
-    );
+    const newArray = contentsList.concat(data.mycontent_getMycontentByMycontentIDs.mycontents);
+    var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
     // console.log(uniq);
     setContentsList(uniq);
   }
   function afterGetBuyContent(data) {
     // console.log(data);
     // console.log(contentsList);
-    const newArray = contentsList.concat(
-      data.buycontent_getBuycontentByBuycontentIDs.buycontents
-    );
-    var uniq = newArray.filter(
-      (v, i, a) => a.findIndex((t) => t._id === v._id) === i
-    );
+    const newArray = contentsList.concat(data.buycontent_getBuycontentByBuycontentIDs.buycontents);
+    var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
     // console.log(uniq);
     setContentsList(uniq);
   }
@@ -157,12 +122,11 @@ const ReadMode = () => {
   );
 
   useEffect(() => {
+    console.log("useEffect fired~!!!!! read mode!!!!")
     if (data) {
       console.log("최초 리드모드 데이터 : ", data);
 
-      const cardListStudying = JSON.parse(
-        sessionStorage.getItem("cardListStudying")
-      );
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
       setCardListStudying(cardListStudying);
 
       setSessionScope(data.session_getSession.sessions[0].sessionScope);
@@ -178,11 +142,9 @@ const ReadMode = () => {
       const buyContentsIdsList = cardListStudying.map((item) => {
         return item.content.buycontent_id;
       });
-      const mybook_ids = data.session_getSession.sessions[0].sessionScope.map(
-        (item) => {
-          return item.mybook_id;
-        }
-      );
+      const mybook_ids = data.session_getSession.sessions[0].sessionScope.map((item) => {
+        return item.mybook_id;
+      });
       console.log(cardIdList);
       console.log(buyContentsIdsList);
       console.log(mybook_ids);
@@ -206,12 +168,7 @@ const ReadMode = () => {
     } else {
       console.log("why here?");
     }
-  }, [
-    data,
-    mycontent_getMycontentByMycontentIDs,
-    buycontent_getBuycontentByBuycontentIDs,
-    cardtypeset_getbymybookids,
-  ]);
+  }, [data, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs, cardtypeset_getbymybookids]);
 
   function onClickUserFlag() {
     console.log("userflagclicked!!!");
@@ -223,18 +180,11 @@ const ReadMode = () => {
     console.log("userFlagChangeClicked!!!");
     console.log(flag);
     updateUserFlag(cardInfo.cardset_id, cardInfo.card_id, flag);
-    const cardListStudying = JSON.parse(
-      sessionStorage.getItem("cardListStudying")
-    );
-    const filtered = cardListStudying.findIndex(
-      (item) => item.card_info.card_id === cardInfo.card_id
-    );
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const filtered = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
     console.log(filtered);
     cardListStudying[0].content.userFlag = Number(flag);
-    sessionStorage.setItem(
-      "cardListStudying",
-      JSON.stringify(cardListStudying)
-    );
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
     setUserFlag(false);
   }
@@ -246,52 +196,43 @@ const ReadMode = () => {
   }
 
   const getSelectionText2 = () => {
-    var text = "";
-    var textRange = {};
-    if (document.getSelection) {
-      text = document.getSelection().toString();
-      textRange = document.getSelection();
-      sessionStorage.setItem("selectionText", text);
-    } else if (document.selection && document.selection.type != "Control") {
-      text = document.selection.createRange().text;
-    }
-    console.log(textRange);
-    if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
-      var parentNode =
-        document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
-      var parentNodeInnerHtml =
-        document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
-      var parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-      if (parentId === null) {
-        parentNode =
-          document.getSelection().anchorNode.parentNode.parentNode.parentNode
-            .outerHTML;
-        parentNodeInnerHtml =
-          document.getSelection().anchorNode.parentNode.parentNode.parentNode
-            .innerHTML;
-        parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-        if (parentId !== null) {
-          sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-          sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-        } else {
-          parentNode =
-            document.getSelection().anchorNode.parentNode.parentNode.parentNode
-              .parentNode.outerHTML;
-          parentNodeInnerHtml =
-            document.getSelection().anchorNode.parentNode.parentNode.parentNode
-              .parentNode.innerHTML;
-          parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+    console.log("hello")
+    // var text = "";
+    // var textRange = {};
+    // if (document.getSelection) {
+    //   text = document.getSelection().toString();
+    //   textRange = document.getSelection();
+    //   sessionStorage.setItem("selectionText", text);
+    // } else if (document.selection && document.selection.type != "Control") {
+    //   text = document.selection.createRange().text;
+    // }
+    // console.log(textRange);
+    // if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
+    //   var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
+    //   var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
+    //   var parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+    //   if (parentId === null) {
+    //     parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
+    //     parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
+    //     parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+    //     if (parentId !== null) {
+    //       sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+    //       sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+    //     } else {
+    //       parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+    //       parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+    //       parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
 
-          if (parentId !== null) {
-            sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-            sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-          }
-        }
-      } else {
-        sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-        sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-      }
-    }
+    //       if (parentId !== null) {
+    //         sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+    //         sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+    //       }
+    //     }
+    //   } else {
+    //     sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+    //     sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+    //   }
+    // }
   };
 
   const hide = (color) => {
@@ -302,9 +243,7 @@ const ReadMode = () => {
     }
     // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
     // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
-    const selectionTextCardSetId = sessionStorage.getItem(
-      "selectionTextCardSetId"
-    );
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
     // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
     const newHiddenValue = {
@@ -312,34 +251,13 @@ const ReadMode = () => {
       targetWord: selectionText,
       toolTpe: null,
     };
-    const cardListStudying = JSON.parse(
-      sessionStorage.getItem("cardListStudying")
-    );
-    const needToBeChangedIndex = cardListStudying.findIndex(
-      (item) => item.card_info.card_id === selectionTextCardId
-    );
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
     cardListStudying[needToBeChangedIndex].content.hidden.push(newHiddenValue);
-    sessionStorage.setItem(
-      "cardListStudying",
-      JSON.stringify(cardListStudying)
-    );
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
-    cardsetAddEffect(
-      selectionTextCardSetId,
-      selectionTextCardId,
-      "hidden",
-      selectionText,
-      null,
-      color
-    );
-    console.log(
-      selectionTextCardSetId,
-      selectionTextCardId,
-      "hidden",
-      selectionText,
-      null,
-      color
-    );
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null, color);
+    console.log(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null, color);
     // var elem = document.getElementById(parentIdOfSelection);
 
     // elem.innerHTML = replaced;
@@ -353,9 +271,7 @@ const ReadMode = () => {
     }
     // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
     // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
-    const selectionTextCardSetId = sessionStorage.getItem(
-      "selectionTextCardSetId"
-    );
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
     // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
     const newUnderlineValue = {
@@ -363,36 +279,13 @@ const ReadMode = () => {
       targetWord: selectionText,
       toolType: toolType,
     };
-    const cardListStudying = JSON.parse(
-      sessionStorage.getItem("cardListStudying")
-    );
-    const needToBeChangedIndex = cardListStudying.findIndex(
-      (item) => item.card_info.card_id === selectionTextCardId
-    );
-    cardListStudying[needToBeChangedIndex].content.underline.push(
-      newUnderlineValue
-    );
-    sessionStorage.setItem(
-      "cardListStudying",
-      JSON.stringify(cardListStudying)
-    );
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.underline.push(newUnderlineValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
-    cardsetAddEffect(
-      selectionTextCardSetId,
-      selectionTextCardId,
-      "underline",
-      selectionText,
-      toolType,
-      color
-    );
-    console.log(
-      selectionTextCardSetId,
-      selectionTextCardId,
-      "underline",
-      selectionText,
-      toolType,
-      color
-    );
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType, color);
+    console.log(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType, color);
     // var elem = document.getElementById(parentIdOfSelection);
 
     // elem.innerHTML = replaced;
@@ -433,21 +326,12 @@ const ReadMode = () => {
     console.log(word);
     console.log(cardInfo);
 
-    const cardListStudying = JSON.parse(
-      sessionStorage.getItem("cardListStudying")
-    );
-    const needToBeChangedIndex = cardListStudying.findIndex(
-      (item) => item.card_info.card_id === cardInfo.card_id
-    );
-    const newHiddenArray = cardListStudying[
-      needToBeChangedIndex
-    ].content.hidden.filter((item) => item.targetWord !== word);
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    const newHiddenArray = cardListStudying[needToBeChangedIndex].content.hidden.filter((item) => item.targetWord !== word);
     console.log(newHiddenArray);
     cardListStudying[needToBeChangedIndex].content.hidden = newHiddenArray;
-    sessionStorage.setItem(
-      "cardListStudying",
-      JSON.stringify(cardListStudying)
-    );
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
     cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "hidden", word);
   }
@@ -456,46 +340,27 @@ const ReadMode = () => {
     console.log(word);
     console.log(cardInfo);
 
-    const cardListStudying = JSON.parse(
-      sessionStorage.getItem("cardListStudying")
-    );
-    const needToBeChangedIndex = cardListStudying.findIndex(
-      (item) => item.card_info.card_id === cardInfo.card_id
-    );
-    const newUnderlineArray = cardListStudying[
-      needToBeChangedIndex
-    ].content.underline.filter((item) => item.targetWord !== word);
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    const newUnderlineArray = cardListStudying[needToBeChangedIndex].content.underline.filter((item) => item.targetWord !== word);
     console.log(newUnderlineArray);
-    cardListStudying[needToBeChangedIndex].content.underline =
-      newUnderlineArray;
-    sessionStorage.setItem(
-      "cardListStudying",
-      JSON.stringify(cardListStudying)
-    );
+    cardListStudying[needToBeChangedIndex].content.underline = newUnderlineArray;
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
-    cardsetDeleteEffect(
-      cardInfo.cardset_id,
-      cardInfo.card_id,
-      "underline",
-      word
-    );
+    cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "underline", word);
   }
 
   if (cardTypeSets.length > 0) {
     var contents = cardListStudying.map((content) => {
       // console.log("카드에 스타일 입히기 시작", cardTypeSets);
       //   console.log(content);
-      const current_card_style_set = cardTypeSets.filter(
-        (item) => item._id === content.card_info.cardtypeset_id
-      );
+      const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
 
       console.log(current_card_style_set);
       const hiddenSettings = current_card_style_set[0].studyTool.hidden;
       const highlightSettings = current_card_style_set[0].studyTool.highlight;
       const underlineSettings = current_card_style_set[0].studyTool.underline;
-      const current_card_style = current_card_style_set[0].cardtypes.filter(
-        (item) => item._id === content.card_info.cardtype_id
-      );
+      const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
       // console.log(current_card_style);
       const face_style = current_card_style[0].face_style;
       const row_style = current_card_style[0].row_style;
@@ -505,10 +370,7 @@ const ReadMode = () => {
       // console.log(content);
       // console.log(contentsList);
       const show_contents = contentsList.map((content_value) => {
-        if (
-          content_value._id === content.content.mycontent_id ||
-          content_value._id === content.content.buycontent_id
-        ) {
+        if (content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) {
           // console.log(content_value._id, content.content.buycontent_id);
           if (content_value._id === cardId) {
             var borderLeft = "2px solid blue";
@@ -531,9 +393,7 @@ const ReadMode = () => {
 
           const star_shape = <StarFilled style={{ color: figure_color }} />;
           const heart_shape = <HeartFilled style={{ color: figure_color }} />;
-          const circle_shape = (
-            <CheckCircleFilled style={{ color: figure_color }} />
-          );
+          const circle_shape = <CheckCircleFilled style={{ color: figure_color }} />;
           if (content.content.makerFlag.value === 1) {
             if (figure_shape === "star") {
               var ratings = star_shape;
@@ -705,13 +565,9 @@ const ReadMode = () => {
                         ? `Gowun Dodum, sans-serif`
                         : ""
                     } `,
-                    fontStyle: `${
-                      comment_font_italic === "on" ? "italic" : "normal"
-                    }`,
+                    fontStyle: `${comment_font_italic === "on" ? "italic" : "normal"}`,
                     fontSize: `${comment_font_size}px`,
-                    textDecoration: `${
-                      comment_font_underline === "on" ? "underline" : "none"
-                    }`,
+                    textDecoration: `${comment_font_underline === "on" ? "underline" : "none"}`,
                     fontWeight: `${comment_font_bold === "on" ? 700 : 400}`,
                   }}
                 >
@@ -861,11 +717,7 @@ const ReadMode = () => {
                                 style={{
                                   cursor: "pointer",
                                   fontSize: "1.5rem",
-                                  color: `${
-                                    userFlagDetails[
-                                      "flag" + String(content.content.userFlag)
-                                    ].figureColor
-                                  }`,
+                                  color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
                                 }}
                               />
                             </>
@@ -873,9 +725,7 @@ const ReadMode = () => {
 
                           {userFlag && (
                             <>
-                              <span style={{ position: "absolute", right: 0 }}>
-                                {userFlags}
-                              </span>
+                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
                             </>
                           )}
                         </div>
@@ -897,10 +747,7 @@ const ReadMode = () => {
                               }}
                               icon={<TagOutlined />}
                             ></Button>
-                            <div
-                              unselectable="on"
-                              style={{ position: "relative" }}
-                            >
+                            <div unselectable="on" style={{ position: "relative" }}>
                               <Button
                                 unselectable="on"
                                 className="hiddenButton"
@@ -910,12 +757,7 @@ const ReadMode = () => {
                                   border: "none",
                                   backgroundColor: "#f0f0f0",
                                 }}
-                                icon={
-                                  <EyeInvisibleOutlined
-                                    unselectable="on"
-                                    style={{ pointerEvents: "none" }}
-                                  />
-                                }
+                                icon={<EyeInvisibleOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
                               ></Button>
                               {hiddenToggle && (
                                 <>
@@ -947,33 +789,19 @@ const ReadMode = () => {
                                         icon={<SettingOutlined />}
                                         onClick={hiddenEffectDeleteModal}
                                       ></Button>
-                                      <Modal
-                                        title="가리기 해제"
-                                        footer={null}
-                                        visible={isModalVisible}
-                                        onOk={handleOk}
-                                        onCancel={handleCancel}
-                                      >
+                                      <Modal title="가리기 해제" footer={null} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                                         {content.content.hidden &&
                                           content.content.hidden.map((item) => {
                                             return (
                                               <>
-                                                <Tag
-                                                  onClick={() =>
-                                                    hiddenElementTagHandler(
-                                                      item.targetWord
-                                                    )
-                                                  }
-                                                >
+                                                <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
                                                   <div
                                                     style={{
                                                       display: "flex",
                                                       alignItems: "center",
                                                     }}
                                                   >
-                                                    <span>
-                                                      {item.targetWord}
-                                                    </span>
+                                                    <span>{item.targetWord}</span>
                                                     <span
                                                       style={{
                                                         marginLeft: "3px",
@@ -995,10 +823,7 @@ const ReadMode = () => {
                             </div>
 
                             {/* underline */}
-                            <div
-                              unselectable="on"
-                              style={{ position: "relative" }}
-                            >
+                            <div unselectable="on" style={{ position: "relative" }}>
                               <Button
                                 unselectable="on"
                                 className="underlineButton"
@@ -1008,12 +833,7 @@ const ReadMode = () => {
                                   border: "none",
                                   backgroundColor: "#f0f0f0",
                                 }}
-                                icon={
-                                  <UnderlineOutlined
-                                    unselectable="on"
-                                    style={{ pointerEvents: "none" }}
-                                  />
-                                }
+                                icon={<UnderlineOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
                               ></Button>
                               {underlineToggle && (
                                 <>
@@ -1045,48 +865,32 @@ const ReadMode = () => {
                                         icon={<SettingOutlined />}
                                         onClick={underlineEffectDeleteModal}
                                       ></Button>
-                                      <Modal
-                                        title="가리기 해제"
-                                        footer={null}
-                                        visible={isModalVisible}
-                                        onOk={handleOk}
-                                        onCancel={handleCancel}
-                                      >
+                                      <Modal title="가리기 해제" footer={null} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                                         {content.content.underline &&
-                                          content.content.underline.map(
-                                            (item) => {
-                                              return (
-                                                <>
-                                                  <Tag
-                                                    onClick={() =>
-                                                      underlineElementTagHandler(
-                                                        item.targetWord
-                                                      )
-                                                    }
+                                          content.content.underline.map((item) => {
+                                            return (
+                                              <>
+                                                <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                                                  <div
+                                                    style={{
+                                                      display: "flex",
+                                                      alignItems: "center",
+                                                    }}
                                                   >
-                                                    <div
+                                                    <span>{item.targetWord}</span>
+                                                    <span
                                                       style={{
-                                                        display: "flex",
-                                                        alignItems: "center",
+                                                        marginLeft: "3px",
+                                                        color: "grey",
                                                       }}
                                                     >
-                                                      <span>
-                                                        {item.targetWord}
-                                                      </span>
-                                                      <span
-                                                        style={{
-                                                          marginLeft: "3px",
-                                                          color: "grey",
-                                                        }}
-                                                      >
-                                                        <CloseOutlined />
-                                                      </span>
-                                                    </div>
-                                                  </Tag>
-                                                </>
-                                              );
-                                            }
-                                          )}
+                                                      <CloseOutlined />
+                                                    </span>
+                                                  </div>
+                                                </Tag>
+                                              </>
+                                            );
+                                          })}
                                       </Modal>
                                     </div>
                                   </div>
@@ -1133,19 +937,18 @@ const ReadMode = () => {
                               ></Button>
                             </>
                           )}
-                          {content_value.annotation.length > 0 &&
-                            content_value.annotation[0] !== "" && (
-                              <>
-                                <Button
-                                  size="small"
-                                  style={{
-                                    border: "none",
-                                    backgroundColor: "#f0f0f0",
-                                  }}
-                                  icon={<PicRightOutlined />}
-                                ></Button>
-                              </>
-                            )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <Button
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<PicRightOutlined />}
+                              ></Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     </>
@@ -1179,11 +982,7 @@ const ReadMode = () => {
                           <>
                             <div
                               style={{
-                                backgroundColor: `${
-                                  userFlagDetails[
-                                    "flag" + String(content.content.userFlag)
-                                  ].figureColor
-                                }`,
+                                backgroundColor: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
                                 height: "2px",
                                 width: "20px",
                                 borderRadius: "2px",
@@ -1209,39 +1008,26 @@ const ReadMode = () => {
                               </div>
                             </>
                           )}
-                          {content_value.annotation.length > 0 &&
-                            content_value.annotation[0] !== "" && (
-                              <>
-                                <div
-                                  style={{
-                                    backgroundColor: "blue",
-                                    height: "2px",
-                                    width: "20px",
-                                    borderRadius: "2px",
-                                  }}
-                                >
-                                  {" "}
-                                </div>
-                              </>
-                            )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "blue",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </>
                   )}
-                  <div
-                    className={`${content._id} other`}
-                    style={{ marginBottom: "0px" }}
-                  >
-                    <div
-                      onClick={() =>
-                        onClickCard(
-                          content._id,
-                          "normal",
-                          null,
-                          content.card_info
-                        )
-                      }
-                    >
+                  <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
+                    <div onClick={() => onClickCard(content._id, "normal", null, content.card_info)}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
                       <div
@@ -1273,34 +1059,21 @@ const ReadMode = () => {
                             <>
                               <div
                                 style={{
-                                  backgroundColor:
-                                    row_style.face1[index].background.color,
-                                  marginTop:
-                                    row_style.face1[index].outer_margin.top,
-                                  marginBottom:
-                                    row_style.face1[index].outer_margin.bottom,
-                                  marginLeft:
-                                    row_style.face1[index].outer_margin.left,
-                                  marginRight:
-                                    row_style.face1[index].outer_margin.right,
-                                  paddingTop:
-                                    row_style.face1[index].inner_padding.top,
-                                  paddingBottom:
-                                    row_style.face1[index].inner_padding.bottom,
-                                  paddingLeft:
-                                    row_style.face1[index].inner_padding.left,
-                                  paddingRight:
-                                    row_style.face1[index].inner_padding.right,
+                                  backgroundColor: row_style.face1[index].background.color,
+                                  marginTop: row_style.face1[index].outer_margin.top,
+                                  marginBottom: row_style.face1[index].outer_margin.bottom,
+                                  marginLeft: row_style.face1[index].outer_margin.left,
+                                  marginRight: row_style.face1[index].outer_margin.right,
+                                  paddingTop: row_style.face1[index].inner_padding.top,
+                                  paddingBottom: row_style.face1[index].inner_padding.bottom,
+                                  paddingLeft: row_style.face1[index].inner_padding.left,
+                                  paddingRight: row_style.face1[index].inner_padding.right,
                                   borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
                                   borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
                                   borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
                                   borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
                                   textAlign: row_font.face1[index].align,
-                                  fontWeight: `${
-                                    row_font.face1[index].bold === "on"
-                                      ? 700
-                                      : 400
-                                  }`,
+                                  fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
                                   color: row_font.face1[index].color,
                                   fontFamily: `${
                                     row_font.face1[index].font === "고딕"
@@ -1313,28 +1086,14 @@ const ReadMode = () => {
                                       ? `Gowun Dodum, sans-serif`
                                       : ""
                                   } `,
-                                  fontStyle: `${
-                                    row_font.face1[index].italic === "on"
-                                      ? "italic"
-                                      : "normal"
-                                  }`,
+                                  fontStyle: `${row_font.face1[index].italic === "on" ? "italic" : "normal"}`,
                                   fontSize: row_font.face1[index].size,
-                                  textDecoration: `${
-                                    row_font.face1[index].underline === "on"
-                                      ? "underline"
-                                      : "none"
-                                  }`,
+                                  textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                 }}
                               >
                                 {/* <FroalaEditorView model={item} /> */}
-                                {content.content.hidden.length > 0 ||
-                                content.content.underline.length > 0 ? (
-                                  <Alter
-                                    content={content}
-                                    item={item}
-                                    index={index}
-                                    getSelectionText2={getSelectionText2}
-                                  />
+                                {content.content.hidden.length > 0 || content.content.underline.length > 0 ? (
+                                  <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} />
                                 ) : (
                                   <>
                                     <div
@@ -1530,34 +1289,21 @@ const ReadMode = () => {
                             <>
                               <div
                                 style={{
-                                  backgroundColor:
-                                    row_style.face1[index].background.color,
-                                  marginTop:
-                                    row_style.face1[index].outer_margin.top,
-                                  marginBottom:
-                                    row_style.face1[index].outer_margin.bottom,
-                                  marginLeft:
-                                    row_style.face1[index].outer_margin.left,
-                                  marginRight:
-                                    row_style.face1[index].outer_margin.right,
-                                  paddingTop:
-                                    row_style.face1[index].inner_padding.top,
-                                  paddingBottom:
-                                    row_style.face1[index].inner_padding.bottom,
-                                  paddingLeft:
-                                    row_style.face1[index].inner_padding.left,
-                                  paddingRight:
-                                    row_style.face1[index].inner_padding.right,
+                                  backgroundColor: row_style.face1[index].background.color,
+                                  marginTop: row_style.face1[index].outer_margin.top,
+                                  marginBottom: row_style.face1[index].outer_margin.bottom,
+                                  marginLeft: row_style.face1[index].outer_margin.left,
+                                  marginRight: row_style.face1[index].outer_margin.right,
+                                  paddingTop: row_style.face1[index].inner_padding.top,
+                                  paddingBottom: row_style.face1[index].inner_padding.bottom,
+                                  paddingLeft: row_style.face1[index].inner_padding.left,
+                                  paddingRight: row_style.face1[index].inner_padding.right,
                                   borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
                                   borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
                                   borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
                                   borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
                                   textAlign: row_font.face1[index].align,
-                                  fontWeight: `${
-                                    row_font.face1[index].bold === "on"
-                                      ? 700
-                                      : 400
-                                  }`,
+                                  fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
                                   color: row_font.face1[index].color,
                                   fontFamily: `${
                                     row_font.face1[index].font === "고딕"
@@ -1570,17 +1316,9 @@ const ReadMode = () => {
                                       ? `Gowun Dodum, sans-serif`
                                       : ""
                                   } `,
-                                  fontStyle: `${
-                                    row_font.face1[index].italic === "on"
-                                      ? "italic"
-                                      : "normal"
-                                  }`,
+                                  fontStyle: `${row_font.face1[index].italic === "on" ? "italic" : "normal"}`,
                                   fontSize: row_font.face1[index].size,
-                                  textDecoration: `${
-                                    row_font.face1[index].underline === "on"
-                                      ? "underline"
-                                      : "none"
-                                  }`,
+                                  textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                 }}
                               >
                                 <FroalaEditorView model={item} />
@@ -1593,200 +1331,540 @@ const ReadMode = () => {
                   </div>
                 </>
               )}
-              {content.card_info.cardtype === "flip" &&
-                current_card_style[0].cardtype_info.flip_option
-                  .card_direction === "top-bottom" && (
-                  <>
-                    {content._id === cardId && (
-                      <>
-                        <div
-                          style={{
-                            height: "1.5rem",
-                            padding: "0px",
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "end",
-                          }}
-                        >
-                          <div style={{ height: "1.5rem" }}>
-                            <FlagFilled
-                              onClick={onClickUserFlag}
-                              style={{
-                                cursor: "pointer",
-                                fontSize: "1.5rem",
-                                color: `red`,
-                              }}
-                            />
-                            {userFlag && (
-                              <>
-                                <span style={{ marginLeft: "5px" }}>
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "red",
-                                    }}
-                                  />
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "orange",
-                                    }}
-                                  />
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "yellow",
-                                    }}
-                                  />
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "green",
-                                    }}
-                                  />
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "blue",
-                                    }}
-                                  />
-                                </span>
-                              </>
-                            )}
-                          </div>
-                          <div style={{ lineHeight: "1.5rem" }}>
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "end",
-                              }}
-                            >
-                              {cardClickMenu && (
-                                <div
+              {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "top-bottom" && (
+                <>
+                  {content._id === cardId && (
+                    <>
+                      <div
+                        style={{
+                          height: "1.5rem",
+                          padding: "0px",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "end",
+                        }}
+                      >
+                        <div style={{ height: "1.5rem" }}>
+                          <FlagFilled
+                            onClick={onClickUserFlag}
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "1.5rem",
+                              color: `red`,
+                            }}
+                          />
+                          {userFlag && (
+                            <>
+                              <span style={{ marginLeft: "5px" }}>
+                                <FlagFilled
+                                  onClick={userFlagChange}
                                   style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    alignItems: "end",
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "red",
+                                  }}
+                                />
+                                <FlagFilled
+                                  onClick={userFlagChange}
+                                  style={{
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "orange",
+                                  }}
+                                />
+                                <FlagFilled
+                                  onClick={userFlagChange}
+                                  style={{
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "yellow",
+                                  }}
+                                />
+                                <FlagFilled
+                                  onClick={userFlagChange}
+                                  style={{
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "green",
+                                  }}
+                                />
+                                <FlagFilled
+                                  onClick={userFlagChange}
+                                  style={{
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "blue",
+                                  }}
+                                />
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "end",
+                            }}
+                          >
+                            {cardClickMenu && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  alignItems: "end",
+                                }}
+                              >
+                                <Button
+                                  size="small"
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    height: "1.5rem",
+                                    marginRight: "5px",
+                                    borderRadius: "5px",
                                   }}
                                 >
-                                  <Button
-                                    size="small"
-                                    style={{
-                                      fontSize: "0.8rem",
-                                      height: "1.5rem",
-                                      marginRight: "5px",
-                                      borderRadius: "5px",
-                                    }}
-                                  >
-                                    메모추가
-                                  </Button>
-                                  <Button
-                                    size="small"
-                                    style={{
-                                      fontSize: "0.8rem",
-                                      height: "1.5rem",
-                                      marginRight: "5px",
-                                      borderRadius: "5px",
-                                    }}
-                                  >
-                                    새카드생성
-                                  </Button>
-                                </div>
-                              )}
-                              <MenuFoldOutlined
-                                onClick={onClickCardMenu}
-                                style={{
-                                  fontSize: "1.5rem",
-                                  color: "grey",
-                                  lineHeight: "1px",
-                                }}
-                              />
-                            </div>
+                                  메모추가
+                                </Button>
+                                <Button
+                                  size="small"
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    height: "1.5rem",
+                                    marginRight: "5px",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  새카드생성
+                                </Button>
+                              </div>
+                            )}
+                            <MenuFoldOutlined
+                              onClick={onClickCardMenu}
+                              style={{
+                                fontSize: "1.5rem",
+                                color: "grey",
+                                lineHeight: "1px",
+                              }}
+                            />
                           </div>
                         </div>
-                      </>
-                    )}
-                    {content._id !== cardId && (
-                      <>
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div
+                        style={{
+                          padding: "0px",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "end",
+                        }}
+                      >
                         <div
                           style={{
-                            padding: "0px",
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "end",
+                            backgroundColor: "red",
+                            height: "4px",
+                            width: "20px",
+                            borderRadius: "2px",
                           }}
                         >
-                          <div
-                            style={{
-                              backgroundColor: "red",
-                              height: "4px",
-                              width: "20px",
-                              borderRadius: "2px",
-                            }}
-                          >
-                            {" "}
-                          </div>
-                          <div></div>
+                          {" "}
                         </div>
-                      </>
-                    )}
-                    <div
-                      className={`${content.card_info.parentCard_id} ${content._id} child_group other`}
-                    >
-                      <div style={{ marginBottom: "0px" }}>
+                        <div></div>
+                      </div>
+                    </>
+                  )}
+                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
+                    <div style={{ marginBottom: "0px" }}>
+                      <div
+                        onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
+                        // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
+                      >
                         <div
-                          onClick={() =>
-                            onClickCard(
-                              content._id,
-                              "flip",
-                              content.card_info.parentCard_id
-                            )
-                          }
-                          // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
+                          style={{
+                            backgroundColor: face_style[0].background.color,
+                            marginTop: face_style[0].outer_margin.top,
+                            marginBottom: face_style[0].outer_margin.bottom,
+                            marginLeft: face_style[0].outer_margin.left,
+                            marginRight: face_style[0].outer_margin.right,
+                            paddingTop: face_style[0].inner_padding.top,
+                            paddingBottom: face_style[0].inner_padding.bottom,
+                            paddingLeft: face_style[0].inner_padding.left,
+                            paddingRight: face_style[0].inner_padding.right,
+                            borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
+                            borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
+                            borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
+                            borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
+                          }}
                         >
+                          {/* 페이스1 스타일 영역 */}
+                          {content.content.makerFlag.value !== null && flagArea}
                           <div
                             style={{
-                              backgroundColor: face_style[0].background.color,
-                              marginTop: face_style[0].outer_margin.top,
-                              marginBottom: face_style[0].outer_margin.bottom,
-                              marginLeft: face_style[0].outer_margin.left,
-                              marginRight: face_style[0].outer_margin.right,
-                              paddingTop: face_style[0].inner_padding.top,
-                              paddingBottom: face_style[0].inner_padding.bottom,
-                              paddingLeft: face_style[0].inner_padding.left,
-                              paddingRight: face_style[0].inner_padding.right,
-                              borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
-                              borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
-                              borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
-                              borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
+                              backgroundColor: face_style[1].background.color,
+                              marginTop: face_style[1].outer_margin.top,
+                              marginBottom: face_style[1].outer_margin.bottom,
+                              marginLeft: face_style[1].outer_margin.left,
+                              marginRight: face_style[1].outer_margin.right,
+                              paddingTop: face_style[1].inner_padding.top,
+                              paddingBottom: face_style[1].inner_padding.bottom,
+                              paddingLeft: face_style[1].inner_padding.left,
+                              paddingRight: face_style[1].inner_padding.right,
+                              borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
+                              borderBottom: `${face_style[1].border.bottom.thickness}px ${face_style[1].border.bottom.bordertype} ${face_style[1].border.bottom.color}`,
+                              borderLeft: `${face_style[1].border.left.thickness}px ${face_style[1].border.left.bordertype} ${face_style[1].border.left.color}`,
+                              borderRight: `${face_style[1].border.right.thickness}px ${face_style[1].border.right.bordertype} ${face_style[1].border.right.color}`,
                             }}
                           >
-                            {/* 페이스1 스타일 영역 */}
-                            {content.content.makerFlag.value !== null &&
-                              flagArea}
+                            {content_value.face1.map((item, index) => (
+                              <>
+                                <div
+                                  style={{
+                                    backgroundColor: row_style.face1[index].background.color,
+                                    marginTop: row_style.face1[index].outer_margin.top,
+                                    marginBottom: row_style.face1[index].outer_margin.bottom,
+                                    marginLeft: row_style.face1[index].outer_margin.left,
+                                    marginRight: row_style.face1[index].outer_margin.right,
+                                    paddingTop: row_style.face1[index].inner_padding.top,
+                                    paddingBottom: row_style.face1[index].inner_padding.bottom,
+                                    paddingLeft: row_style.face1[index].inner_padding.left,
+                                    paddingRight: row_style.face1[index].inner_padding.right,
+                                    borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
+                                    borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
+                                    borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
+                                    borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                                    textAlign: row_font.face1[index].align,
+                                    fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
+                                    color: row_font.face1[index].color,
+                                    fontFamily: `${
+                                      row_font.face1[index].font === "고딕"
+                                        ? `Nanum Gothic, sans-serif`
+                                        : row_font.face1[index].font === "명조"
+                                        ? `Nanum Myeongjo, sans-serif`
+                                        : row_font.face1[index].font === "바탕"
+                                        ? `Gowun Batang, sans-serif`
+                                        : row_font.face1[index].font === "돋움"
+                                        ? `Gowun Dodum, sans-serif`
+                                        : ""
+                                    } `,
+                                    fontSize: row_font.face1[index].size,
+                                    textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
+                                  }}
+                                >
+                                  {/* <FroalaEditorView model={item} /> */}
+                                  <div id={`face1row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
+                                </div>
+                              </>
+                            ))}
+                            {content_value.selection &&
+                              content_value.selection.map((item, index) => (
+                                <>
+                                  <div
+                                    style={{
+                                      backgroundColor: row_style.face1[row_style.face1.length - 1].background.color,
+                                      marginTop: row_style.face1[row_style.face1.length - 1].outer_margin.top,
+                                      marginBottom: row_style.face1[row_style.face1.length - 1].outer_margin.bottom,
+                                      marginLeft: row_style.face1[row_style.face1.length - 1].outer_margin.left,
+                                      marginRight: row_style.face1[row_style.face1.length - 1].outer_margin.right,
+                                      paddingTop: row_style.face1[row_style.face1.length - 1].inner_padding.top,
+                                      paddingBottom: row_style.face1[row_style.face1.length - 1].inner_padding.bottom,
+                                      paddingLeft: row_style.face1[row_style.face1.length - 1].inner_padding.left,
+                                      paddingRight: row_style.face1[row_style.face1.length - 1].inner_padding.right,
+                                      borderTop: `${row_style.face1[row_style.face1.length - 1].border.top.thickness}px ${
+                                        row_style.face1[row_style.face1.length - 1].border.top.bordertype
+                                      } ${row_style.face1[row_style.face1.length - 1].border.top.color}`,
+                                      borderBottom: `${row_style.face1[row_style.face1.length - 1].border.bottom.thickness}px ${
+                                        row_style.face1[row_style.face1.length - 1].border.bottom.bordertype
+                                      } ${row_style.face1[row_style.face1.length - 1].border.bottom.color}`,
+                                      borderLeft: `${row_style.face1[row_style.face1.length - 1].border.left.thickness}px ${
+                                        row_style.face1[row_style.face1.length - 1].border.left.bordertype
+                                      } ${row_style.face1[row_style.face1.length - 1].border.left.color}`,
+                                      borderRight: `${row_style.face1[row_style.face1.length - 1].border.right.thickness}px ${
+                                        row_style.face1[row_style.face1.length - 1].border.right.bordertype
+                                      } ${row_style.face1[row_style.face1.length - 1].border.right.color}`,
+                                      textAlign: row_font.face1[row_font.face1.length - 1].align,
+                                      fontWeight: `${row_font.face1[row_font.face1.length - 1].bold === "on" ? 700 : 400}`,
+                                      color: row_font.face1[row_font.face1.length - 1].color,
+                                      fontFamily: `${
+                                        row_font.face1[row_font.face1.length - 1].font === "고딕"
+                                          ? `Nanum Gothic, sans-serif`
+                                          : row_font.face1[row_font.face1.length - 1].font === "명조"
+                                          ? `Nanum Myeongjo, sans-serif`
+                                          : row_font.face1[row_font.face1.length - 1].font === "바탕"
+                                          ? `Gowun Batang, sans-serif`
+                                          : row_font.face1[row_font.face1.length - 1].font === "돋움"
+                                          ? `Gowun Dodum, sans-serif`
+                                          : ""
+                                      } `,
+                                      fontSize: row_font.face1[row_font.face1.length - 1].size,
+                                      textDecoration: `${row_font.face1[row_font.face1.length - 1].underline === "on" ? "underline" : "none"}`,
+                                    }}
+                                  >
+                                    <FroalaEditorView model={item} />
+                                  </div>
+                                </>
+                              ))}
+                          </div>
+                          {/* 페이스2 스타일 영역 */}
+                          <div
+                            style={{
+                              backgroundColor: face_style[2].background.color,
+                              marginTop: face_style[2].outer_margin.top,
+                              marginBottom: face_style[2].outer_margin.bottom,
+                              marginLeft: face_style[2].outer_margin.left,
+                              marginRight: face_style[2].outer_margin.right,
+                              paddingTop: face_style[2].inner_padding.top,
+                              paddingBottom: face_style[2].inner_padding.bottom,
+                              paddingLeft: face_style[2].inner_padding.left,
+                              paddingRight: face_style[2].inner_padding.right,
+                              borderTop: `${face_style[2].border.top.thickness}px ${face_style[2].border.top.bordertype} ${face_style[2].border.top.color}`,
+                              borderBottom: `${face_style[2].border.bottom.thickness}px ${face_style[2].border.bottom.bordertype} ${face_style[2].border.bottom.color}`,
+                              borderLeft: `${face_style[2].border.left.thickness}px ${face_style[2].border.left.bordertype} ${face_style[2].border.left.color}`,
+                              borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
+                            }}
+                          >
+                            {content_value.face2.map((item, index) => (
+                              <>
+                                <div
+                                  style={{
+                                    backgroundColor: row_style.face2[index].background.color,
+                                    marginTop: row_style.face2[index].outer_margin.top,
+                                    marginBottom: row_style.face2[index].outer_margin.bottom,
+                                    marginLeft: row_style.face2[index].outer_margin.left,
+                                    marginRight: row_style.face2[index].outer_margin.right,
+                                    paddingTop: row_style.face2[index].inner_padding.top,
+                                    paddingBottom: row_style.face2[index].inner_padding.bottom,
+                                    paddingLeft: row_style.face2[index].inner_padding.left,
+                                    paddingRight: row_style.face2[index].inner_padding.right,
+                                    borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
+                                    borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
+                                    borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
+                                    borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                                    textAlign: row_font.face2[index].align,
+                                    fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
+                                    color: row_font.face2[index].color,
+                                    fontFamily: `${
+                                      row_font.face2[index].font === "고딕"
+                                        ? `Nanum Gothic, sans-serif`
+                                        : row_font.face2[index].font === "명조"
+                                        ? `Nanum Myeongjo, sans-serif`
+                                        : row_font.face2[index].font === "바탕"
+                                        ? `Gowun Batang, sans-serif`
+                                        : row_font.face2[index].font === "돋움"
+                                        ? `Gowun Dodum, sans-serif`
+                                        : ""
+                                    } `,
+                                    fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
+                                    fontSize: row_font.face2[index].size,
+                                    textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
+                                  }}
+                                >
+                                  {/* <FroalaEditorView model={item} /> */}
+                                  <div id={`face2row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
+                                </div>
+                              </>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+              {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "left-right" && (
+                <>
+                  {content._id === cardId && (
+                    <>
+                      <div
+                        style={{
+                          height: "1.5rem",
+                          padding: "0px",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "end",
+                        }}
+                      >
+                        <div style={{ height: "1.5rem" }}>
+                          <FlagFilled
+                            onClick={onClickUserFlag}
+                            style={{
+                              cursor: "pointer",
+                              fontSize: "1.5rem",
+                              color: `red`,
+                            }}
+                          />
+                          {userFlag && (
+                            <>
+                              <span style={{ marginLeft: "5px" }}>
+                                <FlagFilled
+                                  onClick={userFlagChange}
+                                  style={{
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "red",
+                                  }}
+                                />
+                                <FlagFilled
+                                  onClick={userFlagChange}
+                                  style={{
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "orange",
+                                  }}
+                                />
+                                <FlagFilled
+                                  onClick={userFlagChange}
+                                  style={{
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "yellow",
+                                  }}
+                                />
+                                <FlagFilled
+                                  onClick={userFlagChange}
+                                  style={{
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "green",
+                                  }}
+                                />
+                                <FlagFilled
+                                  onClick={userFlagChange}
+                                  style={{
+                                    cursor: "pointer",
+                                    fontSize: "1.5rem",
+                                    color: "blue",
+                                  }}
+                                />
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              alignItems: "end",
+                            }}
+                          >
+                            {cardClickMenu && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  alignItems: "end",
+                                }}
+                              >
+                                <Button
+                                  size="small"
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    height: "1.5rem",
+                                    marginRight: "5px",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  메모추가
+                                </Button>
+                                <Button
+                                  size="small"
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    height: "1.5rem",
+                                    marginRight: "5px",
+                                    borderRadius: "5px",
+                                  }}
+                                >
+                                  새카드생성
+                                </Button>
+                              </div>
+                            )}
+                            <MenuFoldOutlined
+                              onClick={onClickCardMenu}
+                              style={{
+                                fontSize: "1.5rem",
+                                color: "grey",
+                                lineHeight: "1px",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div
+                        style={{
+                          padding: "0px",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "end",
+                        }}
+                      >
+                        <div
+                          style={{
+                            backgroundColor: "red",
+                            height: "4px",
+                            width: "20px",
+                            borderRadius: "2px",
+                          }}
+                        ></div>
+                        <div></div>
+                      </div>
+                    </>
+                  )}
+                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
+                    <div style={{ marginBottom: "0px" }}>
+                      <div
+                        onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
+                        // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
+                      >
+                        <div
+                          style={{
+                            backgroundColor: face_style[0].background.color,
+                            marginTop: face_style[0].outer_margin.top,
+                            marginBottom: face_style[0].outer_margin.bottom,
+                            marginLeft: face_style[0].outer_margin.left,
+                            marginRight: face_style[0].outer_margin.right,
+                            paddingTop: face_style[0].inner_padding.top,
+                            paddingBottom: face_style[0].inner_padding.bottom,
+                            paddingLeft: face_style[0].inner_padding.left,
+                            paddingRight: face_style[0].inner_padding.right,
+                            borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
+                            borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
+                            borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
+                            borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
+                          }}
+                        >
+                          {/* 페이스1 스타일 영역 */}
+                          {content.content.makerFlag.value !== null && flagArea}
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              justifyContent: "flex-start",
+                              width: "100%",
+                            }}
+                          >
                             <div
                               style={{
+                                width: `${current_card_style[0].cardtype_info.flip_option.left_face_ratio}%`,
                                 backgroundColor: face_style[1].background.color,
                                 marginTop: face_style[1].outer_margin.top,
                                 marginBottom: face_style[1].outer_margin.bottom,
                                 marginLeft: face_style[1].outer_margin.left,
                                 marginRight: face_style[1].outer_margin.right,
                                 paddingTop: face_style[1].inner_padding.top,
-                                paddingBottom:
-                                  face_style[1].inner_padding.bottom,
+                                paddingBottom: face_style[1].inner_padding.bottom,
                                 paddingLeft: face_style[1].inner_padding.left,
                                 paddingRight: face_style[1].inner_padding.right,
                                 borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
@@ -1799,69 +1877,38 @@ const ReadMode = () => {
                                 <>
                                   <div
                                     style={{
-                                      backgroundColor:
-                                        row_style.face1[index].background.color,
-                                      marginTop:
-                                        row_style.face1[index].outer_margin.top,
-                                      marginBottom:
-                                        row_style.face1[index].outer_margin
-                                          .bottom,
-                                      marginLeft:
-                                        row_style.face1[index].outer_margin
-                                          .left,
-                                      marginRight:
-                                        row_style.face1[index].outer_margin
-                                          .right,
-                                      paddingTop:
-                                        row_style.face1[index].inner_padding
-                                          .top,
-                                      paddingBottom:
-                                        row_style.face1[index].inner_padding
-                                          .bottom,
-                                      paddingLeft:
-                                        row_style.face1[index].inner_padding
-                                          .left,
-                                      paddingRight:
-                                        row_style.face1[index].inner_padding
-                                          .right,
+                                      backgroundColor: row_style.face1[index].background.color,
+                                      marginTop: row_style.face1[index].outer_margin.top,
+                                      marginBottom: row_style.face1[index].outer_margin.bottom,
+                                      marginLeft: row_style.face1[index].outer_margin.left,
+                                      marginRight: row_style.face1[index].outer_margin.right,
+                                      paddingTop: row_style.face1[index].inner_padding.top,
+                                      paddingBottom: row_style.face1[index].inner_padding.bottom,
+                                      paddingLeft: row_style.face1[index].inner_padding.left,
+                                      paddingRight: row_style.face1[index].inner_padding.right,
                                       borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
                                       borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
                                       borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
                                       borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
                                       textAlign: row_font.face1[index].align,
-                                      fontWeight: `${
-                                        row_font.face1[index].bold === "on"
-                                          ? 700
-                                          : 400
-                                      }`,
+                                      fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
                                       color: row_font.face1[index].color,
                                       fontFamily: `${
                                         row_font.face1[index].font === "고딕"
                                           ? `Nanum Gothic, sans-serif`
-                                          : row_font.face1[index].font ===
-                                            "명조"
+                                          : row_font.face1[index].font === "명조"
                                           ? `Nanum Myeongjo, sans-serif`
-                                          : row_font.face1[index].font ===
-                                            "바탕"
+                                          : row_font.face1[index].font === "바탕"
                                           ? `Gowun Batang, sans-serif`
-                                          : row_font.face1[index].font ===
-                                            "돋움"
+                                          : row_font.face1[index].font === "돋움"
                                           ? `Gowun Dodum, sans-serif`
                                           : ""
                                       } `,
                                       fontSize: row_font.face1[index].size,
-                                      textDecoration: `${
-                                        row_font.face1[index].underline === "on"
-                                          ? "underline"
-                                          : "none"
-                                      }`,
+                                      textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                     }}
                                   >
-                                    {/* <FroalaEditorView model={item} /> */}
-                                    <div
-                                      id={`face1row${index + 1}`}
-                                      dangerouslySetInnerHTML={{ __html: item }}
-                                    ></div>
+                                    <FroalaEditorView model={item} />
                                   </div>
                                 </>
                               ))}
@@ -1870,139 +1917,35 @@ const ReadMode = () => {
                                   <>
                                     <div
                                       style={{
-                                        backgroundColor:
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].background.color,
-                                        marginTop:
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].outer_margin.top,
-                                        marginBottom:
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].outer_margin.bottom,
-                                        marginLeft:
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].outer_margin.left,
-                                        marginRight:
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].outer_margin.right,
-                                        paddingTop:
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].inner_padding.top,
-                                        paddingBottom:
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].inner_padding.bottom,
-                                        paddingLeft:
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].inner_padding.left,
-                                        paddingRight:
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].inner_padding.right,
-                                        borderTop: `${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.top.thickness
-                                        }px ${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.top.bordertype
-                                        } ${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.top.color
-                                        }`,
-                                        borderBottom: `${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.bottom.thickness
-                                        }px ${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.bottom.bordertype
-                                        } ${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.bottom.color
-                                        }`,
-                                        borderLeft: `${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.left.thickness
-                                        }px ${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.left.bordertype
-                                        } ${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.left.color
-                                        }`,
-                                        borderRight: `${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.right.thickness
-                                        }px ${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.right.bordertype
-                                        } ${
-                                          row_style.face1[
-                                            row_style.face1.length - 1
-                                          ].border.right.color
-                                        }`,
-                                        textAlign:
-                                          row_font.face1[
-                                            row_font.face1.length - 1
-                                          ].align,
-                                        fontWeight: `${
-                                          row_font.face1[
-                                            row_font.face1.length - 1
-                                          ].bold === "on"
-                                            ? 700
-                                            : 400
-                                        }`,
-                                        color:
-                                          row_font.face1[
-                                            row_font.face1.length - 1
-                                          ].color,
+                                        backgroundColor: row_style.face1[index].background.color,
+                                        marginTop: row_style.face1[index].outer_margin.top,
+                                        marginBottom: row_style.face1[index].outer_margin.bottom,
+                                        marginLeft: row_style.face1[index].outer_margin.left,
+                                        marginRight: row_style.face1[index].outer_margin.right,
+                                        paddingTop: row_style.face1[index].inner_padding.top,
+                                        paddingBottom: row_style.face1[index].inner_padding.bottom,
+                                        paddingLeft: row_style.face1[index].inner_padding.left,
+                                        paddingRight: row_style.face1[index].inner_padding.right,
+                                        borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
+                                        borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
+                                        borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
+                                        borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
+                                        textAlign: row_font.face1[index].align,
+                                        fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
+                                        color: row_font.face1[index].color,
                                         fontFamily: `${
-                                          row_font.face1[
-                                            row_font.face1.length - 1
-                                          ].font === "고딕"
+                                          row_font.face1[index].font === "고딕"
                                             ? `Nanum Gothic, sans-serif`
-                                            : row_font.face1[
-                                                row_font.face1.length - 1
-                                              ].font === "명조"
+                                            : row_font.face1[index].font === "명조"
                                             ? `Nanum Myeongjo, sans-serif`
-                                            : row_font.face1[
-                                                row_font.face1.length - 1
-                                              ].font === "바탕"
+                                            : row_font.face1[index].font === "바탕"
                                             ? `Gowun Batang, sans-serif`
-                                            : row_font.face1[
-                                                row_font.face1.length - 1
-                                              ].font === "돋움"
+                                            : row_font.face1[index].font === "돋움"
                                             ? `Gowun Dodum, sans-serif`
                                             : ""
                                         } `,
-                                        fontSize:
-                                          row_font.face1[
-                                            row_font.face1.length - 1
-                                          ].size,
-                                        textDecoration: `${
-                                          row_font.face1[
-                                            row_font.face1.length - 1
-                                          ].underline === "on"
-                                            ? "underline"
-                                            : "none"
-                                        }`,
+                                        fontSize: row_font.face1[index].size,
+                                        textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                       }}
                                     >
                                       <FroalaEditorView model={item} />
@@ -2013,14 +1956,14 @@ const ReadMode = () => {
                             {/* 페이스2 스타일 영역 */}
                             <div
                               style={{
+                                width: `${100 - current_card_style[0].cardtype_info.flip_option.left_face_ratio}%`,
                                 backgroundColor: face_style[2].background.color,
                                 marginTop: face_style[2].outer_margin.top,
                                 marginBottom: face_style[2].outer_margin.bottom,
                                 marginLeft: face_style[2].outer_margin.left,
                                 marginRight: face_style[2].outer_margin.right,
                                 paddingTop: face_style[2].inner_padding.top,
-                                paddingBottom:
-                                  face_style[2].inner_padding.bottom,
+                                paddingBottom: face_style[2].inner_padding.bottom,
                                 paddingLeft: face_style[2].inner_padding.left,
                                 paddingRight: face_style[2].inner_padding.right,
                                 borderTop: `${face_style[2].border.top.thickness}px ${face_style[2].border.top.bordertype} ${face_style[2].border.top.color}`,
@@ -2033,74 +1976,39 @@ const ReadMode = () => {
                                 <>
                                   <div
                                     style={{
-                                      backgroundColor:
-                                        row_style.face2[index].background.color,
-                                      marginTop:
-                                        row_style.face2[index].outer_margin.top,
-                                      marginBottom:
-                                        row_style.face2[index].outer_margin
-                                          .bottom,
-                                      marginLeft:
-                                        row_style.face2[index].outer_margin
-                                          .left,
-                                      marginRight:
-                                        row_style.face2[index].outer_margin
-                                          .right,
-                                      paddingTop:
-                                        row_style.face2[index].inner_padding
-                                          .top,
-                                      paddingBottom:
-                                        row_style.face2[index].inner_padding
-                                          .bottom,
-                                      paddingLeft:
-                                        row_style.face2[index].inner_padding
-                                          .left,
-                                      paddingRight:
-                                        row_style.face2[index].inner_padding
-                                          .right,
+                                      backgroundColor: row_style.face2[index].background.color,
+                                      marginTop: row_style.face2[index].outer_margin.top,
+                                      marginBottom: row_style.face2[index].outer_margin.bottom,
+                                      marginLeft: row_style.face2[index].outer_margin.left,
+                                      marginRight: row_style.face2[index].outer_margin.right,
+                                      paddingTop: row_style.face2[index].inner_padding.top,
+                                      paddingBottom: row_style.face2[index].inner_padding.bottom,
+                                      paddingLeft: row_style.face2[index].inner_padding.left,
+                                      paddingRight: row_style.face2[index].inner_padding.right,
                                       borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
                                       borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
                                       borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
                                       borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
                                       textAlign: row_font.face2[index].align,
-                                      fontWeight: `${
-                                        row_font.face2[index].bold === "on"
-                                          ? 700
-                                          : 400
-                                      }`,
+                                      fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
                                       color: row_font.face2[index].color,
                                       fontFamily: `${
                                         row_font.face2[index].font === "고딕"
                                           ? `Nanum Gothic, sans-serif`
-                                          : row_font.face2[index].font ===
-                                            "명조"
+                                          : row_font.face2[index].font === "명조"
                                           ? `Nanum Myeongjo, sans-serif`
-                                          : row_font.face2[index].font ===
-                                            "바탕"
+                                          : row_font.face2[index].font === "바탕"
                                           ? `Gowun Batang, sans-serif`
-                                          : row_font.face2[index].font ===
-                                            "돋움"
+                                          : row_font.face2[index].font === "돋움"
                                           ? `Gowun Dodum, sans-serif`
                                           : ""
                                       } `,
-                                      fontStyle: `${
-                                        row_font.face2[index].italic === "on"
-                                          ? "italic"
-                                          : "normal"
-                                      }`,
+                                      fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
                                       fontSize: row_font.face2[index].size,
-                                      textDecoration: `${
-                                        row_font.face2[index].underline === "on"
-                                          ? "underline"
-                                          : "none"
-                                      }`,
+                                      textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
                                     }}
                                   >
-                                    {/* <FroalaEditorView model={item} /> */}
-                                    <div
-                                      id={`face2row${index + 1}`}
-                                      dangerouslySetInnerHTML={{ __html: item }}
-                                    ></div>
+                                    <FroalaEditorView model={item} />
                                   </div>
                                 </>
                               ))}
@@ -2109,473 +2017,9 @@ const ReadMode = () => {
                         </div>
                       </div>
                     </div>
-                  </>
-                )}
-              {content.card_info.cardtype === "flip" &&
-                current_card_style[0].cardtype_info.flip_option
-                  .card_direction === "left-right" && (
-                  <>
-                    {content._id === cardId && (
-                      <>
-                        <div
-                          style={{
-                            height: "1.5rem",
-                            padding: "0px",
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "end",
-                          }}
-                        >
-                          <div style={{ height: "1.5rem" }}>
-                            <FlagFilled
-                              onClick={onClickUserFlag}
-                              style={{
-                                cursor: "pointer",
-                                fontSize: "1.5rem",
-                                color: `red`,
-                              }}
-                            />
-                            {userFlag && (
-                              <>
-                                <span style={{ marginLeft: "5px" }}>
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "red",
-                                    }}
-                                  />
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "orange",
-                                    }}
-                                  />
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "yellow",
-                                    }}
-                                  />
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "green",
-                                    }}
-                                  />
-                                  <FlagFilled
-                                    onClick={userFlagChange}
-                                    style={{
-                                      cursor: "pointer",
-                                      fontSize: "1.5rem",
-                                      color: "blue",
-                                    }}
-                                  />
-                                </span>
-                              </>
-                            )}
-                          </div>
-                          <div style={{ lineHeight: "1.5rem" }}>
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "end",
-                              }}
-                            >
-                              {cardClickMenu && (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    alignItems: "end",
-                                  }}
-                                >
-                                  <Button
-                                    size="small"
-                                    style={{
-                                      fontSize: "0.8rem",
-                                      height: "1.5rem",
-                                      marginRight: "5px",
-                                      borderRadius: "5px",
-                                    }}
-                                  >
-                                    메모추가
-                                  </Button>
-                                  <Button
-                                    size="small"
-                                    style={{
-                                      fontSize: "0.8rem",
-                                      height: "1.5rem",
-                                      marginRight: "5px",
-                                      borderRadius: "5px",
-                                    }}
-                                  >
-                                    새카드생성
-                                  </Button>
-                                </div>
-                              )}
-                              <MenuFoldOutlined
-                                onClick={onClickCardMenu}
-                                style={{
-                                  fontSize: "1.5rem",
-                                  color: "grey",
-                                  lineHeight: "1px",
-                                }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {content._id !== cardId && (
-                      <>
-                        <div
-                          style={{
-                            padding: "0px",
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                            alignItems: "end",
-                          }}
-                        >
-                          <div
-                            style={{
-                              backgroundColor: "red",
-                              height: "4px",
-                              width: "20px",
-                              borderRadius: "2px",
-                            }}
-                          >
-                            {" "}
-                          </div>
-                          <div></div>
-                        </div>
-                      </>
-                    )}
-                    <div
-                      className={`${content.card_info.parentCard_id} ${content._id} child_group other`}
-                    >
-                      <div style={{ marginBottom: "0px" }}>
-                        <div
-                          onClick={() =>
-                            onClickCard(
-                              content._id,
-                              "flip",
-                              content.card_info.parentCard_id
-                            )
-                          }
-                          // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
-                        >
-                          <div
-                            style={{
-                              backgroundColor: face_style[0].background.color,
-                              marginTop: face_style[0].outer_margin.top,
-                              marginBottom: face_style[0].outer_margin.bottom,
-                              marginLeft: face_style[0].outer_margin.left,
-                              marginRight: face_style[0].outer_margin.right,
-                              paddingTop: face_style[0].inner_padding.top,
-                              paddingBottom: face_style[0].inner_padding.bottom,
-                              paddingLeft: face_style[0].inner_padding.left,
-                              paddingRight: face_style[0].inner_padding.right,
-                              borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
-                              borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
-                              borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
-                              borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
-                            }}
-                          >
-                            {/* 페이스1 스타일 영역 */}
-                            {content.content.makerFlag.value !== null &&
-                              flagArea}
-                            <div
-                              style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "flex-start",
-                                width: "100%",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  width: `${current_card_style[0].cardtype_info.flip_option.left_face_ratio}%`,
-                                  backgroundColor:
-                                    face_style[1].background.color,
-                                  marginTop: face_style[1].outer_margin.top,
-                                  marginBottom:
-                                    face_style[1].outer_margin.bottom,
-                                  marginLeft: face_style[1].outer_margin.left,
-                                  marginRight: face_style[1].outer_margin.right,
-                                  paddingTop: face_style[1].inner_padding.top,
-                                  paddingBottom:
-                                    face_style[1].inner_padding.bottom,
-                                  paddingLeft: face_style[1].inner_padding.left,
-                                  paddingRight:
-                                    face_style[1].inner_padding.right,
-                                  borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
-                                  borderBottom: `${face_style[1].border.bottom.thickness}px ${face_style[1].border.bottom.bordertype} ${face_style[1].border.bottom.color}`,
-                                  borderLeft: `${face_style[1].border.left.thickness}px ${face_style[1].border.left.bordertype} ${face_style[1].border.left.color}`,
-                                  borderRight: `${face_style[1].border.right.thickness}px ${face_style[1].border.right.bordertype} ${face_style[1].border.right.color}`,
-                                }}
-                              >
-                                {content_value.face1.map((item, index) => (
-                                  <>
-                                    <div
-                                      style={{
-                                        backgroundColor:
-                                          row_style.face1[index].background
-                                            .color,
-                                        marginTop:
-                                          row_style.face1[index].outer_margin
-                                            .top,
-                                        marginBottom:
-                                          row_style.face1[index].outer_margin
-                                            .bottom,
-                                        marginLeft:
-                                          row_style.face1[index].outer_margin
-                                            .left,
-                                        marginRight:
-                                          row_style.face1[index].outer_margin
-                                            .right,
-                                        paddingTop:
-                                          row_style.face1[index].inner_padding
-                                            .top,
-                                        paddingBottom:
-                                          row_style.face1[index].inner_padding
-                                            .bottom,
-                                        paddingLeft:
-                                          row_style.face1[index].inner_padding
-                                            .left,
-                                        paddingRight:
-                                          row_style.face1[index].inner_padding
-                                            .right,
-                                        borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
-                                        borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
-                                        borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
-                                        borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
-                                        textAlign: row_font.face1[index].align,
-                                        fontWeight: `${
-                                          row_font.face1[index].bold === "on"
-                                            ? 700
-                                            : 400
-                                        }`,
-                                        color: row_font.face1[index].color,
-                                        fontFamily: `${
-                                          row_font.face1[index].font === "고딕"
-                                            ? `Nanum Gothic, sans-serif`
-                                            : row_font.face1[index].font ===
-                                              "명조"
-                                            ? `Nanum Myeongjo, sans-serif`
-                                            : row_font.face1[index].font ===
-                                              "바탕"
-                                            ? `Gowun Batang, sans-serif`
-                                            : row_font.face1[index].font ===
-                                              "돋움"
-                                            ? `Gowun Dodum, sans-serif`
-                                            : ""
-                                        } `,
-                                        fontSize: row_font.face1[index].size,
-                                        textDecoration: `${
-                                          row_font.face1[index].underline ===
-                                          "on"
-                                            ? "underline"
-                                            : "none"
-                                        }`,
-                                      }}
-                                    >
-                                      <FroalaEditorView model={item} />
-                                    </div>
-                                  </>
-                                ))}
-                                {content_value.selection &&
-                                  content_value.selection.map((item, index) => (
-                                    <>
-                                      <div
-                                        style={{
-                                          backgroundColor:
-                                            row_style.face1[index].background
-                                              .color,
-                                          marginTop:
-                                            row_style.face1[index].outer_margin
-                                              .top,
-                                          marginBottom:
-                                            row_style.face1[index].outer_margin
-                                              .bottom,
-                                          marginLeft:
-                                            row_style.face1[index].outer_margin
-                                              .left,
-                                          marginRight:
-                                            row_style.face1[index].outer_margin
-                                              .right,
-                                          paddingTop:
-                                            row_style.face1[index].inner_padding
-                                              .top,
-                                          paddingBottom:
-                                            row_style.face1[index].inner_padding
-                                              .bottom,
-                                          paddingLeft:
-                                            row_style.face1[index].inner_padding
-                                              .left,
-                                          paddingRight:
-                                            row_style.face1[index].inner_padding
-                                              .right,
-                                          borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
-                                          borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
-                                          borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
-                                          borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
-                                          textAlign:
-                                            row_font.face1[index].align,
-                                          fontWeight: `${
-                                            row_font.face1[index].bold === "on"
-                                              ? 700
-                                              : 400
-                                          }`,
-                                          color: row_font.face1[index].color,
-                                          fontFamily: `${
-                                            row_font.face1[index].font ===
-                                            "고딕"
-                                              ? `Nanum Gothic, sans-serif`
-                                              : row_font.face1[index].font ===
-                                                "명조"
-                                              ? `Nanum Myeongjo, sans-serif`
-                                              : row_font.face1[index].font ===
-                                                "바탕"
-                                              ? `Gowun Batang, sans-serif`
-                                              : row_font.face1[index].font ===
-                                                "돋움"
-                                              ? `Gowun Dodum, sans-serif`
-                                              : ""
-                                          } `,
-                                          fontSize: row_font.face1[index].size,
-                                          textDecoration: `${
-                                            row_font.face1[index].underline ===
-                                            "on"
-                                              ? "underline"
-                                              : "none"
-                                          }`,
-                                        }}
-                                      >
-                                        <FroalaEditorView model={item} />
-                                      </div>
-                                    </>
-                                  ))}
-                              </div>
-                              {/* 페이스2 스타일 영역 */}
-                              <div
-                                style={{
-                                  width: `${
-                                    100 -
-                                    current_card_style[0].cardtype_info
-                                      .flip_option.left_face_ratio
-                                  }%`,
-                                  backgroundColor:
-                                    face_style[2].background.color,
-                                  marginTop: face_style[2].outer_margin.top,
-                                  marginBottom:
-                                    face_style[2].outer_margin.bottom,
-                                  marginLeft: face_style[2].outer_margin.left,
-                                  marginRight: face_style[2].outer_margin.right,
-                                  paddingTop: face_style[2].inner_padding.top,
-                                  paddingBottom:
-                                    face_style[2].inner_padding.bottom,
-                                  paddingLeft: face_style[2].inner_padding.left,
-                                  paddingRight:
-                                    face_style[2].inner_padding.right,
-                                  borderTop: `${face_style[2].border.top.thickness}px ${face_style[2].border.top.bordertype} ${face_style[2].border.top.color}`,
-                                  borderBottom: `${face_style[2].border.bottom.thickness}px ${face_style[2].border.bottom.bordertype} ${face_style[2].border.bottom.color}`,
-                                  borderLeft: `${face_style[2].border.left.thickness}px ${face_style[2].border.left.bordertype} ${face_style[2].border.left.color}`,
-                                  borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
-                                }}
-                              >
-                                {content_value.face2.map((item, index) => (
-                                  <>
-                                    <div
-                                      style={{
-                                        backgroundColor:
-                                          row_style.face2[index].background
-                                            .color,
-                                        marginTop:
-                                          row_style.face2[index].outer_margin
-                                            .top,
-                                        marginBottom:
-                                          row_style.face2[index].outer_margin
-                                            .bottom,
-                                        marginLeft:
-                                          row_style.face2[index].outer_margin
-                                            .left,
-                                        marginRight:
-                                          row_style.face2[index].outer_margin
-                                            .right,
-                                        paddingTop:
-                                          row_style.face2[index].inner_padding
-                                            .top,
-                                        paddingBottom:
-                                          row_style.face2[index].inner_padding
-                                            .bottom,
-                                        paddingLeft:
-                                          row_style.face2[index].inner_padding
-                                            .left,
-                                        paddingRight:
-                                          row_style.face2[index].inner_padding
-                                            .right,
-                                        borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
-                                        borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
-                                        borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
-                                        borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
-                                        textAlign: row_font.face2[index].align,
-                                        fontWeight: `${
-                                          row_font.face2[index].bold === "on"
-                                            ? 700
-                                            : 400
-                                        }`,
-                                        color: row_font.face2[index].color,
-                                        fontFamily: `${
-                                          row_font.face2[index].font === "고딕"
-                                            ? `Nanum Gothic, sans-serif`
-                                            : row_font.face2[index].font ===
-                                              "명조"
-                                            ? `Nanum Myeongjo, sans-serif`
-                                            : row_font.face2[index].font ===
-                                              "바탕"
-                                            ? `Gowun Batang, sans-serif`
-                                            : row_font.face2[index].font ===
-                                              "돋움"
-                                            ? `Gowun Dodum, sans-serif`
-                                            : ""
-                                        } `,
-                                        fontStyle: `${
-                                          row_font.face2[index].italic === "on"
-                                            ? "italic"
-                                            : "normal"
-                                        }`,
-                                        fontSize: row_font.face2[index].size,
-                                        textDecoration: `${
-                                          row_font.face2[index].underline ===
-                                          "on"
-                                            ? "underline"
-                                            : "none"
-                                        }`,
-                                      }}
-                                    >
-                                      <FroalaEditorView model={item} />
-                                    </div>
-                                  </>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
+                  </div>
+                </>
+              )}
             </>
           );
         }
@@ -2724,19 +2168,13 @@ const Alter = ({ content, item, index, getSelectionText2 }) => {
   var altered = item;
   if (content.content.hidden.length > 0) {
     content.content.hidden.map((element) => {
-      altered = altered.replace(
-        element.targetWord,
-        `<span style="background-color:${element.color}; color:${element.color}">${element.targetWord}</span>`
-      );
+      altered = altered.replace(element.targetWord, `<span style="background-color:${element.color}; color:${element.color}">${element.targetWord}</span>`);
     });
   }
   if (content.content.underline.length > 0) {
     content.content.underline.map((element) => {
       console.log(element);
-      altered = altered.replace(
-        element.targetWord,
-        `<span style="display:inline-block; border-bottom: ${element.toolType}px solid ${element.color}">${element.targetWord}</span>`
-      );
+      altered = altered.replace(element.targetWord, `<span style="display:inline-block; border-bottom: ${element.toolType}px solid ${element.color}">${element.targetWord}</span>`);
     });
   }
   return (

@@ -276,10 +276,10 @@ const BooksTable = ({ category, myBook }) => {
                 getContainer={false}
               >
                 <Space size={3}>
-                  <BookOrderButton
+                  {/* <BookOrderButton
                     _record={_record}
                     changeFoldedMenu={changeFoldedMenu}
-                  />{" "}
+                  />{" "} */}
                   |
                   <FavoriteBook
                     record={_record}

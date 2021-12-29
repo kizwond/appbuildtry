@@ -239,7 +239,6 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
   })(numberOfFilteredCards, sortOption);
 
   return sortedCards.map((card, seqInCardlist) => {
-    console.log(card.studyStatus.statusCurrent);
     return {
       ...card,
       seqInCardlist,

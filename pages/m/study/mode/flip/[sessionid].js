@@ -122,7 +122,11 @@ const FlipMode = () => {
           marginTop: "50px",
         }}
       >
-        <FlipContainer cardListStudying={cardListStudying} contentsList={contentsList} sessionScope={sessionScope} levelConfigs={levelConfigs} cardTypeSets={cardTypeSets} />
+        {contentsList.length > 0 && (
+          <>
+            <FlipContainer cardListStudying={cardListStudying} contentsList={contentsList} sessionScope={sessionScope} levelConfigs={levelConfigs} cardTypeSets={cardTypeSets} />
+          </>
+        )}
       </div>
       {data && (
         <>

@@ -134,6 +134,7 @@ const StudySessionConfig = () => {
           numberOfFilteredCards,
           sortOption: sessionConfig.detailedOption.sortOption,
         });
+        console.log(sortedCards);
         if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
           const { studyingCards, remainedCards } = getCardsByNumber({
             sortedCards,
@@ -164,9 +165,9 @@ const StudySessionConfig = () => {
         }
         console.timeEnd("카드스터딩넣기");
 
-        router.push(
-          `/m/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
-        );
+        // router.push(
+        //   `/m/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
+        // );
       } else if (_data.session_createSession.status === "401") {
         router.push("/m/account/login");
       } else {

@@ -238,25 +238,28 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
     }
   })(numberOfFilteredCards, sortOption);
 
-  return sortedCards.map((card, seqInCardlist) => ({
-    ...card,
-    seqInCardlist,
-    card_info: {
-      ...card.card_info,
-      card_id: card._id,
-    },
-    studyStatus: {
-      ...card.studyStatus,
-      statusOriginal: card.studyStatus.statusCurret,
-      statusPrev: card.studyStatus.statusCurrent,
-      levelOriginal: card.studyStatus.levelCurrent,
-      userFlagOriginal: card.content.userFlag,
-      userFlagPrev: card.content.userFlag,
-      studyTimesInSession: 0,
-      studyHourInSession: new Date(0),
-      needStudyTimeTmp: null,
-    },
-  }));
+  return sortedCards.map((card, seqInCardlist) => {
+    console.log(card.studyStatus.statusCurrent);
+    return {
+      ...card,
+      seqInCardlist,
+      card_info: {
+        ...card.card_info,
+        card_id: card._id,
+      },
+      studyStatus: {
+        ...card.studyStatus,
+        statusOriginal: card.studyStatus.statusCurrent,
+        statusPrev: card.studyStatus.statusCurrent,
+        levelOriginal: card.studyStatus.levelCurrent,
+        userFlagOriginal: card.content.userFlag,
+        userFlagPrev: card.content.userFlag,
+        studyTimesInSession: 0,
+        studyHourInSession: new Date(0),
+        needStudyTimeTmp: null,
+      },
+    };
+  });
 };
 
 export const getCardsByNumber = ({ sortedCards, numStartCards }) => {

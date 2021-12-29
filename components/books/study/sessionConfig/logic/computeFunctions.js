@@ -284,11 +284,11 @@ export const getCardsByNumber = ({ sortedCards, numStartCards }) => {
   ].sort((a, b) => a.seqInCardlist - b.seqInCardlist);
   return {
     studyingCards,
-    RemainedCards: {
-      yetCards,
-      ingCards,
-      completedCards,
-      holdCards,
+    remainedCards: {
+      yet: yetCards,
+      ing: ingCards,
+      completed: completedCards,
+      hold: holdCards,
     },
   };
 };

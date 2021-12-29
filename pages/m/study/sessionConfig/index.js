@@ -127,28 +127,36 @@ const StudySessionConfig = () => {
         sessionStorage.setItem("study_mode", sessionConfig.studyMode);
         sessionStorage.removeItem("cardListStudying");
         console.time("카드스터딩넣기");
+        const sortedCards = sortFilteredCards({
+          numberOfFilteredCards,
+          sortOption: sessionConfig.detailedOption.sortOption,
+        });
         if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
+          const { studyingCards, remainedCards } = getCardsByNumber({
+            sortedCards,
+            numStartCards: sessionConfig.detailedOption.numStartCards,
+          });
           sessionStorage.setItem(
             "cardListStudying2",
-            JSON.stringify(
-              getCardsByNumber({
-                sortedCards: sortFilteredCards({
-                  numberOfFilteredCards,
-                  sortOption: sessionConfig.detailedOption.sortOption,
-                }),
-                numStartCards: sessionConfig.detailedOption.numStartCards,
-              })
-            )
+            JSON.stringify(studyingCards)
+          );
+          sessionStorage.setItem(
+            "cardlistRemained",
+            JSON.stringify(remainedCards)
           );
         } else {
           sessionStorage.setItem(
             "cardListStudying2",
-            JSON.stringify(
-              sortFilteredCards({
-                numberOfFilteredCards,
-                sortOption: sessionConfig.detailedOption.sortOption,
-              })
-            )
+            JSON.stringify(sortedCards)
+          );
+          sessionStorage.setItem(
+            "cardlistRemained",
+            JSON.stringify({
+              yet: [],
+              ing: [],
+              hold: [],
+              completed: [],
+            })
           );
         }
         console.timeEnd("카드스터딩넣기");

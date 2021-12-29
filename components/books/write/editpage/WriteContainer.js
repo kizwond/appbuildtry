@@ -343,9 +343,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                             color: row_font.face1[index].color,
                             fontFamily: `${
                               row_font.face1[index].font === "고딕"
-                                ? `NanumGothic`
+                                ? `Nanum Gothic, sans-serif`
                                 : row_font.face1[index].font === "명조"
-                                ? `NanumMyeongjo`
+                                ? `Nanum Myeongjo, sans-serif`
                                 : row_font.face1[index].font === "바탕"
                                 ? `Gowun Batang, sans-serif`
                                 : row_font.face1[index].font === "돋움"
@@ -426,9 +426,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                             color: row_font.face1[index].color,
                             fontFamily: `${
                               row_font.face1[index].font === "고딕"
-                                ? `NanumGothic`
+                                ? `Nanum Gothic, sans-serif`
                                 : row_font.face1[index].font === "명조"
-                                ? `NanumMyeongjo`
+                                ? `Nanum Myeongjo, sans-serif`
                                 : row_font.face1[index].font === "바탕"
                                 ? `Gowun Batang, sans-serif`
                                 : row_font.face1[index].font === "돋움"
@@ -509,9 +509,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                             color: row_font.face1[index].color,
                             fontFamily: `${
                               row_font.face1[index].font === "고딕"
-                                ? `NanumGothic`
+                                ? `Nanum Gothic, sans-serif`
                                 : row_font.face1[index].font === "명조"
-                                ? `NanumMyeongjo`
+                                ? `Nanum Myeongjo, sans-serif`
                                 : row_font.face1[index].font === "바탕"
                                 ? `Gowun Batang, sans-serif`
                                 : row_font.face1[index].font === "돋움"
@@ -592,9 +592,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                             color: row_font.face1[index].color,
                             fontFamily: `${
                               row_font.face1[index].font === "고딕"
-                                ? `NanumGothic`
+                                ? `Nanum Gothic, sans-serif`
                                 : row_font.face1[index].font === "명조"
-                                ? `NanumMyeongjo`
+                                ? `Nanum Myeongjo, sans-serif`
                                 : row_font.face1[index].font === "바탕"
                                 ? `Gowun Batang, sans-serif`
                                 : row_font.face1[index].font === "돋움"
@@ -650,9 +650,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                             color: row_font.face2[index].color,
                             fontFamily: `${
                               row_font.face2[index].font === "고딕"
-                                ? `NanumGothic`
+                                ? `Nanum Gothic, sans-serif`
                                 : row_font.face2[index].font === "명조"
-                                ? `NanumMyeongjo`
+                                ? `Nanum Myeongjo, sans-serif`
                                 : row_font.face2[index].font === "바탕"
                                 ? `Gowun Batang, sans-serif`
                                 : row_font.face2[index].font === "돋움"
@@ -735,9 +735,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                               color: row_font.face1[index].color,
                               fontFamily: `${
                                 row_font.face1[index].font === "고딕"
-                                  ? `NanumGothic`
+                                  ? `Nanum Gothic, sans-serif`
                                   : row_font.face1[index].font === "명조"
-                                  ? `NanumMyeongjo`
+                                  ? `Nanum Myeongjo, sans-serif`
                                   : row_font.face1[index].font === "바탕"
                                   ? `Gowun Batang, sans-serif`
                                   : row_font.face1[index].font === "돋움"
@@ -793,9 +793,9 @@ const WriteContainer = ({ indexChanged, indexSetId, book_id, Editor, EditorFromC
                               color: row_font.face2[index].color,
                               fontFamily: `${
                                 row_font.face2[index].font === "고딕"
-                                  ? `NanumGothic`
+                                  ? `Nanum Gothic, sans-serif`
                                   : row_font.face2[index].font === "명조"
-                                  ? `NanumMyeongjo`
+                                  ? `Nanum Myeongjo, sans-serif`
                                   : row_font.face2[index].font === "바탕"
                                   ? `Gowun Batang, sans-serif`
                                   : row_font.face2[index].font === "돋움"

@@ -696,9 +696,9 @@ const ReadMode = () => {
                     color: comment_font_color,
                     fontFamily: `${
                       comment_font_font === "고딕"
-                        ? `NanumGothic`
+                        ? `Nanum Gothic, sans-serif`
                         : comment_font_font === "명조"
-                        ? `NanumMyeongjo`
+                        ? `Nanum Myeongjo, sans-serif`
                         : comment_font_font === "바탕"
                         ? `Gowun Batang, sans-serif`
                         : comment_font_font === "돋움"
@@ -1304,9 +1304,9 @@ const ReadMode = () => {
                                   color: row_font.face1[index].color,
                                   fontFamily: `${
                                     row_font.face1[index].font === "고딕"
-                                      ? `NanumGothic`
+                                      ? `Nanum Gothic, sans-serif`
                                       : row_font.face1[index].font === "명조"
-                                      ? `NanumMyeongjo`
+                                      ? `Nanum Myeongjo, sans-serif`
                                       : row_font.face1[index].font === "바탕"
                                       ? `Gowun Batang, sans-serif`
                                       : row_font.face1[index].font === "돋움"
@@ -1561,9 +1561,9 @@ const ReadMode = () => {
                                   color: row_font.face1[index].color,
                                   fontFamily: `${
                                     row_font.face1[index].font === "고딕"
-                                      ? `NanumGothic`
+                                      ? `Nanum Gothic, sans-serif`
                                       : row_font.face1[index].font === "명조"
-                                      ? `NanumMyeongjo`
+                                      ? `Nanum Myeongjo, sans-serif`
                                       : row_font.face1[index].font === "바탕"
                                       ? `Gowun Batang, sans-serif`
                                       : row_font.face1[index].font === "돋움"
@@ -1837,10 +1837,10 @@ const ReadMode = () => {
                                       color: row_font.face1[index].color,
                                       fontFamily: `${
                                         row_font.face1[index].font === "고딕"
-                                          ? `NanumGothic`
+                                          ? `Nanum Gothic, sans-serif`
                                           : row_font.face1[index].font ===
                                             "명조"
-                                          ? `NanumMyeongjo`
+                                          ? `Nanum Myeongjo, sans-serif`
                                           : row_font.face1[index].font ===
                                             "바탕"
                                           ? `Gowun Batang, sans-serif`
@@ -1977,11 +1977,11 @@ const ReadMode = () => {
                                           row_font.face1[
                                             row_font.face1.length - 1
                                           ].font === "고딕"
-                                            ? `NanumGothic`
+                                            ? `Nanum Gothic, sans-serif`
                                             : row_font.face1[
                                                 row_font.face1.length - 1
                                               ].font === "명조"
-                                            ? `NanumMyeongjo`
+                                            ? `Nanum Myeongjo, sans-serif`
                                             : row_font.face1[
                                                 row_font.face1.length - 1
                                               ].font === "바탕"
@@ -2071,10 +2071,10 @@ const ReadMode = () => {
                                       color: row_font.face2[index].color,
                                       fontFamily: `${
                                         row_font.face2[index].font === "고딕"
-                                          ? `NanumGothic`
+                                          ? `Nanum Gothic, sans-serif`
                                           : row_font.face2[index].font ===
                                             "명조"
-                                          ? `NanumMyeongjo`
+                                          ? `Nanum Myeongjo, sans-serif`
                                           : row_font.face2[index].font ===
                                             "바탕"
                                           ? `Gowun Batang, sans-serif`
@@ -2369,10 +2369,10 @@ const ReadMode = () => {
                                         color: row_font.face1[index].color,
                                         fontFamily: `${
                                           row_font.face1[index].font === "고딕"
-                                            ? `NanumGothic`
+                                            ? `Nanum Gothic, sans-serif`
                                             : row_font.face1[index].font ===
                                               "명조"
-                                            ? `NanumMyeongjo`
+                                            ? `Nanum Myeongjo, sans-serif`
                                             : row_font.face1[index].font ===
                                               "바탕"
                                             ? `Gowun Batang, sans-serif`
@@ -2441,10 +2441,10 @@ const ReadMode = () => {
                                           fontFamily: `${
                                             row_font.face1[index].font ===
                                             "고딕"
-                                              ? `NanumGothic`
+                                              ? `Nanum Gothic, sans-serif`
                                               : row_font.face1[index].font ===
                                                 "명조"
-                                              ? `NanumMyeongjo`
+                                              ? `Nanum Myeongjo, sans-serif`
                                               : row_font.face1[index].font ===
                                                 "바탕"
                                               ? `Gowun Batang, sans-serif`
@@ -2538,10 +2538,10 @@ const ReadMode = () => {
                                         color: row_font.face2[index].color,
                                         fontFamily: `${
                                           row_font.face2[index].font === "고딕"
-                                            ? `NanumGothic`
+                                            ? `Nanum Gothic, sans-serif`
                                             : row_font.face2[index].font ===
                                               "명조"
-                                            ? `NanumMyeongjo`
+                                            ? `Nanum Myeongjo, sans-serif`
                                             : row_font.face2[index].font ===
                                               "바탕"
                                             ? `Gowun Batang, sans-serif`

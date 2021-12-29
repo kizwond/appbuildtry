@@ -29,9 +29,24 @@ export const FRAGMENT_CARD_SET = gql`
           value
           comment
         }
-        hidden
-        underline
-        highlight
+        hidden {
+          _id
+          color
+          targetWord
+          toolType
+        }
+        underline {
+          _id
+          color
+          targetWord
+          toolType
+        }
+        highlight {
+          _id
+          color
+          targetWord
+          toolType
+        }
         location
         mycontent_id
         buycontent_id

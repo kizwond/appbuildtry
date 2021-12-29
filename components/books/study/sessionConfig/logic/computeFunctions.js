@@ -1,3 +1,4 @@
+import produce from "immer";
 import _ from "lodash";
 
 export const computeNumberOfCardsPerBook = ({
@@ -5,7 +6,6 @@ export const computeNumberOfCardsPerBook = ({
   cardsets,
   bookList,
 }) => {
-  console.time("a");
   const currentTime = new Date();
   let todayMidnight = new Date();
   todayMidnight.setDate(todayMidnight.getDate() + 1);
@@ -21,7 +21,6 @@ export const computeNumberOfCardsPerBook = ({
     return finalObj;
   }
 
-  console.log({ currentTime, todayMidnight: todayMidnight / 24 / 3600 });
   //  map 과 reduce 활용하여 카드 배열을  다음 키와 값을 가진 프로퍼티로 변환 (카드종류: 합계)
   const getNumberOfCards = (cards) =>
     cards
@@ -133,8 +132,6 @@ export const computeNumberOfCardsPerBook = ({
     ];
   });
 
-  console.timeEnd("a");
-
   return normalizationBooksData;
 };
 
@@ -143,13 +140,14 @@ export const computeNumberOfAllFilteredCards = ({
   checkedKeys,
   sessionConfig,
 }) => {
-  console.log({ cardsets, checkedKeys, sessionConfig });
-
+  if (sessionConfig.detailedOption.sortOption === "") {
+    return [];
+  }
   const currentTime = new Date();
   let todayMidnight = new Date();
   todayMidnight.setDate(todayMidnight.getDate() + 1);
   todayMidnight.setHours(0, 0, 0, 0);
-
+  console.log("실행됨");
   const flattenCheckedKeys = Object.keys(checkedKeys).flatMap(
     (key) => checkedKeys[key]
   );
@@ -210,5 +208,90 @@ export const computeNumberOfAllFilteredCards = ({
       );
     });
 
-  return flattenCards.length;
+  return flattenCards;
+};
+
+export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
+  const sortedCards = ((numberOfFilteredCards, sortOption) => {
+    switch (sortOption) {
+      case "standard":
+        return numberOfFilteredCards;
+      case "time":
+        const nonNullCards = numberOfFilteredCards
+          .filter((card) => card.studyStatus.needStudyTime !== null)
+          .sort((a, b) => {
+            let dateA = new Date(a.studyStatus.needStudyTime);
+            let dateB = new Date(b.studyStatus.needStudyTime);
+            return dateA.getTime() - dateB.getTime();
+          });
+        const nullCards = numberOfFilteredCards.filter(
+          (card) => card.studyStatus.needStudyTime === null
+        );
+        return [...nonNullCards, ...nullCards];
+
+      case "random":
+        const random = _.shuffle(numberOfFilteredCards); // Creates an array of shuffled values, using a version of the Fisher-Yates shuffle. immutable
+        return random;
+
+      default:
+        throw new Error(`선택한 ${sortOption}정렬 옵션이 없습니다.`);
+    }
+  })(numberOfFilteredCards, sortOption);
+
+  return sortedCards.map((card, seqInCardlist) => ({
+    ...card,
+    seqInCardlist,
+    card_info: {
+      ...card.card_info,
+      card_id: card._id,
+    },
+    studyStatus: {
+      ...card.studyStatus,
+      statusOriginal: card.studyStatus.statusCurret,
+      statusPrev: card.studyStatus.statusCurrent,
+      levelOriginal: card.studyStatus.levelCurrent,
+      userFlagOriginal: card.content.userFlag,
+      userFlagPrev: card.content.userFlag,
+      studyTimesInSession: 0,
+      studyHourInSession: 0,
+      needStudyTimeTmp: null,
+    },
+  }));
+};
+
+export const getCardsByNumber = ({ sortedCards, numStartCards }) => {
+  const { yet, ing, hold, completed } = numStartCards;
+  const yetCards = sortedCards.filter(
+    (card) => card.studyStatus.statusCurrent === "yet"
+  );
+  const ingCards = sortedCards.filter(
+    (card) => card.studyStatus.statusCurrent === "ing"
+  );
+  const completedCards = sortedCards.filter(
+    (card) => card.studyStatus.statusCurrent === "completed"
+  );
+  const holdCards = sortedCards.filter(
+    (card) => card.studyStatus.statusCurrent === "hold"
+  );
+
+  const yetCardsOnStudyStage = yetCards.splice(0, yet);
+  const ingCardsOnStudyStage = ingCards.splice(0, ing);
+  const completedCardsOnStudyStage = completedCards.splice(0, completed);
+  const holdCardsOnStudyStage = holdCards.splice(0, hold);
+
+  const studyingCards = [
+    ...yetCardsOnStudyStage,
+    ...ingCardsOnStudyStage,
+    ...completedCardsOnStudyStage,
+    ...holdCardsOnStudyStage,
+  ].sort((a, b) => a.seqInCardlist - b.seqInCardlist);
+  return {
+    studyingCards,
+    remainedCards: {
+      yet: yetCards,
+      ing: ingCards,
+      completed: completedCards,
+      hold: holdCards,
+    },
+  };
 };

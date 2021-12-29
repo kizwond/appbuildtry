@@ -13,6 +13,8 @@ import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../..
 import {
   computeNumberOfAllFilteredCards,
   computeNumberOfCardsPerBook,
+  sortFilteredCards,
+  getCardsByNumber,
 } from /* --------------- */ "../../../../components/books/study/sessionConfig/logic/computeFunctions";
 import useSessionConfig from "../../../../components/books/study/sessionConfig/useHook/useSessionConfig";
 
@@ -81,15 +83,18 @@ const StudySessionConfig = () => {
   );
 
   const numberOfFilteredCards = useMemo(
-    () =>
-      data &&
-      computeNumberOfAllFilteredCards({
-        cardsets: data.cardset_getByMybookIDs.cardsets,
-        checkedKeys,
-        sessionConfig,
-      }),
+    () => {
+      if (data) {
+        return computeNumberOfAllFilteredCards({
+          cardsets: data.cardset_getByMybookIDs.cardsets,
+          checkedKeys,
+          sessionConfig,
+        });
+      }
+    },
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, checkedKeys, sessionConfig]
+    [checkedKeys, sessionConfig]
   );
 
   useEffect(() => {
@@ -114,19 +119,54 @@ const StudySessionConfig = () => {
   }, []);
 
   const [session_createSession, {}] = useMutation(MUTATION_CREATE_SESSION, {
-    onCompleted: (data) => {
-      if (data.session_createSession.status === "200") {
-        console.log("세션 생성 요청 후 받은 데이터", data);
+    onCompleted: (_data) => {
+      if (_data.session_createSession.status === "200") {
+        console.log("세션 생성 요청 후 받은 데이터", _data);
         sessionStorage.setItem(
           "session_Id",
-          data.session_createSession.sessions[0]._id
+          _data.session_createSession.sessions[0]._id
         );
         sessionStorage.setItem("study_mode", sessionConfig.studyMode);
         sessionStorage.removeItem("cardListStudying");
+        console.time("카드스터딩넣기");
+        const sortedCards = sortFilteredCards({
+          numberOfFilteredCards,
+          sortOption: sessionConfig.detailedOption.sortOption,
+        });
+        if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
+          const { studyingCards, remainedCards } = getCardsByNumber({
+            sortedCards,
+            numStartCards: sessionConfig.detailedOption.numStartCards,
+          });
+          sessionStorage.setItem(
+            "cardListStudying",
+            JSON.stringify(studyingCards)
+          );
+          sessionStorage.setItem(
+            "cardListRemained",
+            JSON.stringify(remainedCards)
+          );
+        } else {
+          sessionStorage.setItem(
+            "cardListStudying",
+            JSON.stringify(sortedCards)
+          );
+          sessionStorage.setItem(
+            "cardListRemained",
+            JSON.stringify({
+              yet: [],
+              ing: [],
+              hold: [],
+              completed: [],
+            })
+          );
+        }
+        console.timeEnd("카드스터딩넣기");
+
         router.push(
-          `/m/study/mode/${sessionConfig.studyMode}/${data.session_createSession.sessions[0]._id}`
+          `/m/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
         );
-      } else if (data.session_createSession.status === "401") {
+      } else if (_data.session_createSession.status === "401") {
         router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -170,21 +210,22 @@ const StudySessionConfig = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedKeys, sessionConfig]);
 
+  const onCheckIndexesCheckedKeys = useCallback(
+    (checkedKeysValueOfBook, selectedBookId) => {
+      setCheckedKeys({
+        ...checkedKeys,
+        [selectedBookId]: checkedKeysValueOfBook,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   if (error) {
     console.log("에러", error);
     console.log(variables);
     return <div>에러발생</div>;
   }
-
-  const onCheckIndexesCheckedKeys = (
-    checkedKeysValueOfBook,
-    selectedBookId
-  ) => {
-    setCheckedKeys({
-      ...checkedKeys,
-      [selectedBookId]: checkedKeysValueOfBook,
-    });
-  };
 
   return (
     <M_Layout>
@@ -196,7 +237,7 @@ const StudySessionConfig = () => {
             submitCreateSessionConfigToServer={
               submitCreateSessionConfigToServer
             }
-            numberOfFilteredCards={numberOfFilteredCards}
+            numberOfFilteredCards={numberOfFilteredCards.length}
           />
           <StyledForTabsOfBooks activatedComponent={activatedComponent}>
             <M_TabsOfBooksForInfromationTable

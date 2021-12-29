@@ -1024,9 +1024,9 @@ class Container extends Component {
                       color: comment_font_color,
                       fontFamily: `${
                         comment_font_font === "고딕"
-                          ? `NanumGothic`
+                          ? `Nanum Gothic, sans-serif`
                           : comment_font_font === "명조"
-                          ? `NanumMyeongjo`
+                          ? `Nanum Myeongjo, sans-serif`
                           : comment_font_font === "바탕"
                           ? `Gowun Batang, sans-serif`
                           : comment_font_font === "돋움"
@@ -1135,9 +1135,9 @@ class Container extends Component {
                                   color: row_font.face1[index].color,
                                   fontFamily: `${
                                     row_font.face1[index].font === "고딕"
-                                      ? `NanumGothic`
+                                      ? `Nanum Gothic, sans-serif`
                                       : row_font.face1[index].font === "명조"
-                                      ? `NanumMyeongjo`
+                                      ? `Nanum Myeongjo, sans-serif`
                                       : row_font.face1[index].font === "바탕"
                                       ? `Gowun Batang, sans-serif`
                                       : row_font.face1[index].font === "돋움"
@@ -1211,9 +1211,9 @@ class Container extends Component {
                                   color: row_font.face1[index].color,
                                   fontFamily: `${
                                     row_font.face1[index].font === "고딕"
-                                      ? `NanumGothic`
+                                      ? `Nanum Gothic, sans-serif`
                                       : row_font.face1[index].font === "명조"
-                                      ? `NanumMyeongjo`
+                                      ? `Nanum Myeongjo, sans-serif`
                                       : row_font.face1[index].font === "바탕"
                                       ? `Gowun Batang, sans-serif`
                                       : row_font.face1[index].font === "돋움"
@@ -1286,9 +1286,9 @@ class Container extends Component {
                                   color: row_font.face1[index].color,
                                   fontFamily: `${
                                     row_font.face1[index].font === "고딕"
-                                      ? `NanumGothic`
+                                      ? `Nanum Gothic, sans-serif`
                                       : row_font.face1[index].font === "명조"
-                                      ? `NanumMyeongjo`
+                                      ? `Nanum Myeongjo, sans-serif`
                                       : row_font.face1[index].font === "바탕"
                                       ? `Gowun Batang, sans-serif`
                                       : row_font.face1[index].font === "돋움"
@@ -1339,9 +1339,9 @@ class Container extends Component {
                                     color: row_font.face1[row_font.face1.length - 1].color,
                                     fontFamily: `${
                                       row_font.face1[row_font.face1.length - 1].font === "고딕"
-                                        ? `NanumGothic`
+                                        ? `Nanum Gothic, sans-serif`
                                         : row_font.face1[row_font.face1.length - 1].font === "명조"
-                                        ? `NanumMyeongjo`
+                                        ? `Nanum Myeongjo, sans-serif`
                                         : row_font.face1[row_font.face1.length - 1].font === "바탕"
                                         ? `Gowun Batang, sans-serif`
                                         : row_font.face1[row_font.face1.length - 1].font === "돋움"
@@ -1456,7 +1456,7 @@ class Container extends Component {
                             borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
                           }}
                         >
-                          {content_value.selection !== null &&
+                          {content_value.selection !== null && content_value.selection.length > 0 &&
                             content_value.face2.map((item, index) => (
                               <>
                                 <div
@@ -1481,9 +1481,9 @@ class Container extends Component {
                                     color: row_font.face2[index].color,
                                     fontFamily: `${
                                       row_font.face2[index].font === "고딕"
-                                        ? `NanumGothic`
+                                        ? `Nanum Gothic, sans-serif`
                                         : row_font.face2[index].font === "명조"
-                                        ? `NanumMyeongjo`
+                                        ? `Nanum Myeongjo, sans-serif`
                                         : row_font.face2[index].font === "바탕"
                                         ? `Gowun Batang, sans-serif`
                                         : row_font.face2[index].font === "돋움"
@@ -1567,9 +1567,9 @@ class Container extends Component {
                                     color: row_font.face2[index].color,
                                     fontFamily: `${
                                       row_font.face2[index].font === "고딕"
-                                        ? `NanumGothic`
+                                        ? `Nanum Gothic, sans-serif`
                                         : row_font.face2[index].font === "명조"
-                                        ? `NanumMyeongjo`
+                                        ? `Nanum Myeongjo, sans-serif`
                                         : row_font.face2[index].font === "바탕"
                                         ? `Gowun Batang, sans-serif`
                                         : row_font.face2[index].font === "돋움"

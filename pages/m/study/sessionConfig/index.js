@@ -13,8 +13,8 @@ import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../..
 import {
   computeNumberOfAllFilteredCards,
   computeNumberOfCardsPerBook,
-  getAllFilteredCards,
-  sortCardlistTotal,
+  sortFilteredCards,
+  getCardsByNumber,
 } from /* --------------- */ "../../../../components/books/study/sessionConfig/logic/computeFunctions";
 import useSessionConfig from "../../../../components/books/study/sessionConfig/useHook/useSessionConfig";
 
@@ -127,26 +127,31 @@ const StudySessionConfig = () => {
         sessionStorage.setItem("study_mode", sessionConfig.studyMode);
         sessionStorage.removeItem("cardListStudying");
         console.time("카드스터딩넣기");
-        sessionStorage.setItem(
-          "cardListStudying2",
-          JSON.stringify(
-            getAllFilteredCards({
-              cardsets: data.cardset_getByMybookIDs.cardsets,
-              checkedKeys,
-              sessionConfig,
-            })
-          )
-        );
+        if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
+          sessionStorage.setItem(
+            "cardListStudying2",
+            JSON.stringify(
+              getCardsByNumber({
+                sortedCards: sortFilteredCards({
+                  numberOfFilteredCards,
+                  sortOption: sessionConfig.detailedOption.sortOption,
+                }),
+                numStartCards: sessionConfig.detailedOption.numStartCards,
+              })
+            )
+          );
+        } else {
+          sessionStorage.setItem(
+            "cardListStudying2",
+            JSON.stringify(
+              sortFilteredCards({
+                numberOfFilteredCards,
+                sortOption: sessionConfig.detailedOption.sortOption,
+              })
+            )
+          );
+        }
         console.timeEnd("카드스터딩넣기");
-
-        // sortCardlistTotal(
-        //   getAllFilteredCards({
-        //     cardsets: data.cardset_getByMybookIDs.cardsets,
-        //     checkedKeys,
-        //     sessionConfig,
-        //   }),
-        //   sessionConfig.detailedOption.sortOption
-        // ).forEach((c) => console.log(c.studyStatus.needStudyTime));
 
         router.push(
           `/m/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
@@ -221,7 +226,7 @@ const StudySessionConfig = () => {
             submitCreateSessionConfigToServer={
               submitCreateSessionConfigToServer
             }
-            numberOfFilteredCards={numberOfFilteredCards}
+            numberOfFilteredCards={numberOfFilteredCards.length}
           />
           <StyledForTabsOfBooks activatedComponent={activatedComponent}>
             <M_TabsOfBooksForInfromationTable

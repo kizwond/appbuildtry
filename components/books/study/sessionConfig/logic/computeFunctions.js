@@ -6,7 +6,6 @@ export const computeNumberOfCardsPerBook = ({
   cardsets,
   bookList,
 }) => {
-  console.time("a");
   const currentTime = new Date();
   let todayMidnight = new Date();
   todayMidnight.setDate(todayMidnight.getDate() + 1);
@@ -133,8 +132,6 @@ export const computeNumberOfCardsPerBook = ({
     ];
   });
 
-  console.timeEnd("a");
-
   return normalizationBooksData;
 };
 
@@ -208,164 +205,90 @@ export const computeNumberOfAllFilteredCards = ({
       );
     });
 
-  return flattenCards.length;
-};
-export const getAllFilteredCards = ({
-  cardsets,
-  checkedKeys,
-  sessionConfig,
-}) => {
-  console.time("필터링된 데이터");
-
-  const currentTime = new Date();
-  let todayMidnight = new Date();
-  todayMidnight.setDate(todayMidnight.getDate() + 1);
-  todayMidnight.setHours(0, 0, 0, 0);
-
-  const flattenCheckedKeys = Object.keys(checkedKeys).flatMap(
-    (key) => checkedKeys[key]
-  );
-  const {
-    detailedOption: {
-      needStudyTimeCondition,
-      needStudyTimeRange,
-      useCardtype,
-      useStatus,
-      sortOption,
-    },
-  } = sessionConfig;
-
-  const flattenCards = cardsets
-    .flatMap((cardset) => cardset.cards)
-    .filter((card, i) => {
-      const conditionOfCheckedIndexes = flattenCheckedKeys.includes(
-        card.card_info.index_id
-      );
-      const conditionOfCardType = useCardtype.includes(card.card_info.cardtype);
-      const conditionOfCardStatus = (() => {
-        if (card.studyStatus.statusCurrent !== "ing") {
-          return useStatus.includes(card.studyStatus.statusCurrent);
-        }
-        if (needStudyTimeCondition === "all") {
-          return useStatus.includes(card.studyStatus.statusCurrent);
-        }
-        if (needStudyTimeCondition === "untilNow") {
-          return (
-            useStatus.includes(card.studyStatus.statusCurrent) &&
-            Date.parse(card.studyStatus.needStudyTime) < currentTime
-          );
-        }
-        if (needStudyTimeCondition === "untilToday") {
-          return (
-            useStatus.includes(card.studyStatus.statusCurrent) &&
-            Date.parse(card.studyStatus.needStudyTime) < todayMidnight
-          );
-        }
-        if (needStudyTimeCondition === "custom") {
-          const needStudyTimePosition =
-            (Date.parse(card.studyStatus.needStudyTime) - todayMidnight) /
-            24 /
-            3600000;
-
-          return (
-            useStatus.includes(card.studyStatus.statusCurrent) &&
-            needStudyTimePosition > needStudyTimeRange[0] - 1 &&
-            needStudyTimePosition < needStudyTimeRange[1]
-          );
-        }
-      })();
-
-      return (
-        conditionOfCheckedIndexes &&
-        conditionOfCardType &&
-        useStatus.includes(card.studyStatus.statusCurrent) &&
-        conditionOfCardStatus
-      );
-    })
-    .map((card) => ({
-      ...card,
-      seqInCardlist: null,
-      card_info: {
-        ...card.card_info,
-        card_id: card._id,
-      },
-      studyStatus: {
-        ...card.studyStatus,
-        statusOriginal: card.studyStatus.statusCurret,
-        statusPrev: card.studyStatus.statusCurrent,
-        levelOriginal: card.studyStatus.levelCurrent,
-        userFlagOriginal: card.content.userFlag,
-        userFlagPrev: card.content.userFlag,
-        studyTimesInSession: 0,
-        studyHourInSession: 0,
-        needStudyTimeTmp: null,
-      },
-    }));
-  console.timeEnd("필터링된 데이터");
-
-  if (sortOption === "standard") {
-    return flattenCards;
-  }
-
-  if (sortOption === "time") {
-    console.time("시간순");
-    const distantFuture = new Date(8640000000000000);
-    const newCards = produce(flattenCards, (draft) =>
-      draft.sort((a, b) => {
-        let dateA = a.studyStatus.needStudyTime
-          ? new Date(a.studyStatus.needStudyTime)
-          : distantFuture;
-        let dateB = b.studyStatus.needStudyTime
-          ? new Date(b.studyStatus.needStudyTime)
-          : distantFuture;
-
-        return dateA.getTime() - dateB.getTime();
-      })
-    );
-    console.timeEnd("시간순");
-    return newCards;
-  }
-
-  if (sortOption === "random") {
-    console.time("랜덤순");
-    const random = _.shuffle(flattenCards); // Creates an array of shuffled values, using a version of the Fisher-Yates shuffle. immutable
-    console.timeEnd("랜덤순");
-    return random;
-  }
-
-  if (!["random", "time", "standard"].includes(sortOption)) {
-    throw new Error(`선택한 ${sortOption}정렬 옵션이 없습니다.`);
-  }
+  return flattenCards;
 };
 
-export const sortCardlistTotal = (cards, sortOption) => {
-  const result = produce(cards, (draft) => {
+export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
+  const sortedCards = ((numberOfFilteredCards, sortOption) => {
     switch (sortOption) {
       case "standard":
-        break;
+        return numberOfFilteredCards;
       case "time":
-        draft.sort((a, b) => {
-          let dateA = a.studyStatus.needStudyTime
-            ? new Date(a.studyStatus.needStudyTime)
-            : distantFuture;
-          let dateB = b.studyStatus.needStudyTime
-            ? new Date(b.studyStatus.needStudyTime)
-            : distantFuture;
-          return dateA.getTime() - dateB.getTime();
-        });
+        const nonNullCards = numberOfFilteredCards
+          .filter((card) => card.studyStatus.needStudyTime !== null)
+          .sort((a, b) => {
+            let dateA = new Date(a.studyStatus.needStudyTime);
+            let dateB = new Date(b.studyStatus.needStudyTime);
+            return dateA.getTime() - dateB.getTime();
+          });
+        const nullCards = numberOfFilteredCards.filter(
+          (card) => card.studyStatus.needStudyTime === null
+        );
+        return [...nonNullCards, ...nullCards];
 
-        break;
       case "random":
-        for (let i = draft.length - 1; i > 0; i--) {
-          let j = Math.floor(Math.random() * (i + 1)); // 무작위 인덱스(0 이상 i 미만)
-          [draft[i], draft[j]] = [draft[j], draft[i]];
-        }
-        break;
-    }
-    for (let i = 0; i < draft.length; i++) {
-      draft[i].seqInCardlist = i;
-    }
-  });
+        const random = _.shuffle(numberOfFilteredCards); // Creates an array of shuffled values, using a version of the Fisher-Yates shuffle. immutable
+        return random;
 
-  return result;
+      default:
+        throw new Error(`선택한 ${sortOption}정렬 옵션이 없습니다.`);
+    }
+  })(numberOfFilteredCards, sortOption);
+
+  return sortedCards.map((card, seqInCardlist) => ({
+    ...card,
+    seqInCardlist,
+    card_info: {
+      ...card.card_info,
+      card_id: card._id,
+    },
+    studyStatus: {
+      ...card.studyStatus,
+      statusOriginal: card.studyStatus.statusCurret,
+      statusPrev: card.studyStatus.statusCurrent,
+      levelOriginal: card.studyStatus.levelCurrent,
+      userFlagOriginal: card.content.userFlag,
+      userFlagPrev: card.content.userFlag,
+      studyTimesInSession: 0,
+      studyHourInSession: 0,
+      needStudyTimeTmp: null,
+    },
+  }));
+};
+
+export const getCardsByNumber = ({ sortedCards, numStartCards }) => {
+  const { yet, ing, hold, completed } = numStartCards;
+  const yetCards = sortedCards.filter(
+    (card) => card.studyStatus.statusCurrent === "yet"
+  );
+  const ingCards = sortedCards.filter(
+    (card) => card.studyStatus.statusCurrent === "ing"
+  );
+  const completedCards = sortedCards.filter(
+    (card) => card.studyStatus.statusCurrent === "completed"
+  );
+  const holdCards = sortedCards.filter(
+    (card) => card.studyStatus.statusCurrent === "hold"
+  );
+
+  const yetCardsOnStudyStage = yetCards.splice(0, yet);
+  const ingCardsOnStudyStage = ingCards.splice(0, ing);
+  const completedCardsOnStudyStage = completedCards.splice(0, completed);
+  const holdCardsOnStudyStage = holdCards.splice(0, hold);
+
+  const studyingCards = [
+    ...yetCardsOnStudyStage,
+    ...ingCardsOnStudyStage,
+    ...completedCardsOnStudyStage,
+    ...holdCardsOnStudyStage,
+  ].sort((a, b) => a.seqInCardlist - b.seqInCardlist);
+  return {
+    studyingCards,
+    RemainedCards: {
+      yetCards,
+      ingCards,
+      completedCards,
+      holdCards,
+    },
+  };
 };

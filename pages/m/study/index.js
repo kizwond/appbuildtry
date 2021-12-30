@@ -1,9 +1,10 @@
+import { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { useRouter } from "next/router";
+
 import { useQuery } from "@apollo/client";
 import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
-import { useRouter } from "next/router";
 
 import styled from "styled-components";
 
@@ -41,20 +42,19 @@ const M_StudyMainPage = () => {
     }
   );
 
-  useEffect(() => {
-    sessionStorage.removeItem("books_selected");
-    sessionStorage.removeItem("forCheckedKeys");
-  }, []);
+  // useEffect(() => {
+  //   sessionStorage.removeItem("books_selected");
+  //   sessionStorage.removeItem("forCheckedKeys");
+  // }, []);
 
   const directStart = () => {
-    // router.push("/m/study/mode/directread");
     router.push({
       pathname: "/m/study/mode/directread",
       query: { name: JSON.stringify(selectedBooks) },
     });
   };
 
-  const getCheckedIndexKeys = useCallback((data, selectedBooks) => {
+  const getCheckedIndexKeys = (data, selectedBooks) => {
     let forCheckedKeys = {};
     data.mybook_getMybookByUserID.mybooks
       .filter((_book) =>
@@ -63,10 +63,12 @@ const M_StudyMainPage = () => {
       .forEach((book) => {
         forCheckedKeys[book._id] = book.recentStudyIndexes;
       });
-
-    sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
+    // sessionStorage.removeItem("forCheckedKeys");
+    if (forCheckedKeys !== {}) {
+      sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
+    }
     return forCheckedKeys;
-  }, []);
+  };
 
   const changeSelectedBooks = useCallback((_booksArray) => {
     setSelectedBooks(_booksArray);

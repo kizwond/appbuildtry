@@ -1,8 +1,10 @@
+import { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+
 import { useQuery } from "@apollo/client";
 import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
-import { useRouter } from "next/router";
 
 import styled from "styled-components";
 
@@ -40,9 +42,10 @@ const StudyPage = () => {
     }
   );
 
-  useEffect(() => {
-    sessionStorage.removeItem("books_selected");
-  }, []);
+  // useEffect(() => {
+  //   sessionStorage.setItem("forCheckedKeys", JSON.stringify([]));
+  //   sessionStorage.setItem("books_selected", JSON.stringify([]));
+  // }, []);
 
   const directStart = () => {
     router.push({
@@ -50,7 +53,8 @@ const StudyPage = () => {
       query: { name: JSON.stringify(selectedBooks) },
     });
   };
-  const sesstionStart = async () => {
+
+  const getCheckedIndexKeys = (data, selectedBooks) => {
     let forCheckedKeys = {};
     data.mybook_getMybookByUserID.mybooks
       .filter((_book) =>
@@ -59,12 +63,15 @@ const StudyPage = () => {
       .forEach((book) => {
         forCheckedKeys[book._id] = book.recentStudyIndexes;
       });
-
-    sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
-    router.push("/books/study/sessionConfig");
+    if (Object.keys(forCheckedKeys).length > 0) {
+      sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
+    }
+    return forCheckedKeys;
   };
 
   const changeSelectedBooks = useCallback((_booksArray) => {
+    sessionStorage.removeItem("forCheckedKeys");
+    sessionStorage.removeItem("books_selected");
     setSelectedBooks(_booksArray);
     sessionStorage.setItem("books_selected", JSON.stringify(_booksArray));
   }, []);
@@ -97,7 +104,26 @@ const StudyPage = () => {
               <div>
                 <Space>
                   <Button onClick={directStart}>바로보기</Button>
-                  <Button onClick={sesstionStart}>세션 설정 후 시작</Button>
+                  {selectedBooks.length > 0 ? (
+                    <Link
+                      as="/books/study/sessionConfig"
+                      href={{
+                        pathname: "/books/study/sessionConfig",
+                        query: {
+                          selectedBooks: JSON.stringify(selectedBooks),
+                          initialCheckedKey: JSON.stringify(
+                            getCheckedIndexKeys(data, selectedBooks)
+                          ),
+                        },
+                      }}
+                    >
+                      <a>
+                        <Button>세션 설정 후 시작</Button>
+                      </a>
+                    </Link>
+                  ) : (
+                    <Button>세션 설정 후 시작</Button>
+                  )}
                 </Space>
               </div>
             </StyledFlexSpaceBetween>

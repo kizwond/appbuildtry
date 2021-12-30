@@ -1,13 +1,6 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-} from "react";
-import { initializeApollo, addApolloState } from "../../../../lib/apollo";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
-import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
 import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
 

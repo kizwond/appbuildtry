@@ -51,7 +51,7 @@ const ReadMode = () => {
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
-    console.log(ISSERVER)
+    console.log(ISSERVER);
     var session_id_temp = sessionStorage.getItem("session_Id");
     if (query.sessionid === undefined) {
       var session_id = session_id_temp;
@@ -122,7 +122,7 @@ const ReadMode = () => {
   );
 
   useEffect(() => {
-    console.log("useEffect fired~!!!!! read mode!!!!")
+    console.log("useEffect fired~!!!!! read mode!!!!");
     if (data) {
       console.log("최초 리드모드 데이터 : ", data);
 
@@ -196,43 +196,57 @@ const ReadMode = () => {
   }
 
   const getSelectionText2 = () => {
-    console.log("hello")
-    // var text = "";
-    // var textRange = {};
-    // if (document.getSelection) {
-    //   text = document.getSelection().toString();
-    //   textRange = document.getSelection();
-    //   sessionStorage.setItem("selectionText", text);
-    // } else if (document.selection && document.selection.type != "Control") {
-    //   text = document.selection.createRange().text;
-    // }
-    // console.log(textRange);
-    // if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
-    //   var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
-    //   var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
-    //   var parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-    //   if (parentId === null) {
-    //     parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
-    //     parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
-    //     parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
-    //     if (parentId !== null) {
-    //       sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-    //       sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-    //     } else {
-    //       parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
-    //       parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
-    //       parentId = parentNode.match(/(?<=id=\")\w{1,100}/gi);
+    console.log("hello");
+    var text = "";
+    var textRange = {};
+    if (document.getSelection) {
+      text = document.getSelection().toString();
+      textRange = document.getSelection();
+      sessionStorage.setItem("selectionText", text);
+    } else if (document.selection && document.selection.type != "Control") {
+      text = document.selection.createRange().text;
+    }
 
-    //       if (parentId !== null) {
-    //         sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-    //         sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-    //       }
-    //     }
-    //   } else {
-    //     sessionStorage.setItem("parentIdOfSelection", parentId[0]);
-    //     sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
-    //   }
-    // }
+    if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
+      var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
+      var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
+      var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
+      if (parentId_tmp1 !== null) {
+        var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+      } else {
+        parentId = null;
+      }
+      if (parentId === null) {
+        parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
+        parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
+        var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
+        if (parentId_tmp1 !== null) {
+          var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+        } else {
+          parentId = null;
+        }
+        if (parentId !== null) {
+          sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+          sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+        } else {
+          parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+          parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+          var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
+          if (parentId_tmp1 !== null) {
+            var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+          } else {
+            parentId = null;
+          }
+          if (parentId !== null) {
+            sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+            sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+          }
+        }
+      } else {
+        sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+        sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+      }
+    }
   };
 
   const hide = (color) => {
@@ -1096,13 +1110,7 @@ const ReadMode = () => {
                                   <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} />
                                 ) : (
                                   <>
-                                    <div
-                                      id={`${content._id}face1row${index + 1}`}
-                                      cardsetid={content.card_info.cardset_id}
-                                      cardid={content.card_info.card_id}
-                                      dangerouslySetInnerHTML={{ __html: item }}
-                                      onPointerUp={getSelectionText2}
-                                    ></div>
+                                    <div id={`${content._id}face1row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }} onPointerUp={getSelectionText2}></div>
                                   </>
                                 )}
                               </div>
@@ -2179,13 +2187,7 @@ const Alter = ({ content, item, index, getSelectionText2 }) => {
   }
   return (
     <>
-      <div
-        id={`${content._id}face1row${index + 1}`}
-        cardsetid={content.card_info.cardset_id}
-        cardid={content.card_info.card_id}
-        dangerouslySetInnerHTML={{ __html: altered }}
-        onPointerUp={getSelectionText2}
-      ></div>
+      <div id={`${content._id}face1row${index + 1}`} dangerouslySetInnerHTML={{ __html: altered }} onPointerUp={getSelectionText2}></div>
     </>
   );
 };

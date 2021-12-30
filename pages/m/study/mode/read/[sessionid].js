@@ -1053,7 +1053,7 @@ const ReadMode = () => {
                       >
                         <div
                           style={{
-                            width: "80%",
+                            width: "100%",
                             backgroundColor: face_style[0].background.color,
                             marginTop: face_style[0].outer_margin.top,
                             marginBottom: face_style[0].outer_margin.bottom,

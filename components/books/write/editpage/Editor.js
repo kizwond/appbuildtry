@@ -11,6 +11,7 @@ import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Radio, Input, Button, Select } from "antd";
 import { PlusCircleOutlined, MinusCircleOutlined, StarFilled } from "@ant-design/icons";
+import { s3Hash } from "./EditorSub";
 
 const { Option } = Select;
 
@@ -59,11 +60,31 @@ class Editor extends Component {
       answerRadio: null,
       answerFieldNick: "",
     };
+    
+    // this.s3config = {
+    //   // The name of your bucket.
+    //   bucket: process.env.NEXT_PUBLIC_S3_BUCKET_IMAGEINCARD,
+
+    //   // S3 region. If you are using the default us-east-1, it this can be ignored.
+    //   region: process.env.NEXT_PUBLIC_S3_REGION,
+    //   // The folder where to upload the images.
+    //   keyStart: "original",
+
+    //   // File access.
+    //   acl: "public-read",
+
+    //   // AWS keys.
+    //   accessKey: process.env.NEXT_PUBLIC_S3_ACCESS_KEY_ID,
+    //   secretKey: process.env.NEXT_PUBLIC_S3_SECRET_ACCESS_KEY,
+    // };
+    // this.s3Hash = FroalaEditor.S3.getHash(this.s3config);
     this.config = {
       key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
+      imageUploadToS3: s3Hash, 
       editorClass: "editor_try",
       quickInsertEnabled: false,
-      imageUploadURL: "/api/cardset/imageUpload",
+      imageUploadURL: false,
+      // imageUploadURL: "/api/cardset/imageUpload",
       fileUploadURL: "/api/cardset/fileUpload",
       //   videoUploadURL: "/api/cardset/videoUpload",
       filesManagerUploadURL: "/api/cardset/fileUpload",
@@ -681,12 +702,12 @@ class Editor extends Component {
                 model={this.state["editor" + (index + 1).toString()]}
                 onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
               />
-              <PlusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color:"grey" }} onClick={this.props.addSelections} />
-              <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color:"grey" }} onClick={this.props.removeSelection} />
+              <PlusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color: "grey" }} onClick={this.props.addSelections} />
+              <MinusCircleOutlined style={{ fontSize: "1.3rem", marginLeft: "5px", color: "grey" }} onClick={this.props.removeSelection} />
             </div>
             {this.state.diffValues && (
-              <div style={{ display: "flex", marginTop:"3px", alignItems:"center" }}>
-                <span style={{fontSize:"0.8rem", marginRight:"5px"}}>정답 :</span>
+              <div style={{ display: "flex", marginTop: "3px", alignItems: "center" }}>
+                <span style={{ fontSize: "0.8rem", marginRight: "5px" }}>정답 :</span>
                 <Radio.Group buttonStyle="solid" size="small" onChange={this.onChange} name={index + 1} defaultChecked={false} value={this.state.answerRadio}>
                   {this.state.diffValues.map((value, answerindex) => {
                     return (

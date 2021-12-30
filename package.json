@@ -46,7 +46,8 @@
     "sharp": "^0.29.1",
     "styled-components": "^5.3.0",
     "tinyld": "^1.1.5",
-    "tui-image-editor": "^3.15.0"
+    "tui-image-editor": "^3.15.0",
+    "wysiwyg-editor-node-sdk": "^4.0.8"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.176",

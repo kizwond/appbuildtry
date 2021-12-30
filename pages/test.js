@@ -8,15 +8,14 @@ const test = () => {
 
 export default test;
 
-// export async function getStaticProps(context) {
-//   const { book_ids} = context.params
-//   const apolloClient = initializeApollo()
-//   await apolloClient.query({
-//     query: QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
-//     variables: {mybook_ids: book_ids},
-//   })
-// initializeApollo
-//   return addApolloState(apolloClient, {
-//     props: {},
-//   })
-// }
+export async function getStaticProps(context) {
+  const { book_ids } = context.params;
+  const apolloClient = initializeApollo();
+  await apolloClient.query({
+    query: QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
+    variables: { mybook_ids: book_ids },
+  });
+  return addApolloState(apolloClient, {
+    props: {},
+  });
+}

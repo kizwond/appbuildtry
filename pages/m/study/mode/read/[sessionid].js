@@ -308,11 +308,13 @@ const ReadMode = () => {
   const hiddenToggleHandler = () => {
     console.log("userflagclicked!!!");
     setHiddenToggle(!hiddenToggle);
+    setUnderlineToggle(false)
   };
 
   const underlineToggleHandler = () => {
     console.log("underlineToggleHandler!!!");
     setUnderlineToggle(!underlineToggle);
+    setHiddenToggle(false)
   };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -656,7 +658,7 @@ const ReadMode = () => {
             </>
           );
 
-          const hiddenButtons = hiddenSettings.map((item, index) => {
+          var hiddenButtons = hiddenSettings.map((item, index) => {
             return (
               <>
                 <div
@@ -2165,7 +2167,7 @@ const ReadMode = () => {
       </div>
       {data && (
         <>
-          <FixedBottomMenuReadMode />
+          <FixedBottomMenuReadMode underlineToggle={underlineToggle} hiddenToggle={hiddenToggle} cardTypeSets={cardTypeSets} hiddenToggleHandler={hiddenToggleHandler} underlineToggleHandler={underlineToggleHandler}/>
         </>
       )}
     </StudyLayout>

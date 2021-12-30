@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useQuery } from "@apollo/client";
 import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
@@ -51,7 +52,7 @@ const M_StudyMainPage = () => {
       query: { name: JSON.stringify(selectedBooks) },
     });
   };
-  const sesstionStart = async () => {
+  const getForCheckedKeys = (data) => {
     let forCheckedKeys = {};
     data.mybook_getMybookByUserID.mybooks
       .filter((_book) =>
@@ -61,10 +62,15 @@ const M_StudyMainPage = () => {
         forCheckedKeys[book._id] = book.recentStudyIndexes;
       });
 
-    console.log(forCheckedKeys);
-    sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
-    router.push("/m/study/sessionConfig");
+    return forCheckedKeys;
   };
+  // const sesstionStart = async () => {
+
+  //   console.log(forCheckedKeys);
+  //   sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
+  //   // router.push("/m/study/sessionConfig");
+  //   router.push("/m/study/sessionConfig");
+  // };
 
   const changeSelectedBooks = useCallback((_booksArray) => {
     setSelectedBooks(_booksArray);
@@ -116,7 +122,18 @@ const M_StudyMainPage = () => {
           </StyledRowMaxWidth>
           <StyledBottomBar>
             <div onClick={directStart}>바로 보기</div>
-            <div onClick={sesstionStart}>세션 설정 후 시작</div>
+            <Link
+              as={"/m/study/sessionConfig"}
+              href={{
+                pathname: "/m/study/sessionConfig",
+                query: {
+                  book_ids: JSON.stringify(selectedBooks),
+                  ForCheckedKeys: JSON.stringify(getForCheckedKeys(data)),
+                },
+              }}
+            >
+              <a>세션 설정 후 시작</a>
+            </Link>
           </StyledBottomBar>
         </M_Layout>
       )}

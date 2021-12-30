@@ -24,10 +24,16 @@ import M_Layout from "../../../../components/layout/M_Layout";
 import M_SessionNavigationBar /* ----------- */ from "../../../../components/books/study/sessionConfig/M_SessionNavigationBar";
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const StudySessionConfig = () => {
   const router = useRouter();
 
+  const { book_ids, ForCheckedKeys } = router.query;
+  console.log({
+    book_ids: JSON.parse(book_ids),
+    ForCheckedKeys: JSON.parse(ForCheckedKeys),
+  });
   const [checkedKeys, setCheckedKeys] = useState([]);
 
   const bookList = useRef();
@@ -228,6 +234,7 @@ const StudySessionConfig = () => {
     // console.log(variables);
     return <div>에러발생</div>;
   }
+  if (loading) <div>로딩중..</div>;
 
   return (
     <M_Layout>

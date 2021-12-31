@@ -11,11 +11,11 @@ export const StyledDivConfigRow = styled.div`
   flex-wrap: nowrap;
   & > div:nth-child(1):not(.FilterSubTitleCol) {
     flex: none;
-    width: ${(props) => (props.isPc === true ? "166px" : "156px")};
+    width: ${(props) => (props.isPc === true ? "158px" : "148px")};
   }
   & > div.FilterSubTitleCol {
     flex: none;
-    width: ${(props) => (props.isPc === true ? "160px" : "150px")};
+    width: ${(props) => (props.isPc === true ? "153px" : "143px")};
     margin-top: 3px;
   }
   & > div:nth-child(2) {
@@ -34,7 +34,7 @@ export const StyledDivConfigRow = styled.div`
 
   & .ConfigTitle {
     font-weight: 500;
-    font-size: 1.16667rem;
+    font-size: ${({ isPc }) => (isPc ? "15px" : "1.16667rem")};
   }
 `;
 
@@ -69,7 +69,8 @@ export const StyledSpanConfigTitle = styled(({ onOff, children, ...rest }) => (
 ))`
   color: ${({ onOff }) => (onOff ? "black" : "#0000003f")};
   margin-right: 10px;
-  font-size: 1.16667rem !important;
+  font-size: ${({ isPc }) =>
+    isPc ? "15px !important" : "1.16667rem !important"};
   font-weight: 500;
 `;
 

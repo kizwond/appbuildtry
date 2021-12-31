@@ -51,7 +51,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
     <StyledDivWrapper>
       <StyledDivTitleRow isPc={isPc}>
         <StyledDivConfigColStartCards>
-          <StyledSpanConfigTitle onOff={onOff === "on"}>
+          <StyledSpanConfigTitle onOff={onOff === "on"} isPc={isPc}>
             고급필터
           </StyledSpanConfigTitle>
           <Switch
@@ -195,7 +195,7 @@ const StyledDivTitleRow = styled.div`
   align-items: center;
   & > div:nth-child(1) {
     flex: none;
-    width: ${(props) => (props.isPc === true ? "166px" : "156px")};
+    width: ${(props) => (props.isPc === true ? "158px" : "148px")};
     /* width: 104px; */
   }
   & > div:nth-child(2) {
@@ -204,11 +204,13 @@ const StyledDivTitleRow = styled.div`
 `;
 
 const StyledDivWrapper = styled.div`
-  border-left: 1px solid #9bcfff;
+  /* border-left: 1px solid #9bcfff;
   border-right: 1px solid #9bcfff;
-  border-bottom: 1px solid #9bcfff;
+  border-bottom: 1px solid #9bcfff; */
+  /* height: calc(100vh - 433px); */
   padding: 0 5px 5px 5px;
   background-color: white;
+  /* overflow: scroll; */
 `;
 
 const RowForLevelTwo = styled.div`

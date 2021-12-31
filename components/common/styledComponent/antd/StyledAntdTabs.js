@@ -31,7 +31,7 @@ export const StyledAntTabs = styled(Tabs)`
         transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
       }
       .ant-tabs-tab-btn {
-        font-size: 1.16667rem;
+        font-size: ${({ isPc }) => (isPc ? "15px" : "1.16667rem")};
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -59,11 +59,7 @@ export const StyledAntTabs = styled(Tabs)`
     border: 1px solid #9bcfff;
     border-top: none;
     padding: 5px;
-    height: ${({ isPc, isForTable, isForSession }) =>
-      isPc && isForTable
-        ? "calc(100vh - 160px)"
-        : isPc && isForSession
-        ? "calc(100vh - 160px)"
-        : "auto"};
+    overflow-y: auto;
+    height: ${({ isPc }) => (isPc ? "calc(100vh - 160px)" : "auto")};
   }
 `;

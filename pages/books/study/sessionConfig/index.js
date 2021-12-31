@@ -315,7 +315,7 @@ const StyledDiv = styled.div`
   width: 1024px;
   min-width: 360px;
   * {
-    font-size: 1rem;
+    font-size: 13px;
   }
 
   .SummaryForNumberOfAllBooksCards {
@@ -365,7 +365,7 @@ const StyledForTabsOfBooks = styled(Col)`
 const StyledSessionConfig = styled(Col)`
   padding: 8px;
   padding-left: 4px;
-  width: 370px;
+  width: 398px;
 
   .ant-radio-group {
     display: block;

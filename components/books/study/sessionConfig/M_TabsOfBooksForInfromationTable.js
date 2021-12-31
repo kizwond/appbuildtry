@@ -18,7 +18,6 @@ const M_TabsOfBooksForInfromationTable = ({
       size="small"
       tabBarStyle={{ margin: 0 }}
       isPc={isPc || false}
-      isForTable={false}
     >
       {bookList.map((book) => (
         <Tabs.TabPane tab={book.book_title} key={book.book_id}>

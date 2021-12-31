@@ -31,14 +31,20 @@ const M_SessionModeAndFilterConfig = ({
         onTabClick={(key) => changeMode(key)}
         tabBarStyle={{ margin: 0 }}
         isPc={isPc}
-        isForSession
       >
         <Tabs.TabPane tab="읽기모드" key="read">
-          <M_ModeSessionConfig
-            detailedOption={readDetailedOption}
-            changeProps={changeReadProps}
-            isPc={isPc || false}
-          />
+          <div className="SessionTabContentWrapper">
+            <M_ModeSessionConfig
+              detailedOption={readDetailedOption}
+              changeProps={changeReadProps}
+              isPc={isPc || false}
+            />
+            <M_AdvancedFilter
+              changeAdvancedFilter={changeAdvancedFilter}
+              advancedFilter={advancedFilter}
+              isPc={isPc || false}
+            />
+          </div>
         </Tabs.TabPane>
         <Tabs.TabPane tab="뒤집기모드" key="flip">
           <M_ModeSessionConfig
@@ -55,11 +61,6 @@ const M_SessionModeAndFilterConfig = ({
           />
         </Tabs.TabPane>
       </StyledAntTabs>
-      <M_AdvancedFilter
-        changeAdvancedFilter={changeAdvancedFilter}
-        advancedFilter={advancedFilter}
-        isPc={isPc || false}
-      />
     </div>
   );
 };

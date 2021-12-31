@@ -43,6 +43,7 @@ const Nav = () => {
             <a
               style={{
                 marginRight: "30px",
+                marginLeft: "8px",
                 fontFamily: `Architects Daughter, cursive`,
                 fontWeight: 900,
                 color: fontColor,
@@ -61,7 +62,7 @@ const Nav = () => {
           >
             <div style={{ display: "flex", alignItems: "center" }}>
               <Link href="/books/study">
-                <a style={linkStyle}>학습</a>
+                <a style={linkStyle}>학습하기</a>
               </Link>
               <Link href="/books/writepage">
                 <a style={linkStyle}>만들기</a>

@@ -48,6 +48,7 @@ const ReadMode = () => {
   const [cardClickMenu, setCardClickMenu] = useState(false);
   const [hiddenToggle, setHiddenToggle] = useState(false);
   const [underlineToggle, setUnderlineToggle] = useState(false);
+  const [highlightToggle, setHighlightToggle] = useState(false);
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -263,7 +264,7 @@ const ReadMode = () => {
     const newHiddenValue = {
       color: color,
       targetWord: selectionText,
-      toolTpe: null,
+      toolType: null,
     };
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
@@ -275,6 +276,7 @@ const ReadMode = () => {
     // var elem = document.getElementById(parentIdOfSelection);
 
     // elem.innerHTML = replaced;
+    setHiddenToggle(false);
   };
 
   const underline = (color, toolType) => {
@@ -303,39 +305,84 @@ const ReadMode = () => {
     // var elem = document.getElementById(parentIdOfSelection);
 
     // elem.innerHTML = replaced;
+    setUnderlineToggle(false);
+  };
+
+  const highlight = (color, toolType) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    const newHighlightValue = {
+      color: color,
+      targetWord: selectionText,
+      toolType: toolType,
+    };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.highlight.push(newHighlightValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType, color);
+    console.log(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType, color);
+    // var elem = document.getElementById(parentIdOfSelection);
+
+    // elem.innerHTML = replaced;
+    setHighlightToggle(false);
   };
 
   const hiddenToggleHandler = () => {
     console.log("userflagclicked!!!");
     setHiddenToggle(!hiddenToggle);
-    setUnderlineToggle(false)
+    setUnderlineToggle(false);
+    setHighlightToggle(false)
   };
 
   const underlineToggleHandler = () => {
     console.log("underlineToggleHandler!!!");
     setUnderlineToggle(!underlineToggle);
-    setHiddenToggle(false)
+    setHiddenToggle(false);
+    setHighlightToggle(false)
   };
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const highlightToggleHandler = () => {
+    console.log("underlineToggleHandler!!!");
+    setHighlightToggle(!highlightToggle);
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
+  };
+
+  const [isModalVisibleHidden, setIsModalVisibleHidden] = useState(false);
+  const [isModalVisibleUnderline, setIsModalVisibleUnderline] = useState(false);
+  const [isModalVisibleHighlight, setIsModalVisibleHighlight] = useState(false);
 
   const handleOk = () => {
-    setIsModalVisible(false);
+    setIsModalVisibleHidden(false);
+    setIsModalVisibleUnderline(false);
+    setIsModalVisibleHighlight(false);
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setIsModalVisibleHidden(false);
+    setIsModalVisibleUnderline(false);
+    setIsModalVisibleHighlight(false);
   };
 
   const hiddenEffectDeleteModal = () => {
-    console.log("hiddenEffectDeleteHandler!!!");
-    setIsModalVisible(true);
-    // setHiddenToggle(!hiddenToggle);
+    setIsModalVisibleHidden(true);
   };
   const underlineEffectDeleteModal = () => {
-    console.log("hiddenEffectDeleteHandler!!!");
-    setIsModalVisible(true);
-    // setHiddenToggle(!hiddenToggle);
+    setIsModalVisibleUnderline(true);
+  };
+
+  const highlightEffectDeleteModal = () => {
+    setIsModalVisibleHighlight(true);
   };
 
   function hiddenElementTagHandler(word) {
@@ -364,6 +411,20 @@ const ReadMode = () => {
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
     cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "underline", word);
+  }
+
+  function highlightElementTagHandler(word) {
+    console.log(word);
+    console.log(cardInfo);
+
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    const newHighlightArray = cardListStudying[needToBeChangedIndex].content.highlight.filter((item) => item.targetWord !== word);
+    console.log(newHighlightArray);
+    cardListStudying[needToBeChangedIndex].content.highlight = newHighlightArray;
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "highlight", word);
   }
 
   if (cardTypeSets.length > 0) {
@@ -658,41 +719,6 @@ const ReadMode = () => {
             </>
           );
 
-          var hiddenButtons = hiddenSettings.map((item, index) => {
-            return (
-              <>
-                <div
-                  onClick={() => hide(item.color)}
-                  style={{
-                    border: "1px solid lightgrey",
-                    cursor: "pointer",
-                    width: "24px",
-                    height: "24px",
-                    backgroundColor: item.color,
-                  }}
-                ></div>
-              </>
-            );
-          });
-
-          const underlineButtons = underlineSettings.map((item, index) => {
-            return (
-              <>
-                <div
-                  onClick={() => underline(item.color, item.toolType)}
-                  style={{
-                    border: "1px solid lightgrey",
-                    cursor: "pointer",
-                    width: "24px",
-                    height: "24px",
-                    backgroundColor: item.color,
-                  }}
-                >
-                  {item.toolType}px
-                </div>
-              </>
-            );
-          });
           return (
             <>
               {content.card_info.cardtype === "read" && (
@@ -767,7 +793,7 @@ const ReadMode = () => {
                               <Button
                                 unselectable="on"
                                 className="hiddenButton"
-                                onClick={hiddenToggleHandler}
+                                onClick={hiddenEffectDeleteModal}
                                 size="small"
                                 style={{
                                   border: "none",
@@ -775,67 +801,34 @@ const ReadMode = () => {
                                 }}
                                 icon={<EyeInvisibleOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
                               ></Button>
-                              {hiddenToggle && (
-                                <>
-                                  <div
-                                    unselectable="on"
-                                    style={{
-                                      position: "absolute",
-                                      right: 0,
-                                      boxShadow: "0px 1px 2px 1px #eeeeee",
-                                    }}
-                                  >
-                                    {hiddenButtons}
-                                    <div
-                                      style={{
-                                        border: "1px solid lightgrey",
-                                        cursor: "pointer",
-                                        width: "24px",
-                                        height: "24px",
-                                      }}
-                                    >
-                                      <Button
-                                        size="small"
-                                        style={{
-                                          width: "22px",
-                                          height: "22px",
-                                          border: "none",
-                                          backgroundColor: "#f0f0f0",
-                                        }}
-                                        icon={<SettingOutlined />}
-                                        onClick={hiddenEffectDeleteModal}
-                                      ></Button>
-                                      <Modal title="가리기 해제" footer={null} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-                                        {content.content.hidden &&
-                                          content.content.hidden.map((item) => {
-                                            return (
-                                              <>
-                                                <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
-                                                  <div
-                                                    style={{
-                                                      display: "flex",
-                                                      alignItems: "center",
-                                                    }}
-                                                  >
-                                                    <span>{item.targetWord}</span>
-                                                    <span
-                                                      style={{
-                                                        marginLeft: "3px",
-                                                        color: "grey",
-                                                      }}
-                                                    >
-                                                      <CloseOutlined />
-                                                    </span>
-                                                  </div>
-                                                </Tag>
-                                              </>
-                                            );
-                                          })}
-                                      </Modal>
-                                    </div>
-                                  </div>
-                                </>
-                              )}
+
+                              <Modal title="가리기 해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                                {content.content.hidden &&
+                                  content.content.hidden.map((item) => {
+                                    return (
+                                      <>
+                                        <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <span>{item.targetWord}</span>
+                                            <span
+                                              style={{
+                                                marginLeft: "3px",
+                                                color: "grey",
+                                              }}
+                                            >
+                                              <CloseOutlined />
+                                            </span>
+                                          </div>
+                                        </Tag>
+                                      </>
+                                    );
+                                  })}
+                              </Modal>
                             </div>
 
                             {/* underline */}
@@ -843,7 +836,7 @@ const ReadMode = () => {
                               <Button
                                 unselectable="on"
                                 className="underlineButton"
-                                onClick={underlineToggleHandler}
+                                onClick={underlineEffectDeleteModal}
                                 size="small"
                                 style={{
                                   border: "none",
@@ -851,77 +844,78 @@ const ReadMode = () => {
                                 }}
                                 icon={<UnderlineOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
                               ></Button>
-                              {underlineToggle && (
-                                <>
-                                  <div
-                                    unselectable="on"
-                                    style={{
-                                      position: "absolute",
-                                      right: 0,
-                                      boxShadow: "0px 1px 2px 1px #eeeeee",
-                                    }}
-                                  >
-                                    {underlineButtons}
-                                    <div
-                                      style={{
-                                        border: "1px solid lightgrey",
-                                        cursor: "pointer",
-                                        width: "24px",
-                                        height: "24px",
-                                      }}
-                                    >
-                                      <Button
-                                        size="small"
-                                        style={{
-                                          width: "22px",
-                                          height: "22px",
-                                          border: "none",
-                                          backgroundColor: "#f0f0f0",
-                                        }}
-                                        icon={<SettingOutlined />}
-                                        onClick={underlineEffectDeleteModal}
-                                      ></Button>
-                                      <Modal title="가리기 해제" footer={null} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-                                        {content.content.underline &&
-                                          content.content.underline.map((item) => {
-                                            return (
-                                              <>
-                                                <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
-                                                  <div
-                                                    style={{
-                                                      display: "flex",
-                                                      alignItems: "center",
-                                                    }}
-                                                  >
-                                                    <span>{item.targetWord}</span>
-                                                    <span
-                                                      style={{
-                                                        marginLeft: "3px",
-                                                        color: "grey",
-                                                      }}
-                                                    >
-                                                      <CloseOutlined />
-                                                    </span>
-                                                  </div>
-                                                </Tag>
-                                              </>
-                                            );
-                                          })}
-                                      </Modal>
-                                    </div>
-                                  </div>
-                                </>
-                              )}
+
+                              <Modal title="밑줄 해제" footer={null} visible={isModalVisibleUnderline} onOk={handleOk} onCancel={handleCancel}>
+                                {content.content.underline &&
+                                  content.content.underline.map((item) => {
+                                    return (
+                                      <>
+                                        <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <span>{item.targetWord}</span>
+                                            <span
+                                              style={{
+                                                marginLeft: "3px",
+                                                color: "grey",
+                                              }}
+                                            >
+                                              <CloseOutlined />
+                                            </span>
+                                          </div>
+                                        </Tag>
+                                      </>
+                                    );
+                                  })}
+                              </Modal>
                             </div>
                             {/* <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<UnderlineOutlined />}></Button> */}
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<HighlightOutlined />}
-                            ></Button>
+                            <div unselectable="on" style={{ position: "relative" }}>
+                              <Button
+                                unselectable="on"
+                                className="highlightbutton"
+                                onClick={highlightEffectDeleteModal}
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<HighlightOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                              ></Button>
+
+                              <Modal title="형광펜 해제" footer={null} visible={isModalVisibleHighlight} onOk={handleOk} onCancel={handleCancel}>
+                                {content.content.highlight &&
+                                  content.content.highlight.map((item) => {
+                                    return (
+                                      <>
+                                        <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <span>{item.targetWord}</span>
+                                            <span
+                                              style={{
+                                                marginLeft: "3px",
+                                                color: "grey",
+                                              }}
+                                            >
+                                              <CloseOutlined />
+                                            </span>
+                                          </div>
+                                        </Tag>
+                                      </>
+                                    );
+                                  })}
+                              </Modal>
+                            </div>
+
                             <Button
                               size="small"
                               style={{
@@ -1108,7 +1102,7 @@ const ReadMode = () => {
                                 }}
                               >
                                 {/* <FroalaEditorView model={item} /> */}
-                                {content.content.hidden.length > 0 || content.content.underline.length > 0 ? (
+                                {content.content.hidden.length > 0 || content.content.underline.length > 0 || content.content.highlight.length > 0 ? (
                                   <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} />
                                 ) : (
                                   <>
@@ -2071,6 +2065,7 @@ const ReadMode = () => {
     setCardClickMenu(false);
     setUserFlag(false);
     setHiddenToggle(false);
+    setUnderlineToggle(false);
   };
 
   const [cardset_addEffect] = useMutation(ForAddEffect, {
@@ -2167,7 +2162,18 @@ const ReadMode = () => {
       </div>
       {data && (
         <>
-          <FixedBottomMenuReadMode underlineToggle={underlineToggle} hiddenToggle={hiddenToggle} cardTypeSets={cardTypeSets} hiddenToggleHandler={hiddenToggleHandler} underlineToggleHandler={underlineToggleHandler}/>
+          <FixedBottomMenuReadMode
+            hide={hide}
+            underline={underline}
+            highlight={highlight}
+            underlineToggle={underlineToggle}
+            hiddenToggle={hiddenToggle}
+            highlightToggle={highlightToggle}
+            cardTypeSets={cardTypeSets}
+            hiddenToggleHandler={hiddenToggleHandler}
+            underlineToggleHandler={underlineToggleHandler}
+            highlightToggleHandler={highlightToggleHandler}
+          />
         </>
       )}
     </StudyLayout>
@@ -2185,6 +2191,17 @@ const Alter = ({ content, item, index, getSelectionText2 }) => {
     content.content.underline.map((element) => {
       console.log(element);
       altered = altered.replace(element.targetWord, `<span style="display:inline-block; border-bottom: ${element.toolType}px solid ${element.color}">${element.targetWord}</span>`);
+    });
+  }
+
+  if (content.content.highlight.length > 0) {
+    content.content.highlight.map((element) => {
+      console.log(element);
+      if (element.toolType === "brush1") {
+        altered = altered.replace(element.targetWord, `<span class="${element.toolType}" style="display:inline-block; border-color:${element.color}">${element.targetWord}</span>`);
+      } else {
+        altered = altered.replace(element.targetWord, `<span class="${element.toolType}" style="display:inline-block; background-color:${element.color}">${element.targetWord}</span>`);
+      }
     });
   }
   return (

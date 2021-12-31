@@ -6,7 +6,7 @@ import React, {
   useRef,
 } from "react";
 import { useRouter } from "next/router";
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
 import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
 
@@ -19,23 +19,15 @@ import useSessionConfig from "../../../../components/books/study/sessionConfig/u
 import styled from "styled-components";
 
 import Layout from "../../../../components/layout/Layout";
-import M_SessionNavigationBar /* ----------- */ from "../../../../components/books/study/sessionConfig/M_SessionNavigationBar";
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
 import { Col, Row } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
-const StudySessionConfig = () => {
+const StudySessionConfig = (props) => {
   const router = useRouter();
-
-  const [checkedKeys, setCheckedKeys] = useState([]);
-
-  const bookList = useRef();
-
-  const [activatedComponent, setActivatedComponent] = useState("index");
-  const changeActivatedComponent = useCallback((_type) => {
-    setActivatedComponent(_type);
-  }, []);
-
+  console.log({ props });
+  /* 세션 설정 customHook */
   const {
     // 모드
     mode,
@@ -51,7 +43,33 @@ const StudySessionConfig = () => {
     sessionConfig,
   } = useSessionConfig();
 
-  const [getSessionConfig, { data, loading, error }] = useLazyQuery(
+  /* 목차선택 관련 코드 */
+  const [checkedKeys, setCheckedKeys] = useState([]);
+  const onCheckIndexesCheckedKeys = useCallback(
+    (checkedKeysValueOfBook, selectedBookId) => {
+      setCheckedKeys({
+        ...checkedKeys,
+        [selectedBookId]: checkedKeysValueOfBook,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  useEffect(() => {
+    if (!props.isRefreshPage) {
+      setCheckedKeys(props.initialCheckedKey);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (props.isRefreshPage) {
+      const checkedKeys = JSON.parse(sessionStorage.getItem("forCheckedKeys"));
+      setCheckedKeys(checkedKeys);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const { data, loading, error } = useQuery(
     QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
     {
       onCompleted: (received_data) => {
@@ -59,10 +77,20 @@ const StudySessionConfig = () => {
           console.log("세션 설정 데이터 받음", received_data);
           updateData(received_data);
         } else if (received_data.session_getSessionConfig.status === "401") {
-          router.push("account/login");
+          router.push("/m/account/login");
         } else {
           console.log("어떤 문제가 발생함");
         }
+      },
+      variables: {
+        mybook_ids:
+          typeof window === "undefined"
+            ? []
+            : !props.isRefreshPage
+            ? props.selectedBooks.map((book) => book.book_id)
+            : JSON.parse(sessionStorage.getItem("books_selected")).map(
+                (book) => book.book_id
+              ),
       },
       fetchPolicy: "network-only",
     }
@@ -70,11 +98,14 @@ const StudySessionConfig = () => {
 
   const bookData = useMemo(
     () =>
+      typeof window !== "undefined" &&
       data &&
       computeNumberOfCardsPerBook({
         indexsets: data.indexset_getByMybookids.indexsets,
         cardsets: data.cardset_getByMybookIDs.cardsets,
-        bookList: bookList.current,
+        bookList: !props.isRefreshPage
+          ? props.selectedBooks
+          : JSON.parse(sessionStorage.getItem("books_selected")),
       }),
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,52 +113,71 @@ const StudySessionConfig = () => {
   );
 
   const numberOfFilteredCards = useMemo(
-    () =>
-      data &&
-      computeNumberOfAllFilteredCards({
-        cardsets: data.cardset_getByMybookIDs.cardsets,
-        checkedKeys,
-        sessionConfig,
-      }),
+    () => {
+      if (data) {
+        return computeNumberOfAllFilteredCards({
+          cardsets: data.cardset_getByMybookIDs.cardsets,
+          checkedKeys,
+          sessionConfig,
+        });
+      }
+    },
+
+    // 디펜던시에서 sessionConfig가 매 랜더링마다 변경되어서  useMemo가 실행된다. 크게 의미가 없다. sessionConfig 메모라이징 할 방법 찾아야함
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, checkedKeys, sessionConfig]
+    [checkedKeys, sessionConfig]
   );
 
-  useEffect(() => {
-    const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
-    const book_list = booklist.map((book, index) => ({
-      book_id: book.book_id,
-      book_title: book.book_title,
-      seq: index,
-    }));
-    const checkedKeys = JSON.parse(sessionStorage.getItem("forCheckedKeys"));
-    if (book_list.length > 0) {
-      bookList.current = book_list;
-      getSessionConfig({
-        variables: {
-          mybook_ids: book_list.map((book) => book.book_id),
-        },
-      });
-      setCheckedKeys(checkedKeys);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const [session_createSession, {}] = useMutation(MUTATION_CREATE_SESSION, {
-    onCompleted: (data) => {
-      if (data.session_createSession.status === "200") {
-        console.log("세션 생성 요청 후 받은 데이터", data);
+    onCompleted: (_data) => {
+      if (_data.session_createSession.status === "200") {
+        console.log("세션 생성 요청 후 받은 데이터", _data);
         sessionStorage.setItem(
           "session_Id",
-          data.session_createSession.sessions[0]._id
+          _data.session_createSession.sessions[0]._id
         );
         sessionStorage.setItem("study_mode", sessionConfig.studyMode);
         sessionStorage.removeItem("cardListStudying");
+        console.time("카드스터딩넣기");
+        const sortedCards = sortFilteredCards({
+          numberOfFilteredCards,
+          sortOption: sessionConfig.detailedOption.sortOption,
+        });
+
+        if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
+          const { studyingCards, remainedCards } = getCardsByNumber({
+            sortedCards,
+            numStartCards: sessionConfig.detailedOption.numStartCards,
+          });
+          sessionStorage.setItem(
+            "cardListStudying",
+            JSON.stringify(studyingCards)
+          );
+          sessionStorage.setItem(
+            "cardListRemained",
+            JSON.stringify(remainedCards)
+          );
+        } else {
+          sessionStorage.setItem(
+            "cardListStudying",
+            JSON.stringify(sortedCards)
+          );
+          sessionStorage.setItem(
+            "cardListRemained",
+            JSON.stringify({
+              yet: [],
+              ing: [],
+              hold: [],
+              completed: [],
+            })
+          );
+        }
+        console.timeEnd("카드스터딩넣기");
+
         router.push(
-          `/m/study/mode/${sessionConfig.studyMode}/${data.session_createSession.sessions[0]._id}`
+          `/books/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
         );
-      } else if (data.session_createSession.status === "401") {
+      } else if (_data.session_createSession.status === "401") {
         router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -177,23 +227,31 @@ const StudySessionConfig = () => {
     return <div>에러발생</div>;
   }
 
-  const onCheckIndexesCheckedKeys = (
-    checkedKeysValueOfBook,
-    selectedBookId
-  ) => {
-    setCheckedKeys({
-      ...checkedKeys,
-      [selectedBookId]: checkedKeysValueOfBook,
-    });
-  };
-
   return (
     <Layout>
-      {!error && !loading && bookData && (
+      {loading && (
+        <div
+          style={{
+            width: "100%",
+            margin: "0 auto",
+            marginTop: "150px",
+            fontSize: "30px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          <LoadingOutlined /> 로딩 중...
+        </div>
+      )}
+      {typeof window !== "undefined" && !error && !loading && bookData && (
         <StyledDiv>
           <div className="SummaryForNumberOfAllBooksCards">
             학습 시작 예정 카드는{" "}
-            <span className="NumberOfCards">{numberOfFilteredCards}장</span>{" "}
+            <span className="NumberOfCards">
+              {numberOfFilteredCards.length}장
+            </span>{" "}
             입니다.
           </div>
 
@@ -201,7 +259,11 @@ const StudySessionConfig = () => {
             <StyledForTabsOfBooks flex="auto">
               <M_TabsOfBooksForInfromationTable
                 bookData={bookData}
-                bookList={bookList.current}
+                bookList={
+                  !props.isRefreshPage
+                    ? props.selectedBooks
+                    : JSON.parse(sessionStorage.getItem("books_selected"))
+                }
                 checkedKeys={checkedKeys}
                 onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
               />
@@ -223,6 +285,26 @@ const StudySessionConfig = () => {
   );
 };
 export default StudySessionConfig;
+
+export function getServerSideProps({ query }) {
+  if (query.selectedBooks) {
+    return {
+      props: {
+        isRefreshPage: false,
+        selectedBooks: JSON.parse(query.selectedBooks),
+        initialCheckedKey: JSON.parse(query.initialCheckedKey),
+      },
+    };
+  }
+
+  return {
+    props: {
+      isRefreshPage: true,
+      selectedBooks: [],
+      initialCheckedKey: [],
+    },
+  };
+}
 
 const StyledDiv = styled.div`
   margin: 0 auto;

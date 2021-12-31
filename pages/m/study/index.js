@@ -1,8 +1,10 @@
+import { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+
 import { useQuery } from "@apollo/client";
 import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
-import { useRouter } from "next/router";
 
 import styled from "styled-components";
 
@@ -40,18 +42,19 @@ const M_StudyMainPage = () => {
     }
   );
 
-  useEffect(() => {
-    sessionStorage.removeItem("books_selected");
-  }, []);
+  // useEffect(() => {
+  //   sessionStorage.removeItem("books_selected");
+  //   sessionStorage.removeItem("forCheckedKeys");
+  // }, []);
 
   const directStart = () => {
-    // router.push("/m/study/mode/directread");
     router.push({
       pathname: "/m/study/mode/directread",
       query: { name: JSON.stringify(selectedBooks) },
     });
   };
-  const sesstionStart = async () => {
+
+  const getCheckedIndexKeys = (data, selectedBooks) => {
     let forCheckedKeys = {};
     data.mybook_getMybookByUserID.mybooks
       .filter((_book) =>
@@ -60,10 +63,11 @@ const M_StudyMainPage = () => {
       .forEach((book) => {
         forCheckedKeys[book._id] = book.recentStudyIndexes;
       });
-
-    console.log(forCheckedKeys);
-    sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
-    router.push("/m/study/sessionConfig");
+    // sessionStorage.removeItem("forCheckedKeys");
+    if (forCheckedKeys !== {}) {
+      sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
+    }
+    return forCheckedKeys;
   };
 
   const changeSelectedBooks = useCallback((_booksArray) => {
@@ -116,7 +120,23 @@ const M_StudyMainPage = () => {
           </StyledRowMaxWidth>
           <StyledBottomBar>
             <div onClick={directStart}>바로 보기</div>
-            <div onClick={sesstionStart}>세션 설정 후 시작</div>
+
+            <div>
+              <Link
+                as="/m/study/sessionConfig"
+                href={{
+                  pathname: "/m/study/sessionConfig",
+                  query: {
+                    selectedBooks: JSON.stringify(selectedBooks),
+                    initialCheckedKey: JSON.stringify(
+                      getCheckedIndexKeys(data, selectedBooks)
+                    ),
+                  },
+                }}
+              >
+                <a>세션 설정 후 시작</a>
+              </Link>
+            </div>
           </StyledBottomBar>
         </M_Layout>
       )}

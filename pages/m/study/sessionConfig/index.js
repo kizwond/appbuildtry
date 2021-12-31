@@ -1,12 +1,6 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-} from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
 import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
 
@@ -24,19 +18,12 @@ import M_Layout from "../../../../components/layout/M_Layout";
 import M_SessionNavigationBar /* ----------- */ from "../../../../components/books/study/sessionConfig/M_SessionNavigationBar";
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
+import { LoadingOutlined } from "@ant-design/icons";
 
-const StudySessionConfig = () => {
+const StudySessionConfig = (props) => {
   const router = useRouter();
 
-  const [checkedKeys, setCheckedKeys] = useState([]);
-
-  const bookList = useRef();
-
-  const [activatedComponent, setActivatedComponent] = useState("index");
-  const changeActivatedComponent = useCallback((_type) => {
-    setActivatedComponent(_type);
-  }, []);
-
+  /* 세션 설정 customHook */
   const {
     // 모드
     mode,
@@ -52,7 +39,38 @@ const StudySessionConfig = () => {
     sessionConfig,
   } = useSessionConfig();
 
-  const [getSessionConfig, { data, loading, error }] = useLazyQuery(
+  /* 목차선택 관련 코드 */
+  const [checkedKeys, setCheckedKeys] = useState([]);
+  const onCheckIndexesCheckedKeys = useCallback(
+    (checkedKeysValueOfBook, selectedBookId) => {
+      setCheckedKeys({
+        ...checkedKeys,
+        [selectedBookId]: checkedKeysValueOfBook,
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  useEffect(() => {
+    if (!props.isRefreshPage) {
+      setCheckedKeys(props.initialCheckedKey);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (props.isRefreshPage) {
+      const checkedKeys = JSON.parse(sessionStorage.getItem("forCheckedKeys"));
+      setCheckedKeys(checkedKeys);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [activatedComponent, setActivatedComponent] = useState("index");
+  const changeActivatedComponent = useCallback((_type) => {
+    setActivatedComponent(_type);
+  }, []);
+
+  const { data, loading, error } = useQuery(
     QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
     {
       onCompleted: (received_data) => {
@@ -65,17 +83,30 @@ const StudySessionConfig = () => {
           console.log("어떤 문제가 발생함");
         }
       },
+      variables: {
+        mybook_ids:
+          typeof window === "undefined"
+            ? []
+            : !props.isRefreshPage
+            ? props.selectedBooks.map((book) => book.book_id)
+            : JSON.parse(sessionStorage.getItem("books_selected")).map(
+                (book) => book.book_id
+              ),
+      },
       fetchPolicy: "network-only",
     }
   );
 
   const bookData = useMemo(
     () =>
+      typeof window !== "undefined" &&
       data &&
       computeNumberOfCardsPerBook({
         indexsets: data.indexset_getByMybookids.indexsets,
         cardsets: data.cardset_getByMybookIDs.cardsets,
-        bookList: bookList.current,
+        bookList: !props.isRefreshPage
+          ? props.selectedBooks
+          : JSON.parse(sessionStorage.getItem("books_selected")),
       }),
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -97,27 +128,6 @@ const StudySessionConfig = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [checkedKeys, sessionConfig]
   );
-
-  useEffect(() => {
-    const booklist = JSON.parse(sessionStorage.getItem("books_selected"));
-    const book_list = booklist.map((book, index) => ({
-      book_id: book.book_id,
-      book_title: book.book_title,
-      seq: index,
-    }));
-    const checkedKeys = JSON.parse(sessionStorage.getItem("forCheckedKeys"));
-    if (book_list.length > 0) {
-      bookList.current = book_list;
-      getSessionConfig({
-        variables: {
-          mybook_ids: book_list.map((book) => book.book_id),
-        },
-      });
-      setCheckedKeys(checkedKeys);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const [session_createSession, {}] = useMutation(MUTATION_CREATE_SESSION, {
     onCompleted: (_data) => {
@@ -212,17 +222,6 @@ const StudySessionConfig = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkedKeys, sessionConfig]);
 
-  const onCheckIndexesCheckedKeys = useCallback(
-    (checkedKeysValueOfBook, selectedBookId) => {
-      setCheckedKeys({
-        ...checkedKeys,
-        [selectedBookId]: checkedKeysValueOfBook,
-      });
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
-
   if (error) {
     console.log("에러", error);
     // console.log(variables);
@@ -231,7 +230,24 @@ const StudySessionConfig = () => {
 
   return (
     <M_Layout>
-      {!error && !loading && bookData && (
+      {loading && (
+        <div
+          style={{
+            width: "100%",
+            margin: "0 auto",
+            marginTop: "150px",
+            fontSize: "30px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          <LoadingOutlined />
+          로딩 중...
+        </div>
+      )}
+      {typeof window !== "undefined" && !loading && bookData && (
         <StyledDiv>
           <M_SessionNavigationBar
             activatedComponent={activatedComponent}
@@ -244,7 +260,11 @@ const StudySessionConfig = () => {
           <StyledForTabsOfBooks activatedComponent={activatedComponent}>
             <M_TabsOfBooksForInfromationTable
               bookData={bookData}
-              bookList={bookList.current}
+              bookList={
+                !props.isRefreshPage
+                  ? props.selectedBooks
+                  : JSON.parse(sessionStorage.getItem("books_selected"))
+              }
               checkedKeys={checkedKeys}
               onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
             />
@@ -267,6 +287,26 @@ const StudySessionConfig = () => {
   );
 };
 export default StudySessionConfig;
+
+export function getServerSideProps({ query }) {
+  if (query.selectedBooks) {
+    return {
+      props: {
+        isRefreshPage: false,
+        selectedBooks: JSON.parse(query.selectedBooks),
+        initialCheckedKey: JSON.parse(query.initialCheckedKey),
+      },
+    };
+  }
+
+  return {
+    props: {
+      isRefreshPage: true,
+      selectedBooks: [],
+      initialCheckedKey: [],
+    },
+  };
+}
 
 const StyledDiv = styled.div`
   margin: 0 auto;

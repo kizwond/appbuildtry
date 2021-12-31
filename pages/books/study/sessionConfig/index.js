@@ -246,7 +246,7 @@ const StudySessionConfig = (props) => {
         </div>
       )}
       {typeof window !== "undefined" && !error && !loading && bookData && (
-        <StyledDiv>
+        <StyledDiv className="ForPcMainPages">
           <div style={{ padding: "8px 8px 0 8px" }}>
             <div className="SummaryForNumberOfAllBooksCards">
               학습 시작 예정 카드는{" "}
@@ -325,9 +325,9 @@ const StyledDiv = styled.div`
     align-items: center;
     border: 1px dashed #9bcfff;
     background-color: #9bffff;
-    font-size: 1.16667rem;
+    font-size: 15px;
     & .NumberOfCards {
-      font-size: 1.16667rem;
+      font-size: 15px;
       font-weight: 600;
     }
   }

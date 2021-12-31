@@ -95,7 +95,10 @@ const M_ModeSessionConfig = ({
 
       <StyledDivConfigRow isPc={isPc}>
         <StyledDivConfigColStartCards>
-          <StyledSpanConfigTitle onOff={numStartCards.onOff === "on"}>
+          <StyledSpanConfigTitle
+            onOff={numStartCards.onOff === "on"}
+            isPc={isPc}
+          >
             학습량
           </StyledSpanConfigTitle>
           <Switch
@@ -128,8 +131,8 @@ const M_ModeSessionConfig = ({
 export default memo(M_ModeSessionConfig);
 
 const StyledDivConfigWrapper = styled.div`
-  border-left: 1px solid #9bcfff;
-  border-right: 1px solid #9bcfff;
+  /* border-left: 1px solid #9bcfff;
+  border-right: 1px solid #9bcfff; */
   padding: 5px 5px 0 5px;
   background-color: white;
   display: flex;

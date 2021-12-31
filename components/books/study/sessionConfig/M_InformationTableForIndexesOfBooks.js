@@ -4,13 +4,25 @@ import styled from "styled-components";
 import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
 import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
 import { getAllChildrenKeys } from "../../../common/logic/getAllChildrenKeysForTable";
+import { useMemo } from "react";
 
 const IndexTree = ({
   onCheckIndexesCheckedKeys,
   checkedKeys,
   selectedbookId,
   bookData,
+  isPc,
 }) => {
+  const scrolProperty = useMemo(
+    () =>
+      isPc
+        ? null
+        : {
+            scroll: { x: 720 },
+          },
+    [isPc]
+  );
+
   const handleCheckbox = (record) => {
     return {
       onClick: () => {
@@ -40,7 +52,7 @@ const IndexTree = ({
           title: "목차",
           dataIndex: "title",
           key: "title",
-          width: 140,
+          width: 120,
           className: "TableRowTitle",
           fixed: true,
           align: "center",
@@ -52,7 +64,7 @@ const IndexTree = ({
         {
           dataIndex: "key",
           key: "key",
-          width: 30,
+          width: 25,
           fixed: true,
           align: "center",
           onCell: handleCheckbox,
@@ -71,7 +83,7 @@ const IndexTree = ({
           title: "평균 레벨",
           dataIndex: "totalLevelOfAllCards",
           key: "totalLevelOfAllCards",
-          width: 80,
+          width: 56,
           align: "center",
           onCell: handleCheckbox,
           render: function ForProgress(level, { totalNumberOfAllCards }) {
@@ -94,14 +106,14 @@ const IndexTree = ({
           dataIndex: "totalNumberOfAllCards",
           key: "totalNumberOfAllCards",
           align: "center",
-          width: 60,
+          width: 42,
         },
         {
           title: "미학습",
           dataIndex: "totalNumberOfYetCards",
           key: "totalNumberOfYetCards",
           align: "center",
-          width: 60,
+          width: 42,
         },
         {
           title: "학습중",
@@ -111,28 +123,28 @@ const IndexTree = ({
               dataIndex: "totalNumberOfAllCardsOnStudyStage",
               key: "totalNumberOfAllCardsOnStudyStage",
               align: "center",
-              width: 60,
+              width: 53,
             },
             {
               title: "현재이전",
               dataIndex: "totalNumberOfUntilNowCardsOnStudyStage",
               key: "totalNumberOfUntilNowCardsOnStudyStage",
               align: "center",
-              width: 60,
+              width: 53,
             },
             {
               title: "오늘이전",
               dataIndex: "totalNumberOfUntilTodayCardsOnStudyStage",
               key: "totalNumberOfUntilTodayCardsOnStudyStage",
               align: "center",
-              width: 60,
+              width: 53,
             },
             {
               title: "내일이후",
               dataIndex: "totalNumberOfFromTomorrowCardsOnStudyStage",
               key: "totalNumberOfFromTomorrowCardsOnStudyStage",
               align: "center",
-              width: 60,
+              width: 53,
             },
           ],
         },
@@ -141,14 +153,14 @@ const IndexTree = ({
           dataIndex: "totalNumberOfCompletedCards",
           key: "totalNumberOfCompletedCards",
           align: "center",
-          width: 60,
+          width: 42,
         },
         {
           title: "보류",
           dataIndex: "totalNumberOfHoldCards",
           key: "totalNumberOfHoldCards",
           align: "center",
-          width: 60,
+          width: 42,
         },
       ]}
       dataSource={bookData}
@@ -161,7 +173,8 @@ const IndexTree = ({
         indentSize: 10,
       }}
       size="small"
-      scroll={{ x: 720 }}
+      // scroll={{ x: isPc ? null : 720 }}
+      {...scrolProperty}
       pagination={false}
       title={() => (
         <StyledDivTitle>

@@ -13,7 +13,7 @@ import ToggleTags from "../common/ToggleTags";
 import { filterTags } from "../common/dataForContainer";
 import InactivatedTags from "../common/InactivatedTags";
 
-const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
+const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
   const {
     changeAdvancedFilterOnOff,
     changeUserFlag,
@@ -49,7 +49,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
   const { flagTags, recentDifficultyTags, examResultTags } = filterTags;
   return (
     <StyledDivWrapper>
-      <StyledDivTitleRow>
+      <StyledDivTitleRow isPc={isPc}>
         <StyledDivConfigColStartCards>
           <StyledSpanConfigTitle onOff={onOff === "on"}>
             고급필터
@@ -77,6 +77,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
       {onOff === "on" && (
         <>
           <FilterSubMenu
+            isPc={isPc}
             title="사용자 플래그"
             changeOnOff={changeUserFlagOnOff}
             onOff={userFlag.onOff}
@@ -93,6 +94,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
             )}
           </FilterSubMenu>
           <FilterSubMenu
+            isPc={isPc}
             title="제작자 플래그"
             changeOnOff={changeMakerFlagOnOff}
             onOff={makerFlag.onOff}
@@ -109,6 +111,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
             )}
           </FilterSubMenu>
           <FilterSubMenu
+            isPc={isPc}
             title="최근 학습 시점"
             changeOnOff={changeRecentStudyTimeOnOff}
             onOff={recentStudyTime.onOff}
@@ -120,6 +123,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
             />
           </FilterSubMenu>
           <FilterSubMenu
+            isPc={isPc}
             title="카드 레벨"
             changeOnOff={changeLevelOnOff}
             onOff={level.onOff}
@@ -131,6 +135,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
             />
           </FilterSubMenu>
           <FilterSubMenu
+            isPc={isPc}
             title="학습 횟수"
             changeOnOff={changeStudyTimesOnOff}
             onOff={studyTimes.onOff}
@@ -143,6 +148,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
           </FilterSubMenu>
 
           <FilterSubMenu
+            isPc={isPc}
             title="최근 선택 난이도"
             changeOnOff={changeRecentDifficultyOnOff}
             onOff={recentDifficulty.onOff}
@@ -159,6 +165,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter }) => {
             )}
           </FilterSubMenu>
           <FilterSubMenu
+            isPc={isPc}
             title="최근 시험 결과"
             changeOnOff={changeExamResultOnOff}
             onOff={examResult.onOff}
@@ -188,7 +195,8 @@ const StyledDivTitleRow = styled.div`
   align-items: center;
   & > div:nth-child(1) {
     flex: none;
-    width: 104px;
+    width: ${(props) => (props.isPc === true ? "166px" : "156px")};
+    /* width: 104px; */
   }
   & > div:nth-child(2) {
     flex: auto;

@@ -8,6 +8,7 @@ const M_TabsOfBooksForInfromationTable = ({
   checkedKeys,
   onCheckIndexesCheckedKeys,
   bookData,
+  isPc,
 }) => {
   return (
     <StyledAntTabs
@@ -16,6 +17,8 @@ const M_TabsOfBooksForInfromationTable = ({
       tabPosition="top"
       size="small"
       tabBarStyle={{ margin: 0 }}
+      isPc={isPc || false}
+      isForTable={false}
     >
       {bookList.map((book) => (
         <Tabs.TabPane tab={book.book_title} key={book.book_id}>
@@ -25,6 +28,7 @@ const M_TabsOfBooksForInfromationTable = ({
               selectedbookId={book.book_id}
               onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
               bookData={bookData[book.book_id]}
+              isPc={isPc || false}
             />
           </div>
         </Tabs.TabPane>

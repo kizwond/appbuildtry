@@ -42,11 +42,6 @@ const StudyPage = () => {
     }
   );
 
-  // useEffect(() => {
-  //   sessionStorage.setItem("forCheckedKeys", JSON.stringify([]));
-  //   sessionStorage.setItem("books_selected", JSON.stringify([]));
-  // }, []);
-
   const directStart = () => {
     router.push({
       pathname: "/study/mode/directread",
@@ -158,7 +153,7 @@ const StudyPage = () => {
 export default StudyPage;
 
 const StyledRowMaxWidth = styled.div`
-  max-width: 1440px;
+  width: 1024px;
   margin: 0 auto;
   padding: 0 8px;
 
@@ -182,34 +177,6 @@ const StyledRowMaxWidth = styled.div`
   }
   & .PullCustomCircleButton:hover > .anticon-setting > svg {
     color: #fff;
-  }
-`;
-
-const StyledBottomBar = styled.div`
-  overflow: hidden;
-  /* border: 1px solid #d1d1d1; */
-  border-top: 1px solid #e1e1e1;
-  background-color: #f5f5f5;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 4.2rem;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  z-index: 999;
-
-  & > div {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 500;
-    font-size: 1.2rem;
-  }
-  & > div:first-child {
-    border-right: 1px solid #e1e1e1;
   }
 `;
 

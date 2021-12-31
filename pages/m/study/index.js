@@ -42,11 +42,6 @@ const M_StudyMainPage = () => {
     }
   );
 
-  // useEffect(() => {
-  //   sessionStorage.removeItem("books_selected");
-  //   sessionStorage.removeItem("forCheckedKeys");
-  // }, []);
-
   const directStart = () => {
     router.push({
       pathname: "/m/study/mode/directread",
@@ -63,7 +58,6 @@ const M_StudyMainPage = () => {
       .forEach((book) => {
         forCheckedKeys[book._id] = book.recentStudyIndexes;
       });
-    // sessionStorage.removeItem("forCheckedKeys");
     if (forCheckedKeys !== {}) {
       sessionStorage.setItem("forCheckedKeys", JSON.stringify(forCheckedKeys));
     }
@@ -71,6 +65,8 @@ const M_StudyMainPage = () => {
   };
 
   const changeSelectedBooks = useCallback((_booksArray) => {
+    sessionStorage.removeItem("forCheckedKeys");
+    sessionStorage.removeItem("books_selected");
     setSelectedBooks(_booksArray);
     sessionStorage.setItem("books_selected", JSON.stringify(_booksArray));
   }, []);

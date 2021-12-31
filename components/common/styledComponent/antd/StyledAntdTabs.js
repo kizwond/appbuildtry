@@ -59,5 +59,11 @@ export const StyledAntTabs = styled(Tabs)`
     border: 1px solid #9bcfff;
     border-top: none;
     padding: 5px;
+    height: ${({ isPc, isForTable, isForSession }) =>
+      isPc && isForTable
+        ? "calc(100vh - 160px)"
+        : isPc && isForSession
+        ? "calc(100vh - 160px)"
+        : "auto"};
   }
 `;

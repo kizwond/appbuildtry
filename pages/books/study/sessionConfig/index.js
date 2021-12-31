@@ -247,16 +247,18 @@ const StudySessionConfig = (props) => {
       )}
       {typeof window !== "undefined" && !error && !loading && bookData && (
         <StyledDiv>
-          <div className="SummaryForNumberOfAllBooksCards">
-            학습 시작 예정 카드는{" "}
-            <span className="NumberOfCards">
-              {numberOfFilteredCards.length}장
-            </span>{" "}
-            입니다.
+          <div style={{ padding: "8px 8px 0 8px" }}>
+            <div className="SummaryForNumberOfAllBooksCards">
+              학습 시작 예정 카드는{" "}
+              <span className="NumberOfCards">
+                {numberOfFilteredCards.length}장
+              </span>{" "}
+              입니다.
+            </div>
           </div>
 
-          <StyledRow>
-            <StyledForTabsOfBooks flex="auto">
+          <StyledRow wrap={false}>
+            <StyledForTabsOfBooks flex="auto" className="BookTable">
               <M_TabsOfBooksForInfromationTable
                 bookData={bookData}
                 bookList={
@@ -266,16 +268,18 @@ const StudySessionConfig = (props) => {
                 }
                 checkedKeys={checkedKeys}
                 onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
+                isPc
               />
             </StyledForTabsOfBooks>
 
-            <StyledSessionConfig flex="420px">
+            <StyledSessionConfig flex="none" className="Config">
               <M_SessionModeAndFilterConfig
                 mode={mode}
                 changeMode={changeMode}
                 modeOption={modeOption}
                 advancedFilter={advancedFilter}
                 changeAdvancedFilter={changeAdvancedFilter}
+                isPc
               />
             </StyledSessionConfig>
           </StyledRow>
@@ -308,15 +312,17 @@ export function getServerSideProps({ query }) {
 
 const StyledDiv = styled.div`
   margin: 0 auto;
-  max-width: 1440px;
+  width: 1024px;
   min-width: 360px;
   * {
     font-size: 1rem;
   }
 
   .SummaryForNumberOfAllBooksCards {
-    margin: 8px;
     padding: 4px;
+    height: 40px;
+    display: flex;
+    align-items: center;
     border: 1px dashed #9bcfff;
     background-color: #9bffff;
     font-size: 1.16667rem;
@@ -331,8 +337,35 @@ const StyledDiv = styled.div`
   }
 `;
 
+const StyledForTabsOfBooks = styled(Col)`
+  padding: 8px;
+  padding-right: 4px;
+
+  .ant-table.ant-table-small .ant-table-title {
+    padding: reset;
+    padding: 0px 8px 3px 8px;
+  }
+
+  .ant-table-tbody > tr.ant-table-row-selected > td {
+    background: white;
+  }
+  .ant-table-tbody > tr.SelectedIndexCardsInfo > td {
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .ant-table.ant-table-small .ant-table-tbody > tr > td {
+    padding: 4px;
+  }
+
+  .ant-table-row-indent + .ant-table-row-expand-icon {
+    margin-right: 2px;
+  }
+`;
+
 const StyledSessionConfig = styled(Col)`
-  margin: 8px;
+  padding: 8px;
+  padding-left: 4px;
+  width: 370px;
 
   .ant-radio-group {
     display: block;
@@ -354,29 +387,6 @@ const StyledSessionConfig = styled(Col)`
   .ant-input-number-handler-wrap {
     width: 0px;
     visibility: hidden;
-  }
-`;
-const StyledForTabsOfBooks = styled(Col)`
-  margin: 8px;
-
-  .ant-table.ant-table-small .ant-table-title {
-    padding: reset;
-    padding: 0px 8px 3px 8px;
-  }
-
-  .ant-table-tbody > tr.ant-table-row-selected > td {
-    background: white;
-  }
-  .ant-table-tbody > tr.SelectedIndexCardsInfo > td {
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .ant-table.ant-table-small .ant-table-tbody > tr > td {
-    padding: 4px;
-  }
-
-  .ant-table-row-indent + .ant-table-row-expand-icon {
-    margin-right: 2px;
   }
 `;
 

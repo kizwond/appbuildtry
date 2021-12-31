@@ -11,6 +11,7 @@ const M_SessionModeAndFilterConfig = ({
   modeOption,
   advancedFilter,
   changeAdvancedFilter,
+  isPc,
 }) => {
   const {
     readDetailedOption,
@@ -20,38 +21,44 @@ const M_SessionModeAndFilterConfig = ({
     examDetailedOption,
     changeExamProps,
   } = modeOption;
-
   return (
     <div>
       <StyledAntTabs
+        width="28%"
         activeKey={mode}
         type="card"
         size="small"
         onTabClick={(key) => changeMode(key)}
         tabBarStyle={{ margin: 0 }}
+        isPc={isPc}
+        isForSession
       >
         <Tabs.TabPane tab="읽기모드" key="read">
           <M_ModeSessionConfig
             detailedOption={readDetailedOption}
             changeProps={changeReadProps}
+            isPc={isPc || false}
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="뒤집기모드" key="flip">
           <M_ModeSessionConfig
             detailedOption={flipDetailedOption}
             changeProps={changeFlipProps}
+            isPc={isPc || false}
           />
         </Tabs.TabPane>
         <Tabs.TabPane tab="시험모드" key="exam">
           <M_ModeSessionConfig
             detailedOption={examDetailedOption}
             changeProps={changeExamProps}
+            isPc={isPc || false}
           />
         </Tabs.TabPane>
       </StyledAntTabs>
       <M_AdvancedFilter
         changeAdvancedFilter={changeAdvancedFilter}
         advancedFilter={advancedFilter}
+        isPc={isPc || false}
       />
     </div>
   );

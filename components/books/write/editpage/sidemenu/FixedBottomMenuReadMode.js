@@ -24,6 +24,9 @@ import {
   ToolOutlined,
   ReadOutlined,
 } from "@ant-design/icons";
+
+import StudyToolSetting from "../../../study/mode/StudyToolSetting";
+
 const FloatingMenu = ({
   highlightToggle,
   highlightToggleHandler,
@@ -46,6 +49,25 @@ const FloatingMenu = ({
     const hiddenSettings = cardTypeSets[0].studyTool.hidden;
     const highlightSettings = cardTypeSets[0].studyTool.highlight;
     const underlineSettings = cardTypeSets[0].studyTool.underline;
+    if (selectionText === "" || selectionText === null || selectionText === undefined) {
+      selectionText = "선택영역이 없습니다.";
+    }
+    var selectionTextShow = (
+      <>
+        <div
+          style={{
+            position: "absolute",
+            top: -55,
+            left: `100px`,
+            border: "1px solid lightgrey",
+            width: "200px",
+            textAlign: "center",
+          }}
+        >
+          {selectionText}
+        </div>
+      </>
+    );
     var hiddenButtons = hiddenSettings.map((item, index) => {
       if (index === 0) {
         var marginValue = 0;
@@ -133,6 +155,12 @@ const FloatingMenu = ({
   }
   return (
     <div style={{ width: "100%", alignItems: "center", position: "fixed", bottom: 0, left: 0, zIndex: 3, fontSize: "0.8rem" }}>
+      <div style={{ position: "relative" }}>
+        {hiddenToggle && <>{selectionTextShow}</>}
+        {underlineToggle && <>{selectionTextShow}</>}
+        {highlightToggle && <>{selectionTextShow}</>}
+      </div>
+
       <div
         style={{
           margin: "auto",
@@ -163,12 +191,7 @@ const FloatingMenu = ({
           <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}>
             <EyeInvisibleOutlined onClick={hiddenToggleHandler} style={{ fontSize: "1.3rem" }} />
             가리기
-            {hiddenToggle && (
-              <>
-                {selectionText}
-                {hiddenButtons}
-              </>
-            )}
+            {hiddenToggle && <>{hiddenButtons}</>}
           </div>
 
           <div style={{ position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -196,9 +219,8 @@ const FloatingMenu = ({
                     <ReadOutlined style={{ fontSize: "1.3rem" }} />
                     학습설정
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <ToolOutlined style={{ fontSize: "1.3rem" }} />
-                    도구설정
+                  <div style={{  display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <StudyToolSetting cardTypeSets={cardTypeSets}/>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <SoundOutlined style={{ fontSize: "1.3rem" }} />

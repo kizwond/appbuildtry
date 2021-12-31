@@ -682,7 +682,7 @@ p {
   top:0.3em;
   border-width:2px;
   border-style:solid;
-  border-color:red;
+  border-color:var(--bubble-color);
   position:absolute;
   border-right-color:transparent;
   width:100%;
@@ -701,7 +701,7 @@ p {
   padding:0.1em 0.25em;
   border-width:2px;
   border-style:solid;
-  border-color:red;
+  border-color:var(--bubble-color);
   border-left-color:transparent;
   border-top-color:transparent;
   position:absolute;

@@ -197,6 +197,9 @@ const ReadMode = () => {
   }
 
   const getSelectionText2 = () => {
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
+    setHighlightToggle(false);
     console.log("hello");
     var text = "";
     var textRange = {};
@@ -207,13 +210,18 @@ const ReadMode = () => {
     } else if (document.selection && document.selection.type != "Control") {
       text = document.selection.createRange().text;
     }
+    console.log(text);
 
     if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
       var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
       var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
+      var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
+      var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
       if (parentId_tmp1 !== null) {
         var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+        var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+        var cardId = parentId_tmp3[0].replace("cardId", "");
       } else {
         parentId = null;
       }
@@ -221,31 +229,47 @@ const ReadMode = () => {
         parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
         parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
         var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
+        var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
+        var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+        console.log(parentId_tmp1);
         if (parentId_tmp1 !== null) {
           var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+          var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+          var cardId = parentId_tmp3[0].replace("cardId", "");
         } else {
           parentId = null;
         }
         if (parentId !== null) {
           sessionStorage.setItem("parentIdOfSelection", parentId[0]);
           sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+          sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+          sessionStorage.setItem("selectionTextCardId", cardId);
         } else {
           parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
           parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
           var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
+          var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
+          var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+          console.log(parentId_tmp1);
           if (parentId_tmp1 !== null) {
             var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+            var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+            var cardId = parentId_tmp3[0].replace("cardId", "");
           } else {
             parentId = null;
           }
           if (parentId !== null) {
             sessionStorage.setItem("parentIdOfSelection", parentId[0]);
             sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+            sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+            sessionStorage.setItem("selectionTextCardId", cardId);
           }
         }
       } else {
         sessionStorage.setItem("parentIdOfSelection", parentId[0]);
         sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+        sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+        sessionStorage.setItem("selectionTextCardId", cardId);
       }
     }
   };
@@ -277,6 +301,7 @@ const ReadMode = () => {
 
     // elem.innerHTML = replaced;
     setHiddenToggle(false);
+    sessionStorage.removeItem("selectionText");
   };
 
   const underline = (color, toolType) => {
@@ -306,6 +331,7 @@ const ReadMode = () => {
 
     // elem.innerHTML = replaced;
     setUnderlineToggle(false);
+    sessionStorage.removeItem("selectionText");
   };
 
   const highlight = (color, toolType) => {
@@ -335,20 +361,21 @@ const ReadMode = () => {
 
     // elem.innerHTML = replaced;
     setHighlightToggle(false);
+    sessionStorage.removeItem("selectionText");
   };
 
   const hiddenToggleHandler = () => {
     console.log("userflagclicked!!!");
     setHiddenToggle(!hiddenToggle);
     setUnderlineToggle(false);
-    setHighlightToggle(false)
+    setHighlightToggle(false);
   };
 
   const underlineToggleHandler = () => {
     console.log("underlineToggleHandler!!!");
     setUnderlineToggle(!underlineToggle);
     setHiddenToggle(false);
-    setHighlightToggle(false)
+    setHighlightToggle(false);
   };
 
   const highlightToggleHandler = () => {
@@ -434,9 +461,6 @@ const ReadMode = () => {
       const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
 
       console.log(current_card_style_set);
-      const hiddenSettings = current_card_style_set[0].studyTool.hidden;
-      const highlightSettings = current_card_style_set[0].studyTool.highlight;
-      const underlineSettings = current_card_style_set[0].studyTool.underline;
       const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
       // console.log(current_card_style);
       const face_style = current_card_style[0].face_style;
@@ -1102,13 +1126,14 @@ const ReadMode = () => {
                                 }}
                               >
                                 {/* <FroalaEditorView model={item} /> */}
-                                {content.content.hidden.length > 0 || content.content.underline.length > 0 || content.content.highlight.length > 0 ? (
+                                <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} />
+                                {/* {content.content.hidden.length > 0 || content.content.underline.length > 0 || content.content.highlight.length > 0 ? (
                                   <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} />
                                 ) : (
                                   <>
                                     <div id={`${content._id}face1row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }} onPointerUp={getSelectionText2}></div>
                                   </>
-                                )}
+                                )} */}
                               </div>
                             </>
                           ))}
@@ -2033,6 +2058,7 @@ const ReadMode = () => {
   }
 
   const onClickCard = (card_id, from, group, card_info) => {
+    sessionStorage.removeItem("selectionText");
     const selected1 = document.getElementsByClassName(card_id);
     const selected2 = document.getElementsByClassName("other");
 
@@ -2048,8 +2074,6 @@ const ReadMode = () => {
       section.style.boxShadow = "#eeeeee 0px 1px 2px 1px";
     }
 
-    sessionStorage.setItem("selectionTextCardSetId", card_info.cardset_id);
-    sessionStorage.setItem("selectionTextCardId", card_info.card_id);
     if (cardId === card_id) {
       setCardId("");
       setCardInfo("");
@@ -2198,15 +2222,22 @@ const Alter = ({ content, item, index, getSelectionText2 }) => {
     content.content.highlight.map((element) => {
       console.log(element);
       if (element.toolType === "brush1") {
-        altered = altered.replace(element.targetWord, `<span class="${element.toolType}" style="display:inline-block; border-color:${element.color}">${element.targetWord}</span>`);
+        altered = altered.replace(element.targetWord, `<span class="${element.toolType}" style="display:inline-block; --bubble-color:${element.color}">${element.targetWord}</span>`);
       } else {
-        altered = altered.replace(element.targetWord, `<span class="${element.toolType}" style="display:inline-block; background-color:${element.color}">${element.targetWord}</span>`);
+        altered = altered.replace(
+          element.targetWord,
+          `<span class="${element.toolType}" style="display:inline-block; background-color:${element.color}">${element.targetWord}</span>`
+        );
       }
     });
   }
   return (
     <>
-      <div id={`${content._id}face1row${index + 1}`} dangerouslySetInnerHTML={{ __html: altered }} onPointerUp={getSelectionText2}></div>
+      <div
+        id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
+        dangerouslySetInnerHTML={{ __html: altered }}
+        onPointerUp={getSelectionText2}
+      ></div>
     </>
   );
 };

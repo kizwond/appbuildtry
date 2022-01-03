@@ -385,9 +385,8 @@ const StyledForHeader = styled.div`
   height: 40px;
   justify-content: space-between;
   align-items: center;
-  /* margin-bottom: 4px; */
   padding-bottom: 4px;
-  border-bottom: 1px dashed lightgray;
+  border-bottom: 1px solid lightgray;
 
   & .ForCloseButton {
     display: inline-block;

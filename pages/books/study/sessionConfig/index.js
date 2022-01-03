@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-} from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
@@ -13,16 +7,17 @@ import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../..
 import {
   computeNumberOfAllFilteredCards,
   computeNumberOfCardsPerBook,
+  getCardsByNumber,
+  sortFilteredCards,
 } from /* --------------- */ "../../../../components/books/study/sessionConfig/logic/computeFunctions";
 import useSessionConfig from "../../../../components/books/study/sessionConfig/useHook/useSessionConfig";
 
 import styled from "styled-components";
+import { LoadingOutlined } from "@ant-design/icons";
 
 import Layout from "../../../../components/layout/Layout";
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
-import { Col, Row } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
 
 const StudySessionConfig = (props) => {
   const router = useRouter();
@@ -77,7 +72,7 @@ const StudySessionConfig = (props) => {
           console.log("세션 설정 데이터 받음", received_data);
           updateData(received_data);
         } else if (received_data.session_getSessionConfig.status === "401") {
-          router.push("/m/account/login");
+          router.push("/account/login");
         } else {
           console.log("어떤 문제가 발생함");
         }
@@ -178,7 +173,7 @@ const StudySessionConfig = (props) => {
           `/books/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
         );
       } else if (_data.session_createSession.status === "401") {
-        router.push("/m/account/login");
+        router.push("/account/login");
       } else {
         console.log("어떤 문제가 발생함");
       }
@@ -247,13 +242,20 @@ const StudySessionConfig = (props) => {
       )}
       {typeof window !== "undefined" && !error && !loading && bookData && (
         <StyledDiv className="ForPcMainPages">
-          <div style={{ padding: "8px 8px 0 8px" }}>
+          <div className="TitleForPcMainPage">목차 및 세션 설정</div>
+          <div className="SummaryAndStartButtonWrapper">
             <div className="SummaryForNumberOfAllBooksCards">
-              학습 시작 예정 카드는{" "}
+              학습 시작 예정 카드는
               <span className="NumberOfCards">
-                {numberOfFilteredCards.length}장
-              </span>{" "}
+                {`${numberOfFilteredCards.length}`}장
+              </span>
               입니다.
+            </div>
+            <div
+              className="StartButtonForSession"
+              onClick={submitCreateSessionConfigToServer}
+            >
+              학습 시작
             </div>
           </div>
 
@@ -314,32 +316,54 @@ const StyledDiv = styled.div`
   margin: 0 auto;
   width: 1024px;
   min-width: 360px;
+  padding: 0 8px;
   * {
     font-size: 13px;
   }
-
-  .SummaryForNumberOfAllBooksCards {
-    padding: 4px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    border: 1px dashed #9bcfff;
-    background-color: #9bffff;
-    font-size: 15px;
-    & .NumberOfCards {
-      font-size: 15px;
-      font-weight: 600;
-    }
+  .TitleForPcMainPage {
+    font-size: 18px;
+    font-weight: 500;
   }
-
-  .ContentsBoxWrapper {
+  .SummaryAndStartButtonWrapper {
     display: flex;
+    & > .StartButtonForSession {
+      margin-left: 4px;
+      width: 394px;
+      height: 40px;
+      flex: none;
+      font-size: 18px;
+      color: white;
+      background-color: #50d356;
+      border: 1px solid #50d356;
+      text-align: center;
+      line-height: 38px;
+      cursor: pointer;
+    }
+    & > .SummaryForNumberOfAllBooksCards {
+      padding: 0 4px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      margin-right: 4px;
+      width: 606px;
+      flex: none;
+      border: 1px solid #9bffff;
+      background-color: #9bffff;
+      font-size: 15px;
+      & .NumberOfCards {
+        font-size: 15px;
+        font-weight: 600;
+        margin-left: 8px;
+      }
+    }
   }
 `;
 
-const StyledForTabsOfBooks = styled(Col)`
-  padding: 8px;
+const StyledForTabsOfBooks = styled.div`
+  margin-top: 8px;
   padding-right: 4px;
+  width: 610px;
+  flex: none;
 
   .ant-table.ant-table-small .ant-table-title {
     padding: reset;
@@ -362,10 +386,11 @@ const StyledForTabsOfBooks = styled(Col)`
   }
 `;
 
-const StyledSessionConfig = styled(Col)`
-  padding: 8px;
+const StyledSessionConfig = styled.div`
+  margin-top: 8px;
   padding-left: 4px;
   width: 398px;
+  flex: none;
 
   .ant-radio-group {
     display: block;
@@ -390,4 +415,7 @@ const StyledSessionConfig = styled(Col)`
   }
 `;
 
-const StyledRow = styled(Row)``;
+const StyledRow = styled.div`
+  display: flex;
+  flex-wrap: nowrap;
+`;

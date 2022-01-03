@@ -47,18 +47,32 @@ const M_SessionModeAndFilterConfig = ({
           </div>
         </Tabs.TabPane>
         <Tabs.TabPane tab="뒤집기모드" key="flip">
-          <M_ModeSessionConfig
-            detailedOption={flipDetailedOption}
-            changeProps={changeFlipProps}
-            isPc={isPc || false}
-          />
+          <div className="SessionTabContentWrapper">
+            <M_ModeSessionConfig
+              detailedOption={flipDetailedOption}
+              changeProps={changeFlipProps}
+              isPc={isPc || false}
+            />
+            <M_AdvancedFilter
+              changeAdvancedFilter={changeAdvancedFilter}
+              advancedFilter={advancedFilter}
+              isPc={isPc || false}
+            />
+          </div>
         </Tabs.TabPane>
         <Tabs.TabPane tab="시험모드" key="exam">
-          <M_ModeSessionConfig
-            detailedOption={examDetailedOption}
-            changeProps={changeExamProps}
-            isPc={isPc || false}
-          />
+          <div className="SessionTabContentWrapper">
+            <M_ModeSessionConfig
+              detailedOption={examDetailedOption}
+              changeProps={changeExamProps}
+              isPc={isPc || false}
+            />
+            <M_AdvancedFilter
+              changeAdvancedFilter={changeAdvancedFilter}
+              advancedFilter={advancedFilter}
+              isPc={isPc || false}
+            />
+          </div>
         </Tabs.TabPane>
       </StyledAntTabs>
     </div>

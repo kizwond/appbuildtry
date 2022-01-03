@@ -185,7 +185,7 @@ export const StyledFlexSpaceBetween = styled.div`
   justify-content: space-between;
   margin-top: 8px;
   .ForMainTitle {
-    font-size: 1.4rem;
+    font-size: 18px;
     font-weight: 500;
   }
 `;

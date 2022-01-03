@@ -26,7 +26,7 @@ import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
-import CreateBookButton from "../createBook/CreateBookButton";
+import CreateBookButton from "../../../common/createBook/CreateBookButton";
 import CategorySettingButton from "../categorySetting/CategorySettingButton";
 
 const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
@@ -436,9 +436,5 @@ const StyledCard = styled(Card)`
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
   }
 `;

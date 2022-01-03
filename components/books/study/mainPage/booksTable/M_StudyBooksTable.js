@@ -25,7 +25,7 @@ import HideOrShowButton from "../../../common/HideOrShowButton";
 import FavoriteBook from "../../../common/FavoriteBook";
 import makeDataSource from "../../../common/logic";
 import MoveToBookSetting from "../../../common/MoveToBookSetting";
-import CategorySettingButton from "../../../writepage/categorySetting/CategorySettingButton";
+import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 
 const M_StudyBooksTable = ({
   category,
@@ -418,9 +418,6 @@ const M_StudyBooksTable = ({
         size="small"
         rowKey={(record) => record.key}
         pagination={false}
-        // bordered
-        // rowSelection을 첫번째 행에서 옮기는 것은 안되고 styled에서 selection 애들 모두 display:none 처리하고
-        // 체크 박스로 같이 처리해보자 자세한건 세션설정에서 썼던 코드 참고해서 짜보자
         rowClassName={(record, index) =>
           record.classType === "empty-category"
             ? "EmptyCategoryRow"
@@ -443,12 +440,6 @@ const M_StudyBooksTable = ({
             ? "EvenNumberRow"
             : "OddNumberRow"
         }
-        // rowSelection={{
-        //   hideSelectAll: true,
-        // }}
-        // scroll={{
-        //   y: 370,
-        // }}
         expandable={{
           expandedRowKeys,
           expandIcon: () => null,
@@ -481,9 +472,5 @@ const StyledCard = styled(Card)`
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
   }
 `;

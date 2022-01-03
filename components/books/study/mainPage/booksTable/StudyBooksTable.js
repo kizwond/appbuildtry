@@ -27,7 +27,7 @@ import FavoriteBook from "../../../common/FavoriteBook";
 import makeDataSource from "../../../common/logic";
 import MoveToBookSetting from "../../../common/MoveToBookSetting";
 import moment from "moment";
-import CategorySettingButton from "../../../writepage/categorySetting/CategorySettingButton";
+import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 
 const StudyBooksTable = ({
   category,
@@ -492,7 +492,7 @@ const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
 
   & .ant-card-body {
-    padding: 0px 8px 12px 8px;
+    padding: 0 0 12px 0;
     & * {
       font-size: 1rem;
     }
@@ -510,9 +510,5 @@ const StyledCard = styled(Card)`
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
   }
 `;

@@ -337,9 +337,7 @@ const StyledCard = styled(Card)`
 
   & .ant-card-body {
     padding: ${(props) =>
-      props.isvisible === "true"
-        ? "0px 8px 12px 8px"
-        : "0px 8px 0px 8px !important"};
+      props.isvisible === "true" ? "0 0 12px 0" : "0 !important"};
     & * {
       font-size: 1rem;
     }
@@ -357,9 +355,5 @@ const StyledCard = styled(Card)`
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
   }
 `;

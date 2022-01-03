@@ -1,41 +1,52 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "moment";
 
-import { Table, Card, Space, Drawer } from "antd";
+import { Table, Card, Space, Drawer, Popover } from "antd";
 import {
-  DollarCircleFilled,
   DoubleLeftOutlined,
   DoubleRightOutlined,
+  DownOutlined,
+  RightOutlined,
 } from "@ant-design/icons";
 
-import WriteHistoryGraphBarComponent /*--------*/ from "./WriteHistoryGraphBarComponent";
+import BookOrderButton from "../../../common/BookOrderButton";
+import HideOrShowButton from "../../../common/HideOrShowButton";
+import FavoriteBook from "../../../common/FavoriteBook";
+import MoveToBookSetting from "../../../common/MoveToBookSetting";
 
-import HideOrShowButton /*---------------------*/ from "../../common/HideOrShowButton";
-import BookOrderButton /*---------------------*/ from "../../common/BookOrderButton";
-import MoveToBookSetting /*--------------------*/ from "../../common/MoveToBookSetting";
-import FavoriteBook /*-------------------------*/ from "../../common/FavoriteBook";
-import makeDataSource /*-----------------------*/ from "../../common/logic";
-
+import makeDataSource from "../../../common/logic";
 import {
+  StyledFlexAlignCenter,
   StyledFlexAllCenterDimension100Percent,
-  StyledTwoLinesEllipsis,
-} from /*-------------------------------------------*/ "../../../common/styledComponent/page";
-import { StyledBookSettingBarDrawer } from /*-------*/ "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+  StyledFlexSpaceBetween,
+} from "../../../../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
+import CreateBookButton from "../../../common/createBook/CreateBookButton";
+import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 
-const BooksTable = ({ category, myBook }) => {
+const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
-  const [isFoldedMenu, setIsFoldedMenu] = useState();
+
+  const [newCategoryId, setNewCategoryId] = useState(null);
+  const addNewCategoryIdOnExpandedRowKeys = useCallback((id) => {
+    setNewCategoryId(id);
+  }, []);
+  useEffect(() => {
+    if (newCategoryId !== null) {
+      setExpandedRowKeys([...expandedRowKeys, `KEY:${newCategoryId}INDEX:0`]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newCategoryId]);
 
   const router = useRouter();
 
-  const changeFoldedMenu = useCallback((_id) => {
-    setIsFoldedMenu(_id);
-  }, []);
   const changeIsShowedHiddenBook = useCallback(
     (isShowedAllBooks, isShowedHiddenBook, id) => {
       if (isShowedAllBooks) {
@@ -58,13 +69,6 @@ const BooksTable = ({ category, myBook }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const movepage = useCallback(function (bookid) {
-    localStorage.removeItem("book_id");
-    localStorage.setItem("book_id", bookid);
-    router.push(`/books/write/${bookid}`);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const dataSource = useMemo(
     () =>
       makeDataSource(
@@ -76,6 +80,13 @@ const BooksTable = ({ category, myBook }) => {
     [myBook, category, isShowedHiddenBook, changeIsShowedHiddenBook]
   );
 
+  const movepage = useCallback(function (bookid) {
+    localStorage.removeItem("book_id");
+    localStorage.setItem("book_id", bookid);
+    router.push(`/m/write/${bookid}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (!mounted) {
     return null;
   }
@@ -86,7 +97,9 @@ const BooksTable = ({ category, myBook }) => {
         _record.relationship === "parent") ||
       _record.classType === "hiddenBar" ||
       _record.classType === "middle-hiddenBar" ||
-      _record.classType === "empty-category"
+      _record.classType === "empty-category" ||
+      _record.classType === "firstHiddenBar" ||
+      _record.classType === "OnlyShowHiddenBar"
     );
   };
 
@@ -100,7 +113,27 @@ const BooksTable = ({ category, myBook }) => {
       dataIndex: "categoryName",
       render: (_value, _record) =>
         _record.relationship === "parent" ? (
-          <StyledTwoLinesEllipsis>{_value}</StyledTwoLinesEllipsis>
+          <StyledFlexAlignCenter
+            onClick={() => {
+              if (expandedRowKeys.includes(_record.key)) {
+                setExpandedRowKeys(
+                  expandedRowKeys.filter((key) => key !== _record.key)
+                );
+              }
+              if (!expandedRowKeys.includes(_record.key)) {
+                setExpandedRowKeys([...expandedRowKeys, _record.key]);
+              }
+            }}
+          >
+            {expandedRowKeys.includes(_record.key) ? (
+              <DownOutlined />
+            ) : (
+              <RightOutlined />
+            )}
+            <DoubleLinesEllipsisContainer style={{ marginLeft: "2px" }}>
+              {_value}
+            </DoubleLinesEllipsisContainer>
+          </StyledFlexAlignCenter>
         ) : null,
     },
     {
@@ -117,24 +150,37 @@ const BooksTable = ({ category, myBook }) => {
               <div>빈 칸테고리</div>
             ) : _record.relationship === "parent" &&
               !expandedRowKeys.includes(_record.key) ? (
-              <div>{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
-            ) : _record.classType === "middle-hiddenBar" ||
-              _record.classType === "hiddenBar" ? (
-              <StyledTwoLinesEllipsis>{value}</StyledTwoLinesEllipsis>
-            ) : (
               <div
+                onClick={() => {
+                  if (expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys(
+                      expandedRowKeys.filter((key) => key !== _record.key)
+                    );
+                  }
+                  if (!expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys([...expandedRowKeys, _record.key]);
+                  }
+                }}
+              >{`총 ${_record.totalBooksNum} 권의 책이 있습니다. (숨김 책 ${_record.totalHiddenBooksNum} 권)`}</div>
+            ) : _record.classType === "middle-hiddenBar" ||
+              _record.classType === "hiddenBar" ||
+              _record.classType === "OnlyShowHiddenBar" ||
+              _record.classType === "firstHiddenBar" ? (
+              value
+            ) : (
+              <StyledFlexAlignCenter
                 onClick={() => {
                   movepage(_record._id);
                 }}
                 style={{ cursor: "pointer" }}
               >
-                <StyledTwoLinesEllipsis>
-                  <DollarCircleFilled
-                    style={{ marginRight: "3px", color: "aqua" }}
-                  />
+                <StyledFlexAlignCenter>
+                  <StyledBookTypeDiv booktype={_record.type} />
+                </StyledFlexAlignCenter>
+                <DoubleLinesEllipsisContainer>
                   {value}
-                </StyledTwoLinesEllipsis>
-              </div>
+                </DoubleLinesEllipsisContainer>
+              </StyledFlexAlignCenter>
             ),
           props: {},
         };
@@ -149,17 +195,44 @@ const BooksTable = ({ category, myBook }) => {
     {
       title: "카드수",
       key: "total",
-      align: "center",
       dataIndex: "total",
-      className: "TableMiddleColumn",
-      ellipsis: true,
-      width: 70,
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 26,
       render: (_value, _record) => {
         const obj = {
           children: (
-            <StyledFlexAllCenterDimension100Percent>
-              {_value}
-            </StyledFlexAllCenterDimension100Percent>
+            <div style={{ width: "100%" }}>
+              <Popover
+                arrowPointAtCenter
+                content={
+                  <>
+                    <StyledFlexSpaceBetween>
+                      <div>읽기카드:</div>
+                      <div>{_record.read}</div>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
+                      <div>뒤집기카드:</div>
+                      <div>{_record.flip}</div>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
+                      <div>목차카드:</div>
+                      <div>수정必</div>
+                    </StyledFlexSpaceBetween>
+                    <StyledFlexSpaceBetween>
+                      <div>일반카드:</div>
+                      <div>수정必</div>
+                    </StyledFlexSpaceBetween>
+                  </>
+                }
+                trigger="click"
+                overlayClassName="M-Popover-NumberOfCards"
+              >
+                <StyledFlexAllCenterDimension100Percent>
+                  {_value}
+                </StyledFlexAllCenterDimension100Percent>
+              </Popover>
+            </div>
           ),
           props: {
             colSpan: 1,
@@ -175,17 +248,28 @@ const BooksTable = ({ category, myBook }) => {
       },
     },
     {
-      title: "수정일",
-      key: "timeModify",
+      title: "최근생성일",
+      key: "writeHistory",
+      dataIndex: "writeHistory",
+      className: "TableMiddleColumn TextAlignCenterColumn",
       align: "center",
-      dataIndex: "timeModify",
-      className: "TableMiddleColumn",
       width: 45,
       render: (_value, _record) => {
-        const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format("YY.MM.DD");
         const obj = {
-          children: <div>{_value === null ? "-" : DateString}</div>,
+          children: (
+            <div>
+              {_value.length === 0
+                ? "-"
+                : _value[_value.length - 1].date[2] +
+                  _value[_value.length - 1].date[3] +
+                  "." +
+                  _value[_value.length - 1].date[4] +
+                  _value[_value.length - 1].date[5] +
+                  "." +
+                  _value[_value.length - 1].date[6] +
+                  _value[_value.length - 1].date[7]}
+            </div>
+          ),
           props: {
             colSpan: 1,
             rowSpan: 1,
@@ -200,16 +284,11 @@ const BooksTable = ({ category, myBook }) => {
       },
     },
     {
-      title: (
-        <>
-          <div>최근 3일간</div>
-          <div>카드생성</div>
-        </>
-      ),
-      key: "timeModify",
+      title: "카드생성이력",
+      key: "writeHistory",
+      dataIndex: "writeHistory",
+      className: "TableMiddleColumn TextAlignCenterColumn",
       align: "center",
-      dataIndex: "timeModify",
-      className: "TableMiddleColumn",
       width: 60,
       render: (_value, _record) => {
         const obj = {
@@ -232,8 +311,8 @@ const BooksTable = ({ category, myBook }) => {
       dataIndex: "seqInCategory",
       className: "TableLastColumn",
       align: "right",
-      width: 35,
-      render: (value, _record, index) => {
+      width: 20,
+      render: (value, _record) => {
         const obj = {
           children: (
             <div
@@ -256,7 +335,7 @@ const BooksTable = ({ category, myBook }) => {
                   className="PullCustomCircleButton"
                   style={{
                     width: "44px",
-                    height: "30px",
+                    height: "3rem",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -265,6 +344,7 @@ const BooksTable = ({ category, myBook }) => {
                   <DoubleLeftOutlined />
                 </div>
               </div>
+
               <StyledBookSettingBarDrawer
                 booktype={_record.type}
                 destroyOnClose={true}
@@ -280,25 +360,28 @@ const BooksTable = ({ category, myBook }) => {
                   <BookOrderButton
                     _record={_record}
                     changeFoldedMenu={changeFoldedMenu}
+                    isPc
                   />{" "}
                   |
                   <FavoriteBook
                     record={_record}
                     changeFoldedMenu={changeFoldedMenu}
                     tableType="write"
+                    isPc
                   />{" "}
                   |
                   <HideOrShowButton
                     record={_record}
                     changeFoldedMenu={changeFoldedMenu}
+                    isPc
                   />{" "}
                   |
-                  <MoveToBookSetting mybook_id={_record._id} />
+                  <MoveToBookSetting mybook_id={_record._id} isPc />
                 </Space>
                 <div
                   className="PushCustomCircleButton"
                   onClick={() => {
-                    setIsFoldedMenu("");
+                    changeFoldedMenu("");
                   }}
                 >
                   <DoubleRightOutlined />
@@ -322,7 +405,18 @@ const BooksTable = ({ category, myBook }) => {
     <StyledCard
       bordered={false}
       size="small"
-      title={<div className="ForPageMainTitle">나의 책</div>}
+      title={
+        <Space>
+          <div className="ForPageMainTitle">나의책</div>
+          <CreateBookButton category={category} />
+          <CategorySettingButton
+            category={category}
+            addNewCategoryIdOnExpandedRowKeys={
+              addNewCategoryIdOnExpandedRowKeys
+            }
+          />
+        </Space>
+      }
     >
       <Table
         dataSource={dataSource}
@@ -337,6 +431,10 @@ const BooksTable = ({ category, myBook }) => {
             : !expandedRowKeys.includes(record.key) &&
               record.relationship === "parent"
             ? "FoldedCategoryRow"
+            : record.classType === "OnlyShowHiddenBar"
+            ? "OnlyShowHiddenBar"
+            : record.classType === "firstHiddenBar"
+            ? "FirstHiddenBar"
             : record.classType === "hiddenBar"
             ? "LastHiddenBarRow"
             : record.classType === "middle-hiddenBar"
@@ -351,16 +449,7 @@ const BooksTable = ({ category, myBook }) => {
         }
         expandable={{
           expandedRowKeys,
-          onExpand: (ex, re) => {
-            if (!ex) {
-              setExpandedRowKeys(
-                expandedRowKeys.filter((key) => key !== re.key)
-              );
-            }
-            if (ex) {
-              setExpandedRowKeys([...expandedRowKeys, re.key]);
-            }
-          },
+          expandIcon: () => null,
         }}
       />
     </StyledCard>
@@ -371,46 +460,19 @@ export default BooksTable;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
+
   & .ant-card-body {
+    padding: 0 0 12px 0;
     & * {
       font-size: 1rem;
     }
   }
-
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */
   & .ant-table-row-indent + .ant-table-row-expand-icon {
     margin-right: 2px;
   }
 
-  /* 개별 책 펼치기  */
-  & .ant-drawer-content {
-    overflow: hidden;
-    background-color: #2fbf40;
-    background-clip: padding-box;
-    border: 0;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-  }
-
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
-  & .anticon-double-right > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-
-  & .anticon-double-left > svg {
-    font-size: 18px;
-    color: #a3a3a3;
-  }
-  & .PullCustomCircleButton:hover > .anticon-double-left > svg {
-    color: #fff;
-  }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
   }
 `;

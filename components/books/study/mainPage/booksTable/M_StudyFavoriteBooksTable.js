@@ -337,8 +337,4 @@ const StyledCard = styled(Card)`
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
   }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
-  }
 `;

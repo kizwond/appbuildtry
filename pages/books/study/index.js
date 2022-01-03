@@ -93,9 +93,7 @@ const StudyPage = () => {
         <Layout>
           <StyledRowMaxWidth>
             <StyledFlexSpaceBetween>
-              <div>
-                <span className="ForMainTitle">학습하기</span>
-              </div>
+              <div className="ForMainTitle">학습하기</div>
               <div>
                 <Space>
                   <Button onClick={directStart}>바로보기</Button>
@@ -159,7 +157,7 @@ const StyledRowMaxWidth = styled.div`
 
   & .ant-card-small > .ant-card-head {
     border-bottom: none;
-    padding: 0 8px;
+    padding: 0;
   }
 
   /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */

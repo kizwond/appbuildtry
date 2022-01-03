@@ -160,6 +160,14 @@ const StyledRowMaxWidth = styled.div`
     padding: 0;
   }
 
+  &
+    .ant-card-small
+    > .ant-card-head
+    > .ant-card-head-wrapper
+    > .ant-card-head-title {
+    padding: 0 0 8px 0;
+  }
+
   /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
 
   & .PullCustomCircleButton > .anticon-double-left > svg {
@@ -180,8 +188,9 @@ const StyledRowMaxWidth = styled.div`
 
 export const StyledFlexSpaceBetween = styled.div`
   display: flex;
+  height: 40px;
   justify-content: space-between;
-  margin-top: 8px;
+  align-items: center;
   .ForMainTitle {
     font-size: 18px;
     font-weight: 500;

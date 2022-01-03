@@ -382,14 +382,13 @@ const StyledDiv = styled.div`
 
 const StyledForHeader = styled.div`
   display: flex;
+  height: 40px;
   justify-content: space-between;
   align-items: center;
   /* margin-bottom: 4px; */
   padding-bottom: 4px;
   border-bottom: 1px dashed lightgray;
 
-  .TitleForMainPage {
-  }
   & .ForCloseButton {
     display: inline-block;
     color: rgba(0, 0, 0, 0.45);

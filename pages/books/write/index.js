@@ -60,7 +60,7 @@ const M_WriteMainPage = () => {
       {myBook2 && category2 && (
         <Layout>
           <StyledRowMaxWidth>
-            <div>
+            <div className="WritePageHeaderWrapper">
               <span className="ForMainTitle">만들기</span>
             </div>
             <div>
@@ -93,6 +93,11 @@ const StyledRowMaxWidth = styled.div`
   margin: 0 auto;
   padding: 0 8px;
 
+  .WritePageHeaderWrapper {
+    display: flex;
+    height: 40px;
+    align-items: center;
+  }
   .ForMainTitle {
     font-size: 18px;
     font-weight: 500;
@@ -101,6 +106,14 @@ const StyledRowMaxWidth = styled.div`
   & .ant-card-small > .ant-card-head {
     border-bottom: none;
     padding: 0;
+  }
+
+  &
+    .ant-card-small
+    > .ant-card-head
+    > .ant-card-head-wrapper
+    > .ant-card-head-title {
+    padding: 0 0 8px 0;
   }
 
   /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */

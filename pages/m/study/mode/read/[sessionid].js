@@ -2240,7 +2240,8 @@ const Alter = ({ content, item, index, getSelectionText2 }) => {
       <div
         id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
         dangerouslySetInnerHTML={{ __html: altered }}
-        onContextMenu={getSelectionText2}        
+        onContextMenu={getSelectionText2}  
+        tabIndex="-1"      
       ></div>
     </>
   );

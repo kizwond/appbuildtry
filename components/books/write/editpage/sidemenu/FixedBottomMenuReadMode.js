@@ -154,7 +154,7 @@ const FloatingMenu = ({
     });
   }
   return (
-    <div style={{ width: "100%", alignItems: "center", position: "fixed", bottom: 100, left: 0, zIndex: 3, fontSize: "0.8rem" }}>
+    <div style={{ width: "100%", alignItems: "center", position: "fixed", bottom: 0, left: 0, zIndex: 3, fontSize: "0.8rem" }}>
       <div style={{ position: "relative" }}>
         {hiddenToggle && <>{selectionTextShow}</>}
         {underlineToggle && <>{selectionTextShow}</>}

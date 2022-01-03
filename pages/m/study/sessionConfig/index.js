@@ -310,7 +310,7 @@ export function getServerSideProps({ query }) {
 
 const StyledDiv = styled.div`
   margin: 0 auto;
-  max-width: 1440px;
+  max-width: 1024px;
   min-width: 360px;
   padding-top: 40px;
 

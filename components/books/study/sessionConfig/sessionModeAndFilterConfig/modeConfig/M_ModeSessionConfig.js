@@ -11,7 +11,12 @@ import M_ConditionOfReviewTime from "./M_ConditionOfReviewTime";
 import ToggleTags from "../common/ToggleTags";
 import { tags } from "../common/dataForContainer";
 
-const M_ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
+const M_ModeSessionConfig = ({
+  children,
+  detailedOption,
+  changeProps,
+  isPc,
+}) => {
   const {
     changeSortOption,
     changeNeedStudyTimeRange,
@@ -31,7 +36,7 @@ const M_ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
   const { sortOptionTags, useCardTypeTags, useStatusTags } = tags;
   return (
     <StyledDivConfigWrapper>
-      <StyledDivConfigRow>
+      <StyledDivConfigRow isPc={isPc}>
         <div>
           <span className="ConfigTitle">보기 순서</span>
         </div>
@@ -44,7 +49,7 @@ const M_ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
         </div>
       </StyledDivConfigRow>
 
-      <StyledDivConfigRow>
+      <StyledDivConfigRow isPc={isPc}>
         <div>
           <span className="ConfigTitle">카드종류</span>
         </div>
@@ -57,7 +62,7 @@ const M_ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
         </div>
       </StyledDivConfigRow>
 
-      <StyledDivConfigRow>
+      <StyledDivConfigRow isPc={isPc}>
         <div>
           <span className="ConfigTitle">카드상태</span>
         </div>
@@ -88,9 +93,12 @@ const M_ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
         </div>
       </StyledDivConfigRow>
 
-      <StyledDivConfigRow>
+      <StyledDivConfigRow isPc={isPc}>
         <StyledDivConfigColStartCards>
-          <StyledSpanConfigTitle onOff={numStartCards.onOff === "on"}>
+          <StyledSpanConfigTitle
+            onOff={numStartCards.onOff === "on"}
+            isPc={isPc}
+          >
             학습량
           </StyledSpanConfigTitle>
           <Switch
@@ -123,8 +131,8 @@ const M_ModeSessionConfig = ({ children, detailedOption, changeProps }) => {
 export default memo(M_ModeSessionConfig);
 
 const StyledDivConfigWrapper = styled.div`
-  border-left: 1px solid #9bcfff;
-  border-right: 1px solid #9bcfff;
+  /* border-left: 1px solid #9bcfff;
+  border-right: 1px solid #9bcfff; */
   padding: 5px 5px 0 5px;
   background-color: white;
   display: flex;

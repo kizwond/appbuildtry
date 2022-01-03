@@ -34,7 +34,7 @@ export const StyledOverFlowHidden = styled.div`
 `;
 
 export const StyledRowMaxWidth = styled(Row)`
-  max-width: 1440px;
+  max-width: 1024px;
   margin: 0 auto;
   @media screen and (min-width: 100px) and (max-width: 767px) {
     margin-top: ${(props) => (props.topcompo === "true" ? "40px" : "0")};

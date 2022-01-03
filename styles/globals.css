@@ -8,7 +8,7 @@
   font-family: "NanumMyeongjo";
   src: url("../public/font/NanumMyeongjo.ttf") format("truetype");
 } */
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
 html,
 body {
@@ -17,9 +17,9 @@ body {
   font-family: "Noto Sans KR", sans-serif;
 }
 
-@media screen and (min-width: 992px) and (max-width: 1440px) {
+@media screen and (min-width: 992px) and (max-width: 3000px) {
   html {
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 /* @media screen and (min-width: 769px) and (max-width: 991px) {
@@ -29,7 +29,7 @@ body {
 } */
 @media screen and (min-width: 621px) and (max-width: 991px) {
   html {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
 @media screen and (min-width: 576px) and (max-width: 620px) {
@@ -176,8 +176,14 @@ p {
 .ant-table.ant-table-small .ant-table-tbody > tr > td > * {
   font-size: 1rem;
 }
+.ForPcMainPages .ant-table.ant-table-small .ant-table-tbody > tr > td > * {
+  font-size: 13px;
+}
 .ant-table.ant-table-small .ant-table-thead > tr > th > * {
   font-size: 1rem;
+}
+.ForPcMainPages .ant-table.ant-table-small .ant-table-thead > tr > th > * {
+  font-size: 13px;
 }
 
 .ant-table-tbody > tr.ant-table-row:hover > td,
@@ -187,6 +193,9 @@ p {
 .ant-table.ant-table-small .ant-table-thead > tr > th {
   padding: 4px;
   font-size: 1rem;
+}
+.ForPcMainPages .ant-table.ant-table-small .ant-table-thead > tr > th {
+  font-size: 13px;
 }
 .ant-table.ant-table-small .ant-table-thead > tr > th.TableCardCounterColumn {
   padding: 0;
@@ -201,6 +210,9 @@ p {
   padding: 0;
   border-bottom: none;
   font-size: 1rem;
+}
+.ForPcMainPages .ant-table.ant-table-small .ant-table-tbody > tr > td {
+  font-size: 13px;
 }
 .ant-table.ant-table-small .ant-table-tbody > tr > td.TableGroupingColumn {
   padding: 4px;
@@ -671,43 +683,43 @@ p {
   line-height: 4rem;
 }
 
-.brush1{
-  position:relative;
+.brush1 {
+  position: relative;
 }
 
-.brush1:before{
-  content:"";
-  z-index:-1;
-  left:-0.1em;
-  top:0.3em;
-  border-width:2px;
-  border-style:solid;
-  border-color:var(--bubble-color);
-  position:absolute;
-  border-right-color:transparent;
-  width:100%;
-  height:1em;
-  transform:rotate(2deg);
-  opacity:0.7;
-  border-radius:50%;
-  padding:0.1em 0.25em;
+.brush1:before {
+  content: "";
+  z-index: -1;
+  left: -0.1em;
+  top: 0.3em;
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--bubble-color);
+  position: absolute;
+  border-right-color: transparent;
+  width: 100%;
+  height: 1em;
+  transform: rotate(2deg);
+  opacity: 0.7;
+  border-radius: 50%;
+  padding: 0.1em 0.25em;
 }
 
-.brush1:after{
-  content:"";
-  z-index:-1;
-  left:-0.1em;
-  top:0.4em;
-  padding:0.1em 0.25em;
-  border-width:2px;
-  border-style:solid;
-  border-color:var(--bubble-color);
-  border-left-color:transparent;
-  border-top-color:transparent;
-  position:absolute;
-  width:100%;
-  height:1em;
-  transform:rotate(-1deg);
-  opacity:0.7;
-  border-radius:50%;
+.brush1:after {
+  content: "";
+  z-index: -1;
+  left: -0.1em;
+  top: 0.4em;
+  padding: 0.1em 0.25em;
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--bubble-color);
+  border-left-color: transparent;
+  border-top-color: transparent;
+  position: absolute;
+  width: 100%;
+  height: 1em;
+  transform: rotate(-1deg);
+  opacity: 0.7;
+  border-radius: 50%;
 }

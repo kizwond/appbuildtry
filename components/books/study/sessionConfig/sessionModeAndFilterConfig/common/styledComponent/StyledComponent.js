@@ -6,31 +6,22 @@ export const StyledFilteMenuWrapper = styled.div`
 
 export const StyledDivConfigRow = styled.div`
   display: flex;
+  flex-direction: ${(props) => (props.isPc === true ? "column" : "row")};
   padding-bottom: 5px;
   flex-wrap: nowrap;
-  align-items: center;
   & > div:nth-child(1):not(.FilterSubTitleCol) {
     flex: none;
-    width: 104px;
+    width: ${(props) => (props.isPc === true ? "158px" : "148px")};
   }
   & > div.FilterSubTitleCol {
     flex: none;
-    width: 140px;
+    width: ${(props) => (props.isPc === true ? "153px" : "143px")};
     margin-top: 3px;
   }
   & > div:nth-child(2) {
     flex: auto;
   }
 
-  /* @media screen and (min-width: 992px) {
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    & > div:nth-child(2) {
-      flex: auto;
-      width: 100%;
-    }
-  } */
   @media screen and (max-width: 540px) {
     flex-direction: column;
     align-items: flex-start;
@@ -43,7 +34,7 @@ export const StyledDivConfigRow = styled.div`
 
   & .ConfigTitle {
     font-weight: 500;
-    font-size: 1.16667rem;
+    font-size: ${({ isPc }) => (isPc ? "15px" : "1.16667rem")};
   }
 `;
 
@@ -78,7 +69,8 @@ export const StyledSpanConfigTitle = styled(({ onOff, children, ...rest }) => (
 ))`
   color: ${({ onOff }) => (onOff ? "black" : "#0000003f")};
   margin-right: 10px;
-  font-size: 1.16667rem !important;
+  font-size: ${({ isPc }) =>
+    isPc ? "15px !important" : "1.16667rem !important"};
   font-weight: 500;
 `;
 

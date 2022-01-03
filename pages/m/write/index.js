@@ -54,7 +54,7 @@ const M_WriteMainPage = () => {
   return (
     <>
       <Head>
-        <title>Im더북</title>
+        <title>{"Write - I'mTheBook"}</title>
       </Head>
 
       {myBook2 && category2 && (

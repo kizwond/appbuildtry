@@ -1,13 +1,13 @@
 /* eslint-disable react/display-name */
+import Head from "next/head";
 import React, { useState } from "react";
 
 import { useQuery } from "@apollo/client";
 import { QUERY_USER_BOOKS_BY_BOOK_IDS__WITH_USER_CATEGORIES } from "../../../graphql/query/allQuery";
 
 import { useRouter } from "next/router";
-import Head from "next/head";
 
-import { Card, Select, Space, Avatar } from "antd";
+import { Space, Avatar } from "antd";
 import {
   AppstoreAddOutlined,
   CloseOutlined,
@@ -19,10 +19,7 @@ import {
 } from "@ant-design/icons";
 
 import styled from "styled-components";
-import {
-  StyledDivEllipsis,
-  StyledTwoLinesEllipsis,
-} from "../../../components/common/styledComponent/page";
+import { StyledTwoLinesEllipsis } from "../../../components/common/styledComponent/page";
 
 import Layout from "../../../components/layout/Layout";
 import M_FlagSetting from "../../../components/books/settings/flagSetting/M_FlagSetting";
@@ -118,7 +115,7 @@ const BookSetting = () => {
   return (
     <div>
       <Head>
-        <title>콕북 - 책 상세 설정</title>
+        <title>{"책 상세 설정 - I'mTheBook"}</title>
         <meta charSet="utf-8" />
       </Head>
       {data &&

@@ -1,3 +1,4 @@
+import Head from "next/head";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -229,61 +230,67 @@ const StudySessionConfig = (props) => {
   }
 
   return (
-    <M_Layout>
-      {loading && (
-        <div
-          style={{
-            width: "100%",
-            margin: "0 auto",
-            marginTop: "150px",
-            fontSize: "30px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "20px",
-          }}
-        >
-          <LoadingOutlined />
-          로딩 중...
-        </div>
-      )}
-      {typeof window !== "undefined" && !loading && bookData && (
-        <StyledDiv>
-          <M_SessionNavigationBar
-            activatedComponent={activatedComponent}
-            changeActivatedComponent={changeActivatedComponent}
-            submitCreateSessionConfigToServer={
-              submitCreateSessionConfigToServer
-            }
-            numberOfFilteredCards={numberOfFilteredCards.length}
-          />
-          <StyledForTabsOfBooks activatedComponent={activatedComponent}>
-            <M_TabsOfBooksForInfromationTable
-              bookData={bookData}
-              bookList={
-                !props.isRefreshPage
-                  ? props.selectedBooks
-                  : JSON.parse(sessionStorage.getItem("books_selected"))
+    <>
+      <Head>
+        <title>{"세션설정 - I'mTheBook"}</title>
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+      </Head>{" "}
+      <M_Layout>
+        {loading && (
+          <div
+            style={{
+              width: "100%",
+              margin: "0 auto",
+              marginTop: "150px",
+              fontSize: "30px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "20px",
+            }}
+          >
+            <LoadingOutlined />
+            로딩 중...
+          </div>
+        )}
+        {typeof window !== "undefined" && !loading && bookData && (
+          <StyledDiv>
+            <M_SessionNavigationBar
+              activatedComponent={activatedComponent}
+              changeActivatedComponent={changeActivatedComponent}
+              submitCreateSessionConfigToServer={
+                submitCreateSessionConfigToServer
               }
-              checkedKeys={checkedKeys}
-              onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
+              numberOfFilteredCards={numberOfFilteredCards.length}
             />
-          </StyledForTabsOfBooks>
-
-          <StyledSessionConfig activatedComponent={activatedComponent}>
-            {
-              <M_SessionModeAndFilterConfig
-                mode={mode}
-                changeMode={changeMode}
-                modeOption={modeOption}
-                advancedFilter={advancedFilter}
-                changeAdvancedFilter={changeAdvancedFilter}
+            <StyledForTabsOfBooks activatedComponent={activatedComponent}>
+              <M_TabsOfBooksForInfromationTable
+                bookData={bookData}
+                bookList={
+                  !props.isRefreshPage
+                    ? props.selectedBooks
+                    : JSON.parse(sessionStorage.getItem("books_selected"))
+                }
+                checkedKeys={checkedKeys}
+                onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
               />
-            }
-          </StyledSessionConfig>
-        </StyledDiv>
-      )}
-    </M_Layout>
+            </StyledForTabsOfBooks>
+
+            <StyledSessionConfig activatedComponent={activatedComponent}>
+              {
+                <M_SessionModeAndFilterConfig
+                  mode={mode}
+                  changeMode={changeMode}
+                  modeOption={modeOption}
+                  advancedFilter={advancedFilter}
+                  changeAdvancedFilter={changeAdvancedFilter}
+                />
+              }
+            </StyledSessionConfig>
+          </StyledDiv>
+        )}
+      </M_Layout>
+    </>
   );
 };
 export default StudySessionConfig;

@@ -86,7 +86,7 @@ const M_StudyMainPage = () => {
   return (
     <>
       <Head>
-        <title>Write - CogBook</title>
+        <title>{"Study - I'mTheBook"}</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       {myBook2 && category2 && (

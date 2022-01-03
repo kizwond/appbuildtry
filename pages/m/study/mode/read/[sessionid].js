@@ -201,18 +201,20 @@ const ReadMode = () => {
     setUnderlineToggle(false);
     setHighlightToggle(false);
     console.log("hello");
-    var text = "";
-    var textRange = {};
+    var text = null;
+    var textRange = null;
     console.log(typeof document.selection)
+    console.log(document.selection)
     if (document.getSelection) {
       text = document.getSelection().toString();
       textRange = document.getSelection();
       sessionStorage.setItem("selectionText", text);
+      console.log("case1", text)
     } else if (typeof document.selection != "undefined") {
       text = document.selection;
-      alert(text)
+      console.log("case2",text);
     }
-    console.log(text);
+    console.log("end")
 
     if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
@@ -2215,14 +2217,14 @@ const Alter = ({ content, item, index, getSelectionText2 }) => {
   }
   if (content.content.underline.length > 0) {
     content.content.underline.map((element) => {
-      console.log(element);
+      // console.log(element);
       altered = altered.replace(element.targetWord, `<span style="display:inline-block; border-bottom: ${element.toolType}px solid ${element.color}">${element.targetWord}</span>`);
     });
   }
 
   if (content.content.highlight.length > 0) {
     content.content.highlight.map((element) => {
-      console.log(element);
+      // console.log(element);
       if (element.toolType === "brush1") {
         altered = altered.replace(element.targetWord, `<span class="${element.toolType}" style="display:inline-block; --bubble-color:${element.color}">${element.targetWord}</span>`);
       } else {
@@ -2238,7 +2240,7 @@ const Alter = ({ content, item, index, getSelectionText2 }) => {
       <div
         id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
         dangerouslySetInnerHTML={{ __html: altered }}
-        onPointerUp={getSelectionText2}
+        onPointerLeave={getSelectionText2}        
       ></div>
     </>
   );

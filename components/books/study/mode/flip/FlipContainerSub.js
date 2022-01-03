@@ -31,11 +31,13 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   console.log('card_details_session[current_card_info_index].studyStatus.totalStudyTimes', card_details_session[current_card_info_index].studyStatus.totalStudyTimes)
   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
   card_details_session[current_card_info_index].studyStatus.studyTimesInSession += 1;
+  card_details_session[current_card_info_index].studyStatus.studyHourInSession = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.studyHourInSession) + timer);
   
   
   let {levelCurrent, recentKnowTime,currentLevElapsedTime, currentLevStudyTimes}=card_details_session[current_card_info_index].studyStatus
   let {newLevel, needStudyTime} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentKnowTime,currentLevElapsedTime, currentLevStudyTimes, levelConfigs)  
   console.log('정상적으로 생성됐나?', newLevel, needStudyTime)  
+  card_details_session[current_card_info_index].studyStatus.levelAcquisitionOfNotCompleted = newLevel - card_details_session[current_card_info_index].studyStatus.levelCurrent
   card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
   card_details_session[current_card_info_index].studyStatus.recentKnowTime = now
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
@@ -74,6 +76,7 @@ const calculateNormalStudy = (interval, selection, current_card_info_index, time
   card_details_session[current_card_info_index].studyStatus.totalStudyHour = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.totalStudyHour) + timer);
   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
   card_details_session[current_card_info_index].studyStatus.studyTimesInSession += 1;
+  card_details_session[current_card_info_index].studyStatus.studyHourInSession = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.studyHourInSession) + timer);
     
   const needStudyTime = new Date(Date.now() + interval * 60000)  
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
@@ -100,6 +103,11 @@ const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
   card_details_session[current_card_info_index].studyStatus.needStudyTime = null
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null
 
+  card_details_session[current_card_info_index].studyStatus.studyHourInSession = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.studyHourInSession) + timer);
+
+  if (selection == 'completed'){
+    card_details_session[current_card_info_index].studyStatus.levelAcquisitionOfNotCompleted = -card_details_session[current_card_info_index].studyStatus.levelCurrent
+  }
   
   return card_details_session;
 };
@@ -123,6 +131,9 @@ const calculateRestore = (selection, current_card_info_index, timer) => {
   
   card_details_session[current_card_info_index].studyStatus.needStudyTime = now;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = now;
+
+  card_details_session[current_card_info_index].studyStatus.studyHourInSession = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.studyHourInSession) + timer);
+  card_details_session[current_card_info_index].studyStatus.levelAcquisitionOfNotCompleted = card_details_session[current_card_info_index].studyStatus.levelCurrent
   
   return card_details_session;
 };
@@ -136,6 +147,8 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
   card_details_session[current_card_info_index].studyStatus.totalStayHour = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.totalStayHour) + timer);
+
+  card_details_session[current_card_info_index].studyStatus.studyHourInSession = new Date(Date.parse(card_details_session[current_card_info_index].studyStatus.studyHourInSession) + timer);
 
   return card_details_session;
 };

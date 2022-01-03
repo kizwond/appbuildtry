@@ -8,8 +8,8 @@ import { Col } from "antd";
 import styled from "styled-components";
 
 import M_Layout from "../../../components/layout/M_Layout";
-import M_BooksTable from "../../../components/books/writepage/booksTable/M_BooksTable";
-import M_FavoriteBooksTable from "../../../components/books/writepage/booksTable/M_FavoriteBooksTable";
+import M_BooksTable from "../../../components/books/write/mainPage/booksTable/M_BooksTable";
+import M_FavoriteBooksTable from "../../../components/books/write/mainPage/booksTable/M_FavoriteBooksTable";
 
 const M_WriteMainPage = () => {
   const router = useRouter();

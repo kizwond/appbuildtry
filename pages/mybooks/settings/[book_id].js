@@ -19,7 +19,10 @@ import {
 } from "@ant-design/icons";
 
 import styled from "styled-components";
-import { StyledDivEllipsis } from "../../../components/common/styledComponent/page";
+import {
+  StyledDivEllipsis,
+  StyledTwoLinesEllipsis,
+} from "../../../components/common/styledComponent/page";
 
 import Layout from "../../../components/layout/Layout";
 import M_FlagSetting from "../../../components/books/settings/flagSetting/M_FlagSetting";
@@ -44,7 +47,7 @@ const BookSetting = () => {
         } else if (
           _data.mybookcateset_getMybookcatesetByUserID.status === "401"
         ) {
-          push("/m/account/login");
+          push("/account/login");
         } else {
           console.log("어떤 문제가 발생함");
         }
@@ -64,7 +67,12 @@ const BookSetting = () => {
         return null;
         break;
       case "set_flags":
-        return <M_FlagSetting />;
+        return (
+          <div>
+            <div className="BookSettingContentTitle">플래그 설정</div>
+            <M_FlagSetting />
+          </div>
+        );
         break;
       case "cards_progress":
         return null;
@@ -74,24 +82,32 @@ const BookSetting = () => {
         break;
       case "select_category":
         return (
-          <M_ReAssignBookToAnotherCategory
-            book_id={query.book_id}
-            cateIdNow={
-              data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
-                .mybookcate_id
-            }
-            categories={
-              data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0]
-                .mybookcates
-            }
-            bookTitle={
-              data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
-            }
-          />
+          <div>
+            <div className="BookSettingContentTitle">카테고리 이동</div>
+            <M_ReAssignBookToAnotherCategory
+              book_id={query.book_id}
+              cateIdNow={
+                data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
+                  .mybookcate_id
+              }
+              categories={
+                data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0]
+                  .mybookcates
+              }
+              bookTitle={
+                data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+              }
+            />
+          </div>
         );
         break;
       case "delete_book":
-        return <M_DeleteBook book_id={query.book_id} />;
+        return (
+          <div>
+            <div className="BookSettingContentTitle">책 삭제</div>
+            <M_DeleteBook book_id={query.book_id} />
+          </div>
+        );
         break;
 
       default:
@@ -110,116 +126,123 @@ const BookSetting = () => {
         data.mybook_getMybookByMybookIDs.mybooks.length === 1 && (
           <>
             <Layout>
-              <StyledMainPageCard
-                bordered={false}
-                size="small"
-                title={
-                  <>
-                    <StyledForHeader>
-                      <EllipsisTitle>
-                        책 제목:{" "}
-                        {
-                          data.mybook_getMybookByMybookIDs.mybooks[0]
-                            .mybook_info.title
-                        }
-                      </EllipsisTitle>
-                      <button
-                        type="button"
-                        aria-label="Close"
-                        className="ForCloseButton"
-                        onClick={() => {
-                          back();
-                        }}
-                      >
-                        <CloseOutlined />
-                      </button>
-                    </StyledForHeader>
+              <StyledDiv>
+                <StyledForHeader>
+                  <div className="ForMainTitle">상세 설정</div>
+
+                  <button
+                    type="button"
+                    aria-
+                    className="ForCloseButton"
+                    onClick={() => {
+                      back();
+                    }}
+                  >
+                    <div className="subTitleForSetting">
+                      <CloseOutlined />
+                    </div>
+                  </button>
+                </StyledForHeader>
+                <div className="FlexWith8Gap">
+                  <div className="BookSettingSiderMenu">
+                    <EllipsisTwoLinesForTitle>
+                      책 제목:{" "}
+                      {
+                        data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
+                          .title
+                      }
+                    </EllipsisTwoLinesForTitle>
 
                     <div
-                      style={{
-                        display: "flex",
-                        alignItems: "flex-end",
-                        gap: "14px",
+                      className="subTitleForSettingWrapper"
+                      onClick={() => {
+                        setSelectedMenu("study_data_detail");
                       }}
-                    >
-                      <div className="ForPageMainTitle">상세 설정</div>
-                    </div>
-                  </>
-                }
-              >
-                <div style={{ display: "flex" }}>
-                  <div
-                    className="BookSettingSelector"
-                    onChange={setSelectedMenu}
-                    optionLabelProp="label"
-                    placeholder="메뉴를 선택해주세요"
-                    listHeight={400}
-                    style={{ width: "240px", marginBottom: "8px" }}
-                  >
-                    <Select.Option
-                      value="study_data_detail"
-                      label="학습 상세 정보 보기"
                     >
                       <Space>
                         <Avatar>
                           <RiseOutlined />
                         </Avatar>
-                        학습 상세 정보 보기
+                        <div className="subTitleForSetting">
+                          학습 상세 정보 보기
+                        </div>
                       </Space>
-                    </Select.Option>
-                    <Select.Option value="set_flags" label="플래그 설정">
+                    </div>
+                    <div
+                      className="subTitleForSettingWrapper"
+                      onClick={() => {
+                        setSelectedMenu("set_flags");
+                      }}
+                    >
                       <Space>
                         <Avatar>
                           <FlagOutlined />
                         </Avatar>
-                        플래그 설정
+                        <div className="subTitleForSetting">플래그 설정</div>
                       </Space>
-                    </Select.Option>
-                    <Select.Option
-                      value="cards_progress"
-                      label="카드 학습 상태 관리"
+                    </div>
+                    <div
+                      className="subTitleForSettingWrapper"
+                      onClick={() => {
+                        setSelectedMenu("cards_progress");
+                      }}
                     >
                       <Space>
                         <Avatar>
                           <FundViewOutlined />
                         </Avatar>
-                        카드 학습 상태 관리
+                        <div className="subTitleForSetting">
+                          카드 학습 상태 관리
+                        </div>
                       </Space>
-                    </Select.Option>
-                    <Select.Option
-                      value="set_level_and_cycle"
-                      label="레벨 및 복습 주기 설정"
+                    </div>
+                    <div
+                      className="subTitleForSettingWrapper"
+                      onClick={() => {
+                        setSelectedMenu("set_level_and_cycle");
+                      }}
                     >
                       <Space>
                         <Avatar>
                           <FileSyncOutlined />
                         </Avatar>
-                        레벨 및 복습 주기 설정
+                        <div className="subTitleForSetting">
+                          레벨 및 복습 주기 설정
+                        </div>
                       </Space>
-                    </Select.Option>
-                    <Select.Option
-                      value="select_category"
-                      label="카테고리 이동"
+                    </div>
+                    <div
+                      className="subTitleForSettingWrapper"
+                      onClick={() => {
+                        setSelectedMenu("select_category");
+                      }}
                     >
                       <Space>
                         <Avatar>
                           <AppstoreAddOutlined />
                         </Avatar>
-                        카테고리 이동
+                        <div className="subTitleForSetting">카테고리 이동</div>
                       </Space>
-                    </Select.Option>
-                    <Select.Option value="delete_book" label="책 삭제">
+                    </div>
+                    <div
+                      className="subTitleForSettingWrapper"
+                      onClick={() => {
+                        setSelectedMenu("delete_book");
+                      }}
+                    >
                       <Space>
                         <Avatar>
                           <DeleteOutlined />
                         </Avatar>
-                        책 삭제
+                        <div className="subTitleForSetting">책 삭제</div>
                       </Space>
-                    </Select.Option>
+                    </div>
                   </div>
-                  <div>{content(selectedMenu)}</div>
+                  <div className="BookSettingContentArea">
+                    {content(selectedMenu)}
+                  </div>
                 </div>
-              </StyledMainPageCard>
+              </StyledDiv>
             </Layout>
           </>
         )}
@@ -228,25 +251,55 @@ const BookSetting = () => {
 };
 export default BookSetting;
 
-const StyledMainPageCard = styled(Card)`
+const StyledDiv = styled.div`
   width: 1024px;
   margin: 0 auto;
   padding: 0 8px;
+  & * {
+    font-size: 13px;
+  }
+
+  .ForMainTitle {
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  .subTitleForSetting {
+    font-size: 16px;
+    font-weight: 400;
+  }
+
+  .FlexWith8Gap {
+    display: flex;
+    gap: 8px;
+  }
+
+  .BookSettingSiderMenu {
+    width: 230px;
+    height: calc(100vh - 80px);
+    border-right: 1px solid lightgray;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .subTitleForSettingWrapper {
+    cursor: pointer;
+  }
+
+  .BookSettingContentArea {
+    width: 770px;
+  }
+
+  .BookSettingContentTitle {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
 
   &.ant-card-small > .ant-card-head {
     border-bottom: none;
     padding: 0 8px;
-  }
-
-  &.ant-card-small > .ant-card-body {
-    padding: 0px 8px 12px 8px;
-    width: 100%;
-    & * {
-      font-size: 1rem;
-    }
-  }
-
-  & .fa-layers.fa-fw {
   }
 
   & .compact-picker {
@@ -261,15 +314,82 @@ const StyledMainPageCard = styled(Card)`
     // ColorPicker 잘리는 문제 해결
     overflow: unset;
   }
+
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastEvenNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastEvenNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastEvenNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastOddNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastOddNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastOddNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.EvenNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.EvenNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.EvenNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.OddNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.OddNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.OddNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small .ant-table-thead > tr > th {
+    font-size: 13px;
+  }
 `;
 
 const StyledForHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  /* margin-bottom: 4px; */
   padding-bottom: 4px;
   border-bottom: 1px dashed lightgray;
+
+  .TitleForMainPage {
+  }
   & .ForCloseButton {
     display: inline-block;
     color: rgba(0, 0, 0, 0.45);
@@ -289,7 +409,8 @@ const StyledForHeader = styled.div`
     text-rendering: auto;
   }
 `;
-const EllipsisTitle = styled(StyledDivEllipsis)`
-  font-size: 1rem;
+const EllipsisTwoLinesForTitle = styled(StyledTwoLinesEllipsis)`
+  font-size: 16px;
   color: #747474;
+  padding: 4px;
 `;

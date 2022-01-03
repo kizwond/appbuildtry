@@ -1,24 +1,22 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState, forwardRef } from "react";
+import { useEffect, useState, forwardRef } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "moment";
 
 import { Table, Card, Space, Popover } from "antd";
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
-
-import HideOrShowButton from "../../common/HideOrShowButton";
-import MoveToBookSetting from "../../common/MoveToBookSetting";
-import FavoriteBook from "../../common/FavoriteBook";
-import FavoriteBookOrderButton from "../../common/FavoriteBookOrderButton";
+import HideOrShowButton from "../../../common/HideOrShowButton";
+import MoveToBookSetting from "../../../common/MoveToBookSetting";
+import FavoriteBook from "../../../common/FavoriteBook";
+import FavoriteBookOrderButton from "../../../common/FavoriteBookOrderButton";
 import {
   StyledFlexAlignCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
-} from "../../../common/styledComponent/page";
-import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
-import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+} from "../../../../common/styledComponent/page";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 
 const FavoriteBooksTable = forwardRef(

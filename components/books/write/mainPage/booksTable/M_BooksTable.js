@@ -11,23 +11,23 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 
-import BookOrderButton from "../../common/BookOrderButton";
-import HideOrShowButton from "../../common/HideOrShowButton";
-import FavoriteBook from "../../common/FavoriteBook";
-import MoveToBookSetting from "../../common/MoveToBookSetting";
+import BookOrderButton from "../../../common/BookOrderButton";
+import HideOrShowButton from "../../../common/HideOrShowButton";
+import FavoriteBook from "../../../common/FavoriteBook";
+import MoveToBookSetting from "../../../common/MoveToBookSetting";
 
-import makeDataSource from "../../common/logic";
+import makeDataSource from "../../../common/logic";
 import {
   StyledFlexAlignCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
-} from "../../../common/styledComponent/page";
-import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
-import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+} from "../../../../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 import CreateBookButton from "../../../common/createBook/CreateBookButton";
-import CategorySettingButton from "../categorySetting/CategorySettingButton";
+import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 
 const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);

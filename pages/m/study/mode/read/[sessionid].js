@@ -203,12 +203,14 @@ const ReadMode = () => {
     console.log("hello");
     var text = "";
     var textRange = {};
+    console.log(typeof document.selection)
     if (document.getSelection) {
       text = document.getSelection().toString();
       textRange = document.getSelection();
       sessionStorage.setItem("selectionText", text);
-    } else if (document.selection && document.selection.type != "Control") {
-      text = document.selection.createRange().text;
+    } else if (typeof document.selection != "undefined") {
+      text = document.selection;
+      alert(text)
     }
     console.log(text);
 

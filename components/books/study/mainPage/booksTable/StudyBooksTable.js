@@ -28,6 +28,7 @@ import makeDataSource from "../../../common/logic";
 import MoveToBookSetting from "../../../common/MoveToBookSetting";
 import moment from "moment";
 import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
+import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 
 const StudyBooksTable = ({
   category,
@@ -224,37 +225,11 @@ const StudyBooksTable = ({
       render: (_value, _record, _index) => {
         const obj = {
           children: (
-            <div style={{ width: "100%" }}>
-              <Popover
-                arrowPointAtCenter
-                content={
-                  <>
-                    <StyledFlexSpaceBetween>
-                      <div>읽기카드:</div>
-                      <div>{_record.read}</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>뒤집기카드:</div>
-                      <div>{_record.flip}</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>목차카드:</div>
-                      <div>수정必</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>일반카드:</div>
-                      <div>수정必</div>
-                    </StyledFlexSpaceBetween>
-                  </>
-                }
-                trigger="click"
-                overlayClassName="M-Popover-NumberOfCards"
-              >
-                <StyledFlexAllCenterDimension100Percent>
-                  {_value}
-                </StyledFlexAllCenterDimension100Percent>
-              </Popover>
-            </div>
+            <NumberOfCardCell
+              value={_value}
+              read={_record.read}
+              flip={_record.flip}
+            />
           ),
           props: {
             colSpan: 1,

@@ -28,6 +28,7 @@ import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/a
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 import CreateBookButton from "../../../common/createBook/CreateBookButton";
 import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
+import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 
 const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -202,37 +203,11 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
       render: (_value, _record) => {
         const obj = {
           children: (
-            <div style={{ width: "100%" }}>
-              <Popover
-                arrowPointAtCenter
-                content={
-                  <>
-                    <StyledFlexSpaceBetween>
-                      <div>읽기카드:</div>
-                      <div>{_record.read}</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>뒤집기카드:</div>
-                      <div>{_record.flip}</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>목차카드:</div>
-                      <div>수정必</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>일반카드:</div>
-                      <div>수정必</div>
-                    </StyledFlexSpaceBetween>
-                  </>
-                }
-                trigger="click"
-                overlayClassName="M-Popover-NumberOfCards"
-              >
-                <StyledFlexAllCenterDimension100Percent>
-                  {_value}
-                </StyledFlexAllCenterDimension100Percent>
-              </Popover>
-            </div>
+            <NumberOfCardCell
+              value={_value}
+              read={_record.read}
+              flip={_record.flip}
+            />
           ),
           props: {
             colSpan: 1,

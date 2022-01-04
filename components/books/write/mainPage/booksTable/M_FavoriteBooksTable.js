@@ -18,6 +18,7 @@ import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/Dou
 import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
 import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
+import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 
 const FavoriteBooksTable = forwardRef(
   ({ category, myBook, isFoldedMenu, changeFoldedMenu }, ref) => {
@@ -122,37 +123,11 @@ const FavoriteBooksTable = forwardRef(
         ellipsis: true,
         width: 26,
         render: (_value, _record) => (
-          <div style={{ width: "100%" }}>
-            <Popover
-              arrowPointAtCenter
-              content={
-                <>
-                  <StyledFlexSpaceBetween>
-                    <div>읽기카드:</div>
-                    <div>{_record.read}</div>
-                  </StyledFlexSpaceBetween>
-                  <StyledFlexSpaceBetween>
-                    <div>뒤집기카드:</div>
-                    <div>{_record.flip}</div>
-                  </StyledFlexSpaceBetween>
-                  <StyledFlexSpaceBetween>
-                    <div>목차카드:</div>
-                    <div>수정必</div>
-                  </StyledFlexSpaceBetween>
-                  <StyledFlexSpaceBetween>
-                    <div>일반카드:</div>
-                    <div>수정必</div>
-                  </StyledFlexSpaceBetween>
-                </>
-              }
-              trigger="click"
-              overlayClassName="M-Popover-NumberOfCards"
-            >
-              <StyledFlexAllCenterDimension100Percent>
-                {_value}
-              </StyledFlexAllCenterDimension100Percent>
-            </Popover>
-          </div>
+          <NumberOfCardCell
+            value={_value}
+            read={_record.read}
+            flip={_record.flip}
+          />
         ),
       },
 

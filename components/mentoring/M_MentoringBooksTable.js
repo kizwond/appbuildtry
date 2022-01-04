@@ -2,16 +2,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import styled from "styled-components";
-import { Table, Card, Popover, Button } from "antd";
+import { Table, Card, Button } from "antd";
 
-import {
-  StyledFlexAlignCenter,
-  StyledFlexSpaceBetween,
-} from "../common/styledComponent/page";
+import { StyledFlexAlignCenter } from "../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../common/styledComponent/DoubleLinesEllipsisContainer";
 
 import M_RequestMentoringCard from "../../components/mentoring/M_RequestMetoringCard";
-import { StyledBookTypeDiv } from "../common/styledComponent/buttons";
+import NumberOfCardCell from "../books/common/tableComponent/NumberOfCardCell";
 
 const M_Mentoring_BooksTable = ({
   bookData,
@@ -121,45 +119,11 @@ const M_Mentoring_BooksTable = ({
       ellipsis: true,
       width: 60,
       render: (_value, _record) => (
-        <div style={{ width: "100%" }}>
-          <Popover
-            arrowPointAtCenter
-            content={
-              <>
-                <StyledFlexSpaceBetween>
-                  <div>읽기카드:</div>
-                  <div>{_record.read}</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>뒤집기카드:</div>
-                  <div>{_record.flip}</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>목차카드:</div>
-                  <div>수정必</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>일반카드:</div>
-                  <div>수정必</div>
-                </StyledFlexSpaceBetween>
-              </>
-            }
-            trigger="click"
-            overlayClassName="M-Popover-NumberOfCards"
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
-                width: "100%",
-              }}
-            >
-              {_value}
-            </div>
-          </Popover>
-        </div>
+        <NumberOfCardCell
+          value={_value}
+          read={_record.read}
+          flip={_record.flip}
+        />
       ),
     },
 

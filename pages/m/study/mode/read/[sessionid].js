@@ -370,25 +370,34 @@ const ReadMode = () => {
     sessionStorage.removeItem("selectionText");
   };
 
-  const hiddenToggleHandler = () => {
+  const hiddenToggleHandler = (info) => {
     console.log("userflagclicked!!!");
     setHiddenToggle(!hiddenToggle);
     setUnderlineToggle(false);
     setHighlightToggle(false);
+    if (hiddenToggle === false) {
+      info();
+    }
   };
 
-  const underlineToggleHandler = () => {
+  const underlineToggleHandler = (info) => {
     console.log("underlineToggleHandler!!!");
     setUnderlineToggle(!underlineToggle);
     setHiddenToggle(false);
     setHighlightToggle(false);
+    if (underlineToggle === false) {
+      info();
+    }
   };
 
-  const highlightToggleHandler = () => {
+  const highlightToggleHandler = (info) => {
     console.log("underlineToggleHandler!!!");
     setHighlightToggle(!highlightToggle);
     setHiddenToggle(false);
     setUnderlineToggle(false);
+    if (highlightToggle === false) {
+      info();
+    }
   };
 
   const [isModalVisibleHidden, setIsModalVisibleHidden] = useState(false);
@@ -2116,7 +2125,7 @@ const ReadMode = () => {
               card_id,
               effectType,
               targetWord,
-              toolType: Number(toolType)
+              toolType: Number(toolType),
             },
           },
         });

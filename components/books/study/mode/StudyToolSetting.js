@@ -2,8 +2,13 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Drawer, Button, Space, Divider } from "antd";
 import { useQuery, useMutation } from "@apollo/client";
 import { ToolOutlined } from "@ant-design/icons";
+import HiddenSetting from "./HiddenSetting";
+import UnderlineSetting from "./UnderlineSetting";
+import HighlightSetting from "./HighlightSetting";
+import { Tabs } from "antd";
+const { TabPane } = Tabs;
 
-const RightDrawer = ({cardTypeSets}) => {
+const RightDrawer = ({ cardTypeSets, updateStudyToolApply }) => {
   const [visible, setVisible] = useState(false);
 
   const showDrawer = () => {
@@ -13,7 +18,7 @@ const RightDrawer = ({cardTypeSets}) => {
   const onClose = () => {
     setVisible(false);
   };
-
+  
   return (
     <>
       <div onClick={showDrawer} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -32,12 +37,45 @@ const RightDrawer = ({cardTypeSets}) => {
         visible={visible}
         mask={true}
         width={250}
-        style={{zIndex:1031}}
-        
+        style={{ zIndex: 1031 }}
       >
-        <Space direction="vertical">
-          <div >hello</div>
-        </Space>
+        <div style={{ padding: "0px 10px 0px 10px" }}>
+          <Tabs className="card_setting_tab" defaultActiveKey="1" type="card" size="small">
+            <TabPane
+              tab={
+                <>
+                  <span style={{ fontSize: "0.8rem" }}>가리기</span>
+                </>
+              }
+              key="1"
+              style={{padding:10}}
+            >
+              <HiddenSetting cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply}/>
+            </TabPane>
+            <TabPane
+              tab={
+                <>
+                  <span style={{ fontSize: "0.8rem" }}>밑줄</span>
+                </>
+              }
+              key="2"
+              style={{padding:10}}
+            >
+              <UnderlineSetting cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply}/>
+            </TabPane>
+            <TabPane
+              tab={
+                <>
+                  <span style={{ fontSize: "0.8rem" }}>형광펜</span>
+                </>
+              }
+              key="3"
+              style={{padding:10}}
+            >
+              <HighlightSetting cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply}/>
+            </TabPane>
+          </Tabs>
+        </div>
       </Drawer>
     </>
   );

@@ -156,6 +156,7 @@ const FavoriteBooksTable = forwardRef(
             isFoldedMenu={isFoldedMenu}
             changeFoldedMenu={changeFoldedMenu}
             favorite
+            tableType="write"
           />
         ),
       },

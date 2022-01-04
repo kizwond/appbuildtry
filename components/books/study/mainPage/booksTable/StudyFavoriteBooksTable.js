@@ -209,6 +209,7 @@ const M_StudyFavoriteBooksTable = ({
           changeFoldedMenu={changeFoldedMenu}
           isPc
           favorite
+          tableType="study"
         />
       ),
     },

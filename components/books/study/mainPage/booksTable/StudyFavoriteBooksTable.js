@@ -21,6 +21,7 @@ import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledProgress } from "../../../../common/styledComponent/StyledProgress";
 import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 
 const M_StudyFavoriteBooksTable = ({
   category,
@@ -147,37 +148,11 @@ const M_StudyFavoriteBooksTable = ({
       align: "center",
       width: 26,
       render: (_value, _record) => (
-        <div style={{ width: "100%" }}>
-          <Popover
-            arrowPointAtCenter
-            content={
-              <>
-                <StyledFlexSpaceBetween>
-                  <div>읽기카드:</div>
-                  <div>{_record.read}</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>뒤집기카드:</div>
-                  <div>{_record.flip}</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>목차카드:</div>
-                  <div>수정必</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>일반카드:</div>
-                  <div>수정必</div>
-                </StyledFlexSpaceBetween>
-              </>
-            }
-            trigger="click"
-            overlayClassName="M-Popover-NumberOfCards"
-          >
-            <StyledFlexAllCenterDimension100Percent>
-              {_value}
-            </StyledFlexAllCenterDimension100Percent>
-          </Popover>
-        </div>
+        <NumberOfCardCell
+          value={_value}
+          read={_record.read}
+          flip={_record.flip}
+        />
       ),
     },
 
@@ -310,7 +285,7 @@ const M_StudyFavoriteBooksTable = ({
       size="small"
       title={
         <Space onClick={() => setVisible((_prev) => !_prev)}>
-          <div className="ForPageMainTitle">즐겨찾기</div>
+          <div className="ForPcPageMainTitle">즐겨찾기</div>
           <DoubleRightOutlined rotate={visible ? 270 : 90} />
         </Space>
       }
@@ -337,11 +312,9 @@ const StyledCard = styled(Card)`
 
   & .ant-card-body {
     padding: ${(props) =>
-      props.isvisible === "true"
-        ? "0px 8px 12px 8px"
-        : "0px 8px 0px 8px !important"};
+      props.isvisible === "true" ? "0 0 12px 0" : "0 !important"};
     & * {
-      font-size: 1rem;
+      font-size: 13px;
     }
   }
 
@@ -357,9 +330,5 @@ const StyledCard = styled(Card)`
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
   }
 `;

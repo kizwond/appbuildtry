@@ -1,3 +1,4 @@
+import Head from "next/head";
 import { SEARCH_USER_INFO } from "../../graphql/query/mentoring";
 import { useQuery } from "@apollo/client";
 
@@ -11,9 +12,15 @@ const MentoringHome = () => {
   console.log({ data });
 
   return (
-    <div>
-      <div>Hello Mentoring Page!!</div>
-    </div>
+    <>
+      <Head>
+        <title>{"멘토링 - I'mTheBook"}</title>
+        <meta charSet="utf-8" />
+      </Head>{" "}
+      <div>
+        <div>Hello Mentoring Page!!</div>
+      </div>
+    </>
   );
 };
 

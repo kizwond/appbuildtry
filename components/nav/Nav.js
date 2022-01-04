@@ -64,7 +64,7 @@ const Nav = () => {
               <Link href="/books/study">
                 <a style={linkStyle}>학습하기</a>
               </Link>
-              <Link href="/books/writepage">
+              <Link href="/books/write">
                 <a style={linkStyle}>만들기</a>
               </Link>
               <Link href="/mentoring">

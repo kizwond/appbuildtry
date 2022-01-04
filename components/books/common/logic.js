@@ -52,6 +52,7 @@ export default function makeDataSource(
         categoryOrder: seq,
         categoryName: name,
         key: `KEY:${_cate._id}INDEX:0`,
+        writeHistory: [],
       };
     }
 
@@ -147,6 +148,7 @@ export default function makeDataSource(
     const hiddenBar = {
       key: `KEY:${_cate._id}HIDDENBAR`,
       classType: "hiddenBar",
+      writeHistory: [],
       title: (
         <div
           style={{ width: "100%" }}

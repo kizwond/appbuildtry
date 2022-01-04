@@ -27,7 +27,8 @@ import FavoriteBook from "../../../common/FavoriteBook";
 import makeDataSource from "../../../common/logic";
 import MoveToBookSetting from "../../../common/MoveToBookSetting";
 import moment from "moment";
-import CategorySettingButton from "../../../writepage/categorySetting/CategorySettingButton";
+import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
+import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 
 const StudyBooksTable = ({
   category,
@@ -224,37 +225,11 @@ const StudyBooksTable = ({
       render: (_value, _record, _index) => {
         const obj = {
           children: (
-            <div style={{ width: "100%" }}>
-              <Popover
-                arrowPointAtCenter
-                content={
-                  <>
-                    <StyledFlexSpaceBetween>
-                      <div>읽기카드:</div>
-                      <div>{_record.read}</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>뒤집기카드:</div>
-                      <div>{_record.flip}</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>목차카드:</div>
-                      <div>수정必</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>일반카드:</div>
-                      <div>수정必</div>
-                    </StyledFlexSpaceBetween>
-                  </>
-                }
-                trigger="click"
-                overlayClassName="M-Popover-NumberOfCards"
-              >
-                <StyledFlexAllCenterDimension100Percent>
-                  {_value}
-                </StyledFlexAllCenterDimension100Percent>
-              </Popover>
-            </div>
+            <NumberOfCardCell
+              value={_value}
+              read={_record.read}
+              flip={_record.flip}
+            />
           ),
           props: {
             colSpan: 1,
@@ -433,10 +408,9 @@ const StudyBooksTable = ({
     <StyledCard
       bordered={false}
       size="small"
-      // title={<div className="ForPageMainTitle">나의 책</div>}
       title={
         <Space>
-          <div className="ForPageMainTitle">나의책</div>
+          <div className="ForPcPageMainTitle">나의책</div>
           <div>
             <CategorySettingButton
               category={category}
@@ -492,9 +466,9 @@ const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
 
   & .ant-card-body {
-    padding: 0px 8px 12px 8px;
+    padding: 0 0 12px 0;
     & * {
-      font-size: 1rem;
+      font-size: 13px;
     }
   }
 
@@ -510,9 +484,5 @@ const StyledCard = styled(Card)`
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
   }
 `;

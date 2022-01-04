@@ -13,7 +13,7 @@ import StudyBooksTable from "../../../components/books/study/mainPage/booksTable
 import Layout from "../../../components/layout/Layout";
 import { Button, Space } from "antd";
 
-const StudyPage = () => {
+const StudyMainPage = () => {
   const router = useRouter();
 
   const [isFoldedMenu, setIsFoldedMenu] = useState();
@@ -93,13 +93,11 @@ const StudyPage = () => {
         <Layout>
           <StyledRowMaxWidth>
             <StyledFlexSpaceBetween>
+              <div className="ForMainTitle">학습하기</div>
               <div>
-                <span className="ForMainTitle">학습하기</span>
-              </div>
-              <div>
-                <Space>
-                  <Button onClick={directStart}>바로보기</Button>
-                  {selectedBooks.length > 0 ? (
+                {selectedBooks.length > 0 ? (
+                  <Space>
+                    <Button onClick={directStart}>바로보기</Button>
                     <Link
                       as="/books/study/sessionConfig"
                       href={{
@@ -116,10 +114,13 @@ const StudyPage = () => {
                         <Button>세션 설정 후 시작</Button>
                       </a>
                     </Link>
-                  ) : (
-                    <Button>세션 설정 후 시작</Button>
-                  )}
-                </Space>
+                  </Space>
+                ) : (
+                  <Space>
+                    <Button disabled>바로보기</Button>
+                    <Button disabled>세션 설정 후 시작</Button>
+                  </Space>
+                )}
               </div>
             </StyledFlexSpaceBetween>
             <div>
@@ -150,7 +151,7 @@ const StudyPage = () => {
   );
 };
 
-export default StudyPage;
+export default StudyMainPage;
 
 const StyledRowMaxWidth = styled.div`
   width: 1024px;
@@ -159,7 +160,15 @@ const StyledRowMaxWidth = styled.div`
 
   & .ant-card-small > .ant-card-head {
     border-bottom: none;
-    padding: 0 8px;
+    padding: 0;
+  }
+
+  &
+    .ant-card-small
+    > .ant-card-head
+    > .ant-card-head-wrapper
+    > .ant-card-head-title {
+    padding: 0 0 8px 0;
   }
 
   /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
@@ -178,12 +187,77 @@ const StyledRowMaxWidth = styled.div`
   & .PullCustomCircleButton:hover > .anticon-setting > svg {
     color: #fff;
   }
+
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastEvenNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastEvenNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastEvenNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastOddNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastOddNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastOddNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.EvenNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.EvenNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.EvenNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.OddNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.OddNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.OddNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small .ant-table-thead > tr > th {
+    font-size: 13px;
+  }
 `;
 
 export const StyledFlexSpaceBetween = styled.div`
   display: flex;
+  height: 40px;
   justify-content: space-between;
-  margin-top: 8px;
+  align-items: center;
   .ForMainTitle {
     font-size: 18px;
     font-weight: 500;

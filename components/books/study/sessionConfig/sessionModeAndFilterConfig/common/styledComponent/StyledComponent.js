@@ -6,16 +6,16 @@ export const StyledFilteMenuWrapper = styled.div`
 
 export const StyledDivConfigRow = styled.div`
   display: flex;
-  flex-direction: ${(props) => (props.isPc === true ? "column" : "row")};
+  flex-direction: ${(props) => (props.is_pc === "true" ? "column" : "row")};
   padding-bottom: 5px;
   flex-wrap: nowrap;
   & > div:nth-child(1):not(.FilterSubTitleCol) {
     flex: none;
-    width: ${(props) => (props.isPc === true ? "158px" : "148px")};
+    width: ${(props) => (props.is_pc === "true" ? "158px" : "148px")};
   }
   & > div.FilterSubTitleCol {
     flex: none;
-    width: ${(props) => (props.isPc === true ? "153px" : "143px")};
+    width: ${(props) => (props.is_pc === "true" ? "153px" : "143px")};
     margin-top: 3px;
   }
   & > div:nth-child(2) {
@@ -34,7 +34,7 @@ export const StyledDivConfigRow = styled.div`
 
   & .ConfigTitle {
     font-weight: 500;
-    font-size: ${({ isPc }) => (isPc ? "15px" : "1.16667rem")};
+    font-size: ${({ is_pc }) => (is_pc === "true" ? "15px" : "1.16667rem")};
   }
 `;
 
@@ -69,8 +69,8 @@ export const StyledSpanConfigTitle = styled(({ onOff, children, ...rest }) => (
 ))`
   color: ${({ onOff }) => (onOff ? "black" : "#0000003f")};
   margin-right: 10px;
-  font-size: ${({ isPc }) =>
-    isPc ? "15px !important" : "1.16667rem !important"};
+  font-size: ${({ is_pc }) =>
+    is_pc === "true" ? "15px !important" : "1.16667rem !important"};
   font-weight: 500;
 `;
 

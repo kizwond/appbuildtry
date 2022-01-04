@@ -11,23 +11,24 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 
-import BookOrderButton from "../../common/BookOrderButton";
-import HideOrShowButton from "../../common/HideOrShowButton";
-import FavoriteBook from "../../common/FavoriteBook";
-import MoveToBookSetting from "../../common/MoveToBookSetting";
+import BookOrderButton from "../../../common/BookOrderButton";
+import HideOrShowButton from "../../../common/HideOrShowButton";
+import FavoriteBook from "../../../common/FavoriteBook";
+import MoveToBookSetting from "../../../common/MoveToBookSetting";
 
-import makeDataSource from "../../common/logic";
+import makeDataSource from "../../../common/logic";
 import {
   StyledFlexAlignCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
-} from "../../../common/styledComponent/page";
-import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
-import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+} from "../../../../common/styledComponent/page";
+import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
-import CreateBookButton from "../createBook/CreateBookButton";
-import CategorySettingButton from "../categorySetting/CategorySettingButton";
+import CreateBookButton from "../../../common/createBook/CreateBookButton";
+import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
+import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 
 const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -202,37 +203,11 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
       render: (_value, _record) => {
         const obj = {
           children: (
-            <div style={{ width: "100%" }}>
-              <Popover
-                arrowPointAtCenter
-                content={
-                  <>
-                    <StyledFlexSpaceBetween>
-                      <div>읽기카드:</div>
-                      <div>{_record.read}</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>뒤집기카드:</div>
-                      <div>{_record.flip}</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>목차카드:</div>
-                      <div>수정必</div>
-                    </StyledFlexSpaceBetween>
-                    <StyledFlexSpaceBetween>
-                      <div>일반카드:</div>
-                      <div>수정必</div>
-                    </StyledFlexSpaceBetween>
-                  </>
-                }
-                trigger="click"
-                overlayClassName="M-Popover-NumberOfCards"
-              >
-                <StyledFlexAllCenterDimension100Percent>
-                  {_value}
-                </StyledFlexAllCenterDimension100Percent>
-              </Popover>
-            </div>
+            <NumberOfCardCell
+              value={_value}
+              read={_record.read}
+              flip={_record.flip}
+            />
           ),
           props: {
             colSpan: 1,
@@ -436,9 +411,5 @@ const StyledCard = styled(Card)`
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
   }
 `;

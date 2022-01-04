@@ -86,7 +86,7 @@ const M_StudyMainPage = () => {
   return (
     <>
       <Head>
-        <title>Write - CogBook</title>
+        <title>{"Study - I'mTheBook"}</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       {myBook2 && category2 && (
@@ -153,17 +153,6 @@ const StyledRowMaxWidth = styled.div`
     border-bottom: none;
     padding: 0 8px;
   }
-
-  /* & .ant-checkbox-inner {
-    width: 12px;
-    height: 12px;
-  } */
-  /* & .ant-checkbox-inner::after {
-    width: 4px;
-    height: 7px;
-  } */
-
-  /* 아이콘 크기 및 색상 - 부모 div Hover시 동작 포함 */
 
   & .PullCustomCircleButton > .anticon-double-left > svg {
     font-size: 14px;

@@ -7,6 +7,7 @@ export const StyledBookSettingBarDrawer = styled(Drawer)`
     text-align: initial;
     height: 3rem;
     top: 0.6rem;
+    overflow: hidden;
   }
   & .ant-drawer-content {
     background-color: ${(props) => {
@@ -18,21 +19,15 @@ export const StyledBookSettingBarDrawer = styled(Drawer)`
           : console.log(new Error("책 타입 잘못 설정됨"));
       return bgColor;
     }};
-    overflow: hidden;
     background-clip: padding-box;
     border: 0;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
   }
-  &.ant-drawer.ant-drawer-right.BookDrawerMenu .ant-drawer-content-wrapper {
-    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-      box-shadow 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-    box-shadow: unset;
-  }
+
   & .ant-drawer-body {
     padding: unset;
     flex-grow: unset;
-    overflow: hidden;
     height: 100%;
     display: flex;
     align-items: center;

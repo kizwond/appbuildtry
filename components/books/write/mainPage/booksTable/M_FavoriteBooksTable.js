@@ -1,28 +1,24 @@
 /* eslint-disable react/display-name */
-import { useCallback, useEffect, useState, forwardRef } from "react";
+import { useEffect, useState, forwardRef } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "moment";
 
-import { Table, Card, Space, Drawer, Popover } from "antd";
+import { Table, Card, Space, Popover } from "antd";
 import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
-
-import HideOrShowButton from "../../common/HideOrShowButton";
-import MoveToBookSetting from "../../common/MoveToBookSetting";
-import FavoriteBook from "../../common/FavoriteBook";
-import FavoriteBookOrderButton from "../../common/FavoriteBookOrderButton";
+import HideOrShowButton from "../../../common/HideOrShowButton";
+import MoveToBookSetting from "../../../common/MoveToBookSetting";
+import FavoriteBook from "../../../common/FavoriteBook";
+import FavoriteBookOrderButton from "../../../common/FavoriteBookOrderButton";
 import {
   StyledFlexAlignCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
-  StyledTwoLinesEllipsis,
-} from "../../../common/styledComponent/page";
-import CategorySettingButton from "../categorySetting/CategorySettingButton";
-import CreateBookButton from "../createBook/CreateBookButton";
-import DoubleLinesEllipsisContainer from "../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledBookTypeDiv } from "../../../common/styledComponent/buttons";
-import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
+} from "../../../../common/styledComponent/page";
+import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
+import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
+import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
+import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 
 const FavoriteBooksTable = forwardRef(
   ({ category, myBook, isFoldedMenu, changeFoldedMenu }, ref) => {
@@ -127,37 +123,11 @@ const FavoriteBooksTable = forwardRef(
         ellipsis: true,
         width: 26,
         render: (_value, _record) => (
-          <div style={{ width: "100%" }}>
-            <Popover
-              arrowPointAtCenter
-              content={
-                <>
-                  <StyledFlexSpaceBetween>
-                    <div>읽기카드:</div>
-                    <div>{_record.read}</div>
-                  </StyledFlexSpaceBetween>
-                  <StyledFlexSpaceBetween>
-                    <div>뒤집기카드:</div>
-                    <div>{_record.flip}</div>
-                  </StyledFlexSpaceBetween>
-                  <StyledFlexSpaceBetween>
-                    <div>목차카드:</div>
-                    <div>수정必</div>
-                  </StyledFlexSpaceBetween>
-                  <StyledFlexSpaceBetween>
-                    <div>일반카드:</div>
-                    <div>수정必</div>
-                  </StyledFlexSpaceBetween>
-                </>
-              }
-              trigger="click"
-              overlayClassName="M-Popover-NumberOfCards"
-            >
-              <StyledFlexAllCenterDimension100Percent>
-                {_value}
-              </StyledFlexAllCenterDimension100Percent>
-            </Popover>
-          </div>
+          <NumberOfCardCell
+            value={_value}
+            read={_record.read}
+            flip={_record.flip}
+          />
         ),
       },
 
@@ -306,9 +276,5 @@ const StyledCard = styled(Card)`
 
   & .PullCustomCircleButton:hover {
     background-color: #a9a9a9;
-  }
-
-  & .HandleOnOffShow > span {
-    font-size: 0.7rem;
   }
 `;

@@ -119,12 +119,13 @@ const PeriodHead = styled.span`
 
   &::before {
     position: absolute;
-    content: '';
+    content: "";
     width: 4px;
     height: 4px;
     top: 5px;
     left: 1px;
     background: #808991;
+  }
 `;
 
 const PeriodDate = styled.span`

@@ -14,7 +14,7 @@ const FilterSubMenu = ({ children, changeOnOff, onOff, title, isPc }) => {
 
   return (
     <StyledFilteMenuWrapper>
-      <StyledDivConfigRow isPc={isPc}>
+      <StyledDivConfigRow is_pc={(isPc || false).toString()}>
         <StyledDivConfigColStartCards className="FilterSubTitleCol">
           <StyledSpanFilterSubTitle onOff={booleanOnOff}>
             {title}

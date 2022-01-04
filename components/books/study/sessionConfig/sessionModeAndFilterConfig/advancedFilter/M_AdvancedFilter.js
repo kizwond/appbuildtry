@@ -49,9 +49,12 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
   const { flagTags, recentDifficultyTags, examResultTags } = filterTags;
   return (
     <StyledDivWrapper>
-      <StyledDivTitleRow isPc={isPc}>
+      <StyledDivTitleRow is_pc={(isPc || false).toString()}>
         <StyledDivConfigColStartCards>
-          <StyledSpanConfigTitle onOff={onOff === "on"} isPc={isPc}>
+          <StyledSpanConfigTitle
+            onOff={onOff === "on"}
+            is_pc={(isPc || false).toString()}
+          >
             고급필터
           </StyledSpanConfigTitle>
           <Switch
@@ -195,7 +198,7 @@ const StyledDivTitleRow = styled.div`
   align-items: center;
   & > div:nth-child(1) {
     flex: none;
-    width: ${(props) => (props.isPc === true ? "158px" : "148px")};
+    width: ${(props) => (props.is_pc === "true" ? "158px" : "148px")};
     /* width: 104px; */
   }
   & > div:nth-child(2) {

@@ -17,7 +17,7 @@ const M_TabsOfBooksForInfromationTable = ({
       tabPosition="top"
       size="small"
       tabBarStyle={{ margin: 0 }}
-      isPc={isPc || false}
+      is_pc={(isPc || false).toString()}
     >
       {bookList.map((book) => (
         <Tabs.TabPane tab={book.book_title} key={book.book_id}>

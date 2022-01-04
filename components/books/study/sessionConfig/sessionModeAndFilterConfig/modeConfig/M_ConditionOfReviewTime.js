@@ -62,7 +62,7 @@ const M_ConditionOfReviewTime = ({
       value={needStudyTimeCondition}
       size="small"
     >
-      <StyledRow wrap={false}>
+      <Row wrap={false}>
         <Col {...breakPoint[0]}>
           <StyledRadio value="all">전체</StyledRadio>
         </Col>
@@ -77,7 +77,7 @@ const M_ConditionOfReviewTime = ({
             <StyledRadio value="custom">직접입력</StyledRadio>
           </Row>
         </Col>
-      </StyledRow>
+      </Row>
       <Row wrap={false} justify="end">
         {needStudyTimeCondition === "custom" && (
           <Col>
@@ -111,9 +111,7 @@ const StyledRadio = styled(Radio)`
     padding-left: 3px;
     align-self: center;
   }
-`;
-const StyledRow = styled(Row)`
-  & .ant-radio-wrapper {
+  &.ant-radio-wrapper {
     margin-right: 2px;
   }
 `;

@@ -168,6 +168,10 @@ p {
   font-size: 1.16667rem;
   font-weight: 500;
 }
+.ForPcPageMainTitle {
+  font-size: 15px;
+  font-weight: 500;
+}
 /* 표 관련 설정 */
 .ant-table table {
   border-collapse: collapse;

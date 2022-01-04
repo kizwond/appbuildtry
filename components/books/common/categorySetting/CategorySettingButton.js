@@ -7,6 +7,7 @@ import CategorySettingModal from "./CategorySettingModal";
 const CategorySettingButton = ({
   category,
   addNewCategoryIdOnExpandedRowKeys,
+  isPc,
 }) => {
   const [visible, setVisible] = useState(false);
   const changeVisible = useCallback((_boolean) => {
@@ -19,6 +20,7 @@ const CategorySettingButton = ({
         onClick={() => {
           setVisible(!visible);
         }}
+        is_pc={(isPc || false).toString()}
       >
         <OrderedListOutlined className="IconForButton" />
       </StyledButtonForMainPage>

@@ -11,6 +11,7 @@ import {
 import { MUTATION_CREATE_BUY_BOOK_FROM_MY_BOOK } from "../../graphql/mutation/buyBook";
 import { QUERY_BUY_BOOKS } from "../../graphql/query/allQuery";
 import { useMutation } from "@apollo/client";
+import NumberOfCardCell from "../books/common/tableComponent/NumberOfCardCell";
 
 const M_MyBooksTable = ({ bookData, loading, error }) => {
   const [form] = Form.useForm();
@@ -154,45 +155,11 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       align: "center",
       width: 26,
       render: (_value, _record) => (
-        <div style={{ width: "100%" }}>
-          <Popover
-            arrowPointAtCenter
-            content={
-              <>
-                <StyledFlexSpaceBetween>
-                  <div>읽기카드:</div>
-                  <div>{_record.read}</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>뒤집기카드:</div>
-                  <div>{_record.flip}</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>목차카드:</div>
-                  <div>수정必</div>
-                </StyledFlexSpaceBetween>
-                <StyledFlexSpaceBetween>
-                  <div>일반카드:</div>
-                  <div>수정必</div>
-                </StyledFlexSpaceBetween>
-              </>
-            }
-            trigger="click"
-            overlayClassName="M-Popover-NumberOfCards"
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
-                width: "100%",
-              }}
-            >
-              {_value}
-            </div>
-          </Popover>
-        </div>
+        <NumberOfCardCell
+          value={_value}
+          read={_record.read}
+          flip={_record.flip}
+        />
       ),
     },
 

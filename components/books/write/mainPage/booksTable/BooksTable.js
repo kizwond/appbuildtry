@@ -383,6 +383,8 @@ const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
     },
   ];
 
+  console.log({ dataSource });
+
   return (
     <StyledCard
       bordered={false}

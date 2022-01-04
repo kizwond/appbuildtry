@@ -6,15 +6,17 @@ import { Space } from "antd";
 import { StyledBookSettingBarDrawer } from "../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import BookOrderButton from "../BookOrderButton";
 import FavoriteBook from "../FavoriteBook";
+import FavoriteBookOrderButton from "../FavoriteBookOrderButton";
 import HideOrShowButton from "../HideOrShowButton";
 import MoveToBookSetting from "../MoveToBookSetting";
 
 const SlidingMenuForBook = ({
-  _record,
+  record,
   isFoldedMenu,
   changeFoldedMenu,
   isPc,
   favorite,
+  tableType,
 }) => {
   return (
     <div
@@ -30,7 +32,7 @@ const SlidingMenuForBook = ({
           justifyContent: "end",
         }}
         onClick={() => {
-          changeFoldedMenu(favorite ? `favorite:${_record._id}` : _record.id);
+          changeFoldedMenu(favorite ? `favorite:${record._id}` : record._id);
         }}
       >
         <div
@@ -47,7 +49,7 @@ const SlidingMenuForBook = ({
         </div>
       </div>
       <StyledBookSettingBarDrawer
-        booktype={_record.type}
+        booktype={record.type}
         destroyOnClose={true}
         className="BookDrawerMenu"
         placement="right"
@@ -55,31 +57,40 @@ const SlidingMenuForBook = ({
         closable={false}
         mask={false}
         visible={
-          (favorite ? `favorite:${_record._id}` : _record.id) === isFoldedMenu
+          (favorite ? `favorite:${record._id}` : record._id) === isFoldedMenu
         }
         getContainer={false}
       >
         <Space size={3}>
-          <BookOrderButton
-            _record={_record}
-            changeFoldedMenu={changeFoldedMenu}
-            isPc={isPc || false}
-          />{" "}
+          {favorite ? (
+            <FavoriteBookOrderButton
+              record={record}
+              changeFoldedMenu={changeFoldedMenu}
+              tableType={tableType}
+              isPc
+            />
+          ) : (
+            <BookOrderButton
+              record={record}
+              changeFoldedMenu={changeFoldedMenu}
+              isPc={isPc || false}
+            />
+          )}
           |
           <FavoriteBook
-            record={_record}
+            record={record}
             changeFoldedMenu={changeFoldedMenu}
-            tableType="write"
+            tableType={tableType}
             isPc={isPc || false}
-          />{" "}
+          />
           |
           <HideOrShowButton
-            record={_record}
+            record={record}
             changeFoldedMenu={changeFoldedMenu}
             isPc={isPc || false}
-          />{" "}
+          />
           |
-          <MoveToBookSetting mybook_id={_record._id} isPc={isPc || false} />
+          <MoveToBookSetting mybook_id={record._id} isPc={isPc || false} />
         </Space>
         <div
           className="PushCustomCircleButton"

@@ -20,6 +20,7 @@ import DoubleLinesEllipsisContainer /* --- */ from "../../../../common/styledCom
 import { StyledBookSettingBarDrawer } from /* - */ "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import { StyledProgress } from /* ------------- */ "../../../../common/styledComponent/StyledProgress";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
+import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
 
 const M_StudyFavoriteBooksTable = ({
   category,
@@ -182,78 +183,14 @@ const M_StudyFavoriteBooksTable = ({
       className: "TableLastColumn",
       align: "right",
       width: 20,
-      render: (value, _record, index) => (
-        <div
-          style={{
-            position: "relative",
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-              cursor: "pointer",
-              display: "flex",
-              justifyContent: "end",
-            }}
-            onClick={() => {
-              changeFoldedMenu(`favorite${_record._id}`);
-            }}
-          >
-            <div
-              className="PullCustomCircleButton"
-              style={{
-                width: "44px",
-                height: "3rem",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <DoubleLeftOutlined />
-            </div>
-          </div>
-
-          <StyledBookSettingBarDrawer
-            booktype={_record.type}
-            destroyOnClose={true}
-            className="BookDrawerMenu"
-            placement="right"
-            width={"250px"}
-            closable={false}
-            mask={false}
-            visible={`favorite${_record._id}` === isFoldedMenu}
-            getContainer={false}
-          >
-            <Space size={3}>
-              <FavoriteBookOrderButton
-                _record={_record}
-                tableType="study"
-                changeFoldedMenu={changeFoldedMenu}
-              />{" "}
-              |
-              <FavoriteBook
-                record={_record}
-                changeFoldedMenu={changeFoldedMenu}
-                tableType="study"
-              />{" "}
-              |
-              <HideOrShowButton
-                record={_record}
-                changeFoldedMenu={changeFoldedMenu}
-              />{" "}
-              |
-              <MoveToBookSetting mybook_id={_record._id} />
-            </Space>
-            <div
-              className="PushCustomCircleButton"
-              onClick={() => {
-                changeFoldedMenu("");
-              }}
-            >
-              <DoubleRightOutlined />
-            </div>
-          </StyledBookSettingBarDrawer>
-        </div>
+      render: (value, _record) => (
+        <SlidingMenuForBook
+          record={_record}
+          isFoldedMenu={isFoldedMenu}
+          changeFoldedMenu={changeFoldedMenu}
+          favorite
+          tableType="study"
+        />
       ),
     },
   ];

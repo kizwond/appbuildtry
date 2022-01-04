@@ -7,7 +7,7 @@ import { Space } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
 const FavoriteBookOrderButton = ({
-  _record,
+  record,
   tableType,
   changeFoldedMenu,
   isPc,
@@ -44,7 +44,7 @@ const FavoriteBookOrderButton = ({
 
   return (
     <Space size={2}>
-      {_record.isFirstBook ? (
+      {record.isFirstBook ? (
         <div
           className="FirstBookCustom"
           style={{
@@ -63,20 +63,20 @@ const FavoriteBookOrderButton = ({
           onClick={() => {
             const forModifySeq = [
               {
-                mybook_id: _record.aboveAndBelowBooks.aboveBook.mybook_id,
+                mybook_id: record.aboveAndBelowBooks.aboveBook.mybook_id,
                 seqType: tableType === "study" ? "StudyLike" : "WriteLike",
                 seq:
                   tableType === "study"
-                    ? _record.seqInStudyLike
-                    : _record.seqInWriteLike,
+                    ? record.seqInStudyLike
+                    : record.seqInWriteLike,
               },
               {
-                mybook_id: _record._id,
+                mybook_id: record._id,
                 seqType: tableType === "study" ? "StudyLike" : "WriteLike",
                 seq:
                   tableType === "study"
-                    ? _record.aboveAndBelowBooks.aboveBook.seqInStudyLike
-                    : _record.aboveAndBelowBooks.aboveBook.seqInWriteLike,
+                    ? record.aboveAndBelowBooks.aboveBook.seqInStudyLike
+                    : record.aboveAndBelowBooks.aboveBook.seqInWriteLike,
               },
             ];
             positionBooks(forModifySeq);
@@ -85,7 +85,7 @@ const FavoriteBookOrderButton = ({
           <ArrowUpOutlined />
         </div>
       )}
-      {_record.isLastBook ? (
+      {record.isLastBook ? (
         <div
           className="LastBookCustom"
           style={{
@@ -104,20 +104,20 @@ const FavoriteBookOrderButton = ({
           onClick={() => {
             const forModifySeq = [
               {
-                mybook_id: _record.aboveAndBelowBooks.belowBook.mybook_id,
+                mybook_id: record.aboveAndBelowBooks.belowBook.mybook_id,
                 seqType: tableType === "study" ? "StudyLike" : "WriteLike",
                 seq:
                   tableType === "study"
-                    ? _record.seqInStudyLike
-                    : _record.seqInWriteLike,
+                    ? record.seqInStudyLike
+                    : record.seqInWriteLike,
               },
               {
-                mybook_id: _record._id,
+                mybook_id: record._id,
                 seqType: tableType === "study" ? "StudyLike" : "WriteLike",
                 seq:
                   tableType === "study"
-                    ? _record.aboveAndBelowBooks.belowBook.seqInStudyLike
-                    : _record.aboveAndBelowBooks.belowBook.seqInWriteLike,
+                    ? record.aboveAndBelowBooks.belowBook.seqInStudyLike
+                    : record.aboveAndBelowBooks.belowBook.seqInWriteLike,
               },
             ];
             positionBooks(forModifySeq);

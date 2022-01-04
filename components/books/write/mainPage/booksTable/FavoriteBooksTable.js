@@ -20,6 +20,7 @@ import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
 import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
+import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
 
 const FavoriteBooksTable = forwardRef(
   ({ category, myBook, isFoldedMenu, changeFoldedMenu }, ref) => {
@@ -170,81 +171,14 @@ const FavoriteBooksTable = forwardRef(
         align: "right",
         width: 20,
         render: (value, _record) => (
-          <div
-            className="BookFloatingMenuWrapper"
-            style={{
-              position: "relative",
-            }}
-          >
-            <div
-              style={{
-                width: "100%",
-                cursor: "pointer",
-                display: "flex",
-                justifyContent: "end",
-              }}
-              onClick={() => {
-                changeFoldedMenu(`favorite${_record._id}`);
-              }}
-            >
-              <div
-                className="PullCustomCircleButton"
-                style={{
-                  width: "44px",
-                  height: "3rem",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <DoubleLeftOutlined />
-              </div>
-            </div>
-
-            <StyledBookSettingBarDrawer
-              booktype={_record.type}
-              destroyOnClose={true}
-              className="BookDrawerMenu"
-              placement="right"
-              width={"250px"}
-              closable={false}
-              mask={false}
-              visible={`favorite${_record._id}` === isFoldedMenu}
-              getContainer={false}
-            >
-              <Space size={3}>
-                <FavoriteBookOrderButton
-                  _record={_record}
-                  changeFoldedMenu={changeFoldedMenu}
-                  tableType="write"
-                  isPc
-                />{" "}
-                |
-                <FavoriteBook
-                  record={_record}
-                  changeFoldedMenu={changeFoldedMenu}
-                  tableType="write"
-                  isPc
-                />{" "}
-                |
-                <HideOrShowButton
-                  record={_record}
-                  changeFoldedMenu={changeFoldedMenu}
-                  isPc
-                />{" "}
-                |
-                <MoveToBookSetting mybook_id={_record._id} isPc />
-              </Space>
-              <div
-                className="PushCustomCircleButton"
-                onClick={() => {
-                  changeFoldedMenu("");
-                }}
-              >
-                <DoubleRightOutlined />
-              </div>
-            </StyledBookSettingBarDrawer>
-          </div>
+          <SlidingMenuForBook
+            record={_record}
+            isFoldedMenu={isFoldedMenu}
+            changeFoldedMenu={changeFoldedMenu}
+            isPc
+            favorite
+            tableType="write"
+          />
         ),
       },
     ];

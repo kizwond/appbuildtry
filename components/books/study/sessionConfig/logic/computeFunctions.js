@@ -254,7 +254,7 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
         userFlagOriginal: card.content.userFlag,
         userFlagPrev: card.content.userFlag,
         studyTimesInSession: 0,
-        studyHourInSession: new Date(0),
+        studyHourInSession: 0,
         needStudyTimeTmp: null,
         levelAcquisitionOfNotCompleted: 0,
       },

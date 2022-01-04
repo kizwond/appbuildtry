@@ -29,6 +29,7 @@ import MoveToBookSetting from "../../../common/MoveToBookSetting";
 import moment from "moment";
 import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
+import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
 
 const StudyBooksTable = ({
   category,
@@ -319,79 +320,13 @@ const StudyBooksTable = ({
       render: (value, _record, index) => {
         const obj = {
           children: (
-            <div
-              style={{
-                position: "relative",
-              }}
-            >
-              <div
-                style={{
-                  width: "100%",
-                  cursor: "pointer",
-                  display: "flex",
-                  justifyContent: "end",
-                }}
-                onClick={() => {
-                  changeFoldedMenu(`table${_record._id}`);
-                }}
-              >
-                <div
-                  className="PullCustomCircleButton"
-                  style={{
-                    width: "44px",
-                    height: "3rem",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <DoubleLeftOutlined />
-                </div>
-              </div>
-
-              <StyledBookSettingBarDrawer
-                booktype={_record.type}
-                destroyOnClose={true}
-                className="BookDrawerMenu"
-                placement="right"
-                width={"250px"}
-                closable={false}
-                mask={false}
-                visible={`table${_record._id}` === isFoldedMenu}
-                getContainer={false}
-              >
-                <Space size={3}>
-                  <BookOrderButton
-                    _record={_record}
-                    changeFoldedMenu={changeFoldedMenu}
-                    isPc
-                  />{" "}
-                  |
-                  <FavoriteBook
-                    record={_record}
-                    changeFoldedMenu={changeFoldedMenu}
-                    tableType="study"
-                    isPc
-                  />{" "}
-                  |
-                  <HideOrShowButton
-                    record={_record}
-                    changeFoldedMenu={changeFoldedMenu}
-                    isPc
-                  />{" "}
-                  |
-                  <MoveToBookSetting mybook_id={_record._id} isPc />
-                </Space>
-                <div
-                  className="PushCustomCircleButton"
-                  onClick={() => {
-                    changeFoldedMenu("");
-                  }}
-                >
-                  <DoubleRightOutlined />
-                </div>
-              </StyledBookSettingBarDrawer>
-            </div>
+            <SlidingMenuForBook
+              record={_record}
+              isFoldedMenu={isFoldedMenu}
+              changeFoldedMenu={changeFoldedMenu}
+              isPc
+              tableType="study"
+            />
           ),
           props: {},
         };

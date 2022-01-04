@@ -291,85 +291,12 @@ const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
         const obj = {
           children: (
             <SlidingMenuForBook
-              _record={_record}
+              record={_record}
               isFoldedMenu={isFoldedMenu}
               changeFoldedMenu={changeFoldedMenu}
               isPc
+              tableType="write"
             />
-
-            // <div
-            //   style={{
-            //     position: "relative",
-            //   }}
-            // >
-            //   <div
-            //     style={{
-            //       width: "100%",
-            //       cursor: "pointer",
-            //       display: "flex",
-            //       justifyContent: "end",
-            //     }}
-            //     onClick={() => {
-            //       changeFoldedMenu(`table${_record._id}`);
-            //     }}
-            //   >
-            //     <div
-            //       className="PullCustomCircleButton"
-            //       style={{
-            //         width: "44px",
-            //         height: "3rem",
-            //         display: "flex",
-            //         justifyContent: "center",
-            //         alignItems: "center",
-            //       }}
-            //     >
-            //       <DoubleLeftOutlined />
-            //     </div>
-            //   </div>
-
-            //   <StyledBookSettingBarDrawer
-            //     booktype={_record.type}
-            //     destroyOnClose={true}
-            //     className="BookDrawerMenu"
-            //     placement="right"
-            //     width={"250px"}
-            //     closable={false}
-            //     mask={false}
-            //     visible={`table${_record._id}` === isFoldedMenu}
-            //     getContainer={false}
-            //   >
-            //     <Space size={3}>
-            //       <BookOrderButton
-            //         _record={_record}
-            //         changeFoldedMenu={changeFoldedMenu}
-            //         isPc
-            //       />{" "}
-            //       |
-            //       <FavoriteBook
-            //         record={_record}
-            //         changeFoldedMenu={changeFoldedMenu}
-            //         tableType="write"
-            //         isPc
-            //       />{" "}
-            //       |
-            //       <HideOrShowButton
-            //         record={_record}
-            //         changeFoldedMenu={changeFoldedMenu}
-            //         isPc
-            //       />{" "}
-            //       |
-            //       <MoveToBookSetting mybook_id={_record._id} isPc />
-            //     </Space>
-            //     <div
-            //       className="PushCustomCircleButton"
-            //       onClick={() => {
-            //         changeFoldedMenu("");
-            //       }}
-            //     >
-            //       <DoubleRightOutlined />
-            //     </div>
-            //   </StyledBookSettingBarDrawer>
-            // </div>
           ),
           props: {},
         };

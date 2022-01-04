@@ -6,7 +6,7 @@ import { MUTATION_CHANGE_BOOK_ORDER } from "../../../graphql/mutation/myBook";
 import { Space } from "antd";
 import { ArrowUpOutlined, ArrowDownOutlined } from "@ant-design/icons";
 
-const BookOrderButton = ({ _record, changeFoldedMenu, isPc }) => {
+const BookOrderButton = ({ record, changeFoldedMenu, isPc }) => {
   const router = useRouter();
   let timer;
   const [rePosition] = useMutation(MUTATION_CHANGE_BOOK_ORDER, {
@@ -39,7 +39,7 @@ const BookOrderButton = ({ _record, changeFoldedMenu, isPc }) => {
 
   return (
     <Space size={2}>
-      {_record.isFirstBook || _record.hideOrShow === "hide" ? (
+      {record.isFirstBook || record.hideOrShow === "hide" ? (
         <div
           className="FirstBookCustom"
           style={{
@@ -58,14 +58,14 @@ const BookOrderButton = ({ _record, changeFoldedMenu, isPc }) => {
           onClick={() => {
             const forModifySeq = [
               {
-                mybook_id: _record.aboveAndBelowBooks.aboveBook.mybook_id,
+                mybook_id: record.aboveAndBelowBooks.aboveBook.mybook_id,
                 seqType: "Category",
-                seq: _record.seqInCategory,
+                seq: record.seqInCategory,
               },
               {
-                mybook_id: _record._id,
+                mybook_id: record._id,
                 seqType: "Category",
-                seq: _record.aboveAndBelowBooks.aboveBook.seqInCategory,
+                seq: record.aboveAndBelowBooks.aboveBook.seqInCategory,
               },
             ];
             positionBooks(forModifySeq);
@@ -74,7 +74,7 @@ const BookOrderButton = ({ _record, changeFoldedMenu, isPc }) => {
           <ArrowUpOutlined />
         </div>
       )}
-      {_record.isLastBook || _record.hideOrShow === "hide" ? (
+      {record.isLastBook || record.hideOrShow === "hide" ? (
         <div
           className="LastBookCustom"
           style={{
@@ -93,14 +93,14 @@ const BookOrderButton = ({ _record, changeFoldedMenu, isPc }) => {
           onClick={() => {
             const forModifySeq = [
               {
-                mybook_id: _record.aboveAndBelowBooks.belowBook.mybook_id,
+                mybook_id: record.aboveAndBelowBooks.belowBook.mybook_id,
                 seqType: "Category",
-                seq: _record.seqInCategory,
+                seq: record.seqInCategory,
               },
               {
-                mybook_id: _record._id,
+                mybook_id: record._id,
                 seqType: "Category",
-                seq: _record.aboveAndBelowBooks.belowBook.seqInCategory,
+                seq: record.aboveAndBelowBooks.belowBook.seqInCategory,
               },
             ];
             positionBooks(forModifySeq);

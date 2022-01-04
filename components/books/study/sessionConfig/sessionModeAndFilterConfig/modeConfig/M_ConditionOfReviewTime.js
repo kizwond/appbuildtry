@@ -111,9 +111,7 @@ const StyledRadio = styled(Radio)`
     padding-left: 3px;
     align-self: center;
   }
-`;
-const StyledRow = styled(Row)`
-  & .ant-radio-wrapper {
+  &.ant-radio-wrapper {
     margin-right: 2px;
   }
 `;

@@ -259,7 +259,7 @@ const StudySessionConfig = (props) => {
             </div>
           </div>
 
-          <StyledRow wrap={false}>
+          <StyledRow>
             <StyledForTabsOfBooks flex="auto" className="BookTable">
               <M_TabsOfBooksForInfromationTable
                 bookData={bookData}

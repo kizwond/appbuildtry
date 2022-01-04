@@ -8,10 +8,14 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   const [displayColorPicker1, setDisplayColorPicker1] = useState(false);
   const [displayColorPicker2, setDisplayColorPicker2] = useState(false);
   const [displayColorPicker3, setDisplayColorPicker3] = useState(false);
+  const [displayColorPicker4, setDisplayColorPicker4] = useState(false);
+  const [displayColorPicker5, setDisplayColorPicker5] = useState(false);
 
   const [color1, setColor1] = useState();
   const [color2, setColor2] = useState();
   const [color3, setColor3] = useState();
+  const [color4, setColor4] = useState();
+  const [color5, setColor5] = useState();
 
   const [cardTypeSetId, setCardTypeSetId] = useState();
 
@@ -19,11 +23,9 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
     console.log("clicked handleclick 1");
     setDisplayColorPicker1(!displayColorPicker1);
   };
-
   const handleClose1 = () => {
     setDisplayColorPicker1(false);
   };
-
   const type1ColorHandler = (color) => {
     setColor1(color.hex);
   };
@@ -31,11 +33,9 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   const handleClick2 = () => {
     setDisplayColorPicker2(!displayColorPicker2);
   };
-
   const handleClose2 = () => {
     setDisplayColorPicker2(false);
   };
-
   const type2ColorHandler = (color) => {
     setColor2(color.hex);
   };
@@ -43,20 +43,40 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   const handleClick3 = () => {
     setDisplayColorPicker3(!displayColorPicker3);
   };
-
   const handleClose3 = () => {
     setDisplayColorPicker3(false);
   };
-
   const type3ColorHandler = (color) => {
     setColor3(color.hex);
   };
 
+  const handleClick4 = () => {
+    setDisplayColorPicker4(!displayColorPicker4);
+  };
+  const handleClose4 = () => {
+    setDisplayColorPicker4(false);
+  };
+  const type4ColorHandler = (color) => {
+    setColor4(color.hex);
+  };
+
+  const handleClick5 = () => {
+    setDisplayColorPicker5(!displayColorPicker5);
+  };
+  const handleClose5 = () => {
+    setDisplayColorPicker5(false);
+  };
+  const type5ColorHandler = (color) => {
+    setColor5(color.hex);
+  };
+
   const handleSubmit = () => {
     var sendValue = [
-      { toolType: null, color: color1 },
-      { toolType: null, color: color2 },
-      { toolType: null, color: color3 },
+      { attr1: null, attr2: null, color: color1 },
+      { attr1: null, attr2: null, color: color2 },
+      { attr1: null, attr2: null, color: color3 },
+      { attr1: null, attr2: null, color: color4 },
+      { attr1: null, attr2: null, color: color5 },
     ];
     updatestudytool(sendValue);
   };
@@ -68,6 +88,8 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
       setColor1(hiddenSetting[0].color);
       setColor2(hiddenSetting[1].color);
       setColor3(hiddenSetting[2].color);
+      setColor4(hiddenSetting[3].color);
+      setColor5(hiddenSetting[4].color);
     }
   }, [cardTypeSets]);
 
@@ -84,8 +106,8 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
         variables: {
           forUpdateStudyTool: {
             cardtypeset_id: cardTypeSetId,
-            studyToolType: "hidden",
-            studyToolDetailConfig: data,
+            effectType: "hidden",
+            detailsByEffect: data,
           },
         },
       });
@@ -126,6 +148,28 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           <div style={popover}>
             <div style={cover} onClick={handleClose3} />
             <CompactPicker color={color3} onChange={type3ColorHandler} />
+          </div>
+        ) : null}
+
+        <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4 }}>
+          Color
+        </Button>
+        <div>가리기 <span style={{ display: "inline-block", backgroundColor: color4, color: color4 }}>예시</span> 입니다~~~</div>
+        {displayColorPicker4 ? (
+          <div style={popover}>
+            <div style={cover} onClick={handleClose4} />
+            <CompactPicker color={color4} onChange={type4ColorHandler} />
+          </div>
+        ) : null}
+
+        <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5 }}>
+          Color
+        </Button>
+        <div>가리기 <span style={{ display: "inline-block", backgroundColor: color5, color: color5 }}>예시</span> 입니다~~~</div>
+        {displayColorPicker5 ? (
+          <div style={popover}>
+            <div style={cover} onClick={handleClose5} />
+            <CompactPicker color={color5} onChange={type5ColorHandler} />
           </div>
         ) : null}
       </Space>

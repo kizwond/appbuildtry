@@ -132,15 +132,18 @@ export const GET_CARDTYPESET = gql`
         }
         studyTool {
           hidden {
-            toolType
+            attr1
+            attr2
             color
           }
           highlight {
-            toolType
+            attr1
+            attr2
             color
           }
           underline {
-            toolType
+            attr1
+            attr2
             color
           }
         }

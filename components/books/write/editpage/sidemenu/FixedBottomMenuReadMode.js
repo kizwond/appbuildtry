@@ -38,7 +38,7 @@ const FloatingMenu = ({
   hide,
   underline,
   highlight,
-  updateStudyToolApply
+  updateStudyToolApply,
 }) => {
   const [visible, setVisible] = useState(false);
   const handleVisibleChange = () => {
@@ -74,13 +74,17 @@ const FloatingMenu = ({
         var marginValue = 0;
       } else if (index === 1) {
         marginValue = 30;
-      } else {
+      } else if (index === 2) {
         marginValue = 60;
+      } else if (index === 3) {
+        marginValue = 90;
+      } else if (index === 4) {
+        marginValue = 120;
       }
       return (
         <>
           <div
-            onClick={() => hide(item.color)}
+            onClick={() => hide(index)}
             style={{
               position: "absolute",
               top: -35,
@@ -101,13 +105,17 @@ const FloatingMenu = ({
         var marginValue = 0;
       } else if (index === 1) {
         marginValue = 30;
-      } else {
+      } else if (index === 2) {
         marginValue = 60;
+      } else if (index === 3) {
+        marginValue = 90;
+      } else if (index === 4) {
+        marginValue = 120;
       }
       return (
         <>
           <div
-            onClick={() => underline(item.color, item.toolType)}
+            onClick={() => underline(index)}
             style={{
               position: "absolute",
               top: -35,
@@ -119,7 +127,7 @@ const FloatingMenu = ({
               backgroundColor: item.color,
             }}
           >
-            {item.toolType}px
+            {item.attr1}px
           </div>
         </>
       );
@@ -130,13 +138,17 @@ const FloatingMenu = ({
         var marginValue = 0;
       } else if (index === 1) {
         marginValue = 30;
-      } else {
+      } else if (index === 2) {
         marginValue = 60;
+      } else if (index === 3) {
+        marginValue = 90;
+      } else if (index === 4) {
+        marginValue = 120;
       }
       return (
         <>
           <div
-            onClick={() => highlight(item.color, item.toolType)}
+            onClick={() => highlight(index)}
             style={{
               position: "absolute",
               top: -35,
@@ -148,7 +160,7 @@ const FloatingMenu = ({
               backgroundColor: item.color,
             }}
           >
-            {index+1}
+            {index + 1}
           </div>
         </>
       );
@@ -220,8 +232,8 @@ const FloatingMenu = ({
                     <ReadOutlined style={{ fontSize: "1.3rem" }} />
                     학습설정
                   </div>
-                  <div style={{  display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <StudyToolSetting cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply}/>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <StudyToolSetting cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} />
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <SoundOutlined style={{ fontSize: "1.3rem" }} />

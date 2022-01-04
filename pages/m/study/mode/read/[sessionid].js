@@ -29,6 +29,7 @@ import {
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
 import { Button, Modal, Space, Tag } from "antd";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
+import { elementType } from "prop-types";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -95,7 +96,7 @@ const ReadMode = () => {
     setCardTypeSets(data.cardtypeset_getbymybookids.cardtypesets);
   }
 
-  function updateStudyToolApply(data){
+  function updateStudyToolApply(data) {
     setCardTypeSets(data);
   }
 
@@ -282,7 +283,7 @@ const ReadMode = () => {
     }
   };
 
-  const hide = (color) => {
+  const hide = (toolType) => {
     const selectionText = sessionStorage.getItem("selectionText");
     console.log(selectionText);
     if (selectionText === "") {
@@ -294,17 +295,16 @@ const ReadMode = () => {
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
     // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
     const newHiddenValue = {
-      color: color,
       targetWord: selectionText,
-      toolType: null,
+      toolType: toolType,
     };
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
     cardListStudying[needToBeChangedIndex].content.hidden.push(newHiddenValue);
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
-    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null, color);
-    console.log(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null, color);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null);
+    console.log(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null);
     // var elem = document.getElementById(parentIdOfSelection);
 
     // elem.innerHTML = replaced;
@@ -312,7 +312,7 @@ const ReadMode = () => {
     sessionStorage.removeItem("selectionText");
   };
 
-  const underline = (color, toolType) => {
+  const underline = (toolType) => {
     const selectionText = sessionStorage.getItem("selectionText");
     console.log(selectionText);
     if (selectionText === "") {
@@ -324,7 +324,6 @@ const ReadMode = () => {
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
     // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
     const newUnderlineValue = {
-      color: color,
       targetWord: selectionText,
       toolType: toolType,
     };
@@ -333,8 +332,8 @@ const ReadMode = () => {
     cardListStudying[needToBeChangedIndex].content.underline.push(newUnderlineValue);
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
-    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType, color);
-    console.log(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType, color);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType);
+    console.log(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType);
     // var elem = document.getElementById(parentIdOfSelection);
 
     // elem.innerHTML = replaced;
@@ -342,7 +341,7 @@ const ReadMode = () => {
     sessionStorage.removeItem("selectionText");
   };
 
-  const highlight = (color, toolType) => {
+  const highlight = (toolType) => {
     const selectionText = sessionStorage.getItem("selectionText");
     console.log(selectionText);
     if (selectionText === "") {
@@ -354,7 +353,6 @@ const ReadMode = () => {
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
     // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
     const newHighlightValue = {
-      color: color,
       targetWord: selectionText,
       toolType: toolType,
     };
@@ -363,8 +361,8 @@ const ReadMode = () => {
     cardListStudying[needToBeChangedIndex].content.highlight.push(newHighlightValue);
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
-    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType, color);
-    console.log(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType, color);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType);
+    console.log(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType);
     // var elem = document.getElementById(parentIdOfSelection);
 
     // elem.innerHTML = replaced;
@@ -1134,7 +1132,7 @@ const ReadMode = () => {
                                 }}
                               >
                                 {/* <FroalaEditorView model={item} /> */}
-                                <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} />
+                                <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                                 {/* {content.content.hidden.length > 0 || content.content.underline.length > 0 || content.content.highlight.length > 0 ? (
                                   <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} />
                                 ) : (
@@ -2109,7 +2107,7 @@ const ReadMode = () => {
   }
 
   const cardsetAddEffect = useCallback(
-    async (cardset_id, card_id, effectType, targetWord, toolType, color) => {
+    async (cardset_id, card_id, effectType, targetWord, toolType) => {
       try {
         await cardset_addEffect({
           variables: {
@@ -2118,8 +2116,7 @@ const ReadMode = () => {
               card_id,
               effectType,
               targetWord,
-              toolType,
-              color,
+              toolType: Number(toolType)
             },
           },
         });
@@ -2223,32 +2220,38 @@ const ReadMode = () => {
   );
 };
 
-const Alter = ({ content, item, index, getSelectionText2 }) => {
+const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
+  console.log(content);
+  console.log(cardTypeSets);
   var altered = item;
   if (content.content.hidden.length > 0) {
     content.content.hidden.map((element) => {
-      altered = altered.replace(element.targetWord, `<span style="background-color:${element.color}; color:${element.color}">${element.targetWord}</span>`);
+      const color = cardTypeSets[0].studyTool.hidden[element.toolType].color;
+      altered = altered.replace(element.targetWord, `<span style="background-color:${color}; color:${color}">${element.targetWord}</span>`);
     });
   }
   if (content.content.underline.length > 0) {
     content.content.underline.map((element) => {
+      const color = cardTypeSets[0].studyTool.underline[element.toolType].color;
+      const thickness = cardTypeSets[0].studyTool.underline[element.toolType].attr1;
+      const lineType = cardTypeSets[0].studyTool.underline[element.toolType].attr2;
       // console.log(element);
-      altered = altered.replace(element.targetWord, `<span style="display:inline-block; border-bottom: ${element.toolType}px solid ${element.color}">${element.targetWord}</span>`);
+      altered = altered.replace(element.targetWord, `<span style="display:inline-block; border-bottom: ${thickness}px ${lineType} ${color}">${element.targetWord}</span>`);
     });
   }
 
   if (content.content.highlight.length > 0) {
     content.content.highlight.map((element) => {
-      console.log(element);
-      if (element.toolType === "brush1" || element.toolType === "brush3") {
+      const color = cardTypeSets[0].studyTool.highlight[element.toolType].color;
+      if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
         altered = altered.replace(
           element.targetWord,
-          `<span class="${element.toolType}" style="display:inline-block; --bubble-color:${element.color}">${element.targetWord}</span>`
+          `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}">${element.targetWord}</span>`
         );
-      } else if (element.toolType === "brush2") {
+      } else if (element.toolType === 2) {
         altered = altered.replace(
           element.targetWord,
-          `<span class="${element.toolType}" style="display:inline-block; background-color:${element.color}">${element.targetWord}</span>`
+          `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`
         );
       }
     });

@@ -33,7 +33,6 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   const [cardTypeSetId, setCardTypeSetId] = useState();
 
   const handleClick1 = () => {
-    console.log("clicked handleclick 1");
     setDisplayColorPicker1(!displayColorPicker1);
   };
   const handleClose1 = () => {
@@ -41,6 +40,7 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   };
   const type1ColorHandler = (color) => {
     setColor1(color.hex);
+    setDisplayColorPicker1(false);
   };
 
   const handleClick2 = () => {
@@ -51,6 +51,7 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   };
   const type2ColorHandler = (color) => {
     setColor2(color.hex);
+    setDisplayColorPicker2(false);
   };
 
   const handleClick3 = () => {
@@ -61,6 +62,7 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   };
   const type3ColorHandler = (color) => {
     setColor3(color.hex);
+    setDisplayColorPicker3(false);
   };
 
   const handleClick4 = () => {
@@ -71,6 +73,7 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   };
   const type4ColorHandler = (color) => {
     setColor4(color.hex);
+    setDisplayColorPicker4(false);
   };
 
   const handleClick5 = () => {
@@ -81,6 +84,7 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   };
   const type5ColorHandler = (color) => {
     setColor5(color.hex);
+    setDisplayColorPicker5(false);
   };
 
   const thicknessHandler1 = (e) => {

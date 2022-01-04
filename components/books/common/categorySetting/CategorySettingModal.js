@@ -243,6 +243,7 @@ const CategorySettingModal = ({
                   <Input
                     ref={(ref) => (inputRefs.current[_record.key] = ref)}
                     size="small"
+                    autoComplete="off"
                     value={cateName}
                     onChange={(e) => {
                       setCateName(e.target.value);

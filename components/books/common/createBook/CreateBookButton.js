@@ -25,6 +25,7 @@ const CreateBookButton = ({ category, isPc }) => {
           visible={visible}
           changeVisible={changeVisible}
           category={category}
+          isPc={isPc}
         />
       )}
     </>

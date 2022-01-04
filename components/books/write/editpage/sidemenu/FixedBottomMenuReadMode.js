@@ -38,6 +38,7 @@ const FloatingMenu = ({
   hide,
   underline,
   highlight,
+  updateStudyToolApply
 }) => {
   const [visible, setVisible] = useState(false);
   const handleVisibleChange = () => {
@@ -147,7 +148,7 @@ const FloatingMenu = ({
               backgroundColor: item.color,
             }}
           >
-            {item.toolType}px
+            {index+1}
           </div>
         </>
       );
@@ -220,7 +221,7 @@ const FloatingMenu = ({
                     학습설정
                   </div>
                   <div style={{  display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <StudyToolSetting cardTypeSets={cardTypeSets}/>
+                    <StudyToolSetting cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply}/>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <SoundOutlined style={{ fontSize: "1.3rem" }} />

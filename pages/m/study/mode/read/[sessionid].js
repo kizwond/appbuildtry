@@ -95,6 +95,10 @@ const ReadMode = () => {
     setCardTypeSets(data.cardtypeset_getbymybookids.cardtypesets);
   }
 
+  function updateStudyToolApply(data){
+    setCardTypeSets(data);
+  }
+
   //userflag update
   const [cardset_updateUserFlag] = useMutation(MUTATION_UPDATE_USER_FLAG, {
     onCompleted: afterupdateuserflag,
@@ -203,18 +207,18 @@ const ReadMode = () => {
     console.log("hello");
     var text = null;
     var textRange = null;
-    console.log(typeof document.selection)
-    console.log(document.selection)
+    console.log(typeof document.selection);
+    console.log(document.selection);
     if (document.getSelection) {
       text = document.getSelection().toString();
       textRange = document.getSelection();
       sessionStorage.setItem("selectionText", text);
-      console.log("case1", text)
+      console.log("case1", text);
     } else if (typeof document.selection != "undefined") {
       text = document.selection;
-      console.log("case2",text);
+      console.log("case2", text);
     }
-    console.log("end")
+    console.log("end");
 
     if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
@@ -2177,34 +2181,45 @@ const ReadMode = () => {
   // }
 
   return (
-    <StudyLayout>
-      <div
-        style={{
-          width: "95%",
-          margin: "auto",
-          marginBottom: "120px",
-          marginTop: "50px",
-        }}
-      >
-        <div id="contents">{contents}</div>
-      </div>
-      {data && (
-        <>
-          <FixedBottomMenuReadMode
-            hide={hide}
-            underline={underline}
-            highlight={highlight}
-            underlineToggle={underlineToggle}
-            hiddenToggle={hiddenToggle}
-            highlightToggle={highlightToggle}
-            cardTypeSets={cardTypeSets}
-            hiddenToggleHandler={hiddenToggleHandler}
-            underlineToggleHandler={underlineToggleHandler}
-            highlightToggleHandler={highlightToggleHandler}
-          />
-        </>
-      )}
-    </StudyLayout>
+    <>
+      <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{ display: "none" }}>
+        <defs>
+          <filter id="marker-shape">
+            <feTurbulence type="fractalNoise" baseFrequency="0 0.15" numOctaves="1" result="warp" />
+            <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="30" in="SourceGraphic" in2="warp" />
+          </filter>
+        </defs>
+      </svg>
+      <StudyLayout>
+        <div
+          style={{
+            width: "95%",
+            margin: "auto",
+            marginBottom: "120px",
+            marginTop: "50px",
+          }}
+        >
+          <div id="contents">{contents}</div>
+        </div>
+        {data && (
+          <>
+            <FixedBottomMenuReadMode
+              hide={hide}
+              underline={underline}
+              highlight={highlight}
+              underlineToggle={underlineToggle}
+              hiddenToggle={hiddenToggle}
+              highlightToggle={highlightToggle}
+              cardTypeSets={cardTypeSets}
+              hiddenToggleHandler={hiddenToggleHandler}
+              underlineToggleHandler={underlineToggleHandler}
+              highlightToggleHandler={highlightToggleHandler}
+              updateStudyToolApply={updateStudyToolApply}
+            />
+          </>
+        )}
+      </StudyLayout>
+    </>
   );
 };
 
@@ -2224,10 +2239,13 @@ const Alter = ({ content, item, index, getSelectionText2 }) => {
 
   if (content.content.highlight.length > 0) {
     content.content.highlight.map((element) => {
-      // console.log(element);
-      if (element.toolType === "brush1") {
-        altered = altered.replace(element.targetWord, `<span class="${element.toolType}" style="display:inline-block; --bubble-color:${element.color}">${element.targetWord}</span>`);
-      } else {
+      console.log(element);
+      if (element.toolType === "brush1" || element.toolType === "brush3") {
+        altered = altered.replace(
+          element.targetWord,
+          `<span class="${element.toolType}" style="display:inline-block; --bubble-color:${element.color}">${element.targetWord}</span>`
+        );
+      } else if (element.toolType === "brush2") {
         altered = altered.replace(
           element.targetWord,
           `<span class="${element.toolType}" style="display:inline-block; background-color:${element.color}">${element.targetWord}</span>`
@@ -2240,7 +2258,7 @@ const Alter = ({ content, item, index, getSelectionText2 }) => {
       <div
         id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
         dangerouslySetInnerHTML={{ __html: altered }}
-        onContextMenu={getSelectionText2}      
+        onContextMenu={getSelectionText2}
       ></div>
     </>
   );

@@ -27,7 +27,7 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
-import { Button, Modal, Space, Tag } from "antd";
+import { Button, Modal, Space, Tag,message } from "antd";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 import { elementType } from "prop-types";
 
@@ -376,6 +376,7 @@ const ReadMode = () => {
     setUnderlineToggle(false);
     setHighlightToggle(false);
     if (hiddenToggle === false) {
+      message.destroy()
       info();
     }
   };
@@ -386,6 +387,7 @@ const ReadMode = () => {
     setHiddenToggle(false);
     setHighlightToggle(false);
     if (underlineToggle === false) {
+      message.destroy()
       info();
     }
   };
@@ -396,6 +398,7 @@ const ReadMode = () => {
     setHiddenToggle(false);
     setUnderlineToggle(false);
     if (highlightToggle === false) {
+      message.destroy()
       info();
     }
   };

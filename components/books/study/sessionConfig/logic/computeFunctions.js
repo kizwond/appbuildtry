@@ -257,6 +257,7 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
         studyHourInSession: 0,
         needStudyTimeTmp: null,
         levelAcquisitionOfNotCompleted: 0,
+        isUpdated: false,
       },
     };
   });

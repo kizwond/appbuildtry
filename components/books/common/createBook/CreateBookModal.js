@@ -1,3 +1,4 @@
+import { CloseOutlined } from "@ant-design/icons";
 import { gql, useMutation } from "@apollo/client";
 import { Modal, Form, Input, Select } from "antd";
 import { useRouter } from "next/router";
@@ -107,8 +108,8 @@ const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
           size: "small",
           onClick: () => changeVisible(false),
         }}
-        closeIcon={}
-        mask={false} // 모달 바깥 전체화면 덮기 기능
+        closeIcon={<CloseOutlined onClick={() => changeVisible(false)} />}
+        mask={true} // 모달 바깥 전체화면 덮기 기능
         okText="새 책 만들기 완료"
         confirmLoading={loading}
         is_pc={(isPc || false).toString()}

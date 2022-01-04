@@ -93,9 +93,8 @@ const StudyResult = () => {
       currentLevel: card.studyStatus.levelCurrent,
       studiedCardCounter: card.studyStatus.currentLevStudyTimes,
       elasedTimeOnStudyingCard:
-        Math.round(
-          (Date.parse(card.studyStatus.currentLevElapsedTime) / 3600000) * 100
-        ) / 100,
+        Math.round((card.studyStatus.currentLevElapsedHour / 3600000) * 100) /
+        100,
     };
   };
   return (

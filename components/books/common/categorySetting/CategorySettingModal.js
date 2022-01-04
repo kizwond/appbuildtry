@@ -18,6 +18,8 @@ import {
   DeleteOutlined,
   ArrowDownOutlined,
   ArrowUpOutlined,
+  CloseOutlined,
+  AppstoreAddOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
@@ -205,12 +207,10 @@ const CategorySettingModal = ({
     }
   }
 
-  const dataSource = category.mybookcates
-    .filter((a) => a.isFixed !== "yes")
-    .map((_cate) => ({
-      ..._cate,
-      key: _cate._id,
-    }));
+  const dataSource = category.mybookcates.map((_cate) => ({
+    ..._cate,
+    key: _cate._id,
+  }));
 
   const columns = [
     {
@@ -294,7 +294,7 @@ const CategorySettingModal = ({
                     size="small"
                     type="text"
                     icon={<EditFilled />}
-                    disabled={editingCell !== "" || _record.isFixed === "yes"}
+                    disabled={editingCell !== ""}
                     onClick={() => {
                       setEditingCell(_record.key);
                       setCateName(_record.name);
@@ -366,6 +366,43 @@ const CategorySettingModal = ({
         return obj;
       },
     },
+    {
+      title: "추가",
+      key: "key",
+      dataIndex: "key",
+      width: 50,
+      align: "center",
+      render: (_value, _record, _index) => {
+        const obj = {
+          children: (
+            <Button
+              size="small"
+              type="text"
+              icon={<AppstoreAddOutlined />}
+              onClick={() => {
+                if (expandedRowKeys.includes(_value)) {
+                  setExpandedRowKeys([]);
+                  setCateName("");
+                }
+                if (!expandedRowKeys.includes(_value)) {
+                  setExpandedRowKeys([_value]);
+                  console.log(newCateRef);
+                }
+              }}
+            />
+          ),
+          props: {},
+        };
+
+        if (editingCell === _record.key) {
+          obj.props.colSpan = 0;
+        } else {
+          obj.props.colSpan = 1;
+        }
+
+        return obj;
+      },
+    },
 
     {
       title: "삭제",
@@ -379,10 +416,13 @@ const CategorySettingModal = ({
             <Button
               size="small"
               type="text"
+              disabled={dataSource.length === 1}
               icon={<DeleteOutlined />}
               onClick={() => {
-                setExpandedRowKeys([]);
-                deleteACategory({ mybookcate_id: _record._id });
+                if (dataSource.length !== 1) {
+                  setExpandedRowKeys([]);
+                  deleteACategory({ mybookcate_id: _record._id });
+                }
               }}
             />
           ),
@@ -405,8 +445,9 @@ const CategorySettingModal = ({
       <StyledModal
         visible={visible}
         title={<div className="ForPageMainTitle">카테고리 관리</div>}
-        onCancel={() => changeVisible(false)}
-        mask={false} // 모달 바깥 전체화면 덮기 기능
+        closeIcon={<CloseOutlined onClick={() => changeVisible(false)} />}
+        // onCancel={() => changeVisible(false)}
+        mask={true} // 모달 바깥 전체화면 덮기 기능
         footer={[
           <Button key="close" onClick={() => changeVisible(false)} size="small">
             닫기
@@ -519,17 +560,8 @@ const CategorySettingModal = ({
               </div>
             ),
             rowExpandable: (_record) => editingCell == "",
-            onExpand: (ex, re) => {
-              console.log({ expandedRowKeys });
-              if (!ex) {
-                setExpandedRowKeys([]);
-                setCateName("");
-              }
-              if (ex) {
-                setExpandedRowKeys([re.key]);
-                console.log(newCateRef);
-              }
-            },
+            expandIcon: () => null,
+            columnWidth: 0,
           }}
           pagination={false}
         />
@@ -564,14 +596,5 @@ const StyledModal = styled(Modal)`
   .ant-table table {
     // ColorPicker 잘리는 문제 해결
     overflow: unset;
-  }
-
-  & .ant-table-expand-icon-col {
-    width: 1px;
-  }
-  & .ant-table-row-expand-icon {
-    top: 20px;
-    left: -15px;
-    z-index: 9999;
   }
 `;

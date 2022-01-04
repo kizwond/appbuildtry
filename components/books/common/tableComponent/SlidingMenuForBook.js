@@ -9,6 +9,7 @@ import FavoriteBook from "../FavoriteBook";
 import FavoriteBookOrderButton from "../FavoriteBookOrderButton";
 import HideOrShowButton from "../HideOrShowButton";
 import MoveToBookSetting from "../MoveToBookSetting";
+import styled from "styled-components";
 
 const SlidingMenuForBook = ({
   record,
@@ -19,32 +20,14 @@ const SlidingMenuForBook = ({
   tableType,
 }) => {
   return (
-    <div
-      style={{
-        position: "relative",
-      }}
-    >
+    <StyledDiv>
       <div
-        style={{
-          width: "100%",
-          cursor: "pointer",
-          display: "flex",
-          justifyContent: "end",
-        }}
+        className="OpenMenuButton"
         onClick={() => {
           changeFoldedMenu(favorite ? `favorite:${record._id}` : record._id);
         }}
       >
-        <div
-          className="PullCustomCircleButton"
-          style={{
-            width: "44px",
-            height: "3rem",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <div className="PullCustomCircleButton">
           <DoubleLeftOutlined />
         </div>
       </div>
@@ -101,8 +84,25 @@ const SlidingMenuForBook = ({
           <DoubleRightOutlined />
         </div>
       </StyledBookSettingBarDrawer>
-    </div>
+    </StyledDiv>
   );
 };
 
 export default SlidingMenuForBook;
+
+const StyledDiv = styled.div`
+  position: relative;
+  & > .OpenMenuButton {
+    width: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: end;
+    & > .PullCustomCircleButton {
+      width: 44px;
+      height: 3rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+`;

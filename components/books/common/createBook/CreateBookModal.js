@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 import { MUTATION_CREATE_MY_BOOK } from "../../../../graphql/mutation/myBook";
 
-const CreateBookModal = ({ category, visible, changeVisible }) => {
+const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const { resetFields, getFieldInstance } = form;
@@ -90,9 +90,13 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
     <>
       <StyledModal
         visible={visible}
-        title={<div className="ForPageMainTitle">새 책 만들기</div>}
+        title={
+          <div className={isPc ? "ForPcPageMainTitle" : "ForPageMainTitle"}>
+            새 책 만들기
+          </div>
+        }
         cancelText="취소"
-        onCancel={() => changeVisible(false)}
+        // onCancel={() => changeVisible(false)}
         okButtonProps={{
           form: "category-editor-form",
           key: "submit",
@@ -101,19 +105,21 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
         }}
         cancelButtonProps={{
           size: "small",
+          onClick: () => changeVisible(false),
         }}
+        closeIcon={}
         mask={false} // 모달 바깥 전체화면 덮기 기능
         okText="새 책 만들기 완료"
         confirmLoading={loading}
+        is_pc={(isPc || false).toString()}
       >
         <Form
           form={form}
           id="category-editor-form"
+          autoComplete="off"
           requiredMark={false}
           initialValues={{
-            category: category.mybookcates.filter(
-              (cate) => cate.name === "(임시)"
-            )[0]._id,
+            category: category.mybookcates[0]._id,
           }}
           onFinish={(values) => {
             changeVisible(false);
@@ -127,6 +133,24 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
           }}
         >
           <Form.Item
+            name="category"
+            label="카테고리 선택"
+            rules={[
+              {
+                required: true,
+                message: "책 제목을 입력해주세요!",
+              },
+            ]}
+          >
+            <Select placeholder="카테고리를 선택해 주세요.">
+              {category.mybookcates.map((_category) => (
+                <Select.Option key={_category._id} value={_category._id}>
+                  {_category.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
             name="book_title"
             label="책제목"
             rules={[
@@ -137,24 +161,6 @@ const CreateBookModal = ({ category, visible, changeVisible }) => {
             ]}
           >
             <Input placeholder="책 제목" />
-          </Form.Item>
-          <Form.Item
-            name="category"
-            label="카테고리 선택"
-            rules={[
-              {
-                required: true,
-                message: "책 제목을 입력해주세요!",
-              },
-            ]}
-          >
-            <Select placeholder="카테고리를 선택해 주세요." size="small">
-              {category.mybookcates.map((_category) => (
-                <Select.Option key={_category._id} value={_category._id}>
-                  {_category.name}
-                </Select.Option>
-              ))}
-            </Select>
           </Form.Item>
         </Form>
       </StyledModal>
@@ -170,17 +176,29 @@ const StyledModal = styled(Modal)`
   & .ant-modal-body {
     padding: 8px 24px 8px 24px;
     & * {
-      font-size: 1rem;
+      font-size: ${({ is_pc }) => (is_pc === "true" ? "13px" : "1rem")};
     }
   }
 
   & .ant-form-item-label {
     padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    /* top: 7px;
+     */
+    line-height: 33px;
   }
   & .ant-form-item-label > label {
-    height: auto;
-    font-size: 0.9rem;
+    display: block;
+    /* height: auto; */
+    font-size: ${({ is_pc }) => (is_pc === "true" ? "13px" : "0.8rem")};
     font-weight: 500;
+    width: 90px;
+    text-align: right;
+  }
+
+  & .ant-form-item-label > label::after {
+    top: 1.5px;
   }
 
   & .ant-row.ant-form-item {

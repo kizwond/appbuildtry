@@ -259,7 +259,7 @@ export const StyledFlexSpaceBetween = styled.div`
   justify-content: space-between;
   align-items: center;
   .ForMainTitle {
-    font-size: 18px;
+    font-size: 25px;
     font-weight: 500;
   }
 `;

@@ -99,7 +99,7 @@ const StyledRowMaxWidth = styled.div`
     align-items: center;
   }
   .ForMainTitle {
-    font-size: 18px;
+    font-size: 25px;
     font-weight: 500;
   }
 

@@ -152,6 +152,7 @@ p {
   left: 70%;
   transform: translateX(-30%);
 }
+
 .M-Popover-NumberOfCards > .ant-popover-content > .ant-popover-inner {
   width: 110px;
 }
@@ -160,6 +161,16 @@ p {
   > .ant-popover-inner
   > .ant-popover-inner-content {
   font-size: 0.8rem;
+  padding: 8px 15px 8px 15px;
+}
+.Pc-Popover-NumberOfCards > .ant-popover-content > .ant-popover-inner {
+  width: 140px;
+}
+.Pc-Popover-NumberOfCards
+  > .ant-popover-content
+  > .ant-popover-inner
+  > .ant-popover-inner-content {
+  font-size: 12px;
   padding: 8px 15px 8px 15px;
 }
 

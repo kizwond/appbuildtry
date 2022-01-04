@@ -29,6 +29,7 @@ import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 import CreateBookButton from "../../../common/createBook/CreateBookButton";
 import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
+import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
 
 const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -207,6 +208,7 @@ const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
               value={_value}
               read={_record.read}
               flip={_record.flip}
+              isPc
             />
           ),
           props: {
@@ -282,87 +284,92 @@ const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
       },
     },
     {
-      key: "seqInCategory",
-      dataIndex: "seqInCategory",
       className: "TableLastColumn",
       align: "right",
       width: 20,
       render: (value, _record) => {
         const obj = {
           children: (
-            <div
-              style={{
-                position: "relative",
-              }}
-            >
-              <div
-                style={{
-                  width: "100%",
-                  cursor: "pointer",
-                  display: "flex",
-                  justifyContent: "end",
-                }}
-                onClick={() => {
-                  changeFoldedMenu(`table${_record._id}`);
-                }}
-              >
-                <div
-                  className="PullCustomCircleButton"
-                  style={{
-                    width: "44px",
-                    height: "3rem",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <DoubleLeftOutlined />
-                </div>
-              </div>
+            <SlidingMenuForBook
+              _record={_record}
+              isFoldedMenu={isFoldedMenu}
+              changeFoldedMenu={changeFoldedMenu}
+              isPc
+            />
 
-              <StyledBookSettingBarDrawer
-                booktype={_record.type}
-                destroyOnClose={true}
-                className="BookDrawerMenu"
-                placement="right"
-                width={"250px"}
-                closable={false}
-                mask={false}
-                visible={`table${_record._id}` === isFoldedMenu}
-                getContainer={false}
-              >
-                <Space size={3}>
-                  <BookOrderButton
-                    _record={_record}
-                    changeFoldedMenu={changeFoldedMenu}
-                    isPc
-                  />{" "}
-                  |
-                  <FavoriteBook
-                    record={_record}
-                    changeFoldedMenu={changeFoldedMenu}
-                    tableType="write"
-                    isPc
-                  />{" "}
-                  |
-                  <HideOrShowButton
-                    record={_record}
-                    changeFoldedMenu={changeFoldedMenu}
-                    isPc
-                  />{" "}
-                  |
-                  <MoveToBookSetting mybook_id={_record._id} isPc />
-                </Space>
-                <div
-                  className="PushCustomCircleButton"
-                  onClick={() => {
-                    changeFoldedMenu("");
-                  }}
-                >
-                  <DoubleRightOutlined />
-                </div>
-              </StyledBookSettingBarDrawer>
-            </div>
+            // <div
+            //   style={{
+            //     position: "relative",
+            //   }}
+            // >
+            //   <div
+            //     style={{
+            //       width: "100%",
+            //       cursor: "pointer",
+            //       display: "flex",
+            //       justifyContent: "end",
+            //     }}
+            //     onClick={() => {
+            //       changeFoldedMenu(`table${_record._id}`);
+            //     }}
+            //   >
+            //     <div
+            //       className="PullCustomCircleButton"
+            //       style={{
+            //         width: "44px",
+            //         height: "3rem",
+            //         display: "flex",
+            //         justifyContent: "center",
+            //         alignItems: "center",
+            //       }}
+            //     >
+            //       <DoubleLeftOutlined />
+            //     </div>
+            //   </div>
+
+            //   <StyledBookSettingBarDrawer
+            //     booktype={_record.type}
+            //     destroyOnClose={true}
+            //     className="BookDrawerMenu"
+            //     placement="right"
+            //     width={"250px"}
+            //     closable={false}
+            //     mask={false}
+            //     visible={`table${_record._id}` === isFoldedMenu}
+            //     getContainer={false}
+            //   >
+            //     <Space size={3}>
+            //       <BookOrderButton
+            //         _record={_record}
+            //         changeFoldedMenu={changeFoldedMenu}
+            //         isPc
+            //       />{" "}
+            //       |
+            //       <FavoriteBook
+            //         record={_record}
+            //         changeFoldedMenu={changeFoldedMenu}
+            //         tableType="write"
+            //         isPc
+            //       />{" "}
+            //       |
+            //       <HideOrShowButton
+            //         record={_record}
+            //         changeFoldedMenu={changeFoldedMenu}
+            //         isPc
+            //       />{" "}
+            //       |
+            //       <MoveToBookSetting mybook_id={_record._id} isPc />
+            //     </Space>
+            //     <div
+            //       className="PushCustomCircleButton"
+            //       onClick={() => {
+            //         changeFoldedMenu("");
+            //       }}
+            //     >
+            //       <DoubleRightOutlined />
+            //     </div>
+            //   </StyledBookSettingBarDrawer>
+            // </div>
           ),
           props: {},
         };
@@ -394,40 +401,42 @@ const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
         </Space>
       }
     >
-      <Table
-        dataSource={dataSource}
-        tableLayout="fixed"
-        columns={columns}
-        size="small"
-        rowKey={(record) => record.key}
-        pagination={false}
-        rowClassName={(record, index) =>
-          record.classType === "empty-category"
-            ? "EmptyCategoryRow"
-            : !expandedRowKeys.includes(record.key) &&
-              record.relationship === "parent"
-            ? "FoldedCategoryRow"
-            : record.classType === "OnlyShowHiddenBar"
-            ? "OnlyShowHiddenBar"
-            : record.classType === "firstHiddenBar"
-            ? "FirstHiddenBar"
-            : record.classType === "hiddenBar"
-            ? "LastHiddenBarRow"
-            : record.classType === "middle-hiddenBar"
-            ? "MiddleHiddenBar"
-            : record.classType === "last-even-book"
-            ? "LastEvenNumberRow"
-            : record.classType === "last-odd-book"
-            ? "LastOddNumberRow"
-            : record.classType === "even-book"
-            ? "EvenNumberRow"
-            : "OddNumberRow"
-        }
-        expandable={{
-          expandedRowKeys,
-          expandIcon: () => null,
-        }}
-      />
+      {dataSource.length > 0 && (
+        <Table
+          dataSource={dataSource}
+          tableLayout="fixed"
+          columns={columns}
+          size="small"
+          rowKey={(record) => record.key}
+          pagination={false}
+          rowClassName={(record, index) =>
+            record.classType === "empty-category"
+              ? "EmptyCategoryRow"
+              : !expandedRowKeys.includes(record.key) &&
+                record.relationship === "parent"
+              ? "FoldedCategoryRow"
+              : record.classType === "OnlyShowHiddenBar"
+              ? "OnlyShowHiddenBar"
+              : record.classType === "firstHiddenBar"
+              ? "FirstHiddenBar"
+              : record.classType === "hiddenBar"
+              ? "LastHiddenBarRow"
+              : record.classType === "middle-hiddenBar"
+              ? "MiddleHiddenBar"
+              : record.classType === "last-even-book"
+              ? "LastEvenNumberRow"
+              : record.classType === "last-odd-book"
+              ? "LastOddNumberRow"
+              : record.classType === "even-book"
+              ? "EvenNumberRow"
+              : "OddNumberRow"
+          }
+          expandable={{
+            expandedRowKeys,
+            expandIcon: () => null,
+          }}
+        />
+      )}
     </StyledCard>
   );
 };

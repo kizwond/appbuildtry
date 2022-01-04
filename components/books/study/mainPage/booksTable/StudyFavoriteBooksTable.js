@@ -152,6 +152,7 @@ const M_StudyFavoriteBooksTable = ({
           value={_value}
           read={_record.read}
           flip={_record.flip}
+          isPc
         />
       ),
     },

@@ -31,19 +31,16 @@ export const FRAGMENT_CARD_SET = gql`
         }
         hidden {
           _id
-          color
           targetWord
           toolType
         }
         underline {
           _id
-          color
           targetWord
           toolType
         }
         highlight {
           _id
-          color
           targetWord
           toolType
         }

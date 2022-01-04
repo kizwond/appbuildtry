@@ -21,10 +21,10 @@ export const StyledButtonForMainPage = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 4.167rem;
-  height: 1.57rem;
+  width: ${({ is_pc }) => (is_pc === "true" ? "54px" : "4.167rem")};
+  height: ${({ is_pc }) => (is_pc === "true" ? "22px" : "1.7rem")};
   background-color: lightgray;
-  border-radius: 0.8rem;
+  border-radius: ${({ is_pc }) => (is_pc === "true" ? "11px" : "0.9rem")};
   border: none;
   cursor: pointer;
   &:hover {
@@ -38,7 +38,7 @@ export const StyledButtonForMainPage = styled.button`
   & > .anticon.anticon-plus.IconForButton > svg,
   & > .anticon.anticon-ordered-list.IconForButton > svg {
     color: gray;
-    font-size: 1.333rem;
+    font-size: ${({ is_pc }) => (is_pc === "true" ? "17px" : "1.333rem")};
   }
   &:active > .anticon.anticon-form.IconForButton,
   &:hover > .anticon.anticon-form.IconForButton > svg,

@@ -30,7 +30,7 @@ const M_SessionModeAndFilterConfig = ({
         size="small"
         onTabClick={(key) => changeMode(key)}
         tabBarStyle={{ margin: 0 }}
-        isPc={isPc}
+        is_pc={(isPc || false).toString()}
       >
         <Tabs.TabPane tab="읽기모드" key="read">
           <div className="SessionTabContentWrapper">

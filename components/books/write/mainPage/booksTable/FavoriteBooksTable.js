@@ -282,7 +282,7 @@ const FavoriteBooksTable = forwardRef(
         size="small"
         title={
           <Space onClick={() => setVisible((_prev) => !_prev)}>
-            <div className="ForPageMainTitle">즐겨찾기</div>
+            <div className="ForPcPageMainTitle">즐겨찾기</div>
             <DoubleRightOutlined rotate={visible ? 270 : 90} />
           </Space>
         }

@@ -433,10 +433,9 @@ const StudyBooksTable = ({
     <StyledCard
       bordered={false}
       size="small"
-      // title={<div className="ForPageMainTitle">나의 책</div>}
       title={
         <Space>
-          <div className="ForPageMainTitle">나의책</div>
+          <div className="ForPcPageMainTitle">나의책</div>
           <div>
             <CategorySettingButton
               category={category}
@@ -494,7 +493,7 @@ const StyledCard = styled(Card)`
   & .ant-card-body {
     padding: 0 0 12px 0;
     & * {
-      font-size: 1rem;
+      font-size: 13px;
     }
   }
 

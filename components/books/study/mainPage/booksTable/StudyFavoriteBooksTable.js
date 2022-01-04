@@ -310,7 +310,7 @@ const M_StudyFavoriteBooksTable = ({
       size="small"
       title={
         <Space onClick={() => setVisible((_prev) => !_prev)}>
-          <div className="ForPageMainTitle">즐겨찾기</div>
+          <div className="ForPcPageMainTitle">즐겨찾기</div>
           <DoubleRightOutlined rotate={visible ? 270 : 90} />
         </Space>
       }
@@ -339,7 +339,7 @@ const StyledCard = styled(Card)`
     padding: ${(props) =>
       props.isvisible === "true" ? "0 0 12px 0" : "0 !important"};
     & * {
-      font-size: 1rem;
+      font-size: 13px;
     }
   }
 

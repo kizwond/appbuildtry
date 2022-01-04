@@ -36,7 +36,7 @@ const M_ModeSessionConfig = ({
   const { sortOptionTags, useCardTypeTags, useStatusTags } = tags;
   return (
     <StyledDivConfigWrapper>
-      <StyledDivConfigRow isPc={isPc}>
+      <StyledDivConfigRow is_pc={(isPc || false).toString()}>
         <div>
           <span className="ConfigTitle">보기 순서</span>
         </div>
@@ -49,7 +49,7 @@ const M_ModeSessionConfig = ({
         </div>
       </StyledDivConfigRow>
 
-      <StyledDivConfigRow isPc={isPc}>
+      <StyledDivConfigRow is_pc={(isPc || false).toString()}>
         <div>
           <span className="ConfigTitle">카드종류</span>
         </div>
@@ -62,7 +62,7 @@ const M_ModeSessionConfig = ({
         </div>
       </StyledDivConfigRow>
 
-      <StyledDivConfigRow isPc={isPc}>
+      <StyledDivConfigRow is_pc={(isPc || false).toString()}>
         <div>
           <span className="ConfigTitle">카드상태</span>
         </div>
@@ -93,11 +93,11 @@ const M_ModeSessionConfig = ({
         </div>
       </StyledDivConfigRow>
 
-      <StyledDivConfigRow isPc={isPc}>
+      <StyledDivConfigRow is_pc={(isPc || false).toString()}>
         <StyledDivConfigColStartCards>
           <StyledSpanConfigTitle
             onOff={numStartCards.onOff === "on"}
-            isPc={isPc}
+            is_pc={(isPc || false).toString()}
           >
             학습량
           </StyledSpanConfigTitle>

@@ -11,7 +11,7 @@ import Layout from "../../../components/layout/Layout";
 import BooksTable from "../../../components/books/write/mainPage/booksTable/BooksTable";
 import FavoriteBooksTable from "../../../components/books/write/mainPage/booksTable/FavoriteBooksTable";
 
-const M_WriteMainPage = () => {
+const WriteMainPage = () => {
   const router = useRouter();
 
   const [isFoldedMenu, setIsFoldedMenu] = useState();
@@ -86,7 +86,7 @@ const M_WriteMainPage = () => {
   );
 };
 
-export default M_WriteMainPage;
+export default WriteMainPage;
 
 const StyledRowMaxWidth = styled.div`
   width: 1024px;
@@ -131,5 +131,69 @@ const StyledRowMaxWidth = styled.div`
   }
   & .PullCustomCircleButton:hover > .anticon-setting > svg {
     color: #fff;
+  }
+
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastEvenNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastEvenNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastEvenNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastOddNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastOddNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.LastOddNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.EvenNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.EvenNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.EvenNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.OddNumberRow
+    > .TableFirstColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.OddNumberRow
+    > .TableMiddleColumn
+    > div,
+  .ant-table.ant-table-small
+    .ant-table-tbody
+    > tr.OddNumberRow
+    > .TableLastColumn
+    > div,
+  .ant-table.ant-table-small .ant-table-thead > tr > th {
+    font-size: 13px;
   }
 `;

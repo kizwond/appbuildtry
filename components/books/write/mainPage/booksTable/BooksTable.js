@@ -407,13 +407,14 @@ const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
       size="small"
       title={
         <Space>
-          <div className="ForPageMainTitle">나의책</div>
-          <CreateBookButton category={category} />
+          <div className="ForPcPageMainTitle">나의책</div>
+          <CreateBookButton category={category} isPc />
           <CategorySettingButton
             category={category}
             addNewCategoryIdOnExpandedRowKeys={
               addNewCategoryIdOnExpandedRowKeys
             }
+            isPc
           />
         </Space>
       }
@@ -464,7 +465,7 @@ const StyledCard = styled(Card)`
   & .ant-card-body {
     padding: 0 0 12px 0;
     & * {
-      font-size: 1rem;
+      font-size: 13px;
     }
   }
   /* 카테고리 펼치기 아이콘 오른쪽 마진 조절 */

@@ -31,7 +31,7 @@ export const StyledAntTabs = styled(Tabs)`
         transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
       }
       .ant-tabs-tab-btn {
-        font-size: ${({ isPc }) => (isPc ? "15px" : "1.16667rem")};
+        font-size: ${({ is_pc }) => (is_pc === "true" ? "15px" : "1.16667rem")};
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -62,7 +62,8 @@ export const StyledAntTabs = styled(Tabs)`
     border-top: none;
     padding: 5px;
     overflow-y: auto;
-    height: ${({ isPc }) => (isPc ? "calc(100vh - 160px)" : "auto")};
+    height: ${({ is_pc }) =>
+      is_pc === "true" ? "calc(100vh - 160px)" : "auto"};
   }
 
   .ant-tabs-tabpane.ant-tabs-tabpane-active

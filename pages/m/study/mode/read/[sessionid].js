@@ -27,7 +27,7 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
-import { Button, Modal, Space, Tag } from "antd";
+import { Button, Modal, Space, Tag,message } from "antd";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 import { elementType } from "prop-types";
 
@@ -370,25 +370,37 @@ const ReadMode = () => {
     sessionStorage.removeItem("selectionText");
   };
 
-  const hiddenToggleHandler = () => {
+  const hiddenToggleHandler = (info) => {
     console.log("userflagclicked!!!");
     setHiddenToggle(!hiddenToggle);
     setUnderlineToggle(false);
     setHighlightToggle(false);
+    if (hiddenToggle === false) {
+      message.destroy()
+      info();
+    }
   };
 
-  const underlineToggleHandler = () => {
+  const underlineToggleHandler = (info) => {
     console.log("underlineToggleHandler!!!");
     setUnderlineToggle(!underlineToggle);
     setHiddenToggle(false);
     setHighlightToggle(false);
+    if (underlineToggle === false) {
+      message.destroy()
+      info();
+    }
   };
 
-  const highlightToggleHandler = () => {
+  const highlightToggleHandler = (info) => {
     console.log("underlineToggleHandler!!!");
     setHighlightToggle(!highlightToggle);
     setHiddenToggle(false);
     setUnderlineToggle(false);
+    if (highlightToggle === false) {
+      message.destroy()
+      info();
+    }
   };
 
   const [isModalVisibleHidden, setIsModalVisibleHidden] = useState(false);
@@ -2116,7 +2128,7 @@ const ReadMode = () => {
               card_id,
               effectType,
               targetWord,
-              toolType: Number(toolType)
+              toolType: Number(toolType),
             },
           },
         });

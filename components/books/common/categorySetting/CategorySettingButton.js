@@ -6,6 +6,7 @@ import CategorySettingModal from "./CategorySettingModal";
 // eslint-disable-next-line react/display-name
 const CategorySettingButton = ({
   category,
+  categorySetId,
   addNewCategoryIdOnExpandedRowKeys,
   isPc,
 }) => {
@@ -28,6 +29,7 @@ const CategorySettingButton = ({
         visible={visible}
         addNewCategoryIdOnExpandedRowKeys={addNewCategoryIdOnExpandedRowKeys}
         changeVisible={changeVisible}
+        categorySetId={categorySetId}
         category={category}
       />
     </>

@@ -10,15 +10,6 @@ export default function makeDataSource(
   isShowedHiddenBook,
   changeIsShowedHiddenBook
 ) {
-  const noCategoryId = category.find((_cate) => _cate.isFixed === "yes")._id;
-  const noCategoryBooksLength = myBook.filter(
-    (_book) => _book.mybook_info.mybookcate_id === noCategoryId
-  ).length;
-  const filteredCategory =
-    noCategoryBooksLength > 0
-      ? category
-      : category.filter((_cate) => _cate.name !== "(미지정)");
-
   const studyLikedBoooks = myBook.filter(
     (book) => book.mybook_info.isStudyLike
   );
@@ -36,8 +27,8 @@ export default function makeDataSource(
           ...writeLikedBooks.map((book) => book.mybook_info.seqInWriteLike)
         ) + 1;
 
-  const dataSource = filteredCategory.map((_cate, _categoryIndex) => {
-    const { name, seq } = _cate;
+  const dataSource = category.map((_cate, _categoryIndex) => {
+    const { name } = _cate;
     const _categoryBooksList = myBook.filter(
       (_book) => _cate._id === _book.mybook_info.mybookcate_id
     );
@@ -49,10 +40,10 @@ export default function makeDataSource(
       return {
         relationship: "parent",
         classType: "empty-category",
-        categoryOrder: seq,
         categoryName: name,
         key: `KEY:${_cate._id}INDEX:0`,
         writeHistory: [],
+        mybookcate_id: _cate._id,
       };
     }
 
@@ -88,7 +79,6 @@ export default function makeDataSource(
           : _index % 2 !== 0
           ? "even-book"
           : "odd-book",
-      categoryOrder: seq,
       categoryName: name,
       isFirstBook: _index === 0,
       isLastBook: markedShowListLength === _index + 1,
@@ -135,7 +125,6 @@ export default function makeDataSource(
           : _index % 2 !== 0
           ? "even-book"
           : "odd-book",
-      categoryOrder: seq,
       categoryName: name,
       isFirstBook: _index === 0,
       isLastBook: markedHideListLength === _index + 1,
@@ -218,7 +207,6 @@ export default function makeDataSource(
     const parent = {
       ...parentBooks,
       key: `KEY:${_cate._id}INDEX:0`,
-      categoryOrder: seq,
       categoryName: name,
       relationship: "parent",
       children: childrenBooks,

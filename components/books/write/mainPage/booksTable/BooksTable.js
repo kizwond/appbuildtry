@@ -321,7 +321,12 @@ const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
           <div className="ForPcPageMainTitle">나의책</div>
           <CreateBookButton category={category} isPc />
           <CategorySettingButton
-            category={category}
+            category={dataSource.map((item) => ({
+              name: item.categoryName,
+              _id: item.mybookcate_id,
+              hasBooks: item.classType !== "empty-category",
+            }))}
+            categorySetId={category._id}
             addNewCategoryIdOnExpandedRowKeys={
               addNewCategoryIdOnExpandedRowKeys
             }

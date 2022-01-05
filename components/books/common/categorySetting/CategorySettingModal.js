@@ -12,7 +12,17 @@ import {
 import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 
 import styled from "styled-components";
-import { Modal, Button, Input, Table, Space, Empty } from "antd";
+import {
+  Modal,
+  Button,
+  Input,
+  Table,
+  Space,
+  Empty,
+  Select,
+  Row,
+  Col,
+} from "antd";
 import {
   EditFilled,
   DeleteOutlined,
@@ -28,12 +38,15 @@ import _ from "lodash";
 
 const CategorySettingModal = ({
   category,
+  categorySetId,
   visible,
   changeVisible,
   addNewCategoryIdOnExpandedRowKeys,
 }) => {
+  const [anotherCategoryForBooks, setAnotherCategoryForBooks] = useState(null);
   const [editingCell, setEditingCell] = useState("");
   const [cateName, setCateName] = useState("");
+  const [expandedMode, setExpandedMode] = useState("");
   const [expandedRowKeys, setExpandedRowKeys] = useState("");
   const newIdRef = useRef();
 
@@ -41,7 +54,6 @@ const CategorySettingModal = ({
 
   const inputRefs = useRef({});
   const newCateRef = useRef({});
-
   useEffect(() => {
     if (editingCell.length > 0) {
       inputRefs.current[editingCell].focus({
@@ -51,10 +63,11 @@ const CategorySettingModal = ({
   }, [editingCell]);
 
   useEffect(() => {
-    if (expandedRowKeys.length > 0) {
+    if (expandedMode === "add" && expandedRowKeys.length > 0) {
       const [rowKey] = expandedRowKeys;
       newCateRef.current[rowKey].focus();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expandedRowKeys]);
 
   const [createNewCategory] = useMutation(MUTATION_CREATE_MY_BOOK_CATEGORY, {
@@ -80,7 +93,7 @@ const CategorySettingModal = ({
       await createNewCategory({
         variables: {
           forCreateMybookcate: {
-            mybookcateset_id: category._id,
+            mybookcateset_id: categorySetId,
             name,
             seq,
           },
@@ -111,7 +124,7 @@ const CategorySettingModal = ({
       await changeCategoryName({
         variables: {
           forUpdateMybookcateInfo: {
-            mybookcateset_id: category._id,
+            mybookcateset_id: categorySetId,
             mybookcate_id,
             name,
           },
@@ -145,7 +158,7 @@ const CategorySettingModal = ({
       await changeCategoryOrder({
         variables: {
           forUpdateMybookcateOrder: {
-            mybookcateset_id: category._id,
+            mybookcateset_id: categorySetId,
             mybookcate_id,
             direction,
           },
@@ -160,6 +173,8 @@ const CategorySettingModal = ({
     onCompleted: (received_data) => {
       console.log("received_data", received_data);
       if (received_data.mybookcateset_deleteMybookcate.status === "200") {
+        setExpandedRowKeys([]);
+        setAnotherCategoryForBooks(null);
       } else if (
         received_data.mybookcateset_deleteMybookcate.status === "401"
       ) {
@@ -169,16 +184,14 @@ const CategorySettingModal = ({
       }
     },
   });
-  async function deleteACategory({ mybookcate_id }) {
+  async function deleteACategory({ mybookcate_id, anotherCategoryForBooks }) {
     try {
       await deleteCategory({
         variables: {
           forDeleteMybookcate: {
-            mybookcateset_id: category._id,
+            mybookcateset_id: categorySetId,
             mybookcate_id,
-            moveToMybookcate_id: category.mybookcates.find(
-              (cate) => cate.isFixed === "yes"
-            )._id,
+            moveToMybookcate_id: anotherCategoryForBooks,
           },
         },
         refetchQueries: gql`
@@ -199,7 +212,7 @@ const CategorySettingModal = ({
     }
   }
 
-  const dataSource = category.mybookcates.map((_cate) => ({
+  const dataSource = category.map((_cate) => ({
     ..._cate,
     key: _cate._id,
   }));
@@ -378,7 +391,7 @@ const CategorySettingModal = ({
                 }
                 if (!expandedRowKeys.includes(_value)) {
                   setExpandedRowKeys([_value]);
-                  console.log(newCateRef);
+                  setExpandedMode("add");
                 }
               }}
             />
@@ -411,9 +424,19 @@ const CategorySettingModal = ({
               disabled={dataSource.length === 1}
               icon={<DeleteOutlined />}
               onClick={() => {
-                if (dataSource.length !== 1) {
-                  setExpandedRowKeys([]);
-                  deleteACategory({ mybookcate_id: _record._id });
+                if (_record.hasBooks) {
+                  if (expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys([]);
+                  }
+                  if (!expandedRowKeys.includes(_record.key)) {
+                    setExpandedRowKeys([_record.key]);
+                    setExpandedMode("delete");
+                  }
+                } else {
+                  deleteACategory({
+                    mybookcate_id: _record._id,
+                    anotherCategoryForBooks: null,
+                  });
                 }
               }}
             />
@@ -454,44 +477,93 @@ const CategorySettingModal = ({
           expandable={{
             expandedRowKeys,
             expandedRowRender: (_record, _index) => (
-              <div style={{ margin: "0 10px", display: "flex" }}>
-                <Input
-                  size="small"
-                  ref={(ref) => (newCateRef.current[_record.key] = ref)}
-                  value={cateName}
-                  onChange={(e) => {
-                    setCateName(e.target.value);
-                  }}
-                  style={{ marginRight: "5px" }}
-                />
-                <Button
-                  size="small"
-                  type="primary"
-                  disabled={
-                    cateName.length === 0 ||
-                    dataSource.map((_c) => _c.name).includes(cateName)
-                  }
-                  style={{ marginRight: "5px" }}
-                  onClick={() => {
-                    createCategory({ name: cateName, seq: _index + 1 });
-                    newIdRef.current = _index + 1;
-                    setCateName("");
-                    setExpandedRowKeys([]);
-                  }}
-                >
-                  생성
-                </Button>
-                <Button
-                  size="small"
-                  type="primary"
-                  onClick={() => {
-                    setCateName("");
-                    setExpandedRowKeys([]);
-                  }}
-                >
-                  취소
-                </Button>
-              </div>
+              <>
+                {expandedMode === "add" && (
+                  <div style={{ margin: "0 10px", display: "flex" }}>
+                    <Input
+                      size="small"
+                      ref={(ref) => (newCateRef.current[_record.key] = ref)}
+                      value={cateName}
+                      onChange={(e) => {
+                        setCateName(e.target.value);
+                      }}
+                      style={{ marginRight: "5px" }}
+                    />
+                    <Button
+                      size="small"
+                      type="primary"
+                      disabled={
+                        cateName.length === 0 ||
+                        dataSource.map((_c) => _c.name).includes(cateName)
+                      }
+                      style={{ marginRight: "5px" }}
+                      onClick={() => {
+                        createCategory({ name: cateName, seq: _index + 1 });
+                        newIdRef.current = _index + 1;
+                        setCateName("");
+                        setExpandedRowKeys([]);
+                      }}
+                    >
+                      생성
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        setCateName("");
+                        setExpandedRowKeys([]);
+                      }}
+                    >
+                      취소
+                    </Button>
+                  </div>
+                )}
+                {expandedMode === "delete" && (
+                  <div style={{ width: "100%" }}>
+                    <Row gutter={8} wrap={false}>
+                      <Col flex="auto">
+                        <Select
+                          style={{ width: "100%" }}
+                          placeholder="이동할 카테고리를 선택하세요."
+                          size="small"
+                          onChange={(v) => setAnotherCategoryForBooks(v)}
+                        >
+                          {dataSource
+                            .filter((cate) => cate.key !== _record.key)
+                            .map((cate) => (
+                              <Select.Option key={cate.key} value={cate.key}>
+                                {cate.name}
+                              </Select.Option>
+                            ))}
+                        </Select>
+                      </Col>
+                      <Col flex="none">
+                        <Space>
+                          <Button
+                            size="small"
+                            disabled={anotherCategoryForBooks === null}
+                            onClick={() => {
+                              deleteACategory({
+                                mybookcate_id: _record._id,
+                                anotherCategoryForBooks,
+                              });
+                            }}
+                          >
+                            이동 후 삭제
+                          </Button>
+                          <Button
+                            size="small"
+                            onClick={() => {
+                              setExpandedRowKeys([]);
+                            }}
+                          >
+                            취소
+                          </Button>
+                        </Space>
+                      </Col>
+                    </Row>
+                  </div>
+                )}
+              </>
             ),
             rowExpandable: (_record) => editingCell == "",
             expandIcon: () => null,

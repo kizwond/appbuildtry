@@ -315,7 +315,12 @@ const M_StudyBooksTable = ({
         <Space>
           <div className="ForPageMainTitle">나의책</div>
           <CategorySettingButton
-            category={category}
+            category={dataSource.map((item) => ({
+              name: item.categoryName,
+              _id: item.mybookcate_id,
+              hasBooks: item.classType !== "empty-category",
+            }))}
+            categorySetId={category._id}
             addNewCategoryIdOnExpandedRowKeys={
               addNewCategoryIdOnExpandedRowKeys
             }

@@ -349,10 +349,16 @@ const StudyBooksTable = ({
           <div className="ForPcPageMainTitle">나의책</div>
           <div>
             <CategorySettingButton
-              category={category}
+              category={dataSource.map((item) => ({
+                name: item.categoryName,
+                _id: item.mybookcate_id,
+                hasBooks: item.classType !== "empty-category",
+              }))}
+              categorySetId={category._id}
               addNewCategoryIdOnExpandedRowKeys={
                 addNewCategoryIdOnExpandedRowKeys
               }
+              isPc
             />
           </div>
         </Space>

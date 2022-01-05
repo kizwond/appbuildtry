@@ -104,7 +104,6 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
       _record.classType === "OnlyShowHiddenBar"
     );
   };
-
   const columns = [
     {
       title: "카테고리",
@@ -290,8 +289,14 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
               addNewCategoryIdOnExpandedRowKeys
             }
           />
+
           <CategorySettingButton
-            category={category}
+            category={dataSource.map((item) => ({
+              name: item.categoryName,
+              _id: item.mybookcate_id,
+              hasBooks: item.classType !== "empty-category",
+            }))}
+            categorySetId={category._id}
             addNewCategoryIdOnExpandedRowKeys={
               addNewCategoryIdOnExpandedRowKeys
             }

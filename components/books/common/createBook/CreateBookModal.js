@@ -122,7 +122,6 @@ const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
           initialValues={{
             category: category.mybookcates[0]._id,
           }}
-          labelAlign="right"
           onFinish={(values) => {
             changeVisible(false);
             postNewMyBook(values.book_title, values.category);
@@ -186,16 +185,13 @@ const StyledModal = styled(Modal)`
     padding: 0;
     display: flex;
     justify-content: flex-end;
-    /* top: 7px;
-     */
     line-height: 33px;
   }
   & .ant-form-item-label > label {
     display: block;
-    /* height: auto; */
     font-size: ${({ is_pc }) => (is_pc === "true" ? "13px" : "0.8rem")};
     font-weight: 500;
-    width: 90px;
+    width: 76px;
     text-align: right;
   }
 

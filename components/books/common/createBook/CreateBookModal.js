@@ -122,6 +122,7 @@ const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
           initialValues={{
             category: category.mybookcates[0]._id,
           }}
+          labelAlign="right"
           onFinish={(values) => {
             changeVisible(false);
             postNewMyBook(values.book_title, values.category);

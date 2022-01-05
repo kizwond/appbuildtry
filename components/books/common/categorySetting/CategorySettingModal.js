@@ -18,6 +18,8 @@ import {
   DeleteOutlined,
   ArrowDownOutlined,
   ArrowUpOutlined,
+  CloseOutlined,
+  AppstoreAddOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
@@ -33,9 +35,7 @@ const CategorySettingModal = ({
   const [editingCell, setEditingCell] = useState("");
   const [cateName, setCateName] = useState("");
   const [expandedRowKeys, setExpandedRowKeys] = useState("");
-  const [isInputForFistCateInput, SetIsInputForFistCateInput] = useState(false);
   const newIdRef = useRef();
-  const firstNewCategoryInputRef = useRef();
 
   const router = useRouter();
 
@@ -56,12 +56,6 @@ const CategorySettingModal = ({
       newCateRef.current[rowKey].focus();
     }
   }, [expandedRowKeys]);
-
-  useEffect(() => {
-    if (isInputForFistCateInput) {
-      firstNewCategoryInputRef.current.focus();
-    }
-  }, [firstNewCategoryInputRef, isInputForFistCateInput]);
 
   const [createNewCategory] = useMutation(MUTATION_CREATE_MY_BOOK_CATEGORY, {
     onCompleted: (received_data) => {
@@ -205,12 +199,10 @@ const CategorySettingModal = ({
     }
   }
 
-  const dataSource = category.mybookcates
-    .filter((a) => a.isFixed !== "yes")
-    .map((_cate) => ({
-      ..._cate,
-      key: _cate._id,
-    }));
+  const dataSource = category.mybookcates.map((_cate) => ({
+    ..._cate,
+    key: _cate._id,
+  }));
 
   const columns = [
     {
@@ -294,7 +286,7 @@ const CategorySettingModal = ({
                     size="small"
                     type="text"
                     icon={<EditFilled />}
-                    disabled={editingCell !== "" || _record.isFixed === "yes"}
+                    disabled={editingCell !== ""}
                     onClick={() => {
                       setEditingCell(_record.key);
                       setCateName(_record.name);
@@ -366,6 +358,43 @@ const CategorySettingModal = ({
         return obj;
       },
     },
+    {
+      title: "추가",
+      key: "key",
+      dataIndex: "key",
+      width: 50,
+      align: "center",
+      render: (_value, _record, _index) => {
+        const obj = {
+          children: (
+            <Button
+              size="small"
+              type="text"
+              icon={<AppstoreAddOutlined />}
+              onClick={() => {
+                if (expandedRowKeys.includes(_value)) {
+                  setExpandedRowKeys([]);
+                  setCateName("");
+                }
+                if (!expandedRowKeys.includes(_value)) {
+                  setExpandedRowKeys([_value]);
+                  console.log(newCateRef);
+                }
+              }}
+            />
+          ),
+          props: {},
+        };
+
+        if (editingCell === _record.key) {
+          obj.props.colSpan = 0;
+        } else {
+          obj.props.colSpan = 1;
+        }
+
+        return obj;
+      },
+    },
 
     {
       title: "삭제",
@@ -379,10 +408,13 @@ const CategorySettingModal = ({
             <Button
               size="small"
               type="text"
+              disabled={dataSource.length === 1}
               icon={<DeleteOutlined />}
               onClick={() => {
-                setExpandedRowKeys([]);
-                deleteACategory({ mybookcate_id: _record._id });
+                if (dataSource.length !== 1) {
+                  setExpandedRowKeys([]);
+                  deleteACategory({ mybookcate_id: _record._id });
+                }
               }}
             />
           ),
@@ -405,8 +437,9 @@ const CategorySettingModal = ({
       <StyledModal
         visible={visible}
         title={<div className="ForPageMainTitle">카테고리 관리</div>}
-        onCancel={() => changeVisible(false)}
-        mask={false} // 모달 바깥 전체화면 덮기 기능
+        closeIcon={<CloseOutlined onClick={() => changeVisible(false)} />}
+        // onCancel={() => changeVisible(false)}
+        mask={true} // 모달 바깥 전체화면 덮기 기능
         footer={[
           <Button key="close" onClick={() => changeVisible(false)} size="small">
             닫기
@@ -418,64 +451,6 @@ const CategorySettingModal = ({
           tableLayout="fixed"
           columns={columns}
           size="small"
-          locale={{
-            emptyText: (
-              <Empty
-                image={
-                  isInputForFistCateInput ? (
-                    <div style={{ margin: "20px 10px", display: "flex" }}>
-                      <Input
-                        size="small"
-                        ref={firstNewCategoryInputRef}
-                        value={cateName}
-                        onChange={(e) => {
-                          setCateName(e.target.value);
-                        }}
-                        style={{ marginRight: "5px" }}
-                      />
-                      <Button
-                        size="small"
-                        type="primary"
-                        style={{ marginRight: "5px" }}
-                        onClick={() => {
-                          createCategory({ name: cateName, seq: 1 });
-                          newIdRef.current = 1;
-                          setCateName("");
-                          SetIsInputForFistCateInput(false);
-                        }}
-                      >
-                        생성
-                      </Button>
-                      <Button
-                        size="small"
-                        type="primary"
-                        onClick={() => {
-                          setCateName("");
-                          SetIsInputForFistCateInput(false);
-                        }}
-                      >
-                        취소
-                      </Button>
-                    </div>
-                  ) : (
-                    Empty.PRESENTED_IMAGE_SIMPLE
-                  )
-                }
-                description={<div>등록된 카테고리가 없습니다.</div>}
-              >
-                {!isInputForFistCateInput && (
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      SetIsInputForFistCateInput(true);
-                    }}
-                  >
-                    새 카테고리 만들기
-                  </Button>
-                )}
-              </Empty>
-            ),
-          }}
           expandable={{
             expandedRowKeys,
             expandedRowRender: (_record, _index) => (
@@ -498,8 +473,8 @@ const CategorySettingModal = ({
                   }
                   style={{ marginRight: "5px" }}
                   onClick={() => {
-                    createCategory({ name: cateName, seq: _index + 2 });
-                    newIdRef.current = _index + 2;
+                    createCategory({ name: cateName, seq: _index + 1 });
+                    newIdRef.current = _index + 1;
                     setCateName("");
                     setExpandedRowKeys([]);
                   }}
@@ -519,17 +494,8 @@ const CategorySettingModal = ({
               </div>
             ),
             rowExpandable: (_record) => editingCell == "",
-            onExpand: (ex, re) => {
-              console.log({ expandedRowKeys });
-              if (!ex) {
-                setExpandedRowKeys([]);
-                setCateName("");
-              }
-              if (ex) {
-                setExpandedRowKeys([re.key]);
-                console.log(newCateRef);
-              }
-            },
+            expandIcon: () => null,
+            columnWidth: 0,
           }}
           pagination={false}
         />
@@ -564,14 +530,5 @@ const StyledModal = styled(Modal)`
   .ant-table table {
     // ColorPicker 잘리는 문제 해결
     overflow: unset;
-  }
-
-  & .ant-table-expand-icon-col {
-    width: 1px;
-  }
-  & .ant-table-row-expand-icon {
-    top: 20px;
-    left: -15px;
-    z-index: 9999;
   }
 `;

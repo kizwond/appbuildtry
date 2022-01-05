@@ -1,4 +1,4 @@
-import "antd/dist/antd.css";
+import "../styles/antd.css";
 import "../styles/globals.css";
 
 import { config } from "@fortawesome/fontawesome-svg-core";

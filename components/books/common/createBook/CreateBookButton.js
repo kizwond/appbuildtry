@@ -3,7 +3,11 @@ import React, { useCallback, useState } from "react";
 import { StyledButtonForMainPage } from "../../../common/styledComponent/buttons";
 import CreateBookModal from "./CreateBookModal";
 
-const CreateBookButton = ({ category, isPc }) => {
+const CreateBookButton = ({
+  category,
+  isPc,
+  addNewCategoryIdOnExpandedRowKeys,
+}) => {
   const [visible, setVisible] = useState(false);
 
   const changeVisible = useCallback((_boolean) => {
@@ -26,6 +30,7 @@ const CreateBookButton = ({ category, isPc }) => {
           changeVisible={changeVisible}
           category={category}
           isPc={isPc}
+          addNewCategoryIdOnExpandedRowKeys={addNewCategoryIdOnExpandedRowKeys}
         />
       )}
     </>

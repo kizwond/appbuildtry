@@ -1,3 +1,4 @@
+import { CloseOutlined } from "@ant-design/icons";
 import { gql, useMutation } from "@apollo/client";
 import { Modal, Form, Input, Select } from "antd";
 import { useRouter } from "next/router";
@@ -7,7 +8,13 @@ import styled from "styled-components";
 import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 import { MUTATION_CREATE_MY_BOOK } from "../../../../graphql/mutation/myBook";
 
-const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
+const CreateBookModal = ({
+  category,
+  visible,
+  changeVisible,
+  isPc,
+  addNewCategoryIdOnExpandedRowKeys,
+}) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const { resetFields, getFieldInstance } = form;
@@ -21,6 +28,10 @@ const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
     onCompleted: (_data) => {
       if (_data.mybook_createMybook.msg == "책 생성 성공적!") {
         console.log("receivedData", _data);
+
+        // changeVisible(false);
+        // // postNewMyBook(values.book_title, values.category);
+        // resetFields();
       } else if (_data.mybook_createMybook.status === "401") {
         router.push("/m/account/login");
       } else {
@@ -107,8 +118,8 @@ const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
           size: "small",
           onClick: () => changeVisible(false),
         }}
-        closeIcon={}
-        mask={false} // 모달 바깥 전체화면 덮기 기능
+        closeIcon={<CloseOutlined onClick={() => changeVisible(false)} />}
+        mask={true} // 모달 바깥 전체화면 덮기 기능
         okText="새 책 만들기 완료"
         confirmLoading={loading}
         is_pc={(isPc || false).toString()}
@@ -122,6 +133,7 @@ const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
             category: category.mybookcates[0]._id,
           }}
           onFinish={(values) => {
+            addNewCategoryIdOnExpandedRowKeys(values.category);
             changeVisible(false);
             postNewMyBook(values.book_title, values.category);
             resetFields();
@@ -184,16 +196,13 @@ const StyledModal = styled(Modal)`
     padding: 0;
     display: flex;
     justify-content: flex-end;
-    /* top: 7px;
-     */
     line-height: 33px;
   }
   & .ant-form-item-label > label {
     display: block;
-    /* height: auto; */
     font-size: ${({ is_pc }) => (is_pc === "true" ? "13px" : "0.8rem")};
     font-weight: 500;
-    width: 90px;
+    width: 76px;
     text-align: right;
   }
 

@@ -112,7 +112,7 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
 
   function afterupdatemutation(data) {
     console.log("data", data);
-    updateStudyToolApply(data.cardtypeset_updateStudyTool.cardtypesets)
+    updateStudyToolApply(data.cardtypeset_updateStudyTool.cardtypesets);
   }
 
   async function updatestudytool(data) {
@@ -133,7 +133,7 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
 
   return (
     <>
-      <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{display:"none"}}>
+      <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{ display: "none" }}>
         <defs>
           <filter id="marker-shape">
             <feTurbulence type="fractalNoise" baseFrequency="0 0.15" numOctaves="1" result="warp" />
@@ -143,11 +143,13 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
       </svg>
 
       <Space direction="vertical">
-        <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1 }}>
-          Color
-        </Button>
-        <div className={toolType1} style={{ display: "inline-block", "--bubble-color": color1 }}>
-          형광펜 예시 입니다~~
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1 }}>
+            Color
+          </Button>
+          <div className={toolType1} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": color1 }}>
+            ex. 형광펜 예시 입니다~~
+          </div>
         </div>
         {displayColorPicker1 ? (
           <div style={popover}>
@@ -156,12 +158,13 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           </div>
         ) : null}
 
-
-        <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2 }}>
-          Color
-        </Button>
-        <div className={toolType2} style={{ display: "inline-block", "--bubble-color": color2  }}>
-          형광펜 예시 입니다~~
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2 }}>
+            Color
+          </Button>
+          <div className={toolType2} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": color2 }}>
+            ex. 형광펜 예시 입니다~~
+          </div>
         </div>
         {displayColorPicker2 ? (
           <div style={popover}>
@@ -170,11 +173,14 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           </div>
         ) : null}
 
-
-        <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3 }}>
-          Color
-        </Button>
-        <div className={toolType3} style={{ display: "inline-block", backgroundColor: color3 }}>형광펜 예시 입니다~~</div>
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3 }}>
+            Color
+          </Button>
+          <div className={toolType3} style={{ fontSize: "0.8rem", display: "inline-block", backgroundColor: color3 }}>
+            ex. 형광펜 예시 입니다~~
+          </div>
+        </div>
         {displayColorPicker3 ? (
           <div style={popover}>
             <div style={cover} onClick={handleClose3} />
@@ -182,11 +188,14 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           </div>
         ) : null}
 
-
-        <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4 }}>
-          Color
-        </Button>
-        <div className={toolType4} style={{ display: "inline-block", backgroundColor: color4 }}>형광펜 예시 입니다~~</div>
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4 }}>
+            Color
+          </Button>
+          <div className={toolType4} style={{ fontSize: "0.8rem", display: "inline-block", backgroundColor: color4 }}>
+            ex. 형광펜 예시 입니다~~
+          </div>
+        </div>
         {displayColorPicker4 ? (
           <div style={popover}>
             <div style={cover} onClick={handleClose4} />
@@ -194,11 +203,14 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           </div>
         ) : null}
 
-
-        <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5 }}>
-          Color
-        </Button>
-        <div className={toolType5} style={{ display: "inline-block", "--bubble-color": color5 }}>형광펜 예시 입니다~~</div>
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5 }}>
+            Color
+          </Button>
+          <div className={toolType5} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": color5 }}>
+            ex. 형광펜 예시 입니다~~
+          </div>
+        </div>
         {displayColorPicker5 ? (
           <div style={popover}>
             <div style={cover} onClick={handleClose5} />
@@ -206,9 +218,12 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           </div>
         ) : null}
       </Space>
-      <Button size="small" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
-        적용하기
-      </Button>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+        <div></div>
+        <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
+          적용하기
+        </Button>
+      </div>
     </>
   );
 };

@@ -134,7 +134,7 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
 
   useEffect(() => {
     if (cardTypeSets) {
-      console.log(cardTypeSets)
+      console.log(cardTypeSets);
       const underlineSetting = cardTypeSets[0].studyTool.underline;
       setCardTypeSetId(cardTypeSets[0]._id);
       setColor1(underlineSetting[0].color);
@@ -181,129 +181,148 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   return (
     <>
       <Space direction="vertical">
-        <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1 }}>
-          Color
-        </Button>
-        {displayColorPicker1 ? (
-          <div style={popover}>
-            <div style={cover} onClick={handleClose1} />
-            <CompactPicker color={color1} onChange={type1ColorHandler} />
+        <div style={{ marginBottom: "5px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
+            <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1 }}>
+              Color
+            </Button>
+            {displayColorPicker1 ? (
+              <div style={popover}>
+                <div style={cover} onClick={handleClose1} />
+                <CompactPicker color={color1} onChange={type1ColorHandler} />
+              </div>
+            ) : null}
+            <InputNumber size="small" style={{ width: "50px", fontSize: "0.8rem" }} value={thickness1} onChange={thicknessHandler1} />
+            <Select size="small" value={lineType1} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler1}>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
+            </Select>
           </div>
-        ) : null}
-        <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={thickness1} onChange={thicknessHandler1} />
-        <Select size="small" value={lineType1} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler1}>
-          <Option value="solid" style={{ fontSize: "0.8rem" }}>
-            solid
-          </Option>
-          <Option value="dashed" style={{ fontSize: "0.8rem" }}>
-            dashed
-          </Option>
-          <Option value="dotted" style={{ fontSize: "0.8rem" }}>
-            dotted
-          </Option>
-        </Select>
-        <div style={{ display: "inline-block", borderBottom: `${thickness1}px ${lineType1} ${color1}` }}>밑줄긋기 예시 입니다~~~</div>
-        
+          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness1}px ${lineType1} ${color1}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+        </div>
 
-        <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2 }}>
-          Color
-        </Button>
-        {displayColorPicker2 ? (
-          <div style={popover}>
-            <div style={cover} onClick={handleClose2} />
-            <CompactPicker color={color2} onChange={type2ColorHandler} />
+        <div style={{ marginBottom: "5px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
+            <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2 }}>
+              Color
+            </Button>
+            {displayColorPicker2 ? (
+              <div style={popover}>
+                <div style={cover} onClick={handleClose2} />
+                <CompactPicker color={color2} onChange={type2ColorHandler} />
+              </div>
+            ) : null}
+            <InputNumber size="small" style={{ width: "50px", fontSize: "0.8rem" }} value={thickness2} onChange={thicknessHandler2} />
+            <Select size="small" value={lineType2} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler2}>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
+            </Select>
           </div>
-        ) : null}
-        <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={thickness2} onChange={thicknessHandler2} />
-        <Select size="small" value={lineType2} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler2}>
-          <Option value="solid" style={{ fontSize: "0.8rem" }}>
-            solid
-          </Option>
-          <Option value="dashed" style={{ fontSize: "0.8rem" }}>
-            dashed
-          </Option>
-          <Option value="dotted" style={{ fontSize: "0.8rem" }}>
-            dotted
-          </Option>
-        </Select>
-        <div style={{ display: "inline-block", borderBottom: `${thickness2}px ${lineType2} ${color2}` }}>밑줄긋기 예시 입니다~~~</div>
-        
+          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness2}px ${lineType2} ${color2}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+        </div>
 
-        <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3 }}>
-          Color
-        </Button>
-        {displayColorPicker3 ? (
-          <div style={popover}>
-            <div style={cover} onClick={handleClose3} />
-            <CompactPicker color={color3} onChange={type3ColorHandler} />
+        <div style={{ marginBottom: "5px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
+            <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3 }}>
+              Color
+            </Button>
+            {displayColorPicker3 ? (
+              <div style={popover}>
+                <div style={cover} onClick={handleClose3} />
+                <CompactPicker color={color3} onChange={type3ColorHandler} />
+              </div>
+            ) : null}
+            <InputNumber size="small" style={{ width: "50px", fontSize: "0.8rem" }} value={thickness3} onChange={thicknessHandler3} />
+            <Select size="small" value={lineType3} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler3}>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
+            </Select>
           </div>
-        ) : null}
-        <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={thickness3} onChange={thicknessHandler3} />
-        <Select size="small" value={lineType3} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler3}>
-          <Option value="solid" style={{ fontSize: "0.8rem" }}>
-            solid
-          </Option>
-          <Option value="dashed" style={{ fontSize: "0.8rem" }}>
-            dashed
-          </Option>
-          <Option value="dotted" style={{ fontSize: "0.8rem" }}>
-            dotted
-          </Option>
-        </Select>
-        <div style={{ display: "inline-block", borderBottom: `${thickness3}px ${lineType3} ${color3}` }}>밑줄긋기 예시 입니다~~~</div>
-        
+          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness3}px ${lineType3} ${color3}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+        </div>
 
-        <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4 }}>
-          Color
-        </Button>
-        {displayColorPicker4 ? (
-          <div style={popover}>
-            <div style={cover} onClick={handleClose4} />
-            <CompactPicker color={color4} onChange={type4ColorHandler} />
+        <div style={{ marginBottom: "5px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
+            <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4 }}>
+              Color
+            </Button>
+            {displayColorPicker4 ? (
+              <div style={popover}>
+                <div style={cover} onClick={handleClose4} />
+                <CompactPicker color={color4} onChange={type4ColorHandler} />
+              </div>
+            ) : null}
+            <InputNumber size="small" style={{ width: "50px", fontSize: "0.8rem" }} value={thickness4} onChange={thicknessHandler4} />
+            <Select size="small" value={lineType4} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler4}>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
+            </Select>
           </div>
-        ) : null}
-        <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={thickness4} onChange={thicknessHandler4} />
-        <Select size="small" value={lineType4} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler4}>
-          <Option value="solid" style={{ fontSize: "0.8rem" }}>
-            solid
-          </Option>
-          <Option value="dashed" style={{ fontSize: "0.8rem" }}>
-            dashed
-          </Option>
-          <Option value="dotted" style={{ fontSize: "0.8rem" }}>
-            dotted
-          </Option>
-        </Select>
-        <div style={{ display: "inline-block", borderBottom: `${thickness4}px ${lineType4} ${color4}` }}>밑줄긋기 예시 입니다~~~</div>
-        
+          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness4}px ${lineType4} ${color4}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+        </div>
 
-        <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5 }}>
-          Color
-        </Button>
-        {displayColorPicker5 ? (
-          <div style={popover}>
-            <div style={cover} onClick={handleClose5} />
-            <CompactPicker color={color5} onChange={type5ColorHandler} />
+        <div style={{ marginBottom: "5px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
+            <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5 }}>
+              Color
+            </Button>
+            {displayColorPicker5 ? (
+              <div style={popover}>
+                <div style={cover} onClick={handleClose5} />
+                <CompactPicker color={color5} onChange={type5ColorHandler} />
+              </div>
+            ) : null}
+            <InputNumber size="small" style={{ width: "50px", fontSize: "0.8rem" }} value={thickness5} onChange={thicknessHandler5} />
+            <Select size="small" value={lineType5} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler5}>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
+            </Select>
           </div>
-        ) : null}
-        <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={thickness5} onChange={thicknessHandler5} />
-        <Select size="small" value={lineType5} style={{ width: 75, fontSize: "0.8rem" }} onChange={lineTypeHandler5}>
-          <Option value="solid" style={{ fontSize: "0.8rem" }}>
-            solid
-          </Option>
-          <Option value="dashed" style={{ fontSize: "0.8rem" }}>
-            dashed
-          </Option>
-          <Option value="dotted" style={{ fontSize: "0.8rem" }}>
-            dotted
-          </Option>
-        </Select>
-        <div style={{ display: "inline-block", borderBottom: `${thickness5}px ${lineType5} ${color5}` }}>밑줄긋기 예시 입니다~~~</div>
-        
+          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness5}px ${lineType5} ${color5}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+        </div>
       </Space>
-      <Button size="small" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
-        적용하기
-      </Button>
+
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+        <div></div>
+        <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
+          적용하기
+        </Button>
+      </div>
     </>
   );
 };

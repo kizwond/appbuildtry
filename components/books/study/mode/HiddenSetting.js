@@ -101,7 +101,7 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
 
   function afterupdatemutation(data) {
     console.log("data", data);
-    updateStudyToolApply(data.cardtypeset_updateStudyTool.cardtypesets)
+    updateStudyToolApply(data.cardtypeset_updateStudyTool.cardtypesets);
   }
 
   async function updatestudytool(data) {
@@ -123,31 +123,44 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
   return (
     <>
       <Space direction="vertical">
-        <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1 }}>
-          Color
-        </Button>
-        <div>가리기 <span style={{ display: "inline-block", backgroundColor: color1, color: color1 }}>예시</span> 입니다~~~</div>
-
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1 }}>
+            Color
+          </Button>
+          <div style={{ fontSize: "0.8rem" }}>
+            ex. 가리기 <span style={{ display: "inline-block", backgroundColor: color1, color: color1 }}>예시</span> 입니다~~~
+          </div>
+        </div>
         {displayColorPicker1 ? (
           <div style={popover}>
             <div style={cover} onClick={handleClose1} />
             <CompactPicker color={color1} onChange={type1ColorHandler} />
           </div>
         ) : null}
-        <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2 }}>
-          Color
-        </Button>
-        <div>가리기 <span style={{ display: "inline-block", backgroundColor: color2, color: color2 }}>예시</span> 입니다~~~</div>
+
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2 }}>
+            Color
+          </Button>
+          <div style={{ fontSize: "0.8rem" }}>
+            ex. 가리기 <span style={{ display: "inline-block", backgroundColor: color2, color: color2 }}>예시</span> 입니다~~~
+          </div>
+        </div>
         {displayColorPicker2 ? (
           <div style={popover}>
             <div style={cover} onClick={handleClose2} />
             <CompactPicker color={color2} onChange={type2ColorHandler} />
           </div>
         ) : null}
-        <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3 }}>
-          Color
-        </Button>
-        <div>가리기 <span style={{ display: "inline-block", backgroundColor: color3, color: color3 }}>예시</span> 입니다~~~</div>
+
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3 }}>
+            Color
+          </Button>
+          <div style={{ fontSize: "0.8rem" }}>
+            ex. 가리기 <span style={{ display: "inline-block", backgroundColor: color3, color: color3 }}>예시</span> 입니다~~~
+          </div>
+        </div>
         {displayColorPicker3 ? (
           <div style={popover}>
             <div style={cover} onClick={handleClose3} />
@@ -155,10 +168,14 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           </div>
         ) : null}
 
-        <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4 }}>
-          Color
-        </Button>
-        <div>가리기 <span style={{ display: "inline-block", backgroundColor: color4, color: color4 }}>예시</span> 입니다~~~</div>
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4 }}>
+            Color
+          </Button>
+          <div style={{ fontSize: "0.8rem" }}>
+            ex. 가리기 <span style={{ display: "inline-block", backgroundColor: color4, color: color4 }}>예시</span> 입니다~~~
+          </div>
+        </div>
         {displayColorPicker4 ? (
           <div style={popover}>
             <div style={cover} onClick={handleClose4} />
@@ -166,10 +183,14 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           </div>
         ) : null}
 
-        <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5 }}>
-          Color
-        </Button>
-        <div>가리기 <span style={{ display: "inline-block", backgroundColor: color5, color: color5 }}>예시</span> 입니다~~~</div>
+        <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5 }}>
+            Color
+          </Button>
+          <div style={{ fontSize: "0.8rem" }}>
+            ex. 가리기 <span style={{ display: "inline-block", backgroundColor: color5, color: color5 }}>예시</span> 입니다~~~
+          </div>
+        </div>
         {displayColorPicker5 ? (
           <div style={popover}>
             <div style={cover} onClick={handleClose5} />
@@ -177,9 +198,12 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           </div>
         ) : null}
       </Space>
-      <Button size="small" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
-        적용하기
-      </Button>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+        <div></div>
+        <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
+          적용하기
+        </Button>
+      </div>
     </>
   );
 };

@@ -48,7 +48,7 @@ const RightDrawer = ({ cardTypeSets, updateStudyToolApply }) => {
                 </>
               }
               key="1"
-              style={{padding:10}}
+              style={{paddingTop:10}}
             >
               <HiddenSetting cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply}/>
             </TabPane>
@@ -59,7 +59,7 @@ const RightDrawer = ({ cardTypeSets, updateStudyToolApply }) => {
                 </>
               }
               key="2"
-              style={{padding:10}}
+              style={{paddingTop:10}}
             >
               <UnderlineSetting cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply}/>
             </TabPane>
@@ -70,7 +70,7 @@ const RightDrawer = ({ cardTypeSets, updateStudyToolApply }) => {
                 </>
               }
               key="3"
-              style={{padding:10}}
+              style={{paddingTop:10}}
             >
               <HighlightSetting cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply}/>
             </TabPane>

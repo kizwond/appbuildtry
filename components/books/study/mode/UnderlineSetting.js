@@ -183,7 +183,7 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
       <Space direction="vertical">
         <div style={{ marginBottom: "5px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
-            <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1 }}>
+            <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1, borderRadius: "10px" }}>
               Color
             </Button>
             {displayColorPicker1 ? (
@@ -205,12 +205,15 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
               </Option>
             </Select>
           </div>
-          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness1}px ${lineType1} ${color1}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop:"5px" }}>
+            <div></div>
+            <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness1}px ${lineType1} ${color1}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          </div>
         </div>
 
         <div style={{ marginBottom: "5px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
-            <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2 }}>
+            <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2, borderRadius: "10px" }}>
               Color
             </Button>
             {displayColorPicker2 ? (
@@ -232,12 +235,15 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
               </Option>
             </Select>
           </div>
-          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness2}px ${lineType2} ${color2}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop:"5px"  }}>
+            <div></div>
+            <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness2}px ${lineType2} ${color2}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          </div>
         </div>
 
         <div style={{ marginBottom: "5px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
-            <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3 }}>
+            <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3, borderRadius: "10px" }}>
               Color
             </Button>
             {displayColorPicker3 ? (
@@ -259,12 +265,15 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
               </Option>
             </Select>
           </div>
-          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness3}px ${lineType3} ${color3}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop:"5px"  }}>
+            <div></div>
+            <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness3}px ${lineType3} ${color3}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          </div>
         </div>
 
         <div style={{ marginBottom: "5px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
-            <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4 }}>
+            <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4, borderRadius: "10px" }}>
               Color
             </Button>
             {displayColorPicker4 ? (
@@ -286,12 +295,15 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
               </Option>
             </Select>
           </div>
-          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness4}px ${lineType4} ${color4}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop:"5px"  }}>
+            <div></div>
+            <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness4}px ${lineType4} ${color4}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          </div>
         </div>
 
         <div style={{ marginBottom: "5px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", width: "220px", alignItems: "center" }}>
-            <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5 }}>
+            <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5, borderRadius: "10px" }}>
               Color
             </Button>
             {displayColorPicker5 ? (
@@ -313,7 +325,10 @@ const UnderlineSetting = ({ cardTypeSets, updateStudyToolApply }) => {
               </Option>
             </Select>
           </div>
-          <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness5}px ${lineType5} ${color5}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop:"5px"  }}>
+            <div></div>
+            <div style={{ fontSize: "0.8rem", display: "inline-block", borderBottom: `${thickness5}px ${lineType5} ${color5}` }}>ex. 밑줄긋기 예시 입니다~~~</div>
+          </div>
         </div>
       </Space>
 

@@ -124,7 +124,7 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
     <>
       <Space direction="vertical">
         <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1 }}>
+          <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1, borderRadius:"10px" }}>
             Color
           </Button>
           <div style={{ fontSize: "0.8rem" }}>
@@ -139,7 +139,7 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
         ) : null}
 
         <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2 }}>
+          <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2, borderRadius:"10px" }}>
             Color
           </Button>
           <div style={{ fontSize: "0.8rem" }}>
@@ -154,7 +154,7 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
         ) : null}
 
         <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3 }}>
+          <Button size="small" onClick={handleClick3} style={{ width: "80px", fontSize: "0.8rem", background: color3, borderRadius:"10px" }}>
             Color
           </Button>
           <div style={{ fontSize: "0.8rem" }}>
@@ -169,7 +169,7 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
         ) : null}
 
         <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4 }}>
+          <Button size="small" onClick={handleClick4} style={{ width: "80px", fontSize: "0.8rem", background: color4, borderRadius:"10px" }}>
             Color
           </Button>
           <div style={{ fontSize: "0.8rem" }}>
@@ -184,7 +184,7 @@ const HiddenSetting = ({ cardTypeSets, updateStudyToolApply }) => {
         ) : null}
 
         <div style={{ width: "200px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5 }}>
+          <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5, borderRadius:"10px" }}>
             Color
           </Button>
           <div style={{ fontSize: "0.8rem" }}>

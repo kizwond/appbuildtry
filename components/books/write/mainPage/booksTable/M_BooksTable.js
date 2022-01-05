@@ -121,6 +121,7 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
                 setExpandedRowKeys(
                   expandedRowKeys.filter((key) => key !== _record.key)
                 );
+                setNewCategoryId(null);
               }
               if (!expandedRowKeys.includes(_record.key)) {
                 setExpandedRowKeys([...expandedRowKeys, _record.key]);
@@ -158,6 +159,7 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
                     setExpandedRowKeys(
                       expandedRowKeys.filter((key) => key !== _record.key)
                     );
+                    setNewCategoryId(null);
                   }
                   if (!expandedRowKeys.includes(_record.key)) {
                     setExpandedRowKeys([...expandedRowKeys, _record.key]);
@@ -282,7 +284,12 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
       title={
         <Space>
           <div className="ForPageMainTitle">나의책</div>
-          <CreateBookButton category={category} />
+          <CreateBookButton
+            category={category}
+            addNewCategoryIdOnExpandedRowKeys={
+              addNewCategoryIdOnExpandedRowKeys
+            }
+          />
           <CategorySettingButton
             category={category}
             addNewCategoryIdOnExpandedRowKeys={

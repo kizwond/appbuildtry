@@ -8,7 +8,13 @@ import styled from "styled-components";
 import { FRAGMENT_MYBOOK } from "../../../../graphql/fragment/book";
 import { MUTATION_CREATE_MY_BOOK } from "../../../../graphql/mutation/myBook";
 
-const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
+const CreateBookModal = ({
+  category,
+  visible,
+  changeVisible,
+  isPc,
+  addNewCategoryIdOnExpandedRowKeys,
+}) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const { resetFields, getFieldInstance } = form;
@@ -22,6 +28,10 @@ const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
     onCompleted: (_data) => {
       if (_data.mybook_createMybook.msg == "책 생성 성공적!") {
         console.log("receivedData", _data);
+
+        // changeVisible(false);
+        // // postNewMyBook(values.book_title, values.category);
+        // resetFields();
       } else if (_data.mybook_createMybook.status === "401") {
         router.push("/m/account/login");
       } else {
@@ -123,6 +133,7 @@ const CreateBookModal = ({ category, visible, changeVisible, isPc }) => {
             category: category.mybookcates[0]._id,
           }}
           onFinish={(values) => {
+            addNewCategoryIdOnExpandedRowKeys(values.category);
             changeVisible(false);
             postNewMyBook(values.book_title, values.category);
             resetFields();

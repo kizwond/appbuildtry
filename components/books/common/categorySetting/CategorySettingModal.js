@@ -35,9 +35,7 @@ const CategorySettingModal = ({
   const [editingCell, setEditingCell] = useState("");
   const [cateName, setCateName] = useState("");
   const [expandedRowKeys, setExpandedRowKeys] = useState("");
-  const [isInputForFistCateInput, SetIsInputForFistCateInput] = useState(false);
   const newIdRef = useRef();
-  const firstNewCategoryInputRef = useRef();
 
   const router = useRouter();
 
@@ -58,12 +56,6 @@ const CategorySettingModal = ({
       newCateRef.current[rowKey].focus();
     }
   }, [expandedRowKeys]);
-
-  useEffect(() => {
-    if (isInputForFistCateInput) {
-      firstNewCategoryInputRef.current.focus();
-    }
-  }, [firstNewCategoryInputRef, isInputForFistCateInput]);
 
   const [createNewCategory] = useMutation(MUTATION_CREATE_MY_BOOK_CATEGORY, {
     onCompleted: (received_data) => {
@@ -459,64 +451,6 @@ const CategorySettingModal = ({
           tableLayout="fixed"
           columns={columns}
           size="small"
-          locale={{
-            emptyText: (
-              <Empty
-                image={
-                  isInputForFistCateInput ? (
-                    <div style={{ margin: "20px 10px", display: "flex" }}>
-                      <Input
-                        size="small"
-                        ref={firstNewCategoryInputRef}
-                        value={cateName}
-                        onChange={(e) => {
-                          setCateName(e.target.value);
-                        }}
-                        style={{ marginRight: "5px" }}
-                      />
-                      <Button
-                        size="small"
-                        type="primary"
-                        style={{ marginRight: "5px" }}
-                        onClick={() => {
-                          createCategory({ name: cateName, seq: 1 });
-                          newIdRef.current = 1;
-                          setCateName("");
-                          SetIsInputForFistCateInput(false);
-                        }}
-                      >
-                        생성
-                      </Button>
-                      <Button
-                        size="small"
-                        type="primary"
-                        onClick={() => {
-                          setCateName("");
-                          SetIsInputForFistCateInput(false);
-                        }}
-                      >
-                        취소
-                      </Button>
-                    </div>
-                  ) : (
-                    Empty.PRESENTED_IMAGE_SIMPLE
-                  )
-                }
-                description={<div>등록된 카테고리가 없습니다.</div>}
-              >
-                {!isInputForFistCateInput && (
-                  <Button
-                    type="primary"
-                    onClick={() => {
-                      SetIsInputForFistCateInput(true);
-                    }}
-                  >
-                    새 카테고리 만들기
-                  </Button>
-                )}
-              </Empty>
-            ),
-          }}
           expandable={{
             expandedRowKeys,
             expandedRowRender: (_record, _index) => (
@@ -539,8 +473,8 @@ const CategorySettingModal = ({
                   }
                   style={{ marginRight: "5px" }}
                   onClick={() => {
-                    createCategory({ name: cateName, seq: _index + 2 });
-                    newIdRef.current = _index + 2;
+                    createCategory({ name: cateName, seq: _index + 1 });
+                    newIdRef.current = _index + 1;
                     setCateName("");
                     setExpandedRowKeys([]);
                   }}

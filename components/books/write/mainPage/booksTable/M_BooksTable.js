@@ -19,6 +19,7 @@ import MoveToBookSetting from "../../../common/MoveToBookSetting";
 import makeDataSource from "../../../common/logic";
 import {
   StyledFlexAlignCenter,
+  StyledFlexAllCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
 } from "../../../../common/styledComponent/page";
@@ -30,6 +31,8 @@ import CreateBookButton from "../../../common/createBook/CreateBookButton";
 import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
+import moment from "moment";
+import computeFromNow from "../../../common/logic/computeFromNow";
 
 const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -201,7 +204,7 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
       dataIndex: "total",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 26,
+      width: 30,
       render: (_value, _record) => {
         const obj = {
           children: (
@@ -209,6 +212,9 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
               value={_value}
               read={_record.read}
               flip={_record.flip}
+              general={_record.general}
+              common={_record.common}
+              subject={_record.subject}
             />
           ),
           props: {
@@ -224,17 +230,21 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
         return obj;
       },
     },
-
     {
-      title: "카드생성이력",
-      key: "writeHistory",
-      dataIndex: "writeHistory",
-      className: "TableMiddleColumn TextAlignCenterColumn",
+      title: "최근학습일",
+      key: "timeStudy",
+      dataIndex: "timeStudy",
+      className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 60,
+      width: 43,
       render: (_value, _record) => {
+        const dateString = computeFromNow(_value);
         const obj = {
-          children: <WriteHistoryGraphBarComponent _record={_record} />,
+          children: (
+            <StyledFlexAllCenter>
+              {_value === null ? "-" : dateString}
+            </StyledFlexAllCenter>
+          ),
           props: {
             colSpan: 1,
             rowSpan: 1,
@@ -248,6 +258,30 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
         return obj;
       },
     },
+
+    // {
+    //   title: "카드생성이력",
+    //   key: "writeHistory",
+    //   dataIndex: "writeHistory",
+    //   className: "TableMiddleColumn TextAlignCenterColumn",
+    //   align: "center",
+    //   width: 60,
+    //   render: (_value, _record) => {
+    //     const obj = {
+    //       children: <WriteHistoryGraphBarComponent _record={_record} />,
+    //       props: {
+    //         colSpan: 1,
+    //         rowSpan: 1,
+    //       },
+    //     };
+    //     if (getConditionValue(_record)) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
     {
       key: "seqInCategory",
       dataIndex: "seqInCategory",

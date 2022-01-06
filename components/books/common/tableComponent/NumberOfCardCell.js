@@ -5,7 +5,15 @@ import {
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
 } from "../../../common/styledComponent/page";
-const NumberOfCardCell = ({ value, read, flip, isPc }) => {
+const NumberOfCardCell = ({
+  value,
+  read,
+  flip,
+  general,
+  common,
+  subject,
+  isPc,
+}) => {
   return (
     <StyledWrapper className={isPc ? "PcPagePopOver" : null}>
       <Popover
@@ -22,11 +30,15 @@ const NumberOfCardCell = ({ value, read, flip, isPc }) => {
             </StyledFlexSpaceBetween>
             <StyledFlexSpaceBetween>
               <div>목차카드:</div>
-              <div>수정必</div>
+              <div>{subject}</div>
             </StyledFlexSpaceBetween>
             <StyledFlexSpaceBetween>
               <div>일반카드:</div>
-              <div>수정必</div>
+              <div>{general}</div>
+            </StyledFlexSpaceBetween>
+            <StyledFlexSpaceBetween>
+              <div>공유카드:</div>
+              <div>{common}</div>
             </StyledFlexSpaceBetween>
           </>
         }
@@ -38,6 +50,9 @@ const NumberOfCardCell = ({ value, read, flip, isPc }) => {
         <StyledFlexAllCenterDimension100Percent>
           {value}
         </StyledFlexAllCenterDimension100Percent>
+        <StyledFlexAllCenterDimension100Percent>
+          {`(${flip + read})`}
+        </StyledFlexAllCenterDimension100Percent>
       </Popover>
     </StyledWrapper>
   );
@@ -47,11 +62,4 @@ export default NumberOfCardCell;
 
 const StyledWrapper = styled.div`
   width: 100%;
-
-  .M-Popover-NumberOfCards
-    > .ant-popover-content
-    > .ant-popover-inner
-    > .ant-popover-inner-content {
-    font-size: ${({ is_pc }) => (is_pc === "true" ? "15px" : " 0.8rem")};
-  }
 `;

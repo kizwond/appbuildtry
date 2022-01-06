@@ -7,6 +7,7 @@ import {
   DoubleLeftOutlined,
   DoubleRightOutlined,
   DownOutlined,
+  EditOutlined,
   RightOutlined,
 } from "@ant-design/icons";
 
@@ -30,6 +31,7 @@ import moment from "moment";
 import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
+import { useRouter } from "next/router";
 
 const StudyBooksTable = ({
   category,
@@ -39,6 +41,14 @@ const StudyBooksTable = ({
   isFoldedMenu,
   changeFoldedMenu,
 }) => {
+  const router = useRouter();
+  const movepage = useCallback(function (bookid) {
+    localStorage.removeItem("book_id");
+    localStorage.setItem("book_id", bookid);
+    router.push(`/books/write/${bookid}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -216,6 +226,37 @@ const StudyBooksTable = ({
         return obj;
       },
     },
+    {
+      title: "수정",
+      key: "total",
+      dataIndex: "total",
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 20,
+      onCell: (record) => ({
+        onClick: () => {
+          movepage(record._id);
+        },
+        style: { cursor: "pointer" },
+      }),
+
+      render: (_value, _record, _index) => {
+        const obj = {
+          children: <EditOutlined />,
+          props: {
+            colSpan: 1,
+            rowSpan: 1,
+          },
+        };
+        if (getConditionValue(_record)) {
+          obj.props.colSpan = 0;
+        } else {
+          obj.props.colSpan = 1;
+        }
+        return obj;
+      },
+    },
+
     {
       title: "카드수",
       key: "total",

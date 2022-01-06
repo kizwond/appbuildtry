@@ -5,7 +5,11 @@ import styled from "styled-components";
 import moment from "moment";
 
 import { Table, Card, Space, Drawer, Checkbox, Popover } from "antd";
-import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import {
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 
 import HideOrShowButton from "../../../common/HideOrShowButton";
 import MoveToBookSetting from "../../../common/MoveToBookSetting";
@@ -32,6 +36,14 @@ const M_StudyFavoriteBooksTable = ({
   isFoldedMenu,
   changeFoldedMenu,
 }) => {
+  const router = useRouter();
+  const movepage = useCallback(function (bookid) {
+    localStorage.removeItem("book_id");
+    localStorage.setItem("book_id", bookid);
+    router.push(`/books/write/${bookid}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(true);
   const checkRef = useRef({});
@@ -140,6 +152,21 @@ const M_StudyFavoriteBooksTable = ({
           </div>
         );
       },
+    },
+    {
+      title: "수정",
+      key: "total",
+      dataIndex: "total",
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 20,
+      onCell: (record) => ({
+        onClick: () => {
+          movepage(record._id);
+        },
+        style: { cursor: "pointer" },
+      }),
+      render: (_value, _record) => <EditOutlined />,
     },
     {
       title: "카드수",

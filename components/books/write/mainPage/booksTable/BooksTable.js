@@ -3,25 +3,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
-import { Table, Card, Space, Drawer, Popover } from "antd";
-import {
-  DoubleLeftOutlined,
-  DoubleRightOutlined,
-  DownOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
-
-import BookOrderButton from "../../../common/BookOrderButton";
-import HideOrShowButton from "../../../common/HideOrShowButton";
-import FavoriteBook from "../../../common/FavoriteBook";
-import MoveToBookSetting from "../../../common/MoveToBookSetting";
+import { Table, Card, Space } from "antd";
+import { DownOutlined, RightOutlined } from "@ant-design/icons";
 
 import makeDataSource from "../../../common/logic";
-import {
-  StyledFlexAlignCenter,
-  StyledFlexAllCenterDimension100Percent,
-  StyledFlexSpaceBetween,
-} from "../../../../common/styledComponent/page";
+import { StyledFlexAlignCenter } from "../../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
@@ -85,7 +71,7 @@ const BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
   const movepage = useCallback(function (bookid) {
     localStorage.removeItem("book_id");
     localStorage.setItem("book_id", bookid);
-    router.push(`/m/write/${bookid}`);
+    router.push(`/books/write/${bookid}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

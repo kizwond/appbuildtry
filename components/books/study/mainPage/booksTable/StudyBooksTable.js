@@ -242,7 +242,11 @@ const StudyBooksTable = ({
 
       render: (_value, _record, _index) => {
         const obj = {
-          children: <EditOutlined />,
+          children: (
+            <StyledFlexAllCenter>
+              <EditOutlined />
+            </StyledFlexAllCenter>
+          ),
           props: {
             colSpan: 1,
             rowSpan: 1,

@@ -166,7 +166,11 @@ const M_StudyFavoriteBooksTable = ({
         },
         style: { cursor: "pointer" },
       }),
-      render: (_value, _record) => <EditOutlined />,
+      render: (_value, _record) => (
+        <StyledFlexAllCenter>
+          <EditOutlined />
+        </StyledFlexAllCenter>
+      ),
     },
     {
       title: "카드수",

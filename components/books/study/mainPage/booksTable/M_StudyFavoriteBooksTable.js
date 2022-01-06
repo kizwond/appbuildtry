@@ -155,7 +155,11 @@ const M_StudyFavoriteBooksTable = ({
           movepage(record._id);
         },
       }),
-      render: (_value, _record) => <EditOutlined />,
+      render: (_value, _record) => (
+        <StyledFlexAllCenter>
+          <EditOutlined />
+        </StyledFlexAllCenter>
+      ),
     },
     {
       title: "카드수",

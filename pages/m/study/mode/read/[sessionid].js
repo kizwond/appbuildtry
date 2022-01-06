@@ -27,7 +27,7 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
-import { Button, Modal, Space, Tag,message } from "antd";
+import { Button, Modal, Space, Tag,message, Divider } from "antd";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 import { elementType } from "prop-types";
 
@@ -1159,6 +1159,7 @@ const ReadMode = () => {
                       </div>
                     </div>
                   </div>
+                  <Divider style={{marginTop:"5px", marginBottom:"5px"}} dashed />
                 </>
               )}
 
@@ -1168,119 +1169,238 @@ const ReadMode = () => {
                     <>
                       <div
                         style={{
-                          height: "1.5rem",
-                          padding: "0px",
+                          backgroundColor: "#f0f0f0",
+                          height: "28px",
+                          padding: "0 3px 0 3px",
+                          boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-between",
-                          alignItems: "end",
+                          alignItems: "center",
+                          border: "1px solid gainsboro",
                         }}
                       >
-                        <div style={{ height: "1.5rem" }}>
-                          <FlagFilled
-                            onClick={onClickUserFlag}
-                            style={{
-                              cursor: "pointer",
-                              fontSize: "1.5rem",
-                              color: `red`,
-                            }}
-                          />
+                        <div style={{ height: "1.5rem", position: "relative" }}>
+                          {content.content.userFlag === 0 && (
+                            <>
+                              <FlagOutlined
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "1.5rem",
+                                  color: "#f0f0f0",
+                                  border: "1px solid lightgrey",
+                                }}
+                              />
+                            </>
+                          )}
+                          {content.content.userFlag !== 0 && (
+                            <>
+                              <FlagFilled
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "1.5rem",
+                                  color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                }}
+                              />
+                            </>
+                          )}
+
                           {userFlag && (
                             <>
-                              <span style={{ marginLeft: "5px" }}>
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "red",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "orange",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "yellow",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "green",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "blue",
-                                  }}
-                                />
-                              </span>
+                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
                             </>
                           )}
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              alignItems: "end",
-                            }}
-                          >
-                            {cardClickMenu && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Button
-                                  size="small"
-                                  style={{
-                                    fontSize: "0.8rem",
-                                    height: "1.5rem",
-                                    marginRight: "5px",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  메모추가
-                                </Button>
-                                <Button
-                                  size="small"
-                                  style={{
-                                    fontSize: "0.8rem",
-                                    height: "1.5rem",
-                                    marginRight: "5px",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  새카드생성
-                                </Button>
-                              </div>
-                            )}
-                            <MenuFoldOutlined
-                              onClick={onClickCardMenu}
+                          <Space>
+                            <Button
+                              size="small"
                               style={{
-                                fontSize: "1.5rem",
-                                color: "grey",
-                                lineHeight: "1px",
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
                               }}
-                            />
-                          </div>
+                              icon={<PlusOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<TagOutlined />}
+                            ></Button>
+                            <div unselectable="on" style={{ position: "relative" }}>
+                              <Button
+                                unselectable="on"
+                                className="hiddenButton"
+                                onClick={hiddenEffectDeleteModal}
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<EyeInvisibleOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                              ></Button>
+
+                              <Modal title="가리기 해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                                {content.content.hidden &&
+                                  content.content.hidden.map((item) => {
+                                    return (
+                                      <>
+                                        <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <span>{item.targetWord}</span>
+                                            <span
+                                              style={{
+                                                marginLeft: "3px",
+                                                color: "grey",
+                                              }}
+                                            >
+                                              <CloseOutlined />
+                                            </span>
+                                          </div>
+                                        </Tag>
+                                      </>
+                                    );
+                                  })}
+                              </Modal>
+                            </div>
+
+                            {/* underline */}
+                            <div unselectable="on" style={{ position: "relative" }}>
+                              <Button
+                                unselectable="on"
+                                className="underlineButton"
+                                onClick={underlineEffectDeleteModal}
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<UnderlineOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                              ></Button>
+
+                              <Modal title="밑줄 해제" footer={null} visible={isModalVisibleUnderline} onOk={handleOk} onCancel={handleCancel}>
+                                {content.content.underline &&
+                                  content.content.underline.map((item) => {
+                                    return (
+                                      <>
+                                        <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <span>{item.targetWord}</span>
+                                            <span
+                                              style={{
+                                                marginLeft: "3px",
+                                                color: "grey",
+                                              }}
+                                            >
+                                              <CloseOutlined />
+                                            </span>
+                                          </div>
+                                        </Tag>
+                                      </>
+                                    );
+                                  })}
+                              </Modal>
+                            </div>
+                            {/* <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<UnderlineOutlined />}></Button> */}
+                            <div unselectable="on" style={{ position: "relative" }}>
+                              <Button
+                                unselectable="on"
+                                className="highlightbutton"
+                                onClick={highlightEffectDeleteModal}
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<HighlightOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                              ></Button>
+
+                              <Modal title="형광펜 해제" footer={null} visible={isModalVisibleHighlight} onOk={handleOk} onCancel={handleCancel}>
+                                {content.content.highlight &&
+                                  content.content.highlight.map((item) => {
+                                    return (
+                                      <>
+                                        <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <span>{item.targetWord}</span>
+                                            <span
+                                              style={{
+                                                marginLeft: "3px",
+                                                color: "grey",
+                                              }}
+                                            >
+                                              <CloseOutlined />
+                                            </span>
+                                          </div>
+                                        </Tag>
+                                      </>
+                                    );
+                                  })}
+                              </Modal>
+                            </div>
+
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<ProfileOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<QuestionCircleOutlined />}
+                            ></Button>
+                          </Space>
+                        </div>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          {content.content.memo !== null && (
+                            <>
+                              <Button
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<MessageOutlined />}
+                              ></Button>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <Button
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<PicRightOutlined />}
+                              ></Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     </>
@@ -1296,17 +1416,65 @@ const ReadMode = () => {
                           alignItems: "end",
                         }}
                       >
-                        <div
-                          style={{
-                            backgroundColor: "red",
-                            height: "4px",
-                            width: "20px",
-                            borderRadius: "2px",
-                          }}
-                        >
-                          {" "}
+                        {content.content.userFlag === 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: "#ffffff00",
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+                        {content.content.userFlag !== 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+
+                        <div style={{ display: "flex", alignItems: "end" }}>
+                          {content.content.memo !== null && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "#50d663",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "blue",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
                         </div>
-                        <div></div>
                       </div>
                     </>
                   )}
@@ -1368,7 +1536,8 @@ const ReadMode = () => {
                                   textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                 }}
                               >
-                                <FroalaEditorView model={item} />
+                                {/* <FroalaEditorView model={item} /> */}
+                                <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                               </div>
                             </>
                           ))}
@@ -1376,127 +1545,247 @@ const ReadMode = () => {
                       </div>
                     </div>
                   </div>
+                  <Divider style={{marginTop:"5px", marginBottom:"5px"}} dashed />
                 </>
               )}
-              {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "top-bottom" && (
+              {content.card_info.cardtype === "flip" && (
                 <>
                   {content._id === cardId && (
                     <>
                       <div
                         style={{
-                          height: "1.5rem",
-                          padding: "0px",
+                          backgroundColor: "#f0f0f0",
+                          height: "28px",
+                          padding: "0 3px 0 3px",
+                          boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-between",
-                          alignItems: "end",
+                          alignItems: "center",
+                          border: "1px solid gainsboro",
                         }}
                       >
-                        <div style={{ height: "1.5rem" }}>
-                          <FlagFilled
-                            onClick={onClickUserFlag}
-                            style={{
-                              cursor: "pointer",
-                              fontSize: "1.5rem",
-                              color: `red`,
-                            }}
-                          />
+                        <div style={{ height: "1.5rem", position: "relative" }}>
+                          {content.content.userFlag === 0 && (
+                            <>
+                              <FlagOutlined
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "1.5rem",
+                                  color: "#f0f0f0",
+                                  border: "1px solid lightgrey",
+                                }}
+                              />
+                            </>
+                          )}
+                          {content.content.userFlag !== 0 && (
+                            <>
+                              <FlagFilled
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "1.5rem",
+                                  color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                }}
+                              />
+                            </>
+                          )}
+
                           {userFlag && (
                             <>
-                              <span style={{ marginLeft: "5px" }}>
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "red",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "orange",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "yellow",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "green",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "blue",
-                                  }}
-                                />
-                              </span>
+                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
                             </>
                           )}
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              alignItems: "end",
-                            }}
-                          >
-                            {cardClickMenu && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Button
-                                  size="small"
-                                  style={{
-                                    fontSize: "0.8rem",
-                                    height: "1.5rem",
-                                    marginRight: "5px",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  메모추가
-                                </Button>
-                                <Button
-                                  size="small"
-                                  style={{
-                                    fontSize: "0.8rem",
-                                    height: "1.5rem",
-                                    marginRight: "5px",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  새카드생성
-                                </Button>
-                              </div>
-                            )}
-                            <MenuFoldOutlined
-                              onClick={onClickCardMenu}
+                          <Space>
+                            <Button
+                              size="small"
                               style={{
-                                fontSize: "1.5rem",
-                                color: "grey",
-                                lineHeight: "1px",
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
                               }}
-                            />
-                          </div>
+                              icon={<PlusOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<TagOutlined />}
+                            ></Button>
+                            <div unselectable="on" style={{ position: "relative" }}>
+                              <Button
+                                unselectable="on"
+                                className="hiddenButton"
+                                onClick={hiddenEffectDeleteModal}
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<EyeInvisibleOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                              ></Button>
+
+                              <Modal title="가리기 해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                                {content.content.hidden &&
+                                  content.content.hidden.map((item) => {
+                                    return (
+                                      <>
+                                        <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <span>{item.targetWord}</span>
+                                            <span
+                                              style={{
+                                                marginLeft: "3px",
+                                                color: "grey",
+                                              }}
+                                            >
+                                              <CloseOutlined />
+                                            </span>
+                                          </div>
+                                        </Tag>
+                                      </>
+                                    );
+                                  })}
+                              </Modal>
+                            </div>
+
+                            {/* underline */}
+                            <div unselectable="on" style={{ position: "relative" }}>
+                              <Button
+                                unselectable="on"
+                                className="underlineButton"
+                                onClick={underlineEffectDeleteModal}
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<UnderlineOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                              ></Button>
+
+                              <Modal title="밑줄 해제" footer={null} visible={isModalVisibleUnderline} onOk={handleOk} onCancel={handleCancel}>
+                                {content.content.underline &&
+                                  content.content.underline.map((item) => {
+                                    return (
+                                      <>
+                                        <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <span>{item.targetWord}</span>
+                                            <span
+                                              style={{
+                                                marginLeft: "3px",
+                                                color: "grey",
+                                              }}
+                                            >
+                                              <CloseOutlined />
+                                            </span>
+                                          </div>
+                                        </Tag>
+                                      </>
+                                    );
+                                  })}
+                              </Modal>
+                            </div>
+                            {/* <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<UnderlineOutlined />}></Button> */}
+                            <div unselectable="on" style={{ position: "relative" }}>
+                              <Button
+                                unselectable="on"
+                                className="highlightbutton"
+                                onClick={highlightEffectDeleteModal}
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<HighlightOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                              ></Button>
+
+                              <Modal title="형광펜 해제" footer={null} visible={isModalVisibleHighlight} onOk={handleOk} onCancel={handleCancel}>
+                                {content.content.highlight &&
+                                  content.content.highlight.map((item) => {
+                                    return (
+                                      <>
+                                        <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <span>{item.targetWord}</span>
+                                            <span
+                                              style={{
+                                                marginLeft: "3px",
+                                                color: "grey",
+                                              }}
+                                            >
+                                              <CloseOutlined />
+                                            </span>
+                                          </div>
+                                        </Tag>
+                                      </>
+                                    );
+                                  })}
+                              </Modal>
+                            </div>
+
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<ProfileOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<QuestionCircleOutlined />}
+                            ></Button>
+                          </Space>
+                        </div>
+                        <div style={{ lineHeight: "1.5rem" }}>
+                          {content.content.memo !== null && (
+                            <>
+                              <Button
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<MessageOutlined />}
+                              ></Button>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <Button
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<PicRightOutlined />}
+                              ></Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     </>
@@ -1512,17 +1801,65 @@ const ReadMode = () => {
                           alignItems: "end",
                         }}
                       >
-                        <div
-                          style={{
-                            backgroundColor: "red",
-                            height: "4px",
-                            width: "20px",
-                            borderRadius: "2px",
-                          }}
-                        >
-                          {" "}
+                        {content.content.userFlag === 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: "#ffffff00",
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+                        {content.content.userFlag !== 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+
+                        <div style={{ display: "flex", alignItems: "end" }}>
+                          {content.content.memo !== null && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "#50d663",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "blue",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
                         </div>
-                        <div></div>
                       </div>
                     </>
                   )}
@@ -1604,7 +1941,8 @@ const ReadMode = () => {
                                   }}
                                 >
                                   {/* <FroalaEditorView model={item} /> */}
-                                  <div id={`face1row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
+                                  <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
+                                  {/* <div id={`face1row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }}></div> */}
                                 </div>
                               </>
                             ))}
@@ -1712,7 +2050,8 @@ const ReadMode = () => {
                                   }}
                                 >
                                   {/* <FroalaEditorView model={item} /> */}
-                                  <div id={`face2row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }}></div>
+                                  <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
+                                  {/* <div id={`face2row${index + 1}`} dangerouslySetInnerHTML={{ __html: item }}></div> */}
                                 </div>
                               </>
                             ))}
@@ -1721,6 +2060,7 @@ const ReadMode = () => {
                       </div>
                     </div>
                   </div>
+                  <Divider style={{marginTop:"5px", marginBottom:"5px"}} dashed />
                 </>
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "left-right" && (
@@ -2224,6 +2564,9 @@ const ReadMode = () => {
               underlineToggleHandler={underlineToggleHandler}
               highlightToggleHandler={highlightToggleHandler}
               updateStudyToolApply={updateStudyToolApply}
+              setHiddenToggle={setHiddenToggle}
+              setUnderlineToggle={setUnderlineToggle}
+              setHighlightToggle={setHighlightToggle}
             />
           </>
         )}
@@ -2258,7 +2601,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
       if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
         altered = altered.replace(
           element.targetWord,
-          `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}">${element.targetWord}</span>`
+          `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}; --z-index:-1">${element.targetWord}</span>`
         );
       } else if (element.toolType === 2) {
         altered = altered.replace(

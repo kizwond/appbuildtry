@@ -8,11 +8,12 @@ import HighlightSetting from "./HighlightSetting";
 import { Tabs } from "antd";
 const { TabPane } = Tabs;
 
-const RightDrawer = ({ cardTypeSets, updateStudyToolApply }) => {
+const RightDrawer = ({ cardTypeSets, updateStudyToolApply, setBottomVisible }) => {
   const [visible, setVisible] = useState(false);
 
   const showDrawer = () => {
     setVisible(true);
+    setBottomVisible(false)
   };
 
   const onClose = () => {

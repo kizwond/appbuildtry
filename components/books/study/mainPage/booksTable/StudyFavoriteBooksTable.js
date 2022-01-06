@@ -173,6 +173,26 @@ const M_StudyFavoriteBooksTable = ({
       ),
     },
     {
+      title: "총카드수",
+      key: "total",
+      dataIndex: "total",
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 26,
+      render: (_value, _record, _index) => (
+        <NumberOfCardCell
+          value={_value}
+          read={_record.read}
+          flip={_record.flip}
+          general={_record.general}
+          common={_record.common}
+          subject={_record.subject}
+          isPc
+        />
+      ),
+    },
+
+    {
       title: "카드수",
       key: "total",
       dataIndex: "total",
@@ -184,6 +204,9 @@ const M_StudyFavoriteBooksTable = ({
           value={_value}
           read={_record.read}
           flip={_record.flip}
+          general={_record.general}
+          common={_record.common}
+          subject={_record.subject}
           isPc
         />
       ),

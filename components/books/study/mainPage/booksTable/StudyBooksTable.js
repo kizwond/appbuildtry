@@ -275,6 +275,9 @@ const StudyBooksTable = ({
               value={_value}
               read={_record.read}
               flip={_record.flip}
+              general={_record.general}
+              common={_record.common}
+              subject={_record.subject}
               isPc
             />
           ),
@@ -305,6 +308,9 @@ const StudyBooksTable = ({
               value={_value}
               read={_record.read}
               flip={_record.flip}
+              general={_record.general}
+              common={_record.common}
+              subject={_record.subject}
               isPc
             />
           ),
@@ -351,41 +357,41 @@ const StudyBooksTable = ({
         return obj;
       },
     },
-    {
-      title: "진도율",
-      key: "accuLevel",
-      dataIndex: "accuLevel",
-      className: "TableMiddleColumn TextAlignCenterColumn",
-      align: "center",
-      width: 60,
-      render: (_value, _record, _index) => {
-        const obj = {
-          children: (
-            <div>
-              {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-              {_record.total === 0 ? (
-                "-"
-              ) : (
-                <StyledProgress
-                  booktype={_record.type}
-                  percent={_record.accuLevel / _record.total}
-                />
-              )}
-            </div>
-          ),
-          props: {
-            colSpan: 1,
-            rowSpan: 1,
-          },
-        };
-        if (getConditionValue(_record)) {
-          obj.props.colSpan = 0;
-        } else {
-          obj.props.colSpan = 1;
-        }
-        return obj;
-      },
-    },
+    // {
+    //   title: "진도율",
+    //   key: "accuLevel",
+    //   dataIndex: "accuLevel",
+    //   className: "TableMiddleColumn TextAlignCenterColumn",
+    //   align: "center",
+    //   width: 60,
+    //   render: (_value, _record, _index) => {
+    //     const obj = {
+    //       children: (
+    //         <div>
+    //           {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
+    //           {_record.total === 0 ? (
+    //             "-"
+    //           ) : (
+    //             <StyledProgress
+    //               booktype={_record.type}
+    //               percent={_record.accuLevel / _record.total}
+    //             />
+    //           )}
+    //         </div>
+    //       ),
+    //       props: {
+    //         colSpan: 1,
+    //         rowSpan: 1,
+    //       },
+    //     };
+    //     if (getConditionValue(_record)) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
     {
       key: "seqInCategory",
       dataIndex: "seqInCategory",

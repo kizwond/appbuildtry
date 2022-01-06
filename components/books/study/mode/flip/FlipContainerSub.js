@@ -34,6 +34,7 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null;
   
+  card_details_session[current_card_info_index].studyStatus.isUpdated = true;
   updateSessionResult(card_details_session[current_card_info_index])
   
 
@@ -69,6 +70,9 @@ const calculateNormalStudy = (interval, selection, current_card_info_index, time
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = needStudyTime;
 
+  card_details_session[current_card_info_index].studyStatus.isUpdated = true;
+  updateSessionResult(card_details_session[current_card_info_index])
+
   return card_details_session;
 };
 
@@ -93,6 +97,9 @@ const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
 
   card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
+
+  card_details_session[current_card_info_index].studyStatus.isUpdated = true;
+  updateSessionResult(card_details_session[current_card_info_index])
   
   return card_details_session;
 };
@@ -120,6 +127,9 @@ const calculateRestore = (selection, current_card_info_index, timer) => {
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;  
 
   card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
+
+  card_details_session[current_card_info_index].studyStatus.isUpdated = true;
+  updateSessionResult(card_details_session[current_card_info_index])
   
   return card_details_session;
 };
@@ -135,6 +145,9 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
   card_details_session[current_card_info_index].studyStatus.totalStayHour += timer;
 
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
+
+  card_details_session[current_card_info_index].studyStatus.isUpdated = true;
+  updateSessionResult(card_details_session[current_card_info_index])
 
   return card_details_session;
 };

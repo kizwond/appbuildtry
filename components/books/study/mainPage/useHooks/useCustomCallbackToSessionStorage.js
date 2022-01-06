@@ -34,6 +34,10 @@ export const useCustomCallbackToSessionStore = () => {
         up: { count: 0, gap: 0 },
         down: { count: 0, gap: 0 },
       },
+      nonCompletedLevelChange : {
+        count : 0,
+        gap : 0
+      },
       userFlagChange: {
         flag0: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
         flag1: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },

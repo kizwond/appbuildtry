@@ -225,9 +225,9 @@ p {
 .ForPcMainPages .ant-table.ant-table-small .ant-table-tbody > tr > td {
   font-size: 13px;
 }
-.ant-table.ant-table-small .ant-table-tbody > tr > td.TableGroupingColumn {
+/* .ant-table.ant-table-small .ant-table-tbody > tr > td.TableGroupingColumn {
   padding: 4px;
-}
+} */
 
 .ant-table.ant-table-small
   .ant-table-tbody
@@ -355,7 +355,7 @@ p {
   > tr.OddNumberRow
   > .TableLastColumn
   > div {
-  height: 4.2rem;
+  height: 100%;
   display: flex;
   align-items: center;
   padding: 4px;

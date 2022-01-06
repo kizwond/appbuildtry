@@ -129,6 +129,9 @@ const FavoriteBooksTable = forwardRef(
             value={_value}
             read={_record.read}
             flip={_record.flip}
+            general={_record.general}
+            common={_record.common}
+            subject={_record.subject}
             isPc
           />
         ),

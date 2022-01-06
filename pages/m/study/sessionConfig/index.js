@@ -151,6 +151,7 @@ const StudySessionConfig = ({
           sortedCards,
           isRefreshPage,
           selectedBooks,
+          numberOfFilteredCards,
         });
 
         router.push(

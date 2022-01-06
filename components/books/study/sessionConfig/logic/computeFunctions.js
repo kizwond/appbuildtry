@@ -147,6 +147,7 @@ export const computeNumberOfAllFilteredCards = ({
   let todayMidnight = new Date();
   todayMidnight.setDate(todayMidnight.getDate() + 1);
   todayMidnight.setHours(0, 0, 0, 0);
+  console.log("실행됨");
   const flattenCheckedKeys = Object.keys(checkedKeys).flatMap(
     (key) => checkedKeys[key]
   );
@@ -252,7 +253,7 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
         levelOriginal: card.studyStatus.levelCurrent,
         userFlagOriginal: card.content.userFlag,
         userFlagPrev: card.content.userFlag,
-        studyTimesInSession: 0,
+        clickTimesInSession: 0,
         studyHourInSession: 0,
         needStudyTimeTmp: null,
         levelAcquisitionOfNotCompleted: 0,

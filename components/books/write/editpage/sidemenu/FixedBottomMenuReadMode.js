@@ -24,7 +24,6 @@ import {
   ToolOutlined,
   ReadOutlined,
 } from "@ant-design/icons";
-import "animate.css";
 
 import StudyToolSetting from "../../../study/mode/StudyToolSetting";
 import Item from "antd/lib/list/Item";

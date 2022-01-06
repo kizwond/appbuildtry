@@ -20,9 +20,16 @@ import M_SessionNavigationBar /* ----------- */ from "../../../../components/boo
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
 import { LoadingOutlined } from "@ant-design/icons";
+import { useCustomCallbackToSessionStore } from "../../../../components/books/study/mainPage/useHooks/useCustomCallbackToSessionStorage";
 
-const StudySessionConfig = (props) => {
+const StudySessionConfig = ({
+  isRefreshPage,
+  selectedBooks,
+  initialCheckedKey,
+}) => {
   const router = useRouter();
+
+  const writeSessionDataInSessionStorage = useCustomCallbackToSessionStore();
 
   /* 세션 설정 customHook */
   const {
@@ -53,13 +60,13 @@ const StudySessionConfig = (props) => {
     []
   );
   useEffect(() => {
-    if (!props.isRefreshPage) {
-      setCheckedKeys(props.initialCheckedKey);
+    if (!isRefreshPage) {
+      setCheckedKeys(initialCheckedKey);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    if (props.isRefreshPage) {
+    if (isRefreshPage) {
       const checkedKeys = JSON.parse(sessionStorage.getItem("forCheckedKeys"));
       setCheckedKeys(checkedKeys);
     }
@@ -88,8 +95,8 @@ const StudySessionConfig = (props) => {
         mybook_ids:
           typeof window === "undefined"
             ? []
-            : !props.isRefreshPage
-            ? props.selectedBooks.map((book) => book.book_id)
+            : !isRefreshPage
+            ? selectedBooks.map((book) => book.book_id)
             : JSON.parse(sessionStorage.getItem("books_selected")).map(
                 (book) => book.book_id
               ),
@@ -105,8 +112,8 @@ const StudySessionConfig = (props) => {
       computeNumberOfCardsPerBook({
         indexsets: data.indexset_getByMybookids.indexsets,
         cardsets: data.cardset_getByMybookIDs.cardsets,
-        bookList: !props.isRefreshPage
-          ? props.selectedBooks
+        bookList: !isRefreshPage
+          ? selectedBooks
           : JSON.parse(sessionStorage.getItem("books_selected")),
       }),
 
@@ -178,67 +185,76 @@ const StudySessionConfig = (props) => {
     onCompleted: (_data) => {
       if (_data.session_createSession.status === "200") {
         console.log("세션 생성 요청 후 받은 데이터", _data);
-        sessionStorage.setItem(
-          "session_Id",
-          _data.session_createSession.sessions[0]._id
-        );
-        sessionStorage.setItem("study_mode", sessionConfig.studyMode);
-        sessionStorage.setItem(
-          "resultOfSession",
-          JSON.stringify(sessionResults)
-        );
-        sessionStorage.setItem(
-          "resultByBook",
-          JSON.stringify(
-            !props.isRefreshPage
-              ? props.selectedBooks.map((book) => ({
-                  ...sessionResults,
-                  mybook_id: book.book_id,
-                }))
-              : JSON.parse(sessionStorage.getItem("books_selected")).map(
-                  (book) => ({
-                    ...sessionResults,
-                    mybook_id: book.book_id,
-                  })
-                )
-          )
-        );
-        sessionStorage.removeItem("cardListStudying");
-        console.time("카드스터딩넣기");
         const sortedCards = sortFilteredCards({
           numberOfFilteredCards,
           sortOption: sessionConfig.detailedOption.sortOption,
         });
 
-        if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
-          const { studyingCards, remainedCards } = getCardsByNumber({
-            sortedCards,
-            numStartCards: sessionConfig.detailedOption.numStartCards,
-          });
-          sessionStorage.setItem(
-            "cardListStudying",
-            JSON.stringify(studyingCards)
-          );
-          sessionStorage.setItem(
-            "cardListRemained",
-            JSON.stringify(remainedCards)
-          );
-        } else {
-          sessionStorage.setItem(
-            "cardListStudying",
-            JSON.stringify(sortedCards)
-          );
-          sessionStorage.setItem(
-            "cardListRemained",
-            JSON.stringify({
-              yet: [],
-              ing: [],
-              hold: [],
-              completed: [],
-            })
-          );
-        }
-        console.timeEnd("카드스터딩넣기");
+        writeSessionDataInSessionStorage({
+          _data,
+          sessionConfig,
+          sortedCards,
+          isRefreshPage,
+          selectedBooks,
+        });
+
+        // sessionStorage.setItem(
+        //   "session_Id",
+        //   _data.session_createSession.sessions[0]._id
+        // );
+        // sessionStorage.setItem("study_mode", sessionConfig.studyMode);
+        // sessionStorage.setItem(
+        //   "resultOfSession",
+        //   JSON.stringify(sessionResults)
+        // );
+        // sessionStorage.setItem(
+        //   "resultByBook",
+        //   JSON.stringify(
+        //     !props.isRefreshPage
+        //       ? props.selectedBooks.map((book) => ({
+        //           ...sessionResults,
+        //           mybook_id: book.book_id,
+        //         }))
+        //       : JSON.parse(sessionStorage.getItem("books_selected")).map(
+        //           (book) => ({
+        //             ...sessionResults,
+        //             mybook_id: book.book_id,
+        //           })
+        //         )
+        //   )
+        // );
+        // sessionStorage.removeItem("cardListStudying");
+        // console.time("카드스터딩넣기");
+
+        // if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
+        //   const { studyingCards, remainedCards } = getCardsByNumber({
+        //     sortedCards,
+        //     numStartCards: sessionConfig.detailedOption.numStartCards,
+        //   });
+        //   sessionStorage.setItem(
+        //     "cardListStudying",
+        //     JSON.stringify(studyingCards)
+        //   );
+        //   sessionStorage.setItem(
+        //     "cardListRemained",
+        //     JSON.stringify(remainedCards)
+        //   );
+        // } else {
+        //   sessionStorage.setItem(
+        //     "cardListStudying",
+        //     JSON.stringify(sortedCards)
+        //   );
+        //   sessionStorage.setItem(
+        //     "cardListRemained",
+        //     JSON.stringify({
+        //       yet: [],
+        //       ing: [],
+        //       hold: [],
+        //       completed: [],
+        //     })
+        //   );
+        // }
+        // console.timeEnd("카드스터딩넣기");
 
         router.push(
           `/m/study/mode/${sessionConfig.studyMode}/${_data.session_createSession.sessions[0]._id}`
@@ -331,8 +347,8 @@ const StudySessionConfig = (props) => {
               <M_TabsOfBooksForInfromationTable
                 bookData={bookData}
                 bookList={
-                  !props.isRefreshPage
-                    ? props.selectedBooks
+                  !isRefreshPage
+                    ? selectedBooks
                     : JSON.parse(sessionStorage.getItem("books_selected"))
                 }
                 checkedKeys={checkedKeys}

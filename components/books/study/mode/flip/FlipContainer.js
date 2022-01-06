@@ -185,11 +185,6 @@ class Container extends Component {
 
     //서버에 보내기 위한 학습정보 리스트 생성
     this.generateStudyStatus(card_details_session, current_card_info_index);
-    //업데이트된 학습정보 세션스토리지에 다시 저장
-    card_details_session[current_card_info_index].studyStatus.currentLevElapsedTime = null;
-    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = null;
-    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 0;
-    card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null;
     //recent know time 여기서 리셋
     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
 

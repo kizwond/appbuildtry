@@ -10,6 +10,7 @@ export const useCustomCallbackToSessionStore = () => {
   const sessionResults = useMemo(
     () => ({
       mybook_id: null,
+      studyHour : 0,
       numCards: {
         yet: { selected: 0, inserted: 0, started: 0, finished: 0 },
         ing: { selected: 0, inserted: 0, started: 0, finished: 0 },

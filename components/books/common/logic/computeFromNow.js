@@ -2,7 +2,7 @@ import moment from "moment";
 
 const computeFromNow = (value) => {
   const newDate = new Date(Number(value));
-  const fromNow = moment(newDate).diff(moment(), "days");
+  const fromNow = -1 * moment(newDate).diff(moment(), "days");
   const dateString =
     fromNow === 0
       ? "오늘"

@@ -228,6 +228,7 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
           (card) => card.studyStatus.needStudyTime === null
         );
         return [...nonNullCards, ...nullCards];
+        
 
       case "random":
         const random = _.shuffle(numberOfFilteredCards); // Creates an array of shuffled values, using a version of the Fisher-Yates shuffle. immutable

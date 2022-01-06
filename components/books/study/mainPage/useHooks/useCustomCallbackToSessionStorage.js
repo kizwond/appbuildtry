@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useCallback } from "react";
+import { getCardsByNumber } from "../../sessionConfig/logic/computeFunctions";
 
 export const useCustomCallbackToSessionStore = () => {
   const sessionResults = useMemo(
@@ -33,6 +34,10 @@ export const useCustomCallbackToSessionStore = () => {
         up: { count: 0, gap: 0 },
         down: { count: 0, gap: 0 },
       },
+      nonCompletedLevelChange: {
+        count: 0,
+        gap: 0,
+      },
       userFlagChange: {
         flag0: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
         flag1: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
@@ -53,6 +58,7 @@ export const useCustomCallbackToSessionStore = () => {
       );
       sessionStorage.setItem("study_mode", sessionConfig.studyMode);
       sessionStorage.setItem("resultOfSession", JSON.stringify(sessionResults));
+      sessionStorage.setItem("createdCards", JSON.stringify([]));
       sessionStorage.setItem(
         "resultByBook",
         JSON.stringify(
@@ -70,11 +76,6 @@ export const useCustomCallbackToSessionStore = () => {
         )
       );
       sessionStorage.removeItem("cardListStudying");
-      console.time("카드스터딩넣기");
-      // const sortedCards = sortFilteredCards({
-      //   numberOfFilteredCards,
-      //   sortOption: sessionConfig.detailedOption.sortOption,
-      // });
 
       if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
         const { studyingCards, remainedCards } = getCardsByNumber({
@@ -101,7 +102,6 @@ export const useCustomCallbackToSessionStore = () => {
           })
         );
       }
-      console.timeEnd("카드스터딩넣기");
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

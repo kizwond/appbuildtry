@@ -250,13 +250,16 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
         ...card.studyStatus,
         statusOriginal: card.studyStatus.statusCurrent,
         statusPrev: card.studyStatus.statusCurrent,
+
         levelOriginal: card.studyStatus.levelCurrent,
+
         userFlagOriginal: card.content.userFlag,
         userFlagPrev: card.content.userFlag,
-        studyTimesInSession: 0,
+
+        clickTimesInSession: 0,
         studyHourInSession: 0,
-        needStudyTimeTmp: null,
-        levelAcquisitionOfNotCompleted: 0,
+
+        needStudyTimeTmp: null,        
         isUpdated: false,
       },
     };

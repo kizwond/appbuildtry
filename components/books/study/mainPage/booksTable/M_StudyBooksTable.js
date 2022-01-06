@@ -1,5 +1,6 @@
 /* eslint-disable react/display-name */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 
 import { Table, Card, Space, Checkbox, Popover } from "antd";
@@ -7,11 +8,13 @@ import {
   DoubleLeftOutlined,
   DoubleRightOutlined,
   DownOutlined,
+  EditOutlined,
   RightOutlined,
 } from "@ant-design/icons";
 
 import {
   StyledFlexAlignCenter,
+  StyledFlexAllCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
 } from "../../../../common/styledComponent/page";
@@ -28,6 +31,7 @@ import MoveToBookSetting from "../../../common/MoveToBookSetting";
 import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
+import computeFromNow from "../../../common/logic/computeFromNow";
 
 const M_StudyBooksTable = ({
   category,
@@ -37,11 +41,20 @@ const M_StudyBooksTable = ({
   isFoldedMenu,
   changeFoldedMenu,
 }) => {
+  const router = useRouter();
+
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [isShowedHiddenBook, setIsShowedHiddenBook] = useState([]);
   const [mounted, setMounted] = useState(false);
 
   const checkRef = useRef({});
+
+  const movepage = useCallback(function (bookid) {
+    localStorage.removeItem("book_id");
+    localStorage.setItem("book_id", bookid);
+    router.push(`/m/write/${bookid}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [newCategoryId, setNewCategoryId] = useState(null);
   const addNewCategoryIdOnExpandedRowKeys = useCallback((id) => {
@@ -109,7 +122,7 @@ const M_StudyBooksTable = ({
       key: "categoryName",
       className: "TableGroupingColumn",
       align: "center",
-      width: 50,
+      width: 45,
       dataIndex: "categoryName",
       render: (_value, _record) =>
         _record.relationship === "parent" ? (
@@ -142,7 +155,7 @@ const M_StudyBooksTable = ({
       dataIndex: "title",
       className: "TableFirstColumn",
       align: "center",
-      width: 95,
+      width: 80,
       render: (value, _record, index) => {
         const isSelected =
           selectedBooks.filter((_book) => _book.book_id === _record._id)
@@ -215,19 +228,50 @@ const M_StudyBooksTable = ({
       },
     },
     {
+      title: "수정",
+      key: "total",
+      dataIndex: "total",
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 20,
+      onCell: (record) => ({
+        onClick: () => {
+          movepage(record._id);
+        },
+      }),
+      render: (_value, _record) => {
+        const obj = {
+          children: <EditOutlined />,
+          props: {
+            colSpan: 1,
+            rowSpan: 1,
+          },
+        };
+        if (getConditionValue(_record)) {
+          obj.props.colSpan = 0;
+        } else {
+          obj.props.colSpan = 1;
+        }
+        return obj;
+      },
+    },
+    {
       title: "카드수",
       key: "total",
       dataIndex: "total",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 26,
-      render: (_value, _record, _index) => {
+      width: 30,
+      render: (_value, _record) => {
         const obj = {
           children: (
             <NumberOfCardCell
               value={_value}
               read={_record.read}
               flip={_record.flip}
+              general={_record.general}
+              common={_record.common}
+              subject={_record.subject}
             />
           ),
           props: {
@@ -243,28 +287,20 @@ const M_StudyBooksTable = ({
         return obj;
       },
     },
-
     {
-      title: "진도율",
-      key: "accuLevel",
-      dataIndex: "accuLevel",
-      className: "TableMiddleColumn TextAlignCenterColumn",
+      title: "최근학습일",
+      key: "timeStudy",
+      dataIndex: "timeStudy",
+      className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 60,
-      render: (_value, _record, _index) => {
+      width: 43,
+      render: (_value, _record) => {
+        const dateString = computeFromNow(_value);
         const obj = {
           children: (
-            <div>
-              {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-              {_record.total === 0 ? (
-                "-"
-              ) : (
-                <StyledProgress
-                  booktype={_record.type}
-                  percent={_record.accuLevel / _record.total}
-                />
-              )}
-            </div>
+            <StyledFlexAllCenter>
+              {_value === null ? "-" : dateString}
+            </StyledFlexAllCenter>
           ),
           props: {
             colSpan: 1,
@@ -279,6 +315,42 @@ const M_StudyBooksTable = ({
         return obj;
       },
     },
+
+    // {
+    //   title: "진도율",
+    //   key: "accuLevel",
+    //   dataIndex: "accuLevel",
+    //   className: "TableMiddleColumn TextAlignCenterColumn",
+    //   align: "center",
+    //   width: 60,
+    //   render: (_value, _record, _index) => {
+    //     const obj = {
+    //       children: (
+    //         <div>
+    //           {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
+    //           {_record.total === 0 ? (
+    //             "-"
+    //           ) : (
+    //             <StyledProgress
+    //               booktype={_record.type}
+    //               percent={_record.accuLevel / _record.total}
+    //             />
+    //           )}
+    //         </div>
+    //       ),
+    //       props: {
+    //         colSpan: 1,
+    //         rowSpan: 1,
+    //       },
+    //     };
+    //     if (getConditionValue(_record)) {
+    //       obj.props.colSpan = 0;
+    //     } else {
+    //       obj.props.colSpan = 1;
+    //     }
+    //     return obj;
+    //   },
+    // },
     {
       key: "seqInCategory",
       dataIndex: "seqInCategory",

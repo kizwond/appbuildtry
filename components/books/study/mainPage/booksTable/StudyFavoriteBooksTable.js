@@ -5,7 +5,11 @@ import styled from "styled-components";
 import moment from "moment";
 
 import { Table, Card, Space, Drawer, Checkbox, Popover } from "antd";
-import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
+import {
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 
 import HideOrShowButton from "../../../common/HideOrShowButton";
 import MoveToBookSetting from "../../../common/MoveToBookSetting";
@@ -32,6 +36,14 @@ const M_StudyFavoriteBooksTable = ({
   isFoldedMenu,
   changeFoldedMenu,
 }) => {
+  const router = useRouter();
+  const movepage = useCallback(function (bookid) {
+    localStorage.removeItem("book_id");
+    localStorage.setItem("book_id", bookid);
+    router.push(`/books/write/${bookid}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(true);
   const checkRef = useRef({});
@@ -142,6 +154,21 @@ const M_StudyFavoriteBooksTable = ({
       },
     },
     {
+      title: "수정",
+      key: "total",
+      dataIndex: "total",
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 20,
+      onCell: (record) => ({
+        onClick: () => {
+          movepage(record._id);
+        },
+        style: { cursor: "pointer" },
+      }),
+      render: (_value, _record) => <EditOutlined />,
+    },
+    {
       title: "카드수",
       key: "total",
       dataIndex: "total",
@@ -174,27 +201,6 @@ const M_StudyFavoriteBooksTable = ({
           </StyledFlexAllCenter>
         );
       },
-    },
-    {
-      title: "진도율",
-      key: "timeModify",
-      dataIndex: "timeModify",
-      className: "TableMiddleColumn TextAlignCenterColumn",
-      align: "center",
-      width: 60,
-      render: (_value, _record) => (
-        <div>
-          {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-          {_record.total === 0 ? (
-            "-"
-          ) : (
-            <StyledProgress
-              booktype={_record.type}
-              percent={_record.accuLevel / _record.total}
-            />
-          )}
-        </div>
-      ),
     },
     {
       key: "seqInCategory",

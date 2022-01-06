@@ -11,6 +11,7 @@ import FavoriteBook from "../../../common/FavoriteBook";
 import FavoriteBookOrderButton from "../../../common/FavoriteBookOrderButton";
 import {
   StyledFlexAlignCenter,
+  StyledFlexAllCenter,
   StyledFlexAllCenterDimension100Percent,
   StyledFlexSpaceBetween,
 } from "../../../../common/styledComponent/page";
@@ -20,6 +21,7 @@ import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/a
 import WriteHistoryGraphBarComponent from "./WriteHistoryGraphBarComponent";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
+import computeFromNow from "../../../common/logic/computeFromNow";
 
 const FavoriteBooksTable = forwardRef(
   ({ category, myBook, isFoldedMenu, changeFoldedMenu }, ref) => {
@@ -117,31 +119,38 @@ const FavoriteBooksTable = forwardRef(
       {
         title: "카드수",
         key: "total",
-        align: "center",
         dataIndex: "total",
         className: "TableMiddleColumn TableCardCounterColumn",
         align: "center",
-        ellipsis: true,
-        width: 26,
-        render: (_value, _record) => (
-          <NumberOfCardCell
-            value={_value}
-            read={_record.read}
-            flip={_record.flip}
-          />
-        ),
+        width: 30,
+        render: (_value, _record) => {
+          return (
+            <NumberOfCardCell
+              value={_value}
+              read={_record.read}
+              flip={_record.flip}
+              general={_record.general}
+              common={_record.common}
+              subject={_record.subject}
+            />
+          );
+        },
       },
-
       {
-        title: "카드생성이력",
-        key: "writeHistory",
-        dataIndex: "writeHistory",
-        className: "TableMiddleColumn TextAlignCenterColumn",
+        title: "최근수정일",
+        key: "timeModify",
+        dataIndex: "timeModify",
+        className: "TableMiddleColumn TableCardCounterColumn",
         align: "center",
-        width: 60,
-        render: (_value, _record) => (
-          <WriteHistoryGraphBarComponent _record={_record} />
-        ),
+        width: 43,
+        render: (_value, _record) => {
+          const dateString = computeFromNow(_value);
+          return (
+            <StyledFlexAllCenter>
+              {_value === null ? "-" : dateString}
+            </StyledFlexAllCenter>
+          );
+        },
       },
       {
         // title: "이동",

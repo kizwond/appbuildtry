@@ -25,9 +25,14 @@ import {
   FlagOutlined,
   SettingOutlined,
   CloseOutlined,
+  ClearOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  FormOutlined,
+  BarChartOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
-import { Button, Modal, Space, Tag,message, Divider } from "antd";
+import { Button, Modal, Space, Tag, message, Divider } from "antd";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 import { elementType } from "prop-types";
 
@@ -189,7 +194,7 @@ const ReadMode = () => {
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const filtered = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
     console.log(filtered);
-    cardListStudying[0].content.userFlag = Number(flag);
+    cardListStudying[filtered].content.userFlag = Number(flag);
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     setCardListStudying(cardListStudying);
     setUserFlag(false);
@@ -376,7 +381,7 @@ const ReadMode = () => {
     setUnderlineToggle(false);
     setHighlightToggle(false);
     if (hiddenToggle === false) {
-      message.destroy()
+      message.destroy();
       info();
     }
   };
@@ -387,7 +392,7 @@ const ReadMode = () => {
     setHiddenToggle(false);
     setHighlightToggle(false);
     if (underlineToggle === false) {
-      message.destroy()
+      message.destroy();
       info();
     }
   };
@@ -398,7 +403,7 @@ const ReadMode = () => {
     setHiddenToggle(false);
     setUnderlineToggle(false);
     if (highlightToggle === false) {
-      message.destroy()
+      message.destroy();
       info();
     }
   };
@@ -772,12 +777,14 @@ const ReadMode = () => {
                           backgroundColor: "#f0f0f0",
                           height: "28px",
                           padding: "0 3px 0 3px",
-                          boxShadow: "0px 0px 1px 1px #eeeeee",
+                          // boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-between",
                           alignItems: "center",
                           border: "1px solid gainsboro",
+                          borderTopLeftRadius: "5px",
+                          borderTopRightRadius: "5px",
                         }}
                       >
                         <div style={{ height: "1.5rem", position: "relative" }}>
@@ -815,22 +822,6 @@ const ReadMode = () => {
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
                           <Space>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PlusOutlined />}
-                            ></Button>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<TagOutlined />}
-                            ></Button>
                             <div unselectable="on" style={{ position: "relative" }}>
                               <Button
                                 unselectable="on"
@@ -841,10 +832,11 @@ const ReadMode = () => {
                                   border: "none",
                                   backgroundColor: "#f0f0f0",
                                 }}
-                                icon={<EyeInvisibleOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                                icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
                               ></Button>
 
-                              <Modal title="가리기 해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                              <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                                <div>가리기</div>
                                 {content.content.hidden &&
                                   content.content.hidden.map((item) => {
                                     return (
@@ -870,24 +862,7 @@ const ReadMode = () => {
                                       </>
                                     );
                                   })}
-                              </Modal>
-                            </div>
-
-                            {/* underline */}
-                            <div unselectable="on" style={{ position: "relative" }}>
-                              <Button
-                                unselectable="on"
-                                className="underlineButton"
-                                onClick={underlineEffectDeleteModal}
-                                size="small"
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "#f0f0f0",
-                                }}
-                                icon={<UnderlineOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
-                              ></Button>
-
-                              <Modal title="밑줄 해제" footer={null} visible={isModalVisibleUnderline} onOk={handleOk} onCancel={handleCancel}>
+                                <div>밑줄</div>
                                 {content.content.underline &&
                                   content.content.underline.map((item) => {
                                     return (
@@ -913,23 +888,7 @@ const ReadMode = () => {
                                       </>
                                     );
                                   })}
-                              </Modal>
-                            </div>
-                            {/* <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<UnderlineOutlined />}></Button> */}
-                            <div unselectable="on" style={{ position: "relative" }}>
-                              <Button
-                                unselectable="on"
-                                className="highlightbutton"
-                                onClick={highlightEffectDeleteModal}
-                                size="small"
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "#f0f0f0",
-                                }}
-                                icon={<HighlightOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
-                              ></Button>
-
-                              <Modal title="형광펜 해제" footer={null} visible={isModalVisibleHighlight} onOk={handleOk} onCancel={handleCancel}>
+                                <div>형광펜</div>
                                 {content.content.highlight &&
                                   content.content.highlight.map((item) => {
                                     return (
@@ -957,6 +916,30 @@ const ReadMode = () => {
                                   })}
                               </Modal>
                             </div>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PlusOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<FormOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<DeleteOutlined />}
+                            ></Button>
 
                             <Button
                               size="small"
@@ -972,24 +955,20 @@ const ReadMode = () => {
                                 border: "none",
                                 backgroundColor: "#f0f0f0",
                               }}
-                              icon={<QuestionCircleOutlined />}
+                              icon={<BarChartOutlined />}
                             ></Button>
                           </Space>
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
-                          {content.content.memo !== null && (
-                            <>
-                              <Button
-                                size="small"
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "#f0f0f0",
-                                }}
-                                icon={<MessageOutlined />}
-                              ></Button>
-                            </>
-                          )}
-                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                          <Button
+                            size="small"
+                            style={{
+                              border: "none",
+                              backgroundColor: "#f0f0f0",
+                            }}
+                            icon={<MessageOutlined />}
+                          ></Button>
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
                             <>
                               <Button
                                 size="small"
@@ -998,6 +977,18 @@ const ReadMode = () => {
                                   backgroundColor: "#f0f0f0",
                                 }}
                                 icon={<PicRightOutlined />}
+                              ></Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<PicRightOutlined />}
+                                disabled
                               ></Button>
                             </>
                           )}
@@ -1159,7 +1150,7 @@ const ReadMode = () => {
                       </div>
                     </div>
                   </div>
-                  <Divider style={{marginTop:"5px", marginBottom:"5px"}} dashed />
+                  <Divider style={{ marginTop: "5px", marginBottom: "5px" }} dashed />
                 </>
               )}
 
@@ -1172,12 +1163,14 @@ const ReadMode = () => {
                           backgroundColor: "#f0f0f0",
                           height: "28px",
                           padding: "0 3px 0 3px",
-                          boxShadow: "0px 0px 1px 1px #eeeeee",
+                          // boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-between",
                           alignItems: "center",
                           border: "1px solid gainsboro",
+                          borderTopLeftRadius: "5px",
+                          borderTopRightRadius: "5px",
                         }}
                       >
                         <div style={{ height: "1.5rem", position: "relative" }}>
@@ -1215,22 +1208,6 @@ const ReadMode = () => {
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
                           <Space>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PlusOutlined />}
-                            ></Button>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<TagOutlined />}
-                            ></Button>
                             <div unselectable="on" style={{ position: "relative" }}>
                               <Button
                                 unselectable="on"
@@ -1241,10 +1218,11 @@ const ReadMode = () => {
                                   border: "none",
                                   backgroundColor: "#f0f0f0",
                                 }}
-                                icon={<EyeInvisibleOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                                icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
                               ></Button>
 
-                              <Modal title="가리기 해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                              <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                                <div>가리기</div>
                                 {content.content.hidden &&
                                   content.content.hidden.map((item) => {
                                     return (
@@ -1270,24 +1248,7 @@ const ReadMode = () => {
                                       </>
                                     );
                                   })}
-                              </Modal>
-                            </div>
-
-                            {/* underline */}
-                            <div unselectable="on" style={{ position: "relative" }}>
-                              <Button
-                                unselectable="on"
-                                className="underlineButton"
-                                onClick={underlineEffectDeleteModal}
-                                size="small"
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "#f0f0f0",
-                                }}
-                                icon={<UnderlineOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
-                              ></Button>
-
-                              <Modal title="밑줄 해제" footer={null} visible={isModalVisibleUnderline} onOk={handleOk} onCancel={handleCancel}>
+                                <div>밑줄</div>
                                 {content.content.underline &&
                                   content.content.underline.map((item) => {
                                     return (
@@ -1313,23 +1274,7 @@ const ReadMode = () => {
                                       </>
                                     );
                                   })}
-                              </Modal>
-                            </div>
-                            {/* <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<UnderlineOutlined />}></Button> */}
-                            <div unselectable="on" style={{ position: "relative" }}>
-                              <Button
-                                unselectable="on"
-                                className="highlightbutton"
-                                onClick={highlightEffectDeleteModal}
-                                size="small"
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "#f0f0f0",
-                                }}
-                                icon={<HighlightOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
-                              ></Button>
-
-                              <Modal title="형광펜 해제" footer={null} visible={isModalVisibleHighlight} onOk={handleOk} onCancel={handleCancel}>
+                                <div>형광펜</div>
                                 {content.content.highlight &&
                                   content.content.highlight.map((item) => {
                                     return (
@@ -1357,6 +1302,30 @@ const ReadMode = () => {
                                   })}
                               </Modal>
                             </div>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PlusOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<FormOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<DeleteOutlined />}
+                            ></Button>
 
                             <Button
                               size="small"
@@ -1372,24 +1341,20 @@ const ReadMode = () => {
                                 border: "none",
                                 backgroundColor: "#f0f0f0",
                               }}
-                              icon={<QuestionCircleOutlined />}
+                              icon={<BarChartOutlined />}
                             ></Button>
                           </Space>
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
-                          {content.content.memo !== null && (
-                            <>
-                              <Button
-                                size="small"
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "#f0f0f0",
-                                }}
-                                icon={<MessageOutlined />}
-                              ></Button>
-                            </>
-                          )}
-                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                          <Button
+                            size="small"
+                            style={{
+                              border: "none",
+                              backgroundColor: "#f0f0f0",
+                            }}
+                            icon={<MessageOutlined />}
+                          ></Button>
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
                             <>
                               <Button
                                 size="small"
@@ -1398,6 +1363,18 @@ const ReadMode = () => {
                                   backgroundColor: "#f0f0f0",
                                 }}
                                 icon={<PicRightOutlined />}
+                              ></Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<PicRightOutlined />}
+                                disabled
                               ></Button>
                             </>
                           )}
@@ -1545,7 +1522,7 @@ const ReadMode = () => {
                       </div>
                     </div>
                   </div>
-                  <Divider style={{marginTop:"5px", marginBottom:"5px"}} dashed />
+                  <Divider style={{ marginTop: "5px", marginBottom: "5px" }} dashed />
                 </>
               )}
               {content.card_info.cardtype === "flip" && (
@@ -1557,12 +1534,14 @@ const ReadMode = () => {
                           backgroundColor: "#f0f0f0",
                           height: "28px",
                           padding: "0 3px 0 3px",
-                          boxShadow: "0px 0px 1px 1px #eeeeee",
+                          // boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-between",
                           alignItems: "center",
                           border: "1px solid gainsboro",
+                          borderTopLeftRadius: "5px",
+                          borderTopRightRadius: "5px",
                         }}
                       >
                         <div style={{ height: "1.5rem", position: "relative" }}>
@@ -1600,22 +1579,6 @@ const ReadMode = () => {
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
                           <Space>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PlusOutlined />}
-                            ></Button>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<TagOutlined />}
-                            ></Button>
                             <div unselectable="on" style={{ position: "relative" }}>
                               <Button
                                 unselectable="on"
@@ -1626,10 +1589,11 @@ const ReadMode = () => {
                                   border: "none",
                                   backgroundColor: "#f0f0f0",
                                 }}
-                                icon={<EyeInvisibleOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
+                                icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
                               ></Button>
 
-                              <Modal title="가리기 해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                              <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                                <div>가리기</div>
                                 {content.content.hidden &&
                                   content.content.hidden.map((item) => {
                                     return (
@@ -1655,24 +1619,7 @@ const ReadMode = () => {
                                       </>
                                     );
                                   })}
-                              </Modal>
-                            </div>
-
-                            {/* underline */}
-                            <div unselectable="on" style={{ position: "relative" }}>
-                              <Button
-                                unselectable="on"
-                                className="underlineButton"
-                                onClick={underlineEffectDeleteModal}
-                                size="small"
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "#f0f0f0",
-                                }}
-                                icon={<UnderlineOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
-                              ></Button>
-
-                              <Modal title="밑줄 해제" footer={null} visible={isModalVisibleUnderline} onOk={handleOk} onCancel={handleCancel}>
+                                <div>밑줄</div>
                                 {content.content.underline &&
                                   content.content.underline.map((item) => {
                                     return (
@@ -1698,23 +1645,7 @@ const ReadMode = () => {
                                       </>
                                     );
                                   })}
-                              </Modal>
-                            </div>
-                            {/* <Button size="small" style={{ border: "none", backgroundColor: "#f0f0f0" }} icon={<UnderlineOutlined />}></Button> */}
-                            <div unselectable="on" style={{ position: "relative" }}>
-                              <Button
-                                unselectable="on"
-                                className="highlightbutton"
-                                onClick={highlightEffectDeleteModal}
-                                size="small"
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "#f0f0f0",
-                                }}
-                                icon={<HighlightOutlined unselectable="on" style={{ pointerEvents: "none" }} />}
-                              ></Button>
-
-                              <Modal title="형광펜 해제" footer={null} visible={isModalVisibleHighlight} onOk={handleOk} onCancel={handleCancel}>
+                                <div>형광펜</div>
                                 {content.content.highlight &&
                                   content.content.highlight.map((item) => {
                                     return (
@@ -1742,6 +1673,30 @@ const ReadMode = () => {
                                   })}
                               </Modal>
                             </div>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PlusOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<FormOutlined />}
+                            ></Button>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<DeleteOutlined />}
+                            ></Button>
 
                             <Button
                               size="small"
@@ -1757,24 +1712,20 @@ const ReadMode = () => {
                                 border: "none",
                                 backgroundColor: "#f0f0f0",
                               }}
-                              icon={<QuestionCircleOutlined />}
+                              icon={<BarChartOutlined />}
                             ></Button>
                           </Space>
                         </div>
                         <div style={{ lineHeight: "1.5rem" }}>
-                          {content.content.memo !== null && (
-                            <>
-                              <Button
-                                size="small"
-                                style={{
-                                  border: "none",
-                                  backgroundColor: "#f0f0f0",
-                                }}
-                                icon={<MessageOutlined />}
-                              ></Button>
-                            </>
-                          )}
-                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                          <Button
+                            size="small"
+                            style={{
+                              border: "none",
+                              backgroundColor: "#f0f0f0",
+                            }}
+                            icon={<MessageOutlined />}
+                          ></Button>
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
                             <>
                               <Button
                                 size="small"
@@ -1783,6 +1734,18 @@ const ReadMode = () => {
                                   backgroundColor: "#f0f0f0",
                                 }}
                                 icon={<PicRightOutlined />}
+                              ></Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button
+                                size="small"
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "#f0f0f0",
+                                }}
+                                icon={<PicRightOutlined />}
+                                disabled
                               ></Button>
                             </>
                           )}
@@ -1866,7 +1829,7 @@ const ReadMode = () => {
                   <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
-                        onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
+                        onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id, content.card_info)}
                         // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
                       >
                         <div
@@ -2060,351 +2023,7 @@ const ReadMode = () => {
                       </div>
                     </div>
                   </div>
-                  <Divider style={{marginTop:"5px", marginBottom:"5px"}} dashed />
-                </>
-              )}
-              {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "left-right" && (
-                <>
-                  {content._id === cardId && (
-                    <>
-                      <div
-                        style={{
-                          height: "1.5rem",
-                          padding: "0px",
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "end",
-                        }}
-                      >
-                        <div style={{ height: "1.5rem" }}>
-                          <FlagFilled
-                            onClick={onClickUserFlag}
-                            style={{
-                              cursor: "pointer",
-                              fontSize: "1.5rem",
-                              color: `red`,
-                            }}
-                          />
-                          {userFlag && (
-                            <>
-                              <span style={{ marginLeft: "5px" }}>
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "red",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "orange",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "yellow",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "green",
-                                  }}
-                                />
-                                <FlagFilled
-                                  onClick={userFlagChange}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "1.5rem",
-                                    color: "blue",
-                                  }}
-                                />
-                              </span>
-                            </>
-                          )}
-                        </div>
-                        <div style={{ lineHeight: "1.5rem" }}>
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              alignItems: "end",
-                            }}
-                          >
-                            {cardClickMenu && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Button
-                                  size="small"
-                                  style={{
-                                    fontSize: "0.8rem",
-                                    height: "1.5rem",
-                                    marginRight: "5px",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  메모추가
-                                </Button>
-                                <Button
-                                  size="small"
-                                  style={{
-                                    fontSize: "0.8rem",
-                                    height: "1.5rem",
-                                    marginRight: "5px",
-                                    borderRadius: "5px",
-                                  }}
-                                >
-                                  새카드생성
-                                </Button>
-                              </div>
-                            )}
-                            <MenuFoldOutlined
-                              onClick={onClickCardMenu}
-                              style={{
-                                fontSize: "1.5rem",
-                                color: "grey",
-                                lineHeight: "1px",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  {content._id !== cardId && (
-                    <>
-                      <div
-                        style={{
-                          padding: "0px",
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          alignItems: "end",
-                        }}
-                      >
-                        <div
-                          style={{
-                            backgroundColor: "red",
-                            height: "4px",
-                            width: "20px",
-                            borderRadius: "2px",
-                          }}
-                        ></div>
-                        <div></div>
-                      </div>
-                    </>
-                  )}
-                  <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
-                    <div style={{ marginBottom: "0px" }}>
-                      <div
-                        onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
-                        // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
-                      >
-                        <div
-                          style={{
-                            backgroundColor: face_style[0].background.color,
-                            marginTop: face_style[0].outer_margin.top,
-                            marginBottom: face_style[0].outer_margin.bottom,
-                            marginLeft: face_style[0].outer_margin.left,
-                            marginRight: face_style[0].outer_margin.right,
-                            paddingTop: face_style[0].inner_padding.top,
-                            paddingBottom: face_style[0].inner_padding.bottom,
-                            paddingLeft: face_style[0].inner_padding.left,
-                            paddingRight: face_style[0].inner_padding.right,
-                            borderTop: `${face_style[0].border.top.thickness}px ${face_style[0].border.top.bordertype} ${face_style[0].border.top.color}`,
-                            borderBottom: `${face_style[0].border.bottom.thickness}px ${face_style[0].border.bottom.bordertype} ${face_style[0].border.bottom.color}`,
-                            borderLeft: `${face_style[0].border.left.thickness}px ${face_style[0].border.left.bordertype} ${face_style[0].border.left.color}`,
-                            borderRight: `${face_style[0].border.right.thickness}px ${face_style[0].border.right.bordertype} ${face_style[0].border.right.color}`,
-                          }}
-                        >
-                          {/* 페이스1 스타일 영역 */}
-                          {content.content.makerFlag.value !== null && flagArea}
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "row",
-                              justifyContent: "flex-start",
-                              width: "100%",
-                            }}
-                          >
-                            <div
-                              style={{
-                                width: `${current_card_style[0].cardtype_info.flip_option.left_face_ratio}%`,
-                                backgroundColor: face_style[1].background.color,
-                                marginTop: face_style[1].outer_margin.top,
-                                marginBottom: face_style[1].outer_margin.bottom,
-                                marginLeft: face_style[1].outer_margin.left,
-                                marginRight: face_style[1].outer_margin.right,
-                                paddingTop: face_style[1].inner_padding.top,
-                                paddingBottom: face_style[1].inner_padding.bottom,
-                                paddingLeft: face_style[1].inner_padding.left,
-                                paddingRight: face_style[1].inner_padding.right,
-                                borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
-                                borderBottom: `${face_style[1].border.bottom.thickness}px ${face_style[1].border.bottom.bordertype} ${face_style[1].border.bottom.color}`,
-                                borderLeft: `${face_style[1].border.left.thickness}px ${face_style[1].border.left.bordertype} ${face_style[1].border.left.color}`,
-                                borderRight: `${face_style[1].border.right.thickness}px ${face_style[1].border.right.bordertype} ${face_style[1].border.right.color}`,
-                              }}
-                            >
-                              {content_value.face1.map((item, index) => (
-                                <>
-                                  <div
-                                    style={{
-                                      backgroundColor: row_style.face1[index].background.color,
-                                      marginTop: row_style.face1[index].outer_margin.top,
-                                      marginBottom: row_style.face1[index].outer_margin.bottom,
-                                      marginLeft: row_style.face1[index].outer_margin.left,
-                                      marginRight: row_style.face1[index].outer_margin.right,
-                                      paddingTop: row_style.face1[index].inner_padding.top,
-                                      paddingBottom: row_style.face1[index].inner_padding.bottom,
-                                      paddingLeft: row_style.face1[index].inner_padding.left,
-                                      paddingRight: row_style.face1[index].inner_padding.right,
-                                      borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
-                                      borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
-                                      borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
-                                      borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
-                                      textAlign: row_font.face1[index].align,
-                                      fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
-                                      color: row_font.face1[index].color,
-                                      fontFamily: `${
-                                        row_font.face1[index].font === "고딕"
-                                          ? `Nanum Gothic, sans-serif`
-                                          : row_font.face1[index].font === "명조"
-                                          ? `Nanum Myeongjo, sans-serif`
-                                          : row_font.face1[index].font === "바탕"
-                                          ? `Gowun Batang, sans-serif`
-                                          : row_font.face1[index].font === "돋움"
-                                          ? `Gowun Dodum, sans-serif`
-                                          : ""
-                                      } `,
-                                      fontSize: row_font.face1[index].size,
-                                      textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
-                                    }}
-                                  >
-                                    <FroalaEditorView model={item} />
-                                  </div>
-                                </>
-                              ))}
-                              {content_value.selection &&
-                                content_value.selection.map((item, index) => (
-                                  <>
-                                    <div
-                                      style={{
-                                        backgroundColor: row_style.face1[index].background.color,
-                                        marginTop: row_style.face1[index].outer_margin.top,
-                                        marginBottom: row_style.face1[index].outer_margin.bottom,
-                                        marginLeft: row_style.face1[index].outer_margin.left,
-                                        marginRight: row_style.face1[index].outer_margin.right,
-                                        paddingTop: row_style.face1[index].inner_padding.top,
-                                        paddingBottom: row_style.face1[index].inner_padding.bottom,
-                                        paddingLeft: row_style.face1[index].inner_padding.left,
-                                        paddingRight: row_style.face1[index].inner_padding.right,
-                                        borderTop: `${row_style.face1[index].border.top.thickness}px ${row_style.face1[index].border.top.bordertype} ${row_style.face1[index].border.top.color}`,
-                                        borderBottom: `${row_style.face1[index].border.bottom.thickness}px ${row_style.face1[index].border.bottom.bordertype} ${row_style.face1[index].border.bottom.color}`,
-                                        borderLeft: `${row_style.face1[index].border.left.thickness}px ${row_style.face1[index].border.left.bordertype} ${row_style.face1[index].border.left.color}`,
-                                        borderRight: `${row_style.face1[index].border.right.thickness}px ${row_style.face1[index].border.right.bordertype} ${row_style.face1[index].border.right.color}`,
-                                        textAlign: row_font.face1[index].align,
-                                        fontWeight: `${row_font.face1[index].bold === "on" ? 700 : 400}`,
-                                        color: row_font.face1[index].color,
-                                        fontFamily: `${
-                                          row_font.face1[index].font === "고딕"
-                                            ? `Nanum Gothic, sans-serif`
-                                            : row_font.face1[index].font === "명조"
-                                            ? `Nanum Myeongjo, sans-serif`
-                                            : row_font.face1[index].font === "바탕"
-                                            ? `Gowun Batang, sans-serif`
-                                            : row_font.face1[index].font === "돋움"
-                                            ? `Gowun Dodum, sans-serif`
-                                            : ""
-                                        } `,
-                                        fontSize: row_font.face1[index].size,
-                                        textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
-                                      }}
-                                    >
-                                      <FroalaEditorView model={item} />
-                                    </div>
-                                  </>
-                                ))}
-                            </div>
-                            {/* 페이스2 스타일 영역 */}
-                            <div
-                              style={{
-                                width: `${100 - current_card_style[0].cardtype_info.flip_option.left_face_ratio}%`,
-                                backgroundColor: face_style[2].background.color,
-                                marginTop: face_style[2].outer_margin.top,
-                                marginBottom: face_style[2].outer_margin.bottom,
-                                marginLeft: face_style[2].outer_margin.left,
-                                marginRight: face_style[2].outer_margin.right,
-                                paddingTop: face_style[2].inner_padding.top,
-                                paddingBottom: face_style[2].inner_padding.bottom,
-                                paddingLeft: face_style[2].inner_padding.left,
-                                paddingRight: face_style[2].inner_padding.right,
-                                borderTop: `${face_style[2].border.top.thickness}px ${face_style[2].border.top.bordertype} ${face_style[2].border.top.color}`,
-                                borderBottom: `${face_style[2].border.bottom.thickness}px ${face_style[2].border.bottom.bordertype} ${face_style[2].border.bottom.color}`,
-                                borderLeft: `${face_style[2].border.left.thickness}px ${face_style[2].border.left.bordertype} ${face_style[2].border.left.color}`,
-                                borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
-                              }}
-                            >
-                              {content_value.face2.map((item, index) => (
-                                <>
-                                  <div
-                                    style={{
-                                      backgroundColor: row_style.face2[index].background.color,
-                                      marginTop: row_style.face2[index].outer_margin.top,
-                                      marginBottom: row_style.face2[index].outer_margin.bottom,
-                                      marginLeft: row_style.face2[index].outer_margin.left,
-                                      marginRight: row_style.face2[index].outer_margin.right,
-                                      paddingTop: row_style.face2[index].inner_padding.top,
-                                      paddingBottom: row_style.face2[index].inner_padding.bottom,
-                                      paddingLeft: row_style.face2[index].inner_padding.left,
-                                      paddingRight: row_style.face2[index].inner_padding.right,
-                                      borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
-                                      borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
-                                      borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
-                                      borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
-                                      textAlign: row_font.face2[index].align,
-                                      fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
-                                      color: row_font.face2[index].color,
-                                      fontFamily: `${
-                                        row_font.face2[index].font === "고딕"
-                                          ? `Nanum Gothic, sans-serif`
-                                          : row_font.face2[index].font === "명조"
-                                          ? `Nanum Myeongjo, sans-serif`
-                                          : row_font.face2[index].font === "바탕"
-                                          ? `Gowun Batang, sans-serif`
-                                          : row_font.face2[index].font === "돋움"
-                                          ? `Gowun Dodum, sans-serif`
-                                          : ""
-                                      } `,
-                                      fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
-                                      fontSize: row_font.face2[index].size,
-                                      textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
-                                    }}
-                                  >
-                                    <FroalaEditorView model={item} />
-                                  </div>
-                                </>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <Divider style={{ marginTop: "5px", marginBottom: "5px" }} dashed />
                 </>
               )}
             </>
@@ -2416,6 +2035,7 @@ const ReadMode = () => {
   }
 
   const onClickCard = (card_id, from, group, card_info) => {
+    console.log(card_info);
     sessionStorage.removeItem("selectionText");
     const selected1 = document.getElementsByClassName(card_id);
     const selected2 = document.getElementsByClassName("other");
@@ -2423,13 +2043,19 @@ const ReadMode = () => {
     for (var a = 0; a < selected2.length; a++) {
       const section = selected2.item(a);
       section.style.border = "none";
-      section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
+      section.style.borderBottomLeftRadius = "0px";
+      section.style.borderBottomRightRadius = "0px";
+      // section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
     }
     for (var a = 0; a < selected1.length; a++) {
       const section = selected1.item(a);
       section.style.border = "1px solid gainsboro";
       section.style.borderTop = "none";
-      section.style.boxShadow = "#eeeeee 0px 1px 2px 1px";
+      section.style.borderBottomLeftRadius = "5px";
+      section.style.borderBottomRightRadius = "5px";
+      section.style.padding = "5px 0px";
+
+      // section.style.boxShadow = "#eeeeee 0px 1px 2px 1px";
     }
 
     if (cardId === card_id) {
@@ -2438,7 +2064,9 @@ const ReadMode = () => {
       for (var a = 0; a < selected2.length; a++) {
         const section = selected2.item(a);
         section.style.border = "none";
-        section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
+        section.style.borderBottomLeftRadius = "0px";
+        section.style.borderBottomRightRadius = "0px";
+        // section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
       }
     } else {
       setCardId(card_id);
@@ -2601,7 +2229,9 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
       if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
         altered = altered.replace(
           element.targetWord,
-          `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}; --z-index:-1">${element.targetWord}</span>`
+          `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}; --z-index:-1">${
+            element.targetWord
+          }</span>`
         );
       } else if (element.toolType === 2) {
         altered = altered.replace(

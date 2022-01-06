@@ -27,6 +27,7 @@ import { StyledProgress } from "../../../../common/styledComponent/StyledProgres
 import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
+import computeFromNow from "../../../common/logic/computeFromNow";
 
 const M_StudyFavoriteBooksTable = ({
   category,
@@ -101,7 +102,7 @@ const M_StudyFavoriteBooksTable = ({
       key: "categoryName",
       className: "TableFirstColumn",
       align: "center",
-      width: 50,
+      width: 70,
       dataIndex: "categoryName",
       render: (_value, _record) => (
         <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>
@@ -113,7 +114,7 @@ const M_StudyFavoriteBooksTable = ({
       dataIndex: "title",
       className: "TableMiddleColumn",
       align: "center",
-      width: 95,
+      width: 140,
       render: (value, _record, index) => {
         const isSelected =
           selectedBooks.filter((_book) => _book.book_id === _record._id)
@@ -154,7 +155,7 @@ const M_StudyFavoriteBooksTable = ({
       },
     },
     {
-      title: "수정",
+      title: null,
       key: "total",
       dataIndex: "total",
       className: "TableMiddleColumn TableCardCounterColumn",
@@ -173,12 +174,17 @@ const M_StudyFavoriteBooksTable = ({
       ),
     },
     {
-      title: "총카드수",
+      title: (
+        <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+          <div>총</div>
+          <div>카드수</div>
+        </StyledFlexAllCenter>
+      ),
       key: "total",
       dataIndex: "total",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 26,
+      width: 45,
       render: (_value, _record, _index) => (
         <NumberOfCardCell
           value={_value}
@@ -193,23 +199,82 @@ const M_StudyFavoriteBooksTable = ({
     },
 
     {
-      title: "카드수",
-      key: "total",
-      dataIndex: "total",
+      title: (
+        <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+          <div>학습용</div>
+          <div>카드수</div>
+        </StyledFlexAllCenter>
+      ),
+      key: "flip",
+      dataIndex: "flip",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 26,
+      width: 45,
       render: (_value, _record) => (
-        <NumberOfCardCell
-          value={_value}
-          read={_record.read}
-          flip={_record.flip}
-          general={_record.general}
-          common={_record.common}
-          subject={_record.subject}
-          isPc
-        />
+        <StyledFlexAllCenter>{_value + _record.read}</StyledFlexAllCenter>
       ),
+    },
+    {
+      title: (
+        <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+          <div>학습완료</div>
+          <div>(완료율)</div>
+        </StyledFlexAllCenter>
+      ),
+      key: "flip",
+      dataIndex: "flip",
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 45,
+      render: (_value, _record, _index) => {
+        const isParentZero = _value + _record.read - _record.numCompleted === 0;
+        const completedRate = isParentZero
+          ? "-"
+          : new String(
+              Math.floor(100 * (_record.numCompleted / (_value + _record.read)))
+            ) + " %";
+
+        return isParentZero ? (
+          <StyledFlexAllCenter>-</StyledFlexAllCenter>
+        ) : (
+          <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+            <div>{_record.numCompleted}</div>
+            <div>({completedRate})</div>
+          </StyledFlexAllCenter>
+        );
+      },
+    },
+    {
+      title: (
+        <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+          <div>학습미완료</div>
+          <div>(평균레벨)</div>
+        </StyledFlexAllCenter>
+      ),
+      key: "flip",
+      dataIndex: "flip",
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 45,
+      render: (_value, _record, _index) => {
+        const isParentZero = _value + _record.read - _record.numCompleted === 0;
+        const completedRate = isParentZero
+          ? "-"
+          : Math.floor(
+              100 *
+                (_record.accuLevel /
+                  (_value + _record.read - _record.numCompleted))
+            );
+
+        return isParentZero ? (
+          <StyledFlexAllCenter>-</StyledFlexAllCenter>
+        ) : (
+          <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+            <div>{_value + _record.read - _record.numCompleted}</div>
+            <div>({completedRate})</div>
+          </StyledFlexAllCenter>
+        );
+      },
     },
 
     {
@@ -220,11 +285,10 @@ const M_StudyFavoriteBooksTable = ({
       className: "TableMiddleColumn",
       width: 45,
       render: (_value, _record) => {
-        const newDate = new Date(Number(_value));
-        const DateString = moment(newDate).format("YY.MM.DD");
+        const dateString = computeFromNow(_value);
         return (
           <StyledFlexAllCenter>
-            {_value === null ? "-" : DateString}
+            {_value === null ? "-" : dateString}
           </StyledFlexAllCenter>
         );
       },

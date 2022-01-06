@@ -45,15 +45,16 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
   }
 
   const sessionupdateresults = useCallback(
-    async (cardlist_to_send, sessionId) => {
+    async (sessionId, filtered, resultOfSession, resultByBook, createdCards) => {
       try {
-        console.log(sessionId);
-        console.log(cardlist_to_send);
         await session_updateResults({
           variables: {
             forUpdateResults: {
               session_id: sessionId,
-              studyResults: cardlist_to_send,
+              createdCards,
+              studyResults:filtered,
+              resultOfSession,
+              resultByBook,
             },
           },
         });
@@ -600,7 +601,7 @@ class Container extends Component {
       var text = face2;
     } else {
       const text_id = document.getElementById("face2_row1");
-      if(text_id === null){
+      if (text_id === null) {
         return;
       } else {
         var text_tmp = document.getElementById("face2_row1").innerText;
@@ -655,32 +656,82 @@ class Container extends Component {
     this.generateOnFinishStudyStatus();
     // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
-    if (cardlist_to_send) {
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
+    const resultByBook = JSON.parse(sessionStorage.getItem("resultByBook"));
+    const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
+    const filtered = cardListStudying.filter((item) => item.studyStatus.isUpdated === true);
+    if (filtered) {
       console.log("서버에 학습데이타를 전송할 시간이다!!!!");
       sessionStorage.setItem("card_seq", 0);
       const sessionId = sessionStorage.getItem("session_Id");
-      cardlist_to_send.forEach(function (v) {
+      filtered.forEach(function (v) {
         delete v.__typename;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.card_info.__typename;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.card_info.time_created;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v._id;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.content;
-      });
-      cardlist_to_send.forEach(function (v) {
+        delete v.studyStatus.userFlagPrev;
+        delete v.studyStatus.userFlagOriginal;
+        delete v.studyStatus.studyHourInSession;
+        delete v.studyStatus.statusPrev;
+        delete v.studyStatus.statusOriginal;
+        delete v.studyStatus.needStudyTimeTmp;
+        delete v.studyStatus.isUpdated;
+        delete v.studyStatus.clickTimesInSession;
         delete v.studyStatus.__typename;
+        delete v.content;
+        delete v._id;
+        delete v.card_info.time_created;
+        delete v.card_info.__typename;
+        delete v.seqInCardlist;
       });
+      
+      // filtered.forEach(function (v) {
+      //   delete v.__typename;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.card_info.__typename;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.card_info.time_created;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v._id;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.content;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.studyStatus.__typename;
+      // });
 
-      console.log("cardlist_to_send : ", cardlist_to_send);
+      // filtered.forEach(function (v) {
+      //   delete v.studyStatus.clickTimesInSession;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.studyStatus.isUpdated;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.studyStatus.needStudyTimeTmp;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.studyStatus.statusOriginal;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.studyStatus.statusPrev;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.studyStatus.studyHourInSession;
+      // });
+
+      // filtered.forEach(function (v) {
+      //   delete v.studyStatus.userFlagOriginal;
+      // });
+      // filtered.forEach(function (v) {
+      //   delete v.studyStatus.userFlagPrev;
+      // });
+
+
+      console.log("filtered : ", filtered);
       console.log("sessionId : ", sessionId);
-      this.props.sessionupdateresults(cardlist_to_send, sessionId);
+      this.props.sessionupdateresults(sessionId, filtered, resultOfSession, resultByBook, createdCards);
     } else {
       console.log("공부끝");
     }
@@ -1456,7 +1507,8 @@ class Container extends Component {
                             borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
                           }}
                         >
-                          {content_value.selection !== null && content_value.selection.length > 0 &&
+                          {content_value.selection !== null &&
+                            content_value.selection.length > 0 &&
                             content_value.face2.map((item, index) => (
                               <>
                                 <div

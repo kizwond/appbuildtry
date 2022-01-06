@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useCallback } from "react";
+import { getCardsByNumber } from "../../sessionConfig/logic/computeFunctions";
 
 export const useCustomCallbackToSessionStore = () => {
   const sessionResults = useMemo(
@@ -70,11 +71,6 @@ export const useCustomCallbackToSessionStore = () => {
         )
       );
       sessionStorage.removeItem("cardListStudying");
-      console.time("카드스터딩넣기");
-      // const sortedCards = sortFilteredCards({
-      //   numberOfFilteredCards,
-      //   sortOption: sessionConfig.detailedOption.sortOption,
-      // });
 
       if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
         const { studyingCards, remainedCards } = getCardsByNumber({
@@ -101,7 +97,6 @@ export const useCustomCallbackToSessionStore = () => {
           })
         );
       }
-      console.timeEnd("카드스터딩넣기");
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

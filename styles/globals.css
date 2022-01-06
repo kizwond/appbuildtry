@@ -761,3 +761,308 @@ p {
   border-top-left-radius: 13px;
   border-top-right-radius: 13px;
 }
+
+.hiddenToggleButton{
+  animation-name: hiddenToggle; 
+    animation-duration: 1s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    /* animation-delay: 5s; */
+	animation-fill-mode:forwards;
+}
+
+@keyframes hiddenToggle {
+  from {opacity:0;}
+  to {opacity:1;}
+}
+
+.highlightToggleButton{
+  animation-name: highlightToggle; 
+    animation-duration: 0.5s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: none;
+    /* animation-delay: 5s; */
+	animation-fill-mode:forwards;
+}
+
+@keyframes highlightToggle {
+  0% {margin-left:-70px;}
+  100% {margin-left:0px;}
+  /* 100% {margin-left:0;} */
+}
+
+.underlineToggleButton{
+  animation-name: underlineToggle; 
+    animation-duration: 0.6s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes underlineToggle {
+  0% {margin-left:-30px;}
+  80% {margin-left:30px;}
+  100% {margin-left:30px; opacity:0}
+  /* 100% {margin-left:0;} */
+}
+
+.hiddenGroup0{
+  animation-name: hiddenGroup2; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes hiddenGroup2 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-51px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.hiddenGroup1{
+  animation-name: hiddenGroup1; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes hiddenGroup1 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-97px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+
+.hiddenGroup2{
+  animation-name: hiddenGroup2; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes hiddenGroup2 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-143px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.hiddenGroup3{
+  animation-name: hiddenGroup3; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes hiddenGroup3 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-189px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.hiddenGroup4{
+  animation-name: hiddenGroup4; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes hiddenGroup4 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-235px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.underlineGroup0{
+  animation-name: underlineGroup2; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes underlineGroup2 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-51px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.underlineGroup1{
+  animation-name: underlineGroup1; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes underlineGroup1 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-97px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+
+.underlineGroup2{
+  animation-name: underlineGroup2; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes underlineGroup2 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-143px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.underlineGroup3{
+  animation-name: underlineGroup3; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes underlineGroup3 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-189px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.underlineGroup4{
+  animation-name: underlineGroup4; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes underlineGroup4 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-235px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.highlightGroup0{
+  animation-name: highlightGroup2; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes highlightGroup2 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-51px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.highlightGroup1{
+  animation-name: highlightGroup1; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes highlightGroup1 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-97px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+
+.highlightGroup2{
+  animation-name: highlightGroup2; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes highlightGroup2 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-143px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.highlightGroup3{
+  animation-name: highlightGroup3; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes highlightGroup3 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-189px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+.highlightGroup4{
+  animation-name: highlightGroup4; 
+    animation-duration: 0.2s;
+    /* animation-iteration-count: infinite; */
+    /* animation-direction: reverse; */
+    animation-timing-function: linear;
+    animation-fill-mode: inherit;
+    /* animation-delay: 5s; */
+	animation-fill-mode:backwards;
+}
+
+@keyframes highlightGroup4 {
+  0% {position:absolute; top:0px; opacity:0}
+  100% {position:absolute; top:-235px; opacity:1}
+  /* 100% {margin-left:0;} */
+}
+
+/* if (index === 0) {
+  var marginValue = -51;
+} else if (index === 1) {
+  marginValue = -97;
+} else if (index === 2) {
+  marginValue = -143;
+} else if (index === 3) {
+  marginValue = -189;
+} else if (index === 4) {
+  marginValue = -235;
+} */

@@ -203,27 +203,6 @@ const M_StudyFavoriteBooksTable = ({
       },
     },
     {
-      title: "진도율",
-      key: "timeModify",
-      dataIndex: "timeModify",
-      className: "TableMiddleColumn TextAlignCenterColumn",
-      align: "center",
-      width: 60,
-      render: (_value, _record) => (
-        <div>
-          {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-          {_record.total === 0 ? (
-            "-"
-          ) : (
-            <StyledProgress
-              booktype={_record.type}
-              percent={_record.accuLevel / _record.total}
-            />
-          )}
-        </div>
-      ),
-    },
-    {
       key: "seqInCategory",
       dataIndex: "seqInCategory",
       className: "TableLastColumn",

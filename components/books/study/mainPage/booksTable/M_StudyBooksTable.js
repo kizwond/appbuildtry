@@ -288,9 +288,9 @@ const M_StudyBooksTable = ({
       },
     },
     {
-      title: "최근수정일",
-      key: "timeModify",
-      dataIndex: "timeModify",
+      title: "최근학습일",
+      key: "timeStudy",
+      dataIndex: "timeStudy",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
       width: 43,

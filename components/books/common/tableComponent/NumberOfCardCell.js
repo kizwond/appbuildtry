@@ -17,6 +17,23 @@ const NumberOfCardCell = ({
   return (
     <StyledWrapper className={isPc ? "PcPagePopOver" : null}>
       <Popover
+        // eslint-disable-next-line react/no-children-prop
+        children={
+          isPc ? (
+            <StyledFlexAllCenterDimension100Percent>
+              {value}
+            </StyledFlexAllCenterDimension100Percent>
+          ) : (
+            <div style={{ width: "100%" }}>
+              <StyledFlexAllCenterDimension100Percent>
+                {value}
+              </StyledFlexAllCenterDimension100Percent>
+              <StyledFlexAllCenterDimension100Percent>
+                {`(${flip + read})`}
+              </StyledFlexAllCenterDimension100Percent>
+            </div>
+          )
+        }
         arrowPointAtCenter
         content={
           <>
@@ -46,14 +63,24 @@ const NumberOfCardCell = ({
         overlayClassName={
           isPc ? "Pc-Popover-NumberOfCards" : "M-Popover-NumberOfCards"
         }
-      >
-        <StyledFlexAllCenterDimension100Percent>
-          {value}
-        </StyledFlexAllCenterDimension100Percent>
-        <StyledFlexAllCenterDimension100Percent>
-          {`(${flip + read})`}
-        </StyledFlexAllCenterDimension100Percent>
-      </Popover>
+      />
+      {/* {!isPc && (
+          <>
+            <StyledFlexAllCenterDimension100Percent>
+              {value}
+            </StyledFlexAllCenterDimension100Percent>
+            <StyledFlexAllCenterDimension100Percent>
+              {`(${flip + read})`}
+            </StyledFlexAllCenterDimension100Percent>
+          </>
+        )}
+        {isPc && (
+          <>
+            <StyledFlexAllCenterDimension100Percent>
+              {value}
+            </StyledFlexAllCenterDimension100Percent>
+          </>
+        )} */}
     </StyledWrapper>
   );
 };

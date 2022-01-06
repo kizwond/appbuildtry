@@ -231,9 +231,9 @@ const M_BooksTable = ({ category, myBook, isFoldedMenu, changeFoldedMenu }) => {
       },
     },
     {
-      title: "최근학습일",
-      key: "timeStudy",
-      dataIndex: "timeStudy",
+      title: "최근수정일",
+      key: "timeModify",
+      dataIndex: "timeModify",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
       width: 43,

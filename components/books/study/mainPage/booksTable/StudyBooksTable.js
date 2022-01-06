@@ -258,6 +258,36 @@ const StudyBooksTable = ({
     },
 
     {
+      title: "총카드수",
+      key: "total",
+      dataIndex: "total",
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 26,
+      render: (_value, _record, _index) => {
+        const obj = {
+          children: (
+            <NumberOfCardCell
+              value={_value}
+              read={_record.read}
+              flip={_record.flip}
+              isPc
+            />
+          ),
+          props: {
+            colSpan: 1,
+            rowSpan: 1,
+          },
+        };
+        if (getConditionValue(_record)) {
+          obj.props.colSpan = 0;
+        } else {
+          obj.props.colSpan = 1;
+        }
+        return obj;
+      },
+    },
+    {
       title: "카드수",
       key: "total",
       dataIndex: "total",

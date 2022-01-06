@@ -1953,7 +1953,8 @@ const ReadMode = () => {
                                       textDecoration: `${row_font.face1[row_font.face1.length - 1].underline === "on" ? "underline" : "none"}`,
                                     }}
                                   >
-                                    <FroalaEditorView model={item} />
+                                    {/* <FroalaEditorView model={item} /> */}
+                                    <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                                   </div>
                                 </>
                               ))}
@@ -2241,13 +2242,50 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
       }
     });
   }
+
+  var varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
+
+  if (varUA.indexOf("android") > -1) {
+    //안드로이드
+    console.log("android");
+    var contentsToRender = (
+      <>
+        <div
+          id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
+          dangerouslySetInnerHTML={{ __html: altered }}
+          onContextMenu={getSelectionText2}
+        ></div>
+      </>
+    );
+  } else if (varUA.indexOf("iphone") > -1 || varUA.indexOf("ipad") > -1 || varUA.indexOf("ipod") > -1) {
+    //IOS
+    console.log("ios");
+    var contentsToRender = (
+      <>
+        <div
+          id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
+          dangerouslySetInnerHTML={{ __html: altered }}
+          onPointerUp={getSelectionText2}
+        ></div>
+      </>
+    );
+  } else {
+    //아이폰, 안드로이드 외
+    console.log("other");
+    var contentsToRender = (
+      <>
+        <div
+          id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
+          dangerouslySetInnerHTML={{ __html: altered }}
+          onPointerUp={getSelectionText2}
+        ></div>
+      </>
+    );
+  }
+
   return (
     <>
-      <div
-        id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
-        dangerouslySetInnerHTML={{ __html: altered }}
-        onContextMenu={getSelectionText2}
-      ></div>
+      {contentsToRender}
     </>
   );
 };

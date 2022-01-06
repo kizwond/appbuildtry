@@ -1,4 +1,4 @@
-const {calculateNextLevelAndNeedStudyTime} = require('./FlipContainerSub2.js')
+const {calculateNextLevelAndNeedStudyTime, updateSessionResult} = require('./FlipContainerSub2.js')
 
 const calculateKnowCase = (selection, current_card_info_index, timer, levelConfigs) => {  
   
@@ -22,19 +22,21 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   card_details_session[current_card_info_index].studyStatus.recentStudyHour = timer;  
   card_details_session[current_card_info_index].studyStatus.totalStudyHour += timer;
   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
-  card_details_session[current_card_info_index].studyStatus.studyTimesInSession += 1;
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
   
+  card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
   
   let {levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes}=card_details_session[current_card_info_index].studyStatus
   let {newLevel, needStudyTime} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs)  
-  console.log('정상적으로 생성됐나?', newLevel, needStudyTime)  
-  card_details_session[current_card_info_index].studyStatus.levelAcquisitionOfNotCompleted = Math.round((newLevel - card_details_session[current_card_info_index].studyStatus.levelCurrent)*1000)/1000
+  console.log('정상적으로 생성됐나?', newLevel, needStudyTime)    
   card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
   card_details_session[current_card_info_index].studyStatus.recentKnowTime = now
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null;
   
+  updateSessionResult(card_details_session[current_card_info_index])
+  
+
   return card_details_session;
 };
 
@@ -59,9 +61,10 @@ const calculateNormalStudy = (interval, selection, current_card_info_index, time
   card_details_session[current_card_info_index].studyStatus.recentStudyHour = timer;
   card_details_session[current_card_info_index].studyStatus.totalStudyHour += timer;
   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
-  card_details_session[current_card_info_index].studyStatus.studyTimesInSession += 1;
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
-    
+  
+  card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
+
   const needStudyTime = new Date(Date.now() + interval * 60000)  
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = needStudyTime;
@@ -89,9 +92,7 @@ const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
 
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
 
-  if (selection == 'completed'){
-    card_details_session[current_card_info_index].studyStatus.levelAcquisitionOfNotCompleted = -card_details_session[current_card_info_index].studyStatus.levelCurrent
-  }
+  card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
   
   return card_details_session;
 };
@@ -116,8 +117,9 @@ const calculateRestore = (selection, current_card_info_index, timer) => {
   card_details_session[current_card_info_index].studyStatus.needStudyTime = now;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = now;
 
-  card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
-  card_details_session[current_card_info_index].studyStatus.levelAcquisitionOfNotCompleted = card_details_session[current_card_info_index].studyStatus.levelCurrent
+  card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;  
+
+  card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
   
   return card_details_session;
 };

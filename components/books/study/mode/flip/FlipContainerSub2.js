@@ -47,3 +47,77 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,curre
     }
 
 }
+
+exports.updateSessionResult = (singleResult) => {
+
+    const {card_info, studyStatus} = singleResult.studyStatus
+    const {mybook_id} = card_info
+    const {
+        selection, 
+        statusOriginal, 
+        statusPrev, 
+        levelOriginal, 
+        levelPrev, 
+        levelCurrent, 
+        clickTimesInSession 
+    } = studyStatus
+    const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
+    const resultByBook = JSON.parse(sessionStorage.getItem("resultByBook"));
+    const mybookPosition = resultByBook.findIndex(result => result.mybook_id == mybook_id)
+    
+    if (['diffi1','diffi2','diffi3','diffi4','diffi5','hold','completed'].includes(selection)){
+        resultOfSession.clicks[selection] +=1
+        resultByBook[mybookPosition].clicks[selection] +=1
+    } else {
+        resultOfSession.clicks.etc +=1
+        resultByBook[mybookPosition].clicks.etc +=1
+    }
+    
+    if (selection == 'diffi5'){  
+        if (levelPrev < levelCurrent){
+            resultByBook[mybookPosition].total.count += -1
+            resultByBook[mybookPosition].total.gap = levelCurrent - levelOriginal
+            resultByBook[mybookPosition].up.count += -1
+            resultByBook[mybookPosition].up.gap = levelCurrent - levelOriginal
+            resultOfSession.total.count += -1
+            resultOfSession.total.gap = levelCurrent - levelOriginal
+            resultOfSession.up.count += -1
+            resultOfSession.up.gap = levelCurrent - levelOriginal            
+        } else {
+            resultByBook[mybookPosition].total.count += -1
+            resultByBook[mybookPosition].total.gap = levelCurrent - levelOriginal
+            resultByBook[mybookPosition].down.count += -1
+            resultByBook[mybookPosition].down.gap = levelCurrent - levelOriginal
+            resultOfSession.total.count += -1
+            resultOfSession.total.gap = levelCurrent - levelOriginal
+            resultOfSession.down.count += -1
+            resultOfSession.down.gap = levelCurrent - levelOriginal                        
+        }
+    }
+
+    if (clickTimesInSession == 1){
+        resultOfSession.numCards[statusOriginal].started += 1
+    }
+    if (['diffi5', 'pass', 'hold', 'completed'].includes(selection)){
+        resultOfSession.numCards[statusOriginal].finished += 1
+    }
+    if (selection == 'restore' && clickTimesInSession > 1){
+        resultOfSession.numCards[statusOriginal].finished += -1
+    }
+
+
+
+    if (statusOriginal != statusPrev){
+        resultOfSession.statusChange[statusOriginal][statusPrev] += -1
+        resultOfSession.statusChange[statusOriginal][statusCurrent] += 1
+        resultByBook[mybookPosition].statusChange[statusOriginal][statusPrev] += -1
+        resultByBook[mybookPosition].statusChange[statusOriginal][statusCurrent] += 1
+    } else {
+        resultOfSession.statusChange[statusOriginal][statusCurrent] += 1
+        resultByBook[mybookPosition].statusChange[statusOriginal][statusCurrent] += 1        
+    }
+    
+    
+
+
+}

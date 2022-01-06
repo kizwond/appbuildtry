@@ -187,7 +187,7 @@ export const useCustomCallbackToSessionStore = () => {
                       draft.numCards.completed.selected =
                         remainedCards.completed.filter(
                           (card) => card.card_info.mybook_id === book.book_id
-                        ) +
+                        ).length +
                         studyingCards.filter(
                           (card) =>
                             card.card_info.mybook_id === book.book_id &&
@@ -196,7 +196,7 @@ export const useCustomCallbackToSessionStore = () => {
                       draft.numCards.yet.selected =
                         remainedCards.yet.filter(
                           (card) => card.card_info.mybook_id === book.book_id
-                        ) +
+                        ).length +
                         studyingCards.filter(
                           (card) =>
                             card.card_info.mybook_id === book.book_id &&
@@ -205,7 +205,7 @@ export const useCustomCallbackToSessionStore = () => {
                       draft.numCards.ing.selected =
                         remainedCards.ing.filter(
                           (card) => card.card_info.mybook_id === book.book_id
-                        ) +
+                        ).length +
                         studyingCards.filter(
                           (card) =>
                             card.card_info.mybook_id === book.book_id &&
@@ -214,7 +214,7 @@ export const useCustomCallbackToSessionStore = () => {
                       draft.numCards.hold.selected =
                         remainedCards.hold.filter(
                           (card) => card.card_info.mybook_id === book.book_id
-                        ) +
+                        ).length +
                         studyingCards.filter(
                           (card) =>
                             card.card_info.mybook_id === book.book_id &&

@@ -13,6 +13,7 @@ const IndexTree = ({
   bookData,
   isPc,
 }) => {
+  console.log(checkedKeys);
   const scrolProperty = useMemo(
     () =>
       isPc
@@ -28,13 +29,13 @@ const IndexTree = ({
       onClick: () => {
         const allChildrenKeys = getAllChildrenKeys(bookData, "key", record.key);
 
-        if (checkedKeys.includes(record.key)) {
+        if (checkedKeys?.includes(record.key)) {
           onCheckIndexesCheckedKeys(
             checkedKeys.filter((key) => !allChildrenKeys.includes(key)),
             selectedbookId
           );
         }
-        if (!checkedKeys.includes(record.key)) {
+        if (!checkedKeys?.includes(record.key)) {
           onCheckIndexesCheckedKeys(
             [...checkedKeys, ...allChildrenKeys],
             selectedbookId
@@ -74,7 +75,7 @@ const IndexTree = ({
                 {!(
                   record.key === "SummaryForAllBooks" ||
                   record.key === "SummaryForBook"
-                ) && <Checkbox checked={checkedKeys.includes(record.key)} />}
+                ) && <Checkbox checked={checkedKeys?.includes(record.key)} />}
               </>
             );
           },

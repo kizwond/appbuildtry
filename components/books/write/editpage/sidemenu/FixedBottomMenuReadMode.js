@@ -71,7 +71,6 @@ const FloatingMenu = ({
         },
       });
     }
-    
   };
 
   if (cardTypeSets.length > 0) {
@@ -202,7 +201,7 @@ const FloatingMenu = ({
               backgroundColor: "white",
               textAlign: "center",
               boxShadow: "1px 1px 4px 0px #909090",
-              padding: "5px 10px 5px 10px",
+              padding: "10px 10px 5px 10px",
               lineHeight: "45px",
               color: "black",
             }}
@@ -216,14 +215,14 @@ const FloatingMenu = ({
               {item.attr1 === "brush2" && (
                 <>
                   <div className={item.attr1} style={{ height: "15px", fontSize: "0.8rem", display: "inline-block", backgroundColor: item.color }}>
-                    brush{index + 1}
+                    <div style={{visibility:"hidden"}}> brush{index + 1}</div>
                   </div>
                 </>
               )}
               {item.attr1 !== "brush2" && (
                 <>
                   <div className={item.attr1} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": item.color, "--z-index": 0 }}>
-                    brush{index + 1}
+                    <div style={{visibility:"hidden"}}> brush{index + 1}</div>
                   </div>
                 </>
               )}

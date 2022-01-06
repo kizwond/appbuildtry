@@ -1,26 +1,21 @@
 /* eslint-disable react/display-name */
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { Table, Card, Space, Checkbox, Popover } from "antd";
-import { DoubleLeftOutlined, DoubleRightOutlined } from "@ant-design/icons";
-
-import FavoriteBook /* ------------------- */ from "../../../common/FavoriteBook";
-import FavoriteBookOrderButton /*----------*/ from "../../../common/FavoriteBookOrderButton";
-import HideOrShowButton /* --------------- */ from "../../../common/HideOrShowButton";
-import MoveToBookSetting /* -------------- */ from "../../../common/MoveToBookSetting";
+import { Table, Card, Space, Checkbox } from "antd";
+import { DoubleRightOutlined, EditOutlined } from "@ant-design/icons";
 
 import {
   StyledFlexAlignCenter,
-  StyledFlexAllCenterDimension100Percent,
-  StyledFlexSpaceBetween,
+  StyledFlexAllCenter,
 } from /* ------------------------------------- */ "../../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from /* ---------- */ "../../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer /* --- */ from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledBookSettingBarDrawer } from /* - */ "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
-import { StyledProgress } from /* ------------- */ "../../../../common/styledComponent/StyledProgress";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
+import computeFromNow from "../../../common/logic/computeFromNow";
+import { useCallback } from "react";
 
 const M_StudyFavoriteBooksTable = ({
   category,
@@ -33,6 +28,15 @@ const M_StudyFavoriteBooksTable = ({
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(true);
   const checkRef = useRef({});
+
+  const router = useRouter();
+
+  const movepage = useCallback(function (bookid) {
+    localStorage.removeItem("book_id");
+    localStorage.setItem("book_id", bookid);
+    router.push(`/m/write/${bookid}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -87,7 +91,7 @@ const M_StudyFavoriteBooksTable = ({
       key: "categoryName",
       className: "TableFirstColumn",
       align: "center",
-      width: 50,
+      width: 45,
       dataIndex: "categoryName",
       render: (_value, _record) => (
         <DoubleLinesEllipsisContainer>{_value}</DoubleLinesEllipsisContainer>
@@ -99,7 +103,7 @@ const M_StudyFavoriteBooksTable = ({
       dataIndex: "title",
       className: "TableMiddleColumn",
       align: "center",
-      width: 95,
+      width: 80,
       render: (value, _record, index) => {
         const isSelected =
           selectedBooks.filter((_book) => _book.book_id === _record._id)
@@ -140,41 +144,54 @@ const M_StudyFavoriteBooksTable = ({
       },
     },
     {
+      title: "수정",
+      key: "total",
+      dataIndex: "total",
+      className: "TableMiddleColumn TableCardCounterColumn",
+      align: "center",
+      width: 20,
+      onCell: (record) => ({
+        onClick: () => {
+          movepage(record._id);
+        },
+      }),
+      render: (_value, _record) => <EditOutlined />,
+    },
+    {
       title: "카드수",
       key: "total",
       dataIndex: "total",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 26,
-      render: (_value, _record) => (
-        <NumberOfCardCell
-          value={_value}
-          read={_record.read}
-          flip={_record.flip}
-        />
-      ),
+      width: 30,
+      render: (_value, _record) => {
+        return (
+          <NumberOfCardCell
+            value={_value}
+            read={_record.read}
+            flip={_record.flip}
+            general={_record.general}
+            common={_record.common}
+            subject={_record.subject}
+          />
+        );
+      },
     },
-
     {
-      title: "진도율",
-      key: "timeModify",
-      dataIndex: "timeModify",
-      className: "TableMiddleColumn TextAlignCenterColumn",
+      title: "최근학습일",
+      key: "timeStudy",
+      dataIndex: "timeStudy",
+      className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 60,
-      render: (_value, _record) => (
-        <div>
-          {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-          {_record.total === 0 ? (
-            "-"
-          ) : (
-            <StyledProgress
-              booktype={_record.type}
-              percent={_record.accuLevel / _record.total}
-            />
-          )}
-        </div>
-      ),
+      width: 43,
+      render: (_value, _record) => {
+        const dateString = computeFromNow(_value);
+        return (
+          <StyledFlexAllCenter>
+            {_value === null ? "-" : dateString}
+          </StyledFlexAllCenter>
+        );
+      },
     },
     {
       // title: "이동",

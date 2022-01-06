@@ -21,6 +21,7 @@ export const FRAGMENT_MYBOOK = gql`
     stats {
       overall {
         accuLevel
+        numCompleted
         studyHour
         numSession
       }
@@ -32,6 +33,9 @@ export const FRAGMENT_MYBOOK = gql`
         total
         read
         flip
+        subject
+        general
+        common
       }
       writeHistory {
         date

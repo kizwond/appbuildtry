@@ -40,7 +40,7 @@ const FavoriteBooksTable = forwardRef(
     function movepage(bookid) {
       localStorage.removeItem("book_id");
       localStorage.setItem("book_id", bookid);
-      router.push(`/m/write/${bookid}`);
+      router.push(`/books/write/${bookid}`);
     }
 
     const writeLikedBooksList = myBook.filter(

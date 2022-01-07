@@ -83,7 +83,7 @@ export const MUTATION_REASSIGN_MY_BOOK_TO_ANOTHER_CATEGORY = gql`
 export const MUTATION_CHANGE_MY_BOOK_TITLE = gql`
   ${FRAGMENT_MYBOOK}
   mutation ChangeMyBookTitle($mybook_id: String, $title: String) {
-    mybook_updateMybookInfo(mybook_id: $mybook_id, mybook_id: $mybook_id) {
+    mybook_updateMybookInfo(mybook_id: $mybook_id, title: $title) {
       status
       msg
       mybooks {

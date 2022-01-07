@@ -18,6 +18,7 @@ import Layout from "../../../../components/layout/Layout";
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
 import { useCustomCallbackToSessionStore } from "../../../../components/books/study/mainPage/useHooks/useCustomCallbackToSessionStorage";
+import { StyledPcContentsWrapper } from "../../../../components/common/styledComponent/page";
 
 const StudySessionConfig = ({
   isRefreshPage,
@@ -193,7 +194,6 @@ const StudySessionConfig = ({
 
   if (error) {
     console.log("에러", error);
-    console.log(variables);
     return <div>에러발생</div>;
   }
 
@@ -217,8 +217,10 @@ const StudySessionConfig = ({
       )}
       {typeof window !== "undefined" && !error && !loading && bookData && (
         <StyledDiv className="ForPcMainPages">
-          <div className="TitleForPcMainPage">목차 및 세션 설정</div>
-          <div className="SummaryAndStartButtonWrapper">
+          <div className="PageHeaderWrapper">
+            <span className="ForMainTitle">만들기</span>
+          </div>
+          <StyledPcContentsWrapper className="SummaryAndStartButtonWrapper">
             <div className="SummaryForNumberOfAllBooksCards">
               학습 시작 예정 카드는
               <span className="NumberOfCards">
@@ -232,10 +234,10 @@ const StudySessionConfig = ({
             >
               학습 시작
             </div>
-          </div>
+          </StyledPcContentsWrapper>
 
           <StyledRow>
-            <StyledForTabsOfBooks flex="auto" className="BookTable">
+            <StyledForTabsOfBooks className="BookTable">
               <M_TabsOfBooksForInfromationTable
                 bookData={bookData}
                 bookList={
@@ -249,7 +251,7 @@ const StudySessionConfig = ({
               />
             </StyledForTabsOfBooks>
 
-            <StyledSessionConfig flex="none" className="Config">
+            <StyledSessionConfig className="Config">
               <M_SessionModeAndFilterConfig
                 mode={mode}
                 changeMode={changeMode}
@@ -295,9 +297,16 @@ const StyledDiv = styled.div`
   * {
     font-size: 13px;
   }
-  .TitleForPcMainPage {
-    font-size: 18px;
-    font-weight: 500;
+  .PageHeaderWrapper {
+    display: flex;
+    height: 50px;
+    align-items: center;
+    & .ForMainTitle {
+      padding-top: 4px;
+      padding-bottom: 4px;
+      font-size: 25px;
+      font-weight: 500;
+    }
   }
   .SummaryAndStartButtonWrapper {
     display: flex;
@@ -320,7 +329,7 @@ const StyledDiv = styled.div`
       display: flex;
       align-items: center;
       margin-right: 4px;
-      width: 606px;
+      width: 590px;
       flex: none;
       border: 1px solid #9bffff;
       background-color: #9bffff;
@@ -337,7 +346,7 @@ const StyledDiv = styled.div`
 const StyledForTabsOfBooks = styled.div`
   margin-top: 8px;
   padding-right: 4px;
-  width: 610px;
+  width: 594px;
   flex: none;
 
   .ant-table.ant-table-small .ant-table-title {
@@ -390,7 +399,7 @@ const StyledSessionConfig = styled.div`
   }
 `;
 
-const StyledRow = styled.div`
+const StyledRow = styled(StyledPcContentsWrapper)`
   display: flex;
   flex-wrap: nowrap;
 `;

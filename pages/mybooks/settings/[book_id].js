@@ -85,7 +85,12 @@ const BookSetting = () => {
           <Space direction="vertical">
             <div>
               <div className="BookSettingContentTitle">이름수정</div>
-              <M_ChangeBookTitle />
+              <M_ChangeBookTitle
+                book_id={query.book_id}
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
             </div>
             <div>
               <div className="BookSettingContentTitle">카테고리 이동</div>
@@ -106,7 +111,12 @@ const BookSetting = () => {
             </div>
             <div>
               <div className="BookSettingContentTitle">책 삭제</div>
-              <M_DeleteBook book_id={query.book_id} />
+              <M_DeleteBook
+                book_id={query.book_id}
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
             </div>
           </Space>
         );

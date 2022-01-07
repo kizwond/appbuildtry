@@ -182,7 +182,7 @@ const M_StudyFavoriteBooksTable = ({
       },
     },
     {
-      title: "최근학습일",
+      title: "최근학습",
       key: "timeStudy",
       dataIndex: "timeStudy",
       className: "TableMiddleColumn TableCardCounterColumn",

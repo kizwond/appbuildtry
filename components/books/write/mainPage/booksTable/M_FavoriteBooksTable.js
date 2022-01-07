@@ -137,7 +137,7 @@ const FavoriteBooksTable = forwardRef(
         },
       },
       {
-        title: "최근수정일",
+        title: "최근수정",
         key: "timeModify",
         dataIndex: "timeModify",
         className: "TableMiddleColumn TableCardCounterColumn",

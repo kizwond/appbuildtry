@@ -8,7 +8,7 @@ import {
   QUERY_USER_BOOKS,
 } from "../../../../graphql/query/allQuery";
 
-const DeleteBook = ({ book_id }) => {
+const DeleteBook = ({ book_id, bookTitle }) => {
   const { push, back } = useRouter();
 
   const [mybook_delete] = useMutation(MUTATION_DELETE_MY_BOOK, {
@@ -79,10 +79,7 @@ const DeleteBook = ({ book_id }) => {
         // data &&
         <>
           <div>
-            <b>
-              {/* {data && data.mybook_getbyMybookid.mybooks[0].mybook_info.title} */}
-            </b>
-            을 삭제하시겠습니까?
+            <b>{bookTitle}</b>을 삭제하시겠습니까?
           </div>
           <div>삭제시, 영구 삭제되오니 신중히 결정하세요</div>
         </>

@@ -96,12 +96,14 @@ const StyledRowMaxWidth = styled.div`
 
   .WritePageHeaderWrapper {
     display: flex;
-    height: 40px;
+    height: 50px;
     align-items: center;
-  }
-  .ForMainTitle {
-    font-size: 25px;
-    font-weight: 500;
+    & .ForMainTitle {
+      padding-top: 4px;
+      padding-bottom: 4px;
+      font-size: 25px;
+      font-weight: 500;
+    }
   }
 
   & .ant-card-small > .ant-card-head {

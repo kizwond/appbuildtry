@@ -256,7 +256,7 @@ const StyledRowMaxWidth = styled.div`
 
 export const StyledFlexSpaceBetween = styled.div`
   display: flex;
-  height: 40px;
+  height: 50px;
   justify-content: space-between;
   align-items: center;
   .ForMainTitle {

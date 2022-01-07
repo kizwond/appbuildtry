@@ -31,7 +31,10 @@ export const computeNumberOfCardsPerBook = ({
           card.studyStatus.statusCurrent === "hold" ? 1 : 0,
         totalNumberOfCompletedCards:
           card.studyStatus.statusCurrent === "Completed" ? 1 : 0,
-        totalLevelOfAllCards: card.studyStatus.levelCurrent,
+        totalLevelOfAllCards:
+          card.studyStatus.statusCurrent === "Completed"
+            ? 0
+            : card.studyStatus.levelCurrent,
         totalNumberOfAllCardsOnStudyStage:
           card.studyStatus.statusCurrent === "ing" ? 1 : 0,
         totalNumberOfUntilNowCardsOnStudyStage:
@@ -228,7 +231,6 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
           (card) => card.studyStatus.needStudyTime === null
         );
         return [...nonNullCards, ...nullCards];
-        
 
       case "random":
         const random = _.shuffle(numberOfFilteredCards); // Creates an array of shuffled values, using a version of the Fisher-Yates shuffle. immutable

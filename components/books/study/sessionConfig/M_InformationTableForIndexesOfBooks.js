@@ -110,8 +110,8 @@ const IndexTree = ({
         {
           title: (
             <StyledFlexAllCenterDirectionColumn>
-              <div>총</div>
-              <div>카드수</div>
+              <div>학습용</div>
+              <div>카드</div>
             </StyledFlexAllCenterDirectionColumn>
           ),
           dataIndex: "totalNumberOfAllCards",
@@ -120,7 +120,66 @@ const IndexTree = ({
           width: 42,
         },
         {
-          title: "미학습",
+          title: (
+            <StyledFlexAllCenterDirectionColumn>
+              <div>학습완료</div>
+              <div>(완료율)</div>
+            </StyledFlexAllCenterDirectionColumn>
+          ),
+          dataIndex: "totalNumberOfCompletedCards",
+          key: "totalNumberOfCompletedCards",
+          align: "center",
+          width: 42,
+          render: function displayName(_value, _record) {
+            const isParentZero = _record.totalNumberOfAllCards === 0;
+            const completedRate =
+              new String(
+                Math.floor(100 * (_value / _record.totalNumberOfAllCards))
+              ) + " %";
+
+            return isParentZero ? (
+              <StyledFlexAllCenter>-</StyledFlexAllCenter>
+            ) : (
+              <StyledFlexAllCenterDirectionColumn>
+                <div>{_value}</div>
+                <div>({completedRate})</div>
+              </StyledFlexAllCenterDirectionColumn>
+            );
+          },
+        },
+        {
+          title: (
+            <StyledFlexAllCenterDirectionColumn>
+              <div>학습미완료</div>
+              <div>(평균레벨)</div>
+            </StyledFlexAllCenterDirectionColumn>
+          ),
+          key: "totalNumberOfCompletedCards",
+          dataIndex: "totalNumberOfCompletedCards",
+          className: "TableMiddleColumn TableCardCounterColumn",
+          align: "center",
+          width: 45,
+          render: function displayName(_value, _record, _index) {
+            const isParentZero = _record.totalNumberOfAllCards - _value === 0;
+            const levelAverageForNotCompletedCard = Math.floor(
+              100 *
+                (_record.totalLevelOfAllCards /
+                  (_record.totalNumberOfAllCards - _value))
+            );
+
+            return isParentZero ? (
+              <StyledFlexAllCenter>-</StyledFlexAllCenter>
+            ) : (
+              <StyledFlexAllCenterDirectionColumn>
+                <div>{_record.totalNumberOfAllCards - _value}</div>
+                <div>({levelAverageForNotCompletedCard})</div>
+              </StyledFlexAllCenterDirectionColumn>
+            );
+          },
+        },
+
+        {
+          title: "학습전",
           dataIndex: "totalNumberOfYetCards",
           key: "totalNumberOfYetCards",
           align: "center",
@@ -158,13 +217,6 @@ const IndexTree = ({
               width: 53,
             },
           ],
-        },
-        {
-          title: "완료",
-          dataIndex: "totalNumberOfCompletedCards",
-          key: "totalNumberOfCompletedCards",
-          align: "center",
-          width: 42,
         },
         {
           title: "보류",

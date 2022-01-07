@@ -215,12 +215,11 @@ const M_StudyFavoriteBooksTable = ({
       align: "center",
       width: 45,
       render: (_value, _record, _index) => {
-        const isParentZero = _value + _record.read - _record.numCompleted === 0;
-        const completedRate = isParentZero
-          ? "-"
-          : new String(
-              Math.floor(100 * (_record.numCompleted / (_value + _record.read)))
-            ) + " %";
+        const isParentZero = _value + _record.read === 0;
+        const completedRate =
+          new String(
+            Math.floor(100 * (_record.numCompleted / (_value + _record.read)))
+          ) + " %";
 
         return isParentZero ? (
           <StyledFlexAllCenter>-</StyledFlexAllCenter>
@@ -246,20 +245,17 @@ const M_StudyFavoriteBooksTable = ({
       width: 45,
       render: (_value, _record, _index) => {
         const isParentZero = _value + _record.read - _record.numCompleted === 0;
-        const completedRate = isParentZero
-          ? "-"
-          : Math.floor(
-              100 *
-                (_record.accuLevel /
-                  (_value + _record.read - _record.numCompleted))
-            );
+        const levelAverageForNotCompletedCard = Math.floor(
+          100 *
+            (_record.accuLevel / (_value + _record.read - _record.numCompleted))
+        );
 
         return isParentZero ? (
           <StyledFlexAllCenter>-</StyledFlexAllCenter>
         ) : (
           <StyledFlexAllCenterDirectionColumn>
             <div>{_value + _record.read - _record.numCompleted}</div>
-            <div>({completedRate})</div>
+            <div>({levelAverageForNotCompletedCard})</div>
           </StyledFlexAllCenterDirectionColumn>
         );
       },

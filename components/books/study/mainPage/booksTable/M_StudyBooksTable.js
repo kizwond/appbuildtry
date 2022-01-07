@@ -155,7 +155,7 @@ const M_StudyBooksTable = ({
       dataIndex: "title",
       className: "TableFirstColumn",
       align: "center",
-      width: 80,
+      width: 95,
       render: (value, _record, index) => {
         const isSelected =
           selectedBooks.filter((_book) => _book.book_id === _record._id)
@@ -233,7 +233,7 @@ const M_StudyBooksTable = ({
       dataIndex: "total",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 20,
+      width: 18,
       onCell: (record) => ({
         onClick: () => {
           movepage(record._id);
@@ -297,7 +297,7 @@ const M_StudyBooksTable = ({
       dataIndex: "timeStudy",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 43,
+      width: 35,
       render: (_value, _record) => {
         const dateString = computeFromNow(_value);
         const obj = {
@@ -319,48 +319,12 @@ const M_StudyBooksTable = ({
         return obj;
       },
     },
-
-    // {
-    //   title: "진도율",
-    //   key: "accuLevel",
-    //   dataIndex: "accuLevel",
-    //   className: "TableMiddleColumn TextAlignCenterColumn",
-    //   align: "center",
-    //   width: 60,
-    //   render: (_value, _record, _index) => {
-    //     const obj = {
-    //       children: (
-    //         <div>
-    //           {/* 카드 레벨 총합 = acculevel, 총 카드 갯수 = total, 진도율 = 총 카드 갯수 / 카드 레벨 총합 */}
-    //           {_record.total === 0 ? (
-    //             "-"
-    //           ) : (
-    //             <StyledProgress
-    //               booktype={_record.type}
-    //               percent={_record.accuLevel / _record.total}
-    //             />
-    //           )}
-    //         </div>
-    //       ),
-    //       props: {
-    //         colSpan: 1,
-    //         rowSpan: 1,
-    //       },
-    //     };
-    //     if (getConditionValue(_record)) {
-    //       obj.props.colSpan = 0;
-    //     } else {
-    //       obj.props.colSpan = 1;
-    //     }
-    //     return obj;
-    //   },
-    // },
     {
       key: "seqInCategory",
       dataIndex: "seqInCategory",
       className: "TableLastColumn",
       align: "right",
-      width: 20,
+      width: 15,
       render: (value, _record, index) => {
         const obj = {
           children: (

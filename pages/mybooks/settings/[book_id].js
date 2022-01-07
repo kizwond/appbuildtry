@@ -268,6 +268,11 @@ const StyledDiv = styled.div`
   .subTitleForSetting {
     font-size: 16px;
     font-weight: 400;
+
+    & > .anticon.anticon-close > svg {
+      font-size: 24px;
+      color: black;
+    }
   }
 
   .FlexWith8Gap {
@@ -388,7 +393,7 @@ const StyledForHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding-bottom: 4px;
-  border-bottom: 1px solid lightgray;
+  /* border-bottom: 1px solid lightgray; */
 
   & .ForCloseButton {
     display: inline-block;

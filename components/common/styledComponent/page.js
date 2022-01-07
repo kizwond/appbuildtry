@@ -21,6 +21,12 @@ export const StyledFlexAllCenter = styled.div`
   justify-content: center;
   align-items: center;
 `;
+export const StyledFlexAllCenterDirectionColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 export const StyledFlexSpaceBetween = styled.div`
   display: flex;

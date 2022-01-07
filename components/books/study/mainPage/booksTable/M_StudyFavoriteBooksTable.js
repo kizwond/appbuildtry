@@ -103,7 +103,7 @@ const M_StudyFavoriteBooksTable = ({
       dataIndex: "title",
       className: "TableMiddleColumn",
       align: "center",
-      width: 80,
+      width: 95,
       render: (value, _record, index) => {
         const isSelected =
           selectedBooks.filter((_book) => _book.book_id === _record._id)
@@ -149,7 +149,7 @@ const M_StudyFavoriteBooksTable = ({
       dataIndex: "total",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 20,
+      width: 18,
       onCell: (record) => ({
         onClick: () => {
           movepage(record._id);
@@ -187,7 +187,7 @@ const M_StudyFavoriteBooksTable = ({
       dataIndex: "timeStudy",
       className: "TableMiddleColumn TableCardCounterColumn",
       align: "center",
-      width: 43,
+      width: 35,
       render: (_value, _record) => {
         const dateString = computeFromNow(_value);
         return (
@@ -203,7 +203,7 @@ const M_StudyFavoriteBooksTable = ({
       dataIndex: "seqInCategory",
       className: "TableLastColumn",
       align: "right",
-      width: 20,
+      width: 15,
       render: (value, _record) => (
         <SlidingMenuForBook
           record={_record}

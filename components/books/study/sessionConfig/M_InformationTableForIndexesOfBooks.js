@@ -2,7 +2,12 @@ import React from "react";
 import { Checkbox, Table } from "antd";
 import styled from "styled-components";
 import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
-import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import {
+  StyledFlexAlignCenter,
+  StyledFlexAllCenter,
+  StyledFlexAllCenterDirectionColumn,
+  StyledTwoLinesEllipsis,
+} from "../../../common/styledComponent/page";
 import { getAllChildrenKeys } from "../../../common/logic/getAllChildrenKeysForTable";
 import { useMemo } from "react";
 
@@ -80,30 +85,35 @@ const IndexTree = ({
             );
           },
         },
+        // {
+        //   title: "평균 레벨",
+        //   dataIndex: "totalLevelOfAllCards",
+        //   key: "totalLevelOfAllCards",
+        //   width: 56,
+        //   align: "center",
+        //   onCell: handleCheckbox,
+        //   render: function ForProgress(level, { totalNumberOfAllCards }) {
+        //     return (
+        //       <>
+        //         <StyledProgress
+        //           booktype="any"
+        //           percent={
+        //             totalNumberOfAllCards === 0
+        //               ? 0
+        //               : (level / totalNumberOfAllCards).toFixed(2)
+        //           }
+        //         />
+        //       </>
+        //     );
+        //   },
+        // },
         {
-          title: "평균 레벨",
-          dataIndex: "totalLevelOfAllCards",
-          key: "totalLevelOfAllCards",
-          width: 56,
-          align: "center",
-          onCell: handleCheckbox,
-          render: function ForProgress(level, { totalNumberOfAllCards }) {
-            return (
-              <>
-                <StyledProgress
-                  booktype="any"
-                  percent={
-                    totalNumberOfAllCards === 0
-                      ? 0
-                      : (level / totalNumberOfAllCards).toFixed(2)
-                  }
-                />
-              </>
-            );
-          },
-        },
-        {
-          title: "합계",
+          title: (
+            <StyledFlexAllCenterDirectionColumn>
+              <div>총</div>
+              <div>카드수</div>
+            </StyledFlexAllCenterDirectionColumn>
+          ),
           dataIndex: "totalNumberOfAllCards",
           key: "totalNumberOfAllCards",
           align: "center",

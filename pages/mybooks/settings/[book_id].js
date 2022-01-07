@@ -7,7 +7,7 @@ import { QUERY_USER_BOOKS_BY_BOOK_IDS__WITH_USER_CATEGORIES } from "../../../gra
 
 import { useRouter } from "next/router";
 
-import { Space, Avatar } from "antd";
+import { Space, Avatar, Input } from "antd";
 import {
   AppstoreAddOutlined,
   CloseOutlined,
@@ -16,6 +16,7 @@ import {
   FlagOutlined,
   FundViewOutlined,
   RiseOutlined,
+  ScissorOutlined,
 } from "@ant-design/icons";
 
 import styled from "styled-components";
@@ -26,6 +27,7 @@ import M_FlagSetting from "../../../components/books/settings/flagSetting/M_Flag
 import M_DeleteBook from "../../../components/books/settings/deleteBook/M_DeleteBook";
 import M_LevelAndCycleSetting from "../../../components/books/settings/levelAndCycleSetting/M_LevelAndCycleSetting";
 import M_ReAssignBookToAnotherCategory from "../../../components/books/settings/reasignBookToAnotherCategory/M_ReAssignBookToAnotherCategory";
+import M_ChangeBookTitle from "../../../components/books/settings/reasignBookToAnotherCategory/M_ChangeBookTitle";
 
 const BookSetting = () => {
   const { query, push, back } = useRouter();
@@ -77,33 +79,36 @@ const BookSetting = () => {
       case "set_level_and_cycle":
         return <M_LevelAndCycleSetting book_id={query.book_id} />;
         break;
-      case "select_category":
+
+      case "generalSettings":
         return (
-          <div>
-            <div className="BookSettingContentTitle">카테고리 이동</div>
-            <M_ReAssignBookToAnotherCategory
-              book_id={query.book_id}
-              cateIdNow={
-                data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
-                  .mybookcate_id
-              }
-              categories={
-                data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0]
-                  .mybookcates
-              }
-              bookTitle={
-                data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
-              }
-            />
-          </div>
-        );
-        break;
-      case "delete_book":
-        return (
-          <div>
-            <div className="BookSettingContentTitle">책 삭제</div>
-            <M_DeleteBook book_id={query.book_id} />
-          </div>
+          <Space direction="vertical">
+            <div>
+              <div className="BookSettingContentTitle">이름수정</div>
+              <M_ChangeBookTitle />
+            </div>
+            <div>
+              <div className="BookSettingContentTitle">카테고리 이동</div>
+              <M_ReAssignBookToAnotherCategory
+                book_id={query.book_id}
+                cateIdNow={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
+                    .mybookcate_id
+                }
+                categories={
+                  data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0]
+                    .mybookcates
+                }
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
+            </div>
+            <div>
+              <div className="BookSettingContentTitle">책 삭제</div>
+              <M_DeleteBook book_id={query.book_id} />
+            </div>
+          </Space>
         );
         break;
 
@@ -208,30 +213,18 @@ const BookSetting = () => {
                         </div>
                       </Space>
                     </div>
+
                     <div
                       className="subTitleForSettingWrapper"
                       onClick={() => {
-                        setSelectedMenu("select_category");
+                        setSelectedMenu("generalSettings");
                       }}
                     >
                       <Space>
                         <Avatar>
-                          <AppstoreAddOutlined />
+                          <ScissorOutlined />
                         </Avatar>
-                        <div className="subTitleForSetting">카테고리 이동</div>
-                      </Space>
-                    </div>
-                    <div
-                      className="subTitleForSettingWrapper"
-                      onClick={() => {
-                        setSelectedMenu("delete_book");
-                      }}
-                    >
-                      <Space>
-                        <Avatar>
-                          <DeleteOutlined />
-                        </Avatar>
-                        <div className="subTitleForSetting">책 삭제</div>
+                        <div className="subTitleForSetting">일반설정</div>
                       </Space>
                     </div>
                   </div>

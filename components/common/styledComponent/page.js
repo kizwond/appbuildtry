@@ -58,3 +58,7 @@ export const StyledTwoLinesEllipsis = styled.div`
   word-break: break-all; //한글 관련 줄바꿈 설정
   text-align: left;
 `;
+
+export const StyledPcContentsWrapper = styled.div`
+  padding-left: 16px;
+`;

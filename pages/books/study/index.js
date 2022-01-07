@@ -12,6 +12,7 @@ import StudyFavoriteBooksTable from "../../../components/books/study/mainPage/bo
 import StudyBooksTable from "../../../components/books/study/mainPage/booksTable/StudyBooksTable";
 import Layout from "../../../components/layout/Layout";
 import { Button, Space } from "antd";
+import { StyledPcContentsWrapper } from "../../../components/common/styledComponent/page";
 
 const StudyMainPage = () => {
   const router = useRouter();
@@ -123,7 +124,7 @@ const StudyMainPage = () => {
                 )}
               </div>
             </StyledFlexSpaceBetween>
-            <div>
+            <StyledPcContentsWrapper>
               <StudyFavoriteBooksTable
                 category={category2}
                 myBook={myBook2}
@@ -132,9 +133,9 @@ const StudyMainPage = () => {
                 isFoldedMenu={isFoldedMenu}
                 changeFoldedMenu={changeFoldedMenu}
               />
-            </div>
+            </StyledPcContentsWrapper>
 
-            <div>
+            <StyledPcContentsWrapper>
               <StudyBooksTable
                 category={category2}
                 myBook={myBook2}
@@ -143,7 +144,7 @@ const StudyMainPage = () => {
                 isFoldedMenu={isFoldedMenu}
                 changeFoldedMenu={changeFoldedMenu}
               />
-            </div>
+            </StyledPcContentsWrapper>
           </StyledRowMaxWidth>
         </Layout>
       )}

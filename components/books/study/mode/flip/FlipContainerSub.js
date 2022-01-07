@@ -4,12 +4,18 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    
-  card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour += now - new Date(card_details_session[current_card_info_index].studyStatus.recentKnowTime);
-  card_details_session[current_card_info_index].studyStatus.currentLevStudyHour += timer;
-  card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes += 1;
   
-
+  // 혹시 몰라서 if 문을 썼습니다. 사실 불필요한 if문입니다.
+  if (card_details_session[current_card_info_index].studyStatus.recentKnowTime == null){
+    card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour = 60000;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = timer;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 1;
+  } else {
+    card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour += now - new Date(card_details_session[current_card_info_index].studyStatus.recentKnowTime);
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour += timer;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes += 1;
+  }
+  
   card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
   card_details_session[current_card_info_index].studyStatus.statusCurrent = 'ing';
   
@@ -35,6 +41,25 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null;
   
   card_details_session[current_card_info_index].studyStatus.isUpdated = true;
+
+  const dataForRegression = JSON.parse(sessionStorage.getItem("dataForRegression"));
+  dataForRegression.push({
+    buybook_id : card_details_session[current_card_info_index].card_info.buybook_id,
+    totalStudyTimes : card_details_session[current_card_info_index].studyStatus.totalStudyTimes,
+    levelOriginal : card_details_session[current_card_info_index].studyStatus.levelOriginal,
+    currentLevStudyTimes  : card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes,
+    currentLevStudyHour  : card_details_session[current_card_info_index].studyStatus.currentLevStudyHour,
+    currentLevElapsedHour : card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour,
+    levelCurrent : card_details_session[current_card_info_index].studyStatus.levelCurrent,
+  })
+  sessionStorage.setItem("dataForRegression", JSON.stringify(dataForRegression))
+
+  //커런트 관련 변수를 리셋함
+  card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour = 0;
+  card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = 0;
+  card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 0;
+
+
   updateSessionResult(card_details_session[current_card_info_index])
   
 
@@ -46,9 +71,15 @@ const calculateNormalStudy = (interval, selection, current_card_info_index, time
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
 
-  card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour += now - new Date(card_details_session[current_card_info_index].studyStatus.recentKnowTime);
-  card_details_session[current_card_info_index].studyStatus.currentLevStudyHour += timer;
-  card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes += 1;
+  if (card_details_session[current_card_info_index].studyStatus.recentKnowTime == null){
+    card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour = 60000;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = timer;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 1;
+  } else {
+    card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour += now - new Date(card_details_session[current_card_info_index].studyStatus.recentKnowTime);
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyHour += timer;
+    card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes += 1;
+  }
 
   card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
   card_details_session[current_card_info_index].studyStatus.statusCurrent = 'ing';

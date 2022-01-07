@@ -130,7 +130,16 @@ const BookSetting = () => {
             <Layout>
               <StyledDiv>
                 <StyledForHeader>
-                  <div className="ForMainTitle">상세 설정</div>
+                  <Space align="baseline">
+                    <div className="ForMainTitle">상세 설정</div>
+                    <EllipsisTwoLinesForTitle>
+                      책 제목:{" "}
+                      {
+                        data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
+                          .title
+                      }
+                    </EllipsisTwoLinesForTitle>
+                  </Space>
 
                   <button
                     type="button"
@@ -147,14 +156,6 @@ const BookSetting = () => {
                 </StyledForHeader>
                 <div className="FlexWith8Gap">
                   <div className="BookSettingSiderMenu">
-                    <EllipsisTwoLinesForTitle>
-                      책 제목:{" "}
-                      {
-                        data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
-                          .title
-                      }
-                    </EllipsisTwoLinesForTitle>
-
                     <div
                       className="subTitleForSettingWrapper"
                       onClick={() => {
@@ -265,12 +266,13 @@ const StyledDiv = styled.div`
   }
 
   .BookSettingSiderMenu {
-    width: 230px;
+    width: 240px;
     height: calc(100vh - 80px);
     border-right: 1px solid lightgray;
     display: flex;
     flex-direction: column;
     gap: 25px;
+    padding: 16px 0 16px 16px;
   }
 
   .subTitleForSettingWrapper {

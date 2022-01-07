@@ -14,6 +14,7 @@ export const FRAGMENT_CARD_SET = gql`
       _id
       card_info {
         mybook_id
+        buybook_id
         indexset_id
         index_id
         cardset_id

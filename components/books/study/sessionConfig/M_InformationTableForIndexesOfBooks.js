@@ -117,7 +117,7 @@ const IndexTree = ({
           dataIndex: "totalNumberOfAllCards",
           key: "totalNumberOfAllCards",
           align: "center",
-          width: 42,
+          width: 40,
         },
         {
           title: (
@@ -129,7 +129,7 @@ const IndexTree = ({
           dataIndex: "totalNumberOfCompletedCards",
           key: "totalNumberOfCompletedCards",
           align: "center",
-          width: 42,
+          width: 50,
           render: function displayName(_value, _record) {
             const isParentZero = _record.totalNumberOfAllCards === 0;
             const completedRate =
@@ -158,7 +158,7 @@ const IndexTree = ({
           dataIndex: "totalNumberOfCompletedCards",
           className: "TableMiddleColumn TableCardCounterColumn",
           align: "center",
-          width: 45,
+          width: 50,
           render: function displayName(_value, _record, _index) {
             const isParentZero = _record.totalNumberOfAllCards - _value === 0;
             const levelAverageForNotCompletedCard = Math.floor(
@@ -183,7 +183,7 @@ const IndexTree = ({
           dataIndex: "totalNumberOfYetCards",
           key: "totalNumberOfYetCards",
           align: "center",
-          width: 42,
+          width: 40,
         },
         {
           title: "학습중",
@@ -193,28 +193,28 @@ const IndexTree = ({
               dataIndex: "totalNumberOfAllCardsOnStudyStage",
               key: "totalNumberOfAllCardsOnStudyStage",
               align: "center",
-              width: 53,
+              width: 42,
             },
             {
               title: "현재이전",
               dataIndex: "totalNumberOfUntilNowCardsOnStudyStage",
               key: "totalNumberOfUntilNowCardsOnStudyStage",
               align: "center",
-              width: 53,
+              width: 42,
             },
             {
               title: "오늘이전",
               dataIndex: "totalNumberOfUntilTodayCardsOnStudyStage",
               key: "totalNumberOfUntilTodayCardsOnStudyStage",
               align: "center",
-              width: 53,
+              width: 42,
             },
             {
               title: "내일이후",
               dataIndex: "totalNumberOfFromTomorrowCardsOnStudyStage",
               key: "totalNumberOfFromTomorrowCardsOnStudyStage",
               align: "center",
-              width: 53,
+              width: 42,
             },
           ],
         },
@@ -223,7 +223,7 @@ const IndexTree = ({
           dataIndex: "totalNumberOfHoldCards",
           key: "totalNumberOfHoldCards",
           align: "center",
-          width: 42,
+          width: 40,
         },
       ]}
       dataSource={bookData}

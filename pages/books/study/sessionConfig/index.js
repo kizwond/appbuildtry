@@ -126,7 +126,7 @@ const StudySessionConfig = ({
 
     // 디펜던시에서 sessionConfig가 매 랜더링마다 변경되어서  useMemo가 실행된다. 크게 의미가 없다. sessionConfig 메모라이징 할 방법 찾아야함
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [checkedKeys, sessionConfig]
+    [checkedKeys, sessionConfig, data]
   );
 
   const [session_createSession, {}] = useMutation(MUTATION_CREATE_SESSION, {

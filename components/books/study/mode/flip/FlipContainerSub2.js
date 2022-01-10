@@ -39,16 +39,16 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,curre
         if (recentKnowTime != null && currentLevStudyTimes == 1){
             const maxElapsedTime = levelCurrent
             baseElapsedTime = Math.round(maxElapsedTime * ( 1+ weightFromLevelCurrent * levelchangeSensitivity/100) * 1000)/1000
-            console.log('baseElapsedTime1', baseElapsedTime)
+            // console.log('baseElapsedTime1', baseElapsedTime)
         }
         if (recentKnowTime != null && currentLevStudyTimes != 1){
             const maxElapsedTime = Math.max(levelCurrent,averageElapsedHour )
             baseElapsedTime = Math.round((maxElapsedTime-factorAppliedGap) * ( 1+ weightFromLevelCurrent * levelchangeSensitivity/100) * 1000)/1000
-            console.log('baseElapsedTime2', baseElapsedTime)
+            // console.log('baseElapsedTime2', baseElapsedTime)
         }
 
         newLevel = Math.round((Math.pow(studyTimesCoeff,2)*baseElapsedTime)/(Math.pow(currentLevStudyTimes,2)+Math.pow(studyTimesCoeff,2))*1000)/1000
-        console.log('newLevel', levelCurrent, newLevel)
+        // console.log('newLevel', levelCurrent, newLevel)
         needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
         needStudyTime =  new Date(Date.now() + needStudyTimeGap)
         return {newLevel, needStudyTime, needStudyTimeGap}

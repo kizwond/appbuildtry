@@ -1727,15 +1727,10 @@ class Container extends Component {
 }
 
 const CalculateIf = ({currentSeq, levelConfigs}) => {
-  const value = "time"
   const estimate = calculateStudyStatus(null, "prediction", currentSeq, null, levelConfigs)
   const needStudyTimeGap = (estimate.needStudyTimeGap /60000).toFixed()
-  // const time = new Date(needStudyTimeGap)
-
-  // console.log(needStudyTime)
   return (
-    // <><span>time</span></>
-    <><span>{needStudyTimeGap}분</span></>
+    <><span>[{needStudyTimeGap}분]</span></>
   )
 }
 const style_study_layout_bottom = {

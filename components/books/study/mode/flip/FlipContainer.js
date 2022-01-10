@@ -734,7 +734,7 @@ class Container extends Component {
       console.log("공부끝");
     }
   };
-
+  
   render() {
     if (this.props.levelConfigs) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
@@ -781,7 +781,7 @@ class Container extends Component {
               style={{ fontSize: "0.8rem", borderRadius: "3px" }}
               onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id, this.state.time)}
             >
-              {item.nick}
+             {item.nick} {item.name === "diffi5" && <><CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} /></>}
             </Button>
           </>
         ));
@@ -1709,6 +1709,13 @@ class Container extends Component {
   }
 }
 
+const CalculateIf = ({currentSeq, levelConfigs}) => {
+  const value = "time"
+  // const card_details_session = calculateStudyStatus(null, "prediction", currentSeq, null, levelConfigs)
+  return (
+    <><span>{value}</span></>
+  )
+}
 const style_study_layout_bottom = {
   display: "flex",
   flexDirection: "row",

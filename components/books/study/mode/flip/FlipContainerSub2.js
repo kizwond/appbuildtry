@@ -4,6 +4,8 @@
 exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) => {
     
     try{
+        let newLevel, needStudyTime
+        
         // console.log(recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) 
         // console.log('recentKnowTime', recentKnowTime)       
         // console.log('currentLevElapsedHour', currentLevElapsedHour)
@@ -14,25 +16,23 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,curre
         const lev10StudyTimes = 10
         const levelCoverWidth = 5
         const studyTimesCoeff = Math.round(lev10StudyTimes / Math.pow(levelCoverWidth, 0.5)*1000)/1000
-
-        //여기
-        const weightFromLevelCurrent = Math.round(Math.pow(Math.max(1-levelCurrent/100, 0), 2)/4 *1000)/1000
-        // console.log('weightFromLevelCurrent', weightFromLevelCurrent)
-
-        const averageElapsedHour = Math.round (currentLevElapsedHour / currentLevStudyTimes / 24 / 3600000 *1000 ) /1000
-        // console.log('averageElapsedHour', averageElapsedHour)
-        const gapBetweenLevelCurrentAndElapsedTime = Math.abs(levelCurrent - averageElapsedHour)
-        // console.log('gapBetweenLevelCurrentAndElapsedTime', gapBetweenLevelCurrentAndElapsedTime)
-        const factorAppliedGap = gapBetweenLevelCurrentAndElapsedTime * ((1000-Math.pow(11-currentLevStudyTimes, 3))/1000)
-        // console.log('factorAppliedGap', factorAppliedGap)
-
-        let newLevel, needStudyTime
+        
         if (recentKnowTime == null){
             newLevel = Math.round(initialMaxLevel / currentLevStudyTimes * 1000) / 1000;
             needStudyTime =  new Date(Date.now() + Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000)
             console.log('newLevel', levelCurrent, newLevel)
             return {newLevel, needStudyTime}
         }
+
+        //여기
+        const weightFromLevelCurrent = Math.round(Math.pow(Math.max(1-levelCurrent/100, 0), 2)/4 *1000)/1000
+        // console.log('weightFromLevelCurrent', weightFromLevelCurrent)
+        const averageElapsedHour = Math.round (currentLevElapsedHour / currentLevStudyTimes / 24 / 3600000 *1000 ) /1000
+        // console.log('averageElapsedHour', averageElapsedHour)
+        const gapBetweenLevelCurrentAndElapsedTime = Math.abs(levelCurrent - averageElapsedHour)
+        // console.log('gapBetweenLevelCurrentAndElapsedTime', gapBetweenLevelCurrentAndElapsedTime)
+        const factorAppliedGap = gapBetweenLevelCurrentAndElapsedTime * ((1000-Math.pow(11-currentLevStudyTimes, 3))/1000)
+        // console.log('factorAppliedGap', factorAppliedGap)
             
         let baseElapsedTime
         if (recentKnowTime != null && currentLevStudyTimes == 1){

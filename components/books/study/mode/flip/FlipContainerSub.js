@@ -185,6 +185,20 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
   return card_details_session;
 };
 
+const estimateLevelAndNeedStudyTime = (selection, current_card_info_index, timer) => {
+  console.log('냐하하하하', selection)
+
+  const now = new Date();  
+  const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+  
+  const currentLevElapsedHour = card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour + (now - new Date(card_details_session[current_card_info_index].studyStatus.recentKnowTime));
+  const currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
+
+  let {levelCurrent, recentKnowTime}=card_details_session[current_card_info_index].studyStatus
+  let {newLevel, needStudyTime} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs)  
+
+  return {newLevel, needStudyTime};
+};
 
 
 const modifyToDiffi5 = (selection, current_card_info_index, timer) => {
@@ -220,6 +234,9 @@ exports.calculateStudyStatus = (interval, selection, current_card_info_index, ti
     case "move":
     case "finish":    
       card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer);
+      break;
+    case "prediction":    
+      card_details_session = estimateLevelAndNeedStudyTime(selection, current_card_info_index, timer);
       break;
   }
 

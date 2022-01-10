@@ -738,6 +738,12 @@ class Container extends Component {
   render() {
     if (this.props.levelConfigs) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
+      var sumClicks = resultOfSession.clicks.total
+      const inserted = resultOfSession.numCards.completed.inserted +resultOfSession.numCards.hold.inserted +resultOfSession.numCards.ing.inserted+resultOfSession.numCards.yet.inserted
+      const finished = resultOfSession.numCards.completed.finished +resultOfSession.numCards.hold.finished +resultOfSession.numCards.ing.finished+resultOfSession.numCards.yet.finished
+      var progress = finished/inserted *100
+      // console.log(inserted,finished)
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
       const statusCurrent = card_details_session[currentSeq].studyStatus.statusCurrent;
 
@@ -1657,9 +1663,9 @@ class Container extends Component {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
               <div style={{ width: "50px", fontSize: "1rem", marginRight: "5px" }}>완료율</div>
-              <ProgressBar bgcolor={"#32c41e"} completed={100} />
+              <ProgressBar bgcolor={"#32c41e"} completed={progress} />
             </div>
-            <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {this.state.clickCount}</div>
+            <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {sumClicks}</div>
             <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
             학습종료
           </Button>

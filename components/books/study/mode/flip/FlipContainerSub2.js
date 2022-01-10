@@ -4,7 +4,7 @@
 exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) => {
     
     try{
-        let newLevel, needStudyTime
+        let newLevel, needStudyTime, needStudyTimeGap
         
         // console.log(recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) 
         // console.log('recentKnowTime', recentKnowTime)       
@@ -19,7 +19,8 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,curre
         
         if (recentKnowTime == null){
             newLevel = Math.round(initialMaxLevel / currentLevStudyTimes * 1000) / 1000;
-            needStudyTime =  new Date(Date.now() + Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000)
+            needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
+            needStudyTime =  new Date(Date.now() + needStudyTimeGap)
             console.log('newLevel', levelCurrent, newLevel)
             return {newLevel, needStudyTime}
         }
@@ -48,8 +49,9 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,curre
 
         newLevel = Math.round((Math.pow(studyTimesCoeff,2)*baseElapsedTime)/(Math.pow(currentLevStudyTimes,2)+Math.pow(studyTimesCoeff,2))*1000)/1000
         console.log('newLevel', levelCurrent, newLevel)
-        needStudyTime =  new Date(Date.now() + Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000)
-        return {newLevel, needStudyTime}
+        needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
+        needStudyTime =  new Date(Date.now() + needStudyTimeGap)
+        return {newLevel, needStudyTime, needStudyTimeGap}
         
     }catch(err){
         console.log(err)

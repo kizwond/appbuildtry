@@ -185,7 +185,7 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
   return card_details_session;
 };
 
-const estimateLevelAndNeedStudyTime = (selection, current_card_info_index, timer) => {
+const estimateLevelAndNeedStudyTime = (selection, current_card_info_index, timer, levelConfigs) => {
   console.log('냐하하하하', selection)
 
   const now = new Date();  
@@ -195,9 +195,9 @@ const estimateLevelAndNeedStudyTime = (selection, current_card_info_index, timer
   const currentLevStudyTimes = card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes + 1;
 
   let {levelCurrent, recentKnowTime}=card_details_session[current_card_info_index].studyStatus
-  let {newLevel, needStudyTime} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs)  
+  let {needStudyTimeGap} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs)  
 
-  return {newLevel, needStudyTime};
+  return {needStudyTimeGap};
 };
 
 
@@ -236,7 +236,7 @@ exports.calculateStudyStatus = (interval, selection, current_card_info_index, ti
       card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer);
       break;
     case "prediction":    
-      card_details_session = estimateLevelAndNeedStudyTime(selection, current_card_info_index, timer);
+      card_details_session = estimateLevelAndNeedStudyTime(selection, current_card_info_index, timer, levelConfigs);
       break;
   }
 

@@ -32,6 +32,7 @@ import CategorySettingButton from "../../../common/categorySetting/CategorySetti
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
 import computeFromNow from "../../../common/logic/computeFromNow";
+import CreateBookButton from "../../../common/createBook/CreateBookButton";
 
 const M_StudyBooksTable = ({
   category,
@@ -354,6 +355,12 @@ const M_StudyBooksTable = ({
       title={
         <Space>
           <div className="ForPageMainTitle">나의책</div>
+          <CreateBookButton
+            category={category}
+            addNewCategoryIdOnExpandedRowKeys={
+              addNewCategoryIdOnExpandedRowKeys
+            }
+          />
           <CategorySettingButton
             category={dataSource.map((item) => ({
               name: item.categoryName,

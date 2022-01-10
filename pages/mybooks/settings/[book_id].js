@@ -153,7 +153,6 @@ const BookSetting = () => {
 
                   <button
                     type="button"
-                    aria-
                     className="ForCloseButton"
                     onClick={() => {
                       back();

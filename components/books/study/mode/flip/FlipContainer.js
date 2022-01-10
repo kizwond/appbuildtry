@@ -45,7 +45,7 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
   }
 
   const sessionupdateresults = useCallback(
-    async (sessionId, filtered, resultOfSession, resultByBook, createdCards) => {
+    async (sessionId, filtered, resultOfSession, resultByBook, createdCards,dataForRegression) => {
       try {
         await session_updateResults({
           variables: {
@@ -55,6 +55,7 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
               studyResults:filtered,
               resultOfSession,
               resultByBook,
+              dataForRegression
             },
           },
         });
@@ -409,7 +410,7 @@ class Container extends Component {
     const current_card_info_index = card_details_session_origin.findIndex((item) => item._id === current_card_id);
     console.log(current_card_info_index);
 
-    const card_details_session = calculateStudyStatus(selection, current_card_info_index, timer);
+    const card_details_session = calculateStudyStatus(null, selection, current_card_info_index, timer);
 
     //업데이트된 학습정보 세션스토리지에 다시 저장
     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
@@ -453,7 +454,7 @@ class Container extends Component {
     this.generateCardSeq(card_details_session, now, current_card_id);
   };
 
-  onClickSuspendHandler = (current_card_id, from) => {
+  onClickHoldHandler = (current_card_id, from) => {
     console.log(current_card_id);
     const now = new Date();
     this.setState({
@@ -655,6 +656,7 @@ class Container extends Component {
     const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
     const resultByBook = JSON.parse(sessionStorage.getItem("resultByBook"));
     const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
+    const dataForRegression  = JSON.parse(sessionStorage.getItem("dataForRegression"));
     const filtered = cardListStudying.filter((item) => item.studyStatus.isUpdated === true);
     if (filtered) {
       console.log("서버에 학습데이타를 전송할 시간이다!!!!");
@@ -671,6 +673,7 @@ class Container extends Component {
         delete v.studyStatus.isUpdated;
         delete v.studyStatus.clickTimesInSession;
         delete v.studyStatus.__typename;
+        delete v.studyStatus.levelOriginal;
         delete v.content;
         delete v._id;
         delete v.card_info.time_created;
@@ -726,7 +729,7 @@ class Container extends Component {
 
       console.log("filtered : ", filtered);
       console.log("sessionId : ", sessionId);
-      this.props.sessionupdateresults(sessionId, filtered, resultOfSession, resultByBook, createdCards);
+      this.props.sessionupdateresults(sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression);
     } else {
       console.log("공부끝");
     }
@@ -801,7 +804,7 @@ class Container extends Component {
             </>
           ) : (
             <>
-              <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickSuspendHandler(current_card_id, "back")} type="primary">
+              <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id, "back")} type="primary">
                 보류
               </Button>
               <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id, "back")} type="primary">
@@ -810,16 +813,16 @@ class Container extends Component {
             </>
           )}
 
-          <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
+          {/* <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
             학습종료
-          </Button>
+          </Button> */}
         </Space>
       );
 
       const restoreBackModeMoreMenuContents = (
         <Space>
           <>
-            <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickSuspendHandler(current_card_id, "back")} type="primary">
+            <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id, "back")} type="primary">
               보류
             </Button>
             <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id, "back")} type="primary">
@@ -827,9 +830,9 @@ class Container extends Component {
             </Button>
           </>
 
-          <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
+          {/* <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
             학습종료
-          </Button>
+          </Button> */}
         </Space>
       );
       var goBackToCurrent = (
@@ -859,15 +862,15 @@ class Container extends Component {
           <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary">
             통과
           </Button>
-          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickSuspendHandler(current_card_id)} type="primary">
+          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id)} type="primary">
             보류
           </Button>
           <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id)} type="primary">
             졸업
           </Button>
-          <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
+          {/* <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
             학습종료
-          </Button>
+          </Button> */}
         </Space>
       );
       var moreMenu = (
@@ -1657,6 +1660,9 @@ class Container extends Component {
               <ProgressBar bgcolor={"#32c41e"} completed={100} />
             </div>
             <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {this.state.clickCount}</div>
+            <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
+            학습종료
+          </Button>
           </div>
           <div style={{ display: "flex", marginTop: "5px", justifyContent: "space-between", alignItems: "center" }}>
             <Timer

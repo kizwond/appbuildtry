@@ -67,48 +67,93 @@ const FlipMode = () => {
     setCardTypeSets(data.cardtypeset_getbymybookids.cardtypesets);
   }
   useEffect(() => {
+    
     if (data) {
-      console.log("최초 리드모드 데이터 : ", data);
-      console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
-      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
-      setCardListStudying(cardListStudying);
-      setSessionScope(data.session_getSession.sessions[0].sessionScope);
-      sessionStorage.setItem("card_seq", 0);
-      sessionStorage.setItem("origin_seq", 0);
-      sessionStorage.removeItem("cardlist_to_send");
-      sessionStorage.removeItem("studyLogCardIds");
-      const now = new Date();
-      sessionStorage.setItem("started", now);
-      const cardIdList = cardListStudying.map((item) => {
-        return item.content.mycontent_id;
-      });
-      const buyContentsIdsList = cardListStudying.map((item) => {
-        return item.content.buycontent_id;
-      });
-      mycontent_getMycontentByMycontentIDs({
-        variables: {
-          mycontent_ids: cardIdList,
-        },
-      });
-
-      buycontent_getBuycontentByBuycontentIDs({
-        variables: {
-          buycontent_ids: buyContentsIdsList,
-        },
-      });
-      const mybook_ids = data.session_getSession.sessions[0].sessionScope.map((item) => {
-        return item.mybook_id;
-      });
-      levelconfig_getLevelconfigs({
-        variables: {
-          mybook_ids: mybook_ids,
-        },
-      });
-      cardtypeset_getbymybookids({
-        variables: {
-          mybook_ids: mybook_ids,
-        },
-      });
+      const dataExist = JSON.parse(sessionStorage.getItem("firstFetchData"));
+      if (dataExist) {
+        console.log(dataExist)
+        console.log(data)
+        if (JSON.stringify(dataExist) == JSON.stringify(data)) {
+          const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+          setCardListStudying(cardListStudying);
+          setSessionScope(data.session_getSession.sessions[0].sessionScope);
+          const cardIdList = cardListStudying.map((item) => {
+            return item.content.mycontent_id;
+          });
+          const buyContentsIdsList = cardListStudying.map((item) => {
+            return item.content.buycontent_id;
+          });
+          mycontent_getMycontentByMycontentIDs({
+            variables: {
+              mycontent_ids: cardIdList,
+            },
+          });
+    
+          buycontent_getBuycontentByBuycontentIDs({
+            variables: {
+              buycontent_ids: buyContentsIdsList,
+            },
+          });
+          const mybook_ids = data.session_getSession.sessions[0].sessionScope.map((item) => {
+            return item.mybook_id;
+          });
+          levelconfig_getLevelconfigs({
+            variables: {
+              mybook_ids: mybook_ids,
+            },
+          });
+          cardtypeset_getbymybookids({
+            variables: {
+              mybook_ids: mybook_ids,
+            },
+          });
+        } else {
+          sessionStorage.removeItem("firstFetchData");
+          sessionStorage.setItem("firstFetchData", JSON.stringify(data));
+          console.log("최초 리드모드 데이터 : ", data);
+          console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
+          const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+          setCardListStudying(cardListStudying);
+          setSessionScope(data.session_getSession.sessions[0].sessionScope);
+          sessionStorage.setItem("card_seq", 0);
+          sessionStorage.setItem("origin_seq", 0);
+          sessionStorage.removeItem("cardlist_to_send");
+          sessionStorage.removeItem("studyLogCardIds");
+          const now = new Date();
+          sessionStorage.setItem("started", now);
+          const cardIdList = cardListStudying.map((item) => {
+            return item.content.mycontent_id;
+          });
+          const buyContentsIdsList = cardListStudying.map((item) => {
+            return item.content.buycontent_id;
+          });
+          mycontent_getMycontentByMycontentIDs({
+            variables: {
+              mycontent_ids: cardIdList,
+            },
+          });
+    
+          buycontent_getBuycontentByBuycontentIDs({
+            variables: {
+              buycontent_ids: buyContentsIdsList,
+            },
+          });
+          const mybook_ids = data.session_getSession.sessions[0].sessionScope.map((item) => {
+            return item.mybook_id;
+          });
+          levelconfig_getLevelconfigs({
+            variables: {
+              mybook_ids: mybook_ids,
+            },
+          });
+          cardtypeset_getbymybookids({
+            variables: {
+              mybook_ids: mybook_ids,
+            },
+          });
+        }
+      }
+      
     }
   }, [data, levelconfig_getLevelconfigs, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs, cardtypeset_getbymybookids]);
 

@@ -21,6 +21,12 @@ export const StyledFlexAllCenter = styled.div`
   justify-content: center;
   align-items: center;
 `;
+export const StyledFlexAllCenterDirectionColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 export const StyledFlexSpaceBetween = styled.div`
   display: flex;
@@ -57,4 +63,8 @@ export const StyledTwoLinesEllipsis = styled.div`
   white-space: normal;
   word-break: break-all; //한글 관련 줄바꿈 설정
   text-align: left;
+`;
+
+export const StyledPcContentsWrapper = styled.div`
+  padding-left: 16px;
 `;

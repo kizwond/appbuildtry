@@ -10,6 +10,7 @@ import styled from "styled-components";
 import Layout from "../../../components/layout/Layout";
 import BooksTable from "../../../components/books/write/mainPage/booksTable/BooksTable";
 import FavoriteBooksTable from "../../../components/books/write/mainPage/booksTable/FavoriteBooksTable";
+import { StyledPcContentsWrapper } from "../../../components/common/styledComponent/page";
 
 const WriteMainPage = () => {
   const router = useRouter();
@@ -63,22 +64,22 @@ const WriteMainPage = () => {
             <div className="WritePageHeaderWrapper">
               <span className="ForMainTitle">만들기</span>
             </div>
-            <div>
+            <StyledPcContentsWrapper>
               <FavoriteBooksTable
                 category={category2}
                 myBook={myBook2}
                 isFoldedMenu={isFoldedMenu}
                 changeFoldedMenu={changeFoldedMenu}
               />
-            </div>
-            <div>
+            </StyledPcContentsWrapper>
+            <StyledPcContentsWrapper>
               <BooksTable
                 category={category2}
                 myBook={myBook2}
                 isFoldedMenu={isFoldedMenu}
                 changeFoldedMenu={changeFoldedMenu}
               />
-            </div>
+            </StyledPcContentsWrapper>
           </StyledRowMaxWidth>
         </Layout>
       )}
@@ -95,12 +96,14 @@ const StyledRowMaxWidth = styled.div`
 
   .WritePageHeaderWrapper {
     display: flex;
-    height: 40px;
+    height: 50px;
     align-items: center;
-  }
-  .ForMainTitle {
-    font-size: 25px;
-    font-weight: 500;
+    & .ForMainTitle {
+      padding-top: 4px;
+      padding-bottom: 4px;
+      font-size: 25px;
+      font-weight: 500;
+    }
   }
 
   & .ant-card-small > .ant-card-head {

@@ -31,7 +31,10 @@ export const computeNumberOfCardsPerBook = ({
           card.studyStatus.statusCurrent === "hold" ? 1 : 0,
         totalNumberOfCompletedCards:
           card.studyStatus.statusCurrent === "Completed" ? 1 : 0,
-        totalLevelOfAllCards: card.studyStatus.levelCurrent,
+        totalLevelOfAllCards:
+          card.studyStatus.statusCurrent === "Completed"
+            ? 0
+            : card.studyStatus.levelCurrent,
         totalNumberOfAllCardsOnStudyStage:
           card.studyStatus.statusCurrent === "ing" ? 1 : 0,
         totalNumberOfUntilNowCardsOnStudyStage:
@@ -259,14 +262,14 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
         clickTimesInSession: 0,
         studyHourInSession: 0,
 
-        needStudyTimeTmp: null,        
+        needStudyTimeTmp: null,
         isUpdated: false,
       },
     };
   });
 };
 
-export const getCardsByNumber = ({ sortedCards, numStartCards }) => {
+export const getCardsByNumber = async ({ sortedCards, numStartCards }) => {
   console.log("카드 수량");
   const { yet, ing, hold, completed } = numStartCards;
   const yetCards = sortedCards.filter(
@@ -282,6 +285,16 @@ export const getCardsByNumber = ({ sortedCards, numStartCards }) => {
     (card) => card.studyStatus.statusCurrent === "hold"
   );
 
+  const getNumberOfSelectedCardsByStatus = async () => ({
+    yet: [...yetCards].length,
+    ing: [...ingCards].length,
+    completed: [...completedCards].length,
+    hold: [...holdCards].length,
+  });
+
+  const numberOfSelectedCardsByStatus =
+    await getNumberOfSelectedCardsByStatus();
+
   const yetCardsOnStudyStage = yetCards.splice(0, yet);
   const ingCardsOnStudyStage = ingCards.splice(0, ing);
   const completedCardsOnStudyStage = completedCards.splice(0, completed);
@@ -293,6 +306,13 @@ export const getCardsByNumber = ({ sortedCards, numStartCards }) => {
     ...completedCardsOnStudyStage,
     ...holdCardsOnStudyStage,
   ].sort((a, b) => a.seqInCardlist - b.seqInCardlist);
+  const numberOfstudyingCardsByStatus = {
+    yet: yetCardsOnStudyStage.length,
+    ing: ingCardsOnStudyStage.length,
+    completed: completedCardsOnStudyStage.length,
+    hold: holdCardsOnStudyStage.length,
+  };
+
   return {
     studyingCards,
     remainedCards: {
@@ -301,5 +321,7 @@ export const getCardsByNumber = ({ sortedCards, numStartCards }) => {
       completed: completedCards,
       hold: holdCards,
     },
+    numberOfstudyingCardsByStatus,
+    numberOfSelectedCardsByStatus,
   };
 };

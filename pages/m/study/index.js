@@ -11,6 +11,7 @@ import styled from "styled-components";
 import M_Layout from "../../../components/layout/M_Layout";
 import M_StudyFavoriteBooksTable from "../../../components/books/study/mainPage/booksTable/M_StudyFavoriteBooksTable";
 import M_StudyBooksTable from "../../../components/books/study/mainPage/booksTable/M_StudyBooksTable";
+import { Popover, Tooltip } from "antd";
 
 const M_StudyMainPage = () => {
   const router = useRouter();
@@ -43,10 +44,12 @@ const M_StudyMainPage = () => {
   );
 
   const directStart = () => {
-    router.push({
-      pathname: "/m/study/mode/directread",
-      query: { name: JSON.stringify(selectedBooks) },
-    });
+    if (selectedBooks.length > 0) {
+      router.push({
+        pathname: "/m/study/mode/directread",
+        query: { name: JSON.stringify(selectedBooks) },
+      });
+    }
   };
 
   const getCheckedIndexKeys = (data, selectedBooks) => {
@@ -118,20 +121,30 @@ const M_StudyMainPage = () => {
             <div onClick={directStart}>바로 보기</div>
 
             <div>
-              <Link
-                as="/m/study/sessionConfig"
-                href={{
-                  pathname: "/m/study/sessionConfig",
-                  query: {
-                    selectedBooks: JSON.stringify(selectedBooks),
-                    initialCheckedKey: JSON.stringify(
-                      getCheckedIndexKeys(data, selectedBooks)
-                    ),
-                  },
-                }}
-              >
-                <a>세션 설정 후 시작</a>
-              </Link>
+              {selectedBooks.length > 0 ? (
+                <Link
+                  as="/m/study/sessionConfig"
+                  href={{
+                    pathname: "/m/study/sessionConfig",
+                    query: {
+                      selectedBooks: JSON.stringify(selectedBooks),
+                      initialCheckedKey: JSON.stringify(
+                        getCheckedIndexKeys(data, selectedBooks)
+                      ),
+                    },
+                  }}
+                >
+                  <a>세션 설정 후 시작</a>
+                </Link>
+              ) : (
+                <Tooltip
+                  title="선택한 책이 없습니다."
+                  color={"#2e2e2e"}
+                  trigger={["click"]}
+                >
+                  <a>세션 설정 후 시작</a>
+                </Tooltip>
+              )}
             </div>
           </StyledBottomBar>
         </M_Layout>

@@ -118,6 +118,7 @@ const M_ModeSessionConfig = ({
         </StyledDivConfigColStartCards>
         <div>
           <M_InputNumberForStudyCard
+            selectedCardStatus={useStatus}
             numStartCards={numStartCards}
             changeNumStartCards={changeNumStartCards}
           />

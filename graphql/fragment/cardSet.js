@@ -6,6 +6,7 @@ export const FRAGMENT_CARD_SET = gql`
     cardset_info {
       user_id
       mybook_id
+      buybook_id
       indexset_id
       index_id
     }
@@ -13,6 +14,7 @@ export const FRAGMENT_CARD_SET = gql`
       _id
       card_info {
         mybook_id
+        buybook_id
         indexset_id
         index_id
         cardset_id

@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from "react";
 import styled from "styled-components";
-import { Tag } from "antd";
+import { message, Tag } from "antd";
 
 // eslint-disable-next-line react/display-name
 const ToggleTag = memo((props) => {
@@ -31,8 +31,13 @@ const NewToggleTag = ({ children, option, value, changeValue, tagname }) => {
             changeValue(newArr);
           }
           if (!checked) {
-            const newArr = value.filter((_option) => _option !== option);
-            changeValue(newArr);
+            if (value.length > 1) {
+              const newArr = value.filter((_option) => _option !== option);
+              changeValue(newArr);
+            }
+            if (value.length === 1) {
+              message.warning("최소 1개의 옵션은 선택하셔야합니다.", 0.7);
+            }
           }
         },
       }

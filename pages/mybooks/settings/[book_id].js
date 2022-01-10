@@ -7,7 +7,7 @@ import { QUERY_USER_BOOKS_BY_BOOK_IDS__WITH_USER_CATEGORIES } from "../../../gra
 
 import { useRouter } from "next/router";
 
-import { Space, Avatar } from "antd";
+import { Space, Avatar, Input } from "antd";
 import {
   AppstoreAddOutlined,
   CloseOutlined,
@@ -16,6 +16,7 @@ import {
   FlagOutlined,
   FundViewOutlined,
   RiseOutlined,
+  ScissorOutlined,
 } from "@ant-design/icons";
 
 import styled from "styled-components";
@@ -26,6 +27,7 @@ import M_FlagSetting from "../../../components/books/settings/flagSetting/M_Flag
 import M_DeleteBook from "../../../components/books/settings/deleteBook/M_DeleteBook";
 import M_LevelAndCycleSetting from "../../../components/books/settings/levelAndCycleSetting/M_LevelAndCycleSetting";
 import M_ReAssignBookToAnotherCategory from "../../../components/books/settings/reasignBookToAnotherCategory/M_ReAssignBookToAnotherCategory";
+import M_ChangeBookTitle from "../../../components/books/settings/reasignBookToAnotherCategory/M_ChangeBookTitle";
 
 const BookSetting = () => {
   const { query, push, back } = useRouter();
@@ -77,33 +79,46 @@ const BookSetting = () => {
       case "set_level_and_cycle":
         return <M_LevelAndCycleSetting book_id={query.book_id} />;
         break;
-      case "select_category":
+
+      case "generalSettings":
         return (
-          <div>
-            <div className="BookSettingContentTitle">카테고리 이동</div>
-            <M_ReAssignBookToAnotherCategory
-              book_id={query.book_id}
-              cateIdNow={
-                data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
-                  .mybookcate_id
-              }
-              categories={
-                data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0]
-                  .mybookcates
-              }
-              bookTitle={
-                data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
-              }
-            />
-          </div>
-        );
-        break;
-      case "delete_book":
-        return (
-          <div>
-            <div className="BookSettingContentTitle">책 삭제</div>
-            <M_DeleteBook book_id={query.book_id} />
-          </div>
+          <Space direction="vertical">
+            <div>
+              <div className="BookSettingContentTitle">이름수정</div>
+              <M_ChangeBookTitle
+                book_id={query.book_id}
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
+            </div>
+            <div>
+              <div className="BookSettingContentTitle">카테고리 이동</div>
+              <M_ReAssignBookToAnotherCategory
+                book_id={query.book_id}
+                cateIdNow={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
+                    .mybookcate_id
+                }
+                categories={
+                  data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0]
+                    .mybookcates
+                }
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
+            </div>
+            <div>
+              <div className="BookSettingContentTitle">책 삭제</div>
+              <M_DeleteBook
+                book_id={query.book_id}
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
+            </div>
+          </Space>
         );
         break;
 
@@ -125,7 +140,16 @@ const BookSetting = () => {
             <Layout>
               <StyledDiv>
                 <StyledForHeader>
-                  <div className="ForMainTitle">상세 설정</div>
+                  <Space align="baseline">
+                    <div className="ForMainTitle">상세 설정</div>
+                    <EllipsisTwoLinesForTitle>
+                      책 제목:{" "}
+                      {
+                        data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
+                          .title
+                      }
+                    </EllipsisTwoLinesForTitle>
+                  </Space>
 
                   <button
                     type="button"
@@ -142,14 +166,6 @@ const BookSetting = () => {
                 </StyledForHeader>
                 <div className="FlexWith8Gap">
                   <div className="BookSettingSiderMenu">
-                    <EllipsisTwoLinesForTitle>
-                      책 제목:{" "}
-                      {
-                        data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
-                          .title
-                      }
-                    </EllipsisTwoLinesForTitle>
-
                     <div
                       className="subTitleForSettingWrapper"
                       onClick={() => {
@@ -208,30 +224,18 @@ const BookSetting = () => {
                         </div>
                       </Space>
                     </div>
+
                     <div
                       className="subTitleForSettingWrapper"
                       onClick={() => {
-                        setSelectedMenu("select_category");
+                        setSelectedMenu("generalSettings");
                       }}
                     >
                       <Space>
                         <Avatar>
-                          <AppstoreAddOutlined />
+                          <ScissorOutlined />
                         </Avatar>
-                        <div className="subTitleForSetting">카테고리 이동</div>
-                      </Space>
-                    </div>
-                    <div
-                      className="subTitleForSettingWrapper"
-                      onClick={() => {
-                        setSelectedMenu("delete_book");
-                      }}
-                    >
-                      <Space>
-                        <Avatar>
-                          <DeleteOutlined />
-                        </Avatar>
-                        <div className="subTitleForSetting">책 삭제</div>
+                        <div className="subTitleForSetting">일반설정</div>
                       </Space>
                     </div>
                   </div>
@@ -264,6 +268,11 @@ const StyledDiv = styled.div`
   .subTitleForSetting {
     font-size: 16px;
     font-weight: 400;
+
+    & > .anticon.anticon-close > svg {
+      font-size: 24px;
+      color: black;
+    }
   }
 
   .FlexWith8Gap {
@@ -272,12 +281,13 @@ const StyledDiv = styled.div`
   }
 
   .BookSettingSiderMenu {
-    width: 230px;
+    width: 240px;
     height: calc(100vh - 80px);
     border-right: 1px solid lightgray;
     display: flex;
     flex-direction: column;
     gap: 25px;
+    padding: 16px 0 16px 16px;
   }
 
   .subTitleForSettingWrapper {
@@ -383,7 +393,7 @@ const StyledForHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding-bottom: 4px;
-  border-bottom: 1px solid lightgray;
+  /* border-bottom: 1px solid lightgray; */
 
   & .ForCloseButton {
     display: inline-block;

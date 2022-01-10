@@ -1,30 +1,18 @@
 /* eslint-disable react/display-name */
-import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import moment from "moment";
 
-import { Table, Card, Space, Drawer, Checkbox, Popover } from "antd";
-import {
-  DoubleLeftOutlined,
-  DoubleRightOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
+import { Table, Card, Space, Checkbox } from "antd";
+import { DoubleRightOutlined, EditOutlined } from "@ant-design/icons";
 
-import HideOrShowButton from "../../../common/HideOrShowButton";
-import MoveToBookSetting from "../../../common/MoveToBookSetting";
-import FavoriteBook from "../../../common/FavoriteBook";
-import FavoriteBookOrderButton from "../../../common/FavoriteBookOrderButton";
 import {
   StyledFlexAlignCenter,
   StyledFlexAllCenter,
-  StyledFlexAllCenterDimension100Percent,
-  StyledFlexSpaceBetween,
+  StyledFlexAllCenterDirectionColumn,
 } from "../../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
 import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
-import { StyledProgress } from "../../../../common/styledComponent/StyledProgress";
-import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";
 import computeFromNow from "../../../common/logic/computeFromNow";
@@ -175,10 +163,10 @@ const M_StudyFavoriteBooksTable = ({
     },
     {
       title: (
-        <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+        <StyledFlexAllCenterDirectionColumn>
           <div>총</div>
           <div>카드수</div>
-        </StyledFlexAllCenter>
+        </StyledFlexAllCenterDirectionColumn>
       ),
       key: "total",
       dataIndex: "total",
@@ -200,10 +188,10 @@ const M_StudyFavoriteBooksTable = ({
 
     {
       title: (
-        <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+        <StyledFlexAllCenterDirectionColumn>
           <div>학습용</div>
           <div>카드수</div>
-        </StyledFlexAllCenter>
+        </StyledFlexAllCenterDirectionColumn>
       ),
       key: "flip",
       dataIndex: "flip",
@@ -216,10 +204,10 @@ const M_StudyFavoriteBooksTable = ({
     },
     {
       title: (
-        <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+        <StyledFlexAllCenterDirectionColumn>
           <div>학습완료</div>
           <div>(완료율)</div>
-        </StyledFlexAllCenter>
+        </StyledFlexAllCenterDirectionColumn>
       ),
       key: "flip",
       dataIndex: "flip",
@@ -227,29 +215,28 @@ const M_StudyFavoriteBooksTable = ({
       align: "center",
       width: 45,
       render: (_value, _record, _index) => {
-        const isParentZero = _value + _record.read - _record.numCompleted === 0;
-        const completedRate = isParentZero
-          ? "-"
-          : new String(
-              Math.floor(100 * (_record.numCompleted / (_value + _record.read)))
-            ) + " %";
+        const isParentZero = _value + _record.read === 0;
+        const completedRate =
+          new String(
+            Math.floor(100 * (_record.numCompleted / (_value + _record.read)))
+          ) + " %";
 
         return isParentZero ? (
           <StyledFlexAllCenter>-</StyledFlexAllCenter>
         ) : (
-          <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+          <StyledFlexAllCenterDirectionColumn>
             <div>{_record.numCompleted}</div>
             <div>({completedRate})</div>
-          </StyledFlexAllCenter>
+          </StyledFlexAllCenterDirectionColumn>
         );
       },
     },
     {
       title: (
-        <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+        <StyledFlexAllCenterDirectionColumn>
           <div>학습미완료</div>
           <div>(평균레벨)</div>
-        </StyledFlexAllCenter>
+        </StyledFlexAllCenterDirectionColumn>
       ),
       key: "flip",
       dataIndex: "flip",
@@ -258,21 +245,18 @@ const M_StudyFavoriteBooksTable = ({
       width: 45,
       render: (_value, _record, _index) => {
         const isParentZero = _value + _record.read - _record.numCompleted === 0;
-        const completedRate = isParentZero
-          ? "-"
-          : Math.floor(
-              100 *
-                (_record.accuLevel /
-                  (_value + _record.read - _record.numCompleted))
-            );
+        const levelAverageForNotCompletedCard = Math.floor(
+          100 *
+            (_record.accuLevel / (_value + _record.read - _record.numCompleted))
+        );
 
         return isParentZero ? (
           <StyledFlexAllCenter>-</StyledFlexAllCenter>
         ) : (
-          <StyledFlexAllCenter style={{ flexDirection: "column" }}>
+          <StyledFlexAllCenterDirectionColumn>
             <div>{_value + _record.read - _record.numCompleted}</div>
-            <div>({completedRate})</div>
-          </StyledFlexAllCenter>
+            <div>({levelAverageForNotCompletedCard})</div>
+          </StyledFlexAllCenterDirectionColumn>
         );
       },
     },

@@ -63,7 +63,7 @@ export const StyledAntTabs = styled(Tabs)`
     padding: 5px;
     overflow-y: auto;
     height: ${({ is_pc }) =>
-      is_pc === "true" ? "calc(100vh - 160px)" : "auto"};
+      is_pc === "true" ? "calc(100vh - 184px)" : "auto"};
   }
 
   .ant-tabs-tabpane.ant-tabs-tabpane-active

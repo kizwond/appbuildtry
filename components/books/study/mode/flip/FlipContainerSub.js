@@ -100,7 +100,7 @@ const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
 
   card_details_session[current_card_info_index].studyStatus.isUpdated = true;
   updateSessionResult(card_details_session[current_card_info_index])
-  
+  console.log("here why?")
   return card_details_session;
 };
 

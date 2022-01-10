@@ -21,7 +21,7 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,curre
             newLevel = Math.round(initialMaxLevel / currentLevStudyTimes * 1000) / 1000;
             needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
             needStudyTime =  new Date(Date.now() + needStudyTimeGap)
-            console.log('newLevel', levelCurrent, newLevel)
+            // console.log('newLevel', levelCurrent, newLevel)
             return {newLevel, needStudyTime}
         }
 

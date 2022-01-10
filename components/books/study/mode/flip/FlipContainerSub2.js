@@ -4,12 +4,12 @@
 exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) => {
     
     try{
-        console.log(recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) 
-        console.log('recentKnowTime', recentKnowTime)       
-        console.log('currentLevElapsedHour', currentLevElapsedHour)
-        console.log('currentLevStudyTimes', currentLevStudyTimes)
+        // console.log(recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) 
+        // console.log('recentKnowTime', recentKnowTime)       
+        // console.log('currentLevElapsedHour', currentLevElapsedHour)
+        // console.log('currentLevStudyTimes', currentLevStudyTimes)
         const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
-        console.log('levelchangeSensitivity, restudyRatio', levelchangeSensitivity, restudyRatio)
+        // console.log('levelchangeSensitivity, restudyRatio', levelchangeSensitivity, restudyRatio)
         const initialMaxLevel = 5
         const lev10StudyTimes = 10
         const levelCoverWidth = 5
@@ -17,14 +17,14 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,curre
 
         //여기
         const weightFromLevelCurrent = Math.round(Math.pow(Math.max(1-levelCurrent/100, 0), 2)/4 *1000)/1000
-        console.log('weightFromLevelCurrent', weightFromLevelCurrent)
+        // console.log('weightFromLevelCurrent', weightFromLevelCurrent)
 
         const averageElapsedHour = Math.round (currentLevElapsedHour / currentLevStudyTimes / 24 / 3600000 *1000 ) /1000
-        console.log('averageElapsedHour', averageElapsedHour)
+        // console.log('averageElapsedHour', averageElapsedHour)
         const gapBetweenLevelCurrentAndElapsedTime = Math.abs(levelCurrent - averageElapsedHour)
-        console.log('gapBetweenLevelCurrentAndElapsedTime', gapBetweenLevelCurrentAndElapsedTime)
+        // console.log('gapBetweenLevelCurrentAndElapsedTime', gapBetweenLevelCurrentAndElapsedTime)
         const factorAppliedGap = gapBetweenLevelCurrentAndElapsedTime * ((1000-Math.pow(11-currentLevStudyTimes, 3))/1000)
-        console.log('factorAppliedGap', factorAppliedGap)
+        // console.log('factorAppliedGap', factorAppliedGap)
 
         let newLevel, needStudyTime
         if (recentKnowTime == null){
@@ -83,6 +83,7 @@ exports.updateSessionResult = (singleResult) => {
     resultOfSession.studyHour += recentStudyHour
     resultByBook[mybookPosition].studyHour += recentStudyHour
 
+    console.log('어라 이거 몇 번?')
     // 클릭수
     if (['diffi1','diffi2','diffi3','diffi4','diffi5','hold','completed'].includes(recentSelection)){
         resultOfSession.clicks[recentSelection] +=1

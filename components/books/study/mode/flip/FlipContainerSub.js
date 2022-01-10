@@ -1,7 +1,8 @@
 const {calculateNextLevelAndNeedStudyTime, updateSessionResult} = require('./FlipContainerSub2.js')
 
 const calculateKnowCase = (selection, current_card_info_index, timer, levelConfigs) => {  
-  
+  console.log('냐하하하하', selection)
+
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
   
@@ -34,7 +35,6 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
   
   let {levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes}=card_details_session[current_card_info_index].studyStatus
   let {newLevel, needStudyTime} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs)  
-  console.log('정상적으로 생성됐나?', newLevel, needStudyTime)    
   card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
   card_details_session[current_card_info_index].studyStatus.recentKnowTime = now
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
@@ -67,7 +67,7 @@ const calculateKnowCase = (selection, current_card_info_index, timer, levelConfi
 };
 
 const calculateNormalStudy = (interval, selection, current_card_info_index, timer) => {
-  console.log('냐하하하하', current_card_info_index)
+  console.log('냐하하하하', selection)
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
 
@@ -110,6 +110,7 @@ const calculateNormalStudy = (interval, selection, current_card_info_index, time
 
 
 const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
+  console.log('냐하하하하', selection)
   // 기존 레벨은 남겨둔다.
   // 복습 필요시점은 null로 바꿔준다.
   const now = new Date();  
@@ -136,6 +137,7 @@ const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
 };
 
 const calculateRestore = (selection, current_card_info_index, timer) => {
+  console.log('냐하하하하', selection)
   // 원복시킬때, 기존의 상태(status, 레벨)로 돌리는 대신
   // 복습 필요시점은 현재로 바꿔준다. (null값일 것임)
   const now = new Date();  
@@ -167,7 +169,7 @@ const calculateRestore = (selection, current_card_info_index, timer) => {
 
 
 const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
-  console.log('냐하하하하', current_card_info_index)
+  console.log('냐하하하하', selection)
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
   
@@ -210,13 +212,14 @@ exports.calculateStudyStatus = (interval, selection, current_card_info_index, ti
     case "hold":
     case "completed":
       card_details_session = calculateHoldCompleted(selection, current_card_info_index, timer);
+      break;
     case "restore":
       card_details_session = calculateRestore(selection, current_card_info_index, timer);
       break;
     case "pass":
     case "move":
     case "finish":    
-        card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer);
+      card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer);
       break;
   }
 

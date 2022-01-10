@@ -20,6 +20,7 @@ import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBoo
 import { useRouter } from "next/router";
 import computeFromNow from "../../../common/logic/computeFromNow";
 import _ from "lodash";
+import CreateBookButton from "../../../common/createBook/CreateBookButton";
 
 const StudyBooksTable = ({
   category,
@@ -498,20 +499,25 @@ const StudyBooksTable = ({
       title={
         <Space>
           <div className="ForPcPageMainTitle">나의책</div>
-          <div>
-            <CategorySettingButton
-              category={dataSource.map((item) => ({
-                name: item.categoryName,
-                _id: item.mybookcate_id,
-                hasBooks: item.classType !== "empty-category",
-              }))}
-              categorySetId={category._id}
-              addNewCategoryIdOnExpandedRowKeys={
-                addNewCategoryIdOnExpandedRowKeys
-              }
-              isPc
-            />
-          </div>
+          <CreateBookButton
+            category={category}
+            addNewCategoryIdOnExpandedRowKeys={
+              addNewCategoryIdOnExpandedRowKeys
+            }
+            isPc
+          />
+          <CategorySettingButton
+            category={dataSource.map((item) => ({
+              name: item.categoryName,
+              _id: item.mybookcate_id,
+              hasBooks: item.classType !== "empty-category",
+            }))}
+            categorySetId={category._id}
+            addNewCategoryIdOnExpandedRowKeys={
+              addNewCategoryIdOnExpandedRowKeys
+            }
+            isPc
+          />
         </Space>
       }
     >

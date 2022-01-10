@@ -61,11 +61,8 @@ const Nav = () => {
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
-              <Link href="/books/study">
-                <a style={linkStyle}>학습하기</a>
-              </Link>
-              <Link href="/books/write">
-                <a style={linkStyle}>만들기</a>
+              <Link href="/mybooks">
+                <a style={linkStyle}>마이북</a>
               </Link>
               <Link href="/mentoring">
                 <a style={linkStyle}>멘토링</a>

@@ -196,6 +196,7 @@ const estimateLevelAndNeedStudyTime = (selection, current_card_info_index, timer
 
   let {levelCurrent, recentKnowTime}=card_details_session[current_card_info_index].studyStatus
   let {needStudyTimeGap} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs)  
+  console.log('1111111111111111111111111111111111111111111111111111111111111111', needStudyTimeGap)
 
   return {needStudyTimeGap};
 };

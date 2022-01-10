@@ -459,7 +459,7 @@ const CategorySettingModal = ({
     <>
       <StyledModal
         visible={visible}
-        title={<div className="ForPageMainTitle">카테고리 관리</div>}
+        title={<div className="ForMobilePageMainTitle">카테고리 관리</div>}
         closeIcon={<CloseOutlined onClick={() => changeVisible(false)} />}
         // onCancel={() => changeVisible(false)}
         mask={true} // 모달 바깥 전체화면 덮기 기능

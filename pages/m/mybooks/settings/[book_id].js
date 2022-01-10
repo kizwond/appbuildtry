@@ -164,7 +164,7 @@ const BookSetting = () => {
                         gap: "14px",
                       }}
                     >
-                      <div className="ForPageMainTitle">상세 설정</div>
+                      <div className="ForMobilePageMainTitle">상세 설정</div>
                     </div>
                   </>
                 }

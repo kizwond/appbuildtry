@@ -9,10 +9,11 @@ import M_Layout from "../../../../components/layout/M_Layout";
 import { Table } from "antd";
 import moment from "moment";
 import styled from "styled-components";
+import { divide } from "lodash";
 
 const StudyResult = () => {
   const router = useRouter();
-
+  const [isMounted, setIsMounted] = useState(false);
   const [cardList, setCardList] = useState(null);
 
   const [getCardsContent, { data, loading, error }] = useLazyQuery(
@@ -23,6 +24,8 @@ const StudyResult = () => {
       },
     }
   );
+
+  useEffect(() => setIsMounted(true), []);
   const ISSERVER = typeof window === "undefined";
   useEffect(() => {
     if (!ISSERVER) {
@@ -104,7 +107,235 @@ const StudyResult = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <M_Layout>
-        <StyledDiv>
+        <StyledRowMaxWidth style={{ width: "100%" }}>
+          <div style={{ width: "100%" }}>
+            <div className="ForMobilePageMainTitle">요약</div>
+            {isMounted && (
+              <div
+                style={{ padding: 8, display: "flex", gap: 14, width: "100%" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    minWidth: "100px",
+                    width: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    학습 시작
+                  </div>
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    {moment(sessionStorage.getItem("started")).format(
+                      "M.D hh:mm"
+                    )}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    minWidth: "100px",
+                    width: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    학습 종료
+                  </div>
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    {moment().format("M.D hh:mm")}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    minWidth: "100px",
+                    width: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    실제 학습 시간
+                  </div>
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    {
+                      JSON.parse(sessionStorage.getItem("resultOfSession"))
+                        .studyHour
+                    }
+                  </div>
+                </div>
+              </div>
+            )}
+            {isMounted && (
+              <div
+                style={{ padding: 8, display: "flex", gap: 14, width: "100%" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    minWidth: "100px",
+                    width: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    학습 시작 카드
+                  </div>
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    {JSON.parse(sessionStorage.getItem("resultOfSession"))
+                      .numCards.completed.started +
+                      JSON.parse(sessionStorage.getItem("resultOfSession"))
+                        .numCards.hold.started +
+                      JSON.parse(sessionStorage.getItem("resultOfSession"))
+                        .numCards.ing.started +
+                      JSON.parse(sessionStorage.getItem("resultOfSession"))
+                        .numCards.yet.started}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    minWidth: "100px",
+                    width: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    학습 완료 카드
+                  </div>
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    {JSON.parse(sessionStorage.getItem("resultOfSession"))
+                      .numCards.completed.finished +
+                      JSON.parse(sessionStorage.getItem("resultOfSession"))
+                        .numCards.hold.finished +
+                      JSON.parse(sessionStorage.getItem("resultOfSession"))
+                        .numCards.ing.finished +
+                      JSON.parse(sessionStorage.getItem("resultOfSession"))
+                        .numCards.yet.finished}
+                    장
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 4,
+                    minWidth: "100px",
+                    width: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    레벨 획득
+                  </div>
+                  <div
+                    style={{
+                      background: "black",
+                      color: "white",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    {JSON.parse(sessionStorage.getItem("resultOfSession"))
+                      .levelChange.total.gap > 0
+                      ? "+" +
+                        JSON.parse(sessionStorage.getItem("resultOfSession"))
+                          .levelChange.total.gap
+                      : JSON.parse(sessionStorage.getItem("resultOfSession"))
+                          .levelChange.total.gap < 0
+                      ? "-" +
+                        JSON.parse(sessionStorage.getItem("resultOfSession"))
+                          .levelChange.total.gap
+                      : "-"}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </StyledRowMaxWidth>
+
+        {/* <StyledDiv>
           {cardList &&
             data &&
             data.mycontent_getMycontentByMycontentIDs &&
@@ -162,7 +393,7 @@ const StudyResult = () => {
                 ]}
               />
             )}
-        </StyledDiv>
+        </StyledDiv> */}
       </M_Layout>
     </>
   );
@@ -174,4 +405,13 @@ const StyledDiv = styled.div`
   * {
     font-size: 10px;
   }
+`;
+
+const StyledRowMaxWidth = styled.div`
+  margin: 0 auto;
+  position: absolute;
+  top: 40px;
+  height: calc(100vh - 76px);
+  overflow: scroll;
+  padding: 0 8px;
 `;

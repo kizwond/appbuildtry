@@ -209,7 +209,7 @@ const M_MenteeGroupTable = ({
       >
         <StyledModal
           visible={newGroupModalVisible}
-          title={<div className="ForPageMainTitle">새 그룹 생성</div>}
+          title={<div className="ForMobilePageMainTitle">새 그룹 생성</div>}
           okButtonProps={{
             size: "small",
             loading: loading,

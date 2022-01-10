@@ -187,7 +187,7 @@ const M_MenteeGroupTable = ({
               width: "100%",
             }}
           >
-            <div className="ForPageMainTitle">멘티 그룹 관리</div>
+            <div className="ForMobilePageMainTitle">멘티 그룹 관리</div>
             <div>
               <StyledButtonForMainPage
                 onClick={() => {
@@ -210,7 +210,7 @@ const M_MenteeGroupTable = ({
       >
         <StyledModal
           visible={newGroupModalVisible}
-          title={<div className="ForPageMainTitle">새 그룹 생성</div>}
+          title={<div className="ForMobilePageMainTitle">새 그룹 생성</div>}
           okButtonProps={{
             size: "small",
             loading: loading,

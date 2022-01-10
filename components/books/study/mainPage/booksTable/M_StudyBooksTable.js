@@ -354,7 +354,7 @@ const M_StudyBooksTable = ({
       size="small"
       title={
         <Space>
-          <div className="ForPageMainTitle">나의책</div>
+          <div className="ForMobilePageMainTitle">나의책</div>
           <CreateBookButton
             category={category}
             addNewCategoryIdOnExpandedRowKeys={

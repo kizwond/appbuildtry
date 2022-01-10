@@ -107,7 +107,7 @@ const MentoringHome = () => {
               }}
             >
               <Tabs.TabPane
-                tab={<div className="ForPageMainTitle">멘티</div>}
+                tab={<div className="ForMobilePageMainTitle">멘티</div>}
                 key="멘티"
               >
                 <StyledFlexSpaceBetween>
@@ -165,7 +165,7 @@ const MentoringHome = () => {
                 />
               </Tabs.TabPane>
               <Tabs.TabPane
-                tab={<div className="ForPageMainTitle">멘토</div>}
+                tab={<div className="ForMobilePageMainTitle">멘토</div>}
                 key="멘토"
               >
                 <StyledFlexSpaceBetween>
@@ -272,7 +272,9 @@ const MentoringHome = () => {
           </DrawerWrapper>
 
           <DrawerWrapper
-            title={<div className="ForPageMainTitle">멘토링 요청하기</div>}
+            title={
+              <div className="ForMobilePageMainTitle">멘토링 요청하기</div>
+            }
             placement="right"
             width={"100%"}
             visible={drawerRequestMentoringVisible}

@@ -176,7 +176,7 @@ const Challenges = () => {
           <DrawerWrapper
             title={
               <span
-                className="ForPageMainTitle"
+                className="ForMobilePageMainTitle"
                 style={{
                   marginRight: "10px",
                 }}

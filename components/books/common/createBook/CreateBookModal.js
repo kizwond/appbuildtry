@@ -102,7 +102,9 @@ const CreateBookModal = ({
       <StyledModal
         visible={visible}
         title={
-          <div className={isPc ? "ForPcPageMainTitle" : "ForPageMainTitle"}>
+          <div
+            className={isPc ? "ForPcPageMainTitle" : "ForMobilePageMainTitle"}
+          >
             새 책 만들기
           </div>
         }

@@ -1,65 +1,39 @@
-import React, { memo, useEffect, useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
-import { MUTATION_REASSIGN_MY_BOOK_TO_ANOTHER_CATEGORY } from "../../../../graphql/mutation/myBook";
+import React, { memo, useState } from "react";
+import { useMutation } from "@apollo/client";
+import {
+  MUTATION_CHANGE_MY_BOOK_TITLE,
+  MUTATION_REASSIGN_MY_BOOK_TO_ANOTHER_CATEGORY,
+} from "../../../../graphql/mutation/myBook";
 
-import { Select, Button, Alert, Space, message, Input } from "antd";
-import { QUERY_USER_BOOKS } from "../../../../graphql/query/allQuery";
-import _ from "lodash";
+import { Button, Alert, Space, message, Input } from "antd";
 import { useRouter } from "next/router";
 
-const M_ChangeBookTitle = ({ book_id, categories, bookTitle, cateIdNow }) => {
+const M_ChangeBookTitle = ({ book_id, bookTitle }) => {
   const { push } = useRouter();
   const [newBookTitle, setNewBookTitle] = useState(null);
 
-  useEffect(() => {
-    setNewBookTitle(cateIdNow);
-  }, [cateIdNow]);
-
-  const { data } = useQuery(QUERY_USER_BOOKS, {
-    onCompleted: (_data) => {
-      if (_data.mybook_getMybookByUserID.status === "200") {
-        console.log("모든 책 정보 받음", _data);
-      } else if (_data.mybook_getMybookByUserID.status === "401") {
-        push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
+  const [mybook_updateMybookInfo] = useMutation(MUTATION_CHANGE_MY_BOOK_TITLE, {
+    onCompleted: showSuccessMessage,
   });
 
-  const [mybook_movetoothercate] = useMutation(
-    MUTATION_REASSIGN_MY_BOOK_TO_ANOTHER_CATEGORY,
-    {
-      onCompleted: showdatarebookmovecategory,
-    }
-  );
+  async function showSuccessMessage(_data) {
+    if (_data.mybook_updateMybookInfo.status === "200") {
+      console.log("책 이름 변경 성공", _data);
 
-  async function showdatarebookmovecategory(_data) {
-    if (_data.mybook_moveToOtherCate.status === "200") {
-      console.log("책 카테고리 변경", _data);
-
-      await message.success(
-        `선택하신 ${
-          _.find(categories, (cate) => cate._id === newBookTitle).name
-        }카테고리로 ${bookTitle}책이 이동되었습니다.`,
-        0.7
-      );
-    } else if (_data.mybook_moveToOtherCate.status === "401") {
+      await message.success(` ${newBookTitle}로 제목이 변경되었습니다.`, 0.7);
+    } else if (_data.mybook_updateMybookInfo.status === "401") {
       push("/m/account/login");
     } else {
       console.log("어떤 문제가 발생함");
     }
   }
 
-  async function bookMoveCategory({ mybook_id, newMybookcate_id, seq }) {
+  async function changeBookTitle({ mybook_id, title }) {
     try {
-      await mybook_movetoothercate({
+      await mybook_updateMybookInfo({
         variables: {
-          forMoveToOtherCate: {
-            mybook_id,
-            newMybookcate_id,
-            seq,
-          },
+          mybook_id,
+          title,
         },
       });
     } catch (error) {
@@ -79,27 +53,17 @@ const M_ChangeBookTitle = ({ book_id, categories, bookTitle, cateIdNow }) => {
         <>
           <Space align="center">
             <Input
-              onChange={setNewBookTitle}
+              onChange={(e) => setNewBookTitle(e.target.value)}
               placeholder="변경하려는 이름을 입력하세요"
             />
 
             <Button
               onClick={() => {
-                // if (newBookTitle !== cateIdNow) {
-                //   bookMoveCategory({
-                //     seq:
-                //       _(data.mybook_getMybookByUserID.mybooks)
-                //         .filter(
-                //           (book) =>
-                //             book.mybook_info.mybookcate_id === newBookTitle
-                //         )
-                //         .map((book) => book.mybook_info.seqInCategory)
-                //         .max() + 1 || 0,
-                //     mybook_id: book_id,
-                //     newMybookcate_id: newBookTitle,
-                //   });
-                // }
+                if (newBookTitle) {
+                  changeBookTitle({ mybook_id: book_id, title: newBookTitle });
+                }
               }}
+              disabled={bookTitle === newBookTitle || !newBookTitle}
             >
               변경
             </Button>

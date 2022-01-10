@@ -85,7 +85,12 @@ const BookSetting = () => {
           <Space direction="vertical">
             <div>
               <div className="BookSettingContentTitle">이름수정</div>
-              <M_ChangeBookTitle />
+              <M_ChangeBookTitle
+                book_id={query.book_id}
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
             </div>
             <div>
               <div className="BookSettingContentTitle">카테고리 이동</div>
@@ -106,7 +111,12 @@ const BookSetting = () => {
             </div>
             <div>
               <div className="BookSettingContentTitle">책 삭제</div>
-              <M_DeleteBook book_id={query.book_id} />
+              <M_DeleteBook
+                book_id={query.book_id}
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
             </div>
           </Space>
         );
@@ -258,6 +268,11 @@ const StyledDiv = styled.div`
   .subTitleForSetting {
     font-size: 16px;
     font-weight: 400;
+
+    & > .anticon.anticon-close > svg {
+      font-size: 24px;
+      color: black;
+    }
   }
 
   .FlexWith8Gap {
@@ -378,7 +393,7 @@ const StyledForHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding-bottom: 4px;
-  border-bottom: 1px solid lightgray;
+  /* border-bottom: 1px solid lightgray; */
 
   & .ForCloseButton {
     display: inline-block;

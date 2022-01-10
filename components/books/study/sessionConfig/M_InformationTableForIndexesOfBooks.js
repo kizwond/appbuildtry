@@ -2,7 +2,12 @@ import React from "react";
 import { Checkbox, Table } from "antd";
 import styled from "styled-components";
 import { StyledProgress } from "../../../common/styledComponent/StyledProgress";
-import { StyledTwoLinesEllipsis } from "../../../common/styledComponent/page";
+import {
+  StyledFlexAlignCenter,
+  StyledFlexAllCenter,
+  StyledFlexAllCenterDirectionColumn,
+  StyledTwoLinesEllipsis,
+} from "../../../common/styledComponent/page";
 import { getAllChildrenKeys } from "../../../common/logic/getAllChildrenKeysForTable";
 import { useMemo } from "react";
 
@@ -80,41 +85,105 @@ const IndexTree = ({
             );
           },
         },
+        // {
+        //   title: "평균 레벨",
+        //   dataIndex: "totalLevelOfAllCards",
+        //   key: "totalLevelOfAllCards",
+        //   width: 56,
+        //   align: "center",
+        //   onCell: handleCheckbox,
+        //   render: function ForProgress(level, { totalNumberOfAllCards }) {
+        //     return (
+        //       <>
+        //         <StyledProgress
+        //           booktype="any"
+        //           percent={
+        //             totalNumberOfAllCards === 0
+        //               ? 0
+        //               : (level / totalNumberOfAllCards).toFixed(2)
+        //           }
+        //         />
+        //       </>
+        //     );
+        //   },
+        // },
         {
-          title: "평균 레벨",
-          dataIndex: "totalLevelOfAllCards",
-          key: "totalLevelOfAllCards",
-          width: 56,
+          title: (
+            <StyledFlexAllCenterDirectionColumn>
+              <div>학습용</div>
+              <div>카드</div>
+            </StyledFlexAllCenterDirectionColumn>
+          ),
+          dataIndex: "totalNumberOfAllCards",
+          key: "totalNumberOfAllCards",
           align: "center",
-          onCell: handleCheckbox,
-          render: function ForProgress(level, { totalNumberOfAllCards }) {
-            return (
-              <>
-                <StyledProgress
-                  booktype="any"
-                  percent={
-                    totalNumberOfAllCards === 0
-                      ? 0
-                      : (level / totalNumberOfAllCards).toFixed(2)
-                  }
-                />
-              </>
+          width: 40,
+        },
+        {
+          title: (
+            <StyledFlexAllCenterDirectionColumn>
+              <div>학습완료</div>
+              <div>(완료율)</div>
+            </StyledFlexAllCenterDirectionColumn>
+          ),
+          dataIndex: "totalNumberOfCompletedCards",
+          key: "totalNumberOfCompletedCards",
+          align: "center",
+          width: 50,
+          render: function displayName(_value, _record) {
+            const isParentZero = _record.totalNumberOfAllCards === 0;
+            const completedRate =
+              new String(
+                Math.floor(100 * (_value / _record.totalNumberOfAllCards))
+              ) + " %";
+
+            return isParentZero ? (
+              <StyledFlexAllCenter>-</StyledFlexAllCenter>
+            ) : (
+              <StyledFlexAllCenterDirectionColumn>
+                <div>{_value}</div>
+                <div>({completedRate})</div>
+              </StyledFlexAllCenterDirectionColumn>
             );
           },
         },
         {
-          title: "합계",
-          dataIndex: "totalNumberOfAllCards",
-          key: "totalNumberOfAllCards",
+          title: (
+            <StyledFlexAllCenterDirectionColumn>
+              <div>학습미완료</div>
+              <div>(평균레벨)</div>
+            </StyledFlexAllCenterDirectionColumn>
+          ),
+          key: "totalNumberOfCompletedCards",
+          dataIndex: "totalNumberOfCompletedCards",
+          className: "TableMiddleColumn TableCardCounterColumn",
           align: "center",
-          width: 42,
+          width: 50,
+          render: function displayName(_value, _record, _index) {
+            const isParentZero = _record.totalNumberOfAllCards - _value === 0;
+            const levelAverageForNotCompletedCard = Math.floor(
+              100 *
+                (_record.totalLevelOfAllCards /
+                  (_record.totalNumberOfAllCards - _value))
+            );
+
+            return isParentZero ? (
+              <StyledFlexAllCenter>-</StyledFlexAllCenter>
+            ) : (
+              <StyledFlexAllCenterDirectionColumn>
+                <div>{_record.totalNumberOfAllCards - _value}</div>
+                <div>({levelAverageForNotCompletedCard})</div>
+              </StyledFlexAllCenterDirectionColumn>
+            );
+          },
         },
+
         {
-          title: "미학습",
+          title: "학습전",
           dataIndex: "totalNumberOfYetCards",
           key: "totalNumberOfYetCards",
           align: "center",
-          width: 42,
+          width: 40,
         },
         {
           title: "학습중",
@@ -124,44 +193,37 @@ const IndexTree = ({
               dataIndex: "totalNumberOfAllCardsOnStudyStage",
               key: "totalNumberOfAllCardsOnStudyStage",
               align: "center",
-              width: 53,
+              width: 42,
             },
             {
               title: "현재이전",
               dataIndex: "totalNumberOfUntilNowCardsOnStudyStage",
               key: "totalNumberOfUntilNowCardsOnStudyStage",
               align: "center",
-              width: 53,
+              width: 42,
             },
             {
               title: "오늘이전",
               dataIndex: "totalNumberOfUntilTodayCardsOnStudyStage",
               key: "totalNumberOfUntilTodayCardsOnStudyStage",
               align: "center",
-              width: 53,
+              width: 42,
             },
             {
               title: "내일이후",
               dataIndex: "totalNumberOfFromTomorrowCardsOnStudyStage",
               key: "totalNumberOfFromTomorrowCardsOnStudyStage",
               align: "center",
-              width: 53,
+              width: 42,
             },
           ],
-        },
-        {
-          title: "완료",
-          dataIndex: "totalNumberOfCompletedCards",
-          key: "totalNumberOfCompletedCards",
-          align: "center",
-          width: 42,
         },
         {
           title: "보류",
           dataIndex: "totalNumberOfHoldCards",
           key: "totalNumberOfHoldCards",
           align: "center",
-          width: 42,
+          width: 40,
         },
       ]}
       dataSource={bookData}

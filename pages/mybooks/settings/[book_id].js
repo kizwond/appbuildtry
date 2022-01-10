@@ -235,7 +235,7 @@ const BookSetting = () => {
                         <Avatar>
                           <ScissorOutlined />
                         </Avatar>
-                        <div className="subTitleForSetting">일반설정</div>
+                        <div className="subTitleForSetting">일반 설정</div>
                       </Space>
                     </div>
                   </div>

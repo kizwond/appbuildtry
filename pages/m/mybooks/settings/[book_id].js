@@ -16,6 +16,7 @@ import {
   FlagOutlined,
   FundViewOutlined,
   RiseOutlined,
+  ScissorOutlined,
 } from "@ant-design/icons";
 
 import styled from "styled-components";
@@ -26,6 +27,7 @@ import M_FlagSetting from "../../../../components/books/settings/flagSetting/M_F
 import M_DeleteBook from "../../../../components/books/settings/deleteBook/M_DeleteBook";
 import M_LevelAndCycleSetting from "../../../../components/books/settings/levelAndCycleSetting/M_LevelAndCycleSetting";
 import M_ReAssignBookToAnotherCategory from "../../../../components/books/settings/reasignBookToAnotherCategory/M_ReAssignBookToAnotherCategory";
+import M_ChangeBookTitle from "../../../../components/books/settings/reasignBookToAnotherCategory/M_ChangeBookTitle";
 
 const BookSetting = () => {
   const { query, push, back } = useRouter();
@@ -72,26 +74,46 @@ const BookSetting = () => {
       case "set_level_and_cycle":
         return <M_LevelAndCycleSetting book_id={query.book_id} />;
         break;
-      case "select_category":
+      case "generalSettings":
         return (
-          <M_ReAssignBookToAnotherCategory
-            book_id={query.book_id}
-            cateIdNow={
-              data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
-                .mybookcate_id
-            }
-            categories={
-              data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0]
-                .mybookcates
-            }
-            bookTitle={
-              data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
-            }
-          />
+          <Space direction="vertical">
+            <div>
+              <div className="BookSettingContentTitle">이름수정</div>
+              <M_ChangeBookTitle
+                book_id={query.book_id}
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
+            </div>
+            <div>
+              <div className="BookSettingContentTitle">카테고리 이동</div>
+              <M_ReAssignBookToAnotherCategory
+                book_id={query.book_id}
+                cateIdNow={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info
+                    .mybookcate_id
+                }
+                categories={
+                  data.mybookcateset_getMybookcatesetByUserID.mybookcatesets[0]
+                    .mybookcates
+                }
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
+            </div>
+            <div>
+              <div className="BookSettingContentTitle">책 삭제</div>
+              <M_DeleteBook
+                book_id={query.book_id}
+                bookTitle={
+                  data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+                }
+              />
+            </div>
+          </Space>
         );
-        break;
-      case "delete_book":
-        return <M_DeleteBook book_id={query.book_id} />;
         break;
 
       default:
@@ -102,7 +124,7 @@ const BookSetting = () => {
   return (
     <div>
       <Head>
-        <title>콕북 - 책 상세 설정</title>
+        <title>{"책 상세 설정 - I'mTheBook"}</title>
         <meta charSet="utf-8" />
       </Head>
       {data &&
@@ -197,23 +219,13 @@ const BookSetting = () => {
                         레벨 및 복습 주기 설정
                       </Space>
                     </Select.Option>
-                    <Select.Option
-                      value="select_category"
-                      label="카테고리 이동"
-                    >
+
+                    <Select.Option value="generalSettings" label="일반 설정">
                       <Space>
                         <Avatar>
-                          <AppstoreAddOutlined />
+                          <ScissorOutlined />
                         </Avatar>
-                        카테고리 이동
-                      </Space>
-                    </Select.Option>
-                    <Select.Option value="delete_book" label="책 삭제">
-                      <Space>
-                        <Avatar>
-                          <DeleteOutlined />
-                        </Avatar>
-                        책 삭제
+                        일반 설정
                       </Space>
                     </Select.Option>
                   </Select>

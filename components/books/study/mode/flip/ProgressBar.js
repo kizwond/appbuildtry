@@ -2,7 +2,11 @@ import React from "react";
 
 const ProgressBar = (props) => {
   const { bgcolor, completed } = props;
-  if(completed){
+  // console.log(completed)
+  if(completed == 0 || completed== undefined){
+    
+    var compValue = 0
+  } else {
     var compValue = completed.toFixed()
   }
   const containerStyles = {

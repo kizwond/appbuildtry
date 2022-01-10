@@ -190,7 +190,9 @@ class Container extends Component {
     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
 
     //여기다가 새로운 시퀀스 정보를 가공해야함.
-    this.generateCardSeq(card_details_session, now, current_card_id);
+    // this.generateCardSeq(card_details_session, now, current_card_id);
+    const card_seq = sessionStorage.getItem("card_seq");
+    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
   };
 
   onDiffClickHandler = (interval, diffi, current_card_id, timer) => {
@@ -216,19 +218,23 @@ class Container extends Component {
 
       //남은카드랑 이래저래 해서 학습이 종료되었는지...
       const card_seq = sessionStorage.getItem("card_seq");
-      if (card_details_session.length - 1 == Number(card_seq)) {
-        console.log("원래는 끝난거!!!");
-        this.finishStudy();
-      } else {
-        console.log(card_details_session.length - 1, "======", Number(card_seq));
-        console.log("아직 안끝");
-        //여기다가 새로운 시퀀스 정보를 가공해야함.
-        this.generateCardSeq(card_details_session, now, current_card_id);
-
-        // this.setTimer(0);
-      }
+      this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
     }
   };
+
+  determineStudyFinish = (card_details_session, card_seq, current_card_id, now) => {
+    if (card_details_session.length - 1 == Number(card_seq)) {
+      console.log("원래는 끝난거!!!");
+      this.finishStudy();
+    } else {
+      console.log(card_details_session.length - 1, "======", Number(card_seq));
+      console.log("아직 안끝");
+      //여기다가 새로운 시퀀스 정보를 가공해야함.
+      this.generateCardSeq(card_details_session, now, current_card_id);
+
+      // this.setTimer(0);
+    }
+  }
 
   //상황에따른 새로운 카드 시쿼스 생성
   generateCardSeq = (card_details_session, now, current_card_id) => {
@@ -451,7 +457,9 @@ class Container extends Component {
 
     this.generateBackPassModeStudyStatus(currentCardId, "pass");
 
-    this.generateCardSeq(card_details_session, now, current_card_id);
+    // this.generateCardSeq(card_details_session, now, current_card_id);
+    const card_seq = sessionStorage.getItem("card_seq");
+    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
   };
 
   onClickHoldHandler = (current_card_id, from) => {
@@ -472,7 +480,9 @@ class Container extends Component {
       });
       console.log("여기다가 뭔 짓을 해야하는데....");
     } else {
-      this.generateCardSeq(card_details_session, now, current_card_id);
+      // this.generateCardSeq(card_details_session, now, current_card_id);
+      const card_seq = sessionStorage.getItem("card_seq");
+    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
     }
   };
 
@@ -515,7 +525,9 @@ class Container extends Component {
       //화면은 그대로잖아. 시간은 리셋 되었고, 그러면 더보기 버튼에 내용이 바뀌어야 해.
       // 그럴려면
     } else {
-      this.generateCardSeq(card_details_session, now, current_card_id);
+      // this.generateCardSeq(card_details_session, now, current_card_id);
+      const card_seq = sessionStorage.getItem("card_seq");
+    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
     }
   };
 
@@ -734,7 +746,7 @@ class Container extends Component {
       console.log("공부끝");
     }
   };
-
+  
   render() {
     if (this.props.levelConfigs) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
@@ -742,7 +754,12 @@ class Container extends Component {
       var sumClicks = resultOfSession.clicks.total
       const inserted = resultOfSession.numCards.completed.inserted +resultOfSession.numCards.hold.inserted +resultOfSession.numCards.ing.inserted+resultOfSession.numCards.yet.inserted
       const finished = resultOfSession.numCards.completed.finished +resultOfSession.numCards.hold.finished +resultOfSession.numCards.ing.finished+resultOfSession.numCards.yet.finished
-      var progress = finished/inserted *100
+      
+      if(finished === 0){
+        var progress = 0
+      } else {
+         progress = finished/inserted *100
+      }
       // console.log(inserted,finished)
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
       const statusCurrent = card_details_session[currentSeq].studyStatus.statusCurrent;
@@ -781,7 +798,7 @@ class Container extends Component {
               style={{ fontSize: "0.8rem", borderRadius: "3px" }}
               onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id, this.state.time)}
             >
-              {item.nick}
+             {item.nick} {item.name === "diffi5" && <><CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} /></>}
             </Button>
           </>
         ));
@@ -1709,6 +1726,18 @@ class Container extends Component {
   }
 }
 
+const CalculateIf = ({currentSeq, levelConfigs}) => {
+  const value = "time"
+  const estimate = calculateStudyStatus(null, "prediction", currentSeq, null, levelConfigs)
+  const needStudyTimeGap = (estimate.needStudyTimeGap /60000).toFixed()
+  // const time = new Date(needStudyTimeGap)
+
+  // console.log(needStudyTime)
+  return (
+    // <><span>time</span></>
+    <><span>{needStudyTimeGap}분</span></>
+  )
+}
 const style_study_layout_bottom = {
   display: "flex",
   flexDirection: "row",

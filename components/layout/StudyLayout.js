@@ -1,20 +1,16 @@
 import StudyNav from "../nav/StudyNav";
-import { useWindowSize } from "react-use";
 import Head from "next/head";
-const Layout = ({ children }) => {
-  // const {width, height} = useWindowSize();
+const Layout = (value) => {
+  console.log(value.mode)
+  console.log(value.children)
   return (
     <>
-      {/* <div>
-      <div>width: {width}</div>
-      <div>height: {height}</div>
-    </div> */}
       <Head>
-        <title>콕북</title>
+        <title>I am theBook</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
       </Head>
-      <StudyNav />
-      {children}
+      <StudyNav mode={value.mode} />
+      {value.children}
     </>
   );
 };

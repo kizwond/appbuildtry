@@ -45,17 +45,17 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
   }
 
   const sessionupdateresults = useCallback(
-    async (sessionId, filtered, resultOfSession, resultByBook, createdCards,dataForRegression) => {
+    async (sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression) => {
       try {
         await session_updateResults({
           variables: {
             forUpdateResults: {
               session_id: sessionId,
               createdCards,
-              studyResults:filtered,
+              studyResults: filtered,
               resultOfSession,
               resultByBook,
-              dataForRegression
+              dataForRegression,
             },
           },
         });
@@ -192,7 +192,7 @@ class Container extends Component {
     //여기다가 새로운 시퀀스 정보를 가공해야함.
     // this.generateCardSeq(card_details_session, now, current_card_id);
     const card_seq = sessionStorage.getItem("card_seq");
-    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
+    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now);
   };
 
   onDiffClickHandler = (interval, diffi, current_card_id, timer) => {
@@ -218,7 +218,7 @@ class Container extends Component {
 
       //남은카드랑 이래저래 해서 학습이 종료되었는지...
       const card_seq = sessionStorage.getItem("card_seq");
-      this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
+      this.determineStudyFinish(card_details_session, card_seq, current_card_id, now);
     }
   };
 
@@ -234,7 +234,7 @@ class Container extends Component {
 
       // this.setTimer(0);
     }
-  }
+  };
 
   //상황에따른 새로운 카드 시쿼스 생성
   generateCardSeq = (card_details_session, now, current_card_id) => {
@@ -459,7 +459,7 @@ class Container extends Component {
 
     // this.generateCardSeq(card_details_session, now, current_card_id);
     const card_seq = sessionStorage.getItem("card_seq");
-    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
+    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now);
   };
 
   onClickHoldHandler = (current_card_id, from) => {
@@ -482,7 +482,7 @@ class Container extends Component {
     } else {
       // this.generateCardSeq(card_details_session, now, current_card_id);
       const card_seq = sessionStorage.getItem("card_seq");
-    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
+      this.determineStudyFinish(card_details_session, card_seq, current_card_id, now);
     }
   };
 
@@ -527,7 +527,7 @@ class Container extends Component {
     } else {
       // this.generateCardSeq(card_details_session, now, current_card_id);
       const card_seq = sessionStorage.getItem("card_seq");
-    this.determineStudyFinish(card_details_session, card_seq, current_card_id, now)
+      this.determineStudyFinish(card_details_session, card_seq, current_card_id, now);
     }
   };
 
@@ -668,7 +668,7 @@ class Container extends Component {
     const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
     const resultByBook = JSON.parse(sessionStorage.getItem("resultByBook"));
     const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
-    const dataForRegression  = JSON.parse(sessionStorage.getItem("dataForRegression"));
+    const dataForRegression = JSON.parse(sessionStorage.getItem("dataForRegression"));
     const filtered = cardListStudying.filter((item) => item.studyStatus.isUpdated === true);
     if (filtered) {
       console.log("서버에 학습데이타를 전송할 시간이다!!!!");
@@ -692,7 +692,7 @@ class Container extends Component {
         delete v.card_info.__typename;
         delete v.seqInCardlist;
       });
-      
+
       // filtered.forEach(function (v) {
       //   delete v.__typename;
       // });
@@ -738,7 +738,6 @@ class Container extends Component {
       //   delete v.studyStatus.userFlagPrev;
       // });
 
-
       console.log("filtered : ", filtered);
       console.log("sessionId : ", sessionId);
       this.props.sessionupdateresults(sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression);
@@ -746,19 +745,21 @@ class Container extends Component {
       console.log("공부끝");
     }
   };
-  
+
   render() {
     if (this.props.levelConfigs) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
-      var sumClicks = resultOfSession.clicks.total
-      const inserted = resultOfSession.numCards.completed.inserted +resultOfSession.numCards.hold.inserted +resultOfSession.numCards.ing.inserted+resultOfSession.numCards.yet.inserted
-      const finished = resultOfSession.numCards.completed.finished +resultOfSession.numCards.hold.finished +resultOfSession.numCards.ing.finished+resultOfSession.numCards.yet.finished
-      
-      if(finished === 0){
-        var progress = 0
+      var sumClicks = resultOfSession.clicks.total;
+      const inserted =
+        resultOfSession.numCards.completed.inserted + resultOfSession.numCards.hold.inserted + resultOfSession.numCards.ing.inserted + resultOfSession.numCards.yet.inserted;
+      const finished =
+        resultOfSession.numCards.completed.finished + resultOfSession.numCards.hold.finished + resultOfSession.numCards.ing.finished + resultOfSession.numCards.yet.finished;
+
+      if (finished === 0) {
+        var progress = 0;
       } else {
-         progress = finished/inserted *100
+        progress = (finished / inserted) * 100;
       }
       // console.log(inserted,finished)
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
@@ -798,7 +799,12 @@ class Container extends Component {
               style={{ fontSize: "0.8rem", borderRadius: "3px" }}
               onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id, this.state.time)}
             >
-             {item.nick} {item.name === "diffi5" && <><CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} /></>}
+              {item.nick}{" "}
+              {item.name === "diffi5" && (
+                <>
+                  <CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} />
+                </>
+              )}
             </Button>
           </>
         ));
@@ -1678,14 +1684,34 @@ class Container extends Component {
       <>
         <div style={{ height: "100%", display: "flex", flexDirection: "column", marginBottom: "50px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <div style={{ width: "100%", display: "flex", alignItems: "center" }}>
-              <div style={{ width: "50px", fontSize: "1rem", marginRight: "5px" }}>완료율</div>
+            <div style={{ width: "50%", display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+              <div style={{ width: "45px", fontSize: "0.8rem", marginRight: "5px" }}>완료율</div>
               <ProgressBar bgcolor={"#32c41e"} completed={progress} />
             </div>
-            <div style={{ fontSize: "1rem", width: "70px", textAlign: "right" }}>Click : {sumClicks}</div>
-            <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
-            학습종료
-          </Button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div style={{ lineHeight: "0.8rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "10px" }}>
+                <div>click</div>
+                <div>count</div>
+              </div>
+              <div
+                style={{
+                  backgroundColor: "#f2f2f2",
+                  boxShadow: "inset 2px 2px 3px 0px #cccccc",
+                  textAlign: "right",
+                  paddingRight: "5px",
+                  width: "30px",
+                  fontFamily: "Mina, sans-serif",
+                  fontSize: "0.9rem",
+                  lineHeight: "20px",
+                  height: "20px",
+                }}
+              >
+                {sumClicks}
+              </div>
+            </div>
+            <Button size="small" style={{ fontSize: "0.8rem", width: "53px", borderRadius: "3px" }} onClick={this.finishStudy} type="primary">
+              학습종료
+            </Button>
           </div>
           <div style={{ display: "flex", marginTop: "5px", justifyContent: "space-between", alignItems: "center" }}>
             <Timer
@@ -1726,13 +1752,15 @@ class Container extends Component {
   }
 }
 
-const CalculateIf = ({currentSeq, levelConfigs}) => {
-  const estimate = calculateStudyStatus(null, "prediction", currentSeq, null, levelConfigs)
-  const needStudyTimeGap = (estimate.needStudyTimeGap /60000).toFixed()
+const CalculateIf = ({ currentSeq, levelConfigs }) => {
+  const estimate = calculateStudyStatus(null, "prediction", currentSeq, null, levelConfigs);
+  const needStudyTimeGap = (estimate.needStudyTimeGap / 60000).toFixed();
   return (
-    <><span>[{needStudyTimeGap}분]</span></>
-  )
-}
+    <>
+      <span>[{needStudyTimeGap}분]</span>
+    </>
+  );
+};
 const style_study_layout_bottom = {
   display: "flex",
   flexDirection: "row",

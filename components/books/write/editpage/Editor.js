@@ -19,6 +19,28 @@ class Editor extends Component {
   constructor(props) {
     super(props);
     FroalaEditor.DefineIcon("insertFiles", { SRC: "/image/speaker_Icon.png", ALT: "audioIcon", template: "image" });
+    FroalaEditor.DefineIcon("alert", { NAME: "info", SVG_KEY: "help" });
+    FroalaEditor.RegisterCommand("alert", {
+      title: "Hello",
+      focus: false,
+      undo: false,
+      refreshAfterCallback: false,
+      callback: function () {
+       var text = null
+       var textRange = null
+        if (document.getSelection) {
+          text = document.getSelection().toString();
+          textRange = document.getSelection();
+          sessionStorage.setItem("selectionText", text);
+          console.log("case1", text);
+        } else if (typeof document.selection != "undefined") {
+          text = document.selection;
+          console.log("case2", text);
+        }
+        console.log("try", text)
+        props.addPolly(text)
+      },
+    });
     this.state = {
       editor1: "",
       editor2: "",
@@ -60,7 +82,7 @@ class Editor extends Component {
       answerRadio: null,
       answerFieldNick: "",
     };
-    
+
     // this.s3config = {
     //   // The name of your bucket.
     //   bucket: process.env.NEXT_PUBLIC_S3_BUCKET_IMAGEINCARD,
@@ -80,7 +102,7 @@ class Editor extends Component {
     // this.s3Hash = FroalaEditor.S3.getHash(this.s3config);
     this.config = {
       key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
-      imageUploadToS3: s3Hash, 
+      imageUploadToS3: s3Hash,
       editorClass: "editor_try",
       quickInsertEnabled: false,
       imageUploadURL: false,
@@ -130,6 +152,7 @@ class Editor extends Component {
         "html",
         "undo",
         "redo",
+        "alert",
       ],
     };
   }

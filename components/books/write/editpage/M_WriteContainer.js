@@ -3,7 +3,7 @@ import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Button, Select, Space } from "antd";
-import { UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
+import {AddPolly, UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
 import { DeleteOutlined, EditOutlined, HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -84,6 +84,26 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
     // console.log(uniq);
     setContentsList(uniq);
+  }
+
+  const [cardset_makeSoundFile] = useMutation(AddPolly, { onCompleted: afteraddpollymutation });
+  function afteraddpollymutation(data) {
+    console.log("addpolly : ", data)
+  }
+
+  async function addPolly(selection) {
+    console.log(selection)
+    try {
+      await cardset_makeSoundFile({
+        variables: {
+          forMakeSoundFile: {
+            targetText : selection
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   useEffect(() => {
@@ -262,6 +282,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             setEditorOn={setEditorOn}
             cardtype_info={cardtype_info}
             addSelections={addSelections}
+            addPolly={addPolly}
           />
         </div>
       </>

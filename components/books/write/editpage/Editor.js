@@ -19,7 +19,7 @@ class Editor extends Component {
   constructor(props) {
     super(props);
     FroalaEditor.DefineIcon("insertFiles", { SRC: "/image/speaker_Icon.png", ALT: "audioIcon", template: "image" });
-    FroalaEditor.DefineIcon("alert", { NAME: "info", SVG_KEY: "help" });
+    FroalaEditor.DefineIcon("alert", { SRC: "/image/tts_icon.png", NAME: "tts", template: "image" });
     FroalaEditor.RegisterCommand("alert", {
       title: "Hello",
       focus: false,

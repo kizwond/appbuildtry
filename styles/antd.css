@@ -1,3 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
 /*!
  * 
  * antd v4.17.0-alpha.9

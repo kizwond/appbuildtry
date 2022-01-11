@@ -3,21 +3,190 @@ import { useLazyQuery } from "@apollo/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-import { GET_CARD_CONTENT } from "../../../../graphql/query/card_contents";
+import {
+  QUERY_MY_CARD_CONTENTS,
+  QUERY_BUY_CARD_CONTENTS,
+} from "../../../../graphql/query/allQuery";
 
 import M_Layout from "../../../../components/layout/M_Layout";
 import { Table } from "antd";
 import moment from "moment";
 import styled from "styled-components";
 import { divide } from "lodash";
+import { useMemo } from "react";
+import { ArrowRightOutlined } from "@ant-design/icons";
+import prettyMilliseconds from "pretty-ms";
+
+const ResultForStudy = ({ title, content }) => (
+  <div className="w-full">
+    <div className="ForMobilePageMainTitle">{title}</div>
+    <div className="px-[4px]">{content}</div>
+  </div>
+);
+
+const SummaryTag = ({ title, content }) => (
+  <div className="flex flex-col gap-2 ">
+    <div className="text-base text-center bg-slate-900 text-slate-50">
+      {title}
+    </div>
+    <div className="text-base text-center bg-slate-900 text-slate-50">
+      {content}
+    </div>
+  </div>
+);
+
+const SummaryTags = () => (
+  <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
+    <SummaryTag
+      title={"학습 시작"}
+      content={moment(sessionStorage.getItem("started")).format("M.D hh:mm")}
+    />
+    <SummaryTag title={"학습 종료"} content={moment().format("M.D hh:mm")} />
+    <SummaryTag
+      title={"실제 학습 시간"}
+      content={
+        Math.round(
+          (JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour /
+            1000 /
+            60) *
+            100
+        ) /
+          100 +
+        "분"
+      }
+    />
+    <SummaryTag
+      title={"학습 시작 카드"}
+      content={
+        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.completed
+          .started +
+        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.hold
+          .started +
+        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.ing
+          .started +
+        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.yet
+          .started +
+        "장"
+      }
+    />
+    <SummaryTag
+      title={"학습 완료 카드"}
+      content={
+        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.completed
+          .finished +
+        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.hold
+          .finished +
+        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.ing
+          .finished +
+        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.yet
+          .finished +
+        "장"
+      }
+    />
+    <SummaryTag
+      title={"학습 완료 카드"}
+      content={
+        JSON.parse(sessionStorage.getItem("resultOfSession")).levelChange.total
+          .gap > 0
+          ? "+" +
+            JSON.parse(sessionStorage.getItem("resultOfSession")).levelChange
+              .total.gap
+          : JSON.parse(sessionStorage.getItem("resultOfSession")).levelChange
+              .total.gap < 0
+          ? "-" +
+            JSON.parse(sessionStorage.getItem("resultOfSession")).levelChange
+              .total.gap
+          : "-"
+      }
+    />
+  </div>
+);
+
+const TableForTop5ClickedResult = ({
+  cards,
+  myContents,
+  buyContents,
+
+  contentType,
+}) => {
+  const contents = [...myContents, ...buyContents];
+
+  const getThirdCol =
+    contentType === "clickedTimes"
+      ? function (card) {
+          return card.studyStatus.clickTimesInSession;
+        }
+      : function (card) {
+          return prettyMilliseconds(card.studyStatus.studyHourInSession, {
+            colonNotation: true,
+            secondsDecimalDigits: 1,
+          });
+        };
+  return (
+    <table className="w-full border border-collapse border-gray-200 table-fixed">
+      <thead>
+        <tr>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[30px]">
+            순위
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            앞면
+          </th>
+          {contentType !== "newCards" && (
+            <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[70px]">
+              {contentType === "clickedTimes" ? "총 학습횟수" : "총 학습시간"}
+            </th>
+          )}
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+            카드보기
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {cards.map((card, index) => (
+          <tr key={card._id}>
+            <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+              {index + 1}
+            </td>
+            <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate">
+              {new String(
+                contents.find(
+                  (content) =>
+                    content._id === card.content.mycontent_id ||
+                    content._id === card.content.buycontent_id
+                ).face1
+              ).replace(/(<([^>]+)>)/gi, "")}
+            </td>
+            {contentType !== "newCards" && (
+              <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+                {getThirdCol(card)}
+              </td>
+            )}
+            <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+              <ArrowRightOutlined />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
 
 const StudyResult = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [cardList, setCardList] = useState(null);
 
-  const [getCardsContent, { data, loading, error }] = useLazyQuery(
-    GET_CARD_CONTENT,
+  const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
+    QUERY_MY_CARD_CONTENTS,
+    {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+    }
+  );
+  const [getBuyCardsContent, { data: buyContentsData }] = useLazyQuery(
+    QUERY_BUY_CARD_CONTENTS,
     {
       onCompleted: (data) => {
         console.log(data);
@@ -27,32 +196,81 @@ const StudyResult = () => {
 
   useEffect(() => setIsMounted(true), []);
   const ISSERVER = typeof window === "undefined";
-  useEffect(() => {
+  const topFiveCardsBySubject = useMemo(() => {
     if (!ISSERVER) {
       const cardlist_to_send_tmp = JSON.parse(
-        sessionStorage.getItem("cardlist_to_send")
+        sessionStorage.getItem("cardListStudying")
       );
-      setCardList(cardlist_to_send_tmp);
+      const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
+      const topFiveClicked = [...cardlist_to_send_tmp]
+        .sort(
+          (a, b) =>
+            b.studyStatus.clickTimesInSession -
+            a.studyStatus.clickTimesInSession
+        )
+        .filter((_, i) => i < 5);
+      const topFiveStudyHour = [...cardlist_to_send_tmp]
+        .sort(
+          (a, b) =>
+            b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
+        )
+        .filter((_, i) => i < 5);
+      const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
+
+      return {
+        topFiveClicked,
+        topFiveStudyHour,
+        fiveCreatedCards,
+      };
+    }
+  }, [ISSERVER]);
+
+  useEffect(() => {
+    if (!ISSERVER) {
+      // const cardlist_to_send_tmp = JSON.parse(
+      //   sessionStorage.getItem("cardListStudying")
+      // );
+      // const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
+      // setCardList(cardlist_to_send_tmp);
+      // const topFiveClicked = [...cardlist_to_send_tmp]
+      //   .sort(
+      //     (a, b) =>
+      //       b.studyStatus.clickTimesInSession -
+      //       a.studyStatus.clickTimesInSession
+      //   )
+      //   .filter((_, i) => i < 5);
+      // const topFiveStudyHour = [...cardlist_to_send_tmp]
+      //   .sort(
+      //     (a, b) =>
+      //       b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
+      //   )
+      //   .filter((_, i) => i < 5);
+      // const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
+      const cardsToRequest = [
+        ...topFiveCardsBySubject.topFiveClicked,
+        ...topFiveCardsBySubject.topFiveStudyHour,
+        ...topFiveCardsBySubject.fiveCreatedCards,
+      ];
       if (
-        cardlist_to_send_tmp.filter((card) => card.content.location === "my")
-          .length > 0
+        cardsToRequest.filter((card) => card.content.location === "my").length >
+        0
       ) {
-        getCardsContent({
+        getMyCardsContent({
           variables: {
-            mycontent_ids: cardlist_to_send_tmp
+            mycontent_ids: cardsToRequest
               .filter((card) => card.content.location === "my")
               .map((card) => card.content.mycontent_id),
           },
         });
       }
       if (
-        cardlist_to_send_tmp.filter((card) => card.content.location === "buy")
+        cardsToRequest.filter((card) => card.content.location === "buy")
           .length > 0
       ) {
-        getCardsContent({
+        getBuyCardsContent({
           variables: {
-            mycontent_ids: cardlist_to_send_tmp
-              .filter((card) => card.content.location === "my")
+            buycontent_ids: cardsToRequest
+              .filter((card) => card.content.location === "buy")
               .map((card) => card.content.mycontent_id),
           },
         });
@@ -100,6 +318,7 @@ const StudyResult = () => {
         100,
     };
   };
+
   return (
     <>
       <Head>
@@ -107,233 +326,73 @@ const StudyResult = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <M_Layout>
-        <StyledRowMaxWidth style={{ width: "100%" }}>
-          <div style={{ width: "100%" }}>
-            <div className="ForMobilePageMainTitle">요약</div>
-            {isMounted && (
-              <div
-                style={{ padding: 8, display: "flex", gap: 14, width: "100%" }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                    minWidth: "100px",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    학습 시작
-                  </div>
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    {moment(sessionStorage.getItem("started")).format(
-                      "M.D hh:mm"
-                    )}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                    minWidth: "100px",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    학습 종료
-                  </div>
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    {moment().format("M.D hh:mm")}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                    minWidth: "100px",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    실제 학습 시간
-                  </div>
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    {
-                      JSON.parse(sessionStorage.getItem("resultOfSession"))
-                        .studyHour
-                    }
-                  </div>
-                </div>
+        <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_76px)] overflow-y-auto px-[8px] min-w-[360px]">
+          {isMounted &&
+            data &&
+            data.mycontent_getMycontentByMycontentIDs &&
+            data.mycontent_getMycontentByMycontentIDs.mycontents && (
+              <div className="w-full flex flex-col gap-[8px]">
+                <ResultForStudy title="요약" content={<SummaryTags />} />
+                <ResultForStudy
+                  title="학습횟수 많은 카드"
+                  content={
+                    <TableForTop5ClickedResult
+                      cards={topFiveCardsBySubject.topFiveClicked}
+                      myContents={
+                        data.mycontent_getMycontentByMycontentIDs.mycontents
+                      }
+                      contentType={"clickedTimes"}
+                      buyContents={
+                        !buyContentsData
+                          ? []
+                          : buyContentsData
+                              .buycontent_getBuycontentByBuycontentIDs
+                              .buycontents
+                      }
+                    />
+                  }
+                />
+                <ResultForStudy
+                  title="학습시간 많은 카드"
+                  content={
+                    <TableForTop5ClickedResult
+                      cards={topFiveCardsBySubject.topFiveStudyHour}
+                      myContents={
+                        data.mycontent_getMycontentByMycontentIDs.mycontents
+                      }
+                      contentType={"studyHours"}
+                      buyContents={
+                        !buyContentsData
+                          ? []
+                          : buyContentsData
+                              .buycontent_getBuycontentByBuycontentIDs
+                              .buycontents
+                      }
+                    />
+                  }
+                />
+                <ResultForStudy
+                  title="새로 만든 카드"
+                  content={
+                    <TableForTop5ClickedResult
+                      cards={topFiveCardsBySubject.topFiveStudyHour}
+                      myContents={
+                        data.mycontent_getMycontentByMycontentIDs.mycontents
+                      }
+                      contentType={"newCards"}
+                      buyContents={
+                        !buyContentsData
+                          ? []
+                          : buyContentsData
+                              .buycontent_getBuycontentByBuycontentIDs
+                              .buycontents
+                      }
+                    />
+                  }
+                />
               </div>
             )}
-            {isMounted && (
-              <div
-                style={{ padding: 8, display: "flex", gap: 14, width: "100%" }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                    minWidth: "100px",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    학습 시작 카드
-                  </div>
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    {JSON.parse(sessionStorage.getItem("resultOfSession"))
-                      .numCards.completed.started +
-                      JSON.parse(sessionStorage.getItem("resultOfSession"))
-                        .numCards.hold.started +
-                      JSON.parse(sessionStorage.getItem("resultOfSession"))
-                        .numCards.ing.started +
-                      JSON.parse(sessionStorage.getItem("resultOfSession"))
-                        .numCards.yet.started}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                    minWidth: "100px",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    학습 완료 카드
-                  </div>
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    {JSON.parse(sessionStorage.getItem("resultOfSession"))
-                      .numCards.completed.finished +
-                      JSON.parse(sessionStorage.getItem("resultOfSession"))
-                        .numCards.hold.finished +
-                      JSON.parse(sessionStorage.getItem("resultOfSession"))
-                        .numCards.ing.finished +
-                      JSON.parse(sessionStorage.getItem("resultOfSession"))
-                        .numCards.yet.finished}
-                    장
-                  </div>
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                    minWidth: "100px",
-                    width: "100%",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    레벨 획득
-                  </div>
-                  <div
-                    style={{
-                      background: "black",
-                      color: "white",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                    }}
-                  >
-                    {JSON.parse(sessionStorage.getItem("resultOfSession"))
-                      .levelChange.total.gap > 0
-                      ? "+" +
-                        JSON.parse(sessionStorage.getItem("resultOfSession"))
-                          .levelChange.total.gap
-                      : JSON.parse(sessionStorage.getItem("resultOfSession"))
-                          .levelChange.total.gap < 0
-                      ? "-" +
-                        JSON.parse(sessionStorage.getItem("resultOfSession"))
-                          .levelChange.total.gap
-                      : "-"}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </StyledRowMaxWidth>
+        </div>
 
         {/* <StyledDiv>
           {cardList &&
@@ -400,18 +459,3 @@ const StudyResult = () => {
 };
 
 export default StudyResult;
-
-const StyledDiv = styled.div`
-  * {
-    font-size: 10px;
-  }
-`;
-
-const StyledRowMaxWidth = styled.div`
-  margin: 0 auto;
-  position: absolute;
-  top: 40px;
-  height: calc(100vh - 76px);
-  overflow: scroll;
-  padding: 0 8px;
-`;

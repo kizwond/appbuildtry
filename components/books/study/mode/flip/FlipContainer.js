@@ -29,6 +29,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import { calculateStudyStatus } from "./FlipContainerSub";
 import { detect, detectAll } from "tinyld";
+import produce from 'immer';
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -54,7 +55,9 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
               createdCards,
               studyResults: filtered,
               resultOfSession,
-              resultByBook: resultByBook.map(book => {delete book.bookTitle; return book }),
+              resultByBook: produce(resultByBook, draft => {
+                draft.forEach(book=> delete book.bookTitle)
+              } ),
               dataForRegression,
             },
           },

@@ -9,7 +9,7 @@ import {
 } from "../../../../graphql/query/allQuery";
 
 import M_Layout from "../../../../components/layout/M_Layout";
-import { Table } from "antd";
+import { Select, Table } from "antd";
 import moment from "moment";
 import styled from "styled-components";
 import { divide } from "lodash";
@@ -24,6 +24,95 @@ const ResultForStudy = ({ title, content }) => (
   </div>
 );
 
+const CardNumberTable = ({ numberOfCards }) => {
+  const getTotalNumber = (keyName) =>
+    numberOfCards.completed[keyName] +
+    numberOfCards.yet[keyName] +
+    numberOfCards.hold[keyName] +
+    numberOfCards.ing[keyName];
+
+  const totalOfSelected = getTotalNumber("selected");
+  const totalOfInserted = getTotalNumber("inserted");
+  const totalOfStarted = getTotalNumber("started");
+  const totalOfFinished = getTotalNumber("finished");
+
+  return (
+    <table className="w-full border border-collapse border-gray-200 table-fixed">
+      <thead>
+        <tr>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[50px]">
+            순위
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            선택
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            투입
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            시작
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            종료
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+            Total
+          </td>
+          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+            {totalOfSelected}
+          </td>
+          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+            {totalOfInserted}
+          </td>
+          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+            {totalOfStarted}
+          </td>
+          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+            {totalOfFinished}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
+};
+
+const SelectDetailOption = () => {
+  const [selectedValue, setSelectedValue] = useState("Session");
+
+  const resultOfSession =
+    selectedValue === "Session"
+      ? JSON.parse(sessionStorage.getItem("resultOfSession"))
+      : JSON.parse(sessionStorage.getItem("resultByBook")).find(
+          (book) => book.mybook_id === selectedValue
+        );
+
+  return (
+    <div className="w-full">
+      <Select
+        className="w-full text-[1rem]"
+        value={selectedValue}
+        size="small"
+        onChange={(v) => setSelectedValue(v)}
+      >
+        <Select.Option value="Session">세션전체</Select.Option>
+        {JSON.parse(sessionStorage.getItem("resultByBook")).map((book) => (
+          <Select.Option value={book.mybook_id} key={book.mybook_id}>
+            {book.mybook_id}
+          </Select.Option>
+        ))}
+      </Select>
+      <ResultForStudy
+        title="카드 수"
+        content={<CardNumberTable numberOfCards={resultOfSession.numCards} />}
+      />
+    </div>
+  );
+};
+
 const SummaryTag = ({ title, content }) => (
   <div className="flex flex-col gap-2 ">
     <div className="text-base text-center bg-slate-900 text-slate-50">
@@ -35,78 +124,65 @@ const SummaryTag = ({ title, content }) => (
   </div>
 );
 
-const SummaryTags = () => (
-  <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
-    <SummaryTag
-      title={"학습 시작"}
-      content={moment(sessionStorage.getItem("started")).format("M.D hh:mm")}
-    />
-    <SummaryTag title={"학습 종료"} content={moment().format("M.D hh:mm")} />
-    <SummaryTag
-      title={"실제 학습 시간"}
-      content={
-        Math.round(
-          (JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour /
-            1000 /
-            60) *
-            100
-        ) /
-          100 +
-        "분"
-      }
-    />
-    <SummaryTag
-      title={"학습 시작 카드"}
-      content={
-        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.completed
-          .started +
-        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.hold
-          .started +
-        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.ing
-          .started +
-        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.yet
-          .started +
-        "장"
-      }
-    />
-    <SummaryTag
-      title={"학습 완료 카드"}
-      content={
-        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.completed
-          .finished +
-        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.hold
-          .finished +
-        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.ing
-          .finished +
-        JSON.parse(sessionStorage.getItem("resultOfSession")).numCards.yet
-          .finished +
-        "장"
-      }
-    />
-    <SummaryTag
-      title={"학습 완료 카드"}
-      content={
-        JSON.parse(sessionStorage.getItem("resultOfSession")).levelChange.total
-          .gap > 0
-          ? "+" +
-            JSON.parse(sessionStorage.getItem("resultOfSession")).levelChange
-              .total.gap
-          : JSON.parse(sessionStorage.getItem("resultOfSession")).levelChange
-              .total.gap < 0
-          ? "-" +
-            JSON.parse(sessionStorage.getItem("resultOfSession")).levelChange
-              .total.gap
-          : "-"
-      }
-    />
-  </div>
-);
+const SummaryTags = () => {
+  const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
+
+  const { completed, hold, ing, yet } = resultOfSession.numCards;
+
+  const totalGap = resultOfSession.levelChange.total.gap;
+  return (
+    <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
+      <SummaryTag
+        title={"학습 시작"}
+        content={moment(sessionStorage.getItem("started")).format("M.D hh:mm")}
+      />
+      <SummaryTag title={"학습 종료"} content={moment().format("M.D hh:mm")} />
+      <SummaryTag
+        title={"실제 학습 시간"}
+        content={prettyMilliseconds(
+          JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour,
+          { colonNotation: true, secondsDecimalDigits: 1 }
+        )}
+      />
+      <SummaryTag
+        title={"학습 시작 카드"}
+        content={
+          completed.started + hold.started + ing.started + yet.started + "장"
+        }
+      />
+      <SummaryTag
+        title={"학습 완료 카드"}
+        content={
+          completed.finished +
+          hold.finished +
+          ing.finished +
+          yet.finished +
+          "장"
+        }
+      />
+      <SummaryTag
+        title={"레벨 획득"}
+        content={
+          ((totalGap) => {
+            if (totalGap > 0) {
+              return "+" + totalGap;
+            }
+            if (totalGap < 0) {
+              return "-" + totalGap;
+            }
+            return "-";
+          })(totalGap)
+          // totalGap > 0 ? "+" + totalGap : totalGap < 0 ? "-" + totalGap : "-"
+        }
+      />
+    </div>
+  );
+};
 
 const TableForTop5ClickedResult = ({
   cards,
   myContents,
   buyContents,
-
   contentType,
 }) => {
   const contents = [...myContents, ...buyContents];
@@ -143,30 +219,44 @@ const TableForTop5ClickedResult = ({
         </tr>
       </thead>
       <tbody>
-        {cards.map((card, index) => (
-          <tr key={card._id}>
-            <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
-              {index + 1}
-            </td>
-            <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate">
-              {new String(
-                contents.find(
-                  (content) =>
-                    content._id === card.content.mycontent_id ||
-                    content._id === card.content.buycontent_id
-                ).face1
-              ).replace(/(<([^>]+)>)/gi, "")}
-            </td>
-            {contentType !== "newCards" && (
+        {cards.length > 0 &&
+          cards.map((card, index) => (
+            <tr key={card._id}>
               <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
-                {getThirdCol(card)}
+                {index + 1}
               </td>
-            )}
-            <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
-              <ArrowRightOutlined />
+              <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate">
+                {new String(
+                  contents.find(
+                    (content) =>
+                      content._id === card.content.mycontent_id ||
+                      content._id === card.content.buycontent_id
+                  ).face1
+                ).replace(/(<([^>]+)>)/gi, "")}
+              </td>
+              {contentType !== "newCards" && (
+                <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+                  {getThirdCol(card)}
+                </td>
+              )}
+              <td
+                className="text-[1rem] font-normal border border-collapse border-gray-200 text-center"
+                onClick={() => console.log("카드보기 클릭함")}
+              >
+                <ArrowRightOutlined />
+              </td>
+            </tr>
+          ))}
+        {cards.length === 0 && contentType === "newCards" && (
+          <tr>
+            <td
+              className="text-[1rem] font-normal border border-collapse border-gray-200 text-center"
+              colSpan={3}
+            >
+              학습 중 새로 만든 카드가 없습니다.
             </td>
           </tr>
-        ))}
+        )}
       </tbody>
     </table>
   );
@@ -208,13 +298,15 @@ const StudyResult = () => {
             b.studyStatus.clickTimesInSession -
             a.studyStatus.clickTimesInSession
         )
-        .filter((_, i) => i < 5);
+        .splice(0, 5);
+      // .filter((_, i) => i < 5);
       const topFiveStudyHour = [...cardlist_to_send_tmp]
         .sort(
           (a, b) =>
             b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
         )
-        .filter((_, i) => i < 5);
+        .splice(0, 5);
+      // .filter((_, i) => i < 5);
       const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
 
       return {
@@ -294,31 +386,6 @@ const StudyResult = () => {
     return contentObj;
   };
 
-  const getTableData = (card) => {
-    const contentsByContentIds = getContentsSortByIds(
-      data.mycontent_getMycontentByMycontentIDs.mycontents
-    );
-    const [first, second, third, fourth, fifth] =
-      contentsByContentIds[card.content.mycontent_id];
-    return {
-      key: card._id,
-      seqInCardlist: card.seqInCardlist,
-      content: first + second + third + fourth + fifth,
-      selection: card.studyStatus.recentSelection,
-      requestedStudyTime: moment(card.studyStatus.needStudyTime).format(
-        "DD, HH:mm:ss"
-      ),
-      preStatus: card.studyStatus.statusOriginal,
-      currentStatus: card.studyStatus.statusCurrent,
-      preLevel: card.studyStatus.levelOriginal,
-      currentLevel: card.studyStatus.levelCurrent,
-      studiedCardCounter: card.studyStatus.currentLevStudyTimes,
-      elasedTimeOnStudyingCard:
-        Math.round((card.studyStatus.currentLevElapsedHour / 3600000) * 100) /
-        100,
-    };
-  };
-
   return (
     <>
       <Head>
@@ -375,7 +442,7 @@ const StudyResult = () => {
                   title="새로 만든 카드"
                   content={
                     <TableForTop5ClickedResult
-                      cards={topFiveCardsBySubject.topFiveStudyHour}
+                      cards={topFiveCardsBySubject.fiveCreatedCards}
                       myContents={
                         data.mycontent_getMycontentByMycontentIDs.mycontents
                       }
@@ -390,69 +457,10 @@ const StudyResult = () => {
                     />
                   }
                 />
+                <SelectDetailOption />
               </div>
             )}
         </div>
-
-        {/* <StyledDiv>
-          {cardList &&
-            data &&
-            data.mycontent_getMycontentByMycontentIDs &&
-            data.mycontent_getMycontentByMycontentIDs.mycontents.length > 0 && (
-              <Table
-                style={{ marginTop: "50px" }}
-                dataSource={cardList.map(getTableData)}
-                columns={[
-                  {
-                    title: "No.",
-                    key: "seqInCardlist",
-                    dataIndex: "seqInCardlist",
-                  },
-                  { key: "content", dataIndex: "content", title: "앞면" },
-                  {
-                    title: "난이도선택",
-                    key: "selection",
-                    dataIndex: "selection",
-                  },
-                  {
-                    title: "원상태",
-                    key: "preStatus",
-                    dataIndex: "preStatus",
-                  },
-                  {
-                    title: "후상태",
-                    key: "currentStatus",
-                    dataIndex: "currentStatus",
-                  },
-                  {
-                    title: "복습시점",
-                    key: "requestedStudyTime",
-                    dataIndex: "requestedStudyTime",
-                  },
-                  {
-                    title: "원레벨",
-                    key: "preLevel",
-                    dataIndex: "preLevel",
-                  },
-                  {
-                    title: "후레벨",
-                    key: "currentLevel",
-                    dataIndex: "currentLevel",
-                  },
-                  {
-                    title: "횟수",
-                    key: "studiedCardCounter",
-                    dataIndex: "studiedCardCounter",
-                  },
-                  {
-                    title: "경과시간",
-                    key: "elasedTimeOnStudyingCard",
-                    dataIndex: "elasedTimeOnStudyingCard",
-                  },
-                ]}
-              />
-            )}
-        </StyledDiv> */}
       </M_Layout>
     </>
   );

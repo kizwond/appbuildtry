@@ -54,7 +54,7 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
               createdCards,
               studyResults: filtered,
               resultOfSession,
-              resultByBook,
+              resultByBook: resultByBook.map(book => {delete book.bookTitle; return book }),
               dataForRegression,
             },
           },

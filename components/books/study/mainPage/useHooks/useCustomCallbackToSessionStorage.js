@@ -115,7 +115,6 @@ export const useCustomCallbackToSessionStore = () => {
             })
           )
         );
-
         sessionStorage.setItem(
           "resultByBook",
           JSON.stringify(
@@ -123,6 +122,7 @@ export const useCustomCallbackToSessionStore = () => {
               ? selectedBooks.map((book) =>
                   produce(sessionResults, (draft) => {
                     draft.mybook_id = book.book_id;
+                    draft.bookTitle = book.book_title;
                     draft.numCards.completed.selected =
                       remainedCards.completed.filter(
                         (card) => card.card_info.mybook_id === book.book_id
@@ -298,6 +298,7 @@ export const useCustomCallbackToSessionStore = () => {
               ? selectedBooks.map((book) =>
                   produce(sessionResults, (draft) => {
                     draft.mybook_id = book.book_id;
+                    draft.bookTitle = book.book_title;
                     draft.numCards.completed.selected = sortedCards.filter(
                       (card) =>
                         card.card_info.mybook_id === book.book_id &&

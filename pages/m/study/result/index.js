@@ -9,7 +9,7 @@ import {
 } from "../../../../graphql/query/allQuery";
 
 import M_Layout from "../../../../components/layout/M_Layout";
-import { Select, Table } from "antd";
+import { Select, Space, Table } from "antd";
 import moment from "moment";
 import styled from "styled-components";
 import { divide } from "lodash";
@@ -92,19 +92,22 @@ const SelectDetailOption = () => {
 
   return (
     <div className="w-full">
-      <Select
-        className="w-full text-[1rem]"
-        value={selectedValue}
-        size="small"
-        onChange={(v) => setSelectedValue(v)}
-      >
-        <Select.Option value="Session">세션전체</Select.Option>
-        {JSON.parse(sessionStorage.getItem("resultByBook")).map((book) => (
-          <Select.Option value={book.mybook_id} key={book.mybook_id}>
-            {book.bookTitle}
-          </Select.Option>
-        ))}
-      </Select>
+      <div className="flex">
+        <div className="w-[60px] flex-none ForMobilePageMainTitle">선택</div>
+        <Select
+          className="flex-auto text-[1rem]"
+          value={selectedValue}
+          size="small"
+          onChange={(v) => setSelectedValue(v)}
+        >
+          <Select.Option value="Session">세션전체</Select.Option>
+          {JSON.parse(sessionStorage.getItem("resultByBook")).map((book) => (
+            <Select.Option value={book.mybook_id} key={book.mybook_id}>
+              {book.bookTitle}
+            </Select.Option>
+          ))}
+        </Select>
+      </div>
       <ResultForStudy
         title="카드 수"
         content={<CardNumberTable numberOfCards={resultOfSession.numCards} />}

@@ -10,6 +10,7 @@ import {
   ShopOutlined,
   FileTextOutlined,
   CrownOutlined,
+  HomeOutlined
 } from "@ant-design/icons";
 import { Input, Avatar } from "antd";
 import React, { useEffect, useState } from "react";
@@ -23,7 +24,7 @@ const backgroundColor = "#4466d1";
 const fontColor = "white";
 const burgerSize = "1.3rem";
 
-const StudyNav = () => {
+const StudyNav = ({mode}) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var usernameTemp = localStorage.getItem("username");
@@ -55,7 +56,9 @@ const StudyNav = () => {
     console.log("here");
     window.location.href = "/m";
   };
-
+  const goToHome = () => {
+    window.location.href = "/m";
+  }
   return (
     <>
       <div
@@ -77,7 +80,7 @@ const StudyNav = () => {
         }}
       >
         <div style={{ flexBasis: "33%" }}>
-          <MenuOutlined style={{ fontSize: burgerSize, color: fontColor }} onClick={showDrawer} />
+          <Button onClick={showDrawer} style={{ backgroundColor: "#ffffff00", border: "none" }} icon={<MenuOutlined style={{ fontSize: burgerSize, color: fontColor }} />}></Button>
           <Drawer
             title={
               <>
@@ -130,16 +133,10 @@ const StudyNav = () => {
                       </Link>
                     </>
                   )}
-                  <Link href="/m/study">
+                  <Link href="/m/mybooks">
                     <a style={linkStyleDrawer}>
                       <ReadOutlined style={{ marginRight: 10 }} />
-                      학습
-                    </a>
-                  </Link>
-                  <Link href="/m/write">
-                    <a style={linkStyleDrawer}>
-                      <FormOutlined style={{ marginRight: 10 }} />
-                      만들기
+                      마이북
                     </a>
                   </Link>
                   <Link href="/m/mentoring">
@@ -184,31 +181,17 @@ const StudyNav = () => {
             </div>
           </Drawer>
         </div>
-        <Link href="/m">
-          <a
-            style={{
+
+         <div style={{
               flexBasis: "33%",
               textAlign: "center",
-              fontFamily: `Architects Daughter, cursive`,
+              // fontFamily: `Architects Daughter, cursive`,
               fontWeight: 400,
               color: fontColor,
               position: "relative",
-            }}
-          >
-            <span style={{ transform: "rotate(320deg)", transformOrigin: "left top", position: "absolute", left: 9, top: 3 }}>
-              <sup style={{ fontSize: "11px" }}>I&#39;</sup>
-              <sup style={{ fontSize: "7px" }}>m </sup>
-            </span>
-            <span style={{ fontSize: "16px", color: "white" }}>T</span>
-            <span style={{ fontSize: "14px", color: "white" }}>h</span>
-            <span style={{ fontSize: "14px", color: "white" }}>e</span>
-            <span style={{ fontSize: "16px", color: "#ffe400" }}>B</span>
-            <span style={{ fontSize: "13px", color: "white" }}>o</span>
-            <span style={{ fontSize: "13px", color: "white" }}>o</span>
-            <span style={{ fontSize: "14px", color: "white" }}>K</span>
-          </a>
-        </Link>
-        <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem" }}></div>
+            }}>{mode} mode</div>
+
+        <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem" }}><Button style={{ backgroundColor: "#ffffff00", border: "none" }} onClick={goToHome} icon={<HomeOutlined  style={{ fontSize: burgerSize, color: fontColor }} />}></Button></div>
       </div>
     </>
   );

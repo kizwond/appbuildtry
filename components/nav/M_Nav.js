@@ -78,10 +78,10 @@ const Nav = () => {
         }}
       >
         <div style={{ flexBasis: "33%" }}>
-          <MenuOutlined
+          <Button onClick={showDrawer} style={{backgroundColor:"#ffffff00", border:"none"}} icon={<MenuOutlined
             style={{ fontSize: burgerSize, color: fontColor }}
-            onClick={showDrawer}
-          />
+          />}></Button>
+          
           <Drawer
             title={
               <>

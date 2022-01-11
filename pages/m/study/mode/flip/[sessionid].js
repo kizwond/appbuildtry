@@ -7,6 +7,7 @@ import FlipContainer from "../../../../../components/books/study/mode/flip/FlipC
 import StudyLayout from "../../../../../components/layout/StudyLayout";
 import FixedBottomMenuFlipMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuFlipMode";
 import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../../../../graphql/query/card_contents";
+import { Button, Modal, Space, Tag, message, Divider } from "antd";
 
 const FlipMode = () => {
   const { query } = useRouter();
@@ -17,6 +18,10 @@ const FlipMode = () => {
   const [levelConfigs, setLevelConfigs] = useState();
   const [contentsList, setContentsList] = useState([]);
   const [cardTypeSets, setCardTypeSets] = useState([]);
+
+  const [hiddenToggle, setHiddenToggle] = useState(false);
+  const [underlineToggle, setUnderlineToggle] = useState(false);
+  const [highlightToggle, setHighlightToggle] = useState(false);
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -67,12 +72,11 @@ const FlipMode = () => {
     setCardTypeSets(data.cardtypeset_getbymybookids.cardtypesets);
   }
   useEffect(() => {
-    
     if (data) {
       const dataExist = JSON.parse(sessionStorage.getItem("firstFetchData"));
       if (dataExist) {
-        console.log(dataExist)
-        console.log(data)
+        console.log(dataExist);
+        console.log(data);
         if (JSON.stringify(dataExist) == JSON.stringify(data)) {
           const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
           setCardListStudying(cardListStudying);
@@ -88,7 +92,7 @@ const FlipMode = () => {
               mycontent_ids: cardIdList,
             },
           });
-    
+
           buycontent_getBuycontentByBuycontentIDs({
             variables: {
               buycontent_ids: buyContentsIdsList,
@@ -132,7 +136,7 @@ const FlipMode = () => {
               mycontent_ids: cardIdList,
             },
           });
-    
+
           buycontent_getBuycontentByBuycontentIDs({
             variables: {
               buycontent_ids: buyContentsIdsList,
@@ -154,55 +158,176 @@ const FlipMode = () => {
         }
       } else {
         sessionStorage.removeItem("firstFetchData");
-          sessionStorage.setItem("firstFetchData", JSON.stringify(data));
-          console.log("최초 리드모드 데이터 : ", data);
-          console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
-          const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
-          setCardListStudying(cardListStudying);
-          setSessionScope(data.session_getSession.sessions[0].sessionScope);
-          sessionStorage.setItem("card_seq", 0);
-          sessionStorage.setItem("origin_seq", 0);
-          sessionStorage.removeItem("cardlist_to_send");
-          sessionStorage.removeItem("studyLogCardIds");
-          const now = new Date();
-          sessionStorage.setItem("started", now);
-          const cardIdList = cardListStudying.map((item) => {
-            return item.content.mycontent_id;
-          });
-          const buyContentsIdsList = cardListStudying.map((item) => {
-            return item.content.buycontent_id;
-          });
-          mycontent_getMycontentByMycontentIDs({
-            variables: {
-              mycontent_ids: cardIdList,
-            },
-          });
-    
-          buycontent_getBuycontentByBuycontentIDs({
-            variables: {
-              buycontent_ids: buyContentsIdsList,
-            },
-          });
-          const mybook_ids = data.session_getSession.sessions[0].sessionScope.map((item) => {
-            return item.mybook_id;
-          });
-          levelconfig_getLevelconfigs({
-            variables: {
-              mybook_ids: mybook_ids,
-            },
-          });
-          cardtypeset_getbymybookids({
-            variables: {
-              mybook_ids: mybook_ids,
-            },
-          });
+        sessionStorage.setItem("firstFetchData", JSON.stringify(data));
+        console.log("최초 리드모드 데이터 : ", data);
+        console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
+        const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+        setCardListStudying(cardListStudying);
+        setSessionScope(data.session_getSession.sessions[0].sessionScope);
+        sessionStorage.setItem("card_seq", 0);
+        sessionStorage.setItem("origin_seq", 0);
+        sessionStorage.removeItem("cardlist_to_send");
+        sessionStorage.removeItem("studyLogCardIds");
+        const now = new Date();
+        sessionStorage.setItem("started", now);
+        const cardIdList = cardListStudying.map((item) => {
+          return item.content.mycontent_id;
+        });
+        const buyContentsIdsList = cardListStudying.map((item) => {
+          return item.content.buycontent_id;
+        });
+        mycontent_getMycontentByMycontentIDs({
+          variables: {
+            mycontent_ids: cardIdList,
+          },
+        });
+
+        buycontent_getBuycontentByBuycontentIDs({
+          variables: {
+            buycontent_ids: buyContentsIdsList,
+          },
+        });
+        const mybook_ids = data.session_getSession.sessions[0].sessionScope.map((item) => {
+          return item.mybook_id;
+        });
+        levelconfig_getLevelconfigs({
+          variables: {
+            mybook_ids: mybook_ids,
+          },
+        });
+        cardtypeset_getbymybookids({
+          variables: {
+            mybook_ids: mybook_ids,
+          },
+        });
       }
-      
     }
   }, [data, levelconfig_getLevelconfigs, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs, cardtypeset_getbymybookids]);
 
+  const hide = (toolType) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    const newHiddenValue = {
+      targetWord: selectionText,
+      toolType: toolType,
+    };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.hidden.push(newHiddenValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null);
+    console.log(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null);
+    // var elem = document.getElementById(parentIdOfSelection);
+
+    // elem.innerHTML = replaced;
+    setHiddenToggle(false);
+    sessionStorage.removeItem("selectionText");
+  };
+
+  const underline = (toolType) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    const newUnderlineValue = {
+      targetWord: selectionText,
+      toolType: toolType,
+    };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.underline.push(newUnderlineValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType);
+    console.log(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType);
+    // var elem = document.getElementById(parentIdOfSelection);
+
+    // elem.innerHTML = replaced;
+    setUnderlineToggle(false);
+    sessionStorage.removeItem("selectionText");
+  };
+
+  const highlight = (toolType) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    const newHighlightValue = {
+      targetWord: selectionText,
+      toolType: toolType,
+    };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.highlight.push(newHighlightValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType);
+    console.log(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType);
+    // var elem = document.getElementById(parentIdOfSelection);
+
+    // elem.innerHTML = replaced;
+    setHighlightToggle(false);
+    sessionStorage.removeItem("selectionText");
+  };
+
+  const hiddenToggleHandler = (info) => {
+    console.log("userflagclicked!!!");
+    setHiddenToggle(!hiddenToggle);
+    setUnderlineToggle(false);
+    setHighlightToggle(false);
+    if (hiddenToggle === false) {
+      message.destroy();
+      info();
+    }
+  };
+
+  const underlineToggleHandler = (info) => {
+    console.log("underlineToggleHandler!!!");
+    setUnderlineToggle(!underlineToggle);
+    setHiddenToggle(false);
+    setHighlightToggle(false);
+    if (underlineToggle === false) {
+      message.destroy();
+      info();
+    }
+  };
+
+  const highlightToggleHandler = (info) => {
+    console.log("underlineToggleHandler!!!");
+    setHighlightToggle(!highlightToggle);
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
+    if (highlightToggle === false) {
+      message.destroy();
+      info();
+    }
+  };
+  function updateStudyToolApply(data) {
+    setCardTypeSets(data);
+  }
   return (
-    <StudyLayout>
+    <StudyLayout mode="뒤집기">
       <div
         style={{
           height: "100%",
@@ -219,7 +344,22 @@ const FlipMode = () => {
       </div>
       {data && (
         <>
-          <FixedBottomMenuFlipMode />
+          <FixedBottomMenuFlipMode
+            hide={hide}
+            underline={underline}
+            highlight={highlight}
+            underlineToggle={underlineToggle}
+            hiddenToggle={hiddenToggle}
+            highlightToggle={highlightToggle}
+            cardTypeSets={cardTypeSets}
+            hiddenToggleHandler={hiddenToggleHandler}
+            underlineToggleHandler={underlineToggleHandler}
+            highlightToggleHandler={highlightToggleHandler}
+            updateStudyToolApply={updateStudyToolApply}
+            setHiddenToggle={setHiddenToggle}
+            setUnderlineToggle={setUnderlineToggle}
+            setHighlightToggle={setHighlightToggle}
+          />
         </>
       )}
     </StudyLayout>

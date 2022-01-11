@@ -42,6 +42,15 @@ export const AddCard = gql`
     }
   }
 `;
+export const AddPolly = gql`
+  mutation AddPolly($forMakeSoundFile: forMakeSoundFile) {
+    cardset_makeSoundFile(forMakeSoundFile: $forMakeSoundFile) {
+      status
+      msg
+      route 
+    }
+  }
+`;
 export const DeleteCard = gql`
   mutation DeleteCard($forDeleteCard: forDeleteCard) {
     cardset_deleteCard(forDeleteCard: $forDeleteCard) {

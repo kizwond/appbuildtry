@@ -674,12 +674,16 @@ class Container extends Component {
     sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
   };
   generateOnFinishStudyStatus = () => {
+
+    const card_details_session_origin = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const current_card_info_index = sessionStorage.getItem("card_seq");
+    const current_card_book_id = card_details_session_origin[current_card_info_index].card_info.mybook_id;
+    const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
 
     const timer = this.state.time;
     const now = new Date();
 
-    const card_details_session = calculateStudyStatus(null, "finish", current_card_info_index, timer);
+    const card_details_session = calculateStudyStatus(null, "finish", current_card_info_index, timer, current_card_levelconfig[0]);
 
     //업데이트된 학습정보 세션스토리지에 다시 저장
     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));

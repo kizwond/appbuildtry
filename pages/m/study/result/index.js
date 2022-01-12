@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -9,10 +9,8 @@ import {
 } from "../../../../graphql/query/allQuery";
 
 import M_Layout from "../../../../components/layout/M_Layout";
-import { Select, Space, Table } from "antd";
+import { Select } from "antd";
 import moment from "moment";
-import styled from "styled-components";
-import { divide } from "lodash";
 import { useMemo } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import prettyMilliseconds from "pretty-ms";
@@ -24,7 +22,7 @@ const ResultForStudy = ({ title, content }) => (
   </div>
 );
 
-const CardNumberTable = ({ numberOfCards }) => {
+const CardNumberTable = ({ numberOfCards, more }) => {
   const getTotalNumber = (keyName) =>
     numberOfCards.completed[keyName] +
     numberOfCards.yet[keyName] +
@@ -40,8 +38,8 @@ const CardNumberTable = ({ numberOfCards }) => {
     <table className="w-full border border-collapse border-gray-200 table-fixed">
       <thead>
         <tr>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[50px]">
-            순위
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+            기존 상태
           </th>
           <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
             선택
@@ -59,22 +57,263 @@ const CardNumberTable = ({ numberOfCards }) => {
       </thead>
       <tbody>
         <tr>
-          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
             Total
           </td>
-          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
             {totalOfSelected}
           </td>
-          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
             {totalOfInserted}
           </td>
-          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
             {totalOfStarted}
           </td>
-          <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
             {totalOfFinished}
           </td>
         </tr>
+        {more &&
+          ["yet", "ing", "hold", "completed"].map((status) => (
+            <tr key={status}>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {status === "yet"
+                  ? "학습전"
+                  : status === "ing"
+                  ? "학습중"
+                  : status === "hold"
+                  ? "보류"
+                  : status === "completed"
+                  ? "완료"
+                  : "오류"}
+              </td>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {numberOfCards[status].selected}
+              </td>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {numberOfCards[status].inserted}
+              </td>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {numberOfCards[status].started}
+              </td>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {numberOfCards[status].finished}
+              </td>
+            </tr>
+          ))}
+      </tbody>
+    </table>
+  );
+};
+const ChangedCardStatusTable = ({ changedCardStatus, numberOfCards, more }) => {
+  const getTotalNumber = (keyName) =>
+    changedCardStatus.completed[keyName] +
+    changedCardStatus.yet[keyName] +
+    changedCardStatus.hold[keyName] +
+    changedCardStatus.ing[keyName];
+
+  const totalOfYet = getTotalNumber("yet");
+  const totalOfIng = getTotalNumber("ing");
+  const totalOfHold = getTotalNumber("hold");
+  const totalOfCompleted = getTotalNumber("completed");
+
+  const totalNumberOfInserted =
+    numberOfCards.completed.inserted +
+    numberOfCards.yet.inserted +
+    numberOfCards.hold.inserted +
+    numberOfCards.ing.inserted;
+
+  return (
+    <table className="w-full border border-collapse border-gray-200 table-fixed">
+      <thead>
+        <tr>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+            기존 상태
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            투입카드
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            학습전
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            학습중
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            보류
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            완료
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            Total
+          </td>
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            {totalNumberOfInserted}
+          </td>
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            {totalOfYet}
+          </td>
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            {totalOfIng}
+          </td>
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            {totalOfHold}
+          </td>
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            {totalOfCompleted}
+          </td>
+        </tr>
+        {more &&
+          ["yet", "ing", "hold", "completed"].map((preStatus) => (
+            <tr key={preStatus}>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {preStatus === "yet"
+                  ? "학습전"
+                  : preStatus === "ing"
+                  ? "학습중"
+                  : preStatus === "hold"
+                  ? "보류"
+                  : preStatus === "completed"
+                  ? "완료"
+                  : "오류"}
+              </td>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {numberOfCards[preStatus].inserted}
+              </td>
+              {["yet", "ing", "hold", "completed"].map((afterStatus) => (
+                <React.Fragment key={`afterStatus:${afterStatus}`}>
+                  {afterStatus === preStatus ? (
+                    <td className="text-[1rem] font-normal text-stone-500 bg-zinc-300 border border-collapse border-gray-200 text-center">
+                      {numberOfCards[preStatus].inserted -
+                        Object.values(changedCardStatus[preStatus]).reduce(
+                          (a, b) => a + b,
+                          0
+                        )}
+                    </td>
+                  ) : (
+                    <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+                      {changedCardStatus[preStatus][afterStatus]}
+                    </td>
+                  )}
+                </React.Fragment>
+              ))}
+            </tr>
+          ))}
+      </tbody>
+    </table>
+  );
+};
+const ChangedFlagTable = ({ changedFlag }) => {
+  return (
+    <table className="w-full border border-collapse border-gray-200 table-fixed">
+      <thead>
+        <tr>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+            플래그
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            flag0
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            flag1
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            flag2
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            flag3
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            flag4
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            flag5
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {["flag0", "flag1", "flag2", "flag3", "flag4", "flag5"].map(
+          (preFlag) => (
+            <tr key={preFlag}>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {preFlag}
+              </td>
+              {["flag0", "flag1", "flag2", "flag3", "flag4", "flag5"].map(
+                (afterFlag) => (
+                  <React.Fragment key={`afterFlag:${afterFlag}`}>
+                    {afterFlag === preFlag ? (
+                      <td className="text-[1rem] font-normal text-stone-500 bg-zinc-300 border border-collapse border-gray-200 text-center">
+                        {Boolean(Number(changedFlag[preFlag][afterFlag])) &&
+                          changedFlag[preFlag][afterFlag]}
+                      </td>
+                    ) : (
+                      <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+                        {Boolean(Number(changedFlag[preFlag][afterFlag])) &&
+                          changedFlag[preFlag][afterFlag]}
+                      </td>
+                    )}
+                  </React.Fragment>
+                )
+              )}
+            </tr>
+          )
+        )}
+      </tbody>
+    </table>
+  );
+};
+
+const ChangedLevelTable = ({ changedLevel, more }) => {
+  return (
+    <table className="w-full border border-collapse border-gray-200 table-fixed">
+      <thead>
+        <tr>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+            종류
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            {"'알겠음' 카드수"}
+          </th>
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+            레벨 변동값 평균
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            Total
+          </td>
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            {changedLevel.total.count}
+          </td>
+          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            {changedLevel.total.gap}
+          </td>
+        </tr>
+        {more &&
+          ["up", "down"].map((clickedButton) => (
+            <tr key={clickedButton}>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {clickedButton === "up"
+                  ? "Up"
+                  : clickedButton === "down"
+                  ? "Down"
+                  : "오류"}
+              </td>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {changedLevel[clickedButton].count}
+              </td>
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                {changedLevel[clickedButton].gap}
+              </td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );
@@ -82,6 +321,9 @@ const CardNumberTable = ({ numberOfCards }) => {
 
 const SelectDetailOption = () => {
   const [selectedValue, setSelectedValue] = useState("Session");
+  const [moreCardNumber, setMoreCardNumber] = useState(false);
+  const [moreChangedLevel, setMoreChangedLevel] = useState(false);
+  const [moreChangedCardStatus, setMoreChangedCardStatus] = useState(false);
 
   const resultOfSession =
     selectedValue === "Session"
@@ -92,25 +334,86 @@ const SelectDetailOption = () => {
 
   return (
     <div className="w-full">
-      <div className="flex">
-        <div className="w-[60px] flex-none ForMobilePageMainTitle">선택</div>
-        <Select
-          className="flex-auto text-[1rem]"
-          value={selectedValue}
-          size="small"
-          onChange={(v) => setSelectedValue(v)}
-        >
-          <Select.Option value="Session">세션전체</Select.Option>
-          {JSON.parse(sessionStorage.getItem("resultByBook")).map((book) => (
-            <Select.Option value={book.mybook_id} key={book.mybook_id}>
-              {book.bookTitle}
-            </Select.Option>
-          ))}
-        </Select>
-      </div>
+      <Select
+        className="w-[50%] text-[1.4rem]"
+        value={selectedValue}
+        size="small"
+        onChange={(v) => setSelectedValue(v)}
+      >
+        <Select.Option value="Session">세션전체</Select.Option>
+        {JSON.parse(sessionStorage.getItem("resultByBook")).map((book) => (
+          <Select.Option value={book.mybook_id} key={book.mybook_id}>
+            {book.bookTitle}
+          </Select.Option>
+        ))}
+      </Select>
+
       <ResultForStudy
-        title="카드 수"
-        content={<CardNumberTable numberOfCards={resultOfSession.numCards} />}
+        title={
+          <div className="flex space-x-3 items-end">
+            <div>카드수</div>
+            <a
+              className="text-[1rem] text-blue-700"
+              onClick={() => setMoreCardNumber((pre) => !pre)}
+            >
+              {moreCardNumber ? "접기" : "더보기"}
+            </a>
+          </div>
+        }
+        content={
+          <CardNumberTable
+            numberOfCards={resultOfSession.numCards}
+            more={moreCardNumber}
+          />
+        }
+      />
+
+      <ResultForStudy title="클릭수" content={<div>챠트</div>} />
+
+      <ResultForStudy
+        title={
+          <div className="flex space-x-3 items-end">
+            <div>레벨 변동</div>
+            <a
+              className="text-[1rem] text-blue-700"
+              onClick={() => setMoreChangedLevel((pre) => !pre)}
+            >
+              {moreCardNumber ? "접기" : "더보기"}
+            </a>
+          </div>
+        }
+        content={
+          <ChangedLevelTable
+            changedLevel={resultOfSession.levelChange}
+            more={moreChangedLevel}
+          />
+        }
+      />
+      <ResultForStudy
+        title={
+          <div className="flex space-x-3 items-end">
+            <div>카드 상태 변경</div>
+            <a
+              className="text-[1rem] text-blue-700"
+              onClick={() => setMoreChangedCardStatus((pre) => !pre)}
+            >
+              {moreChangedCardStatus ? "접기" : "더보기"}
+            </a>
+          </div>
+        }
+        content={
+          <ChangedCardStatusTable
+            numberOfCards={resultOfSession.numCards}
+            changedCardStatus={resultOfSession.statusChange}
+            more={moreChangedCardStatus}
+          />
+        }
+      />
+      <ResultForStudy
+        title="사용자 플래그 변경"
+        content={
+          <ChangedFlagTable changedFlag={resultOfSession.userFlagChange} />
+        }
       />
     </div>
   );
@@ -144,7 +447,7 @@ const SummaryTags = () => {
         title={"실제 학습 시간"}
         content={prettyMilliseconds(
           JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour,
-          { colonNotation: true, secondsDecimalDigits: 1 }
+          { colonNotation: true, secondsDecimalDigits: 0 }
         )}
       />
       <SummaryTag
@@ -198,7 +501,7 @@ const TableForTop5ClickedResult = ({
       : function (card) {
           return prettyMilliseconds(card.studyStatus.studyHourInSession, {
             colonNotation: true,
-            secondsDecimalDigits: 1,
+            secondsDecimalDigits: 0,
           });
         };
   return (
@@ -225,10 +528,10 @@ const TableForTop5ClickedResult = ({
         {cards.length > 0 &&
           cards.map((card, index) => (
             <tr key={card._id}>
-              <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
                 {index + 1}
               </td>
-              <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate">
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate">
                 {new String(
                   contents.find(
                     (content) =>
@@ -238,7 +541,7 @@ const TableForTop5ClickedResult = ({
                 ).replace(/(<([^>]+)>)/gi, "")}
               </td>
               {contentType !== "newCards" && (
-                <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
                   {getThirdCol(card)}
                 </td>
               )}
@@ -253,7 +556,7 @@ const TableForTop5ClickedResult = ({
         {cards.length === 0 && contentType === "newCards" && (
           <tr>
             <td
-              className="text-[1rem] font-normal border border-collapse border-gray-200 text-center"
+              className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center"
               colSpan={3}
             >
               학습 중 새로 만든 카드가 없습니다.
@@ -396,7 +699,7 @@ const StudyResult = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <M_Layout>
-        <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_76px)] overflow-y-auto px-[8px] min-w-[360px]">
+        <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px]">
           {isMounted &&
             data &&
             data.mycontent_getMycontentByMycontentIDs &&

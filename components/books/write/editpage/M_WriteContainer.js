@@ -52,6 +52,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   const [indexList, setIndexList] = useState();
   const [makerFlagStyle, setMakerFlagStyle] = useState();
   const [updateStatus, setUpdateStatus] = useState(false);
+  const [getLink, setGetLink] = useState(false);
   // const [selections, setSelections] = useState();
   // const [selectionNicks, setSelectionNicks] = useState([]);
 
@@ -89,6 +90,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   const [cardset_makeSoundFile] = useMutation(AddPolly, { onCompleted: afteraddpollymutation });
   function afteraddpollymutation(data) {
     console.log("addpolly : ", data)
+    setGetLink(data.cardset_makeSoundFile.route)
+    sessionStorage.setItem("getLink", data.cardset_makeSoundFile.route)
   }
 
   async function addPolly(selection) {

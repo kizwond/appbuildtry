@@ -24,6 +24,7 @@ export const useCustomCallbackToSessionStore = () => {
         diffi3: 0,
         diffi4: 0,
         diffi5: 0,
+        diffi6: 0,
         hold: 0,
         completed: 0,
         etc: 0,

@@ -1,63 +1,170 @@
-
-
-
-exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) => {
+exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, studyRatio, studyTimesInSession, levelConfigs) => {
     
+    const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
+    const KnowStudyRatio = 95
+    const initialElapsedTime = 1
+    const minRestudyMin = 5
+    const restudyCoeffForSession = 6 / 100
+
+    let newLevel
+    let needStudyTime, needStudyTimeGap, needStudyTimeTmp
     try{
-        let newLevel, needStudyTime, needStudyTimeGap
         
-        // console.log(recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) 
-        // console.log('recentKnowTime', recentKnowTime)       
-        // console.log('currentLevElapsedHour', currentLevElapsedHour)
-        // console.log('currentLevStudyTimes', currentLevStudyTimes)
-        const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
-        // console.log('levelchangeSensitivity, restudyRatio', levelchangeSensitivity, restudyRatio)
-        const initialMaxLevel = 5
-        const lev10StudyTimes = 10
-        const levelCoverWidth = 5
-        const studyTimesCoeff = Math.round(lev10StudyTimes / Math.pow(levelCoverWidth, 0.5)*1000)/1000
+        console.log('잘 들어왔당가?', levelCurrent, recentStudyTime,studyRatio, studyTimesInSession )
         
-        if (recentKnowTime == null){
-            newLevel = Math.round(initialMaxLevel / currentLevStudyTimes * 1000) / 1000;
-            needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
-            needStudyTime =  new Date(Date.now() + needStudyTimeGap)
-            // console.log('newLevel', levelCurrent, newLevel)
-            return {newLevel, needStudyTime, needStudyTimeGap}
+        
+
+
+        // 세션 첫 학습인 경우
+        if (studyTimesInSession != 1){
+            newLevel = levelCurrent
+        } else if (studyTimesInSession == 1){
+            if (levelCurrent == 0){
+                newLevel = Math.round(initialElapsedTime * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
+                console.log('newLevel1', newLevel)
+            } else {
+                const levelOfLastSession = levelCurrent
+                const lastRatioOfLastSession = recentStudyResult
+                const estimatedElapsedTimeOfLastSession = levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)
+                const elapsedTimeFromLastSession = new Date() - recentStudyTime
+                const totalElapsedTime = estimatedElapsedTimeOfLastSession + elapsedTimeFromLastSession
+    
+                newLevel = totalElapsedTime * Math.log(0.8) / Math.log(studyRatio/100)
+                console.log('newLevel2', newLevel)
+            }
         }
 
-        //여기
-        const weightFromLevelCurrent = Math.round(Math.pow(Math.max(1-levelCurrent/100, 0), 2)/4 *1000)/1000
-        // console.log('weightFromLevelCurrent', weightFromLevelCurrent)
-        const averageElapsedHour = Math.round (currentLevElapsedHour / currentLevStudyTimes / 24 / 3600000 *1000 ) /1000
-        // console.log('averageElapsedHour', averageElapsedHour)
-        const gapBetweenLevelCurrentAndElapsedTime = Math.abs(levelCurrent - averageElapsedHour)
-        // console.log('gapBetweenLevelCurrentAndElapsedTime', gapBetweenLevelCurrentAndElapsedTime)
-        const factorAppliedGap = gapBetweenLevelCurrentAndElapsedTime * ((1000-Math.pow(11-currentLevStudyTimes, 3))/1000)
-        // console.log('factorAppliedGap', factorAppliedGap)
-            
-        let baseElapsedTime
-        if (recentKnowTime != null && currentLevStudyTimes == 1){
-            const maxElapsedTime = levelCurrent
-            baseElapsedTime = Math.round(maxElapsedTime * ( 1+ weightFromLevelCurrent * levelchangeSensitivity/100) * 1000)/1000
-            // console.log('baseElapsedTime1', baseElapsedTime)
-        }
-        if (recentKnowTime != null && currentLevStudyTimes != 1){
-            const maxElapsedTime = Math.max(levelCurrent,averageElapsedHour )
-            baseElapsedTime = Math.round((maxElapsedTime-factorAppliedGap) * ( 1+ weightFromLevelCurrent * levelchangeSensitivity/100) * 1000)/1000
-            // console.log('baseElapsedTime2', baseElapsedTime)
+
+        if (studyRatio == KnowStudyRatio){
+            needStudyTime = new Date(Date.now() +newLevel * (Math.log(restudyRatio/100)-Math.log(95/100)) / Math.log(0.8) * 24 * 3600000)
+            needStudyTimeTmp = null
+            console.log('needStudyTime1',needStudyTime)
+        } else if (studyRatio != KnowStudyRatio){
+            needStudyTimeGap = minRestudyMin * 60000 * (restudyCoeffForSession*studyRatio+1)
+            console.log('needStudyTimeGap', needStudyTimeGap)
+            needStudyTime = new Date(Date.now() + needStudyTimeGap)
+            needStudyTimeTmp = needStudyTime
+            console.log('needStudyTime2',needStudyTime)
         }
 
-        newLevel = Math.round((Math.pow(studyTimesCoeff,2)*baseElapsedTime)/(Math.pow(currentLevStudyTimes,2)+Math.pow(studyTimesCoeff,2))*1000)/1000
-        // console.log('newLevel', levelCurrent, newLevel)
-        needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
-        needStudyTime =  new Date(Date.now() + needStudyTimeGap)
-        return {newLevel, needStudyTime, needStudyTimeGap}
-        
-    }catch(err){
+        console.log('111111111111', newLevel, needStudyTime, needStudyTimeTmp)
+        return {newLevel, needStudyTime, needStudyTimeTmp}
+    }catch (err){
         console.log(err)
     }
 
+
 }
+
+exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, studyRatio, studyTimesInSession, levelConfigs) => {
+    
+    const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
+    const KnowStudyRatio = 95
+    const initialElapsedTime = 1
+    const minRestudyMin = 5
+    const restudyCoeffForSession = 6 / 100
+
+    let newLevel
+    let needStudyTimeGap
+    try{       
+        // 세션 첫 학습인 경우
+        if (studyTimesInSession == 0){
+            if (levelCurrent == 0){
+                newLevel = Math.round(initialElapsedTime * Math.log(0.8) / Math.log(95/100) * 1000) / 1000;                
+            } else {
+                const levelOfLastSession = levelCurrent
+                const lastRatioOfLastSession = recentStudyResult
+                const estimatedElapsedTimeOfLastSession = levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)
+                const elapsedTimeFromLastSession = new Date() - recentStudyTime
+                const totalElapsedTime = estimatedElapsedTimeOfLastSession + elapsedTimeFromLastSession
+    
+                newLevel = totalElapsedTime * Math.log(0.8) / Math.log(95/100)
+                console.log('newLevel2', newLevel)
+            }            
+        } else if (studyTimesInSession > 0){
+            newLevel = levelCurrent            
+        }
+        needStudyTimeGap = newLevel * (Math.log(restudyRatio/100)-Math.log(95/100)) / Math.log(0.8) * 24 * 3600000                    
+        
+        return {needStudyTimeGap}
+    }catch (err){
+        console.log(err)
+    }
+}
+
+exports.recalculateNeedStudyTime = (levelConfigs) => {
+    
+    const cardlistStudying = JSON.parse(sessionStorage.getItem("cardlistStudying"));
+
+    for (let i=0; i<cardlistStudying.length; i++){
+        if (cardlistStudying[i].studyStatus.studyTimesInSession >0){
+            const {restudyRatio} = levelConfigs.restudy 
+            const {levelCurrent} = cardlistStudying[i].studyStatus
+
+            cardlistStudying[i].studyStatus.needStudyTime = new Date(Date.now() +levelCurrent * (Math.log(restudyRatio/100)-Math.log(95/100)) / Math.log(0.8) * 24 * 3600000)
+
+        }
+    }
+    sessionStorage.setItem("cardlistStudying", JSON.stringify(cardlistStudying))
+}
+
+// exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) => {
+    
+//     try{
+//         let newLevel, needStudyTime, needStudyTimeGap
+        
+//         // console.log(recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) 
+//         // console.log('recentKnowTime', recentKnowTime)       
+//         // console.log('currentLevElapsedHour', currentLevElapsedHour)
+//         // console.log('currentLevStudyTimes', currentLevStudyTimes)
+//         const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
+//         // console.log('levelchangeSensitivity, restudyRatio', levelchangeSensitivity, restudyRatio)
+//         const initialMaxLevel = 5
+//         const lev10StudyTimes = 10
+//         const levelCoverWidth = 5
+//         const studyTimesCoeff = Math.round(lev10StudyTimes / Math.pow(levelCoverWidth, 0.5)*1000)/1000
+        
+//         if (recentKnowTime == null){
+//             newLevel = Math.round(initialMaxLevel / currentLevStudyTimes * 1000) / 1000;
+//             needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
+//             needStudyTime =  new Date(Date.now() + needStudyTimeGap)
+//             // console.log('newLevel', levelCurrent, newLevel)
+//             return {newLevel, needStudyTime, needStudyTimeGap}
+//         }
+
+//         //여기
+//         const weightFromLevelCurrent = Math.round(Math.pow(Math.max(1-levelCurrent/100, 0), 2)/4 *1000)/1000
+//         // console.log('weightFromLevelCurrent', weightFromLevelCurrent)
+//         const averageElapsedHour = Math.round (currentLevElapsedHour / currentLevStudyTimes / 24 / 3600000 *1000 ) /1000
+//         // console.log('averageElapsedHour', averageElapsedHour)
+//         const gapBetweenLevelCurrentAndElapsedTime = Math.abs(levelCurrent - averageElapsedHour)
+//         // console.log('gapBetweenLevelCurrentAndElapsedTime', gapBetweenLevelCurrentAndElapsedTime)
+//         const factorAppliedGap = gapBetweenLevelCurrentAndElapsedTime * ((1000-Math.pow(11-currentLevStudyTimes, 3))/1000)
+//         // console.log('factorAppliedGap', factorAppliedGap)
+            
+//         let baseElapsedTime
+//         if (recentKnowTime != null && currentLevStudyTimes == 1){
+//             const maxElapsedTime = levelCurrent
+//             baseElapsedTime = Math.round(maxElapsedTime * ( 1+ weightFromLevelCurrent * levelchangeSensitivity/100) * 1000)/1000
+//             // console.log('baseElapsedTime1', baseElapsedTime)
+//         }
+//         if (recentKnowTime != null && currentLevStudyTimes != 1){
+//             const maxElapsedTime = Math.max(levelCurrent,averageElapsedHour )
+//             baseElapsedTime = Math.round((maxElapsedTime-factorAppliedGap) * ( 1+ weightFromLevelCurrent * levelchangeSensitivity/100) * 1000)/1000
+//             // console.log('baseElapsedTime2', baseElapsedTime)
+//         }
+
+//         newLevel = Math.round((Math.pow(studyTimesCoeff,2)*baseElapsedTime)/(Math.pow(currentLevStudyTimes,2)+Math.pow(studyTimesCoeff,2))*1000)/1000
+//         // console.log('newLevel', levelCurrent, newLevel)
+//         needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
+//         needStudyTime =  new Date(Date.now() + needStudyTimeGap)
+//         return {newLevel, needStudyTime, needStudyTimeGap}
+        
+//     }catch(err){
+//         console.log(err)
+//     }
+
+// }
 
 exports.updateSessionResult = (singleResult) => {
 
@@ -71,8 +178,10 @@ exports.updateSessionResult = (singleResult) => {
         statusCurrent,
         levelOriginal, 
         // levelPrev, 
+        recentStudyResult,
         levelCurrent, 
         clickTimesInSession,
+        studyTimesInSession,
         userFlagPrev,
         userFlagOriginal
     } = studyStatus
@@ -85,19 +194,26 @@ exports.updateSessionResult = (singleResult) => {
     resultOfSession.studyHour += recentStudyHour
     resultByBook[mybookPosition].studyHour += recentStudyHour
 
-    console.log('어라 이거 몇 번?')
+    console.log('어라 이거 몇 번?')    
     // 클릭수
-    if (['diffi1','diffi2','diffi3','diffi4','diffi5','hold','completed'].includes(recentSelection)){
-        resultOfSession.clicks[recentSelection] +=1
-        resultOfSession.clicks.total +=1
-        resultByBook[mybookPosition].clicks[recentSelection] +=1
-        resultByBook[mybookPosition].clicks.total +=1
+    let clicksField
+    if (['difficulty'].includes(recentSelection)){
+        const diffiLevelLow = Math.floor(recentStudyResult / 20)+1
+        const diffiLevelHigh = Math.floor(recentStudyResult / 10) -3
+        if (diffiLevelLow<5){
+            clicksField = 'diffi'+diffiLevelLow            
+        } else {
+            clicksField = 'diffi'+diffiLevelHigh            
+        }       
+    } else if(['hold','completed'].includes(recentSelection)){
+        clicksField = recentSelection               
     } else {
-        resultOfSession.clicks.etc +=1
-        resultOfSession.clicks.total +=1
-        resultByBook[mybookPosition].clicks.etc +=1
-        resultByBook[mybookPosition].clicks.total +=1
+        clicksField = 'etc'        
     }
+    resultOfSession.clicks[clicksField] +=1
+    resultOfSession.clicks.total +=1
+    resultByBook[mybookPosition].clicks[clicksField] +=1
+    resultByBook[mybookPosition].clicks.total +=1
     
     // 스테이터스 변경
     if (statusPrev != statusCurrent){
@@ -116,7 +232,7 @@ exports.updateSessionResult = (singleResult) => {
     console.log('levelOriginal', levelOriginal)
     console.log('levelCurrent', levelCurrent)
     console.log(recentSelection)
-    if (recentSelection == 'diffi5'){  
+    if (recentSelection=='difficulty' && studyTimesInSession == 1){  
         if (levelOriginal < levelCurrent){
             console.log('1111111')
             resultByBook[mybookPosition].levelChange.total.count += 1
@@ -141,7 +257,7 @@ exports.updateSessionResult = (singleResult) => {
     }
 
     // Mybook에 업데이트 해줄 꺼
-    if  (recentSelection == 'diffi5'){
+    if (recentSelection=='difficulty' && studyTimesInSession == 1){  
         resultOfSession.nonCompletedLevelChange.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
         resultByBook[mybookPosition].nonCompletedLevelChange.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
     }
@@ -163,7 +279,11 @@ exports.updateSessionResult = (singleResult) => {
         resultOfSession.numCards[statusOriginal].started += 1
         resultByBook[mybookPosition].numCards[statusOriginal].started += 1
     }
-    if (['diffi5', 'pass', 'hold', 'completed'].includes(recentSelection)){
+    if (['pass', 'hold', 'completed'].includes(recentSelection)){
+        resultOfSession.numCards[statusOriginal].finished += 1
+        resultByBook[mybookPosition].numCards[statusOriginal].finished += 1
+    }
+    if (recentSelection == 'difficulty' && recentStudyResult == 95){
         resultOfSession.numCards[statusOriginal].finished += 1
         resultByBook[mybookPosition].numCards[statusOriginal].finished += 1
     }

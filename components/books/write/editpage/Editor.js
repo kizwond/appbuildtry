@@ -119,52 +119,51 @@ class Editor extends Component {
       ],
     };
   }
- componentDidMount(){
-  const dodo = async () => {
-    var text = null;
-    var textRange = null;
-    if (document.getSelection) {
-      text = document.getSelection().toString();
-      textRange = document.getSelection();
-      sessionStorage.setItem("selectionText", text);
-      console.log("case1", text);
-    } else if (typeof document.selection != "undefined") {
-      text = document.selection;
-      console.log("case2", text);
-    }
-    console.log("try", text);
-    await this.props.addPolly(text);
-    const pollyLink = sessionStorage.getItem("getLink");
-    console.log(pollyLink);
-    var matches = document.getElementsByClassName("fr-element fr-view");
-    for (var i = 0; i < matches.length; i++) {
-      console.log(matches[i].innerText);
-      if (matches[i].innerText.includes(text)) {
-        var thisis = matches[i].innerHTML;
-        console.log(thisis);
-        const hello = thisis.replace(text, `${text} <audio controls><source src="${pollyLink}" type="audio/mpeg"></audio><p></p>`);
-        console.log(hello);
-        sessionStorage.setItem("includeLink", hello);
-        this.handleModelChangeEditor1(hello)
+  componentDidMount() {
+    const dodo = async () => {
+      var text = null;
+      var textRange = null;
+      if (document.getSelection) {
+        text = document.getSelection().toString();
+        textRange = document.getSelection();
+        sessionStorage.setItem("selectionText", text);
+        console.log("case1", text);
+      } else if (typeof document.selection != "undefined") {
+        text = document.selection;
+        console.log("case2", text);
       }
-    }
-   }
+      console.log("try", text);
+      await this.props.addPolly(text);
+      const pollyLink = sessionStorage.getItem("getLink");
+      console.log(pollyLink);
+      var matches = document.getElementsByClassName("fr-element fr-view");
+      for (var i = 0; i < matches.length; i++) {
+        console.log(matches[i].innerText);
+        if (matches[i].innerText.includes(text)) {
+          var thisis = matches[i].innerHTML;
+          console.log(thisis);
+          const hello = thisis.replace(text, `${text} <audio controls><source src="${pollyLink}" type="audio/mpeg"></audio><p></p>`);
+          console.log(hello);
+          sessionStorage.setItem("includeLink", hello);
+          this.handleModelChangeEditor1(hello);
+        }
+      }
+    };
 
-   if(this.props.addPolly){
-     console.log(this.props)
-    FroalaEditor.RegisterCommand("alert", {
-      title: "Hello",
-      focus: false,
-      undo: false,
-      refreshAfterCallback: false,
-      callback: async function () {
-        dodo()
-      },
-    });
-   }
-  
- }
- 
+    if (this.props.addPolly) {
+      console.log(this.props);
+      FroalaEditor.RegisterCommand("alert", {
+        title: "Hello",
+        focus: false,
+        undo: false,
+        refreshAfterCallback: false,
+        callback: async function () {
+          dodo();
+        },
+      });
+    }
+  }
+
   handleFlagStar = (e) => {
     console.log("comment:", e);
     this.setState({

@@ -10,8 +10,9 @@ import "froala-editor//css/themes/gray.css";
 import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Radio, Input, Button, Select } from "antd";
-import { PlusCircleOutlined, MinusCircleOutlined, StarFilled } from "@ant-design/icons";
+import { PlusCircleOutlined, MinusCircleOutlined, StarFilled, ConsoleSqlOutlined } from "@ant-design/icons";
 import { s3Hash } from "./EditorSub";
+import { ThemeProvider } from "styled-components";
 
 const { Option } = Select;
 
@@ -62,43 +63,6 @@ class Editor extends Component {
 
     FroalaEditor.DefineIcon("insertFiles", { SRC: "/image/speaker_Icon.png", ALT: "audioIcon", template: "image" });
     FroalaEditor.DefineIcon("alert", { SRC: "/image/tts_icon.png", NAME: "tts", template: "image" });
-    FroalaEditor.RegisterCommand("alert", {
-      title: "Hello",
-      focus: false,
-      undo: false,
-      refreshAfterCallback: true,
-      callback: async function () {
-       var text = null
-       var textRange = null
-        if (document.getSelection) {
-          text = document.getSelection().toString();
-          textRange = document.getSelection();
-          sessionStorage.setItem("selectionText", text);
-          console.log("case1", text);
-        } else if (typeof document.selection != "undefined") {
-          text = document.selection;
-          console.log("case2", text);
-        }
-        console.log("try", text)
-        console.log(props)
-        await props.addPolly(text)
-        const pollyLink = sessionStorage.getItem("getLink")
-        console.log(pollyLink)
-        var matches = document.getElementsByClassName("fr-element fr-view");
-        for (var i=0; i<matches.length; i++) {
-          console.log(matches[i].innerText)
-          if(matches[i].innerText.includes(text)){
-            var thisis = matches[i].innerHTML
-            console.log(thisis)
-            const hello = thisis.replace(text, `${text} <audio controls><source src="${pollyLink}" type="audio/mpeg"></audio><p></p>`);
-            console.log(hello)
-            sessionStorage.setItem("includeLink", hello)
-          }
-          
-        }
-      },
-    });
-    
     this.config = {
       key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
       imageUploadToS3: s3Hash,
@@ -155,7 +119,52 @@ class Editor extends Component {
       ],
     };
   }
+ componentDidMount(){
+  const dodo = async () => {
+    var text = null;
+    var textRange = null;
+    if (document.getSelection) {
+      text = document.getSelection().toString();
+      textRange = document.getSelection();
+      sessionStorage.setItem("selectionText", text);
+      console.log("case1", text);
+    } else if (typeof document.selection != "undefined") {
+      text = document.selection;
+      console.log("case2", text);
+    }
+    console.log("try", text);
+    await this.props.addPolly(text);
+    const pollyLink = sessionStorage.getItem("getLink");
+    console.log(pollyLink);
+    var matches = document.getElementsByClassName("fr-element fr-view");
+    for (var i = 0; i < matches.length; i++) {
+      console.log(matches[i].innerText);
+      if (matches[i].innerText.includes(text)) {
+        var thisis = matches[i].innerHTML;
+        console.log(thisis);
+        const hello = thisis.replace(text, `${text} <audio controls><source src="${pollyLink}" type="audio/mpeg"></audio><p></p>`);
+        console.log(hello);
+        sessionStorage.setItem("includeLink", hello);
+        this.handleModelChangeEditor1(hello)
+      }
+    }
+   }
+
+   if(this.props.addPolly){
+     console.log(this.props)
+    FroalaEditor.RegisterCommand("alert", {
+      title: "Hello",
+      focus: false,
+      undo: false,
+      refreshAfterCallback: false,
+      callback: async function () {
+        dodo()
+      },
+    });
+   }
   
+ }
+ 
   handleFlagStar = (e) => {
     console.log("comment:", e);
     this.setState({
@@ -390,7 +399,7 @@ class Editor extends Component {
 
   handleSubmit = () => {
     console.log("onClick handleSubmit!!!!!");
-    console.log(this.state.editor1)
+    console.log(this.state.editor1);
     // this.props.onFinish(this.state.editor1);
     const selections = sessionStorage.getItem("selections");
 
@@ -474,23 +483,15 @@ class Editor extends Component {
       flagComment: this.state.flagComment,
     };
     console.log(this.props.parentId);
-    console.log("values---------------->",values)
+    console.log("values---------------->", values);
     this.props.onFinish(values, "normal", this.props.parentId);
 
     this.props.setEditorOn("");
   };
 
-  componentDidUpdate() {
-    const includeLink = sessionStorage.getItem("includeLink")
-    if(includeLink){
-      if(includeLink !== this.state.editor1){
-        this.setState({
-          editor1:includeLink
-        })
-        sessionStorage.removeItem("includeLink")
-      }
-    }
-    
+  componentDidUpdate(prevProps, prevState) {
+    console.log("componentDidUpdate");
+
     const originArray = JSON.parse(sessionStorage.getItem("nicks_without_selections"));
     const newArray = JSON.parse(sessionStorage.getItem("nicks_with_selections"));
     const num_selection = sessionStorage.getItem("selections");

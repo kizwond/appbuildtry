@@ -53,6 +53,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   const [makerFlagStyle, setMakerFlagStyle] = useState();
   const [updateStatus, setUpdateStatus] = useState(false);
   const [getLink, setGetLink] = useState(false);
+  // const [forceUpdateBool, setForceUpdateBool] = useState(false);
   // const [selections, setSelections] = useState();
   // const [selectionNicks, setSelectionNicks] = useState([]);
 
@@ -286,6 +287,8 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             cardtype_info={cardtype_info}
             addSelections={addSelections}
             addPolly={addPolly}
+            // forceUpdateBool={forceUpdateBool}
+            // setForceUpdateBool={setForceUpdateBool}
           />
         </div>
       </>

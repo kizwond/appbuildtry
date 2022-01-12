@@ -14,6 +14,7 @@ import moment from "moment";
 import { useMemo } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import prettyMilliseconds from "pretty-ms";
+import styled from "styled-components";
 
 const ResultForStudy = ({ title, content }) => (
   <div className="w-full">
@@ -105,6 +106,58 @@ const CardNumberTable = ({ numberOfCards, more }) => {
     </table>
   );
 };
+const ClickedTimesByDifficultyChart = ({ clickedTimesByDifficulty }) => {
+  const removedTotalInclicked = { ...clickedTimesByDifficulty };
+  delete removedTotalInclicked.total;
+  const maxNumber = Math.max(...Object.values(removedTotalInclicked));
+  const difficulties = [
+    { title: "diffi1", color: "bg-orange-400" },
+    { title: "diffi2", color: "bg-emerald-400" },
+    { title: "diffi3", color: "bg-yellow-400" },
+    { title: "diffi4", color: "bg-yellow-400" },
+    { title: "diffi5", color: "bg-cyan-400" },
+    { title: "hold", color: "bg-gray-400" },
+    { title: "completed", color: "bg-green-400" },
+    { title: "etc", color: "bg-lime-400" },
+  ];
+  return (
+    <div className="w-full pr-[25px]">
+      <table className="w-full h-full">
+        <tbody>
+          {difficulties.map(({ title, color }) => {
+            const percentage = Math.floor(
+              (clickedTimesByDifficulty[title] / maxNumber) * 100
+            );
+            return (
+              <tr key={title}>
+                <td className="w-[80px] text-[1rem] border-r border-r-slate-900">
+                  <div className="flex justify-end pr-[8px]">{title}</div>
+                </td>
+                <td>
+                  <StyledChartBar
+                    className={`h-[70%] ${color} relative`}
+                    percentage={percentage}
+                  >
+                    {percentage === 0 ? null : (
+                      <div className="text-[10px] absolute w-[9px] right-[-10px]">
+                        <div>{clickedTimesByDifficulty[title]}</div>
+                      </div>
+                    )}
+                  </StyledChartBar>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+const StyledChartBar = styled.div`
+  width: ${({ percentage }) => percentage}%;
+`;
+
 const ChangedCardStatusTable = ({ changedCardStatus, numberOfCards, more }) => {
   const getTotalNumber = (keyName) =>
     changedCardStatus.completed[keyName] +
@@ -333,11 +386,10 @@ const SelectDetailOption = () => {
         );
 
   return (
-    <div className="w-full">
-      <Select
+    <div className="w-full flex flex-col gap-[8px] pt-[8px]">
+      <StyledAntSelect
         className="w-[50%] text-[1.4rem]"
         value={selectedValue}
-        size="small"
         onChange={(v) => setSelectedValue(v)}
       >
         <Select.Option value="Session">세션전체</Select.Option>
@@ -346,7 +398,7 @@ const SelectDetailOption = () => {
             {book.bookTitle}
           </Select.Option>
         ))}
-      </Select>
+      </StyledAntSelect>
 
       <ResultForStudy
         title={
@@ -368,7 +420,24 @@ const SelectDetailOption = () => {
         }
       />
 
-      <ResultForStudy title="클릭수" content={<div>챠트</div>} />
+      <ResultForStudy
+        title={
+          <div className="flex space-x-3 items-end">
+            <div>클릭 수</div>
+            <a
+              className="text-[1rem] text-blue-700"
+              onClick={() => console.log("원래있던 테이블로 구성해야함")}
+            >
+              자세히보기
+            </a>
+          </div>
+        }
+        content={
+          <ClickedTimesByDifficultyChart
+            clickedTimesByDifficulty={resultOfSession.clicks}
+          />
+        }
+      />
 
       <ResultForStudy
         title={
@@ -419,12 +488,26 @@ const SelectDetailOption = () => {
   );
 };
 
+const StyledAntSelect = styled(Select)`
+  &.ant-select:not(.ant-select-customize-input) .ant-select-selector {
+    border-color: #40a9ff;
+    box-shadow: 0 0 0 2px rgb(24 144 255 / 20%);
+    border-right-width: 1px !important;
+    outline: 0;
+  }
+
+  .ant-select-selection-item {
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+`;
+
 const SummaryTag = ({ title, content }) => (
-  <div className="flex flex-col gap-2 ">
-    <div className="text-base text-center bg-slate-900 text-slate-50">
+  <div className="flex flex-col gap-[2px] ">
+    <div className="text-base text-center font-[600] border border-gray-200  bg-slate-100">
       {title}
     </div>
-    <div className="text-base text-center bg-slate-900 text-slate-50">
+    <div className="text-base text-center font-[600] text-[1.16667rem]  py-[10px] border border-gray-200 ">
       {content}
     </div>
   </div>
@@ -546,10 +629,10 @@ const TableForTop5ClickedResult = ({
                 </td>
               )}
               <td
-                className="text-[1rem] font-normal border border-collapse border-gray-200 text-center"
+                className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center"
                 onClick={() => console.log("카드보기 클릭함")}
               >
-                <ArrowRightOutlined />
+                <ArrowRightOutlined className="w-full !block h-full" />
               </td>
             </tr>
           ))}

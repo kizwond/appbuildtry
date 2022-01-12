@@ -225,7 +225,7 @@ class Container extends Component {
   //   }
   // };
 
-  onDiffClickHandler = (current_card_id, timer, ratio) => {
+  onDiffClickHandler = (current_card_id, timer, studyRatio) => {
     console.log("난이도 선택하셨네요~");
 
     const now = new Date();
@@ -236,7 +236,7 @@ class Container extends Component {
     const current_card_book_id = card_details_session_origin[current_card_info_index].card_info.mybook_id;
     const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
 
-    const card_details_session = calculateStudyStatus(null, "difficulty", current_card_info_index, timer, current_card_levelconfig[0], ratio);
+    const card_details_session = calculateStudyStatus(null, "difficulty", current_card_info_index, timer, current_card_levelconfig[0], studyRatio);
     // const card_details_session = calculateStudyStatus(interval, diffi, current_card_info_index, timer);
 
     //업데이트된 학습정보 세션스토리지에 다시 저장

@@ -37,11 +37,11 @@ class Timer extends Component {
     return (
       <>
         <div style={{ width:"100%", display: "flex", flexDirection: "flex", alignItems: "center", justifyContent:"flex-start" }}>
-          <div style={{ marginBottom: "0px", fontSize: "0.8rem", marginRight: "5px" }}>총 경과시간</div>
+          <div style={{ marginBottom: "0px", fontSize: "0.8rem", marginRight: "5px" }}>총경과시간</div>
           <div
             style={{
-              backgroundColor: "#f2f2f2",
-              boxShadow: "inset 2px 2px 3px 0px #cccccc",
+              backgroundColor: "#e2e2e2",
+              boxShadow: "inset 2px 2px 3px 0px #acacac",
               textAlign: "right",
               paddingRight: "5px",
               width: "50%",
@@ -64,8 +64,8 @@ class Timer extends Component {
           </div>
           <div
             style={{
-              backgroundColor: "#f2f2f2",
-              boxShadow: "inset 2px 2px 3px 0px #cccccc",
+              backgroundColor: "#e2e2e2",
+              boxShadow: "inset 2px 2px 3px 0px #acacac",
               textAlign: "right",
               paddingRight: "5px",
               width: "50%",

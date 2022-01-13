@@ -12,18 +12,20 @@ const ProgressBar = (props) => {
   const containerStyles = {
     height: 15,
     width: '100%',
-    backgroundColor: "#e0e0de",
+    backgroundColor: "#e2e2e2",
+    boxShadow: "inset 2px 2px 3px 0px #acacac",
     borderRadius: 5,
   }
-
   const fillerStyles = {
     height: '100%',
     width: `${compValue}%`,
-    backgroundColor: bgcolor,
+    // backgroundColor: bgcolor,
+    background:"linear-gradient(0deg, rgb(134 217 131) 0%, rgba(9,255,0,0.8099614845938375) 40%, rgba(50,242,43,1) 60%, rgb(90 232 130 / 80%) 100%)",
     transition: 'width 1s ease-in-out',
     borderRadius: 'inherit',
     textAlign: 'right',
-    lineHeight:"1rem"
+    lineHeight:"1rem",
+    boxShadow: "2px 0px 1px 0px #acacac",
   }
 
   const labelStyles = {

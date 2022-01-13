@@ -17,22 +17,26 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
   card_details_session[current_card_info_index].studyStatus.totalStayHour += timer;
   
+  
+  card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;  
+  card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
+  card_details_session[current_card_info_index].studyStatus.studyTimesInSession += 1;
+  
+  let {levelCurrent, recentStudyTime, recentStudyResult, studyTimesInSession}=card_details_session[current_card_info_index].studyStatus
+  let {newLevel, needStudyTime, needStudyTimeTmp} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,recentStudyResult, studyRatio, studyTimesInSession, levelConfigs)  
+  card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
+  // card_details_session[current_card_info_index].studyStatus.recentKnowTime = now //불필요
+  card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
+  card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = needStudyTimeTmp;
+  
+  
   card_details_session[current_card_info_index].studyStatus.recentStudyResult = studyRatio;
   card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
   card_details_session[current_card_info_index].studyStatus.recentStudyHour = timer;  
   card_details_session[current_card_info_index].studyStatus.totalStudyHour += timer;
   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
-
-  card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;  
-  card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
-  card_details_session[current_card_info_index].studyStatus.studyTimesInSession += 1;
   
-  let {levelCurrent, recentStudyTime, studyTimesInSession}=card_details_session[current_card_info_index].studyStatus
-  let {newLevel, needStudyTime, needStudyTimeTmp} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,studyRatio, studyTimesInSession, levelConfigs)  
-  card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
-  // card_details_session[current_card_info_index].studyStatus.recentKnowTime = now //불필요
-  card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
-  card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = needStudyTimeTmp;
+  
   
   card_details_session[current_card_info_index].studyStatus.isUpdated = true;
 

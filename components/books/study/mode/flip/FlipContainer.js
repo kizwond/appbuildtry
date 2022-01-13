@@ -878,8 +878,8 @@ class Container extends Component {
                 style={{ width: "25%", fontSize: "0.8rem", display: "flex", flexDirection: "column", alignItems: "center" }}
               >
                 <span>일단 알겠음</span>
-                <span>(+5시간)</span>
-                <CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} />
+                <span><CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} /></span>
+                
               </button>
             </div>
           </div>
@@ -1873,7 +1873,7 @@ const CalculateIf = ({ currentSeq, levelConfigs }) => {
   const needStudyTimeGap = (estimate.needStudyTimeGap / 60000).toFixed();
   return (
     <>
-      <span>[{needStudyTimeGap}분]</span>
+      <span>[+{needStudyTimeGap}분]</span>
     </>
   );
 };

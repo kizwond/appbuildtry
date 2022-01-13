@@ -348,10 +348,10 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
             {changedLevel.total.count}
           </td>
           <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-            {Math.round(changedLevel.total.gap) > 0
-              ? "+" + Math.round(changedLevel.total.gap)
-              : Math.round(changedLevel.total.gap) < 0
-              ? "" + Math.round(changedLevel.total.gap)
+            {Math.round(changedLevel.total.gap * 100) / 100 > 0
+              ? "+" + Math.round(changedLevel.total.gap * 100) / 100
+              : Math.round(changedLevel.total.gap * 100) / 100 < 0
+              ? "" + Math.round(changedLevel.total.gap * 100) / 100
               : "-"}
           </td>
         </tr>
@@ -369,10 +369,11 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
                 {changedLevel[clickedButton].count}
               </td>
               <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                {Math.round(changedLevel[clickedButton].gap) > 0
-                  ? "+" + Math.round(changedLevel[clickedButton].gap)
-                  : Math.round(changedLevel[clickedButton].gap) < 0
-                  ? "" + Math.round(changedLevel[clickedButton].gap)
+                {Math.round(changedLevel[clickedButton].gap * 100) / 100 > 0
+                  ? "+" +
+                    Math.round(changedLevel[clickedButton].gap * 100) / 100
+                  : Math.round(changedLevel[clickedButton].gap * 100) / 100 < 0
+                  ? "" + Math.round(changedLevel[clickedButton].gap * 100) / 100
                   : "-"}
               </td>
             </tr>
@@ -528,7 +529,30 @@ const SummaryTags = () => {
 
   const { completed, hold, ing, yet } = resultOfSession.numCards;
 
-  const totalGap = Math.round(resultOfSession.levelChange.total.gap);
+  const totalGap =
+    Math.round(resultOfSession.levelChange.total.gap * 100) / 100;
+
+  const time = prettyMilliseconds(
+    JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour,
+    { colonNotation: true, secondsDecimalDigits: 0 }
+  );
+  const displayTime = (time) => {
+    switch (time.length) {
+      case 4:
+        return "00:0" + time;
+      case 5:
+        return "00:" + time;
+      case 6:
+        return "00" + time;
+      case 7:
+        return "0" + time;
+      case 8:
+        return time;
+
+      default:
+        break;
+    }
+  };
   return (
     <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
       <SummaryTag
@@ -536,13 +560,7 @@ const SummaryTags = () => {
         content={moment(sessionStorage.getItem("started")).format("M.D hh:mm")}
       />
       <SummaryTag title={"학습 종료"} content={moment().format("M.D hh:mm")} />
-      <SummaryTag
-        title={"실제 학습 시간"}
-        content={prettyMilliseconds(
-          JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour,
-          { colonNotation: true, secondsDecimalDigits: 0 }
-        )}
-      />
+      <SummaryTag title={"실제 학습 시간"} content={displayTime(time)} />
       <SummaryTag
         title={"학습 시작 카드"}
         content={
@@ -595,11 +613,31 @@ const TableForTop5ClickedResult = ({
           return card.studyStatus.clickTimesInSession;
         }
       : function (card) {
-          return prettyMilliseconds(card.studyStatus.studyHourInSession, {
+          const time = prettyMilliseconds(card.studyStatus.studyHourInSession, {
             colonNotation: true,
             secondsDecimalDigits: 0,
           });
+          const displayTime = (time) => {
+            switch (time.length) {
+              case 4:
+                return "00:0" + time;
+              case 5:
+                return "00:" + time;
+              case 6:
+                return "00" + time;
+              case 7:
+                return "0" + time;
+              case 8:
+                return time;
+
+              default:
+                break;
+            }
+          };
+
+          return displayTime(time);
         };
+
   return (
     <table className="w-full border border-collapse border-gray-200 table-fixed">
       <thead>
@@ -646,13 +684,17 @@ const TableForTop5ClickedResult = ({
                   className="w-full !block h-full"
                   onClick={() => {
                     setCardDrawerVisible(true);
-                    setCardContent(
-                      contents.find(
+                    setCardContent({
+                      contents: contents.find(
                         (content) =>
                           content._id === card.content.mycontent_id ||
                           content._id === card.content.buycontent_id
-                      )
-                    );
+                      ),
+                      type: card.card_info.cardtype,
+                      makerFlag: card.content.makerFlag,
+                      userFlag: card.content.userFlag,
+                      memo: card.content.memo,
+                    });
                   }}
                 />
               </td>
@@ -678,8 +720,84 @@ const TableForTop5ClickedResult = ({
         height={"calc(100vh - 40px)"}
         mask={false}
       >
+        {cardContent && (
+          <div className="w-full p-2 mt-4 border border-slate-400">
+            <div className="w-full border-b border-b-slate-400">카드타입</div>
+            <div className="w-full p-1">
+              {cardContent.type === "flip" ? "양면카드" : "단면카드"}
+            </div>
+          </div>
+        )}
+        {cardContent && cardContent.makerFlag.value !== null && (
+          <div className="w-full p-2 mt-4 border border-slate-400">
+            <div className="w-full border-b border-b-slate-400">
+              제작자플래그
+            </div>
+            <div className="w-full p-1">{cardContent.makerFlag.value}</div>
+          </div>
+        )}
+        {cardContent && cardContent.userFlag !== null && (
+          <div className="w-full p-2 mt-4 border border-slate-400">
+            <div className="w-full border-b border-b-slate-400">유저플래그</div>
+            <div className="w-full p-1">{cardContent.userFlag}</div>
+          </div>
+        )}
+        {cardContent && cardContent.contents.annotation.length > 0 ? (
+          <div className="w-full p-2 mt-4 border border-slate-400">
+            <div className="w-full border-b border-b-slate-400">주석</div>
+            <div className="w-full p-1">
+              {cardContent.contents.annotation.map((p) => (
+                <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div>주석 없음</div>
+        )}
+        {cardContent && cardContent.contents.face1.length > 0 && (
+          <div className="w-full p-2 mt-4 border border-slate-400">
+            <div className="w-full border-b border-b-slate-400">앞면</div>
+            <div className="w-full p-1">
+              {cardContent.contents.face1.map((p) => (
+                <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
+              ))}
+            </div>
+          </div>
+        )}
         {cardContent &&
-          new String(cardContent.face1).replace(/(<([^>]+)>)/gi, "")}
+          cardContent.contents.face2.length > 0 &&
+          cardContent.type === "flip" && (
+            <div className="w-full p-2 mt-4 border border-slate-400">
+              <div className="w-full border-b border-b-slate-400">뒷면</div>
+              <div className="w-full p-1">
+                {cardContent.contents.face2.map((p) => (
+                  <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
+                ))}
+              </div>
+            </div>
+          )}
+        {cardContent &&
+          cardContent.contents.selection.length > 0 &&
+          cardContent.type === "flip" && (
+            <div className="w-full p-2 mt-4 border border-slate-400">
+              <div className="w-full border-b border-b-slate-400">
+                Selection
+              </div>
+              <div className="w-full p-1">
+                {cardContent.contents.face2.map((p) => (
+                  <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
+                ))}
+              </div>
+            </div>
+          )}
+        {cardContent && (
+          <div className="w-full p-2 mt-4 border border-slate-400">
+            <div className="w-full border-b border-b-slate-400">메모</div>
+            <div className="w-full p-1">
+              {cardContent.memo ? cardContent.memo : "메모없음"}
+            </div>
+          </div>
+        )}
       </DrawerWrapper>
     </table>
   );

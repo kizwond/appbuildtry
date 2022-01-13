@@ -55,9 +55,9 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   return card_details_session;
 };
 
-const calculatePrediction = (selection, current_card_info_index, timer, levelConfigs) => {
+const calculatePrediction = (selection, current_card_info_index, timer, levelConfigs, studyRatio) => {
   // console.log('냐하하하하', selection)
-
+  const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
 
   let {levelCurrent, recentStudyTime, studyTimesInSession}=card_details_session[current_card_info_index].studyStatus
   let {needStudyTimeGap} = estimateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,studyRatio, studyTimesInSession, levelConfigs)  

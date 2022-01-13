@@ -1190,4 +1190,37 @@ audio {
   height:20px;
 }
 
+.face1 {
+  animation-name: face1;
+  animation-duration: 0.5s;
+  /* animation-iteration-count: infinite; */
+  /* animation-direction: reverse; */
+  animation-timing-function: linear;
+  animation-fill-mode: inherit;
+  /* animation-delay: 5s; */
+  animation-fill-mode: backwards;
+}
+
+@keyframes face1 {
+  0% {opacity:0;}
+  100% {opacity:1;}
+  /* 100% {margin-left:0;} */
+}
+.face2 {
+  animation-name: face2;
+  animation-duration: 0.5s;
+  /* animation-iteration-count: infinite; */
+  /* animation-direction: reverse; */
+  animation-timing-function: linear;
+  animation-fill-mode: inherit;
+  /* animation-delay: 5s; */
+  animation-fill-mode: backwards;
+}
+
+@keyframes face2 {
+  0% {opacity:0;}
+  100% {opacity:1;}
+  /* 100% {margin-left:0;} */
+}
+
 

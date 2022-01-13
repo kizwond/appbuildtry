@@ -879,7 +879,7 @@ class Container extends Component {
               >
                 <span>일단 알겠음</span>
                 <span>(+5시간)</span>
-                {/* <CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} /> */}
+                <CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} />
               </button>
             </div>
           </div>

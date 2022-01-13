@@ -48,7 +48,7 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
 
 }
 
-exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, studyRatio, studyTimesInSession, levelConfigs) => {
+exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyResult, studyRatio, studyTimesInSession, levelConfigs) => {
     
     const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
     const KnowStudyRatio = 95

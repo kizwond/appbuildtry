@@ -227,7 +227,7 @@ exports.calculateStudyStatus = (interval, selection, current_card_info_index, ti
       card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer, levelConfigs);
       break;
     case "prediction":    
-      card_details_session = calculatePrediction(selection, current_card_info_index, timer, levelConfigs, studyRatio);
+      card_details_session = calculatePrediction(selection, current_card_info_index, timer, levelConfigs, studyRatio);                                                
       break;
   }
 

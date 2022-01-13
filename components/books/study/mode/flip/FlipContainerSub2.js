@@ -70,14 +70,13 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
                 const elapsedTimeFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
                 const totalElapsedTime = estimatedElapsedTimeOfLastSession + elapsedTimeFromLastSession
     
-                newLevel = Math.round(totalElapsedTime * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
-                console.log('newLevel2', newLevel)
+                newLevel = Math.round(totalElapsedTime * Math.log(0.8) / Math.log(KnowStudyRatio/100)*1000)/1000
             }            
         } else if (studyTimesInSession > 0){
             newLevel = levelCurrent            
         }
         needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(KnowStudyRatio/100)) / Math.log(0.8) * 24 * 3600000)
-        
+        // console.log('needStudyTimeGap', needStudyTimeGap)
         return {needStudyTimeGap}
     }catch (err){
         console.log(err)

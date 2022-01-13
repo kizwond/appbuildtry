@@ -19,7 +19,8 @@ const ProgressBar = (props) => {
   const fillerStyles = {
     height: '100%',
     width: `${compValue}%`,
-    backgroundColor: bgcolor,
+    // backgroundColor: bgcolor,
+    background:"linear-gradient(0deg, rgb(134 217 131) 0%, rgba(9,255,0,0.8099614845938375) 40%, rgba(50,242,43,1) 60%, rgb(90 232 130 / 80%) 100%)",
     transition: 'width 1s ease-in-out',
     borderRadius: 'inherit',
     textAlign: 'right',

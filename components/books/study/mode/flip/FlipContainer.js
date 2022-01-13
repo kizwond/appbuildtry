@@ -110,6 +110,7 @@ class Container extends Component {
       backModeRestore: false,
       ttsOn: false,
       firstTimeTts: true,
+      flip: true,
     };
     this.keyCount = 0;
     this.getKey = this.getKey.bind(this);
@@ -266,6 +267,9 @@ class Container extends Component {
 
   //상황에따른 새로운 카드 시쿼스 생성
   generateCardSeq = (card_details_session, now, current_card_id) => {
+    this.setState({
+      flip: true,
+    });
     const reviewExist_data = card_details_session.filter((item) => {
       if (item.studyStatus.needStudyTimeTmp !== null) {
         if (new Date(item.studyStatus.needStudyTimeTmp) < now) {
@@ -777,7 +781,11 @@ class Container extends Component {
       console.log("공부끝");
     }
   };
-
+  flip = () => {
+    this.setState((prevState) => ({
+      flip: !prevState.flip,
+    }));
+  };
   render() {
     if (this.props.levelConfigs) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
@@ -825,33 +833,55 @@ class Container extends Component {
         var diffiButtons = (
           <div
             style={{
+              position: "relative",
               width: "80%",
-              display: "flex",
               flexGrow: 1,
               justifyContent: "space-between",
+              borderRadius: "5px",
               background: "linear-gradient(270deg, rgba(65,255,0,1) 0%, rgba(232,255,0,1) 50%, rgba(255,0,0,1) 100%)",
+              textAlign: "left",
+              height: "33.41px",
             }}
           >
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 2.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 7.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 12.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 17.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 22.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 27.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 32.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 37.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 42.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 47.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 52.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 57.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 62.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 67.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 72.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 77.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 82.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 87.5)} style={{ width: "5%" }}></button>
-            <span style={{ width: "3%", backgroundColor: "#dadada" }}></span>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 95)} style={{ width: "15%", border: "1px dashed #03c30d" }}></button>
+            <span style={{ fontSize: "0.8rem", marginLeft: "5px", lineHeight: "33.41px" }}>모르겠음</span>
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 2.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 7.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 12.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 17.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 22.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 27.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 32.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 37.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 42.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 47.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 52.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 57.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 62.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 67.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 72.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 77.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 82.5)} style={{ width: "5%" }}></button>
+              <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 87.5)} style={{ width: "5%" }}></button>
+              <span style={{ width: "3%", backgroundColor: "#dadada", height: "33.41px" }}></span>
+              <button
+                onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 95)}
+                style={{ width: "25%", fontSize: "0.8rem", display: "flex", flexDirection: "column", alignItems: "center" }}
+              >
+                <span>일단 알겠음</span>
+                <span>(+5시간)</span>
+                {/* <CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} /> */}
+              </button>
+            </div>
           </div>
         );
       }
@@ -1127,6 +1157,7 @@ class Container extends Component {
                 <div
                   style={{
                     display: "inline-flex",
+                    alignItems: "center",
                     backgroundColor: makerFlagStyle.row_style.background.color,
                     marginTop: makerFlagStyle.row_style.outer_margin.top,
                     marginBottom: makerFlagStyle.row_style.outer_margin.bottom,
@@ -1142,7 +1173,7 @@ class Container extends Component {
                     borderRight: `${makerFlagStyle.row_style.border.right.thickness}px ${makerFlagStyle.row_style.border.right.bordertype} ${makerFlagStyle.row_style.border.right.color}`,
                   }}
                 >
-                  <span style={{ display: "inline-block", marginRight: "5px", fontSize: `${figure_size}px` }}>{ratings}</span>
+                  <span style={{ display: "flex", marginRight: "5px", fontSize: `${figure_size}px` }}>{ratings}</span>
                   <span
                     style={{
                       color: comment_font_color,
@@ -1207,10 +1238,10 @@ class Container extends Component {
               <>
                 {content.card_info.cardtype === "read" && (
                   <>
-                    <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div  style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          height: "calc(50vh - 120px)",
+                          height: "calc(81vh - 142px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -1238,6 +1269,7 @@ class Container extends Component {
                           {content_value.face1.map((item, index) => (
                             <>
                               <div
+                              className="face1"
                                 key={`face1_row${index + 1}`}
                                 id={`face1_row${index + 1}`}
                                 style={{
@@ -1284,10 +1316,10 @@ class Container extends Component {
                 )}
                 {content.card_info.cardtype === "general" && (
                   <>
-                    <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div  style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          height: "calc(50vh - 130px)",
+                          height: "calc(81vh - 142px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -1315,6 +1347,7 @@ class Container extends Component {
                           {content_value.face1.map((item, index) => (
                             <>
                               <div
+                              className="face1"
                                 key={`face1_row${index + 1}`}
                                 style={{
                                   backgroundColor: row_style.face1[index].background.color,
@@ -1360,10 +1393,10 @@ class Container extends Component {
                 )}
                 {content.card_info.cardtype === "flip" && (
                   <>
-                    <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div onClick={this.flip} style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          height: "calc(50vh - 130px)",
+                          height: "calc(81vh - 142px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -1390,6 +1423,7 @@ class Container extends Component {
                           {content_value.face1.map((item, index) => (
                             <>
                               <div
+                                className="face1"
                                 key={`face1_row${index + 1}`}
                                 style={{
                                   backgroundColor: row_style.face1[index].background.color,
@@ -1435,6 +1469,7 @@ class Container extends Component {
                             content_value.selection.map((item, index) => (
                               <>
                                 <div
+                                  className="face1"
                                   key={`selection${index + 1}`}
                                   style={{
                                     backgroundColor: row_style.face1[row_style.face1.length - 1].background.color,
@@ -1552,10 +1587,10 @@ class Container extends Component {
               <>
                 {content.card_info.cardtype === "flip" && (
                   <>
-                    <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div onClick={this.flip} style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          height: "calc(50vh - 130px)",
+                          height: "calc(81vh - 142px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -1585,6 +1620,7 @@ class Container extends Component {
                             content_value.face2.map((item, index) => (
                               <>
                                 <div
+                                  className="face2"
                                   key={`face2_row${index + 1}`}
                                   id={`face2_row${index + 1}`}
                                   style={{
@@ -1670,6 +1706,7 @@ class Container extends Component {
                             content_value.face2.map((item, index) => (
                               <>
                                 <div
+                                  className="face2"
                                   key={`face2_row${index + 1}`}
                                   // id={`face2_row${index + 1}`}
                                   value={item}
@@ -1722,8 +1759,10 @@ class Container extends Component {
             );
           }
         });
+
         return show_contents;
       });
+      // console.log(face2Contents)
     }
 
     return (
@@ -1774,12 +1813,12 @@ class Container extends Component {
             <div style={{ width: "100%", border: "1px solid lightgrey" }}>
               <div style={{ height: "15px", paddingLeft: "5px" }}>{makerFlagContent}</div>
               <div style={contentsDisplay}>
-                {face1Contents}
-                {face2Contents}
+                {this.state.flip && <div>{face1Contents}</div>}
+                {!this.state.flip && <div>{face2Contents}</div>}
               </div>
             </div>
           </div>
-          <div style={{ width: "100%", textAlign: "center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0, zIndex: 3 }}>
+          <div style={{ width: "100%", height: "57px", textAlign: "center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0, zIndex: 3 }}>
             <div
               style={{
                 width: "95%",
@@ -1789,11 +1828,11 @@ class Container extends Component {
                 justifyContent: "space-between",
                 backgroundColor: "#dadada",
                 borderRadius: "4px",
-                padding: 5,
+                padding: "5px 5px 0px 5px",
                 border: "1px solid #bcbcbc",
               }}
             >
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Button
                   icon={<StepBackwardOutlined />}
                   size="small"
@@ -1810,16 +1849,16 @@ class Container extends Component {
                   <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem", flexGrow: 0 }} onClick={this.onClickNextCardInBackMode} type="secondary" />
                 )}
               </div>
-              <div style={{ flexBasis:"100%", fontSize: "0.8rem", display: "flex" }}>
+              <div style={{ flexBasis: "100%", fontSize: "0.8rem", display: "flex", color: "#737373" }}>
                 <div style={{ width: "24px", marginRight: "5px" }}></div>
-                <div style={{display:"flex", justifyContent:"space-between", width:"80%"}}>
-                  <div>0%</div>
+                <div style={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
+                  <div style={{ width: "30%", textAlign: "left" }}>0%</div>
                   <div>50%</div>
                   <div>90%</div>
                 </div>
-                <div style={{width:"3%"}}></div>
-                <div style={{width:"15%"}}>100%</div>
-                <div style={{ width: "24px", marginLeft: "5px" }}></div>
+                <div style={{ width: "3%" }}></div>
+                <div style={{ width: "15%", textAlign: "right" }}>100%</div>
+                <div style={{ width: "24px" }}></div>
               </div>
             </div>
           </div>
@@ -1850,8 +1889,14 @@ const style_study_layout_bottom = {
 const contentsDisplay = {
   backgroundColor: "white",
   padding: "10px",
-  display: "flex",
-  flexDirection: "column",
-  justifyContent: "space-between",
+
   alignItems: "center",
 };
+// const contentsDisplay = {
+//   backgroundColor: "white",
+//   padding: "10px",
+//   display: "flex",
+//   flexDirection: "column",
+//   justifyContent: "space-between",
+//   alignItems: "center",
+// };

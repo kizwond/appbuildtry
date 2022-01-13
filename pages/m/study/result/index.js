@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLazyQuery } from "@apollo/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -9,7 +9,7 @@ import {
 } from "../../../../graphql/query/allQuery";
 
 import M_Layout from "../../../../components/layout/M_Layout";
-import { Select } from "antd";
+import { Drawer, Select } from "antd";
 import moment from "moment";
 import { useMemo } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
@@ -402,7 +402,7 @@ const SelectDetailOption = () => {
 
       <ResultForStudy
         title={
-          <div className="flex space-x-3 items-end">
+          <div className="flex items-end space-x-3">
             <div>카드수</div>
             <a
               className="text-[1rem] text-blue-700"
@@ -422,7 +422,7 @@ const SelectDetailOption = () => {
 
       <ResultForStudy
         title={
-          <div className="flex space-x-3 items-end">
+          <div className="flex items-end space-x-3">
             <div>클릭 수</div>
             <a
               className="text-[1rem] text-blue-700"
@@ -441,7 +441,7 @@ const SelectDetailOption = () => {
 
       <ResultForStudy
         title={
-          <div className="flex space-x-3 items-end">
+          <div className="flex items-end space-x-3">
             <div>레벨 변동</div>
             <a
               className="text-[1rem] text-blue-700"
@@ -460,7 +460,7 @@ const SelectDetailOption = () => {
       />
       <ResultForStudy
         title={
-          <div className="flex space-x-3 items-end">
+          <div className="flex items-end space-x-3">
             <div>카드 상태 변경</div>
             <a
               className="text-[1rem] text-blue-700"
@@ -656,6 +656,9 @@ const StudyResult = () => {
   const [isMounted, setIsMounted] = useState(false);
   const [cardList, setCardList] = useState(null);
 
+  const [visibleCloseClickedTimesPage, setVisibleCloseClickedTimesPage] =
+    useState(false);
+
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
     QUERY_MY_CARD_CONTENTS,
     {
@@ -681,25 +684,28 @@ const StudyResult = () => {
         sessionStorage.getItem("cardListStudying")
       );
       const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
-      const topFiveClicked = [...cardlist_to_send_tmp]
-        .sort(
-          (a, b) =>
-            b.studyStatus.clickTimesInSession -
-            a.studyStatus.clickTimesInSession
-        )
-        .splice(0, 5);
-      // .filter((_, i) => i < 5);
-      const topFiveStudyHour = [...cardlist_to_send_tmp]
-        .sort(
-          (a, b) =>
-            b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
-        )
-        .splice(0, 5);
-      // .filter((_, i) => i < 5);
+
+      const rankingCardListByNumberOfClickCard = [...cardlist_to_send_tmp].sort(
+        (a, b) =>
+          b.studyStatus.clickTimesInSession - a.studyStatus.clickTimesInSession
+      );
+      const topFiveClicked = rankingCardListByNumberOfClickCard.filter(
+        (_, i) => i < 5
+      );
+
+      const rankingCardListByElapsedTimeOnCard = [...cardlist_to_send_tmp].sort(
+        (a, b) =>
+          b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
+      );
+      const topFiveStudyHour = rankingCardListByElapsedTimeOnCard.filter(
+        (_, i) => i < 5
+      );
       const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
 
       return {
+        rankingCardListByNumberOfClickCard,
         topFiveClicked,
+        rankingCardListByElapsedTimeOnCard,
         topFiveStudyHour,
         fiveCreatedCards,
       };
@@ -775,6 +781,10 @@ const StudyResult = () => {
     return contentObj;
   };
 
+  const closeClickedTimesPage = () => {
+    setVisibleCloseClickedTimesPage(false);
+  };
+
   return (
     <>
       <Head>
@@ -782,7 +792,7 @@ const StudyResult = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <M_Layout>
-        <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px]">
+        <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px]">
           {isMounted &&
             data &&
             data.mycontent_getMycontentByMycontentIDs &&
@@ -790,7 +800,24 @@ const StudyResult = () => {
               <div className="w-full flex flex-col gap-[8px]">
                 <ResultForStudy title="요약" content={<SummaryTags />} />
                 <ResultForStudy
-                  title="학습횟수 많은 카드"
+                  title={
+                    <div className="flex items-end space-x-3">
+                      <div>학습 횟수 많은 카드</div>
+                      <a
+                        className="text-[1rem] text-blue-700"
+                        onClick={() => setVisibleCloseClickedTimesPage(true)}
+                      >
+                        더보기
+                      </a>
+                      <SlidingPage
+                        cards={
+                          topFiveCardsBySubject.rankingCardListByNumberOfClickCard
+                        }
+                        closeDrawer={closeClickedTimesPage}
+                        visible={visibleCloseClickedTimesPage}
+                      />
+                    </div>
+                  }
                   content={
                     <TableForTop5ClickedResult
                       cards={topFiveCardsBySubject.topFiveClicked}
@@ -809,7 +836,17 @@ const StudyResult = () => {
                   }
                 />
                 <ResultForStudy
-                  title="학습시간 많은 카드"
+                  title={
+                    <div className="flex items-end space-x-3">
+                      <div>학습 시간 많은 카드</div>
+                      <a
+                        className="text-[1rem] text-blue-700"
+                        onClick={() => console.log("학습 시간 더보기 버튼")}
+                      >
+                        더보기
+                      </a>
+                    </div>
+                  }
                   content={
                     <TableForTop5ClickedResult
                       cards={topFiveCardsBySubject.topFiveStudyHour}
@@ -856,3 +893,104 @@ const StudyResult = () => {
 };
 
 export default StudyResult;
+
+const SlidingPage = ({ visible, closeDrawer, cards }) => {
+  const [mountCounter, setMountCounter] = useState(0);
+
+  const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
+    QUERY_MY_CARD_CONTENTS,
+    {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+    }
+  );
+  const [getBuyCardsContent, { data: buyContentsData }] = useLazyQuery(
+    QUERY_BUY_CARD_CONTENTS,
+    {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (visible && mountCounter < 3) {
+      setMountCounter((pre) => pre + 1);
+    }
+  }, [visible, mountCounter]);
+
+  useEffect(() => {
+    if (mountCounter === 1 && visible) {
+      if (cards.filter((card) => card.content.location === "my").length > 0) {
+        getMyCardsContent({
+          variables: {
+            mycontent_ids: cards
+              .filter((card) => card.content.location === "my")
+              .map((card) => card.content.mycontent_id),
+          },
+        });
+      }
+      if (cards.filter((card) => card.content.location === "buy").length > 0) {
+        getBuyCardsContent({
+          variables: {
+            buycontent_ids: cards
+              .filter((card) => card.content.location === "buy")
+              .map((card) => card.content.mycontent_id),
+          },
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mountCounter]);
+
+  return (
+    <DrawerWrapper
+      title="학습 횟수 많은 카드"
+      placement="bottom"
+      width={"100%"}
+      height={"calc(100vh - 40px)"}
+      mask={false}
+      // closeIcon={null}
+      visible={visible}
+      onClose={closeDrawer}
+    >
+      {data && data.mycontent_getMycontentByMycontentIDs && (
+        <TableForTop5ClickedResult
+          cards={cards}
+          myContents={data.mycontent_getMycontentByMycontentIDs.mycontents}
+          contentType={"clickedTimes"}
+          buyContents={
+            !buyContentsData
+              ? []
+              : buyContentsData.buycontent_getBuycontentByBuycontentIDs
+                  .buycontents
+          }
+        />
+      )}
+    </DrawerWrapper>
+  );
+};
+
+const DrawerWrapper = styled(Drawer)`
+  top: 40px;
+  /* height: calc(100vh - 40px); */
+  .ant-drawer-header {
+    padding: 8px 12px 4px 8px;
+  }
+
+  .ant-drawer-close {
+    font-size: 1.166667rem;
+  }
+  & .ant-drawer-title {
+    font-size: 1.166667rem;
+  }
+  & .ant-drawer-body {
+    padding: 10px 12px;
+    background: #ffffff;
+  }
+  .ant-drawer-content-wrapper {
+    transition: transform 1.3s cubic-bezier(0.23, 1, 0.32, 1),
+      box-shadow 1.3s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+`;

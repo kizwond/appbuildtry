@@ -92,21 +92,6 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, stud
     }
 }
 
-exports.recalculateNeedStudyTime = (levelConfigs) => {
-    
-    const cardlistStudying = JSON.parse(sessionStorage.getItem("cardlistStudying"));
-
-    for (let i=0; i<cardlistStudying.length; i++){
-        if (cardlistStudying[i].studyStatus.studyTimesInSession >0){
-            const {restudyRatio} = levelConfigs.restudy 
-            const {levelCurrent} = cardlistStudying[i].studyStatus
-
-            cardlistStudying[i].studyStatus.needStudyTime = new Date(Date.now() +levelCurrent * (Math.log(restudyRatio/100)-Math.log(95/100)) / Math.log(0.8) * 24 * 3600000)
-
-        }
-    }
-    sessionStorage.setItem("cardlistStudying", JSON.stringify(cardlistStudying))
-}
 
 // exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) => {
     

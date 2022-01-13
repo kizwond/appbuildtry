@@ -1,7 +1,6 @@
 const {
   calculateNextLevelAndNeedStudyTime, 
   estimateNextLevelAndNeedStudyTime, 
-  recalculateNeedStudyTime,
   updateSessionResult
 } = require('./FlipContainerSub2.js')
 
@@ -167,7 +166,7 @@ const calculateRestore = (selection, current_card_info_index, timer) => {
 };
 
 
-const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
+const calculatePassMoveFinish = (selection, current_card_info_index, timer, levelConfigs) => {
   console.log('냐하하하하', selection)
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
@@ -179,11 +178,20 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer) => {
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
 
   card_details_session[current_card_info_index].studyStatus.isUpdated = true;
+
+  
   updateSessionResult(card_details_session[current_card_info_index])
 
   if(selection == 'finish'){
-    let levelConfigs = 0
-    recalculateNeedStudyTime(levelConfigs)
+    for (let i=0; i<card_details_session.length; i++){
+      if (card_details_session[i].studyStatus.studyTimesInSession >0){
+          const {restudyRatio} = levelConfigs.restudy 
+          const {levelCurrent} = card_details_session[i].studyStatus
+
+          card_details_session[i].studyStatus.needStudyTime = new Date(Date.now() +levelCurrent * (Math.log(restudyRatio/100)-Math.log(95/100)) / Math.log(0.8) * 24 * 3600000)
+
+      }
+    }
   }
 
   return card_details_session;
@@ -224,7 +232,7 @@ exports.calculateStudyStatus = (interval, selection, current_card_info_index, ti
     case "pass":
     case "move":
     case "finish":    
-      card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer);
+      card_details_session = calculatePassMoveFinish(selection, current_card_info_index, timer, levelConfigs);
       break;
     case "prediction":    
       card_details_session = calculatePrediction(selection, current_card_info_index, timer, levelConfigs);

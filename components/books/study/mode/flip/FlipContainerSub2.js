@@ -34,17 +34,11 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
         // 반올림해서 레벨이 0이 되어버리는 것을 막아준다.
         newLevel = (newLevel <=0) ? 0.001 : newLevel
 
-        if (studyRatio == KnowStudyRatio){
-            needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(95/100)) / Math.log(0.8) * 24 * 3600000)            
-            needStudyTime = new Date(Date.now() + needStudyTimeGap)
-            needStudyTimeTmp = null
-            console.log('needStudyTime1',needStudyTime)
-        } else if (studyRatio != KnowStudyRatio){
-            needStudyTimeGap = Math.round(minRestudyMin * 60000 * (restudyCoeffForSession*studyRatio+1))
-            needStudyTime = new Date(Date.now() + needStudyTimeGap)
-            needStudyTimeTmp = needStudyTime
-            console.log('needStudyTime2',needStudyTime)
-        }
+        needStudyTimeTmp = (studyRatio == KnowStudyRatio) ? null : new Date(Date.now() + minRestudyMin * 60000 * (restudyCoeffForSession*studyRatio+1))            
+        needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(studyRatio/100)) / Math.log(0.8) * 24 * 3600000)            
+        needStudyTime = new Date(Date.now() + needStudyTimeGap)
+        needStudyTime = (needStudyTime < needStudyTimeTmp )? needStudyTimeTmp : needStudyTime        
+        console.log('needStudyTime1',needStudyTime)
 
         return {newLevel, needStudyTime, needStudyTimeTmp}
     }catch (err){
@@ -66,23 +60,23 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, stud
     let needStudyTimeGap
     try{       
         // 세션 첫 학습인 경우
-        if (studyTimesInSession == 1){
+        if (studyTimesInSession == 0){
             if (levelCurrent == 0){
-                newLevel = Math.round(initialElapsedTime * Math.log(0.8) / Math.log(95/100) * 1000) / 1000;                
+                newLevel = Math.round(initialElapsedTime * Math.log(0.8) / Math.log(KnowStudyRatio/100) * 1000) / 1000;                
             } else {
                 const levelOfLastSession = levelCurrent
                 const lastRatioOfLastSession = recentStudyResult
-                const estimatedElapsedTimeOfLastSession = levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)
-                const elapsedTimeFromLastSession = new Date() - recentStudyTime
+                const estimatedElapsedTimeOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
+                const elapsedTimeFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
                 const totalElapsedTime = estimatedElapsedTimeOfLastSession + elapsedTimeFromLastSession
     
-                newLevel = totalElapsedTime * Math.log(0.8) / Math.log(95/100)
+                newLevel = Math.round(totalElapsedTime * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
                 console.log('newLevel2', newLevel)
             }            
-        } else if (studyTimesInSession > 1){
+        } else if (studyTimesInSession > 0){
             newLevel = levelCurrent            
         }
-        needStudyTimeGap = newLevel * (Math.log(restudyRatio/100)-Math.log(95/100)) / Math.log(0.8) * 24 * 3600000                    
+        needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(KnowStudyRatio/100)) / Math.log(0.8) * 24 * 3600000)
         
         return {needStudyTimeGap}
     }catch (err){

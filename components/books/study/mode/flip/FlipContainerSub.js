@@ -186,18 +186,6 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer, leve
   
   updateSessionResult(card_details_session[current_card_info_index])
 
-  if(selection == 'finish'){
-    for (let i=0; i<card_details_session.length; i++){
-      if (card_details_session[i].studyStatus.studyTimesInSession >0){
-          const {restudyRatio} = levelConfigs.restudy 
-          const {levelCurrent} = card_details_session[i].studyStatus
-
-          card_details_session[i].studyStatus.needStudyTime = new Date(Date.now() +levelCurrent * (Math.log(restudyRatio/100)-Math.log(95/100)) / Math.log(0.8) * 24 * 3600000)
-
-      }
-    }
-  }
-
   return card_details_session;
 };
 

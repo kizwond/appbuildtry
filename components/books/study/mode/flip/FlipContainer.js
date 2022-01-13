@@ -1156,6 +1156,7 @@ class Container extends Component {
                 <div
                   style={{
                     display: "inline-flex",
+                    alignItems:"center",
                     backgroundColor: makerFlagStyle.row_style.background.color,
                     marginTop: makerFlagStyle.row_style.outer_margin.top,
                     marginBottom: makerFlagStyle.row_style.outer_margin.bottom,
@@ -1171,7 +1172,7 @@ class Container extends Component {
                     borderRight: `${makerFlagStyle.row_style.border.right.thickness}px ${makerFlagStyle.row_style.border.right.bordertype} ${makerFlagStyle.row_style.border.right.color}`,
                   }}
                 >
-                  <span style={{ display: "inline-block", marginRight: "5px", fontSize: `${figure_size}px` }}>{ratings}</span>
+                  <span style={{ display: "flex", marginRight: "5px", fontSize: `${figure_size}px` }}>{ratings}</span>
                   <span
                     style={{
                       color: comment_font_color,

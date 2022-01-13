@@ -1242,7 +1242,7 @@ class Container extends Component {
                     <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          height: "calc(81vh - 142px)",
+                          height: "calc(79vh - 142px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -1320,7 +1320,7 @@ class Container extends Component {
                     <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          height: "calc(81vh - 142px)",
+                          height: "calc(79vh - 142px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -1397,7 +1397,7 @@ class Container extends Component {
                     <div onClick={this.flip} style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          height: "calc(81vh - 142px)",
+                          height: "calc(79vh - 142px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -1591,7 +1591,7 @@ class Container extends Component {
                     <div onClick={this.flip} style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          height: "calc(81vh - 142px)",
+                          height: "calc(79vh - 142px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,

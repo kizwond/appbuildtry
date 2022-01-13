@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -9,12 +9,13 @@ import {
 } from "../../../../graphql/query/allQuery";
 
 import M_Layout from "../../../../components/layout/M_Layout";
-import { Drawer, Select } from "antd";
+import { Drawer, Modal, Select } from "antd";
 import moment from "moment";
 import { useMemo } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import prettyMilliseconds from "pretty-ms";
 import styled from "styled-components";
+import { useRef } from "react";
 
 const ResultForStudy = ({ title, content }) => (
   <div className="w-full">
@@ -114,8 +115,9 @@ const ClickedTimesByDifficultyChart = ({ clickedTimesByDifficulty }) => {
     { title: "diffi1", color: "bg-orange-400" },
     { title: "diffi2", color: "bg-emerald-400" },
     { title: "diffi3", color: "bg-yellow-400" },
-    { title: "diffi4", color: "bg-yellow-400" },
+    { title: "diffi4", color: "bg-rose-400" },
     { title: "diffi5", color: "bg-cyan-400" },
+    { title: "diffi6", color: "bg-indigo-400" },
     { title: "hold", color: "bg-gray-400" },
     { title: "completed", color: "bg-green-400" },
     { title: "etc", color: "bg-lime-400" },
@@ -125,7 +127,7 @@ const ClickedTimesByDifficultyChart = ({ clickedTimesByDifficulty }) => {
       <table className="w-full h-full">
         <tbody>
           {difficulties.map(({ title, color }) => {
-            const percentage = Math.floor(
+            const percentage = Math.round(
               (clickedTimesByDifficulty[title] / maxNumber) * 100
             );
             return (
@@ -346,7 +348,11 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
             {changedLevel.total.count}
           </td>
           <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-            {changedLevel.total.gap}
+            {Math.round(changedLevel.total.gap) > 0
+              ? "+" + Math.round(changedLevel.total.gap)
+              : Math.round(changedLevel.total.gap) < 0
+              ? "" + Math.round(changedLevel.total.gap)
+              : "-"}
           </td>
         </tr>
         {more &&
@@ -363,7 +369,11 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
                 {changedLevel[clickedButton].count}
               </td>
               <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                {changedLevel[clickedButton].gap}
+                {Math.round(changedLevel[clickedButton].gap) > 0
+                  ? "+" + Math.round(changedLevel[clickedButton].gap)
+                  : Math.round(changedLevel[clickedButton].gap) < 0
+                  ? "" + Math.round(changedLevel[clickedButton].gap)
+                  : "-"}
               </td>
             </tr>
           ))}
@@ -518,7 +528,7 @@ const SummaryTags = () => {
 
   const { completed, hold, ing, yet } = resultOfSession.numCards;
 
-  const totalGap = resultOfSession.levelChange.total.gap;
+  const totalGap = Math.round(resultOfSession.levelChange.total.gap);
   return (
     <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
       <SummaryTag
@@ -574,6 +584,9 @@ const TableForTop5ClickedResult = ({
   buyContents,
   contentType,
 }) => {
+  const [cardContent, setCardContent] = useState(null);
+  const [cardDrawerVisible, setCardDrawerVisible] = useState(false);
+
   const contents = [...myContents, ...buyContents];
 
   const getThirdCol =
@@ -628,11 +641,20 @@ const TableForTop5ClickedResult = ({
                   {getThirdCol(card)}
                 </td>
               )}
-              <td
-                className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center"
-                onClick={() => console.log("카드보기 클릭함")}
-              >
-                <ArrowRightOutlined className="w-full !block h-full" />
+              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+                <ArrowRightOutlined
+                  className="w-full !block h-full"
+                  onClick={() => {
+                    setCardDrawerVisible(true);
+                    setCardContent(
+                      contents.find(
+                        (content) =>
+                          content._id === card.content.mycontent_id ||
+                          content._id === card.content.buycontent_id
+                      )
+                    );
+                  }}
+                />
               </td>
             </tr>
           ))}
@@ -647,16 +669,31 @@ const TableForTop5ClickedResult = ({
           </tr>
         )}
       </tbody>
+      <DrawerWrapper
+        visible={cardDrawerVisible}
+        title="카드 상세 보기"
+        onClose={() => setCardDrawerVisible(false)}
+        placement="bottom"
+        width={"100%"}
+        height={"calc(100vh - 40px)"}
+        mask={false}
+      >
+        {cardContent &&
+          new String(cardContent.face1).replace(/(<([^>]+)>)/gi, "")}
+      </DrawerWrapper>
     </table>
   );
 };
+
+const MyModal = (props) => <Modal {...props} />;
 
 const StudyResult = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [cardList, setCardList] = useState(null);
 
-  const [visibleCloseClickedTimesPage, setVisibleCloseClickedTimesPage] =
+  const [visibleClickedTimesPage, setVisibleClickedTimesPage] = useState(false);
+  const [visibleElapsedTimeOnCard, setVisibleElapsedTimeOnCard] =
     useState(false);
 
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
@@ -680,23 +717,28 @@ const StudyResult = () => {
   const ISSERVER = typeof window === "undefined";
   const topFiveCardsBySubject = useMemo(() => {
     if (!ISSERVER) {
-      const cardlist_to_send_tmp = JSON.parse(
+      const insertedCardList = JSON.parse(
         sessionStorage.getItem("cardListStudying")
       );
       const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
 
-      const rankingCardListByNumberOfClickCard = [...cardlist_to_send_tmp].sort(
-        (a, b) =>
-          b.studyStatus.clickTimesInSession - a.studyStatus.clickTimesInSession
-      );
+      const rankingCardListByNumberOfClickCard = insertedCardList
+        .filter((card) => card.studyStatus.isUpdated)
+        .sort(
+          (a, b) =>
+            b.studyStatus.clickTimesInSession -
+            a.studyStatus.clickTimesInSession
+        );
       const topFiveClicked = rankingCardListByNumberOfClickCard.filter(
         (_, i) => i < 5
       );
 
-      const rankingCardListByElapsedTimeOnCard = [...cardlist_to_send_tmp].sort(
-        (a, b) =>
-          b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
-      );
+      const rankingCardListByElapsedTimeOnCard = insertedCardList
+        .filter((card) => card.studyStatus.isUpdated)
+        .sort(
+          (a, b) =>
+            b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
+        );
       const topFiveStudyHour = rankingCardListByElapsedTimeOnCard.filter(
         (_, i) => i < 5
       );
@@ -782,7 +824,10 @@ const StudyResult = () => {
   };
 
   const closeClickedTimesPage = () => {
-    setVisibleCloseClickedTimesPage(false);
+    setVisibleClickedTimesPage(false);
+  };
+  const closeElapsedTimeOnCard = () => {
+    setVisibleElapsedTimeOnCard(false);
   };
 
   return (
@@ -805,7 +850,7 @@ const StudyResult = () => {
                       <div>학습 횟수 많은 카드</div>
                       <a
                         className="text-[1rem] text-blue-700"
-                        onClick={() => setVisibleCloseClickedTimesPage(true)}
+                        onClick={() => setVisibleClickedTimesPage(true)}
                       >
                         더보기
                       </a>
@@ -814,7 +859,8 @@ const StudyResult = () => {
                           topFiveCardsBySubject.rankingCardListByNumberOfClickCard
                         }
                         closeDrawer={closeClickedTimesPage}
-                        visible={visibleCloseClickedTimesPage}
+                        visible={visibleClickedTimesPage}
+                        contentType={"clickedTimes"}
                       />
                     </div>
                   }
@@ -841,10 +887,18 @@ const StudyResult = () => {
                       <div>학습 시간 많은 카드</div>
                       <a
                         className="text-[1rem] text-blue-700"
-                        onClick={() => console.log("학습 시간 더보기 버튼")}
+                        onClick={() => setVisibleElapsedTimeOnCard(true)}
                       >
                         더보기
                       </a>
+                      <SlidingPage
+                        cards={
+                          topFiveCardsBySubject.rankingCardListByElapsedTimeOnCard
+                        }
+                        closeDrawer={closeElapsedTimeOnCard}
+                        visible={visibleElapsedTimeOnCard}
+                        contentType={"studyHours"}
+                      />
                     </div>
                   }
                   content={
@@ -894,7 +948,7 @@ const StudyResult = () => {
 
 export default StudyResult;
 
-const SlidingPage = ({ visible, closeDrawer, cards }) => {
+const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
   const [mountCounter, setMountCounter] = useState(0);
 
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
@@ -946,7 +1000,11 @@ const SlidingPage = ({ visible, closeDrawer, cards }) => {
 
   return (
     <DrawerWrapper
-      title="학습 횟수 많은 카드"
+      title={
+        contentType === "clickedTimes"
+          ? "학습 횟수 많은 카드"
+          : "학습 시간 많은 카드"
+      }
       placement="bottom"
       width={"100%"}
       height={"calc(100vh - 40px)"}
@@ -959,7 +1017,7 @@ const SlidingPage = ({ visible, closeDrawer, cards }) => {
         <TableForTop5ClickedResult
           cards={cards}
           myContents={data.mycontent_getMycontentByMycontentIDs.mycontents}
-          contentType={"clickedTimes"}
+          contentType={contentType}
           buyContents={
             !buyContentsData
               ? []

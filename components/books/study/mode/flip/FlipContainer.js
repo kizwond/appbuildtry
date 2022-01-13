@@ -1769,22 +1769,46 @@ class Container extends Component {
     return (
       <>
         <div style={{ height: "100%", display: "flex", flexDirection: "column", marginBottom: "50px" }}>
-          <div style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
-            <div style={{flexGrow:1}}>
+          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+            <div style={{ flexGrow: 1, color:"#8b8b8b" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div style={{ width: "70%", display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+                <div
+                  style={{
+                    width: "70%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    border: "1px solid lightgrey",
+                    borderRadius: "3px",
+                    padding: 5,
+                    height: "32px",
+                    backgroundColor: "#f1f1f1",
+                  }}
+                >
                   <div style={{ width: "45px", fontSize: "0.8rem", marginRight: "5px" }}>완료율</div>
                   <ProgressBar bgcolor={"#32c41e"} completed={progress} />
                 </div>
-                <div style={{ display: "flex", alignItems: "center", width:"30%" }}>
-                  <div style={{ lineHeight: "0.8rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px", marginLeft:"5px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "30%",
+                    border: "1px solid lightgrey",
+                    borderRadius: "3px",
+                    padding: 5,
+                    height: "32px",
+                    backgroundColor: "#f1f1f1",
+                    marginLeft: "5px",
+                  }}
+                >
+                  <div style={{ lineHeight: "0.8rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px", marginLeft: "5px" }}>
                     <div>click</div>
                     <div>count</div>
                   </div>
                   <div
                     style={{
-                      backgroundColor: "#f2f2f2",
-                      boxShadow: "inset 2px 2px 3px 0px #cccccc",
+                      backgroundColor: "#e2e2e2",
+                      boxShadow: "inset 2px 2px 3px 0px #acacac",
                       textAlign: "right",
                       paddingRight: "5px",
                       width: "50%",
@@ -1792,14 +1816,26 @@ class Container extends Component {
                       fontSize: "0.9rem",
                       lineHeight: "20px",
                       height: "20px",
-                      flexGrow:1
+                      flexGrow: 1,
                     }}
                   >
                     {sumClicks}
                   </div>
                 </div>
               </div>
-              <div style={{ display: "flex", marginTop: "5px", justifyContent: "space-between", alignItems: "center" }}>
+              <div
+                style={{
+                  display: "flex",
+                  marginTop: "5px",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  border: "1px solid lightgrey",
+                  borderRadius: "3px",
+                  padding: 5,
+                  height: "32px",
+                  backgroundColor: "#f1f1f1",
+                }}
+              >
                 <Timer
                   startTimer={this.startTimer}
                   startTimerTotal={this.startTimerTotal}
@@ -1811,7 +1847,7 @@ class Container extends Component {
                 />
               </div>
             </div>
-            <Button size="small" style={{ fontSize: "0.8rem", width: "53px", height:"49px", borderRadius: "3px", marginLeft:"10px" }} onClick={this.finishStudy} type="primary">
+            <Button size="small" style={{ fontSize: "0.8rem", width: "53px", height: "69px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishStudy} type="primary">
               학습종료
             </Button>
           </div>

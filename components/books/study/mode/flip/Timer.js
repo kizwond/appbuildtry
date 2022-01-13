@@ -17,7 +17,7 @@ class Timer extends Component {
   render() {
     let stop_total =
       this.props.time_total === 0 || !this.props.isOn_total ? null : (
-        <Button size="small" onClick={this.props.stopTimerTotal} type="primary" danger style={{ fontSize: "0.8rem", width: "53px", borderRadius: "3px" }}>
+        <Button size="small" onClick={this.props.stopTimerTotal} type="primary" danger style={{ fontSize: "0.8rem", width: "53px", height:"20px", marginLeft:"5px", borderRadius: "3px" }}>
           일시정지
         </Button>
       );
@@ -28,7 +28,7 @@ class Timer extends Component {
           size="small"
           onClick={this.props.startTimerResume}
           type="primary"
-          style={{ fontSize: "0.8rem", width: "53px", borderRadius: "3px", backgroundColor: "#1ce400", border: "none" }}
+          style={{ fontSize: "0.8rem", width: "53px", height:"20px", marginLeft:"5px", borderRadius: "3px", backgroundColor: "#1ce400", border: "none" }}
         >
           재개
         </Button>
@@ -36,15 +36,16 @@ class Timer extends Component {
 
     return (
       <>
-        <div style={{ display: "flex", flexDirection: "flex", alignItems: "center" }}>
-          <div style={{ marginBottom: "0px", fontSize: "0.8rem", marginRight: "10px" }}>총 경과시간</div>
+        <div style={{ width:"100%", display: "flex", flexDirection: "flex", alignItems: "center", justifyContent:"flex-start" }}>
+          <div style={{ marginBottom: "0px", fontSize: "0.8rem", marginRight: "5px" }}>총 경과시간</div>
           <div
             style={{
               backgroundColor: "#f2f2f2",
               boxShadow: "inset 2px 2px 3px 0px #cccccc",
               textAlign: "right",
               paddingRight: "5px",
-              width: "80px",
+              width: "50%",
+              flexGrow:1,
               fontFamily: "Mina, sans-serif",
               fontSize: "0.9rem",
               lineHeight: "20px",
@@ -56,8 +57,8 @@ class Timer extends Component {
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "flex", alignItems: "center" }}>
-          <div style={{ lineHeight: "1rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "10px" }}>
+        <div style={{ width:"100%", display: "flex", flexDirection: "flex", alignItems: "center", marginLeft:"5px" , justifyContent:"flex-start"}}>
+          <div style={{ lineHeight: "1rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px" }}>
             <div>현재카드</div>
             <div>학습시간</div>
           </div>
@@ -67,7 +68,8 @@ class Timer extends Component {
               boxShadow: "inset 2px 2px 3px 0px #cccccc",
               textAlign: "right",
               paddingRight: "5px",
-              width: "80px",
+              width: "50%",
+              flexGrow:1,
               fontFamily: "Mina, sans-serif",
               fontSize: "0.9rem",
               lineHeight: "20px",

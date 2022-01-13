@@ -1842,7 +1842,7 @@ class Container extends Component {
                   <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem", flexGrow: 0 }} onClick={this.onClickNextCardInBackMode} type="secondary" />
                 )}
               </div>
-              <div style={{ flexBasis: "100%", fontSize: "0.8rem", display: "flex" }}>
+              <div style={{ flexBasis: "100%", fontSize: "0.8rem", display: "flex", color:"#737373"}}>
                 <div style={{ width: "24px", marginRight: "5px" }}></div>
                 <div style={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
                   <div style={{ width: "30%", textAlign: "left" }}>0%</div>

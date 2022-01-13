@@ -886,19 +886,61 @@ class Container extends Component {
           </div>
         );
       }
-      var restoreDiffiButtons = useDiffi.map((item, index) => (
-        <>
-          <Button
-            key={`diffiButton_${item.name}`}
-            size="small"
-            type="primary"
-            style={{ fontSize: "0.8rem", borderRadius: "3px" }}
-            onClick={() => this.onDiffClickHandler(item.period, item.name, current_card_id, this.state.time)}
+      var restoreDiffiButtons = (
+        <div
+          style={{
+            position: "relative",
+            width: "80%",
+            flexGrow: 1,
+            justifyContent: "space-between",
+            borderRadius: "5px",
+            background: "linear-gradient(270deg, rgba(65,255,0,1) 0%, rgba(232,255,0,1) 50%, rgba(255,0,0,1) 100%)",
+            textAlign: "left",
+            height: "33.41px",
+          }}
+        >
+          <span style={{ fontSize: "0.8rem", marginLeft: "5px", lineHeight: "33.41px" }}>모르겠음</span>
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
           >
-            {item.nick}
-          </Button>
-        </>
-      ));
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 2.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 7.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 12.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 17.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 22.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 27.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 32.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 37.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 42.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 47.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 52.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 57.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 62.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 67.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 72.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 77.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 82.5)} style={{ width: "5%" }}></button>
+            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 87.5)} style={{ width: "5%" }}></button>
+            <span style={{ width: "3%", backgroundColor: "#dadada", height: "33.41px" }}></span>
+            <button
+              onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 95)}
+              style={{ width: "25%", fontSize: "0.8rem", display: "flex", flexDirection: "column", alignItems: "center" }}
+            >
+              <span>일단 알겠음</span>
+              <span>
+                <CalculateIf currentSeq={currentSeq} timer={this.state.time} levelConfigs={current_card_levelconfig[0]} />
+              </span>
+            </button>
+          </div>
+        </div>
+      );
 
       const backModeMoreMenuContents = (
         <Space>
@@ -990,7 +1032,7 @@ class Container extends Component {
 
     if (this.props.cardTypeSets.length > 0) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-      var makerFlagContent = card_details_session.map((content) => {
+      var makerFlagContent = card_details_session.map((content, index) => {
         const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
@@ -1005,7 +1047,7 @@ class Container extends Component {
         // console.log(row_font);
         // console.log(content);
         // console.log(contentsList);
-        const show_contents = contentsList.map((content_value, index) => {
+        const show_contents = contentsList.map((content_value) => {
           if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === currentSeq) {
             // console.log(content_value._id, content.content.buycontent_id);
             // console.log("해당카드 정보", content);
@@ -1206,7 +1248,7 @@ class Container extends Component {
         });
         return show_contents;
       });
-      var face1Contents = card_details_session.map((content) => {
+      var face1Contents = card_details_session.map((content,index) => {
         const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
@@ -1230,7 +1272,7 @@ class Container extends Component {
         // console.log(row_font);
         // console.log(content);
         // console.log(contentsList);
-        const show_contents = contentsList.map((content_value, index) => {
+        const show_contents = contentsList.map((content_value) => {
           if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === currentSeq) {
             // console.log(content_value._id, content.content.buycontent_id);
             // console.log("해당카드 정보", content);
@@ -1556,7 +1598,7 @@ class Container extends Component {
         });
         return show_contents;
       });
-      var face2Contents = card_details_session.map((content) => {
+      var face2Contents = card_details_session.map((content, index) => {
         const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
@@ -1579,7 +1621,7 @@ class Container extends Component {
         // console.log(row_font);
         // console.log(content);
         // console.log(contentsList);
-        const show_contents = contentsList.map((content_value, index) => {
+        const show_contents = contentsList.map((content_value) => {
           if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === currentSeq) {
             // console.log(content_value._id, content.content.buycontent_id);
             // console.log("해당카드 정보", content);
@@ -1912,10 +1954,39 @@ class Container extends Component {
 
 const CalculateIf = ({ currentSeq, levelConfigs }) => {
   const estimate = calculateStudyStatus(null, "prediction", currentSeq, null, levelConfigs);
-  const needStudyTimeGap = (estimate.needStudyTimeGap / 60000).toFixed();
+  const min = (estimate.needStudyTimeGap / 60000)
+  const hour = (min/60)
+  const day = (hour/24)
+  const month = (day/30)
+  const year = (month/12)
+  if(min < 60){
+    var time = min.toFixed();
+    var unit = "분"
+  } else if(min > 60){
+    if(hour < 24){
+      time = hour.toFixed();
+      unit = "시간"
+    } else if(hour > 24){
+      if(day < 30){
+        time = day.toFixed();
+        unit= "일"
+      } else if(day > 30){
+        if(month < 12){
+          time = month.toFixed();
+          unit = "달"
+        } else if(month > 12){
+          time = year.toFixed();
+          unit = "년"
+        }
+      }
+    }
+
+  }
+  
+  
   return (
     <>
-      <span>[+{needStudyTimeGap}분]</span>
+      <span>[+{time}{unit}]</span>
     </>
   );
 };

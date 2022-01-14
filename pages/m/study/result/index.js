@@ -324,6 +324,8 @@ const ChangedFlagTable = ({ changedFlag }) => {
 };
 
 const ChangedLevelTable = ({ changedLevel, more }) => {
+  const averageOfGap =
+    Math.round((changedLevel.total.gap / changedLevel.total.count) * 100) / 100;
   return (
     <table className="w-full border border-collapse border-gray-200 table-fixed">
       <thead>
@@ -348,10 +350,10 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
             {changedLevel.total.count}
           </td>
           <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-            {Math.round(changedLevel.total.gap * 100) / 100 > 0
-              ? "+" + Math.round(changedLevel.total.gap * 100) / 100
-              : Math.round(changedLevel.total.gap * 100) / 100 < 0
-              ? "" + Math.round(changedLevel.total.gap * 100) / 100
+            {averageOfGap > 0
+              ? "+" + averageOfGap
+              : averageOfGap < 0
+              ? "" + averageOfGap
               : "-"}
           </td>
         </tr>
@@ -369,11 +371,34 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
                 {changedLevel[clickedButton].count}
               </td>
               <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                {Math.round(changedLevel[clickedButton].gap * 100) / 100 > 0
+                {Math.round(
+                  (changedLevel[clickedButton].gap /
+                    changedLevel[clickedButton].count) *
+                    100
+                ) /
+                  100 >
+                0
                   ? "+" +
-                    Math.round(changedLevel[clickedButton].gap * 100) / 100
-                  : Math.round(changedLevel[clickedButton].gap * 100) / 100 < 0
-                  ? "" + Math.round(changedLevel[clickedButton].gap * 100) / 100
+                    Math.round(
+                      (changedLevel[clickedButton].gap /
+                        changedLevel[clickedButton].count) *
+                        100
+                    ) /
+                      100
+                  : Math.round(
+                      (changedLevel[clickedButton].gap /
+                        changedLevel[clickedButton].count) *
+                        100
+                    ) /
+                      100 <
+                    0
+                  ? "" +
+                    Math.round(
+                      (changedLevel[clickedButton].gap /
+                        changedLevel[clickedButton].count) *
+                        100
+                    ) /
+                      100
                   : "-"}
               </td>
             </tr>

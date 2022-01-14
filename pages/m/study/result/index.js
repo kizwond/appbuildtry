@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, Fragment } from "react";
 import { useLazyQuery } from "@apollo/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -559,7 +559,12 @@ const SummaryTags = () => {
         title={"학습 시작"}
         content={moment(sessionStorage.getItem("started")).format("M.D hh:mm")}
       />
-      <SummaryTag title={"학습 종료"} content={moment().format("M.D hh:mm")} />
+      <SummaryTag
+        title={"학습 종료"}
+        content={moment(sessionStorage.getItem("endTimeOfSession")).format(
+          "M.D hh:mm"
+        )}
+      />
       <SummaryTag title={"실제 학습 시간"} content={displayTime(time)} />
       <SummaryTag
         title={"학습 시작 카드"}
@@ -585,7 +590,7 @@ const SummaryTags = () => {
               return "+" + totalGap;
             }
             if (totalGap < 0) {
-              return "-" + totalGap;
+              return "" + totalGap;
             }
             return "-";
           })(totalGap)
@@ -601,10 +606,10 @@ const TableForTop5ClickedResult = ({
   myContents,
   buyContents,
   contentType,
-  toggleCardDrawerVisible,
-  updateCardContent,
 }) => {
   const contents = [...myContents, ...buyContents];
+  const [cardIdForMore, setCardIdForMore] = useState();
+  const [cardContent, setCardContent] = useState(null);
 
   const getThirdCol =
     contentType === "clickedTimes"
@@ -628,7 +633,6 @@ const TableForTop5ClickedResult = ({
                 return "0" + time;
               case 8:
                 return time;
-
               default:
                 break;
             }
@@ -638,21 +642,21 @@ const TableForTop5ClickedResult = ({
         };
 
   return (
-    <table className="w-full border border-collapse border-gray-200 table-fixed">
+    <table className="w-full table-fixed" cellPadding={0} cellSpacing={0}>
       <thead>
-        <tr>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[30px]">
+        <tr className="border-y border-y-gray-200 ">
+          <th className="text-[1rem] font-normal border-collapse border-gray-200 bg-slate-100 w-[30px] border-l-0">
             순위
           </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 border-l-0">
             앞면
           </th>
           {contentType !== "newCards" && (
-            <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[70px]">
+            <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[70px] border-l-0">
               {contentType === "clickedTimes" ? "총 학습횟수" : "총 학습시간"}
             </th>
           )}
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px] border-l-0 border-r-0">
             카드보기
           </th>
         </tr>
@@ -660,49 +664,118 @@ const TableForTop5ClickedResult = ({
       <tbody>
         {cards.length > 0 &&
           cards.map((card, index) => (
-            <tr key={card._id}>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                {index + 1}
-              </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate">
-                {new String(
-                  contents.find(
-                    (content) =>
-                      content._id === card.content.mycontent_id ||
-                      content._id === card.content.buycontent_id
-                  ).face1
-                ).replace(/(<([^>]+)>)/gi, "")}
-              </td>
-              {contentType !== "newCards" && (
-                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                  {getThirdCol(card)}
+            <Fragment key={card._id}>
+              <tr>
+                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-t-0">
+                  {index + 1}
                 </td>
-              )}
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                <ArrowRightOutlined
-                  className="w-full !block h-full"
+                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate border-l-0 border-t-0">
+                  {new String(
+                    contents.find(
+                      (content) =>
+                        content._id === card.content.mycontent_id ||
+                        content._id === card.content.buycontent_id
+                    ).face1
+                  ).replace(/(<([^>]+)>)/gi, "")}
+                </td>
+                {contentType !== "newCards" && (
+                  <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-t-0">
+                    {getThirdCol(card)}
+                  </td>
+                )}
+                <td
+                  className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-r-0 border-l-0 border-t-0"
                   onClick={() => {
-                    toggleCardDrawerVisible(true);
-                    updateCardContent({
-                      contents: contents.find(
-                        (content) =>
-                          content._id === card.content.mycontent_id ||
-                          content._id === card.content.buycontent_id
-                      ),
-                      type: card.card_info.cardtype,
-                      makerFlag: card.content.makerFlag,
-                      userFlag: card.content.userFlag,
-                      memo: card.content.memo,
-                    });
+                    if (cardIdForMore !== card._id) {
+                      setCardIdForMore(card._id);
+                      setCardContent({
+                        contents: contents.find(
+                          (content) =>
+                            content._id === card.content.mycontent_id ||
+                            content._id === card.content.buycontent_id
+                        ),
+                        type: card.card_info.cardtype,
+                        makerFlag: card.content.makerFlag,
+                        userFlag: card.content.userFlag,
+                        memo: card.content.memo,
+                      });
+                    } else {
+                      setCardContent(null);
+                      setCardIdForMore("");
+                    }
                   }}
-                />
-              </td>
-            </tr>
+                >
+                  <a>{cardIdForMore === card._id ? "접기" : "보기"}</a>
+                </td>
+              </tr>
+              {cardContent && cardIdForMore === card._id && (
+                <tr>
+                  <td
+                    colSpan={contentType !== "newCards" ? 4 : 3}
+                    className="p-2 border border-collapse border-gray-200 border-l-0 border-t-0 text-[1rem]"
+                  >
+                    {!!cardContent.userFlag && (
+                      <div className="w-full p-2 bg-teal-100">
+                        <span>유저 플래그 :</span>
+                        <span className="ml-2">{cardContent.userFlag}</span>
+                      </div>
+                    )}
+
+                    <div className="w-full p-2 bg-teal-100">
+                      {!!cardContent.makerFlag.value && (
+                        <div className="w-full">
+                          <span>{cardContent.makerFlag.value}</span>
+                          <span className="ml-1">
+                            {cardContent.makerFlag.comment}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="w-full">
+                        {cardContent.contents.face1.map((p, i) => (
+                          <div
+                            key={i}
+                            dangerouslySetInnerHTML={{ __html: p }}
+                          ></div>
+                        ))}
+                      </div>
+                      {cardContent.contents.face2.length > 0 && (
+                        <div className="w-full">
+                          {cardContent.contents.face2.map((p, i) => (
+                            <div
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: p }}
+                            ></div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {cardContent.contents.annotation.length > 0 && (
+                      <div className="w-full p-2 bg-teal-100 mt-2">
+                        {cardContent.contents.annotation.map((p, i) => (
+                          <div
+                            key={i}
+                            dangerouslySetInnerHTML={{ __html: p }}
+                          ></div>
+                        ))}
+                      </div>
+                    )}
+
+                    {!!cardContent.memo && (
+                      <div className="w-full p-2 bg-teal-100 mt-2">
+                        {cardContent.memo}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              )}
+            </Fragment>
           ))}
         {cards.length === 0 && contentType === "newCards" && (
           <tr>
             <td
-              className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center"
+              className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-r-0"
               colSpan={3}
             >
               학습 중 새로 만든 카드가 없습니다.
@@ -719,15 +792,6 @@ const MyModal = (props) => <Modal {...props} />;
 const StudyResult = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
-
-  const [cardContent, setCardContent] = useState(null);
-  const updateCardContent = useCallback((content) => {
-    setCardContent(content);
-  }, []);
-  const [cardDrawerVisible, setCardDrawerVisible] = useState(false);
-  const toggleCardDrawerVisible = useCallback((_boolean) => {
-    setCardDrawerVisible(_boolean);
-  }, []);
 
   const [visibleClickedTimesPage, setVisibleClickedTimesPage] = useState(false);
   const [visibleElapsedTimeOnCard, setVisibleElapsedTimeOnCard] =
@@ -793,25 +857,6 @@ const StudyResult = () => {
 
   useEffect(() => {
     if (!ISSERVER) {
-      // const cardlist_to_send_tmp = JSON.parse(
-      //   sessionStorage.getItem("cardListStudying")
-      // );
-      // const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
-      // setCardList(cardlist_to_send_tmp);
-      // const topFiveClicked = [...cardlist_to_send_tmp]
-      //   .sort(
-      //     (a, b) =>
-      //       b.studyStatus.clickTimesInSession -
-      //       a.studyStatus.clickTimesInSession
-      //   )
-      //   .filter((_, i) => i < 5);
-      // const topFiveStudyHour = [...cardlist_to_send_tmp]
-      //   .sort(
-      //     (a, b) =>
-      //       b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
-      //   )
-      //   .filter((_, i) => i < 5);
-      // const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
       const cardsToRequest = [
         ...topFiveCardsBySubject.topFiveClicked,
         ...topFiveCardsBySubject.topFiveStudyHour,
@@ -892,8 +937,6 @@ const StudyResult = () => {
                         더보기
                       </a>
                       <SlidingPage
-                        toggleCardDrawerVisible={toggleCardDrawerVisible}
-                        updateCardContent={updateCardContent}
                         cards={
                           topFiveCardsBySubject.rankingCardListByNumberOfClickCard
                         }
@@ -905,8 +948,6 @@ const StudyResult = () => {
                   }
                   content={
                     <TableForTop5ClickedResult
-                      toggleCardDrawerVisible={toggleCardDrawerVisible}
-                      updateCardContent={updateCardContent}
                       cards={topFiveCardsBySubject.topFiveClicked}
                       myContents={
                         data.mycontent_getMycontentByMycontentIDs.mycontents
@@ -933,8 +974,6 @@ const StudyResult = () => {
                         더보기
                       </a>
                       <SlidingPage
-                        toggleCardDrawerVisible={toggleCardDrawerVisible}
-                        updateCardContent={updateCardContent}
                         cards={
                           topFiveCardsBySubject.rankingCardListByElapsedTimeOnCard
                         }
@@ -946,8 +985,6 @@ const StudyResult = () => {
                   }
                   content={
                     <TableForTop5ClickedResult
-                      toggleCardDrawerVisible={toggleCardDrawerVisible}
-                      updateCardContent={updateCardContent}
                       cards={topFiveCardsBySubject.topFiveStudyHour}
                       myContents={
                         data.mycontent_getMycontentByMycontentIDs.mycontents
@@ -967,8 +1004,6 @@ const StudyResult = () => {
                   title="새로 만든 카드"
                   content={
                     <TableForTop5ClickedResult
-                      toggleCardDrawerVisible={toggleCardDrawerVisible}
-                      updateCardContent={updateCardContent}
                       cards={topFiveCardsBySubject.fiveCreatedCards}
                       myContents={
                         data.mycontent_getMycontentByMycontentIDs.mycontents
@@ -988,99 +1023,6 @@ const StudyResult = () => {
               </div>
             )}
         </div>
-        <DrawerWrapper
-          visible={cardDrawerVisible}
-          title="카드 상세 보기"
-          onClose={() => {
-            toggleCardDrawerVisible(false);
-          }}
-          placement="right"
-          width={"100%"}
-          height={"calc(100vh - 40px)"}
-          mask={false}
-          zIndex={11}
-        >
-          {cardContent && (
-            <div className="w-full p-2 mt-4 border border-slate-400">
-              <div className="w-full border-b border-b-slate-400">카드타입</div>
-              <div className="w-full p-1">
-                {cardContent.type === "flip" ? "양면카드" : "단면카드"}
-              </div>
-            </div>
-          )}
-          {cardContent && cardContent.makerFlag.value !== null && (
-            <div className="w-full p-2 mt-4 border border-slate-400">
-              <div className="w-full border-b border-b-slate-400">
-                제작자플래그
-              </div>
-              <div className="w-full p-1">{cardContent.makerFlag.value}</div>
-            </div>
-          )}
-          {cardContent && cardContent.userFlag !== null && (
-            <div className="w-full p-2 mt-4 border border-slate-400">
-              <div className="w-full border-b border-b-slate-400">
-                유저플래그
-              </div>
-              <div className="w-full p-1">{cardContent.userFlag}</div>
-            </div>
-          )}
-          {cardContent && cardContent.contents.annotation.length > 0 ? (
-            <div className="w-full p-2 mt-4 border border-slate-400">
-              <div className="w-full border-b border-b-slate-400">주석</div>
-              <div className="w-full p-1">
-                {cardContent.contents.annotation.map((p) => (
-                  <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div>주석 없음</div>
-          )}
-          {cardContent && cardContent.contents.face1.length > 0 && (
-            <div className="w-full p-2 mt-4 border border-slate-400">
-              <div className="w-full border-b border-b-slate-400">앞면</div>
-              <div className="w-full p-1">
-                {cardContent.contents.face1.map((p) => (
-                  <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
-                ))}
-              </div>
-            </div>
-          )}
-          {cardContent &&
-            cardContent.contents.face2.length > 0 &&
-            cardContent.type === "flip" && (
-              <div className="w-full p-2 mt-4 border border-slate-400">
-                <div className="w-full border-b border-b-slate-400">뒷면</div>
-                <div className="w-full p-1">
-                  {cardContent.contents.face2.map((p) => (
-                    <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
-                  ))}
-                </div>
-              </div>
-            )}
-          {cardContent &&
-            cardContent.contents.selection.length > 0 &&
-            cardContent.type === "flip" && (
-              <div className="w-full p-2 mt-4 border border-slate-400">
-                <div className="w-full border-b border-b-slate-400">
-                  Selection
-                </div>
-                <div className="w-full p-1">
-                  {cardContent.contents.face2.map((p) => (
-                    <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
-                  ))}
-                </div>
-              </div>
-            )}
-          {cardContent && (
-            <div className="w-full p-2 mt-4 border border-slate-400">
-              <div className="w-full border-b border-b-slate-400">메모</div>
-              <div className="w-full p-1">
-                {cardContent.memo ? cardContent.memo : "메모없음"}
-              </div>
-            </div>
-          )}
-        </DrawerWrapper>
       </M_Layout>
     </>
   );
@@ -1088,14 +1030,7 @@ const StudyResult = () => {
 
 export default StudyResult;
 
-const SlidingPage = ({
-  visible,
-  closeDrawer,
-  cards,
-  contentType,
-  toggleCardDrawerVisible,
-  updateCardContent,
-}) => {
+const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
   const [mountCounter, setMountCounter] = useState(0);
 
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
@@ -1152,7 +1087,7 @@ const SlidingPage = ({
           ? "학습 횟수 많은 카드"
           : "학습 시간 많은 카드"
       }
-      placement="right"
+      placement="bottom"
       width={"100%"}
       height={"calc(100vh - 40px)"}
       mask={false}
@@ -1163,8 +1098,6 @@ const SlidingPage = ({
     >
       {data && data.mycontent_getMycontentByMycontentIDs && (
         <TableForTop5ClickedResult
-          toggleCardDrawerVisible={toggleCardDrawerVisible}
-          updateCardContent={updateCardContent}
           cards={cards}
           myContents={data.mycontent_getMycontentByMycontentIDs.mycontents}
           contentType={contentType}
@@ -1182,7 +1115,7 @@ const SlidingPage = ({
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;
-  height: calc(100vh - 40px);
+  /* height: calc(100vh - 40px); */
   .ant-drawer-header {
     padding: 8px 12px 4px 8px;
   }

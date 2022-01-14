@@ -41,6 +41,7 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
   function showdataafterupdateresult(data) {
     console.log("data", data);
     if (data.session_updateResults.status === "200") {
+      sessionStorage.setItem("endTimeOfSession", new Date())
       router.push("/m/study/result");
     }
   }

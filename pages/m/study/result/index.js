@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, Fragment } from "react";
 import { useLazyQuery } from "@apollo/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -348,10 +348,10 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
             {changedLevel.total.count}
           </td>
           <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-            {Math.round(changedLevel.total.gap) > 0
-              ? "+" + Math.round(changedLevel.total.gap)
-              : Math.round(changedLevel.total.gap) < 0
-              ? "" + Math.round(changedLevel.total.gap)
+            {Math.round(changedLevel.total.gap * 100) / 100 > 0
+              ? "+" + Math.round(changedLevel.total.gap * 100) / 100
+              : Math.round(changedLevel.total.gap * 100) / 100 < 0
+              ? "" + Math.round(changedLevel.total.gap * 100) / 100
               : "-"}
           </td>
         </tr>
@@ -369,10 +369,11 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
                 {changedLevel[clickedButton].count}
               </td>
               <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                {Math.round(changedLevel[clickedButton].gap) > 0
-                  ? "+" + Math.round(changedLevel[clickedButton].gap)
-                  : Math.round(changedLevel[clickedButton].gap) < 0
-                  ? "" + Math.round(changedLevel[clickedButton].gap)
+                {Math.round(changedLevel[clickedButton].gap * 100) / 100 > 0
+                  ? "+" +
+                    Math.round(changedLevel[clickedButton].gap * 100) / 100
+                  : Math.round(changedLevel[clickedButton].gap * 100) / 100 < 0
+                  ? "" + Math.round(changedLevel[clickedButton].gap * 100) / 100
                   : "-"}
               </td>
             </tr>
@@ -528,21 +529,43 @@ const SummaryTags = () => {
 
   const { completed, hold, ing, yet } = resultOfSession.numCards;
 
-  const totalGap = Math.round(resultOfSession.levelChange.total.gap);
+  const totalGap =
+    Math.round(resultOfSession.levelChange.total.gap * 100) / 100;
+
+  const time = prettyMilliseconds(
+    JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour,
+    { colonNotation: true, secondsDecimalDigits: 0 }
+  );
+  const displayTime = (time) => {
+    switch (time.length) {
+      case 4:
+        return "00:0" + time;
+      case 5:
+        return "00:" + time;
+      case 6:
+        return "00" + time;
+      case 7:
+        return "0" + time;
+      case 8:
+        return time;
+
+      default:
+        break;
+    }
+  };
   return (
     <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
       <SummaryTag
         title={"학습 시작"}
         content={moment(sessionStorage.getItem("started")).format("M.D hh:mm")}
       />
-      <SummaryTag title={"학습 종료"} content={moment().format("M.D hh:mm")} />
       <SummaryTag
-        title={"실제 학습 시간"}
-        content={prettyMilliseconds(
-          JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour,
-          { colonNotation: true, secondsDecimalDigits: 0 }
+        title={"학습 종료"}
+        content={moment(sessionStorage.getItem("endTimeOfSession")).format(
+          "M.D hh:mm"
         )}
       />
+      <SummaryTag title={"실제 학습 시간"} content={displayTime(time)} />
       <SummaryTag
         title={"학습 시작 카드"}
         content={
@@ -567,7 +590,7 @@ const SummaryTags = () => {
               return "+" + totalGap;
             }
             if (totalGap < 0) {
-              return "-" + totalGap;
+              return "" + totalGap;
             }
             return "-";
           })(totalGap)
@@ -584,10 +607,9 @@ const TableForTop5ClickedResult = ({
   buyContents,
   contentType,
 }) => {
-  const [cardContent, setCardContent] = useState(null);
-  const [cardDrawerVisible, setCardDrawerVisible] = useState(false);
-
   const contents = [...myContents, ...buyContents];
+  const [cardIdForMore, setCardIdForMore] = useState();
+  const [cardContent, setCardContent] = useState(null);
 
   const getThirdCol =
     contentType === "clickedTimes"
@@ -595,27 +617,46 @@ const TableForTop5ClickedResult = ({
           return card.studyStatus.clickTimesInSession;
         }
       : function (card) {
-          return prettyMilliseconds(card.studyStatus.studyHourInSession, {
+          const time = prettyMilliseconds(card.studyStatus.studyHourInSession, {
             colonNotation: true,
             secondsDecimalDigits: 0,
           });
+          const displayTime = (time) => {
+            switch (time.length) {
+              case 4:
+                return "00:0" + time;
+              case 5:
+                return "00:" + time;
+              case 6:
+                return "00" + time;
+              case 7:
+                return "0" + time;
+              case 8:
+                return time;
+              default:
+                break;
+            }
+          };
+
+          return displayTime(time);
         };
+
   return (
-    <table className="w-full border border-collapse border-gray-200 table-fixed">
+    <table className="w-full table-fixed" cellPadding={0} cellSpacing={0}>
       <thead>
-        <tr>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[30px]">
+        <tr className="border-y border-y-gray-200 ">
+          <th className="text-[1rem] font-normal border-collapse border-gray-200 bg-slate-100 w-[30px] border-l-0">
             순위
           </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 border-l-0">
             앞면
           </th>
           {contentType !== "newCards" && (
-            <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[70px]">
+            <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[70px] border-l-0">
               {contentType === "clickedTimes" ? "총 학습횟수" : "총 학습시간"}
             </th>
           )}
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px] border-l-0 border-r-0">
             카드보기
           </th>
         </tr>
@@ -623,45 +664,118 @@ const TableForTop5ClickedResult = ({
       <tbody>
         {cards.length > 0 &&
           cards.map((card, index) => (
-            <tr key={card._id}>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                {index + 1}
-              </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate">
-                {new String(
-                  contents.find(
-                    (content) =>
-                      content._id === card.content.mycontent_id ||
-                      content._id === card.content.buycontent_id
-                  ).face1
-                ).replace(/(<([^>]+)>)/gi, "")}
-              </td>
-              {contentType !== "newCards" && (
-                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                  {getThirdCol(card)}
+            <Fragment key={card._id}>
+              <tr>
+                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-t-0">
+                  {index + 1}
                 </td>
-              )}
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                <ArrowRightOutlined
-                  className="w-full !block h-full"
+                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate border-l-0 border-t-0">
+                  {new String(
+                    contents.find(
+                      (content) =>
+                        content._id === card.content.mycontent_id ||
+                        content._id === card.content.buycontent_id
+                    ).face1
+                  ).replace(/(<([^>]+)>)/gi, "")}
+                </td>
+                {contentType !== "newCards" && (
+                  <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-t-0">
+                    {getThirdCol(card)}
+                  </td>
+                )}
+                <td
+                  className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-r-0 border-l-0 border-t-0"
                   onClick={() => {
-                    setCardDrawerVisible(true);
-                    setCardContent(
-                      contents.find(
-                        (content) =>
-                          content._id === card.content.mycontent_id ||
-                          content._id === card.content.buycontent_id
-                      )
-                    );
+                    if (cardIdForMore !== card._id) {
+                      setCardIdForMore(card._id);
+                      setCardContent({
+                        contents: contents.find(
+                          (content) =>
+                            content._id === card.content.mycontent_id ||
+                            content._id === card.content.buycontent_id
+                        ),
+                        type: card.card_info.cardtype,
+                        makerFlag: card.content.makerFlag,
+                        userFlag: card.content.userFlag,
+                        memo: card.content.memo,
+                      });
+                    } else {
+                      setCardContent(null);
+                      setCardIdForMore("");
+                    }
                   }}
-                />
-              </td>
-            </tr>
+                >
+                  <a>{cardIdForMore === card._id ? "접기" : "보기"}</a>
+                </td>
+              </tr>
+              {cardContent && cardIdForMore === card._id && (
+                <tr>
+                  <td
+                    colSpan={contentType !== "newCards" ? 4 : 3}
+                    className="p-2 border border-collapse border-gray-200 border-l-0 border-t-0 text-[1rem]"
+                  >
+                    {!!cardContent.userFlag && (
+                      <div className="w-full p-2 bg-teal-100">
+                        <span>유저 플래그 :</span>
+                        <span className="ml-2">{cardContent.userFlag}</span>
+                      </div>
+                    )}
+
+                    <div className="w-full p-2 bg-teal-100">
+                      {!!cardContent.makerFlag.value && (
+                        <div className="w-full">
+                          <span>{cardContent.makerFlag.value}</span>
+                          <span className="ml-1">
+                            {cardContent.makerFlag.comment}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="w-full">
+                        {cardContent.contents.face1.map((p, i) => (
+                          <div
+                            key={i}
+                            dangerouslySetInnerHTML={{ __html: p }}
+                          ></div>
+                        ))}
+                      </div>
+                      {cardContent.contents.face2.length > 0 && (
+                        <div className="w-full">
+                          {cardContent.contents.face2.map((p, i) => (
+                            <div
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: p }}
+                            ></div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {cardContent.contents.annotation.length > 0 && (
+                      <div className="w-full p-2 bg-teal-100 mt-2">
+                        {cardContent.contents.annotation.map((p, i) => (
+                          <div
+                            key={i}
+                            dangerouslySetInnerHTML={{ __html: p }}
+                          ></div>
+                        ))}
+                      </div>
+                    )}
+
+                    {!!cardContent.memo && (
+                      <div className="w-full p-2 bg-teal-100 mt-2">
+                        {cardContent.memo}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              )}
+            </Fragment>
           ))}
         {cards.length === 0 && contentType === "newCards" && (
           <tr>
             <td
-              className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center"
+              className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-r-0"
               colSpan={3}
             >
               학습 중 새로 만든 카드가 없습니다.
@@ -669,18 +783,6 @@ const TableForTop5ClickedResult = ({
           </tr>
         )}
       </tbody>
-      <DrawerWrapper
-        visible={cardDrawerVisible}
-        title="카드 상세 보기"
-        onClose={() => setCardDrawerVisible(false)}
-        placement="bottom"
-        width={"100%"}
-        height={"calc(100vh - 40px)"}
-        mask={false}
-      >
-        {cardContent &&
-          new String(cardContent.face1).replace(/(<([^>]+)>)/gi, "")}
-      </DrawerWrapper>
     </table>
   );
 };
@@ -690,7 +792,6 @@ const MyModal = (props) => <Modal {...props} />;
 const StudyResult = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
-  const [cardList, setCardList] = useState(null);
 
   const [visibleClickedTimesPage, setVisibleClickedTimesPage] = useState(false);
   const [visibleElapsedTimeOnCard, setVisibleElapsedTimeOnCard] =
@@ -756,25 +857,6 @@ const StudyResult = () => {
 
   useEffect(() => {
     if (!ISSERVER) {
-      // const cardlist_to_send_tmp = JSON.parse(
-      //   sessionStorage.getItem("cardListStudying")
-      // );
-      // const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
-      // setCardList(cardlist_to_send_tmp);
-      // const topFiveClicked = [...cardlist_to_send_tmp]
-      //   .sort(
-      //     (a, b) =>
-      //       b.studyStatus.clickTimesInSession -
-      //       a.studyStatus.clickTimesInSession
-      //   )
-      //   .filter((_, i) => i < 5);
-      // const topFiveStudyHour = [...cardlist_to_send_tmp]
-      //   .sort(
-      //     (a, b) =>
-      //       b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
-      //   )
-      //   .filter((_, i) => i < 5);
-      // const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
       const cardsToRequest = [
         ...topFiveCardsBySubject.topFiveClicked,
         ...topFiveCardsBySubject.topFiveStudyHour,
@@ -1012,6 +1094,7 @@ const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
       // closeIcon={null}
       visible={visible}
       onClose={closeDrawer}
+      zIndex={10}
     >
       {data && data.mycontent_getMycontentByMycontentIDs && (
         <TableForTop5ClickedResult

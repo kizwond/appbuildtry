@@ -1144,7 +1144,7 @@ const SlidingPage = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mountCounter]);
-
+  sessionStorage.setItem("started", now)
   return (
     <DrawerWrapper
       title={

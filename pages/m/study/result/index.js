@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLazyQuery } from "@apollo/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -601,10 +601,9 @@ const TableForTop5ClickedResult = ({
   myContents,
   buyContents,
   contentType,
+  toggleCardDrawerVisible,
+  updateCardContent,
 }) => {
-  const [cardContent, setCardContent] = useState(null);
-  const [cardDrawerVisible, setCardDrawerVisible] = useState(false);
-
   const contents = [...myContents, ...buyContents];
 
   const getThirdCol =
@@ -683,8 +682,8 @@ const TableForTop5ClickedResult = ({
                 <ArrowRightOutlined
                   className="w-full !block h-full"
                   onClick={() => {
-                    setCardDrawerVisible(true);
-                    setCardContent({
+                    toggleCardDrawerVisible(true);
+                    updateCardContent({
                       contents: contents.find(
                         (content) =>
                           content._id === card.content.mycontent_id ||
@@ -711,94 +710,6 @@ const TableForTop5ClickedResult = ({
           </tr>
         )}
       </tbody>
-      <DrawerWrapper
-        visible={cardDrawerVisible}
-        title="카드 상세 보기"
-        onClose={() => setCardDrawerVisible(false)}
-        placement="bottom"
-        width={"100%"}
-        height={"calc(100vh - 40px)"}
-        mask={false}
-      >
-        {cardContent && (
-          <div className="w-full p-2 mt-4 border border-slate-400">
-            <div className="w-full border-b border-b-slate-400">카드타입</div>
-            <div className="w-full p-1">
-              {cardContent.type === "flip" ? "양면카드" : "단면카드"}
-            </div>
-          </div>
-        )}
-        {cardContent && cardContent.makerFlag.value !== null && (
-          <div className="w-full p-2 mt-4 border border-slate-400">
-            <div className="w-full border-b border-b-slate-400">
-              제작자플래그
-            </div>
-            <div className="w-full p-1">{cardContent.makerFlag.value}</div>
-          </div>
-        )}
-        {cardContent && cardContent.userFlag !== null && (
-          <div className="w-full p-2 mt-4 border border-slate-400">
-            <div className="w-full border-b border-b-slate-400">유저플래그</div>
-            <div className="w-full p-1">{cardContent.userFlag}</div>
-          </div>
-        )}
-        {cardContent && cardContent.contents.annotation.length > 0 ? (
-          <div className="w-full p-2 mt-4 border border-slate-400">
-            <div className="w-full border-b border-b-slate-400">주석</div>
-            <div className="w-full p-1">
-              {cardContent.contents.annotation.map((p) => (
-                <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div>주석 없음</div>
-        )}
-        {cardContent && cardContent.contents.face1.length > 0 && (
-          <div className="w-full p-2 mt-4 border border-slate-400">
-            <div className="w-full border-b border-b-slate-400">앞면</div>
-            <div className="w-full p-1">
-              {cardContent.contents.face1.map((p) => (
-                <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
-              ))}
-            </div>
-          </div>
-        )}
-        {cardContent &&
-          cardContent.contents.face2.length > 0 &&
-          cardContent.type === "flip" && (
-            <div className="w-full p-2 mt-4 border border-slate-400">
-              <div className="w-full border-b border-b-slate-400">뒷면</div>
-              <div className="w-full p-1">
-                {cardContent.contents.face2.map((p) => (
-                  <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
-                ))}
-              </div>
-            </div>
-          )}
-        {cardContent &&
-          cardContent.contents.selection.length > 0 &&
-          cardContent.type === "flip" && (
-            <div className="w-full p-2 mt-4 border border-slate-400">
-              <div className="w-full border-b border-b-slate-400">
-                Selection
-              </div>
-              <div className="w-full p-1">
-                {cardContent.contents.face2.map((p) => (
-                  <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
-                ))}
-              </div>
-            </div>
-          )}
-        {cardContent && (
-          <div className="w-full p-2 mt-4 border border-slate-400">
-            <div className="w-full border-b border-b-slate-400">메모</div>
-            <div className="w-full p-1">
-              {cardContent.memo ? cardContent.memo : "메모없음"}
-            </div>
-          </div>
-        )}
-      </DrawerWrapper>
     </table>
   );
 };
@@ -808,7 +719,15 @@ const MyModal = (props) => <Modal {...props} />;
 const StudyResult = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
-  const [cardList, setCardList] = useState(null);
+
+  const [cardContent, setCardContent] = useState(null);
+  const updateCardContent = useCallback((content) => {
+    setCardContent(content);
+  }, []);
+  const [cardDrawerVisible, setCardDrawerVisible] = useState(false);
+  const toggleCardDrawerVisible = useCallback((_boolean) => {
+    setCardDrawerVisible(_boolean);
+  }, []);
 
   const [visibleClickedTimesPage, setVisibleClickedTimesPage] = useState(false);
   const [visibleElapsedTimeOnCard, setVisibleElapsedTimeOnCard] =
@@ -973,6 +892,8 @@ const StudyResult = () => {
                         더보기
                       </a>
                       <SlidingPage
+                        toggleCardDrawerVisible={toggleCardDrawerVisible}
+                        updateCardContent={updateCardContent}
                         cards={
                           topFiveCardsBySubject.rankingCardListByNumberOfClickCard
                         }
@@ -984,6 +905,8 @@ const StudyResult = () => {
                   }
                   content={
                     <TableForTop5ClickedResult
+                      toggleCardDrawerVisible={toggleCardDrawerVisible}
+                      updateCardContent={updateCardContent}
                       cards={topFiveCardsBySubject.topFiveClicked}
                       myContents={
                         data.mycontent_getMycontentByMycontentIDs.mycontents
@@ -1010,6 +933,8 @@ const StudyResult = () => {
                         더보기
                       </a>
                       <SlidingPage
+                        toggleCardDrawerVisible={toggleCardDrawerVisible}
+                        updateCardContent={updateCardContent}
                         cards={
                           topFiveCardsBySubject.rankingCardListByElapsedTimeOnCard
                         }
@@ -1021,6 +946,8 @@ const StudyResult = () => {
                   }
                   content={
                     <TableForTop5ClickedResult
+                      toggleCardDrawerVisible={toggleCardDrawerVisible}
+                      updateCardContent={updateCardContent}
                       cards={topFiveCardsBySubject.topFiveStudyHour}
                       myContents={
                         data.mycontent_getMycontentByMycontentIDs.mycontents
@@ -1040,6 +967,8 @@ const StudyResult = () => {
                   title="새로 만든 카드"
                   content={
                     <TableForTop5ClickedResult
+                      toggleCardDrawerVisible={toggleCardDrawerVisible}
+                      updateCardContent={updateCardContent}
                       cards={topFiveCardsBySubject.fiveCreatedCards}
                       myContents={
                         data.mycontent_getMycontentByMycontentIDs.mycontents
@@ -1059,6 +988,99 @@ const StudyResult = () => {
               </div>
             )}
         </div>
+        <DrawerWrapper
+          visible={cardDrawerVisible}
+          title="카드 상세 보기"
+          onClose={() => {
+            toggleCardDrawerVisible(false);
+          }}
+          placement="right"
+          width={"100%"}
+          height={"calc(100vh - 40px)"}
+          mask={false}
+          zIndex={11}
+        >
+          {cardContent && (
+            <div className="w-full p-2 mt-4 border border-slate-400">
+              <div className="w-full border-b border-b-slate-400">카드타입</div>
+              <div className="w-full p-1">
+                {cardContent.type === "flip" ? "양면카드" : "단면카드"}
+              </div>
+            </div>
+          )}
+          {cardContent && cardContent.makerFlag.value !== null && (
+            <div className="w-full p-2 mt-4 border border-slate-400">
+              <div className="w-full border-b border-b-slate-400">
+                제작자플래그
+              </div>
+              <div className="w-full p-1">{cardContent.makerFlag.value}</div>
+            </div>
+          )}
+          {cardContent && cardContent.userFlag !== null && (
+            <div className="w-full p-2 mt-4 border border-slate-400">
+              <div className="w-full border-b border-b-slate-400">
+                유저플래그
+              </div>
+              <div className="w-full p-1">{cardContent.userFlag}</div>
+            </div>
+          )}
+          {cardContent && cardContent.contents.annotation.length > 0 ? (
+            <div className="w-full p-2 mt-4 border border-slate-400">
+              <div className="w-full border-b border-b-slate-400">주석</div>
+              <div className="w-full p-1">
+                {cardContent.contents.annotation.map((p) => (
+                  <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div>주석 없음</div>
+          )}
+          {cardContent && cardContent.contents.face1.length > 0 && (
+            <div className="w-full p-2 mt-4 border border-slate-400">
+              <div className="w-full border-b border-b-slate-400">앞면</div>
+              <div className="w-full p-1">
+                {cardContent.contents.face1.map((p) => (
+                  <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
+                ))}
+              </div>
+            </div>
+          )}
+          {cardContent &&
+            cardContent.contents.face2.length > 0 &&
+            cardContent.type === "flip" && (
+              <div className="w-full p-2 mt-4 border border-slate-400">
+                <div className="w-full border-b border-b-slate-400">뒷면</div>
+                <div className="w-full p-1">
+                  {cardContent.contents.face2.map((p) => (
+                    <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
+                  ))}
+                </div>
+              </div>
+            )}
+          {cardContent &&
+            cardContent.contents.selection.length > 0 &&
+            cardContent.type === "flip" && (
+              <div className="w-full p-2 mt-4 border border-slate-400">
+                <div className="w-full border-b border-b-slate-400">
+                  Selection
+                </div>
+                <div className="w-full p-1">
+                  {cardContent.contents.face2.map((p) => (
+                    <p key={p}>{new String(p).replace(/(<([^>]+)>)/gi, "")}</p>
+                  ))}
+                </div>
+              </div>
+            )}
+          {cardContent && (
+            <div className="w-full p-2 mt-4 border border-slate-400">
+              <div className="w-full border-b border-b-slate-400">메모</div>
+              <div className="w-full p-1">
+                {cardContent.memo ? cardContent.memo : "메모없음"}
+              </div>
+            </div>
+          )}
+        </DrawerWrapper>
       </M_Layout>
     </>
   );
@@ -1066,7 +1088,14 @@ const StudyResult = () => {
 
 export default StudyResult;
 
-const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
+const SlidingPage = ({
+  visible,
+  closeDrawer,
+  cards,
+  contentType,
+  toggleCardDrawerVisible,
+  updateCardContent,
+}) => {
   const [mountCounter, setMountCounter] = useState(0);
 
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
@@ -1123,16 +1152,19 @@ const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
           ? "학습 횟수 많은 카드"
           : "학습 시간 많은 카드"
       }
-      placement="bottom"
+      placement="right"
       width={"100%"}
       height={"calc(100vh - 40px)"}
       mask={false}
       // closeIcon={null}
       visible={visible}
       onClose={closeDrawer}
+      zIndex={10}
     >
       {data && data.mycontent_getMycontentByMycontentIDs && (
         <TableForTop5ClickedResult
+          toggleCardDrawerVisible={toggleCardDrawerVisible}
+          updateCardContent={updateCardContent}
           cards={cards}
           myContents={data.mycontent_getMycontentByMycontentIDs.mycontents}
           contentType={contentType}
@@ -1150,7 +1182,7 @@ const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;
-  /* height: calc(100vh - 40px); */
+  height: calc(100vh - 40px);
   .ant-drawer-header {
     padding: 8px 12px 4px 8px;
   }

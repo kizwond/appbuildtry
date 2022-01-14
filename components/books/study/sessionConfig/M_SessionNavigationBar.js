@@ -36,55 +36,55 @@ const M_SessionNavigationBar = ({
     );
   }, [activatedComponent, changeActivatedComponent]);
 
-  const antdButtonNode = useMemo(() => {
-    const hanlderForAntdNaviButton = () => {
-      activatedComponent === "index"
-        ? changeActivatedComponent("config")
-        : changeActivatedComponent("index");
-    };
-    return (
-      <div className="FlexWrapper">
-        <Button
-          className="NextStageButton"
-          block
-          size="small"
-          onClick={hanlderForAntdNaviButton}
-        >
-          {activatedComponent === "index" ? "다음" : "이전"}
-        </Button>
-        <Button
-          className={
-            activatedComponent === "config"
-              ? "NextStageButton GreenLight"
-              : "NextStageButton"
-          }
-          block
-          disabled={activatedComponent === "index"}
-          size="small"
-          onClick={() => {
-            if (numberOfFilteredCards > 0) {
-              submitCreateSessionConfigToServer();
-            } else {
-              message.error("선택하신 카드가 없습니다.", 0.7);
-            }
-          }}
-        >
-          시작
-        </Button>
-      </div>
-    );
-  }, [
-    activatedComponent,
-    changeActivatedComponent,
-    submitCreateSessionConfigToServer,
-    numberOfFilteredCards,
-  ]);
+  // const antdButtonNode = useMemo(() => {
+  //   const hanlderForAntdNaviButton = () => {
+  //     activatedComponent === "index"
+  //       ? changeActivatedComponent("config")
+  //       : changeActivatedComponent("index");
+  //   };
+  //   return (
+  //     <div className="FlexWrapper">
+  //       <Button
+  //         className="NextStageButton"
+  //         block
+  //         size="small"
+  //         onClick={hanlderForAntdNaviButton}
+  //       >
+  //         {activatedComponent === "index" ? "다음" : "이전"}
+  //       </Button>
+  //       <Button
+  //         className={
+  //           activatedComponent === "config"
+  //             ? "NextStageButton GreenLight"
+  //             : "NextStageButton"
+  //         }
+  //         block
+  //         disabled={activatedComponent === "index"}
+  //         size="small"
+  //         onClick={() => {
+  //           if (numberOfFilteredCards > 0) {
+  //             submitCreateSessionConfigToServer();
+  //           } else {
+  //             message.error("선택하신 카드가 없습니다.", 0.7);
+  //           }
+  //         }}
+  //       >
+  //         시작
+  //       </Button>
+  //     </div>
+  //   );
+  // }, [
+  //   activatedComponent,
+  //   changeActivatedComponent,
+  //   submitCreateSessionConfigToServer,
+  //   numberOfFilteredCards,
+  // ]);
 
   return (
     <StyledDiv>
       <StyledSessionNavigationBar>
         {arrowButtonNode}
-        {antdButtonNode}
+        {/* {antdButtonNode} */}
       </StyledSessionNavigationBar>
       <div className="SummaryForNumberOfAllBooksCards">
         학습 시작 예정 카드는{" "}

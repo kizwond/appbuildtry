@@ -1,5 +1,13 @@
 import { gql } from '@apollo/client';
 
+export const ExcelExportMutation = gql`
+  mutation ExcelExportMutation($index_id: ID) {
+    cardset_convertCardsetToExcelFile(index_id: $index_id) {
+      status
+      msg
+    }
+  }
+`;
 export const IndexCreateMutation = gql`
   mutation IndexCreateMutation($forAddIndex: forAddIndex) {
     indexset_addIndex(forAddIndex: $forAddIndex) {

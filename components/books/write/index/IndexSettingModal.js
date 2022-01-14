@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Modal, Button, Popover, Form, Input, Space, Select } from "antd";
 import { PlusOutlined, SettingOutlined } from "@ant-design/icons";
+import Image from "next/image";
 
-const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, onFinishChangeLevel, onFinishIndexDelete }) => {
+const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, onFinishChangeLevel, onFinishIndexDelete, onFinishExcelExport }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -28,6 +29,7 @@ const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, 
           onFinishRename={onFinishRename}
           onFinishChangeLevel={onFinishChangeLevel}
           onFinishIndexDelete={onFinishIndexDelete}
+          onFinishExcelExport={onFinishExcelExport}
         />
       </>
     ));
@@ -43,6 +45,7 @@ const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, 
           <li>이름변경</li>
           <li>레벨변경</li>
           <li>삭제</li>
+          <li>export</li>
         </ul>
         {indexList}
       </Modal>
@@ -50,7 +53,7 @@ const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, 
   );
 };
 
-const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, onFinishChangeLevel, onFinishIndexDelete }) => {
+const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, onFinishChangeLevel, onFinishIndexDelete, onFinishExcelExport }) => {
   const [newInput, setNewInput] = useState(false);
   const [renameInput, setRenameInput] = useState(false);
   const [deleteInput, setDeleteInput] = useState(false);
@@ -192,32 +195,38 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
     }
   };
 
+  const excelExportHandler = (value) => {
+    onFinishExcelExport(value)
+  }
   return (
     <>
-      <ul style={{ display: "flex", listStyle: "none", justifyContent: "space-between", alignItems:"center", paddingLeft:"0" }}>
-        <li>
+      <div style={{ display: "flex", listStyle: "none", justifyContent: "space-between", alignItems:"center", paddingLeft:"0" }}>
+        <div>
           <Popover placement="rightTop" title={newIndexTitle} visible={newInput} content={createIndex(indexSetInfo._id, index._id, index.level)} trigger="click">
             <PlusOutlined onClick={() => setNewInput(true)} style={{ fontSize: "1rem" }} />
           </Popover>
-        </li>
-        <li style={{fontSize:"0.8rem"}}>
+        </div>
+        <div style={{fontSize:"0.8rem"}}>
           {index.name}, level : {index.level}
-        </li>
-        <li>
+        </div>
+        <div>
           <Popover placement="rightTop" title={renameIndexTitle} visible={renameInput} content={renameIndex(indexSetInfo._id, index._id)} trigger="click">
             <Button size="small" onClick={() => setRenameInput(true)} style={{fontSize:"0.8rem"}}>이름변경</Button>
           </Popover>
-        </li>
-        <li>
+        </div>
+        <div>
           <Button size="small" onClick={() => levelChange("up", index.level)} style={{fontSize:"0.8rem"}}>좌</Button>
           <Button size="small" onClick={() => levelChange("down", index.level)} style={{fontSize:"0.8rem"}}>우</Button>
-        </li>
-        <li>
+        </div>
+        <div>
           <Popover placement="rightTop" title={deleteIndexTitle} visible={deleteInput} content={deleteIndex(indexSetInfo._id, index._id)} trigger="click">
             <Button size="small" onClick={() => setDeleteInput(true)} style={{fontSize:"0.8rem"}}>삭제</Button>
           </Popover>
-        </li>
-      </ul>
+        </div>
+        <div>
+            <Button size="small" icon={<Image src="/image/export_excel.png" width={"24px"} height={"24px"} alt="excel_export" />} onClick={() => excelExportHandler(index._id)} style={{border:"none"}}></Button>
+        </div>
+      </div>
     </>
   );
 };

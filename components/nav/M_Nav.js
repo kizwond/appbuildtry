@@ -52,6 +52,7 @@ const Nav = () => {
     logout();
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
     console.log("here");
     window.location.href = "/m";
   };
@@ -120,7 +121,7 @@ const Nav = () => {
                 }}
               >
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                  {!isLogged && (
+                  {username == null && (
                     <>
                       <Link href="/m/account/login">
                         <a style={linkStyleDrawer}>
@@ -174,7 +175,7 @@ const Nav = () => {
                     </a>
                   </Link>
                 </div>
-                {isLogged && (
+                {username !== null && (
                   <>
                     <Button
                       size="medium"

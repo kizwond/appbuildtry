@@ -28,7 +28,7 @@ const LoginComponent = () => {
     console.log("data", data);
     if (data.login.msg === "로그인 성공") {
       openMessage();
-
+      // localStorage.setItem("user_info", data.login.users[0].user_info.username)
       if (data.login.token !== null) {
         localStorage.setItem("accessToken", data.login.token.accessToken);
         localStorage.setItem("refreshToken", data.login.token.refreshToken);

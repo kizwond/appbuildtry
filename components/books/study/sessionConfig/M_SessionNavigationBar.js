@@ -5,86 +5,35 @@ import styled from "styled-components";
 const M_SessionNavigationBar = ({
   activatedComponent,
   changeActivatedComponent,
-  submitCreateSessionConfigToServer,
   numberOfFilteredCards,
 }) => {
-  const arrowButtonNode = useMemo(() => {
-    const hanlderForNaviButton = (e) => {
-      changeActivatedComponent(e.target.dataset.component);
-    };
-    return (
-      <div className="FlexWrapper">
-        <NavigationButton
-          className="NavigationButton GoToIndex"
-          activated={activatedComponent}
-          type="button"
-          data-component="index"
-          onClick={hanlderForNaviButton}
-        >
-          목차 설정
-        </NavigationButton>
-        <NavigationButton
-          className="NavigationButton GoToSession"
-          activated={activatedComponent}
-          type="button"
-          data-component="config"
-          onClick={hanlderForNaviButton}
-        >
-          세션 설정
-        </NavigationButton>
-      </div>
-    );
-  }, [activatedComponent, changeActivatedComponent]);
-
-  // const antdButtonNode = useMemo(() => {
-  //   const hanlderForAntdNaviButton = () => {
-  //     activatedComponent === "index"
-  //       ? changeActivatedComponent("config")
-  //       : changeActivatedComponent("index");
-  //   };
-  //   return (
-  //     <div className="FlexWrapper">
-  //       <Button
-  //         className="NextStageButton"
-  //         block
-  //         size="small"
-  //         onClick={hanlderForAntdNaviButton}
-  //       >
-  //         {activatedComponent === "index" ? "다음" : "이전"}
-  //       </Button>
-  //       <Button
-  //         className={
-  //           activatedComponent === "config"
-  //             ? "NextStageButton GreenLight"
-  //             : "NextStageButton"
-  //         }
-  //         block
-  //         disabled={activatedComponent === "index"}
-  //         size="small"
-  //         onClick={() => {
-  //           if (numberOfFilteredCards > 0) {
-  //             submitCreateSessionConfigToServer();
-  //           } else {
-  //             message.error("선택하신 카드가 없습니다.", 0.7);
-  //           }
-  //         }}
-  //       >
-  //         시작
-  //       </Button>
-  //     </div>
-  //   );
-  // }, [
-  //   activatedComponent,
-  //   changeActivatedComponent,
-  //   submitCreateSessionConfigToServer,
-  //   numberOfFilteredCards,
-  // ]);
+  const hanlderForNaviButton = (e) => {
+    changeActivatedComponent(e.target.dataset.component);
+  };
 
   return (
     <StyledDiv>
       <StyledSessionNavigationBar>
-        {arrowButtonNode}
-        {/* {antdButtonNode} */}
+        <div className="FlexWrapper">
+          <NavigationButton
+            className="NavigationButton GoToIndex"
+            activated={activatedComponent}
+            type="button"
+            data-component="index"
+            onClick={hanlderForNaviButton}
+          >
+            목차 설정
+          </NavigationButton>
+          <NavigationButton
+            className="NavigationButton GoToSession"
+            activated={activatedComponent}
+            type="button"
+            data-component="config"
+            onClick={hanlderForNaviButton}
+          >
+            세션 설정
+          </NavigationButton>
+        </div>
       </StyledSessionNavigationBar>
       <div className="SummaryForNumberOfAllBooksCards">
         학습 시작 예정 카드는{" "}
@@ -98,10 +47,11 @@ export default memo(M_SessionNavigationBar);
 
 const StyledSessionNavigationBar = styled.div`
   margin: 8px;
-  display: flex;
-  justify-content: space-between;
+  max-width: 450px;
   .FlexWrapper {
     display: flex;
+    justify-content: space-evenly;
+    padding-right: 20px;
     .NextStageButton {
       height: 2rem;
       display: flex;
@@ -111,16 +61,12 @@ const StyledSessionNavigationBar = styled.div`
       & > span {
         font-size: 1.16667rem;
       }
-      &.GreenLight {
-        background-color: green;
-        color: #fff;
-      }
     }
   }
 `;
 const NavigationButton = styled.div`
-  width: 8.333rem;
-  min-width: 70px;
+  width: 100%;
+  /* min-width: 70px; */
   height: 2rem;
   position: relative;
   background: #efedfc;

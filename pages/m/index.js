@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import M_Layout from "../../components/layout/M_Layout";
-import RecentStudyList from "../../components/index/RecentStudyList";
+import M_RecentStudyList from "../../components/index/M_RecentStudyList";
 import Hero from "../../components/index/Hero";
 import NewBooks from "../../components/index/NewBooks";
 import M_Footer from "../../components/index/M_Footer";
@@ -25,16 +25,16 @@ const Home = () => {
       console.log(data);
       if (data.me.status === "401") {
         console.log("로그아웃상태입니다.");
-        localStorage.removeItem("username")
+        localStorage.removeItem("username");
         setLoginState(false);
         dispatch(logIn(false));
         reset(resetToken);
       } else {
         console.log("로그인상태입니다.");
-        if(data.me.users[0] !== null){
+        if (data.me.users[0] !== null) {
           localStorage.setItem("username", data.me.users[0].user_info.username);
         }
-        
+
         setLoginState(true);
         dispatch(logIn(true));
       }
@@ -50,7 +50,10 @@ const Home = () => {
       // Router.push("/");
       if (data.resetToken.token !== null) {
         localStorage.setItem("accessToken", data.resetToken.token.accessToken);
-        localStorage.setItem("refreshToken", data.resetToken.token.refreshToken);
+        localStorage.setItem(
+          "refreshToken",
+          data.resetToken.token.refreshToken
+        );
       }
       console.log("done");
     } else {
@@ -61,7 +64,7 @@ const Home = () => {
   return (
     <M_Layout>
       <Hero />
-      <RecentStudyList />
+      <M_RecentStudyList />
       <NewBooks />
       <M_Footer />
     </M_Layout>

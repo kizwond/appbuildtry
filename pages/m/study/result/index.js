@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback, Fragment } from "react";
 import { useLazyQuery } from "@apollo/client";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -9,12 +9,13 @@ import {
 } from "../../../../graphql/query/allQuery";
 
 import M_Layout from "../../../../components/layout/M_Layout";
-import { Drawer, Select } from "antd";
+import { Drawer, Modal, Select } from "antd";
 import moment from "moment";
 import { useMemo } from "react";
 import { ArrowRightOutlined } from "@ant-design/icons";
 import prettyMilliseconds from "pretty-ms";
 import styled from "styled-components";
+import { useRef } from "react";
 
 const ResultForStudy = ({ title, content }) => (
   <div className="w-full">
@@ -114,8 +115,9 @@ const ClickedTimesByDifficultyChart = ({ clickedTimesByDifficulty }) => {
     { title: "diffi1", color: "bg-orange-400" },
     { title: "diffi2", color: "bg-emerald-400" },
     { title: "diffi3", color: "bg-yellow-400" },
-    { title: "diffi4", color: "bg-yellow-400" },
+    { title: "diffi4", color: "bg-rose-400" },
     { title: "diffi5", color: "bg-cyan-400" },
+    { title: "diffi6", color: "bg-indigo-400" },
     { title: "hold", color: "bg-gray-400" },
     { title: "completed", color: "bg-green-400" },
     { title: "etc", color: "bg-lime-400" },
@@ -125,7 +127,7 @@ const ClickedTimesByDifficultyChart = ({ clickedTimesByDifficulty }) => {
       <table className="w-full h-full">
         <tbody>
           {difficulties.map(({ title, color }) => {
-            const percentage = Math.floor(
+            const percentage = Math.round(
               (clickedTimesByDifficulty[title] / maxNumber) * 100
             );
             return (
@@ -322,6 +324,8 @@ const ChangedFlagTable = ({ changedFlag }) => {
 };
 
 const ChangedLevelTable = ({ changedLevel, more }) => {
+  const averageOfGap =
+    Math.round((changedLevel.total.gap / changedLevel.total.count) * 100) / 100;
   return (
     <table className="w-full border border-collapse border-gray-200 table-fixed">
       <thead>
@@ -346,7 +350,11 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
             {changedLevel.total.count}
           </td>
           <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-            {changedLevel.total.gap}
+            {averageOfGap > 0
+              ? "+" + averageOfGap
+              : averageOfGap < 0
+              ? "" + averageOfGap
+              : "-"}
           </td>
         </tr>
         {more &&
@@ -363,7 +371,35 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
                 {changedLevel[clickedButton].count}
               </td>
               <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                {changedLevel[clickedButton].gap}
+                {Math.round(
+                  (changedLevel[clickedButton].gap /
+                    changedLevel[clickedButton].count) *
+                    100
+                ) /
+                  100 >
+                0
+                  ? "+" +
+                    Math.round(
+                      (changedLevel[clickedButton].gap /
+                        changedLevel[clickedButton].count) *
+                        100
+                    ) /
+                      100
+                  : Math.round(
+                      (changedLevel[clickedButton].gap /
+                        changedLevel[clickedButton].count) *
+                        100
+                    ) /
+                      100 <
+                    0
+                  ? "" +
+                    Math.round(
+                      (changedLevel[clickedButton].gap /
+                        changedLevel[clickedButton].count) *
+                        100
+                    ) /
+                      100
+                  : "-"}
               </td>
             </tr>
           ))}
@@ -518,21 +554,43 @@ const SummaryTags = () => {
 
   const { completed, hold, ing, yet } = resultOfSession.numCards;
 
-  const totalGap = resultOfSession.levelChange.total.gap;
+  const totalGap =
+    Math.round(resultOfSession.levelChange.total.gap * 100) / 100;
+
+  const time = prettyMilliseconds(
+    JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour,
+    { colonNotation: true, secondsDecimalDigits: 0 }
+  );
+  const displayTime = (time) => {
+    switch (time.length) {
+      case 4:
+        return "00:0" + time;
+      case 5:
+        return "00:" + time;
+      case 6:
+        return "00" + time;
+      case 7:
+        return "0" + time;
+      case 8:
+        return time;
+
+      default:
+        break;
+    }
+  };
   return (
     <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
       <SummaryTag
         title={"학습 시작"}
         content={moment(sessionStorage.getItem("started")).format("M.D hh:mm")}
       />
-      <SummaryTag title={"학습 종료"} content={moment().format("M.D hh:mm")} />
       <SummaryTag
-        title={"실제 학습 시간"}
-        content={prettyMilliseconds(
-          JSON.parse(sessionStorage.getItem("resultOfSession")).studyHour,
-          { colonNotation: true, secondsDecimalDigits: 0 }
+        title={"학습 종료"}
+        content={moment(sessionStorage.getItem("endTimeOfSession")).format(
+          "M.D hh:mm"
         )}
       />
+      <SummaryTag title={"실제 학습 시간"} content={displayTime(time)} />
       <SummaryTag
         title={"학습 시작 카드"}
         content={
@@ -557,7 +615,7 @@ const SummaryTags = () => {
               return "+" + totalGap;
             }
             if (totalGap < 0) {
-              return "-" + totalGap;
+              return "" + totalGap;
             }
             return "-";
           })(totalGap)
@@ -575,6 +633,8 @@ const TableForTop5ClickedResult = ({
   contentType,
 }) => {
   const contents = [...myContents, ...buyContents];
+  const [cardIdForMore, setCardIdForMore] = useState();
+  const [cardContent, setCardContent] = useState(null);
 
   const getThirdCol =
     contentType === "clickedTimes"
@@ -582,27 +642,46 @@ const TableForTop5ClickedResult = ({
           return card.studyStatus.clickTimesInSession;
         }
       : function (card) {
-          return prettyMilliseconds(card.studyStatus.studyHourInSession, {
+          const time = prettyMilliseconds(card.studyStatus.studyHourInSession, {
             colonNotation: true,
             secondsDecimalDigits: 0,
           });
+          const displayTime = (time) => {
+            switch (time.length) {
+              case 4:
+                return "00:0" + time;
+              case 5:
+                return "00:" + time;
+              case 6:
+                return "00" + time;
+              case 7:
+                return "0" + time;
+              case 8:
+                return time;
+              default:
+                break;
+            }
+          };
+
+          return displayTime(time);
         };
+
   return (
-    <table className="w-full border border-collapse border-gray-200 table-fixed">
+    <table className="w-full table-fixed" cellPadding={0} cellSpacing={0}>
       <thead>
-        <tr>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[30px]">
+        <tr className="border-y border-y-gray-200 ">
+          <th className="text-[1rem] font-normal border-collapse border-gray-200 bg-slate-100 w-[30px] border-l-0">
             순위
           </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 border-l-0">
             앞면
           </th>
           {contentType !== "newCards" && (
-            <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[70px]">
+            <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[70px] border-l-0">
               {contentType === "clickedTimes" ? "총 학습횟수" : "총 학습시간"}
             </th>
           )}
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px] border-l-0 border-r-0">
             카드보기
           </th>
         </tr>
@@ -610,36 +689,115 @@ const TableForTop5ClickedResult = ({
       <tbody>
         {cards.length > 0 &&
           cards.map((card, index) => (
-            <tr key={card._id}>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                {index + 1}
-              </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate">
-                {new String(
-                  contents.find(
-                    (content) =>
-                      content._id === card.content.mycontent_id ||
-                      content._id === card.content.buycontent_id
-                  ).face1
-                ).replace(/(<([^>]+)>)/gi, "")}
-              </td>
-              {contentType !== "newCards" && (
-                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
-                  {getThirdCol(card)}
+            <Fragment key={card._id}>
+              <tr>
+                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-t-0">
+                  {index + 1}
                 </td>
+                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate border-l-0 border-t-0">
+                  {new String(
+                    contents.find(
+                      (content) =>
+                        content._id === card.content.mycontent_id ||
+                        content._id === card.content.buycontent_id
+                    ).face1
+                  ).replace(/(<([^>]+)>)/gi, "")}
+                </td>
+                {contentType !== "newCards" && (
+                  <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-t-0">
+                    {getThirdCol(card)}
+                  </td>
+                )}
+                <td
+                  className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-r-0 border-l-0 border-t-0"
+                  onClick={() => {
+                    if (cardIdForMore !== card._id) {
+                      setCardIdForMore(card._id);
+                      setCardContent({
+                        contents: contents.find(
+                          (content) =>
+                            content._id === card.content.mycontent_id ||
+                            content._id === card.content.buycontent_id
+                        ),
+                        type: card.card_info.cardtype,
+                        makerFlag: card.content.makerFlag,
+                        userFlag: card.content.userFlag,
+                        memo: card.content.memo,
+                      });
+                    } else {
+                      setCardContent(null);
+                      setCardIdForMore("");
+                    }
+                  }}
+                >
+                  <a>{cardIdForMore === card._id ? "접기" : "보기"}</a>
+                </td>
+              </tr>
+              {cardContent && cardIdForMore === card._id && (
+                <tr>
+                  <td
+                    colSpan={contentType !== "newCards" ? 4 : 3}
+                    className="p-2 border border-collapse border-gray-200 border-l-0 border-r-0 border-t-0 text-[1rem]"
+                  >
+                    {!!cardContent.userFlag && (
+                      <div className="w-full p-2 bg-gray-100">
+                        <span className="font-[500]">유저 플래그 :</span>
+                        <span className="ml-2">{cardContent.userFlag}</span>
+                      </div>
+                    )}
+
+                    <div className="w-full p-2 bg-gray-100">
+                      <div className="font-[500]">카드 내용 :</div>
+                      {!!cardContent.makerFlag.value && (
+                        <div className="w-full pl-2">
+                          <span>{cardContent.makerFlag.value}</span>
+                          <span className="ml-1">
+                            {cardContent.makerFlag.comment}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="w-full pl-2">
+                        {cardContent.contents.face1.map((p, i) => (
+                          <div
+                            key={i}
+                            dangerouslySetInnerHTML={{ __html: p }}
+                          ></div>
+                        ))}
+                      </div>
+                      {cardContent.contents.face2.length > 0 &&
+                        cardContent.contents.face2.map((p, i) => (
+                          <div
+                            className="w-full pl-2"
+                            key={i}
+                            dangerouslySetInnerHTML={{ __html: p }}
+                          ></div>
+                        ))}
+                      {cardContent.contents.annotation.length > 0 &&
+                        cardContent.contents.annotation.map((p, i) => (
+                          <div
+                            className="w-full pl-2"
+                            key={i}
+                            dangerouslySetInnerHTML={{ __html: p }}
+                          ></div>
+                        ))}
+                    </div>
+
+                    {!!cardContent.memo && (
+                      <div className="w-full p-2 bg-gray-100 mt-2">
+                        <div className="font-[500]">메모 :</div>
+                        <div className="w-full pl-2">{cardContent.memo}</div>
+                      </div>
+                    )}
+                  </td>
+                </tr>
               )}
-              <td
-                className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center"
-                onClick={() => console.log("카드보기 클릭함")}
-              >
-                <ArrowRightOutlined className="w-full !block h-full" />
-              </td>
-            </tr>
+            </Fragment>
           ))}
         {cards.length === 0 && contentType === "newCards" && (
           <tr>
             <td
-              className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center"
+              className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-r-0"
               colSpan={3}
             >
               학습 중 새로 만든 카드가 없습니다.
@@ -651,12 +809,14 @@ const TableForTop5ClickedResult = ({
   );
 };
 
+const MyModal = (props) => <Modal {...props} />;
+
 const StudyResult = () => {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
-  const [cardList, setCardList] = useState(null);
 
-  const [visibleCloseClickedTimesPage, setVisibleCloseClickedTimesPage] =
+  const [visibleClickedTimesPage, setVisibleClickedTimesPage] = useState(false);
+  const [visibleElapsedTimeOnCard, setVisibleElapsedTimeOnCard] =
     useState(false);
 
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
@@ -680,23 +840,28 @@ const StudyResult = () => {
   const ISSERVER = typeof window === "undefined";
   const topFiveCardsBySubject = useMemo(() => {
     if (!ISSERVER) {
-      const cardlist_to_send_tmp = JSON.parse(
+      const insertedCardList = JSON.parse(
         sessionStorage.getItem("cardListStudying")
       );
       const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
 
-      const rankingCardListByNumberOfClickCard = [...cardlist_to_send_tmp].sort(
-        (a, b) =>
-          b.studyStatus.clickTimesInSession - a.studyStatus.clickTimesInSession
-      );
+      const rankingCardListByNumberOfClickCard = insertedCardList
+        .filter((card) => card.studyStatus.isUpdated)
+        .sort(
+          (a, b) =>
+            b.studyStatus.clickTimesInSession -
+            a.studyStatus.clickTimesInSession
+        );
       const topFiveClicked = rankingCardListByNumberOfClickCard.filter(
         (_, i) => i < 5
       );
 
-      const rankingCardListByElapsedTimeOnCard = [...cardlist_to_send_tmp].sort(
-        (a, b) =>
-          b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
-      );
+      const rankingCardListByElapsedTimeOnCard = insertedCardList
+        .filter((card) => card.studyStatus.isUpdated)
+        .sort(
+          (a, b) =>
+            b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
+        );
       const topFiveStudyHour = rankingCardListByElapsedTimeOnCard.filter(
         (_, i) => i < 5
       );
@@ -714,25 +879,6 @@ const StudyResult = () => {
 
   useEffect(() => {
     if (!ISSERVER) {
-      // const cardlist_to_send_tmp = JSON.parse(
-      //   sessionStorage.getItem("cardListStudying")
-      // );
-      // const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
-      // setCardList(cardlist_to_send_tmp);
-      // const topFiveClicked = [...cardlist_to_send_tmp]
-      //   .sort(
-      //     (a, b) =>
-      //       b.studyStatus.clickTimesInSession -
-      //       a.studyStatus.clickTimesInSession
-      //   )
-      //   .filter((_, i) => i < 5);
-      // const topFiveStudyHour = [...cardlist_to_send_tmp]
-      //   .sort(
-      //     (a, b) =>
-      //       b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
-      //   )
-      //   .filter((_, i) => i < 5);
-      // const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
       const cardsToRequest = [
         ...topFiveCardsBySubject.topFiveClicked,
         ...topFiveCardsBySubject.topFiveStudyHour,
@@ -782,7 +928,10 @@ const StudyResult = () => {
   };
 
   const closeClickedTimesPage = () => {
-    setVisibleCloseClickedTimesPage(false);
+    setVisibleClickedTimesPage(false);
+  };
+  const closeElapsedTimeOnCard = () => {
+    setVisibleElapsedTimeOnCard(false);
   };
 
   return (
@@ -805,7 +954,7 @@ const StudyResult = () => {
                       <div>학습 횟수 많은 카드</div>
                       <a
                         className="text-[1rem] text-blue-700"
-                        onClick={() => setVisibleCloseClickedTimesPage(true)}
+                        onClick={() => setVisibleClickedTimesPage(true)}
                       >
                         더보기
                       </a>
@@ -814,7 +963,8 @@ const StudyResult = () => {
                           topFiveCardsBySubject.rankingCardListByNumberOfClickCard
                         }
                         closeDrawer={closeClickedTimesPage}
-                        visible={visibleCloseClickedTimesPage}
+                        visible={visibleClickedTimesPage}
+                        contentType={"clickedTimes"}
                       />
                     </div>
                   }
@@ -841,10 +991,18 @@ const StudyResult = () => {
                       <div>학습 시간 많은 카드</div>
                       <a
                         className="text-[1rem] text-blue-700"
-                        onClick={() => console.log("학습 시간 더보기 버튼")}
+                        onClick={() => setVisibleElapsedTimeOnCard(true)}
                       >
                         더보기
                       </a>
+                      <SlidingPage
+                        cards={
+                          topFiveCardsBySubject.rankingCardListByElapsedTimeOnCard
+                        }
+                        closeDrawer={closeElapsedTimeOnCard}
+                        visible={visibleElapsedTimeOnCard}
+                        contentType={"studyHours"}
+                      />
                     </div>
                   }
                   content={
@@ -894,7 +1052,7 @@ const StudyResult = () => {
 
 export default StudyResult;
 
-const SlidingPage = ({ visible, closeDrawer, cards }) => {
+const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
   const [mountCounter, setMountCounter] = useState(0);
 
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
@@ -946,7 +1104,11 @@ const SlidingPage = ({ visible, closeDrawer, cards }) => {
 
   return (
     <DrawerWrapper
-      title="학습 횟수 많은 카드"
+      title={
+        contentType === "clickedTimes"
+          ? "학습 횟수 많은 카드"
+          : "학습 시간 많은 카드"
+      }
       placement="bottom"
       width={"100%"}
       height={"calc(100vh - 40px)"}
@@ -954,12 +1116,13 @@ const SlidingPage = ({ visible, closeDrawer, cards }) => {
       // closeIcon={null}
       visible={visible}
       onClose={closeDrawer}
+      zIndex={10}
     >
       {data && data.mycontent_getMycontentByMycontentIDs && (
         <TableForTop5ClickedResult
           cards={cards}
           myContents={data.mycontent_getMycontentByMycontentIDs.mycontents}
-          contentType={"clickedTimes"}
+          contentType={contentType}
           buyContents={
             !buyContentsData
               ? []

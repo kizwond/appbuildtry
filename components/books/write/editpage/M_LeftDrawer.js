@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Drawer, Tree } from "antd";
 import { useQuery, useMutation } from "@apollo/client";
 import { GetIndex } from "../../../../graphql/query/allQuery";
-import { IndexCreateMutation, IndexRenameMutation, IndexLevelMutation, IndexDeleteMutation } from "../../../../graphql/mutation/indexSet";
+import { IndexCreateMutation, IndexRenameMutation, IndexLevelMutation, IndexDeleteMutation, ExcelExportMutation } from "../../../../graphql/mutation/indexSet";
 import IndexSettingModal from "../index/IndexSettingModal";
 import { UnorderedListOutlined } from "@ant-design/icons";
 
@@ -29,6 +29,29 @@ const LeftDrawer = ({ index_changed }) => {
 
   var indexinfo = data.indexset_getByMybookids.indexsets[0].indexes;
   var indexSetInfo = data.indexset_getByMybookids.indexsets[0];
+  //엑셀 익스포트
+  const [cardset_convertCardsetToExcelFile] = useMutation(ExcelExportMutation, { onCompleted: afterexport });
+
+  function afterexport(data) {
+    console.log(data)
+  }
+
+  async function excelexport(indexId) {
+    try {
+      await cardset_convertCardsetToExcelFile({
+        variables: {
+          index_id : indexId
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const onFinishExcelExport = (value) => {
+    console.log(value)
+    excelexport(value);
+  };
+
   //새 목차 추가
   const [indexset_addIndex] = useMutation(IndexCreateMutation, { onCompleted: showindexdata });
 
@@ -491,6 +514,7 @@ const LeftDrawer = ({ index_changed }) => {
                     onFinishRename={onFinishRename}
                     onFinishChangeLevel={onFinishChangeLevel}
                     onFinishIndexDelete={onFinishIndexDelete}
+                    onFinishExcelExport={onFinishExcelExport}
                   />
                 </div>
               </>

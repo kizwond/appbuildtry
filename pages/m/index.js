@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logIn } from "../../redux/actions";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER, ResetToekn } from "../../graphql/query/account";
+import { reset } from "../../hooks/reset";
 
 const Home = () => {
   const [resetToken] = useMutation(ResetToekn, { onCompleted: showdata });
@@ -16,25 +17,6 @@ const Home = () => {
   const dispatch = useDispatch();
   const [loginState, setLoginState] = useState(false);
   const { loading, error, data } = useQuery(GET_USER);
-
-  const ISSERVER = typeof window === "undefined";
-  if (!ISSERVER) {
-    var refreshToken = localStorage.getItem("refreshToken");
-    console.log(refreshToken);
-  }
-
-  const reset = useCallback(async () => {
-    console.log("reset ing");
-    try {
-      await resetToken({
-        variables: {
-          refreshToken: refreshToken,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }, [resetToken, refreshToken]);
 
   useEffect(() => {
     console.log("컴포넌트가 화면에 나타남");
@@ -46,7 +28,7 @@ const Home = () => {
         localStorage.removeItem("username")
         setLoginState(false);
         dispatch(logIn(false));
-        reset(refreshToken);
+        reset(resetToken);
       } else {
         console.log("로그인상태입니다.");
         if(data.me.users[0] !== null){
@@ -57,7 +39,7 @@ const Home = () => {
         dispatch(logIn(true));
       }
     }
-  }, [data, dispatch, refreshToken, reset]);
+  }, [data, dispatch, resetToken]);
 
   function showdata(data) {
     console.log("data", data);

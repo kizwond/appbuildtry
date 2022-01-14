@@ -234,7 +234,9 @@ exports.updateSessionResult = (singleResult) => {
 
     // Mybook에 업데이트 해줄 꺼
     if (recentSelection=='difficulty' && studyTimesInSession == 1){  
+        resultOfSession.nonCompletedLevelChange.count += 1
         resultOfSession.nonCompletedLevelChange.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
+        resultByBook[mybookPosition].nonCompletedLevelChange.count += 1
         resultByBook[mybookPosition].nonCompletedLevelChange.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
     }
     if  (recentSelection == 'restore' && statusPrev == 'completed'){

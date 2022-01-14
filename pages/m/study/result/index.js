@@ -712,18 +712,19 @@ const TableForTop5ClickedResult = ({
                 <tr>
                   <td
                     colSpan={contentType !== "newCards" ? 4 : 3}
-                    className="p-2 border border-collapse border-gray-200 border-l-0 border-t-0 text-[1rem]"
+                    className="p-2 border border-collapse border-gray-200 border-l-0 border-r-0 border-t-0 text-[1rem]"
                   >
                     {!!cardContent.userFlag && (
-                      <div className="w-full p-2 bg-teal-100">
-                        <span>유저 플래그 :</span>
+                      <div className="w-full p-2 bg-gray-100">
+                        <span className="font-[500]">유저 플래그 :</span>
                         <span className="ml-2">{cardContent.userFlag}</span>
                       </div>
                     )}
 
-                    <div className="w-full p-2 bg-teal-100">
+                    <div className="w-full p-2 bg-gray-100">
+                      <div className="font-[500]">카드 내용 :</div>
                       {!!cardContent.makerFlag.value && (
-                        <div className="w-full">
+                        <div className="w-full pl-2">
                           <span>{cardContent.makerFlag.value}</span>
                           <span className="ml-1">
                             {cardContent.makerFlag.comment}
@@ -731,7 +732,7 @@ const TableForTop5ClickedResult = ({
                         </div>
                       )}
 
-                      <div className="w-full">
+                      <div className="w-full pl-2">
                         {cardContent.contents.face1.map((p, i) => (
                           <div
                             key={i}
@@ -739,32 +740,28 @@ const TableForTop5ClickedResult = ({
                           ></div>
                         ))}
                       </div>
-                      {cardContent.contents.face2.length > 0 && (
-                        <div className="w-full">
-                          {cardContent.contents.face2.map((p, i) => (
-                            <div
-                              key={i}
-                              dangerouslySetInnerHTML={{ __html: p }}
-                            ></div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {cardContent.contents.annotation.length > 0 && (
-                      <div className="w-full p-2 bg-teal-100 mt-2">
-                        {cardContent.contents.annotation.map((p, i) => (
+                      {cardContent.contents.face2.length > 0 &&
+                        cardContent.contents.face2.map((p, i) => (
                           <div
+                            className="w-full pl-2"
                             key={i}
                             dangerouslySetInnerHTML={{ __html: p }}
                           ></div>
                         ))}
-                      </div>
-                    )}
+                      {cardContent.contents.annotation.length > 0 &&
+                        cardContent.contents.annotation.map((p, i) => (
+                          <div
+                            className="w-full pl-2"
+                            key={i}
+                            dangerouslySetInnerHTML={{ __html: p }}
+                          ></div>
+                        ))}
+                    </div>
 
                     {!!cardContent.memo && (
-                      <div className="w-full p-2 bg-teal-100 mt-2">
-                        {cardContent.memo}
+                      <div className="w-full p-2 bg-gray-100 mt-2">
+                        <div className="font-[500]">메모 :</div>
+                        <div className="w-full pl-2">{cardContent.memo}</div>
                       </div>
                     )}
                   </td>

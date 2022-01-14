@@ -38,7 +38,7 @@ const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, 
   return (
     <>
       <SettingOutlined size="small" onClick={showModal} style={{fontSize:"1rem"}} />
-      <Modal title="목차설정" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal footer={null} title="목차설정" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <ul style={{ display: "flex", listStyle: "none", justifyContent: "space-between", fontSize:"0.8rem", paddingLeft:"0" }}>
           <li></li>
           <li>목차명</li>
@@ -224,7 +224,7 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
           </Popover>
         </div>
         <div>
-            <Button size="small" icon={<Image src="/image/export_excel.png" width={"24px"} height={"24px"} alt="excel_export" />} onClick={() => excelExportHandler(index._id)} style={{border:"none"}}></Button>
+            <Button size="small" icon={<Image src="/image/export_excel.png" width={"24px"} height={"24px"} alt="excel_export" />} onClick={() => excelExportHandler(index._id)} style={{border:"none", marginTop:"3px"}}></Button>
         </div>
       </div>
     </>

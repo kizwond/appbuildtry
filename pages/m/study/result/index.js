@@ -1089,7 +1089,6 @@ const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
       width={"100%"}
       height={"calc(100vh - 40px)"}
       mask={false}
-      // closeIcon={null}
       visible={visible}
       onClose={closeDrawer}
       zIndex={10}

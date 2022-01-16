@@ -11,13 +11,14 @@ import {
   FileTextOutlined,
   CrownOutlined,
 } from "@ant-design/icons";
-import { Input, Avatar } from "antd";
+import { Divider, Avatar } from "antd";
 import React, { useEffect, useState } from "react";
 import { Drawer, Button } from "antd";
 import { useMutation } from "@apollo/client";
 
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../graphql/query/account";
+import Image from "next/image";
 
 const backgroundColor = "#428545";
 // const backgroundColor = "#565656";
@@ -54,7 +55,7 @@ const Nav = () => {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("username");
     console.log("here");
-    window.location.href = "/m";
+    // window.location.href = "/m";
   };
   const burgerSize = "1.3rem";
   return (
@@ -64,8 +65,7 @@ const Nav = () => {
           position: "relative",
           // background: backgroundColor,
           background: "rgb(68,102,209)",
-          background:
-            "linear-gradient(145deg, rgba(68,102,209,1) 0%, rgba(150,189,214,1) 94%, rgba(150,189,214,1) 100%)",
+          background: "linear-gradient(145deg, rgba(68,102,209,1) 0%, rgba(150,189,214,1) 94%, rgba(150,189,214,1) 100%)",
           width: "100%",
           height: 40,
           padding: 10,
@@ -79,10 +79,8 @@ const Nav = () => {
         }}
       >
         <div style={{ flexBasis: "33%" }}>
-          <Button onClick={showDrawer} style={{backgroundColor:"#ffffff00", border:"none"}} icon={<MenuOutlined
-            style={{ fontSize: burgerSize, color: fontColor }}
-          />}></Button>
-          
+          <Button onClick={showDrawer} style={{ backgroundColor: "#ffffff00", border: "none" }} icon={<MenuOutlined style={{ fontSize: burgerSize, color: fontColor }} />}></Button>
+
           <Drawer
             title={
               <>
@@ -90,9 +88,7 @@ const Nav = () => {
                   <Avatar size="small" icon={<UserOutlined />} />{" "}
                   <span style={{ fontSize: "1rem" }}>
                     {username}
-                    {username !== null
-                      ? "님!! 오셨쎄여?"
-                      : "로그인을 해주세요!!!"}
+                    {username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}
                   </span>
                 </div>
               </>
@@ -106,88 +102,58 @@ const Nav = () => {
           >
             <div
               style={{
-                width: "100%",
-                height: 50,
                 display: "flex",
-                margin: "auto",
+                width: "100%",
+                justifyContent: "space-between",
+                flexDirection: "column",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  justifyContent: "space-between",
-                  flexDirection: "column",
-                }}
-              >
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  {username == null && (
-                    <>
-                      <Link href="/m/account/login">
-                        <a style={linkStyleDrawer}>
-                          <UserOutlined style={{ marginRight: 10 }} />
-                          로그인
-                        </a>
-                      </Link>
-                      <Link href="/m/account/register">
-                        <a style={linkStyleDrawer}>
-                          <FileTextOutlined style={{ marginRight: 10 }} />
-                          회원가입
-                        </a>
-                      </Link>
-                    </>
-                  )}
-                  <Link href="/m/mybooks">
-                    <a style={linkStyleDrawer}>
-                      <ReadOutlined style={{ marginRight: 10 }} />
-                      마이북
-                    </a>
-                  </Link>
-
-                  <Link href="/m/mentoring">
-                    <a style={linkStyleDrawer}>
-                      <TeamOutlined style={{ marginRight: 10 }} />
-                      멘토링
-                    </a>
-                  </Link>
-                  <Link href="/bookstore">
-                    <a style={linkStyleDrawer}>
-                      <ShopOutlined style={{ marginRight: 10 }} />
-                      서점
-                    </a>
-                  </Link>
-                  <Link href="/m/challenges">
-                    <a style={linkStyleDrawer}>
-                      <CrownOutlined style={{ marginRight: 10 }} />
-                      도전출판
-                    </a>
-                  </Link>
-                  <Link href="/cart">
-                    <a style={linkStyleDrawer}>
-                      <ShoppingCartOutlined style={{ marginRight: 10 }} />
-                      장바구니
-                    </a>
-                  </Link>
-                  <Link href="/notification">
-                    <a style={linkStyleDrawer}>
-                      <BellOutlined style={{ marginRight: 10 }} />
-                      알림
-                    </a>
-                  </Link>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                <div onClick={() => (location.href = "/m/mybooks")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
+                  <Image src="/image/book_shelf.png" width={"20px"} height={"20px"} alt="excel_export" />
+                  <span style={{ marginLeft: "5px" }}>마이북</span>
                 </div>
-                {username !== null && (
-                  <>
-                    <Button
-                      size="medium"
-                      shape="round"
-                      style={{ width: "85%", fontSize: "1rem", margin: "auto" }}
-                      onClick={() => onClickLogout()}
-                    >
-                      로그아웃
-                    </Button>
-                  </>
-                )}
+                <div onClick={() => (location.href = "/m/mentoring")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
+                  <Image src="/image/mentor_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                  <span style={{ marginLeft: "5px" }}>멘토링</span>
+                </div>
+                <div onClick={() => (location.href = "/bookstore")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
+                  <Image src="/image/bookstore_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                  <span style={{ marginLeft: "5px" }}>서점</span>
+                </div>
+                <div onClick={() => (location.href = "/m/challenges")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
+                  <Image src="/image/ranking_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                  <span style={{ marginLeft: "5px" }}>도전출판</span>
+                </div>
+                <div onClick={() => (location.href = "/cart")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
+                  <Image src="/image/basket_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                  <span style={{ marginLeft: "5px" }}>장바구니</span>
+                </div>
+                <div onClick={() => (location.href = "/notification")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
+                  <Image src="/image/notification_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                  <span style={{ marginLeft: "5px" }}>알림</span>
+                </div>
               </div>
+              {username == null && (
+                <>
+                  <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+                  <div onClick={() => (location.href = "/m/account/login")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
+                    <Image src="/image/login_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                    <span style={{ marginLeft: "5px" }}>로그인</span>
+                  </div>
+                  <div onClick={() => (location.href = "/m/account/register")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
+                    <Image src="/image/register_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                    <span style={{ marginLeft: "5px" }}>회원가입</span>
+                  </div>                  
+                </>
+              )}
+              {username !== null && (
+                <>
+                  <Button size="medium" shape="round" style={{ width: "85%", fontSize: "14px", margin: "auto" }} onClick={() => onClickLogout()}>
+                    로그아웃
+                  </Button>
+                </>
+              )}
             </div>
           </Drawer>
         </div>
@@ -223,9 +189,7 @@ const Nav = () => {
             <span style={{ fontSize: "14px", color: "white" }}>K</span>
           </a>
         </Link>
-        <div
-          style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem" }}
-        ></div>
+        <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem" }}></div>
       </div>
     </>
   );
@@ -234,7 +198,8 @@ const Nav = () => {
 export default Nav;
 
 const linkStyleDrawer = {
+  width:"150px",
   color: "#5b5b5b",
-  padding: 10,
-  fontSize: "1rem",
+  padding: 5,
+  paddingLeft: 10,
 };

@@ -37,48 +37,43 @@ const CardNumberTable = ({ numberOfCards, more }) => {
   const totalOfFinished = getTotalNumber("finished");
 
   return (
-    <table className="w-full border border-collapse border-gray-200 table-fixed">
+    <table className="w-full table-fixed">
       <thead>
-        <tr>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+        <tr className="border-y border-collapse border-y-gray-200">
+          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
             기존 상태
           </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            선택
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            투입
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            시작
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            종료
-          </th>
+          <th className="text-[1rem] font-normal bg-slate-100">선택</th>
+          <th className="text-[1rem] font-normal bg-slate-100">투입</th>
+          <th className="text-[1rem] font-normal bg-slate-100">시작</th>
+          <th className="text-[1rem] font-normal bg-slate-100">종료</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+        <tr className="border-b border-collapse border-b-gray-200">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             Total
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             {totalOfSelected}
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             {totalOfInserted}
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             {totalOfStarted}
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal text-center">
             {totalOfFinished}
           </td>
         </tr>
         {more &&
           ["yet", "ing", "hold", "completed"].map((status) => (
-            <tr key={status}>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            <tr
+              key={status}
+              className="border-b border-collapse border-b-gray-200"
+            >
+              <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                 {status === "yet"
                   ? "학습전"
                   : status === "ing"
@@ -89,16 +84,16 @@ const CardNumberTable = ({ numberOfCards, more }) => {
                   ? "완료"
                   : "오류"}
               </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+              <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                 {numberOfCards[status].selected}
               </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+              <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                 {numberOfCards[status].inserted}
               </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+              <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                 {numberOfCards[status].started}
               </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+              <td className="text-[1rem] py-[4px] font-normal text-center">
                 {numberOfCards[status].finished}
               </td>
             </tr>
@@ -132,7 +127,7 @@ const ClickedTimesByDifficultyChart = ({ clickedTimesByDifficulty }) => {
             );
             return (
               <tr key={title}>
-                <td className="w-[80px] text-[1rem] border-r border-r-slate-900">
+                <td className="w-[80px] text-[1rem] border-r border-r-slate-400">
                   <div className="flex justify-end pr-[8px]">{title}</div>
                 </td>
                 <td>
@@ -179,54 +174,47 @@ const ChangedCardStatusTable = ({ changedCardStatus, numberOfCards, more }) => {
     numberOfCards.ing.inserted;
 
   return (
-    <table className="w-full border border-collapse border-gray-200 table-fixed">
+    <table className="w-full table-fixed">
       <thead>
-        <tr>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+        <tr className="border-y border-collapse border-y-gray-200">
+          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
             기존 상태
           </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            투입카드
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            학습전
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            학습중
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            보류
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            완료
-          </th>
+          <th className="text-[1rem] font-normal bg-slate-100">투입카드</th>
+          <th className="text-[1rem] font-normal bg-slate-100">학습전</th>
+          <th className="text-[1rem] font-normal bg-slate-100">학습중</th>
+          <th className="text-[1rem] font-normal bg-slate-100">보류</th>
+          <th className="text-[1rem] font-normal bg-slate-100">완료</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+        <tr className="border-b border-collapse border-b-gray-200">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200  text-center">
             Total
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             {totalNumberOfInserted}
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             {totalOfYet}
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             {totalOfIng}
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             {totalOfHold}
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal text-center">
             {totalOfCompleted}
           </td>
         </tr>
         {more &&
           ["yet", "ing", "hold", "completed"].map((preStatus) => (
-            <tr key={preStatus}>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            <tr
+              key={preStatus}
+              className="border-b border-collapse border-b-gray-200"
+            >
+              <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                 {preStatus === "yet"
                   ? "학습전"
                   : preStatus === "ing"
@@ -237,13 +225,13 @@ const ChangedCardStatusTable = ({ changedCardStatus, numberOfCards, more }) => {
                   ? "완료"
                   : "오류"}
               </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+              <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                 {numberOfCards[preStatus].inserted}
               </td>
               {["yet", "ing", "hold", "completed"].map((afterStatus) => (
                 <React.Fragment key={`afterStatus:${afterStatus}`}>
                   {afterStatus === preStatus ? (
-                    <td className="text-[1rem] font-normal text-stone-500 bg-zinc-300 border border-collapse border-gray-200 text-center">
+                    <td className="text-[1rem] font-normal text-stone-500 bg-zinc-300 border-r border-collapse border-r-gray-200 text-center last:border-r-0">
                       {numberOfCards[preStatus].inserted -
                         Object.values(changedCardStatus[preStatus]).reduce(
                           (a, b) => a + b,
@@ -251,7 +239,7 @@ const ChangedCardStatusTable = ({ changedCardStatus, numberOfCards, more }) => {
                         )}
                     </td>
                   ) : (
-                    <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+                    <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200 text-center last:border-r-0">
                       {changedCardStatus[preStatus][afterStatus]}
                     </td>
                   )}
@@ -265,49 +253,40 @@ const ChangedCardStatusTable = ({ changedCardStatus, numberOfCards, more }) => {
 };
 const ChangedFlagTable = ({ changedFlag }) => {
   return (
-    <table className="w-full border border-collapse border-gray-200 table-fixed">
+    <table className="w-full table-fixed">
       <thead>
-        <tr>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
+        <tr className="border-y border-collapse border-y-gray-200">
+          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
             플래그
           </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            flag0
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            flag1
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            flag2
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            flag3
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            flag4
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
-            flag5
-          </th>
+          <th className="text-[1rem] font-normal bg-slate-100">flag0</th>
+          <th className="text-[1rem] font-normal bg-slate-100">flag1</th>
+          <th className="text-[1rem] font-normal bg-slate-100">flag2</th>
+          <th className="text-[1rem] font-normal bg-slate-100">flag3</th>
+          <th className="text-[1rem] font-normal bg-slate-100">flag4</th>
+          <th className="text-[1rem] font-normal bg-slate-100">flag5</th>
         </tr>
       </thead>
       <tbody>
         {["flag0", "flag1", "flag2", "flag3", "flag4", "flag5"].map(
           (preFlag) => (
-            <tr key={preFlag}>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            <tr
+              key={preFlag}
+              className="border-b border-collapse border-b-gray-200"
+            >
+              <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                 {preFlag}
               </td>
               {["flag0", "flag1", "flag2", "flag3", "flag4", "flag5"].map(
                 (afterFlag) => (
                   <React.Fragment key={`afterFlag:${afterFlag}`}>
                     {afterFlag === preFlag ? (
-                      <td className="text-[1rem] font-normal text-stone-500 bg-zinc-300 border border-collapse border-gray-200 text-center">
+                      <td className="text-[1rem] font-normal text-stone-500 bg-zinc-300 border-r border-collapse border-r-gray-200 text-center last:border-r-0">
                         {Boolean(Number(changedFlag[preFlag][afterFlag])) &&
                           changedFlag[preFlag][afterFlag]}
                       </td>
                     ) : (
-                      <td className="text-[1rem] font-normal border border-collapse border-gray-200 text-center">
+                      <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200 text-center last:border-r-0">
                         {Boolean(Number(changedFlag[preFlag][afterFlag])) &&
                           changedFlag[preFlag][afterFlag]}
                       </td>
@@ -327,29 +306,27 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
   const averageOfGap =
     Math.round((changedLevel.total.gap / changedLevel.total.count) * 100) / 100;
   return (
-    <table className="w-full border border-collapse border-gray-200 table-fixed">
+    <table className="w-full table-fixed">
       <thead>
-        <tr>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px]">
-            종류
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+        <tr className="border-y border-collapse border-y-gray-200">
+          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">종류</th>
+          <th className="text-[1rem] font-normal bg-slate-100">
             {"'알겠음' 카드수"}
           </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100">
+          <th className="text-[1rem] font-normal bg-slate-100">
             레벨 변동값 평균
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+        <tr className="border-b border-collapse border-b-gray-200">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             Total
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
             {changedLevel.total.count}
           </td>
-          <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+          <td className="text-[1rem] py-[4px] font-normal text-center">
             {averageOfGap > 0
               ? "+" + averageOfGap
               : averageOfGap < 0
@@ -359,18 +336,21 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
         </tr>
         {more &&
           ["up", "down"].map((clickedButton) => (
-            <tr key={clickedButton}>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+            <tr
+              key={clickedButton}
+              className="border-b border-collapse border-b-gray-200"
+            >
+              <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                 {clickedButton === "up"
                   ? "Up"
                   : clickedButton === "down"
                   ? "Down"
                   : "오류"}
               </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+              <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                 {changedLevel[clickedButton].count}
               </td>
-              <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center">
+              <td className="text-[1rem] py-[4px] font-normal text-center">
                 {Math.round(
                   (changedLevel[clickedButton].gap /
                     changedLevel[clickedButton].count) *
@@ -539,11 +519,11 @@ const StyledAntSelect = styled(Select)`
 `;
 
 const SummaryTag = ({ title, content }) => (
-  <div className="flex flex-col gap-[2px] ">
+  <div className="flex flex-col gap-[2px]">
     <div className="text-base text-center font-[600] border border-gray-200  bg-slate-100">
       {title}
     </div>
-    <div className="text-base text-center font-[600] text-[1.16667rem]  py-[10px] border border-gray-200 ">
+    <div className="text-base text-center font-[600] text-[1.16667rem]  py-[10px] border border-gray-200">
       {content}
     </div>
   </div>
@@ -669,19 +649,15 @@ const TableForTop5ClickedResult = ({
   return (
     <table className="w-full table-fixed" cellPadding={0} cellSpacing={0}>
       <thead>
-        <tr className="border-y border-y-gray-200 ">
-          <th className="text-[1rem] font-normal border-collapse border-gray-200 bg-slate-100 w-[30px] border-l-0">
-            순위
-          </th>
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 border-l-0">
-            앞면
-          </th>
+        <tr className="border-y border-collapse border-y-gray-200">
+          <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
+          <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
           {contentType !== "newCards" && (
-            <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[70px] border-l-0">
+            <th className="text-[1rem] font-normal bg-slate-100 w-[23%]">
               {contentType === "clickedTimes" ? "총 학습횟수" : "총 학습시간"}
             </th>
           )}
-          <th className="text-[1rem] font-normal border border-collapse border-gray-200 bg-slate-100 w-[60px] border-l-0 border-r-0">
+          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
             카드보기
           </th>
         </tr>
@@ -690,11 +666,11 @@ const TableForTop5ClickedResult = ({
         {cards.length > 0 &&
           cards.map((card, index) => (
             <Fragment key={card._id}>
-              <tr>
-                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-t-0">
+              <tr className="border-b border-collapse border-b-gray-200">
+                <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                   {index + 1}
                 </td>
-                <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-left px-[8px] truncate border-l-0 border-t-0">
+                <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
                   {new String(
                     contents.find(
                       (content) =>
@@ -704,12 +680,12 @@ const TableForTop5ClickedResult = ({
                   ).replace(/(<([^>]+)>)/gi, "")}
                 </td>
                 {contentType !== "newCards" && (
-                  <td className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-t-0">
+                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                     {getThirdCol(card)}
                   </td>
                 )}
                 <td
-                  className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-r-0 border-l-0 border-t-0"
+                  className="text-[1rem] py-[4px] font-normal text-center"
                   onClick={() => {
                     if (cardIdForMore !== card._id) {
                       setCardIdForMore(card._id);
@@ -734,10 +710,10 @@ const TableForTop5ClickedResult = ({
                 </td>
               </tr>
               {cardContent && cardIdForMore === card._id && (
-                <tr>
+                <tr className="border-b border-collapse border-b-gray-200">
                   <td
                     colSpan={contentType !== "newCards" ? 4 : 3}
-                    className="p-2 border border-collapse border-gray-200 border-l-0 border-r-0 border-t-0 text-[1rem]"
+                    className="p-2 text-[1rem]"
                   >
                     {!!cardContent.userFlag && (
                       <div className="w-full p-2 bg-gray-100">
@@ -795,9 +771,9 @@ const TableForTop5ClickedResult = ({
             </Fragment>
           ))}
         {cards.length === 0 && contentType === "newCards" && (
-          <tr>
+          <tr className="border-b border-collapse border-b-gray-200">
             <td
-              className="text-[1rem] py-[4px] font-normal border border-collapse border-gray-200 text-center border-l-0 border-r-0"
+              className="text-[1rem] py-[4px] font-normal text-center"
               colSpan={3}
             >
               학습 중 새로 만든 카드가 없습니다.
@@ -1111,9 +1087,8 @@ const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
       }
       placement="bottom"
       width={"100%"}
-      height={"calc(100vh - 40px)"}
+      height={"calc(100vh - 39px)"}
       mask={false}
-      // closeIcon={null}
       visible={visible}
       onClose={closeDrawer}
       zIndex={10}
@@ -1136,7 +1111,7 @@ const SlidingPage = ({ visible, closeDrawer, cards, contentType }) => {
 };
 
 const DrawerWrapper = styled(Drawer)`
-  top: 40px;
+  top: 39px;
   /* height: calc(100vh - 40px); */
   .ant-drawer-header {
     padding: 8px 12px 4px 8px;

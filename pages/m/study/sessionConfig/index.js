@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -8,7 +9,6 @@ import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../..
 import {
   computeNumberOfAllFilteredCards,
   computeNumberOfCardsPerBook,
-  sortFilteredCards,
 } from /* --------------- */ "../../../../components/books/study/sessionConfig/logic/computeFunctions";
 import useSessionConfig from "../../../../components/books/study/sessionConfig/useHook/useSessionConfig";
 
@@ -20,6 +20,7 @@ import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/boo
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useCustomCallbackToSessionStore } from "../../../../components/books/study/mainPage/useHooks/useCustomCallbackToSessionStorage";
+import { message, Tooltip } from "antd";
 
 const StudySessionConfig = ({
   isRefreshPage,
@@ -263,11 +264,69 @@ const StudySessionConfig = ({
             </StyledSessionConfig>
           </StyledDiv>
         )}
+        <StyledBottomBar>
+          <div
+            className="text-[1.2rem]"
+            onClick={() => {
+              if (activatedComponent === "index") {
+                changeActivatedComponent("config");
+              } else {
+                changeActivatedComponent("index");
+              }
+            }}
+          >
+            {activatedComponent === "index" ? "다음" : "이전"}
+          </div>
+          <div
+            className={
+              data && numberOfFilteredCards.length > 0
+                ? "text-[1.2rem]"
+                : "text-[1.2rem] text-gray-300"
+            }
+            onClick={() => {
+              if (numberOfFilteredCards.length > 0) {
+                submitCreateSessionConfigToServer();
+              } else {
+                message.error("선택하신 책이 없습니다.", 0.7);
+              }
+            }}
+          >
+            시작
+          </div>
+        </StyledBottomBar>
       </M_Layout>
     </>
   );
 };
 export default StudySessionConfig;
+
+const StyledBottomBar = styled.div`
+  overflow: hidden;
+  /* border: 1px solid #d1d1d1; */
+  border-top: 1px solid #e1e1e1;
+  background-color: #f5f5f5;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 4.2rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  /* padding: 8px 0; */
+  z-index: 999;
+
+  & > div {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 500;
+  }
+  & > div:first-child {
+    border-right: 1px solid #e1e1e1;
+  }
+`;
 
 export function getServerSideProps({ query }) {
   if (query.selectedBooks) {
@@ -291,6 +350,7 @@ export function getServerSideProps({ query }) {
 
 const StyledDiv = styled.div`
   margin: 0 auto;
+  height: calc(100vh - 90px);
   max-width: 1024px;
   min-width: 360px;
   padding-top: 40px;

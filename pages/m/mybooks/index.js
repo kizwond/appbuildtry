@@ -11,7 +11,7 @@ import styled from "styled-components";
 import M_Layout from "../../../components/layout/M_Layout";
 import M_StudyFavoriteBooksTable from "../../../components/books/study/mainPage/booksTable/M_StudyFavoriteBooksTable";
 import M_StudyBooksTable from "../../../components/books/study/mainPage/booksTable/M_StudyBooksTable";
-import { Popover, Tooltip } from "antd";
+import { message, Popover, Tooltip } from "antd";
 
 const M_StudyMainPage = () => {
   const router = useRouter();
@@ -118,9 +118,25 @@ const M_StudyMainPage = () => {
             </div>
           </StyledRowMaxWidth>
           <StyledBottomBar>
-            <div onClick={directStart}>바로 보기</div>
+            <div
+              onClick={() => {
+                if (selectedBooks.length > 0) {
+                  directStart();
+                } else {
+                  message.error("선택하신 카드가 없습니다.", 0.7);
+                }
+              }}
+            >
+              바로 보기
+            </div>
 
-            <div>
+            <div
+              onClick={() => {
+                if (!(selectedBooks.length > 0)) {
+                  message.error("선택하신 카드가 없습니다.", 0.7);
+                }
+              }}
+            >
               {selectedBooks.length > 0 ? (
                 <Link
                   as="/m/study/sessionConfig"
@@ -137,13 +153,7 @@ const M_StudyMainPage = () => {
                   <a>세션 설정 후 시작</a>
                 </Link>
               ) : (
-                <Tooltip
-                  title="선택한 책이 없습니다."
-                  color={"#2e2e2e"}
-                  trigger={["click"]}
-                >
-                  <a>세션 설정 후 시작</a>
-                </Tooltip>
+                <a>세션 설정 후 시작</a>
               )}
             </div>
           </StyledBottomBar>

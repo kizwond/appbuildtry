@@ -12,10 +12,8 @@ import M_Layout from "../../../../components/layout/M_Layout";
 import { Drawer, Modal, Select } from "antd";
 import moment from "moment";
 import { useMemo } from "react";
-import { ArrowRightOutlined } from "@ant-design/icons";
 import prettyMilliseconds from "pretty-ms";
 import styled from "styled-components";
-import { useRef } from "react";
 
 const ResultForStudy = ({ title, content }) => (
   <div className="w-full">
@@ -39,7 +37,7 @@ const CardNumberTable = ({ numberOfCards, more }) => {
   return (
     <table className="w-full table-fixed">
       <thead>
-        <tr className="border-y border-collapse border-y-gray-200">
+        <tr className="border-collapse border-y border-y-gray-200">
           <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
             기존 상태
           </th>
@@ -122,9 +120,12 @@ const ClickedTimesByDifficultyChart = ({ clickedTimesByDifficulty }) => {
       <table className="w-full h-full">
         <tbody>
           {difficulties.map(({ title, color }) => {
-            const percentage = Math.round(
-              (clickedTimesByDifficulty[title] / maxNumber) * 100
-            );
+            const percentage =
+              maxNumber === 0
+                ? 0
+                : Math.round(
+                    (clickedTimesByDifficulty[title] / maxNumber) * 100
+                  );
             return (
               <tr key={title}>
                 <td className="w-[80px] text-[1rem] border-r border-r-slate-400">
@@ -176,7 +177,7 @@ const ChangedCardStatusTable = ({ changedCardStatus, numberOfCards, more }) => {
   return (
     <table className="w-full table-fixed">
       <thead>
-        <tr className="border-y border-collapse border-y-gray-200">
+        <tr className="border-collapse border-y border-y-gray-200">
           <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
             기존 상태
           </th>
@@ -255,7 +256,7 @@ const ChangedFlagTable = ({ changedFlag }) => {
   return (
     <table className="w-full table-fixed">
       <thead>
-        <tr className="border-y border-collapse border-y-gray-200">
+        <tr className="border-collapse border-y border-y-gray-200">
           <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
             플래그
           </th>
@@ -308,7 +309,7 @@ const ChangedLevelTable = ({ changedLevel, more }) => {
   return (
     <table className="w-full table-fixed">
       <thead>
-        <tr className="border-y border-collapse border-y-gray-200">
+        <tr className="border-collapse border-y border-y-gray-200">
           <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">종류</th>
           <th className="text-[1rem] font-normal bg-slate-100">
             {"'알겠음' 카드수"}
@@ -649,7 +650,7 @@ const TableForTop5ClickedResult = ({
   return (
     <table className="w-full table-fixed" cellPadding={0} cellSpacing={0}>
       <thead>
-        <tr className="border-y border-collapse border-y-gray-200">
+        <tr className="border-collapse border-y border-y-gray-200">
           <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
           <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
           {contentType !== "newCards" && (
@@ -760,7 +761,7 @@ const TableForTop5ClickedResult = ({
                     </div>
 
                     {!!cardContent.memo && (
-                      <div className="w-full p-2 bg-gray-100 mt-2">
+                      <div className="w-full p-2 mt-2 bg-gray-100">
                         <div className="font-[500]">메모 :</div>
                         <div className="w-full pl-2">{cardContent.memo}</div>
                       </div>

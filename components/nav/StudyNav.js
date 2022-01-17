@@ -85,23 +85,10 @@ const StudyNav = ({ mode }) => {
           <Drawer
             title={
               <>
-                <div style={{ height: "100%", padding: "0", display:"flex", alignItems:"baseline" }}>
-                  <Avatar size="small" icon={<UserOutlined />} />{" "}
-                  <span style={{ fontSize: "1rem", color: "grey", marginLeft:"5px" }}>
-                    <span style={{ fontSize: "1rem", color: "black", position: "relative" }}>
-                      <span
-                        style={{
-                          transformOrigin: "left top",
-                          position: "absolute",
-                          left: "5px",
-                          top: "-5px",
-                        }}
-                      >
-                        {/* <sup style={{ fontSize: "0.8rem", color:"grey" }}>welcome!!!</sup> */}
-                      </span>
-                      {username}
-                    </span>
-
+                <div style={{ height: "100%", padding: "0" }}>
+                  <Avatar size="small" icon={<UserOutlined />} />
+                  <span style={{ fontSize: "1rem", color: "grey", marginLeft:"10px"  }}>
+                    <span style={{ color: "black" }}>{username}</span>
                     {username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}
                   </span>
                 </div>
@@ -113,6 +100,7 @@ const StudyNav = ({ mode }) => {
             visible={visible}
             width={200}
             zIndex={20000}
+            className="navDrawer"
             bodyStyle={{ backgroundColor: "#f0f0f0", padding: 10 }}
             headerStyle={{ backgroundColor: "#f0f0f0", borderBottom: "1px solid #e7e7e7" }}
           >

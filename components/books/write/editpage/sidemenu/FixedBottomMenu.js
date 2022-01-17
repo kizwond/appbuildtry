@@ -78,6 +78,7 @@ const FloatingMenu = ({
   const onFinishExcelExport = () => {
     const indexId = localStorage.getItem("first_index")
     console.log(indexId)
+    console.log(indexSetId)
     excelexport(indexId);
   };
 

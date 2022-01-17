@@ -85,8 +85,8 @@ const Nav = () => {
             title={
               <>
                 <div style={{ height: "100%", padding: "0" }}>
-                  <Avatar size="small" icon={<UserOutlined />} />{" "}
-                  <span style={{ fontSize: "1rem", color: "grey" }}>
+                  <Avatar size="small" icon={<UserOutlined />} />
+                  <span style={{ fontSize: "1rem", color: "grey", marginLeft:"10px" }}>
                     <span style={{ color: "black" }}>{username}</span>
                     {username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}
                   </span>
@@ -99,6 +99,7 @@ const Nav = () => {
             visible={visible}
             width={200}
             zIndex={20000}
+            className="navDrawer"
             bodyStyle={{ backgroundColor: "#f0f0f0", padding:10 }}
             headerStyle={{ backgroundColor: "#f0f0f0", borderBottom: "1px solid #e7e7e7" }}
           >

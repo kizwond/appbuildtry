@@ -1223,4 +1223,8 @@ audio {
   /* 100% {margin-left:0;} */
 }
 
+.navDrawer .ant-drawer-content-wrapper .ant-drawer-content{
+  background-color: #ffffff00 !important;
+}
+
 

@@ -23,6 +23,18 @@ const FlipMode = () => {
   const [underlineToggle, setUnderlineToggle] = useState(false);
   const [highlightToggle, setHighlightToggle] = useState(false);
 
+  const [face1row1, setFace1row1] = useState(true);
+  const [face1row2, setFace1row2] = useState(true);
+  const [face1row3, setFace1row3] = useState(true);
+  const [face1row4, setFace1row4] = useState(true);
+  const [face1row5, setFace1row5] = useState(true);
+
+  const [face2row1, setFace2row1] = useState(true);
+  const [face2row2, setFace2row2] = useState(true);
+  const [face2row3, setFace2row3] = useState(true);
+  const [face2row4, setFace2row4] = useState(true);
+  const [face2row5, setFace2row5] = useState(true);
+
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var session_id_temp = sessionStorage.getItem("session_Id");
@@ -326,6 +338,33 @@ const FlipMode = () => {
   function updateStudyToolApply(data) {
     setCardTypeSets(data);
   }
+
+  function face1On(row, bool) {
+    if (row === "1") {
+      setFace1row1(bool);
+    } else if (row === "2") {
+      setFace1row2(bool);
+    } else if (row === "3") {
+      setFace1row3(bool);
+    } else if (row === "4") {
+      setFace1row4(bool);
+    } else if (row === "5") {
+      setFace1row5(bool);
+    }
+  }
+  function face2On(row, bool) {
+    if (row === "1") {
+      setFace2row1(bool);
+    } else if (row === "2") {
+      setFace2row2(bool);
+    } else if (row === "3") {
+      setFace2row3(bool);
+    } else if (row === "4") {
+      setFace2row4(bool);
+    } else if (row === "5") {
+      setFace2row5(bool);
+    }
+  }
   return (
     <StudyLayout mode="뒤집기">
       <div
@@ -338,13 +377,31 @@ const FlipMode = () => {
       >
         {contentsList.length > 0 && (
           <>
-            <FlipContainer cardListStudying={cardListStudying} contentsList={contentsList} sessionScope={sessionScope} levelConfigs={levelConfigs} cardTypeSets={cardTypeSets} />
+            <FlipContainer
+              face1row1={face1row1}
+              face1row2={face1row2}
+              face1row3={face1row3}
+              face1row4={face1row4}
+              face1row5={face1row5}
+              face2row1={face2row1}
+              face2row2={face2row2}
+              face2row3={face2row3}
+              face2row4={face2row4}
+              face2row5={face2row5}
+              cardListStudying={cardListStudying}
+              contentsList={contentsList}
+              sessionScope={sessionScope}
+              levelConfigs={levelConfigs}
+              cardTypeSets={cardTypeSets}
+            />
           </>
         )}
       </div>
       {data && (
         <>
           <FixedBottomMenuFlipMode
+            face1On={face1On}
+            face2On={face2On}
             hide={hide}
             underline={underline}
             highlight={highlight}

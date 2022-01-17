@@ -26,6 +26,8 @@ const FloatingMenu = ({
   setHiddenToggle,
   setUnderlineToggle,
   setHighlightToggle,
+  face1On,
+  face2On
 }) => {
   const [bottomVisible, setBottomVisible] = useState(false);
 
@@ -377,7 +379,7 @@ const FloatingMenu = ({
                 style={{ padding: 20, display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap: "wrap", fontSize: "0.8rem", color: "#7a7a7a" }}
               >
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <StudyGeneralSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} />
+                  <StudyGeneralSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} face1On={face1On} face2On={face2On}/>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                   <StudyToolSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} />

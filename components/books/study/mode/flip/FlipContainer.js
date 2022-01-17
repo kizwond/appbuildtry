@@ -35,13 +35,29 @@ const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditor
   ssr: false,
 });
 
-const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConfigs, cardTypeSets }) => {
+const FlipContainer = ({
+  cardListStudying,
+  contentsList,
+  sessionScope,
+  levelConfigs,
+  cardTypeSets,
+  face1row1,
+  face1row2,
+  face1row3,
+  face1row4,
+  face1row5,
+  face2row1,
+  face2row2,
+  face2row3,
+  face2row4,
+  face2row5,
+}) => {
   const router = useRouter();
   const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
   function showdataafterupdateresult(data) {
     console.log("data", data);
     if (data.session_updateResults.status === "200") {
-      sessionStorage.setItem("endTimeOfSession", new Date())
+      sessionStorage.setItem("endTimeOfSession", new Date());
       router.push("/m/study/result");
     }
   }
@@ -79,6 +95,16 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
         sessionScope={sessionScope}
         levelConfigs={levelConfigs}
         cardTypeSets={cardTypeSets}
+        face1row1={face1row1}
+        face1row2={face1row2}
+        face1row3={face1row3}
+        face1row4={face1row4}
+        face1row5={face1row5}
+        face2row1={face2row1}
+        face2row2={face2row2}
+        face2row3={face2row3}
+        face2row4={face2row4}
+        face2row5={face2row5}
       />
     </>
   );
@@ -1177,7 +1203,7 @@ class Container extends Component {
         });
         return show_contents;
       });
-      var face1Contents = card_details_session.map((content,index) => {
+      var face1Contents = card_details_session.map((content, index) => {
         const currentSeq = Number(sessionStorage.getItem("card_seq"));
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
@@ -1245,6 +1271,7 @@ class Container extends Component {
                                 key={`face1_row${index + 1}`}
                                 id={`face1_row${index + 1}`}
                                 style={{
+                                  visibility: `${this.props[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
                                   backgroundColor: row_style.face1[index].background.color,
                                   marginTop: row_style.face1[index].outer_margin.top,
                                   marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -1322,6 +1349,7 @@ class Container extends Component {
                                 className="face1"
                                 key={`face1_row${index + 1}`}
                                 style={{
+                                  visibility: `${this.props[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
                                   backgroundColor: row_style.face1[index].background.color,
                                   marginTop: row_style.face1[index].outer_margin.top,
                                   marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -1398,6 +1426,7 @@ class Container extends Component {
                                 className="face1"
                                 key={`face1_row${index + 1}`}
                                 style={{
+                                  visibility: `${this.props[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
                                   backgroundColor: row_style.face1[index].background.color,
                                   marginTop: row_style.face1[index].outer_margin.top,
                                   marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -1596,6 +1625,7 @@ class Container extends Component {
                                   key={`face2_row${index + 1}`}
                                   id={`face2_row${index + 1}`}
                                   style={{
+                                    visibility: `${this.props[`face2row${index + 1}`] === false ? "hidden" : "visible"}`,
                                     backgroundColor: row_style.face2[index].background.color,
                                     marginTop: row_style.face2[index].outer_margin.top,
                                     marginBottom: row_style.face2[index].outer_margin.bottom,
@@ -1683,6 +1713,7 @@ class Container extends Component {
                                   // id={`face2_row${index + 1}`}
                                   value={item}
                                   style={{
+                                    visibility: `${this.props[`face2row${index + 1}`] === false ? "hidden" : "visible"}`,
                                     backgroundColor: row_style.face2[index].background.color,
                                     marginTop: row_style.face2[index].outer_margin.top,
                                     marginBottom: row_style.face2[index].outer_margin.bottom,
@@ -1741,7 +1772,7 @@ class Container extends Component {
       <>
         <div style={{ height: "100%", display: "flex", flexDirection: "column", marginBottom: "50px" }}>
           <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-            <div style={{ flexGrow: 1, color:"#8b8b8b" }}>
+            <div style={{ flexGrow: 1, color: "#8b8b8b" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div
                   style={{
@@ -1883,39 +1914,40 @@ class Container extends Component {
 
 const CalculateIf = ({ currentSeq, levelConfigs }) => {
   const estimate = calculateStudyStatus(null, "prediction", currentSeq, null, levelConfigs);
-  const min = (estimate.needStudyTimeGap / 60000)
-  const hour = (min/60)
-  const day = (hour/24)
-  const month = (day/30)
-  const year = (month/12)
-  if(min < 60){
+  const min = estimate.needStudyTimeGap / 60000;
+  const hour = min / 60;
+  const day = hour / 24;
+  const month = day / 30;
+  const year = month / 12;
+  if (min < 60) {
     var time = min.toFixed();
-    var unit = "분"
-  } else if(min > 60){
-    if(hour < 24){
+    var unit = "분";
+  } else if (min > 60) {
+    if (hour < 24) {
       time = hour.toFixed();
-      unit = "시간"
-    } else if(hour > 24){
-      if(day < 30){
+      unit = "시간";
+    } else if (hour > 24) {
+      if (day < 30) {
         time = day.toFixed();
-        unit= "일"
-      } else if(day > 30){
-        if(month < 12){
+        unit = "일";
+      } else if (day > 30) {
+        if (month < 12) {
           time = month.toFixed();
-          unit = "달"
-        } else if(month > 12){
+          unit = "달";
+        } else if (month > 12) {
           time = year.toFixed();
-          unit = "년"
+          unit = "년";
         }
       }
     }
-
   }
-  
-  
+
   return (
     <>
-      <span>[+{time}{unit}]</span>
+      <span>
+        [+{time}
+        {unit}]
+      </span>
     </>
   );
 };
@@ -1933,4 +1965,3 @@ const contentsDisplay = {
   padding: "10px",
   alignItems: "center",
 };
-

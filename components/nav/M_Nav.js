@@ -86,8 +86,8 @@ const Nav = () => {
               <>
                 <div style={{ height: "100%", padding: "0" }}>
                   <Avatar size="small" icon={<UserOutlined />} />{" "}
-                  <span style={{ fontSize: "1rem" }}>
-                    {username}
+                  <span style={{ fontSize: "1rem", color: "grey" }}>
+                    <span style={{ color: "black" }}>{username}</span>
                     {username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}
                   </span>
                 </div>
@@ -99,6 +99,8 @@ const Nav = () => {
             visible={visible}
             width={170}
             zIndex={20000}
+            bodyStyle={{ backgroundColor: "#f0f0f0" }}
+            headerStyle={{ backgroundColor: "#f0f0f0", borderBottom: "1px solid #e7e7e7" }}
           >
             <div
               style={{
@@ -108,52 +110,62 @@ const Nav = () => {
                 flexDirection: "column",
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                <div onClick={() => (location.href = "/m/mybooks")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
-                  <Image src="/image/book_shelf.png" width={"20px"} height={"20px"} alt="excel_export" />
-                  <span style={{ marginLeft: "5px" }}>마이북</span>
-                </div>
-                <div onClick={() => (location.href = "/m/mentoring")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
-                  <Image src="/image/mentor_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
-                  <span style={{ marginLeft: "5px" }}>멘토링</span>
-                </div>
-                <div onClick={() => (location.href = "/bookstore")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
-                  <Image src="/image/bookstore_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
-                  <span style={{ marginLeft: "5px" }}>서점</span>
-                </div>
-                <div onClick={() => (location.href = "/m/challenges")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
-                  <Image src="/image/ranking_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
-                  <span style={{ marginLeft: "5px" }}>도전출판</span>
-                </div>
-                <div onClick={() => (location.href = "/cart")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
-                  <Image src="/image/basket_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
-                  <span style={{ marginLeft: "5px" }}>장바구니</span>
-                </div>
-                <div onClick={() => (location.href = "/notification")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
-                  <Image src="/image/notification_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
-                  <span style={{ marginLeft: "5px" }}>알림</span>
-                </div>
-              </div>
-              {username == null && (
-                <>
-                  <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
-                  <div onClick={() => (location.href = "/m/account/login")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
-                    <Image src="/image/login_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
-                    <span style={{ marginLeft: "5px" }}>로그인</span>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>STUDY</div>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginBottom: "10px", backgroundColor: "white", borderRadius: "5px" }}>
+                  <div onClick={() => (location.href = "/m/mybooks")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                    <Image src="/image/book_shelf.png" width={"20px"} height={"20px"} alt="excel_export" />
+                    <span style={{ marginLeft: "10px" }}>마이북</span>
                   </div>
-                  <div onClick={() => (location.href = "/m/account/register")} style={{ ...linkStyleDrawer, display: "flex", alignItems: "center" }}>
-                    <Image src="/image/register_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
-                    <span style={{ marginLeft: "5px" }}>회원가입</span>
-                  </div>                  
-                </>
-              )}
-              {username !== null && (
-                <>
-                  <Button size="medium" shape="round" style={{ width: "85%", fontSize: "14px", margin: "auto" }} onClick={() => onClickLogout()}>
-                    로그아웃
-                  </Button>
-                </>
-              )}
+                  <div onClick={() => (location.href = "/m/mentoring")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                    <Image src="/image/mentor_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                    <span style={{ marginLeft: "10px" }}>멘토링</span>
+                  </div>
+                </div>
+                <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>SHOP</div>
+                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px" }}>
+                  <div onClick={() => (location.href = "/bookstore")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                    <Image src="/image/bookstore_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                    <span style={{ marginLeft: "10px" }}>서점</span>
+                  </div>
+                  <div onClick={() => (location.href = "/m/challenges")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                    <Image src="/image/ranking_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                    <span style={{ marginLeft: "10px" }}>도전출판</span>
+                  </div>
+                  <div onClick={() => (location.href = "/cart")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                    <Image src="/image/basket_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                    <span style={{ marginLeft: "10px" }}>장바구니</span>
+                  </div>
+                </div>
+                <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>ACCOUNT</div>
+                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px" }}>
+                  <div onClick={() => (location.href = "/notification")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                    <Image src="/image/notification_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                    <span style={{ marginLeft: "10px" }}>알림</span>
+                  </div>
+                  {username == null && (
+                    <>
+                      <div onClick={() => (location.href = "/m/account/login")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                        <Image src="/image/login_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                        <span style={{ marginLeft: "10px" }}>로그인</span>
+                      </div>
+                      <div onClick={() => (location.href = "/m/account/register")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                        <Image src="/image/register_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
+                        <span style={{ marginLeft: "10px" }}>회원가입</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {username !== null && (
+                  <>
+                    <div onClick={() => onClickLogout()} style={{ ...linkStyleDrawer, position: "fixed", bottom: 5, display: "flex", alignItems: "center" }}>
+                      <Image src="/image/logout_icon.png" width={"15px"} height={"15px"} alt="excel_export" />
+                      <span style={{ marginLeft: "10px", fontSize: "1rem" }}>로그아웃</span>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </Drawer>
         </div>
@@ -165,22 +177,23 @@ const Nav = () => {
               fontFamily: `Architects Daughter, cursive`,
               fontWeight: 400,
               color: fontColor,
-              position: "relative",
             }}
           >
-            <span
-              style={{
-                transform: "rotate(320deg)",
-                transformOrigin: "left top",
-                position: "absolute",
-                left: 9,
-                top: 3,
-              }}
-            >
-              <sup style={{ fontSize: "11px" }}>I&#39;</sup>
-              <sup style={{ fontSize: "7px" }}>m </sup>
+            <span style={{ fontSize: "16px", color: "white", position: "relative" }}>
+              <span
+                style={{
+                  transform: "rotate(320deg)",
+                  transformOrigin: "left top",
+                  position: "absolute",
+                  left: -20,
+                  top: 3,
+                }}
+              >
+                <sup style={{ fontSize: "11px" }}>I&#39;</sup>
+                <sup style={{ fontSize: "7px" }}>m </sup>
+              </span>
+              T
             </span>
-            <span style={{ fontSize: "16px", color: "white" }}>T</span>
             <span style={{ fontSize: "14px", color: "white" }}>h</span>
             <span style={{ fontSize: "14px", color: "white" }}>e</span>
             <span style={{ fontSize: "16px", color: "#ffe400" }}>B</span>
@@ -198,8 +211,9 @@ const Nav = () => {
 export default Nav;
 
 const linkStyleDrawer = {
-  width:"150px",
+  width: "150px",
   color: "#5b5b5b",
   padding: 5,
-  paddingLeft: 10,
+  fontSize: "1rem",
+  // paddingLeft: 10,
 };

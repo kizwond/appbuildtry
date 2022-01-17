@@ -55,7 +55,7 @@ const Nav = () => {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("username");
     console.log("here");
-    // window.location.href = "/m";
+    window.location.href = "/m";
   };
   const burgerSize = "1.3rem";
   return (

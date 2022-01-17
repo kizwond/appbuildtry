@@ -3,8 +3,10 @@ import ImportModal from "../import/ImportModal";
 import M_RightDrawer from "../M_RightDrawer";
 import M_FlagSettingDrawer from "../M_FlagSettingDrawer";
 import { Button, Popover, Space } from "antd";
-import { PlusSquareOutlined, DashOutlined } from "@ant-design/icons";
+import { PlusSquareOutlined, DashOutlined, DownloadOutlined } from "@ant-design/icons";
 import M_LeftDrawer from "../M_LeftDrawer";
+import { useQuery, useMutation } from "@apollo/client";
+import {ExcelExportMutation} from "../../../../../graphql/mutation/indexSet"
 
 const backgroundColor = "black";
 const buttonColor = "white";
@@ -50,15 +52,34 @@ const FloatingMenu = ({
     console.log("clicked!!!");
   };
 
-  const content = (
-    <div>
-      <p>Content</p>
-      <p>Content</p>
-    </div>
-  );
   const handleVisibleChange = () => {
     setVisible(!visible);
   };
+
+  //엑셀 익스포트
+  const [cardset_convertCardsetToExcelFile] = useMutation(ExcelExportMutation, { onCompleted: afterexport });
+
+  function afterexport(data) {
+    console.log(data)
+  }
+
+  async function excelexport(indexId) {
+    try {
+      await cardset_convertCardsetToExcelFile({
+        variables: {
+          index_id : indexId
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const onFinishExcelExport = () => {
+    const indexId = localStorage.getItem("first_index")
+    console.log(indexId)
+    excelexport(indexId);
+  };
+
 
   return (
     <div style={{ width: "100%", alignItems: "center", position: "fixed", bottom: 0, zIndex: 3, fontSize: "0.8rem" }}>
@@ -100,8 +121,16 @@ const FloatingMenu = ({
             placement="topRight"
             content={
               <>
-                <Space onClick={handleVisibleChange} size={16} style={{ width:"268px", display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap:"wrap" }}>
+                <Space
+                  onClick={handleVisibleChange}
+                  size={16}
+                  style={{ width: "268px", display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap: "wrap" }}
+                >
                   <ImportModal indexList={indexList} cardSetId={cardSetId} />
+                  <div onClick={onFinishExcelExport} style={{ width: "50px", display: "flex", flexDirection: "column", alignItems: "center", fontSize: "0.8rem" }}>
+                    <DownloadOutlined style={{ fontSize: "1.3rem" }} />
+                    엑셀export
+                  </div>
                 </Space>
               </>
             }

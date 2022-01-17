@@ -410,3 +410,45 @@ export const QUERY_BUY_CARD_CONTENTS = gql`
     }
   }
 `;
+
+// 세션 정보
+export const QUERY_SESSION_BY_USER = gql`
+  query getSession {
+    session_getSessionByUserid {
+      status
+      msg
+      sessions {
+        _id
+        sessionScope {
+          title
+        }
+        session_info {
+          timeFinished
+        }
+        sessionConfig {
+          studyMode
+        }
+      }
+    }
+  }
+`;
+export const QUERY_SESSION_FOR_RESULT_BY_USER = gql`
+  query getSession {
+    session_getSessionByUserid {
+      status
+      msg
+      sessions {
+        _id
+        sessionScope {
+          title
+        }
+        session_info {
+          timeFinished
+        }
+        sessionConfig {
+          studyMode
+        }
+      }
+    }
+  }
+`;

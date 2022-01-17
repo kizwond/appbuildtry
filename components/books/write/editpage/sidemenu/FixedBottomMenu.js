@@ -61,6 +61,7 @@ const FloatingMenu = ({
 
   function afterexport(data) {
     console.log(data)
+    window.open(`${data.cardset_convertCardsetToExcelFile.route}`)
   }
 
   async function excelexport(indexId) {

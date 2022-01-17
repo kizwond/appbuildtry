@@ -5,6 +5,7 @@ export const ExcelExportMutation = gql`
     cardset_convertCardsetToExcelFile(index_id: $index_id, indexset_id:$indexset_id) {
       status
       msg
+      route
     }
   }
 `;

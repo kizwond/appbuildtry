@@ -1,4 +1,4 @@
-exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyResult, studyRatio, studyTimesInSession, levelConfigs) => {
+exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs) => {
     
     const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
     const KnowStudyRatio = 95
@@ -21,7 +21,7 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
                 console.log('newLevel1', newLevel)
             } else {
                 const levelOfLastSession = levelCurrent
-                const lastRatioOfLastSession = recentStudyResult
+                const lastRatioOfLastSession = recentStudyRatio
                 const estimatedElapsedTimeOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
                 const elapsedTimeFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
                 const totalElapsedTime = estimatedElapsedTimeOfLastSession + elapsedTimeFromLastSession
@@ -48,7 +48,7 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
 
 }
 
-exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyResult, studyRatio, studyTimesInSession, levelConfigs) => {
+exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs) => {
     
     const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
     const KnowStudyRatio = 95
@@ -65,7 +65,7 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
                 newLevel = Math.round(initialElapsedTime * Math.log(0.8) / Math.log(KnowStudyRatio/100) * 1000) / 1000;                
             } else {
                 const levelOfLastSession = levelCurrent
-                const lastRatioOfLastSession = recentStudyResult
+                const lastRatioOfLastSession = recentStudyRatio
                 const estimatedElapsedTimeOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
                 const elapsedTimeFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
                 const totalElapsedTime = estimatedElapsedTimeOfLastSession + elapsedTimeFromLastSession
@@ -154,7 +154,7 @@ exports.updateSessionResult = (singleResult) => {
         statusCurrent,
         levelOriginal, 
         // levelPrev, 
-        recentStudyResult,
+        recentStudyRatio,
         levelCurrent, 
         clickTimesInSession,
         studyTimesInSession,
@@ -174,8 +174,8 @@ exports.updateSessionResult = (singleResult) => {
     // 클릭수
     let clicksField
     if (['difficulty'].includes(recentSelection)){
-        const diffiLevelLow = Math.floor(recentStudyResult / 20)+1
-        const diffiLevelHigh = Math.floor(recentStudyResult / 10) -3
+        const diffiLevelLow = Math.floor(recentStudyRatio / 20)+1
+        const diffiLevelHigh = Math.floor(recentStudyRatio / 10) -3
         if (diffiLevelLow<5){
             clicksField = 'diffi'+diffiLevelLow            
         } else {
@@ -261,7 +261,7 @@ exports.updateSessionResult = (singleResult) => {
         resultOfSession.numCards[statusOriginal].finished += 1
         resultByBook[mybookPosition].numCards[statusOriginal].finished += 1
     }
-    if (recentSelection == 'difficulty' && recentStudyResult == 95){
+    if (recentSelection == 'difficulty' && recentStudyRatio == 95){
         resultOfSession.numCards[statusOriginal].finished += 1
         resultByBook[mybookPosition].numCards[statusOriginal].finished += 1
     }

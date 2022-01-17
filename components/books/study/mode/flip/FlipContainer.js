@@ -63,14 +63,15 @@ const FlipContainer = ({
   }
 
   const sessionupdateresults = useCallback(
-    async (sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression) => {
+    async (sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression, cardlist_to_send) => {
       try {
         await session_updateResults({
           variables: {
             forUpdateResults: {
               session_id: sessionId,
               createdCards,
-              studyResults: filtered,
+              cardlistUpdated: filtered,
+              studyHistory: cardlist_to_send,
               resultOfSession,
               resultByBook: produce(resultByBook, (draft) => {
                 draft.forEach((book) => delete book.bookTitle);
@@ -705,6 +706,7 @@ class Container extends Component {
     const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
     const dataForRegression = JSON.parse(sessionStorage.getItem("dataForRegression"));
     const filtered = cardListStudying.filter((item) => item.studyStatus.isUpdated === true);
+    
     if (filtered) {
       console.log("서버에 학습데이타를 전송할 시간이다!!!!");
       sessionStorage.setItem("card_seq", 0);
@@ -713,16 +715,52 @@ class Container extends Component {
         delete v.__typename;
         delete v.studyStatus.userFlagPrev;
         delete v.studyStatus.userFlagOriginal;
-        delete v.studyStatus.studyHourInSession;
         delete v.studyStatus.statusPrev;
         delete v.studyStatus.statusOriginal;
         delete v.studyStatus.needStudyTimeTmp;
         delete v.studyStatus.isUpdated;
-        delete v.studyStatus.clickTimesInSession;
-        delete v.studyStatus.studyTimesInSession;
         delete v.studyStatus.__typename;
+        delete v.content.hidden;
+        delete v.content.underline;
+        delete v.content.highlight;
+        delete v.content.makerFlag.__typename;
+        delete v.content.__typename;
+        delete v._id;
+        delete v.card_info.time_created;
+        delete v.card_info.__typename;
+        delete v.seqInCardlist;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.__typename;
+        delete v.studyStatus.userFlagPrev;
+        delete v.studyStatus.userFlagOriginal;
+        delete v.studyStatus.statusPrev;
+        delete v.studyStatus.statusOriginal;
+        delete v.studyStatus.needStudyTimeTmp;
+        delete v.studyStatus.isUpdated;
+
+        delete v.studyStatus.originalStudyRatio;
         delete v.studyStatus.levelOriginal;
-        delete v.content;
+        delete v.studyStatus.studyTimesInSession;
+        delete v.studyStatus.studyHourInSession;
+        delete v.studyStatus.elapsedTimeFromLastSession;
+        delete v.studyStatus.statusCurrent;
+        delete v.studyStatus.recentSelectTime;
+        delete v.studyStatus.totalStayHour;
+        delete v.studyStatus.recentStudyTime;
+        delete v.studyStatus.totalStudyHour;
+        delete v.studyStatus.totalStudyTimes;        
+        delete v.studyStatus.recentExamTime;
+        delete v.studyStatus.totalExamTimes ;       
+        delete v.studyStatus.__typename;
+
+
+        delete v.studyStatus.__typename;
+        delete v.content.hidden;
+        delete v.content.underline;
+        delete v.content.highlight;
+        delete v.content.makerFlag.__typename;
+        delete v.content.__typename;
         delete v._id;
         delete v.card_info.time_created;
         delete v.card_info.__typename;
@@ -731,7 +769,7 @@ class Container extends Component {
 
       console.log("filtered : ", filtered);
       console.log("sessionId : ", sessionId);
-      this.props.sessionupdateresults(sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression);
+      this.props.sessionupdateresults(sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression, cardlist_to_send);
     } else {
       console.log("공부끝");
     }

@@ -52,18 +52,14 @@ export const FRAGMENT_CARD_SET = gql`
         memo
       }
       studyStatus {
-        statusCurrent
-        recentKnowTime
-        recentStudyResult
+        statusCurrent        
+        recentStudyRatio
         recentExamResult
         recentExamTime
         recentStudyTime
         recentSelection
         recentSelectTime
-        needStudyTime
-        currentLevStudyTimes
-        currentLevElapsedHour
-        currentLevStudyHour
+        needStudyTime        
         totalStudyTimes
         totalStudyHour
         totalExamTimes

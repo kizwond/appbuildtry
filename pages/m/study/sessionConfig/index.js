@@ -161,12 +161,14 @@ const StudySessionConfig = ({
       }
     },
   });
-
   const submitCreateSessionConfigToServer = useCallback(async () => {
-    const keysArray = Object.keys(checkedKeys);
-    const sessionScope = keysArray.map((item) => ({
-      mybook_id: item,
-      index_ids: checkedKeys[item],
+    const selectedBooksInLocalStorage = JSON.parse(
+      sessionStorage.getItem("books_selected")
+    );
+    const sessionScope = selectedBooksInLocalStorage.map((book) => ({
+      mybook_id: book.book_id,
+      title: book.book_title,
+      index_ids: checkedKeys[book.book_id],
     }));
     try {
       await session_createSession({
@@ -177,16 +179,16 @@ const StudySessionConfig = ({
           },
         },
         update: (cache) => {
-          keysArray.forEach((item) => {
+          selectedBooksInLocalStorage.forEach((book) => {
             cache.writeFragment({
-              id: `Mybook:${item}`,
+              id: `Mybook:${book.book_id}`,
               fragment: gql`
                 fragment MyBookRecenctStudyIndexesFragment on Mybook {
                   recentStudyIndexes
                 }
               `,
               data: {
-                recentStudyIndexes: checkedKeys[item],
+                recentStudyIndexes: checkedKeys[book.book_id],
               },
             });
           });

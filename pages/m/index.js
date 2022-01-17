@@ -60,11 +60,10 @@ const Home = () => {
       console.log("로그아웃상태입니다.");
     }
   }
-
   return (
     <M_Layout>
       <Hero />
-      <M_RecentStudyList />
+      {data && data.me && data.me.users && <M_RecentStudyList />}
       <NewBooks />
       <M_Footer />
     </M_Layout>

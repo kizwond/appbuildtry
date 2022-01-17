@@ -14,6 +14,9 @@ const FlipMode = () => {
   // console.log(query.sessionid);
 
   const [cardListStudying, setCardListStudying] = useState();
+
+  const [ttsOn, setTtsOn] = useState(false);
+
   const [sessionScope, setSessionScope] = useState();
   const [levelConfigs, setLevelConfigs] = useState();
   const [contentsList, setContentsList] = useState([]);
@@ -378,6 +381,8 @@ const FlipMode = () => {
         {contentsList.length > 0 && (
           <>
             <FlipContainer
+              ttsOn={ttsOn}
+              setTtsOn={setTtsOn}
               face1row1={face1row1}
               face1row2={face1row2}
               face1row3={face1row3}
@@ -400,6 +405,7 @@ const FlipMode = () => {
       {data && (
         <>
           <FixedBottomMenuFlipMode
+            ttsOn={setTtsOn}
             face1On={face1On}
             face2On={face2On}
             hide={hide}

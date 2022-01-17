@@ -51,6 +51,8 @@ const FlipContainer = ({
   face2row3,
   face2row4,
   face2row5,
+  ttsOn,
+  setTtsOn
 }) => {
   const router = useRouter();
   const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
@@ -106,6 +108,8 @@ const FlipContainer = ({
         face2row3={face2row3}
         face2row4={face2row4}
         face2row5={face2row5}
+        ttsOn={ttsOn}
+        setTtsOn={setTtsOn}
       />
     </>
   );
@@ -136,7 +140,7 @@ class Container extends Component {
       firstBackModeSeq: 0,
       restore: false,
       backModeRestore: false,
-      ttsOn: false,
+      ttsOn: true,
       firstTimeTts: true,
       flip: true,
     };
@@ -309,9 +313,12 @@ class Container extends Component {
     this.stopTimerTotal();
     this.resetTimer();
 
-    this.setState({
-      ttsOn: true,
-    });
+    if(this.props.ttsOn){
+      this.setState({
+        ttsOn: true,
+      });
+    }
+    
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -321,33 +328,36 @@ class Container extends Component {
         alert("학습할 카드가 없습니다. 학습메인으로");
         window.location.href = "/m/study";
       }
-      if (this.props.contentsList.length > 0) {
-        if (this.state.firstTimeTts === true) {
-          console.log(this.props.contentsList);
-          const show_contents = this.props.contentsList[0];
-          console.log(show_contents);
-          const face1_tmp = show_contents.face1[0].replace(/<\/?[^>]+(>|$)/g, "");
-          if (show_contents.face2[0]) {
-            const face2_tmp = show_contents.face2[0].replace(/<\/?[^>]+(>|$)/g, "");
-            var face2 = face2_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
-          }
+      // if (this.props.contentsList.length > 0) {
+      //   if (this.state.firstTimeTts === true) {
+      //     console.log(this.props.contentsList);
+      //     const show_contents = this.props.contentsList[0];
+      //     console.log(show_contents);
+      //     const face1_tmp = show_contents.face1[0].replace(/<\/?[^>]+(>|$)/g, "");
+      //     if (show_contents.face2[0]) {
+      //       const face2_tmp = show_contents.face2[0].replace(/<\/?[^>]+(>|$)/g, "");
+      //       var face2 = face2_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
+      //     }
 
-          const face1 = face1_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
+      //     const face1 = face1_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
 
-          console.log(face1);
-          console.log(face2);
-          this.speakTextFirstCard(face1, face2);
-          this.setState({
-            firstTimeTts: false,
-          });
-        }
-      }
+      //     console.log(face1);
+      //     console.log(face2);
+      //     this.speakTextFirstCard(face1, face2);
+      //     this.setState({
+      //       firstTimeTts: false,
+      //     });
+      //   }
+      // }
     }
-    if (this.state.ttsOn) {
-      this.speakText();
-      this.setState({
-        ttsOn: false,
-      });
+    if (this.props.ttsOn) {
+      if(this.state.ttsOn){
+        this.speakText();
+        this.setState({
+          ttsOn: false,
+        });
+      }
+      
     }
   }
 

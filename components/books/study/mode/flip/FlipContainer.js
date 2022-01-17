@@ -200,33 +200,6 @@ class Container extends Component {
     this.determineStudyFinish(card_details_session, card_seq, current_card_id, now);
   };
 
-  // onDiffClickHandler = (interval, diffi, current_card_id, timer) => {
-  //   console.log("난이도 선택하셨네요~");
-
-  //   console.log("해당카드 난이도평가", interval, diffi, current_card_id, timer);
-  //   if (diffi === "diffi5") {
-  //     console.log("알겠음 클릭함.");
-  //     this.Diffi5Handler(diffi, current_card_id, timer);
-  //   } else {
-  //     const now = new Date();
-  //     const card_details_session_origin = JSON.parse(sessionStorage.getItem("cardListStudying"));
-  //     const current_card_info_index = card_details_session_origin.findIndex((item) => item.content.mycontent_id === current_card_id);
-  //     console.log(current_card_info_index);
-
-  //     const card_details_session = calculateStudyStatus(interval, diffi, current_card_info_index, timer);
-
-  //     //업데이트된 학습정보 세션스토리지에 다시 저장
-  //     sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
-
-  //     //서버에 보내기 위한 학습정보 리스트 생성
-  //     this.generateStudyStatus(card_details_session, current_card_info_index);
-
-  //     //남은카드랑 이래저래 해서 학습이 종료되었는지...
-  //     const card_seq = sessionStorage.getItem("card_seq");
-  //     this.determineStudyFinish(card_details_session, card_seq, current_card_id, now);
-  //   }
-  // };
-
   onDiffClickHandler = (current_card_id, timer, studyRatio) => {
     console.log("난이도 선택하셨네요~");
 
@@ -729,51 +702,6 @@ class Container extends Component {
         delete v.card_info.__typename;
         delete v.seqInCardlist;
       });
-
-      // filtered.forEach(function (v) {
-      //   delete v.__typename;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.card_info.__typename;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.card_info.time_created;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v._id;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.content;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.studyStatus.__typename;
-      // });
-
-      // filtered.forEach(function (v) {
-      //   delete v.studyStatus.clickTimesInSession;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.studyStatus.isUpdated;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.studyStatus.needStudyTimeTmp;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.studyStatus.statusOriginal;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.studyStatus.statusPrev;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.studyStatus.studyHourInSession;
-      // });
-
-      // filtered.forEach(function (v) {
-      //   delete v.studyStatus.userFlagOriginal;
-      // });
-      // filtered.forEach(function (v) {
-      //   delete v.studyStatus.userFlagPrev;
-      // });
 
       console.log("filtered : ", filtered);
       console.log("sessionId : ", sessionId);
@@ -2003,14 +1931,6 @@ const style_study_layout_bottom = {
 const contentsDisplay = {
   backgroundColor: "white",
   padding: "10px",
-
   alignItems: "center",
 };
-// const contentsDisplay = {
-//   backgroundColor: "white",
-//   padding: "10px",
-//   display: "flex",
-//   flexDirection: "column",
-//   justifyContent: "space-between",
-//   alignItems: "center",
-// };
+

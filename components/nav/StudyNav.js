@@ -98,9 +98,9 @@ const StudyNav = ({ mode }) => {
             closable={false}
             onClose={onClose}
             visible={visible}
-            width={170}
+            width={200}
             zIndex={20000}
-            bodyStyle={{ backgroundColor: "#f0f0f0" }}
+            bodyStyle={{ backgroundColor: "#f0f0f0", padding:10 }}
             headerStyle={{ backgroundColor: "#f0f0f0", borderBottom: "1px solid #e7e7e7" }}
           >
             <div

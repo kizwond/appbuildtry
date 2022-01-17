@@ -1,35 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { message, Popover, Space, Drawer } from "antd";
-import M_LeftDrawerDirectRead from "../M_LeftDrawerDirectRead";
+import { message, Space, Drawer } from "antd";
 import {
-  ProfileOutlined,
-  FlagFilled,
-  HeartFilled,
-  StarFilled,
-  CheckCircleFilled,
-  PlusOutlined,
-  MenuFoldOutlined,
   HighlightOutlined,
-  MessageOutlined,
   UnderlineOutlined,
-  TagOutlined,
-  PicRightOutlined,
-  QuestionCircleOutlined,
   EyeInvisibleOutlined,
-  FlagOutlined,
-  SettingOutlined,
-  CloseOutlined,
   DashOutlined,
   SoundOutlined,
-  ToolOutlined,
-  ReadOutlined,
-  HighlightTwoTone,
-  EyeInvisibleTwoTone,
 } from "@ant-design/icons";
 
 import StudyToolSetting from "../../../study/mode/StudyToolSetting";
 import StudyGeneralSetting from "../../../study/mode/StudyGeneralSetting";
-import Item from "antd/lib/list/Item";
 
 const FloatingMenu = ({
   highlightToggle,

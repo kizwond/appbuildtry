@@ -85,10 +85,23 @@ const StudyNav = ({ mode }) => {
           <Drawer
             title={
               <>
-                <div style={{ height: "100%", padding: "0" }}>
+                <div style={{ height: "100%", padding: "0", display:"flex", alignItems:"baseline" }}>
                   <Avatar size="small" icon={<UserOutlined />} />{" "}
-                  <span style={{ fontSize: "1rem", color: "grey" }}>
-                    <span style={{ color: "black" }}>{username}</span>
+                  <span style={{ fontSize: "1rem", color: "grey", marginLeft:"5px" }}>
+                    <span style={{ fontSize: "1rem", color: "black", position: "relative" }}>
+                      <span
+                        style={{
+                          transformOrigin: "left top",
+                          position: "absolute",
+                          left: "5px",
+                          top: "-5px",
+                        }}
+                      >
+                        {/* <sup style={{ fontSize: "0.8rem", color:"grey" }}>welcome!!!</sup> */}
+                      </span>
+                      {username}
+                    </span>
+
                     {username !== null ? "님!! 오셨쎄여?" : "로그인을 해주세요!!!"}
                   </span>
                 </div>
@@ -100,7 +113,7 @@ const StudyNav = ({ mode }) => {
             visible={visible}
             width={200}
             zIndex={20000}
-            bodyStyle={{ backgroundColor: "#f0f0f0", padding:10 }}
+            bodyStyle={{ backgroundColor: "#f0f0f0", padding: 10 }}
             headerStyle={{ backgroundColor: "#f0f0f0", borderBottom: "1px solid #e7e7e7" }}
           >
             <div
@@ -113,7 +126,7 @@ const StudyNav = ({ mode }) => {
             >
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>STUDY</div>
-                <div style={{marginBottom: "10px", backgroundColor: "white", borderRadius: "5px",boxShadow:"1px 1px 2px 0px #c0c0c0" }}>
+                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px", boxShadow: "1px 1px 2px 0px #c0c0c0" }}>
                   <div onClick={() => (location.href = "/m/mybooks")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
                     <Image src="/image/book_shelf.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>마이북</span>
@@ -124,7 +137,7 @@ const StudyNav = ({ mode }) => {
                   </div>
                 </div>
                 <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>SHOP</div>
-                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px",boxShadow:"1px 1px 2px 0px #c0c0c0" }}>
+                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px", boxShadow: "1px 1px 2px 0px #c0c0c0" }}>
                   <div onClick={() => (location.href = "/bookstore")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
                     <Image src="/image/bookstore_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>서점</span>
@@ -139,7 +152,7 @@ const StudyNav = ({ mode }) => {
                   </div>
                 </div>
                 <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>ACCOUNT</div>
-                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px",boxShadow:"1px 1px 2px 0px #c0c0c0" }}>
+                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px", boxShadow: "1px 1px 2px 0px #c0c0c0" }}>
                   <div onClick={() => (location.href = "/notification")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
                     <Image src="/image/notification_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>알림</span>

@@ -67,7 +67,8 @@ const FloatingMenu = ({
     try {
       await cardset_convertCardsetToExcelFile({
         variables: {
-          index_id : indexId
+          index_id : indexId,
+          indexset_id: indexSetId
         },
       });
     } catch (error) {

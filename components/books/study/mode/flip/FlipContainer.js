@@ -73,7 +73,7 @@ const FlipContainer = ({
               session_id: sessionId,
               createdCards,
               cardlistUpdated: filtered,
-              studyHistory: cardlist_to_send,
+              clickHistory: cardlist_to_send,
               resultOfSession,
               resultByBook: produce(resultByBook, (draft) => {
                 draft.forEach((book) => delete book.bookTitle);

@@ -113,7 +113,7 @@ const StudyNav = ({ mode }) => {
             >
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>STUDY</div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", marginBottom: "10px", backgroundColor: "white", borderRadius: "5px" }}>
+                <div style={{marginBottom: "10px", backgroundColor: "white", borderRadius: "5px",boxShadow:"1px 1px 2px 0px #c0c0c0" }}>
                   <div onClick={() => (location.href = "/m/mybooks")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
                     <Image src="/image/book_shelf.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>마이북</span>
@@ -124,7 +124,7 @@ const StudyNav = ({ mode }) => {
                   </div>
                 </div>
                 <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>SHOP</div>
-                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px" }}>
+                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px",boxShadow:"1px 1px 2px 0px #c0c0c0" }}>
                   <div onClick={() => (location.href = "/bookstore")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
                     <Image src="/image/bookstore_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>서점</span>
@@ -139,7 +139,7 @@ const StudyNav = ({ mode }) => {
                   </div>
                 </div>
                 <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>ACCOUNT</div>
-                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px" }}>
+                <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px",boxShadow:"1px 1px 2px 0px #c0c0c0" }}>
                   <div onClick={() => (location.href = "/notification")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
                     <Image src="/image/notification_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>알림</span>

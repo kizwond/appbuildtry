@@ -223,9 +223,9 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
             <Button size="small" onClick={() => setDeleteInput(true)} style={{fontSize:"0.8rem"}}>삭제</Button>
           </Popover>
         </div>
-        <div>
+        {/* <div>
             <Button size="small" icon={<Image src="/image/export_excel.png" width={"24px"} height={"24px"} alt="excel_export" />} onClick={() => excelExportHandler(index._id)} style={{border:"none", marginTop:"3px"}}></Button>
-        </div>
+        </div> */}
       </div>
     </>
   );

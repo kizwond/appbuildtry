@@ -158,7 +158,7 @@ const RightDrawer = ({ cardTypeSets, updateStudyToolApply, setBottomVisible,face
         <Space style={{ padding: "0px 10px 0px 10px", fontSize: "1rem", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
           <div style={{ width: "230px", fontSize: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>뒤집기방향</span>
-            <Radio.Group size="small" onChange={onChangeDirection} defaultValue="top_bottom" >
+            <Radio.Group size="small" onChange={onChangeDirection} defaultValue="front_back" >
               <Radio value="left_right" style={{ fontSize: "1rem" }}>
                 좌우
               </Radio>

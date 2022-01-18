@@ -350,6 +350,16 @@ class Container extends Component {
       //   }
       // }
     }
+    const ttsUse = sessionStorage.getItem("ttsUse")
+    if(ttsUse === null){
+      if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+        console.log("이 브라우저는 음성 합성을 지원하지 않습니다.");
+        sessionStorage.setItem("ttsUse", "unable")
+      } else {
+        sessionStorage.setItem("ttsUse", "able")
+      }
+    }
+    
     if (this.props.ttsOn) {
       if(this.state.ttsOn){
         this.speakText();
@@ -615,11 +625,7 @@ class Container extends Component {
     hello().then(this.speakTextFace2());
   };
   speakTextFace1 = (face1) => {
-    if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
-      console.log("이 브라우저는 음성 합성을 지원하지 않습니다.");
-      sessionStorage.setItem("ttsUse", "unable")
-      return;
-    }
+    
     if (face1) {
       var text = face1;
     } else {
@@ -645,10 +651,7 @@ class Container extends Component {
   };
 
   speakTextFace2 = (face2) => {
-    if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
-      console.log("이 브라우저는 음성 합성을 지원하지 않습니다.");
-      return;
-    }
+    
     if (face2) {
       var text = face2;
     } else {

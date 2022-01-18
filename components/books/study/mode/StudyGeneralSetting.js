@@ -17,6 +17,8 @@ const RightDrawer = ({ cardTypeSets, updateStudyToolApply, setBottomVisible,face
     if(ttsUse !== null){
       if(ttsUse === "unable"){
         var ttsAble = false
+      }else {
+        var ttsAble = true
       }
     } else {
       var ttsAble = true

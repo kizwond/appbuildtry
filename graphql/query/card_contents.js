@@ -47,7 +47,17 @@ export const AddPolly = gql`
     cardset_makeSoundFile(forMakeSoundFile: $forMakeSoundFile) {
       status
       msg
-      route 
+      route
+    }
+  }
+`;
+
+export const Dictionary = gql`
+  mutation Dictionary($targetWord: String) {
+    cardset_inquireLanguageDictionary(targetWord: $targetWord) {
+      status
+      msg
+      data1
     }
   }
 `;

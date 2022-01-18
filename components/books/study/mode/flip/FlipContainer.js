@@ -637,7 +637,7 @@ class Container extends Component {
     hello().then(this.speakTextFace2());
   };
   speakTextFace1 = (face1) => {
-    
+    window.speechSynthesis.cancel()
     if (face1) {
       var text = face1;
     } else {
@@ -663,7 +663,7 @@ class Container extends Component {
   };
 
   speakTextFace2 = (face2) => {
-    
+    window.speechSynthesis.cancel()
     if (face2) {
       var text = face2;
     } else {

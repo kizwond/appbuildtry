@@ -1,17 +1,32 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import Link from "next/link";
 import _ from "lodash";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { QUERY_SESSION_BY_USER } from "../../graphql/query/allQuery";
+import {
+  QUERY_SESSION_BY_USER,
+  QUERY_SESSION_FOR_RESULT_BY_USER,
+} from "../../graphql/query/allQuery";
 import { Space } from "antd";
 
 const M_RecentStudyList = () => {
   const router = useRouter();
-  const { data, loading, error } = useQuery(QUERY_SESSION_BY_USER, {
+  const { data, loading, error } = useQuery(QUERY_SESSION_FOR_RESULT_BY_USER, {
     onCompleted: (received_data) => {
       if (received_data.session_getSessionByUserid.status === "200") {
-        console.log("세션 설정 데이터 받음", received_data);
+        console.log("세션 결과 요약용 데이터 받음", received_data);
+      } else if (received_data.session_getSessionByUserid.status === "401") {
+        router.push("/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
+  });
+
+  const [getSessionDataForResult] = useLazyQuery(QUERY_SESSION_BY_USER, {
+    onCompleted: (received_data) => {
+      if (received_data.session_getSessionByUserid.status === "200") {
+        console.log("세션 결과 데이터 받음", received_data);
       } else if (received_data.session_getSessionByUserid.status === "401") {
         router.push("/account/login");
       } else {

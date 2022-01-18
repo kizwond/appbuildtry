@@ -15,6 +15,7 @@ import {
   FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER,
 } from "../fragment/indexSet";
 import { FRAGMENT_BOOK_STUDY_LEVEL_CONFIG } from "../fragment/bookStudyLevelConfig";
+import { FRAGMENT_SESSION_FOR_RESULT } from "../fragment/session";
 
 // 유저 정보 불러오기
 export const QUERY_USER_MINIMUM_INFORMATION_BY_USER_NAME = gql`
@@ -433,21 +434,13 @@ export const QUERY_SESSION_BY_USER = gql`
   }
 `;
 export const QUERY_SESSION_FOR_RESULT_BY_USER = gql`
-  query getSession {
+  ${FRAGMENT_SESSION_FOR_RESULT}
+  query getSessionForResult {
     session_getSessionByUserid {
       status
       msg
       sessions {
-        _id
-        sessionScope {
-          title
-        }
-        session_info {
-          timeFinished
-        }
-        sessionConfig {
-          studyMode
-        }
+        ...SessionForResultFragment
       }
     }
   }

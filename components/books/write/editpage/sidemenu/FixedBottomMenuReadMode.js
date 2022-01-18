@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { message, Popover, Space, Drawer } from "antd";
 import M_LeftDrawerDirectRead from "../M_LeftDrawerDirectRead";
 import {
@@ -29,6 +29,9 @@ import {
 
 import StudyToolSetting from "../../../study/mode/StudyToolSetting";
 import Item from "antd/lib/list/Item";
+import Image from "next/image";
+import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
+import {Dictionary } from "../../../../../graphql/query/card_contents";
 
 const FloatingMenu = ({
   highlightToggle,
@@ -215,14 +218,14 @@ const FloatingMenu = ({
               {item.attr1 === "brush2" && (
                 <>
                   <div className={item.attr1} style={{ height: "15px", fontSize: "0.8rem", display: "inline-block", backgroundColor: item.color }}>
-                    <div style={{visibility:"hidden"}}> brush{index + 1}</div>
+                    <div style={{ visibility: "hidden" }}> brush{index + 1}</div>
                   </div>
                 </>
               )}
               {item.attr1 !== "brush2" && (
                 <>
                   <div className={item.attr1} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": item.color, "--z-index": 0 }}>
-                    <div style={{visibility:"hidden"}}> brush{index + 1}</div>
+                    <div style={{ visibility: "hidden" }}> brush{index + 1}</div>
                   </div>
                 </>
               )}
@@ -238,9 +241,40 @@ const FloatingMenu = ({
     setHighlightToggle(false);
     setBottomVisible(!bottomVisible);
   }
+
+  function hideAll2() {
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
+    setHighlightToggle(false);
+    searchWord()
+  }
   const onClose = () => {
     setBottomVisible(false);
   };
+
+  const [cardset_inquireLanguageDictionary] = useMutation(Dictionary, {
+    onCompleted: afterdictionary,
+  });
+  function afterdictionary(data) {
+    console.log("data", data.cardset_inquireLanguageDictionary.data1);
+  }
+
+  const searchWord = useCallback(
+    async () => {
+      const selectionText = sessionStorage.getItem("selectionText");
+      try {
+        await cardset_inquireLanguageDictionary({
+          variables: {
+            targetWord:selectionText
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_inquireLanguageDictionary]
+  );
+
   return (
     <>
       <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{ display: "none" }}>
@@ -378,6 +412,22 @@ const FloatingMenu = ({
                 )}
               </div>
             )}
+            {hiddenToggle || underlineToggle || highlightToggle ? (
+              <>
+                <div onClick={hideAll2} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <Image src="/image/dictionary_icon.png" width={"20px"} height={"20px"} alt="dictionary" />
+                  <span style={{ color: "#636363" }}>사전검색</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <div onClick={hideAll2} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <Image src="/image/dictionary_icon_white.png" width={"20px"} height={"20px"} alt="dictionary" />
+                  사전검색
+                </div>
+              </>
+            )}
+
             {hiddenToggle || underlineToggle || highlightToggle ? (
               <>
                 <div onClick={hideAll} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>

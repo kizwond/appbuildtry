@@ -14,7 +14,7 @@ const RightDrawer = ({ cardTypeSets, updateStudyToolApply, setBottomVisible,face
   if (!ISSERVER) {
     var ttsUse = sessionStorage.getItem("ttsUse");
     console.log(ttsUse)
-    if(ttsUse){
+    if(ttsUse !== null){
       if(ttsUse === "unable"){
         var ttsAble = false
       }

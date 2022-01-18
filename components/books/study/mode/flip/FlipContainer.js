@@ -362,10 +362,22 @@ class Container extends Component {
     
     if (this.props.ttsOn) {
       if(this.state.ttsOn){
-        this.speakText();
-        this.setState({
-          ttsOn: false,
-        });
+        if(this.state.flip === true){
+          this.speakTextFace1()
+          this.setState({
+            ttsOn: false,
+          });
+        }
+        // this.speakText();
+        // this.setState({
+        //   ttsOn: false,
+        // });
+        if(this.state.flip === false){
+          this.speakTextFace2()
+          this.setState({
+            ttsOn: false,
+          });
+        }
       }
       
     }
@@ -792,6 +804,9 @@ class Container extends Component {
     this.setState((prevState) => ({
       flip: !prevState.flip,
     }));
+    this.setState({
+      ttsOn:true
+    })
   };
   render() {
     if (this.props.levelConfigs) {

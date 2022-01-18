@@ -11,7 +11,6 @@ const TableForNumberOfCardsOnStages = ({ numberOfCards, more }) => {
   const totalOfInserted = getTotalNumber("inserted");
   const totalOfStarted = getTotalNumber("started");
   const totalOfFinished = getTotalNumber("finished");
-
   return (
     <table className="w-full table-fixed">
       <thead>

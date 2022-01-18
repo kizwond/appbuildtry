@@ -7,6 +7,7 @@ import {
 import TableForStudiedCards from "./TableForStudiedCards";
 import styled from "styled-components";
 import { Drawer } from "antd";
+import { memo } from "react";
 
 const SlidingDrawerForAllCards = ({
   visible,
@@ -33,6 +34,7 @@ const SlidingDrawerForAllCards = ({
     }
   );
 
+  // Drawer를 처음 열었을 때만 서버에 데이터 요청
   useEffect(() => {
     if (visible && mountCounter < 3) {
       setMountCounter((pre) => pre + 1);
@@ -95,7 +97,7 @@ const SlidingDrawerForAllCards = ({
   );
 };
 
-export default SlidingDrawerForAllCards;
+export default memo(SlidingDrawerForAllCards);
 
 const DrawerWrapper = styled(Drawer)`
   top: 39px;

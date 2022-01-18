@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const BoxForSessionSummary = ({ title, content }) => (
   <div className="flex flex-col gap-[2px]">
     <div className="text-base text-center font-[600] border border-gray-200  bg-slate-100">
@@ -9,4 +11,4 @@ const BoxForSessionSummary = ({ title, content }) => (
   </div>
 );
 
-export default BoxForSessionSummary;
+export default memo(BoxForSessionSummary);

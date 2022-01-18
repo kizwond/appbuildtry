@@ -202,7 +202,7 @@ const RightDrawer = ({ cardTypeSets, updateStudyToolApply, setBottomVisible,face
           </div>
           <div style={{ width: "230px", fontSize: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>TTS시작</span>
-            {ttsAble === false && <Switch size="small" onChange={onChangeTTS} disabled/>}
+            {ttsAble === false && <><span style={{fontSize:"0.8rem"}}>※ 지원하지 않는 브라우저입니다.</span><Switch size="small" onChange={onChangeTTS} disabled/></>}
             {ttsAble === true && <Switch size="small" onChange={onChangeTTS} />}
             
           </div>

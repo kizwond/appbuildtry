@@ -27,7 +27,6 @@ const SessionSummary = () => {
     const result = changeString(totalGap);
     return result;
   }, [resultOfSession]);
-
   const time = useMemo(
     () =>
       prettyMilliseconds(resultOfSession.studyHour, {

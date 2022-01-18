@@ -22,13 +22,12 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
   card_details_session[current_card_info_index].studyStatus.studyTimesInSession += 1;
   if (studyTimesInSession ==1){
-    card_details_session[current_card_info_index].studyStatus.elapsedTimeFromLastSession = new Date() - card_details_session[current_card_info_index].studyStatus.recentStudyTime
+    card_details_session[current_card_info_index].studyStatus.elapsedHourFromLastSession = new Date() - card_details_session[current_card_info_index].studyStatus.recentStudyTime
   }
   
   let {levelCurrent, recentStudyTime, recentStudyRatio, studyTimesInSession}=card_details_session[current_card_info_index].studyStatus
   let {newLevel, needStudyTime, needStudyTimeTmp} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs)  
   card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
-  // card_details_session[current_card_info_index].studyStatus.recentKnowTime = now //불필요
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = needStudyTimeTmp;
   
@@ -71,46 +70,6 @@ const calculatePrediction = (selection, current_card_info_index, timer, levelCon
   return {needStudyTimeGap};
 };
 
-// const calculateNormalStudy = (interval, selection, current_card_info_index, timer) => {
-//   console.log('냐하하하하', selection)
-//   const now = new Date();  
-//   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-
-//   if (card_details_session[current_card_info_index].studyStatus.recentKnowTime == null){
-//     card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour = 60000;
-//     card_details_session[current_card_info_index].studyStatus.currentLevStudyHour = timer;
-//     card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes = 1;
-//   } else {
-//     card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour += now - new Date(card_details_session[current_card_info_index].studyStatus.recentKnowTime);
-//     card_details_session[current_card_info_index].studyStatus.currentLevStudyHour += timer;
-//     card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes += 1;
-//   }
-
-//   card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
-//   card_details_session[current_card_info_index].studyStatus.statusCurrent = 'ing';
-  
-//   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
-//   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
-//   card_details_session[current_card_info_index].studyStatus.totalStayHour +=  timer;
-  
-//   card_details_session[current_card_info_index].studyStatus.recentStudyRatio = selection;
-//   card_details_session[current_card_info_index].studyStatus.recentStudyTime = now;
-//   card_details_session[current_card_info_index].studyStatus.recentStudyHour = timer;
-//   card_details_session[current_card_info_index].studyStatus.totalStudyHour += timer;
-//   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
-//   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
-  
-//   card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
-
-//   const needStudyTime = new Date(Date.now() + interval * 60000)  
-//   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
-//   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = needStudyTime;
-
-//   card_details_session[current_card_info_index].studyStatus.isUpdated = true;
-//   updateSessionResult(card_details_session[current_card_info_index])
-
-//   return card_details_session;
-// };
 
 
 
@@ -211,13 +170,7 @@ exports.calculateStudyStatus = (interval, selection, current_card_info_index, ti
   switch (selection) {
     case "difficulty":
       card_details_session = calculateStudyCase(selection, current_card_info_index, timer, levelConfigs, studyRatio);
-      break;
-    // case "diffi1":
-    // case "diffi2":
-    // case "diffi3":
-    // case "diffi4":
-    //   card_details_session = calculateNormalStudy(interval, selection, current_card_info_index, timer);
-    //   break;
+      break;    
     case "hold":
     case "completed":
       card_details_session = calculateHoldCompleted(selection, current_card_info_index, timer);

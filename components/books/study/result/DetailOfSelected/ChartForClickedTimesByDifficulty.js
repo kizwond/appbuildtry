@@ -16,7 +16,7 @@ const ChartForClickedTimesByDifficulty = ({ clickedTimesByDifficulty }) => {
     { title: "완료", value: "completed", color: "bg-green-400" },
     { title: "기타", value: "etc", color: "bg-lime-400" },
   ];
-
+  console.log(clickedTimesByDifficulty);
   return (
     <div className="w-full pr-[25px]">
       <table className="w-full h-full">
@@ -30,7 +30,7 @@ const ChartForClickedTimesByDifficulty = ({ clickedTimesByDifficulty }) => {
                   );
             return (
               <tr key={title}>
-                <td className="w-[90px] text-[1rem] border-r border-r-slate-400">
+                <td className="w-[105px] text-[1rem] border-r border-r-slate-400">
                   <div className="flex justify-end pr-[8px]">{title}</div>
                 </td>
                 <td>

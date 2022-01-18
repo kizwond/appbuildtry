@@ -18,15 +18,34 @@ const DetailOfSelected = () => {
   const [moreCardNumber, setMoreCardNumber] = useState(false);
   const [moreChangedLevel, setMoreChangedLevel] = useState(false);
   const [moreChangedCardStatus, setMoreChangedCardStatus] = useState(false);
-  const resultOfSession = useMemo(
-    () =>
-      selectedValue === "Session"
-        ? JSON.parse(sessionStorage.getItem("resultOfSession"))
-        : JSON.parse(sessionStorage.getItem("resultByBook")).find(
+
+  const resultOfSession = useMemo(() => {
+    const removeProp = (obj, propToDelete) => {
+      for (var property in obj) {
+        if (typeof obj[property] == "object") {
+          delete obj.property;
+          let newJsonData = removeProp(obj[property], propToDelete);
+          obj[property] = newJsonData;
+        } else {
+          if (property === propToDelete) {
+            delete obj[property];
+          }
+        }
+      }
+      return obj;
+    };
+    return selectedValue === "Session"
+      ? removeProp(
+          JSON.parse(sessionStorage.getItem("resultOfSession")),
+          "__typename"
+        )
+      : removeProp(
+          JSON.parse(sessionStorage.getItem("resultByBook")).find(
             (book) => book.mybook_id === selectedValue
           ),
-    [selectedValue]
-  );
+          "__typename"
+        );
+  }, [selectedValue]);
 
   return (
     <div className="w-full flex flex-col gap-[8px] pt-[8px]">

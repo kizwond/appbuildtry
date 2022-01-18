@@ -260,9 +260,9 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
         userFlagPrev: card.content.userFlag,
 
         clickTimesInSession: 0,
-        studyTimesInSession : 0,
+        studyTimesInSession: 0,
         studyHourInSession: 0,
-        elapsedTimeFromLastSession : 0,
+        elapsedHourFromLastSession: 0,
 
         needStudyTimeTmp: null,
         isUpdated: false,

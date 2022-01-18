@@ -3,31 +3,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 
-import { Table, Card, Space, Checkbox, Popover } from "antd";
-import {
-  DoubleLeftOutlined,
-  DoubleRightOutlined,
-  DownOutlined,
-  EditOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
+import { Table, Card, Space, Checkbox } from "antd";
+import { DownOutlined, EditOutlined, RightOutlined } from "@ant-design/icons";
 
 import {
   StyledFlexAlignCenter,
   StyledFlexAllCenter,
-  StyledFlexAllCenterDimension100Percent,
-  StyledFlexSpaceBetween,
 } from "../../../../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../../../../common/styledComponent/buttons";
-import { StyledProgress } from "../../../../common/styledComponent/StyledProgress";
-import { StyledBookSettingBarDrawer } from "../../../../common/styledComponent/antd/StyledBookSettingBarDrawer";
 import DoubleLinesEllipsisContainer from "../../../../common/styledComponent/DoubleLinesEllipsisContainer";
 
-import BookOrderButton from "../../../common/BookOrderButton";
-import HideOrShowButton from "../../../common/HideOrShowButton";
-import FavoriteBook from "../../../common/FavoriteBook";
 import makeDataSource from "../../../common/logic";
-import MoveToBookSetting from "../../../common/MoveToBookSetting";
 import CategorySettingButton from "../../../common/categorySetting/CategorySettingButton";
 import NumberOfCardCell from "../../../common/tableComponent/NumberOfCardCell";
 import SlidingMenuForBook from "../../../common/tableComponent/SlidingMenuForBook";

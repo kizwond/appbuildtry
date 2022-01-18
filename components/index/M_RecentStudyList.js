@@ -5,13 +5,15 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import {
   QUERY_SESSION_BY_USER,
-  QUERY_SESSION_FOR_RESULT_BY_USER,
+  QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
 } from "../../graphql/query/allQuery";
 import { Space } from "antd";
+import { useCallback } from "react";
+import produce from "immer";
 
 const M_RecentStudyList = () => {
   const router = useRouter();
-  const { data, loading, error } = useQuery(QUERY_SESSION_FOR_RESULT_BY_USER, {
+  const { data, loading, error } = useQuery(QUERY_SESSION_BY_USER, {
     onCompleted: (received_data) => {
       if (received_data.session_getSessionByUserid.status === "200") {
         console.log("세션 결과 요약용 데이터 받음", received_data);
@@ -23,17 +25,80 @@ const M_RecentStudyList = () => {
     },
   });
 
-  const [getSessionDataForResult] = useLazyQuery(QUERY_SESSION_BY_USER, {
-    onCompleted: (received_data) => {
-      if (received_data.session_getSessionByUserid.status === "200") {
-        console.log("세션 결과 데이터 받음", received_data);
-      } else if (received_data.session_getSessionByUserid.status === "401") {
-        router.push("/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const [getSessionDataForResult, { variables }] = useLazyQuery(
+    QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
+    {
+      onCompleted: (received_data) => {
+        if (received_data.session_getSession.status === "200") {
+          console.log("세션 결과 데이터 받음", received_data);
+
+          sessionStorage.setItem(
+            "cardListStudying",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].cardlistUpdated
+            )
+          );
+          sessionStorage.setItem(
+            "createdCards",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].createdCards
+            )
+          );
+          sessionStorage.setItem(
+            "resultOfSession",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].resultOfSession
+            )
+          );
+          sessionStorage.setItem(
+            "resultByBook",
+            JSON.stringify(
+              produce(
+                received_data.session_getSession.sessions[0].resultByBook,
+                (draft) => {
+                  draft.forEach((book) => {
+                    book.bookTitle =
+                      received_data.session_getSession.sessions[0].sessionScope.find(
+                        (scope) => scope.mybook_id === book.mybook_id
+                      ).title;
+                  });
+                }
+              )
+            )
+          );
+
+          sessionStorage.setItem(
+            "started",
+            received_data.session_getSession.sessions[0].session_info
+              .timeStarted
+          );
+          sessionStorage.setItem(
+            "endTimeOfSession",
+            received_data.session_getSession.sessions[0].session_info
+              .timeFinished
+          );
+          router.push(`/m/study/result/${variables.session_id}`);
+        } else if (received_data.session_getSession.status === "401") {
+          router.push("/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
+
+  const getSessionResult = useCallback(async ({ session_id }) => {
+    try {
+      getSessionDataForResult({
+        variables: {
+          session_id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <article className="text-[1rem] w-full px-[8px] flex flex-col gap-1">
@@ -45,13 +110,15 @@ const M_RecentStudyList = () => {
           <thead>
             <tr className="border-collapse border-y border-y-gray-200">
               <th className="text-[1rem] font-normal bg-slate-100 w-[18%]">
-                날짜
+                시작일
               </th>
-              <th className="text-[1rem] font-normal bg-slate-100 w-[38%]">
+              <th className="text-[1rem] font-normal bg-slate-100 w-[14%]">
+                Mode
+              </th>
+              <th className="text-[1rem] font-normal bg-slate-100 w-[43%]">
                 책 이름
               </th>
-              <th className="text-[1rem] font-normal bg-slate-100">Mode</th>
-              <th className="text-[1rem] font-normal bg-slate-100 w-[29%]"></th>
+              <th className="text-[1rem] font-normal bg-slate-100 w-[25%]"></th>
             </tr>
           </thead>
           <tbody>
@@ -66,15 +133,10 @@ const M_RecentStudyList = () => {
                     className="border-b border-collapse border-b-gray-200"
                   >
                     <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200  text-center">
-                      {session.session_info.timeFinished &&
-                        moment(session.session_info.timeFinished).format(
+                      {session.session_info.timeStarted &&
+                        moment(session.session_info.timeStarted).format(
                           "YY.MM.DD"
                         )}
-                    </td>
-                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200">
-                      {session.sessionScope[0].title}
-                      {session.sessionScope.length > 1 &&
-                        "외 " + (session.sessionScope.length - 1) + "권"}
                     </td>
                     <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                       {session.sessionConfig.studyMode === "read"
@@ -85,17 +147,28 @@ const M_RecentStudyList = () => {
                         ? "시험"
                         : null}
                     </td>
+                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200">
+                      <div className="flex w-full">
+                        <div className="truncate">
+                          {session.sessionScope[0].title}
+                        </div>
+                        <div className="flex-none w-[40px]">
+                          {session.sessionScope.length > 1 &&
+                            "외 " + (session.sessionScope.length - 1) + "권"}
+                        </div>
+                      </div>
+                    </td>
                     <td className="text-[1rem] p-[4px] font-normal text-center">
-                      <Space size={18}>
+                      <Space>
                         <a
                           onClick={() => {
-                            router.push("/study/result");
+                            getSessionResult({ session_id: session._id });
                           }}
                         >
                           결과
                         </a>
                         <Link href={"/"}>
-                          <a>다시 시작</a>
+                          <a>재시작</a>
                         </Link>
                       </Space>
                     </td>

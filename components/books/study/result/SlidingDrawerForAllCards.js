@@ -72,7 +72,7 @@ const SlidingDrawerForAllCards = ({
           ? "학습 횟수 많은 카드"
           : "학습 시간 많은 카드"
       }
-      placement="bottom"
+      placement="right"
       width={"100%"}
       height={"calc(100vh - 39px)"}
       mask={false}
@@ -117,7 +117,7 @@ const DrawerWrapper = styled(Drawer)`
     background: #ffffff;
   }
   .ant-drawer-content-wrapper {
-    transition: transform 1.3s cubic-bezier(0.23, 1, 0.32, 1),
-      box-shadow 1.3s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+      box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1);
   }
 `;

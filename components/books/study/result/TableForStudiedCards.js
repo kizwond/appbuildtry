@@ -90,7 +90,6 @@ const TableForStudiedCards = ({
                             content._id === card.content.mycontent_id ||
                             content._id === card.content.buycontent_id
                         ),
-                        type: card.card_info.cardtype,
                         makerFlag: card.content.makerFlag,
                         userFlag: card.content.userFlag,
                         memo: card.content.memo,

@@ -70,6 +70,7 @@ export const FRAGMENT_SESSION_FOR_RESULT = gql`
       mycontent_id
     }
     cardlistUpdated {
+      _id
       card_info {
         mybook_id
         buybook_id
@@ -101,6 +102,7 @@ export const FRAGMENT_SESSION_FOR_RESULT = gql`
       }
     }
     clickHistory {
+      _id
       card_info {
         mybook_id
         buybook_id
@@ -162,6 +164,9 @@ export const FRAGMENT_SESSION_FOR_RESULT = gql`
         diffi3
         diffi4
         diffi5
+        diffi6
+        hold
+        completed
         etc
       }
       statusChange {

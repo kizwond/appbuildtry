@@ -424,7 +424,7 @@ export const QUERY_SESSION_BY_USER = gql`
           title
         }
         session_info {
-          timeFinished
+          timeStarted
         }
         sessionConfig {
           studyMode
@@ -433,10 +433,10 @@ export const QUERY_SESSION_BY_USER = gql`
     }
   }
 `;
-export const QUERY_SESSION_FOR_RESULT_BY_USER = gql`
+export const QUERY_SESSION_FOR_RESULT_BY_SESSION_ID = gql`
   ${FRAGMENT_SESSION_FOR_RESULT}
-  query getSessionForResult {
-    session_getSessionByUserid {
+  query getSessionForResult($session_id: ID) {
+    session_getSession(session_id: $session_id) {
       status
       msg
       sessions {

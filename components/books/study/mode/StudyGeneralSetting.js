@@ -9,6 +9,22 @@ import { Tabs, Switch, Radio } from "antd";
 const { TabPane } = Tabs;
 
 const RightDrawer = ({ cardTypeSets, updateStudyToolApply, setBottomVisible,face1On, face2On, ttsOn }) => {
+
+  const ISSERVER = typeof window === "undefined";
+  if (!ISSERVER) {
+    var ttsUse = sessionStorage.getItem("ttsUse");
+    console.log(ttsUse)
+    if(ttsUse){
+      if(ttsUse === "unable"){
+        var ttsAble = false
+      }
+    } else {
+      var ttsAble = true
+    }
+    // console.log(session_id);
+  }
+
+
   const [visible, setVisible] = useState(false);
 
   const [ttsBool, setTtsBool] = useState(false);
@@ -184,7 +200,9 @@ const RightDrawer = ({ cardTypeSets, updateStudyToolApply, setBottomVisible,face
           </div>
           <div style={{ width: "230px", fontSize: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>TTS시작</span>
-            <Switch size="small" onChange={onChangeTTS} />
+            {ttsAble === false && <Switch size="small" onChange={onChangeTTS} disabled/>}
+            {ttsAble === true && <Switch size="small" onChange={onChangeTTS} />}
+            
           </div>
           <div style={{ width: "230px", fontSize: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span>앞뒷면1행바꾸기</span>

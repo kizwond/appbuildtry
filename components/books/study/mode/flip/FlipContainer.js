@@ -617,6 +617,7 @@ class Container extends Component {
   speakTextFace1 = (face1) => {
     if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
       console.log("이 브라우저는 음성 합성을 지원하지 않습니다.");
+      sessionStorage.setItem("ttsUse", "unable")
       return;
     }
     if (face1) {

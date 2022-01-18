@@ -2,7 +2,7 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
     
     const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
     const KnowStudyRatio = 95
-    const initialElapsedTime = 1
+    const initialElapsedHour = 1
     const minRestudyMin = 5
     const restudyCoeffForSession = 6 / 100
 
@@ -17,16 +17,16 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
             newLevel = levelCurrent
         } else if (studyTimesInSession == 1){
             if (levelCurrent == 0){
-                newLevel = Math.round(initialElapsedTime * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
+                newLevel = Math.round(initialElapsedHour * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
                 console.log('newLevel1', newLevel)
             } else {
                 const levelOfLastSession = levelCurrent
                 const lastRatioOfLastSession = recentStudyRatio
-                const estimatedElapsedTimeOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
-                const elapsedTimeFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
-                const totalElapsedTime = estimatedElapsedTimeOfLastSession + elapsedTimeFromLastSession
+                const estimatedElapsedHourOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
+                const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
+                const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
     
-                newLevel = Math.round(totalElapsedTime * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
+                newLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
                 console.log('newLevel2', newLevel)
             }
         }
@@ -52,7 +52,7 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
     
     const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
     const KnowStudyRatio = 95
-    const initialElapsedTime = 1
+    const initialElapsedHour = 1
     const minRestudyMin = 5
     const restudyCoeffForSession = 6 / 100
 
@@ -60,22 +60,27 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
     let needStudyTimeGap
     try{       
         // 세션 첫 학습인 경우
+        // console.log('studyTimesInSession', studyTimesInSession)
         if (studyTimesInSession == 0){
+            // console.log('levelCurrent', levelCurrent)
             if (levelCurrent == 0){
-                newLevel = Math.round(initialElapsedTime * Math.log(0.8) / Math.log(KnowStudyRatio/100) * 1000) / 1000;                
+                newLevel = Math.round(initialElapsedHour * Math.log(0.8) / Math.log(KnowStudyRatio/100) * 1000) / 1000;                
+                // console.log('newLevel1',newLevel)
             } else {
                 const levelOfLastSession = levelCurrent
                 const lastRatioOfLastSession = recentStudyRatio
-                const estimatedElapsedTimeOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
-                const elapsedTimeFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
-                const totalElapsedTime = estimatedElapsedTimeOfLastSession + elapsedTimeFromLastSession
+                const estimatedElapsedHourOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
+                const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
+                const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
     
-                newLevel = Math.round(totalElapsedTime * Math.log(0.8) / Math.log(KnowStudyRatio/100)*1000)/1000
+                newLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(KnowStudyRatio/100)*1000)/1000
+                // console.log('newLevel2',newLevel)
             }            
         } else if (studyTimesInSession > 0){
             newLevel = levelCurrent            
         }
         needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(KnowStudyRatio/100)) / Math.log(0.8) * 24 * 3600000)
+        // console.log('needStudyTimeGap',needStudyTimeGap)
         // console.log('needStudyTimeGap', needStudyTimeGap)
         return {needStudyTimeGap}
     }catch (err){
@@ -84,63 +89,6 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
 }
 
 
-// exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) => {
-    
-//     try{
-//         let newLevel, needStudyTime, needStudyTimeGap
-        
-//         // console.log(recentKnowTime,currentLevElapsedHour, currentLevStudyTimes, levelConfigs) 
-//         // console.log('recentKnowTime', recentKnowTime)       
-//         // console.log('currentLevElapsedHour', currentLevElapsedHour)
-//         // console.log('currentLevStudyTimes', currentLevStudyTimes)
-//         const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
-//         // console.log('levelchangeSensitivity, restudyRatio', levelchangeSensitivity, restudyRatio)
-//         const initialMaxLevel = 5
-//         const lev10StudyTimes = 10
-//         const levelCoverWidth = 5
-//         const studyTimesCoeff = Math.round(lev10StudyTimes / Math.pow(levelCoverWidth, 0.5)*1000)/1000
-        
-//         if (recentKnowTime == null){
-//             newLevel = Math.round(initialMaxLevel / currentLevStudyTimes * 1000) / 1000;
-//             needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
-//             needStudyTime =  new Date(Date.now() + needStudyTimeGap)
-//             // console.log('newLevel', levelCurrent, newLevel)
-//             return {newLevel, needStudyTime, needStudyTimeGap}
-//         }
-
-//         //여기
-//         const weightFromLevelCurrent = Math.round(Math.pow(Math.max(1-levelCurrent/100, 0), 2)/4 *1000)/1000
-//         // console.log('weightFromLevelCurrent', weightFromLevelCurrent)
-//         const averageElapsedHour = Math.round (currentLevElapsedHour / currentLevStudyTimes / 24 / 3600000 *1000 ) /1000
-//         // console.log('averageElapsedHour', averageElapsedHour)
-//         const gapBetweenLevelCurrentAndElapsedTime = Math.abs(levelCurrent - averageElapsedHour)
-//         // console.log('gapBetweenLevelCurrentAndElapsedTime', gapBetweenLevelCurrentAndElapsedTime)
-//         const factorAppliedGap = gapBetweenLevelCurrentAndElapsedTime * ((1000-Math.pow(11-currentLevStudyTimes, 3))/1000)
-//         // console.log('factorAppliedGap', factorAppliedGap)
-            
-//         let baseElapsedTime
-//         if (recentKnowTime != null && currentLevStudyTimes == 1){
-//             const maxElapsedTime = levelCurrent
-//             baseElapsedTime = Math.round(maxElapsedTime * ( 1+ weightFromLevelCurrent * levelchangeSensitivity/100) * 1000)/1000
-//             // console.log('baseElapsedTime1', baseElapsedTime)
-//         }
-//         if (recentKnowTime != null && currentLevStudyTimes != 1){
-//             const maxElapsedTime = Math.max(levelCurrent,averageElapsedHour )
-//             baseElapsedTime = Math.round((maxElapsedTime-factorAppliedGap) * ( 1+ weightFromLevelCurrent * levelchangeSensitivity/100) * 1000)/1000
-//             // console.log('baseElapsedTime2', baseElapsedTime)
-//         }
-
-//         newLevel = Math.round((Math.pow(studyTimesCoeff,2)*baseElapsedTime)/(Math.pow(currentLevStudyTimes,2)+Math.pow(studyTimesCoeff,2))*1000)/1000
-//         // console.log('newLevel', levelCurrent, newLevel)
-//         needStudyTimeGap = Math.round(newLevel* (Math.pow(restudyRatio,2) + Math.pow(studyTimesCoeff, 2)) / (Math.pow(studyTimesCoeff, 2) + 1) * 24 *3600000)/1000
-//         needStudyTime =  new Date(Date.now() + needStudyTimeGap)
-//         return {newLevel, needStudyTime, needStudyTimeGap}
-        
-//     }catch(err){
-//         console.log(err)
-//     }
-
-// }
 
 exports.updateSessionResult = (singleResult) => {
 

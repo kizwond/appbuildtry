@@ -262,7 +262,7 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
         clickTimesInSession: 0,
         studyTimesInSession : 0,
         studyHourInSession: 0,
-        elapsedTimeFromLastSession : 0,
+        elapsedHourFromLastSession : 0,
 
         needStudyTimeTmp: null,
         isUpdated: false,

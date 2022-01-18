@@ -151,7 +151,7 @@ const StudyResult = () => {
                         className="text-[1rem] text-blue-700"
                         onClick={() => setVisibleClickedTimesPage(true)}
                       >
-                        더보기
+                        자세히 보기
                       </a>
                     </div>
                   }
@@ -180,7 +180,7 @@ const StudyResult = () => {
                         className="text-[1rem] text-blue-700"
                         onClick={() => setVisibleElapsedTimeOnCard(true)}
                       >
-                        더보기
+                        자세히 보기
                       </a>
                     </div>
                   }
@@ -220,7 +220,9 @@ const StudyResult = () => {
                     />
                   }
                 />
+
                 <DetailOfSelected />
+
                 <SlidingDrawerForAllCards
                   cards={
                     topFiveCardsBySubject.rankingCardListByNumberOfClickCard
@@ -229,6 +231,7 @@ const StudyResult = () => {
                   visible={visibleClickedTimesPage}
                   contentType={"clickedTimes"}
                 />
+
                 <SlidingDrawerForAllCards
                   cards={
                     topFiveCardsBySubject.rankingCardListByElapsedTimeOnCard

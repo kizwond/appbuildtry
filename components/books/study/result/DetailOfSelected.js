@@ -83,42 +83,42 @@ const DetailOfSelected = () => {
       />
 
       <SectionForResult
-        title={
-          <div className="flex items-end space-x-3">
-            <div>레벨 변동</div>
-            <a
-              className="text-[1rem] text-blue-700"
-              onClick={() => setMoreChangedLevel((pre) => !pre)}
-            >
-              {moreCardNumber ? "접기" : "더보기"}
-            </a>
-          </div>
-        }
+        title="레벨 변동"
         content={
-          <TableForNumberOfChangedLevel
-            changedLevel={resultOfSession.levelChange}
-            more={moreChangedLevel}
-          />
+          <div>
+            <TableForNumberOfChangedLevel
+              changedLevel={resultOfSession.levelChange}
+              more={moreChangedLevel}
+            />
+            <div className="text-right">
+              <a
+                className="text-[1rem] text-blue-700"
+                onClick={() => setMoreChangedLevel((pre) => !pre)}
+              >
+                {moreChangedLevel ? "접기" : "펼치기"}
+              </a>
+            </div>
+          </div>
         }
       />
       <SectionForResult
-        title={
-          <div className="flex items-end space-x-3">
-            <div>카드 상태 변경</div>
-            <a
-              className="text-[1rem] text-blue-700"
-              onClick={() => setMoreChangedCardStatus((pre) => !pre)}
-            >
-              {moreChangedCardStatus ? "접기" : "더보기"}
-            </a>
-          </div>
-        }
+        title="카드 상태 변경"
         content={
-          <TableForNumberOfChangedCardStatus
-            numberOfCards={resultOfSession.numCards}
-            changedCardStatus={resultOfSession.statusChange}
-            more={moreChangedCardStatus}
-          />
+          <div>
+            <TableForNumberOfChangedCardStatus
+              numberOfCards={resultOfSession.numCards}
+              changedCardStatus={resultOfSession.statusChange}
+              more={moreChangedCardStatus}
+            />
+            <div className="text-right">
+              <a
+                className="text-[1rem] text-blue-700"
+                onClick={() => setMoreChangedCardStatus((pre) => !pre)}
+              >
+                {moreChangedCardStatus ? "접기" : "펼치기"}
+              </a>
+            </div>
+          </div>
         }
       />
       <SectionForResult

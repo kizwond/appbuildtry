@@ -195,6 +195,9 @@ export const computeNumberOfAllFilteredCards = ({
           );
         }
         if (needStudyTimeCondition === "custom") {
+          if (card.studyStatus.needStudyTime === null) {
+            return false;
+          }
           const needStudyTimePosition =
             (Date.parse(card.studyStatus.needStudyTime) - todayMidnight) /
             24 /

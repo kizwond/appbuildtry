@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import {
   QUERY_SESSION_BY_USER,
   QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
+  QUERY_SESSION_FOR_RESTARTING_SESSION_BY_SESSION_ID,
 } from "../../graphql/query/allQuery";
 import { Space } from "antd";
 import { useCallback } from "react";
@@ -101,7 +102,7 @@ const M_RecentStudyList = () => {
   }, []);
 
   const [getSessionDataForSessionConfig, { variables: vari }] = useLazyQuery(
-    QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
+    QUERY_SESSION_FOR_RESTARTING_SESSION_BY_SESSION_ID,
     {
       onCompleted: (received_data) => {
         if (received_data.session_getSession.status === "200") {
@@ -154,7 +155,6 @@ const M_RecentStudyList = () => {
                 sessionConfigForRestartingSession:
                   JSON.stringify(sessionConfig),
               },
-
               pathname: `/m/study/sessionConfig/[id]`,
             },
             `/m/study/sessionConfig/${vari.session_id}`
@@ -253,22 +253,8 @@ const M_RecentStudyList = () => {
                             getSessionConfigData({ session_id: session._id });
                           }}
                         >
-                          결과
+                          재시작
                         </a>
-                        {/* <Link
-                          as={`/m/study/sessionConfig/${session._id}`}
-                          href={{
-                            pathname: "/m/study/sessionConfig/[id]",
-                            // query: {
-                            //   selectedBooks: JSON.stringify(selectedBooks),
-                            //   initialCheckedKey: JSON.stringify(
-                            //     getCheckedIndexKeys(data, selectedBooks)
-                            //   ),
-                            // },
-                          }}
-                        >
-                          <a>재시작</a>
-                        </Link> */}
                       </Space>
                     </td>
                   </tr>

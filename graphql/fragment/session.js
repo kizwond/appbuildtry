@@ -344,3 +344,17 @@ export const FRAGMENT_SESSION_FOR_RESULT = gql`
     }
   }
 `;
+export const FRAGMENT_SESSION_FOR_RESTARTING_SESSION = gql`
+  ${FRAGMENT_SESSION_CONFIG}
+  fragment SessionForRestartingSessionFragment on Session {
+    _id
+    sessionScope {
+      mybook_id
+      title
+      index_ids
+    }
+    sessionConfig {
+      ...SessionConfigFragment
+    }
+  }
+`;

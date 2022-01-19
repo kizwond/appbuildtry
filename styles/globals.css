@@ -1065,7 +1065,7 @@ p {
   /* 100% {margin-left:0;} */
 }
 .highlightGroup0 {
-  animation-name: highlightGroup2;
+  animation-name: highlightGroup0;
   animation-duration: 0.2s;
   /* animation-iteration-count: infinite; */
   /* animation-direction: reverse; */
@@ -1075,7 +1075,7 @@ p {
   animation-fill-mode: backwards;
 }
 
-@keyframes highlightGroup2 {
+@keyframes highlightGroup0 {
   0% {
     position: absolute;
     top: 0px;
@@ -1185,7 +1185,54 @@ p {
   }
   /* 100% {margin-left:0;} */
 }
+.searchGroup0 {
+  animation-name: searchGroup0;
+  animation-duration: 0.2s;
+  /* animation-iteration-count: infinite; */
+  /* animation-direction: reverse; */
+  animation-timing-function: linear;
+  animation-fill-mode: inherit;
+  /* animation-delay: 5s; */
+  animation-fill-mode: backwards;
+}
 
+@keyframes searchGroup0 {
+  0% {
+    position: absolute;
+    top: 0px;
+    opacity: 0;
+  }
+  100% {
+    position: absolute;
+    top: -51px;
+    opacity: 1;
+  }
+  /* 100% {margin-left:0;} */
+}
+.searchGroup1 {
+  animation-name: searchGroup1;
+  animation-duration: 0.2s;
+  /* animation-iteration-count: infinite; */
+  /* animation-direction: reverse; */
+  animation-timing-function: linear;
+  animation-fill-mode: inherit;
+  /* animation-delay: 5s; */
+  animation-fill-mode: backwards;
+}
+
+@keyframes searchGroup1 {
+  0% {
+    position: absolute;
+    top: 0px;
+    opacity: 0;
+  }
+  100% {
+    position: absolute;
+    top: -97px;
+    opacity: 1;
+  }
+  /* 100% {margin-left:0;} */
+}
 audio {
   height:20px;
 }

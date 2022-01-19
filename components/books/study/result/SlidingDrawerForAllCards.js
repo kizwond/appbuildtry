@@ -1,9 +1,3 @@
-import { useState, useEffect } from "react";
-import { useLazyQuery } from "@apollo/client";
-import {
-  QUERY_BUY_CARD_CONTENTS,
-  QUERY_MY_CARD_CONTENTS,
-} from "../../../../graphql/query/allQuery";
 import TableForStudiedCards from "./TableForStudiedCards";
 import styled from "styled-components";
 import { Drawer } from "antd";
@@ -14,61 +8,15 @@ const SlidingDrawerForAllCards = ({
   closeDrawer,
   cards,
   contentType,
+  myContents,
+  buyContents,
 }) => {
-  const [mountCounter, setMountCounter] = useState(0);
-
-  const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
-    QUERY_MY_CARD_CONTENTS,
-    {
-      onCompleted: (data) => {
-        console.log(data);
-      },
-    }
-  );
-  const [getBuyCardsContent, { data: buyContentsData }] = useLazyQuery(
-    QUERY_BUY_CARD_CONTENTS,
-    {
-      onCompleted: (data) => {
-        console.log(data);
-      },
-    }
-  );
-
-  // Drawer를 처음 열었을 때만 서버에 데이터 요청
-  useEffect(() => {
-    if (visible && mountCounter < 3) {
-      setMountCounter((pre) => pre + 1);
-    }
-  }, [visible, mountCounter]);
-
-  useEffect(() => {
-    if (mountCounter === 1 && visible) {
-      if (cards.filter((card) => card.content.location === "my").length > 0) {
-        getMyCardsContent({
-          variables: {
-            mycontent_ids: cards
-              .filter((card) => card.content.location === "my")
-              .map((card) => card.content.mycontent_id),
-          },
-        });
-      }
-      if (cards.filter((card) => card.content.location === "buy").length > 0) {
-        getBuyCardsContent({
-          variables: {
-            buycontent_ids: cards
-              .filter((card) => card.content.location === "buy")
-              .map((card) => card.content.mycontent_id),
-          },
-        });
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mountCounter]);
-
   return (
     <DrawerWrapper
       title={
-        contentType === "clickedTimes"
+        contentType === "clickedCard"
+          ? "클릭한 카드"
+          : contentType === "clickedTimes"
           ? "학습 횟수 많은 카드"
           : "학습 시간 많은 카드"
       }
@@ -80,17 +28,12 @@ const SlidingDrawerForAllCards = ({
       onClose={closeDrawer}
       zIndex={10}
     >
-      {data && data.mycontent_getMycontentByMycontentIDs && (
+      {[...myContents, ...buyContents].length > 0 && (
         <TableForStudiedCards
           cards={cards}
-          myContents={data.mycontent_getMycontentByMycontentIDs.mycontents}
+          myContents={myContents}
           contentType={contentType}
-          buyContents={
-            !buyContentsData
-              ? []
-              : buyContentsData.buycontent_getBuycontentByBuycontentIDs
-                  .buycontents
-          }
+          buyContents={buyContents}
         />
       )}
     </DrawerWrapper>

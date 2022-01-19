@@ -13,7 +13,10 @@ import TableForNumberOfCardsOnStages from "./DetailOfSelected/TableForNumberOfCa
 import ChartForClickedTimesByDifficulty from "./DetailOfSelected/ChartForClickedTimesByDifficulty";
 import { useMemo } from "react";
 
-const DetailOfSelected = () => {
+const DetailOfSelected = ({
+  openClickedTimeOnCard,
+  openChangedLevelOnCard,
+}) => {
   const [selectedValue, setSelectedValue] = useState("Session");
   const [moreCardNumber, setMoreCardNumber] = useState(false);
   const [moreChangedLevel, setMoreChangedLevel] = useState(false);
@@ -88,7 +91,7 @@ const DetailOfSelected = () => {
             <div>클릭 수</div>
             <a
               className="text-[1rem] text-blue-700"
-              onClick={() => console.log("원래있던 테이블로 구성해야함")}
+              onClick={openClickedTimeOnCard}
             >
               자세히보기
             </a>
@@ -102,7 +105,17 @@ const DetailOfSelected = () => {
       />
 
       <SectionForResult
-        title="레벨 변동"
+        title={
+          <div className="flex items-end space-x-3">
+            <div>레벨 변동</div>
+            <a
+              className="text-[1rem] text-blue-700"
+              onClick={openChangedLevelOnCard}
+            >
+              자세히보기
+            </a>
+          </div>
+        }
         content={
           <div>
             <TableForNumberOfChangedLevel

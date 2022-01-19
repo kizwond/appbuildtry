@@ -12,7 +12,11 @@ const TableForStudiedCards = ({
   const [cardContent, setCardContent] = useState(null);
 
   const getThirdCol =
-    contentType === "clickedTimes"
+    contentType === "changedLevel"
+      ? function (card) {
+          return card.studyStatus.levelOriginal;
+        }
+      : contentType === "clickedTimes"
       ? function (card) {
           return card.studyStatus.clickTimesInSession;
         }
@@ -41,6 +45,34 @@ const TableForStudiedCards = ({
           return displayTime(time);
         };
 
+  const getCardStatusForResult = (recentSelection, ratio) => {
+    switch (recentSelection) {
+      case "difficulty":
+        return ratio;
+
+      case "restore":
+        return "복원";
+
+      case "hold":
+        return "보류";
+
+      case "completed":
+        return "졸업";
+
+      case "move":
+        return "이동";
+
+      case "finish":
+        return "종료";
+
+      case "pass":
+        return "통과";
+
+      default:
+        throw new Error(`${recentSelection} 는 알수 없는 결과입니다`);
+    }
+  };
+
   return (
     <table className="w-full table-fixed" cellPadding={0} cellSpacing={0}>
       <thead>
@@ -48,19 +80,31 @@ const TableForStudiedCards = ({
           <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
           <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
           {contentType !== "newCards" && (
-            <th className="text-[1rem] font-normal bg-slate-100 w-[23%]">
-              {contentType === "clickedTimes" ? "총 학습횟수" : "총 학습시간"}
+            <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+              {contentType === "changedLevel"
+                ? "기존레벨"
+                : contentType === "clickedTimes"
+                ? "학습횟수"
+                : "학습시간"}
             </th>
           )}
-          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
-            카드보기
-          </th>
+          {contentType === "clickedCard" && (
+            <th className="text-[1rem] font-normal bg-slate-100 w-[13%]">
+              선택
+            </th>
+          )}
+          {contentType === "changedLevel" && (
+            <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+              변경레벨
+            </th>
+          )}
+          <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
         </tr>
       </thead>
       <tbody>
         {cards.length > 0 &&
           cards.map((card, index) => (
-            <Fragment key={card._id}>
+            <Fragment key={card._id + index}>
               <tr className="border-b border-collapse border-b-gray-200">
                 <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
                   {index + 1}
@@ -79,11 +123,24 @@ const TableForStudiedCards = ({
                     {getThirdCol(card)}
                   </td>
                 )}
+                {contentType === "clickedCard" && (
+                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                    {getCardStatusForResult(
+                      card.studyStatus.recentSelection,
+                      card.studyStatus.recentStudyRatio
+                    )}
+                  </td>
+                )}
+                {contentType === "changedLevel" && (
+                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                    {card.studyStatus.levelCurrent}
+                  </td>
+                )}
                 <td
                   className="text-[1rem] py-[4px] font-normal text-center"
                   onClick={() => {
-                    if (cardIdForMore !== card._id) {
-                      setCardIdForMore(card._id);
+                    if (cardIdForMore !== card._id + index) {
+                      setCardIdForMore(card._id + index);
                       setCardContent({
                         contents: contents.find(
                           (content) =>
@@ -100,13 +157,20 @@ const TableForStudiedCards = ({
                     }
                   }}
                 >
-                  <a>{cardIdForMore === card._id ? "접기" : "보기"}</a>
+                  <a>{cardIdForMore === card._id + index ? "접기" : "보기"}</a>
                 </td>
               </tr>
-              {cardContent && cardIdForMore === card._id && (
+              {cardContent && cardIdForMore === card._id + index && (
                 <tr className="border-b border-collapse border-b-gray-200">
                   <td
-                    colSpan={contentType !== "newCards" ? 4 : 3}
+                    colSpan={
+                      contentType === "clickedCard" ||
+                      contentType === "changedLevel"
+                        ? 5
+                        : contentType !== "newCards"
+                        ? 4
+                        : 3
+                    }
                     className="p-2 text-[1rem]"
                   >
                     {!!cardContent.userFlag && (

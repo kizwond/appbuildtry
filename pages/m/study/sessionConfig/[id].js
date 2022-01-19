@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
-import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
+import { QUERY_SESSION_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
 
 import {
   computeNumberOfAllFilteredCards,
@@ -19,21 +19,26 @@ import M_SessionNavigationBar /* ----------- */ from "../../../../components/boo
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
 import {
-  ArrowLeftOutlined,
-  ArrowRightOutlined,
   LoadingOutlined,
   StepBackwardOutlined,
   StepForwardOutlined,
 } from "@ant-design/icons";
 import { useCustomCallbackToSessionStore } from "../../../../components/books/study/mainPage/useHooks/useCustomCallbackToSessionStorage";
-import { message, Space, Tooltip } from "antd";
+import { message, Tooltip } from "antd";
 
 const StudySessionConfig = ({
   isRefreshPage,
   selectedBooks,
   initialCheckedKey,
+  sessionConfigForRestartingSession,
 }) => {
   const router = useRouter();
+  console.log({
+    isRefreshPage,
+    selectedBooks,
+    initialCheckedKey,
+    sessionConfigForRestartingSession,
+  });
 
   const writeSessionDataInSessionStorage = useCustomCallbackToSessionStore();
 
@@ -70,12 +75,23 @@ const StudySessionConfig = ({
     if (!isRefreshPage) {
       setCheckedKeys(initialCheckedKey);
     }
+    if (isRefreshPage) {
+      const checkedKeys = JSON.parse(
+        sessionStorage.getItem("checkedIndexesForRestartingSession")
+      );
+      setCheckedKeys(checkedKeys);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
+    if (!isRefreshPage) {
+      updateData(sessionConfigForRestartingSession);
+    }
     if (isRefreshPage) {
-      const checkedKeys = JSON.parse(sessionStorage.getItem("forCheckedKeys"));
-      setCheckedKeys(checkedKeys);
+      const sessionConfigForRestartingSession = JSON.parse(
+        sessionStorage.getItem("sessionConfigForRestartingSession")
+      );
+      updateData(sessionConfigForRestartingSession);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -86,13 +102,13 @@ const StudySessionConfig = ({
   }, []);
 
   const { data, loading, error } = useQuery(
-    QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
+    QUERY_SESSION_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
     {
       onCompleted: (received_data) => {
-        if (received_data.session_getSessionConfig.status === "200") {
+        if (received_data.indexset_getByMybookids.status === "200") {
           console.log("세션 설정 데이터 받음", received_data);
-          updateData(received_data.session_getSessionConfig.sessionConfigs[0]);
-        } else if (received_data.session_getSessionConfig.status === "401") {
+          // updateData(received_data);
+        } else if (received_data.indexset_getByMybookids.status === "401") {
           router.push("/m/account/login");
         } else {
           console.log("어떤 문제가 발생함");
@@ -104,9 +120,9 @@ const StudySessionConfig = ({
             ? []
             : !isRefreshPage
             ? selectedBooks.map((book) => book.book_id)
-            : JSON.parse(sessionStorage.getItem("books_selected")).map(
-                (book) => book.book_id
-              ),
+            : JSON.parse(
+                sessionStorage.getItem("booksForRestartingSession")
+              ).map((book) => book.book_id),
       },
       fetchPolicy: "network-only",
     }
@@ -121,7 +137,7 @@ const StudySessionConfig = ({
         cardsets: data.cardset_getByMybookIDs.cardsets,
         bookList: !isRefreshPage
           ? selectedBooks
-          : JSON.parse(sessionStorage.getItem("books_selected")),
+          : JSON.parse(sessionStorage.getItem("booksForRestartingSession")),
       }),
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,13 +164,16 @@ const StudySessionConfig = ({
     onCompleted: (_data) => {
       if (_data.session_createSession.status === "200") {
         console.log("세션 생성 요청 후 받은 데이터", _data);
-        sessionStorage.setItem("forCheckedKeys", JSON.stringify(checkedKeys));
+        sessionStorage.setItem(
+          "checkedIndexesForRestartingSession",
+          JSON.stringify(checkedKeys)
+        );
         writeSessionDataInSessionStorage({
           _data,
           sessionConfig,
           selectedBooks: !isRefreshPage
             ? selectedBooks
-            : JSON.parse(sessionStorage.getItem("books_selected")),
+            : JSON.parse(sessionStorage.getItem("booksForRestartingSession")),
           numberOfFilteredCards,
         });
 
@@ -170,7 +189,7 @@ const StudySessionConfig = ({
   });
   const submitCreateSessionConfigToServer = useCallback(async () => {
     const selectedBooksInLocalStorage = JSON.parse(
-      sessionStorage.getItem("books_selected")
+      sessionStorage.getItem("booksForRestartingSession")
     );
     const sessionScope = selectedBooksInLocalStorage.map((book) => ({
       mybook_id: book.book_id,
@@ -253,7 +272,9 @@ const StudySessionConfig = ({
                 bookList={
                   !isRefreshPage
                     ? selectedBooks
-                    : JSON.parse(sessionStorage.getItem("books_selected"))
+                    : JSON.parse(
+                        sessionStorage.getItem("booksForRestartingSession")
+                      )
                 }
                 checkedKeys={checkedKeys}
                 onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
@@ -350,6 +371,9 @@ export function getServerSideProps({ query }) {
         isRefreshPage: false,
         selectedBooks: JSON.parse(query.selectedBooks),
         initialCheckedKey: JSON.parse(query.initialCheckedKey),
+        sessionConfigForRestartingSession: JSON.parse(
+          query.sessionConfigForRestartingSession
+        ),
       },
     };
   }

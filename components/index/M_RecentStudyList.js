@@ -100,6 +100,87 @@ const M_RecentStudyList = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [getSessionDataForSessionConfig, { variables: vari }] = useLazyQuery(
+    QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
+    {
+      onCompleted: (received_data) => {
+        if (received_data.session_getSession.status === "200") {
+          console.log("세션 결과 데이터 받음", received_data);
+          const sessionConfig =
+            received_data.session_getSession.sessions[0].sessionConfig;
+          sessionStorage.setItem(
+            "sessionConfigForRestartingSession",
+            JSON.stringify(sessionConfig)
+          );
+
+          const getCheckedIndexKeys = (data) => {
+            let checkedIndexesforRestartingSession = {};
+
+            data.forEach((book) => {
+              checkedIndexesforRestartingSession[book.mybook_id] =
+                book.index_ids;
+            });
+            if (checkedIndexesforRestartingSession !== {}) {
+            }
+            return checkedIndexesforRestartingSession;
+          };
+          const checkedIndexesforRestartingSession = getCheckedIndexKeys(
+            received_data.session_getSession.sessions[0].sessionScope
+          );
+          sessionStorage.setItem(
+            "checkedIndexesForRestartingSession",
+            JSON.stringify(checkedIndexesforRestartingSession)
+          );
+
+          const booksForRestartingSession =
+            received_data.session_getSession.sessions[0].sessionScope.map(
+              (book) => ({
+                book_id: book.mybook_id,
+                book_title: book.title,
+              })
+            );
+          sessionStorage.setItem(
+            "booksForRestartingSession",
+            JSON.stringify(booksForRestartingSession)
+          );
+          console.log({ sessionConfig });
+          router.push(
+            {
+              query: {
+                selectedBooks: JSON.stringify(booksForRestartingSession),
+                initialCheckedKey: JSON.stringify(
+                  checkedIndexesforRestartingSession
+                ),
+                sessionConfigForRestartingSession:
+                  JSON.stringify(sessionConfig),
+              },
+
+              pathname: `/m/study/sessionConfig/[id]`,
+            },
+            `/m/study/sessionConfig/${vari.session_id}`
+          );
+        } else if (received_data.session_getSession.status === "401") {
+          router.push("/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
+
+  const getSessionConfigData = useCallback(async ({ session_id }) => {
+    try {
+      getSessionDataForSessionConfig({
+        variables: {
+          session_id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <article className="text-[1rem] w-full px-[8px] flex flex-col gap-1">
       <header>
@@ -167,9 +248,27 @@ const M_RecentStudyList = () => {
                         >
                           결과
                         </a>
-                        <Link href={"/"}>
+                        <a
+                          onClick={() => {
+                            getSessionConfigData({ session_id: session._id });
+                          }}
+                        >
+                          결과
+                        </a>
+                        {/* <Link
+                          as={`/m/study/sessionConfig/${session._id}`}
+                          href={{
+                            pathname: "/m/study/sessionConfig/[id]",
+                            // query: {
+                            //   selectedBooks: JSON.stringify(selectedBooks),
+                            //   initialCheckedKey: JSON.stringify(
+                            //     getCheckedIndexKeys(data, selectedBooks)
+                            //   ),
+                            // },
+                          }}
+                        >
                           <a>재시작</a>
-                        </Link>
+                        </Link> */}
                       </Space>
                     </td>
                   </tr>

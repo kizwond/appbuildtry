@@ -143,7 +143,17 @@ export const computeNumberOfAllFilteredCards = ({
   checkedKeys,
   sessionConfig,
 }) => {
-  if (sessionConfig.detailedOption.sortOption === "") {
+  const { exam, flip, read } = sessionConfig;
+  const detailedOption =
+    sessionConfig.studyMode === "exam"
+      ? exam
+      : sessionConfig.studyMode === "flip"
+      ? flip
+      : sessionConfig.studyMode === "read"
+      ? read
+      : new Error("모드가 잘못 설정됨");
+
+  if (detailedOption.sortOption === "") {
     return [];
   }
   const currentTime = new Date();
@@ -154,14 +164,9 @@ export const computeNumberOfAllFilteredCards = ({
   const flattenCheckedKeys = Object.keys(checkedKeys).flatMap(
     (key) => checkedKeys[key]
   );
-  const {
-    detailedOption: {
-      needStudyTimeCondition,
-      needStudyTimeRange,
-      useCardtype,
-      useStatus,
-    },
-  } = sessionConfig;
+
+  const { needStudyTimeCondition, needStudyTimeRange, useCardtype, useStatus } =
+    detailedOption;
 
   const flattenCards = cardsets
     .flatMap((cardset) => cardset.cards)

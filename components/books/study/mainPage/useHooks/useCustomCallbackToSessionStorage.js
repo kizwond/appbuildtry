@@ -57,16 +57,20 @@ export const useCustomCallbackToSessionStore = () => {
   );
 
   const writeSessionDataInSessionStorage = useCallback(
-    async ({
-      _data,
-      sessionConfig,
-      numberOfFilteredCards,
-      isRefreshPage,
-      selectedBooks,
-    }) => {
+    async ({ _data, sessionConfig, numberOfFilteredCards, selectedBooks }) => {
+      const { exam, flip, read } = sessionConfig;
+      const detailedOption =
+        sessionConfig.studyMode === "exam"
+          ? exam
+          : sessionConfig.studyMode === "flip"
+          ? flip
+          : sessionConfig.studyMode === "read"
+          ? read
+          : new Error("모드가 잘못 설정됨");
+
       const sortedCards = sortFilteredCards({
         numberOfFilteredCards,
-        sortOption: sessionConfig.detailedOption.sortOption,
+        sortOption: detailedOption.sortOption,
       });
 
       sessionStorage.setItem(
@@ -79,7 +83,7 @@ export const useCustomCallbackToSessionStore = () => {
 
       sessionStorage.removeItem("cardListStudying");
 
-      if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
+      if (detailedOption.numStartCards.onOff === "on") {
         const {
           studyingCards,
           remainedCards,
@@ -87,7 +91,7 @@ export const useCustomCallbackToSessionStore = () => {
           numberOfSelectedCardsByStatus,
         } = await getCardsByNumber({
           sortedCards,
-          numStartCards: sessionConfig.detailedOption.numStartCards,
+          numStartCards: detailedOption.numStartCards,
         });
         sessionStorage.setItem(
           "cardListStudying",
@@ -119,133 +123,134 @@ export const useCustomCallbackToSessionStore = () => {
         sessionStorage.setItem(
           "resultByBook",
           JSON.stringify(
-            !isRefreshPage
-              ? selectedBooks.map((book) =>
-                  produce(sessionResults, (draft) => {
-                    draft.mybook_id = book.book_id;
-                    draft.bookTitle = book.book_title;
-                    draft.numCards.completed.selected =
-                      remainedCards.completed.filter(
-                        (card) => card.card_info.mybook_id === book.book_id
-                      ).length +
-                      studyingCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "completed"
-                      ).length;
-                    draft.numCards.yet.selected =
-                      remainedCards.yet.filter(
-                        (card) => card.card_info.mybook_id === book.book_id
-                      ).length +
-                      studyingCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "yet"
-                      ).length;
-                    draft.numCards.ing.selected =
-                      remainedCards.ing.filter(
-                        (card) => card.card_info.mybook_id === book.book_id
-                      ).length +
-                      studyingCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "ing"
-                      ).length;
-                    draft.numCards.hold.selected =
-                      remainedCards.hold.filter(
-                        (card) => card.card_info.mybook_id === book.book_id
-                      ).length +
-                      studyingCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "hold"
-                      ).length;
+            // !isRefreshPage
+            //   ?
+            selectedBooks.map((book) =>
+              produce(sessionResults, (draft) => {
+                draft.mybook_id = book.book_id;
+                draft.bookTitle = book.book_title;
+                draft.numCards.completed.selected =
+                  remainedCards.completed.filter(
+                    (card) => card.card_info.mybook_id === book.book_id
+                  ).length +
+                  studyingCards.filter(
+                    (card) =>
+                      card.card_info.mybook_id === book.book_id &&
+                      card.studyStatus.statusCurrent === "completed"
+                  ).length;
+                draft.numCards.yet.selected =
+                  remainedCards.yet.filter(
+                    (card) => card.card_info.mybook_id === book.book_id
+                  ).length +
+                  studyingCards.filter(
+                    (card) =>
+                      card.card_info.mybook_id === book.book_id &&
+                      card.studyStatus.statusCurrent === "yet"
+                  ).length;
+                draft.numCards.ing.selected =
+                  remainedCards.ing.filter(
+                    (card) => card.card_info.mybook_id === book.book_id
+                  ).length +
+                  studyingCards.filter(
+                    (card) =>
+                      card.card_info.mybook_id === book.book_id &&
+                      card.studyStatus.statusCurrent === "ing"
+                  ).length;
+                draft.numCards.hold.selected =
+                  remainedCards.hold.filter(
+                    (card) => card.card_info.mybook_id === book.book_id
+                  ).length +
+                  studyingCards.filter(
+                    (card) =>
+                      card.card_info.mybook_id === book.book_id &&
+                      card.studyStatus.statusCurrent === "hold"
+                  ).length;
 
-                    draft.numCards.completed.inserted = studyingCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "completed"
-                    ).length;
-                    draft.numCards.yet.inserted = studyingCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "yet"
-                    ).length;
-                    draft.numCards.ing.inserted = studyingCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "ing"
-                    ).length;
-                    draft.numCards.hold.inserted = studyingCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "hold"
-                    ).length;
-                  })
-                )
-              : JSON.parse(sessionStorage.getItem("books_selected")).map(
-                  (book) =>
-                    produce(sessionResults, (draft) => {
-                      draft.mybook_id = book.book_id;
-                      draft.numCards.completed.selected =
-                        remainedCards.completed.filter(
-                          (card) => card.card_info.mybook_id === book.book_id
-                        ).length +
-                        studyingCards.filter(
-                          (card) =>
-                            card.card_info.mybook_id === book.book_id &&
-                            card.studyStatus.statusCurrent === "completed"
-                        ).length;
-                      draft.numCards.yet.selected =
-                        remainedCards.yet.filter(
-                          (card) => card.card_info.mybook_id === book.book_id
-                        ).length +
-                        studyingCards.filter(
-                          (card) =>
-                            card.card_info.mybook_id === book.book_id &&
-                            card.studyStatus.statusCurrent === "yet"
-                        ).length;
-                      draft.numCards.ing.selected =
-                        remainedCards.ing.filter(
-                          (card) => card.card_info.mybook_id === book.book_id
-                        ).length +
-                        studyingCards.filter(
-                          (card) =>
-                            card.card_info.mybook_id === book.book_id &&
-                            card.studyStatus.statusCurrent === "ing"
-                        ).length;
-                      draft.numCards.hold.selected =
-                        remainedCards.hold.filter(
-                          (card) => card.card_info.mybook_id === book.book_id
-                        ).length +
-                        studyingCards.filter(
-                          (card) =>
-                            card.card_info.mybook_id === book.book_id &&
-                            card.studyStatus.statusCurrent === "hold"
-                        ).length;
+                draft.numCards.completed.inserted = studyingCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "completed"
+                ).length;
+                draft.numCards.yet.inserted = studyingCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "yet"
+                ).length;
+                draft.numCards.ing.inserted = studyingCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "ing"
+                ).length;
+                draft.numCards.hold.inserted = studyingCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "hold"
+                ).length;
+              })
+            )
+            // : JSON.parse(sessionStorage.getItem("books_selected")).map(
+            //     (book) =>
+            //       produce(sessionResults, (draft) => {
+            //         draft.mybook_id = book.book_id;
+            //         draft.numCards.completed.selected =
+            //           remainedCards.completed.filter(
+            //             (card) => card.card_info.mybook_id === book.book_id
+            //           ).length +
+            //           studyingCards.filter(
+            //             (card) =>
+            //               card.card_info.mybook_id === book.book_id &&
+            //               card.studyStatus.statusCurrent === "completed"
+            //           ).length;
+            //         draft.numCards.yet.selected =
+            //           remainedCards.yet.filter(
+            //             (card) => card.card_info.mybook_id === book.book_id
+            //           ).length +
+            //           studyingCards.filter(
+            //             (card) =>
+            //               card.card_info.mybook_id === book.book_id &&
+            //               card.studyStatus.statusCurrent === "yet"
+            //           ).length;
+            //         draft.numCards.ing.selected =
+            //           remainedCards.ing.filter(
+            //             (card) => card.card_info.mybook_id === book.book_id
+            //           ).length +
+            //           studyingCards.filter(
+            //             (card) =>
+            //               card.card_info.mybook_id === book.book_id &&
+            //               card.studyStatus.statusCurrent === "ing"
+            //           ).length;
+            //         draft.numCards.hold.selected =
+            //           remainedCards.hold.filter(
+            //             (card) => card.card_info.mybook_id === book.book_id
+            //           ).length +
+            //           studyingCards.filter(
+            //             (card) =>
+            //               card.card_info.mybook_id === book.book_id &&
+            //               card.studyStatus.statusCurrent === "hold"
+            //           ).length;
 
-                      draft.numCards.completed.inserted = studyingCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "completed"
-                      ).length;
-                      draft.numCards.yet.inserted = studyingCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "yet"
-                      ).length;
-                      draft.numCards.ing.inserted = studyingCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "ing"
-                      ).length;
-                      draft.numCards.hold.inserted = studyingCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "hold"
-                      ).length;
-                    })
-                )
+            //         draft.numCards.completed.inserted = studyingCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "completed"
+            //         ).length;
+            //         draft.numCards.yet.inserted = studyingCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "yet"
+            //         ).length;
+            //         draft.numCards.ing.inserted = studyingCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "ing"
+            //         ).length;
+            //         draft.numCards.hold.inserted = studyingCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "hold"
+            //         ).length;
+            //       })
+            //   )
           )
         );
       } else {
@@ -295,101 +300,102 @@ export const useCustomCallbackToSessionStore = () => {
         sessionStorage.setItem(
           "resultByBook",
           JSON.stringify(
-            !isRefreshPage
-              ? selectedBooks.map((book) =>
-                  produce(sessionResults, (draft) => {
-                    draft.mybook_id = book.book_id;
-                    draft.bookTitle = book.book_title;
-                    draft.numCards.completed.selected = sortedCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "completed"
-                    ).length;
-                    draft.numCards.yet.selected = sortedCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "yet"
-                    ).length;
-                    draft.numCards.ing.selected = sortedCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "ing"
-                    ).length;
-                    draft.numCards.hold.selected = sortedCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "hold"
-                    ).length;
+            // !isRefreshPage
+            //   ?
+            selectedBooks.map((book) =>
+              produce(sessionResults, (draft) => {
+                draft.mybook_id = book.book_id;
+                draft.bookTitle = book.book_title;
+                draft.numCards.completed.selected = sortedCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "completed"
+                ).length;
+                draft.numCards.yet.selected = sortedCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "yet"
+                ).length;
+                draft.numCards.ing.selected = sortedCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "ing"
+                ).length;
+                draft.numCards.hold.selected = sortedCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "hold"
+                ).length;
 
-                    draft.numCards.completed.inserted = sortedCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "completed"
-                    ).length;
-                    draft.numCards.yet.inserted = sortedCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "yet"
-                    ).length;
-                    draft.numCards.ing.inserted = sortedCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "ing"
-                    ).length;
-                    draft.numCards.hold.inserted = sortedCards.filter(
-                      (card) =>
-                        card.card_info.mybook_id === book.book_id &&
-                        card.studyStatus.statusCurrent === "hold"
-                    ).length;
-                  })
-                )
-              : JSON.parse(sessionStorage.getItem("books_selected")).map(
-                  (book) =>
-                    produce(sessionResults, (draft) => {
-                      draft.mybook_id = book.book_id;
-                      draft.numCards.completed.selected = sortedCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "completed"
-                      ).length;
-                      draft.numCards.yet.selected = sortedCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "yet"
-                      ).length;
-                      draft.numCards.ing.selected = sortedCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "ing"
-                      ).length;
-                      draft.numCards.hold.selected = sortedCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "hold"
-                      ).length;
+                draft.numCards.completed.inserted = sortedCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "completed"
+                ).length;
+                draft.numCards.yet.inserted = sortedCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "yet"
+                ).length;
+                draft.numCards.ing.inserted = sortedCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "ing"
+                ).length;
+                draft.numCards.hold.inserted = sortedCards.filter(
+                  (card) =>
+                    card.card_info.mybook_id === book.book_id &&
+                    card.studyStatus.statusCurrent === "hold"
+                ).length;
+              })
+            )
+            // : JSON.parse(sessionStorage.getItem("books_selected")).map(
+            //     (book) =>
+            //       produce(sessionResults, (draft) => {
+            //         draft.mybook_id = book.book_id;
+            //         draft.numCards.completed.selected = sortedCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "completed"
+            //         ).length;
+            //         draft.numCards.yet.selected = sortedCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "yet"
+            //         ).length;
+            //         draft.numCards.ing.selected = sortedCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "ing"
+            //         ).length;
+            //         draft.numCards.hold.selected = sortedCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "hold"
+            //         ).length;
 
-                      draft.numCards.completed.inserted = sortedCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "completed"
-                      ).length;
-                      draft.numCards.yet.inserted = sortedCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "yet"
-                      ).length;
-                      draft.numCards.ing.inserted = sortedCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "ing"
-                      ).length;
-                      draft.numCards.hold.inserted = sortedCards.filter(
-                        (card) =>
-                          card.card_info.mybook_id === book.book_id &&
-                          card.studyStatus.statusCurrent === "hold"
-                      ).length;
-                    })
-                )
+            //         draft.numCards.completed.inserted = sortedCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "completed"
+            //         ).length;
+            //         draft.numCards.yet.inserted = sortedCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "yet"
+            //         ).length;
+            //         draft.numCards.ing.inserted = sortedCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "ing"
+            //         ).length;
+            //         draft.numCards.hold.inserted = sortedCards.filter(
+            //           (card) =>
+            //             card.card_info.mybook_id === book.book_id &&
+            //             card.studyStatus.statusCurrent === "hold"
+            //         ).length;
+            //       })
+            //   )
           )
         );
       }

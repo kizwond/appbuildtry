@@ -328,6 +328,26 @@ export const QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS = gql`
     }
   }
 `;
+export const QUERY_SESSION_INDEXSET_AND_CARDSET_BY_BOOK_IDS = gql`
+  ${FRAGMENT_INDEX_SET}
+  ${FRAGMENT_CARD_SET}
+  query getSessionConfigAndIndexSetAndCardSet($mybook_ids: [ID]) {
+    indexset_getByMybookids(mybook_ids: $mybook_ids) {
+      status
+      msg
+      indexsets {
+        ...IndexSetFragment
+      }
+    }
+    cardset_getByMybookIDs(mybook_ids: $mybook_ids) {
+      status
+      msg
+      cardsets {
+        ...MyCardSetFragment
+      }
+    }
+  }
+`;
 
 // 책 목차 정보
 export const QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER = gql`

@@ -1,6 +1,8 @@
 import { gql } from "@apollo/client";
+import { FRAGMENT_SESSION_CONFIG } from "./sessionConfig";
 
 export const FRAGMENT_SESSION_FOR_RESULT = gql`
+  ${FRAGMENT_SESSION_CONFIG}
   fragment SessionForResultFragment on Session {
     _id
     session_info {
@@ -15,56 +17,7 @@ export const FRAGMENT_SESSION_FOR_RESULT = gql`
       index_ids
     }
     sessionConfig {
-      studyMode
-      detailedOption {
-        sortOption
-        useCardtype
-        useStatus
-        needStudyTimeCondition
-        needStudyTimeRange
-        numStartCards {
-          onOff
-          yet
-          ing
-          hold
-          completed
-        }
-      }
-      advancedFilter {
-        onOff
-        userFlag {
-          onOff
-          value
-        }
-        makerFlag {
-          onOff
-          value
-        }
-        recentStudyTime {
-          onOff
-          value
-        }
-        level {
-          onOff
-          value
-        }
-        studyTimes {
-          onOff
-          value
-        }
-        recentDifficulty {
-          onOff
-          value
-        }
-        examResult {
-          onOff
-          value
-        }
-        cardMaker {
-          onOff
-          value
-        }
-      }
+      ...SessionConfigFragment
     }
     createdCards {
       mycontent_id

@@ -220,9 +220,7 @@ export default function useSessionConfig() {
     changeExamProps,
   };
 
-  const updateData = useCallback((received_data) => {
-    const sessionconfigs =
-      received_data.session_getSessionConfig.sessionConfigs[0];
+  const updateData = useCallback((sessionconfigs) => {
     if (sessionconfigs === null) {
       return;
     }
@@ -371,26 +369,32 @@ export default function useSessionConfig() {
     changeStudyTimesOnOff,
   };
 
-  const sessionConfig =
-    mode === "read"
-      ? {
-          studyMode: "read",
-          detailedOption: readDetailedOption,
-          advancedFilter,
-        }
-      : mode === "flip"
-      ? {
-          studyMode: "flip",
-          detailedOption: flipDetailedOption,
-          advancedFilter,
-        }
-      : mode === "exam"
-      ? {
-          studyMode: "exam",
-          detailedOption: examDetailedOption,
-          advancedFilter,
-        }
-      : new Error("Unhandled studyConfig Mode");
+  const sessionConfig = {
+    studyMode: mode,
+    read: readDetailedOption,
+    flip: flipDetailedOption,
+    exam: examDetailedOption,
+    advancedFilter,
+  };
+  // mode === "read"
+  //   ? {
+  //       studyMode: "read",
+  //       detailedOption: readDetailedOption,
+  //       advancedFilter,
+  //     }
+  //   : mode === "flip"
+  //   ? {
+  //       studyMode: "flip",
+  //       detailedOption: flipDetailedOption,
+  //       advancedFilter,
+  //     }
+  //   : mode === "exam"
+  //   ? {
+  //       studyMode: "exam",
+  //       detailedOption: examDetailedOption,
+  //       advancedFilter,
+  //     }
+  //   : new Error("Unhandled studyConfig Mode");
 
   return {
     // 모드

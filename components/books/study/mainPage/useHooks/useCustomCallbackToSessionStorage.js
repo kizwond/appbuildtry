@@ -64,9 +64,19 @@ export const useCustomCallbackToSessionStore = () => {
       isRefreshPage,
       selectedBooks,
     }) => {
+      const { exam, flip, read } = sessionConfig;
+      const detailedOption =
+        sessionConfig.studyMode === "exam"
+          ? exam
+          : sessionConfig.studyMode === "flip"
+          ? flip
+          : sessionConfig.studyMode === "read"
+          ? read
+          : new Error("모드가 잘못 설정됨");
+
       const sortedCards = sortFilteredCards({
         numberOfFilteredCards,
-        sortOption: sessionConfig.detailedOption.sortOption,
+        sortOption: detailedOption.sortOption,
       });
 
       sessionStorage.setItem(
@@ -79,7 +89,7 @@ export const useCustomCallbackToSessionStore = () => {
 
       sessionStorage.removeItem("cardListStudying");
 
-      if (sessionConfig.detailedOption.numStartCards.onOff === "on") {
+      if (detailedOption.numStartCards.onOff === "on") {
         const {
           studyingCards,
           remainedCards,
@@ -87,7 +97,7 @@ export const useCustomCallbackToSessionStore = () => {
           numberOfSelectedCardsByStatus,
         } = await getCardsByNumber({
           sortedCards,
-          numStartCards: sessionConfig.detailedOption.numStartCards,
+          numStartCards: detailedOption.numStartCards,
         });
         sessionStorage.setItem(
           "cardListStudying",

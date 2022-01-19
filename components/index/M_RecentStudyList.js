@@ -13,6 +13,7 @@ import { useCallback } from "react";
 import produce from "immer";
 
 const M_RecentStudyList = () => {
+  console.log("학습이력페이지 랜더링");
   const router = useRouter();
   const { data, loading, error } = useQuery(QUERY_SESSION_BY_USER, {
     onCompleted: (received_data) => {
@@ -24,6 +25,7 @@ const M_RecentStudyList = () => {
         console.log("어떤 문제가 발생함");
       }
     },
+    fetchPolicy: "network-only",
   });
 
   const [getSessionDataForResult, { variables }] = useLazyQuery(

@@ -32,9 +32,9 @@ import {
   BarChartOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuReadMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuReadMode";
-import { Button, Modal, Space, Tag, message, Divider } from "antd";
+import { Button, Modal, Tag, message, Divider } from "antd";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
-import { elementType } from "prop-types";
+import { Dictionary } from "../../../../../graphql/query/card_contents";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
@@ -55,6 +55,7 @@ const ReadMode = () => {
   const [hiddenToggle, setHiddenToggle] = useState(false);
   const [underlineToggle, setUnderlineToggle] = useState(false);
   const [highlightToggle, setHighlightToggle] = useState(false);
+  const [searchToggle, setSearchToggle] = useState(false);
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -210,6 +211,7 @@ const ReadMode = () => {
     setHiddenToggle(false);
     setUnderlineToggle(false);
     setHighlightToggle(false);
+    setSearchToggle(false);
     console.log("hello");
     var text = null;
     var textRange = null;
@@ -375,11 +377,29 @@ const ReadMode = () => {
     sessionStorage.removeItem("selectionText");
   };
 
+  const search = (menu) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    if (menu === 0) {
+      searchWord();
+      setSearchToggle(false);
+    } else if (menu === 1) {
+      setSearchToggle(false);
+      sessionStorage.removeItem("selectionText");
+      return;
+    }
+    
+  };
+
   const hiddenToggleHandler = (info) => {
     console.log("userflagclicked!!!");
     setHiddenToggle(!hiddenToggle);
     setUnderlineToggle(false);
     setHighlightToggle(false);
+    setSearchToggle(false);
     if (hiddenToggle === false) {
       message.destroy();
       info();
@@ -391,6 +411,7 @@ const ReadMode = () => {
     setUnderlineToggle(!underlineToggle);
     setHiddenToggle(false);
     setHighlightToggle(false);
+    setSearchToggle(false);
     if (underlineToggle === false) {
       message.destroy();
       info();
@@ -402,7 +423,20 @@ const ReadMode = () => {
     setHighlightToggle(!highlightToggle);
     setHiddenToggle(false);
     setUnderlineToggle(false);
+    setSearchToggle(false);
     if (highlightToggle === false) {
+      message.destroy();
+      info();
+    }
+  };
+
+  const searchToggleHandler = (info) => {
+    console.log("searchToggleHandler!!!");
+    setSearchToggle(!searchToggle);
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
+    setHighlightToggle(false);
+    if (searchToggle === false) {
       message.destroy();
       info();
     }
@@ -483,7 +517,7 @@ const ReadMode = () => {
       //   console.log(content);
       const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
 
-      console.log(current_card_style_set);
+      // console.log(current_card_style_set);
       const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
       // console.log(current_card_style);
       const face_style = current_card_style[0].face_style;
@@ -830,7 +864,7 @@ const ReadMode = () => {
                               border: "none",
                               backgroundColor: "#f0f0f0",
                             }}
-                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize:"16px" }} />}
+                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
                           ></Button>
 
                           <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
@@ -920,7 +954,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<PlusOutlined style={{fontSize:"16px"}}/>}
+                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -928,7 +962,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<FormOutlined style={{fontSize:"16px"}}/>}
+                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -936,7 +970,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<DeleteOutlined style={{fontSize:"16px"}}/>}
+                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
 
                         <Button
@@ -945,7 +979,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<ProfileOutlined style={{fontSize:"16px"}}/>}
+                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -953,7 +987,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<BarChartOutlined style={{fontSize:"16px"}}/>}
+                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -961,7 +995,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<MessageOutlined style={{fontSize:"16px"}}/>}
+                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
                           <>
@@ -971,7 +1005,7 @@ const ReadMode = () => {
                                 border: "none",
                                 backgroundColor: "#f0f0f0",
                               }}
-                              icon={<PicRightOutlined style={{fontSize:"16px"}}/>}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
                             ></Button>
                           </>
                         ) : (
@@ -982,7 +1016,7 @@ const ReadMode = () => {
                                 border: "none",
                                 backgroundColor: "#f0f0f0",
                               }}
-                              icon={<PicRightOutlined style={{fontSize:"16px"}}/>}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
                               disabled
                             ></Button>
                           </>
@@ -1210,7 +1244,7 @@ const ReadMode = () => {
                               border: "none",
                               backgroundColor: "#f0f0f0",
                             }}
-                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize:"16px" }} />}
+                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
                           ></Button>
 
                           <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
@@ -1300,7 +1334,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<PlusOutlined style={{fontSize:"16px"}}/>}
+                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -1308,7 +1342,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<FormOutlined style={{fontSize:"16px"}}/>}
+                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -1316,7 +1350,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<DeleteOutlined style={{fontSize:"16px"}}/>}
+                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
 
                         <Button
@@ -1325,7 +1359,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<ProfileOutlined style={{fontSize:"16px"}}/>}
+                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -1333,7 +1367,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<BarChartOutlined style={{fontSize:"16px"}}/>}
+                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -1341,7 +1375,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<MessageOutlined style={{fontSize:"16px"}}/>}
+                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
                           <>
@@ -1351,7 +1385,7 @@ const ReadMode = () => {
                                 border: "none",
                                 backgroundColor: "#f0f0f0",
                               }}
-                              icon={<PicRightOutlined style={{fontSize:"16px"}}/>}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
                             ></Button>
                           </>
                         ) : (
@@ -1362,7 +1396,7 @@ const ReadMode = () => {
                                 border: "none",
                                 backgroundColor: "#f0f0f0",
                               }}
-                              icon={<PicRightOutlined style={{fontSize:"16px"}}/>}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
                               disabled
                             ></Button>
                           </>
@@ -1575,7 +1609,7 @@ const ReadMode = () => {
                               border: "none",
                               backgroundColor: "#f0f0f0",
                             }}
-                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize:"16px" }} />}
+                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
                           ></Button>
 
                           <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
@@ -1665,7 +1699,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<PlusOutlined style={{fontSize:"16px"}}/>}
+                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -1673,7 +1707,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<FormOutlined style={{fontSize:"16px"}}/>}
+                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -1681,7 +1715,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<DeleteOutlined style={{fontSize:"16px"}}/>}
+                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
 
                         <Button
@@ -1690,7 +1724,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<ProfileOutlined style={{fontSize:"16px"}}/>}
+                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -1698,7 +1732,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<BarChartOutlined style={{fontSize:"16px"}}/>}
+                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         <Button
                           size="small"
@@ -1706,7 +1740,7 @@ const ReadMode = () => {
                             border: "none",
                             backgroundColor: "#f0f0f0",
                           }}
-                          icon={<MessageOutlined style={{fontSize:"16px"}}/>}
+                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
                         ></Button>
                         {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
                           <>
@@ -1716,7 +1750,7 @@ const ReadMode = () => {
                                 border: "none",
                                 backgroundColor: "#f0f0f0",
                               }}
-                              icon={<PicRightOutlined style={{fontSize:"16px"}}/>}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
                             ></Button>
                           </>
                         ) : (
@@ -1727,7 +1761,7 @@ const ReadMode = () => {
                                 border: "none",
                                 backgroundColor: "#f0f0f0",
                               }}
-                              icon={<PicRightOutlined style={{fontSize:"16px"}}/>}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
                               disabled
                             ></Button>
                           </>
@@ -2118,27 +2152,49 @@ const ReadMode = () => {
     [cardset_deleteEffect]
   );
 
-  // if (!ISSERVER) {
-  //   const bodyTag = document.querySelector("body");
-  //   const taggg = document.querySelector(".hiddenButton");
-  //   bodyTag.addEventListener("click", (event) => {
-  //     var target = event.target;
-  //     console.log(target);
-  //     console.log(taggg);
-  //     if (target == taggg) {
-  //       if (hiddenToggle === true) {
-  //         setHiddenToggle(false);
-  //       } else {
-  //         setHiddenToggle(true);
-  //       }
-  //     } else {
-  //       setHiddenToggle(false);
-  //     }
+  const [searchResult, setSearchResult] = useState(false);
+  const [cardset_inquireLanguageDictionary] = useMutation(Dictionary, {
+    onCompleted: afterdictionary,
+  });
+  function afterdictionary(data) {
+    console.log("data", data.cardset_inquireLanguageDictionary.data1);
+    const selectionText = sessionStorage.getItem("selectionText")
+    const original = data.cardset_inquireLanguageDictionary.data1;
+    const meaning = original.match(/(KO\">([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100}))/gi);
+    const definitionKo = meaning[0].match(/([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100})/gi)[0];
+    const additional = meaning[1].match(/([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100})/gi)[0];
+    const definitionEg = original.match(/(def\">([a-z\s(),\.\?]{1,200}))/gi);
+    const definitionEg1 = definitionEg[0].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    const definitionEg2 = definitionEg[1].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    const exampleEg = original.match(/(eg\">([a-z\s(),\.\?]{1,200}))/gi);
+    const exampleEg1 = exampleEg[0].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    const exampleEg2 = exampleEg[1].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    console.log(meaning);
+    console.log("뜻", definitionKo);
+    console.log("뜻2", additional);
+    console.log(definitionEg);
+    console.log("영영뜻", definitionEg1);
+    console.log("영영뜻2", definitionEg2);
+    console.log(exampleEg);
+    console.log("영어예문", exampleEg1);
+    console.log("영어예문2", exampleEg2);
+    const results = { selectionText:selectionText, meaning1: definitionKo, meaning2: additional, meaningEng1: definitionEg1, meaningEng2: definitionEg2, example1: exampleEg1, example2: exampleEg2 };
+    setSearchResult(results);
+    sessionStorage.removeItem("selectionText");
+  }
 
-  //     setCardClickMenu(false);
-  //     setUserFlag(false);
-  //   });
-  // }
+  const searchWord = useCallback(async () => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    try {
+      await cardset_inquireLanguageDictionary({
+        variables: {
+          targetWord: selectionText,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [cardset_inquireLanguageDictionary]);
 
   return (
     <>
@@ -2167,17 +2223,22 @@ const ReadMode = () => {
               hide={hide}
               underline={underline}
               highlight={highlight}
+              search={search}
               underlineToggle={underlineToggle}
               hiddenToggle={hiddenToggle}
               highlightToggle={highlightToggle}
+              searchToggle={searchToggle}
               cardTypeSets={cardTypeSets}
               hiddenToggleHandler={hiddenToggleHandler}
               underlineToggleHandler={underlineToggleHandler}
               highlightToggleHandler={highlightToggleHandler}
+              searchToggleHandler={searchToggleHandler}
               updateStudyToolApply={updateStudyToolApply}
               setHiddenToggle={setHiddenToggle}
               setUnderlineToggle={setUnderlineToggle}
               setHighlightToggle={setHighlightToggle}
+              setSearchToggle={setSearchToggle}
+              searchResult={searchResult}
             />
           </>
         )}
@@ -2187,8 +2248,8 @@ const ReadMode = () => {
 };
 
 const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
-  console.log(content);
-  console.log(cardTypeSets);
+  // console.log(content);
+  // console.log(cardTypeSets);
   var altered = item;
   if (content.content.hidden.length > 0) {
     content.content.hidden.map((element) => {

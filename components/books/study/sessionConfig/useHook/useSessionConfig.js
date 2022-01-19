@@ -220,9 +220,7 @@ export default function useSessionConfig() {
     changeExamProps,
   };
 
-  const updateData = useCallback((received_data) => {
-    const sessionconfigs =
-      received_data.session_getSessionConfig.sessionConfigs[0];
+  const updateData = useCallback((sessionconfigs) => {
     if (sessionconfigs === null) {
       return;
     }

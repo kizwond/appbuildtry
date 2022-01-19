@@ -18,9 +18,15 @@ import M_Layout from "../../../../components/layout/M_Layout";
 import M_SessionNavigationBar /* ----------- */ from "../../../../components/books/study/sessionConfig/M_SessionNavigationBar";
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
-import { LoadingOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  ArrowRightOutlined,
+  LoadingOutlined,
+  StepBackwardOutlined,
+  StepForwardOutlined,
+} from "@ant-design/icons";
 import { useCustomCallbackToSessionStore } from "../../../../components/books/study/mainPage/useHooks/useCustomCallbackToSessionStorage";
-import { message, Tooltip } from "antd";
+import { message, Space, Tooltip } from "antd";
 
 const StudySessionConfig = ({
   isRefreshPage,
@@ -85,7 +91,7 @@ const StudySessionConfig = ({
       onCompleted: (received_data) => {
         if (received_data.session_getSessionConfig.status === "200") {
           console.log("세션 설정 데이터 받음", received_data);
-          updateData(received_data);
+          updateData(received_data.session_getSessionConfig.sessionConfigs[0]);
         } else if (received_data.session_getSessionConfig.status === "401") {
           router.push("/m/account/login");
         } else {
@@ -146,8 +152,9 @@ const StudySessionConfig = ({
         writeSessionDataInSessionStorage({
           _data,
           sessionConfig,
-          isRefreshPage,
-          selectedBooks,
+          selectedBooks: !isRefreshPage
+            ? selectedBooks
+            : JSON.parse(sessionStorage.getItem("books_selected")),
           numberOfFilteredCards,
         });
 
@@ -277,7 +284,15 @@ const StudySessionConfig = ({
               }
             }}
           >
-            {activatedComponent === "index" ? "다음" : "이전"}
+            <div className="flex justify-end w-full align-middle">
+              {activatedComponent === "config" && <StepBackwardOutlined />}
+            </div>
+            <div className="flex-none w-[70px] flex align-middle justify-center">
+              {activatedComponent === "index" ? "세션 설정" : "목차 설정"}
+            </div>
+            <div className="flex w-full align-middle">
+              {activatedComponent === "index" && <StepForwardOutlined />}
+            </div>
           </div>
           <div
             className={
@@ -304,7 +319,6 @@ export default StudySessionConfig;
 
 const StyledBottomBar = styled.div`
   overflow: hidden;
-  /* border: 1px solid #d1d1d1; */
   border-top: 1px solid #e1e1e1;
   background-color: #f5f5f5;
   position: fixed;
@@ -314,7 +328,6 @@ const StyledBottomBar = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  /* padding: 8px 0; */
   z-index: 999;
 
   & > div {

@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { MUTATION_CREATE_SESSION } from "../../../../graphql/mutation/sessionConfig";
-import { QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
+import { QUERY_SESSION_INDEXSET_AND_CARDSET_BY_BOOK_IDS } from "../../../../graphql/query/allQuery";
 
 import {
   computeNumberOfAllFilteredCards,
@@ -18,7 +18,11 @@ import M_Layout from "../../../../components/layout/M_Layout";
 import M_SessionNavigationBar /* ----------- */ from "../../../../components/books/study/sessionConfig/M_SessionNavigationBar";
 import M_TabsOfBooksForInfromationTable /* - */ from "../../../../components/books/study/sessionConfig/M_TabsOfBooksForInfromationTable";
 import M_SessionModeAndFilterConfig /* ----- */ from "../../../../components/books/study/sessionConfig/sessionModeAndFilterConfig/M_SessionModeAndFilterConfig";
-import { LoadingOutlined } from "@ant-design/icons";
+import {
+  LoadingOutlined,
+  StepBackwardOutlined,
+  StepForwardOutlined,
+} from "@ant-design/icons";
 import { useCustomCallbackToSessionStore } from "../../../../components/books/study/mainPage/useHooks/useCustomCallbackToSessionStorage";
 import { message, Tooltip } from "antd";
 
@@ -26,8 +30,15 @@ const StudySessionConfig = ({
   isRefreshPage,
   selectedBooks,
   initialCheckedKey,
+  sessionConfigForRestartingSession,
 }) => {
   const router = useRouter();
+  console.log({
+    isRefreshPage,
+    selectedBooks,
+    initialCheckedKey,
+    sessionConfigForRestartingSession,
+  });
 
   const writeSessionDataInSessionStorage = useCustomCallbackToSessionStore();
 
@@ -64,12 +75,23 @@ const StudySessionConfig = ({
     if (!isRefreshPage) {
       setCheckedKeys(initialCheckedKey);
     }
+    if (isRefreshPage) {
+      const checkedKeys = JSON.parse(
+        sessionStorage.getItem("checkedIndexesForRestartingSession")
+      );
+      setCheckedKeys(checkedKeys);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
+    if (!isRefreshPage) {
+      updateData(sessionConfigForRestartingSession);
+    }
     if (isRefreshPage) {
-      const checkedKeys = JSON.parse(sessionStorage.getItem("forCheckedKeys"));
-      setCheckedKeys(checkedKeys);
+      const sessionConfigForRestartingSession = JSON.parse(
+        sessionStorage.getItem("sessionConfigForRestartingSession")
+      );
+      updateData(sessionConfigForRestartingSession);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -80,13 +102,13 @@ const StudySessionConfig = ({
   }, []);
 
   const { data, loading, error } = useQuery(
-    QUERY_SESSION_CONFIG_AND_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
+    QUERY_SESSION_INDEXSET_AND_CARDSET_BY_BOOK_IDS,
     {
       onCompleted: (received_data) => {
-        if (received_data.session_getSessionConfig.status === "200") {
+        if (received_data.indexset_getByMybookids.status === "200") {
           console.log("세션 설정 데이터 받음", received_data);
-          updateData(received_data);
-        } else if (received_data.session_getSessionConfig.status === "401") {
+          // updateData(received_data);
+        } else if (received_data.indexset_getByMybookids.status === "401") {
           router.push("/m/account/login");
         } else {
           console.log("어떤 문제가 발생함");
@@ -98,9 +120,9 @@ const StudySessionConfig = ({
             ? []
             : !isRefreshPage
             ? selectedBooks.map((book) => book.book_id)
-            : JSON.parse(sessionStorage.getItem("books_selected")).map(
-                (book) => book.book_id
-              ),
+            : JSON.parse(
+                sessionStorage.getItem("booksForRestartingSession")
+              ).map((book) => book.book_id),
       },
       fetchPolicy: "network-only",
     }
@@ -115,7 +137,7 @@ const StudySessionConfig = ({
         cardsets: data.cardset_getByMybookIDs.cardsets,
         bookList: !isRefreshPage
           ? selectedBooks
-          : JSON.parse(sessionStorage.getItem("books_selected")),
+          : JSON.parse(sessionStorage.getItem("booksForRestartingSession")),
       }),
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,12 +164,16 @@ const StudySessionConfig = ({
     onCompleted: (_data) => {
       if (_data.session_createSession.status === "200") {
         console.log("세션 생성 요청 후 받은 데이터", _data);
-        sessionStorage.setItem("forCheckedKeys", JSON.stringify(checkedKeys));
+        sessionStorage.setItem(
+          "checkedIndexesForRestartingSession",
+          JSON.stringify(checkedKeys)
+        );
         writeSessionDataInSessionStorage({
           _data,
           sessionConfig,
-          isRefreshPage,
-          selectedBooks,
+          selectedBooks: !isRefreshPage
+            ? selectedBooks
+            : JSON.parse(sessionStorage.getItem("booksForRestartingSession")),
           numberOfFilteredCards,
         });
 
@@ -163,7 +189,7 @@ const StudySessionConfig = ({
   });
   const submitCreateSessionConfigToServer = useCallback(async () => {
     const selectedBooksInLocalStorage = JSON.parse(
-      sessionStorage.getItem("books_selected")
+      sessionStorage.getItem("booksForRestartingSession")
     );
     const sessionScope = selectedBooksInLocalStorage.map((book) => ({
       mybook_id: book.book_id,
@@ -246,7 +272,9 @@ const StudySessionConfig = ({
                 bookList={
                   !isRefreshPage
                     ? selectedBooks
-                    : JSON.parse(sessionStorage.getItem("books_selected"))
+                    : JSON.parse(
+                        sessionStorage.getItem("booksForRestartingSession")
+                      )
                 }
                 checkedKeys={checkedKeys}
                 onCheckIndexesCheckedKeys={onCheckIndexesCheckedKeys}
@@ -277,7 +305,15 @@ const StudySessionConfig = ({
               }
             }}
           >
-            {activatedComponent === "index" ? "다음" : "이전"}
+            <div className="flex justify-end w-full align-middle">
+              {activatedComponent === "config" && <StepBackwardOutlined />}
+            </div>
+            <div className="flex-none w-[70px] flex align-middle justify-center">
+              {activatedComponent === "index" ? "세션 설정" : "목차 설정"}
+            </div>
+            <div className="flex w-full align-middle">
+              {activatedComponent === "index" && <StepForwardOutlined />}
+            </div>
           </div>
           <div
             className={
@@ -304,7 +340,6 @@ export default StudySessionConfig;
 
 const StyledBottomBar = styled.div`
   overflow: hidden;
-  /* border: 1px solid #d1d1d1; */
   border-top: 1px solid #e1e1e1;
   background-color: #f5f5f5;
   position: fixed;
@@ -314,7 +349,6 @@ const StyledBottomBar = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  /* padding: 8px 0; */
   z-index: 999;
 
   & > div {
@@ -337,6 +371,9 @@ export function getServerSideProps({ query }) {
         isRefreshPage: false,
         selectedBooks: JSON.parse(query.selectedBooks),
         initialCheckedKey: JSON.parse(query.initialCheckedKey),
+        sessionConfigForRestartingSession: JSON.parse(
+          query.sessionConfigForRestartingSession
+        ),
       },
     };
   }

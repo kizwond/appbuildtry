@@ -76,7 +76,7 @@ const StudySessionConfig = ({
       onCompleted: (received_data) => {
         if (received_data.session_getSessionConfig.status === "200") {
           console.log("세션 설정 데이터 받음", received_data);
-          updateData(received_data);
+          updateData(received_data.session_getSessionConfig.sessionConfigs[0]);
         } else if (received_data.session_getSessionConfig.status === "401") {
           router.push("/account/login");
         } else {

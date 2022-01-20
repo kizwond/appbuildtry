@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { message, Modal, Space, Drawer } from "antd";
+import { message, Modal, Space, Drawer, Button, Radio, Input } from "antd";
 import M_LeftDrawerDirectRead from "../M_LeftDrawerDirectRead";
 import {
   ProfileOutlined,
@@ -53,9 +53,13 @@ const FloatingMenu = ({
   setHighlightToggle,
   setSearchToggle,
   searchResult,
+  prepareCardInDictionary,
+  editorOn,
 }) => {
   const [bottomVisible, setBottomVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [createCardOn, setCreateCardOn] = useState(false);
+  const [caseRadio, setCaseRadio] = useState("next");
   const [result, setResult] = useState();
   const showModal = () => {
     setIsModalVisible(true);
@@ -312,6 +316,22 @@ const FloatingMenu = ({
 
     showModal();
   }
+  function createCardInDictionary() {
+    console.log("카드만들기 실행!!");
+    setCreateCardOn(true);
+    if(caseRadio === "next"){
+      prepareCardInDictionary("next")
+    }
+    // prepareCardInDictionary()
+  }
+  function onChange(e) {
+    console.log("radio checked", e.target.value);
+    setCaseRadio(e.target.value);
+    if(e.target.value === "next"){
+      prepareCardInDictionary("next")
+    }
+  }
+
   return (
     <>
       <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{ display: "none" }}>
@@ -523,15 +543,52 @@ const FloatingMenu = ({
             <Modal footer={null} title="카드생성" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
               {searchResult && (
                 <>
-                  <div style={{fontSize:"1rem"}}>선택단어 : {searchResult.selectionText}</div>
-                  <div style={{fontSize:"1rem"}}>뜻 : {searchResult.meaning1}</div>
-                  <div style={{fontSize:"1rem"}}>영어뜻 : {searchResult.meaningEng1}</div>
-                  <div style={{fontSize:"1rem"}}>뜻2 : {searchResult.meaning2}</div>
-                  <div style={{fontSize:"1rem"}}>영어뜻2 : {searchResult.meaningEng2}</div>
-                  <div style={{fontSize:"1rem"}}>예문1 : {searchResult.example1}</div>
-                  <div style={{fontSize:"1rem"}}>예문2 : {searchResult.example2}</div>
+                  <div style={{ fontSize: "1rem" }}>선택단어 : {searchResult.selectionText}</div>
+                  <div style={{ fontSize: "1rem" }}>뜻 : {searchResult.meaning1}</div>
+                  <div style={{ fontSize: "1rem" }}>영어뜻 : {searchResult.meaningEng1}</div>
+                  <div style={{ fontSize: "1rem" }}>뜻2 : {searchResult.meaning2}</div>
+                  <div style={{ fontSize: "1rem" }}>영어뜻2 : {searchResult.meaningEng2}</div>
+                  <div style={{ fontSize: "1rem" }}>예문1 : {searchResult.example1}</div>
+                  <div style={{ fontSize: "1rem" }}>예문2 : {searchResult.example2}</div>
                 </>
               )}
+              <Button size="small" type="primary" onClick={createCardInDictionary}>
+                카드생성
+              </Button>
+              {createCardOn && (
+                <>
+                  <Radio.Group onChange={onChange} value={caseRadio}>
+                    <Space direction="vertical">
+                      <Radio value="next">현재카드 바로 뒤</Radio>
+                      <Radio value="same_last">현재카드 인덱스 맨 뒤</Radio>
+                      <Radio value="diff_last">현재책 다른 인덱스 맨 뒤</Radio>
+                      <Radio value="diff_book">다른책 다른 인덱스 맨 뒤</Radio>
+                    </Space>
+                  </Radio.Group>
+                </>
+              )}
+              {caseRadio === "next" && (
+                <>
+                  <div>현재카드 바로뒤 selection</div>
+                </>
+              )}
+              {caseRadio === "same_last" && (
+                <>
+                  <div>현재카드 인덱스 맨 뒤 selection</div>
+                </>
+              )}
+              {caseRadio === "diff_last" && (
+                <>
+                  <div>현재책 다른 인덱스 맨 뒤 selection</div>
+                </>
+              )}
+              {caseRadio === "diff_book" && (
+                <>
+                  <div>다른책 다른 인덱스 맨 뒤 selection</div>
+                </>
+              )}
+
+              {editorOn}
             </Modal>
           </div>
         </div>

@@ -75,7 +75,7 @@ const FlipMode = () => {
     setContentsList(uniq);
   }
   function afterGetBuyContent(data) {
-    // console.log(data);
+    console.log(data);
     // console.log(contentsList);
     const newArray = contentsList.concat(data.buycontent_getBuycontentByBuycontentIDs.buycontents);
     var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);

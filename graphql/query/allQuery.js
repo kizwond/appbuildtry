@@ -403,7 +403,7 @@ export const QUERY_BOOK_STUDY_LEVEL_CONFIG_BY_BOOK_IDS = gql`
 
 // 카드 컨텐츠 정보
 export const QUERY_MY_CARD_CONTENTS = gql`
-  query getMyCardContents($mycontent_ids: [ID]) {
+  query getMyCardContents($mycontent_ids: [ID], $buycontent_ids: [ID]) {
     mycontent_getMycontentByMycontentIDs(mycontent_ids: $mycontent_ids) {
       status
       msg
@@ -416,10 +416,6 @@ export const QUERY_MY_CARD_CONTENTS = gql`
         annotation
       }
     }
-  }
-`;
-export const QUERY_BUY_CARD_CONTENTS = gql`
-  query getMyCardContents($buycontent_ids: [ID]) {
     buycontent_getBuycontentByBuycontentIDs(buycontent_ids: $buycontent_ids) {
       status
       msg
@@ -434,6 +430,22 @@ export const QUERY_BUY_CARD_CONTENTS = gql`
     }
   }
 `;
+// export const QUERY_BUY_CARD_CONTENTS = gql`
+//   query getMyCardContents($buycontent_ids: [ID]) {
+//     buycontent_getBuycontentByBuycontentIDs(buycontent_ids: $buycontent_ids) {
+//       status
+//       msg
+//       buycontents {
+//         _id
+//         user_id
+//         face1
+//         selection
+//         face2
+//         annotation
+//       }
+//     }
+//   }
+// `;
 
 // 세션 정보
 export const QUERY_SESSION_BY_USER = gql`

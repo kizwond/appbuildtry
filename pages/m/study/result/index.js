@@ -39,22 +39,9 @@ const StudyResult = () => {
       },
     }
   );
-  const [getBuyCardsContent, { data: buyContentsData }] = useLazyQuery(
-    QUERY_BUY_CARD_CONTENTS,
-    {
-      onCompleted: (data) => {
-        console.log(data);
-      },
-    }
-  );
+
   const [getMyCardsContentForAllCards, { data: myContentsDataForAllCards }] =
     useLazyQuery(QUERY_MY_CARD_CONTENTS, {
-      onCompleted: (data) => {
-        console.log(data);
-      },
-    });
-  const [getBuyCardsContentForAllCards, { data: buyContentsDataForAllCards }] =
-    useLazyQuery(QUERY_BUY_CARD_CONTENTS, {
       onCompleted: (data) => {
         console.log(data);
       },
@@ -68,20 +55,13 @@ const StudyResult = () => {
       const myContentsIds = topFiveCardsBySubject.clickedCards
         .filter((card) => card.content.location === "my")
         .map((card) => card.content.mycontent_id);
-      if (myContentsIds.length > 0) {
-        getMyCardsContentForAllCards({
-          variables: {
-            mycontent_ids: myContentsIds,
-          },
-        });
-      }
-      if (buyContentsIds.length > 0) {
-        getBuyCardsContentForAllCards({
-          variables: {
-            buycontent_ids: buyContentsIds,
-          },
-        });
-      }
+
+      getMyCardsContentForAllCards({
+        variables: {
+          mycontent_ids: myContentsIds,
+          buycontent_ids: buyContentsIds,
+        },
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clickedCounterForAllDrawers]);
@@ -95,30 +75,17 @@ const StudyResult = () => {
         ...topFiveCardsBySubject.topFiveStudyHour,
         ...topFiveCardsBySubject.fiveCreatedCards,
       ];
-      if (
-        cardsToRequest.filter((card) => card.content.location === "my").length >
-        0
-      ) {
-        getMyCardsContent({
-          variables: {
-            mycontent_ids: cardsToRequest
-              .filter((card) => card.content.location === "my")
-              .map((card) => card.content.mycontent_id),
-          },
-        });
-      }
-      if (
-        cardsToRequest.filter((card) => card.content.location === "buy")
-          .length > 0
-      ) {
-        getBuyCardsContent({
-          variables: {
-            buycontent_ids: cardsToRequest
-              .filter((card) => card.content.location === "buy")
-              .map((card) => card.content.buycontent_id),
-          },
-        });
-      }
+
+      getMyCardsContent({
+        variables: {
+          mycontent_ids: cardsToRequest
+            .filter((card) => card.content.location === "my")
+            .map((card) => card.content.mycontent_id),
+          buycontent_ids: cardsToRequest
+            .filter((card) => card.content.location === "buy")
+            .map((card) => card.content.buycontent_id),
+        },
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -208,13 +175,7 @@ const StudyResult = () => {
       </Head>
       <M_Layout>
         <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px]">
-          {((data &&
-            data.mycontent_getMycontentByMycontentIDs &&
-            data.mycontent_getMycontentByMycontentIDs.mycontents.length > 0) ||
-            (buyContentsData &&
-              buyContentsData.buycontent_getBuycontentByBuycontentIDs &&
-              buyContentsData.buycontent_getBuycontentByBuycontentIDs
-                .buycontents.length > 0)) && (
+          {data && (
             <div className="w-full flex flex-col gap-[8px]">
               <SectionForResult title="요약" content={<SessionSummary />} />
 
@@ -239,16 +200,11 @@ const StudyResult = () => {
                   <TableForStudiedCards
                     cards={topFiveCardsBySubject.topFiveClicked}
                     myContents={
-                      !data
-                        ? []
-                        : data.mycontent_getMycontentByMycontentIDs.mycontents
+                      data.mycontent_getMycontentByMycontentIDs.mycontents
                     }
                     contentType={"clickedTimes"}
                     buyContents={
-                      !buyContentsData
-                        ? []
-                        : buyContentsData
-                            .buycontent_getBuycontentByBuycontentIDs.buycontents
+                      data.buycontent_getBuycontentByBuycontentIDs.buycontents
                     }
                   />
                 }
@@ -274,16 +230,11 @@ const StudyResult = () => {
                   <TableForStudiedCards
                     cards={topFiveCardsBySubject.topFiveStudyHour}
                     myContents={
-                      !data
-                        ? []
-                        : data.mycontent_getMycontentByMycontentIDs.mycontents
+                      data.mycontent_getMycontentByMycontentIDs.mycontents
                     }
                     contentType={"studyHours"}
                     buyContents={
-                      !buyContentsData
-                        ? []
-                        : buyContentsData
-                            .buycontent_getBuycontentByBuycontentIDs.buycontents
+                      data.buycontent_getBuycontentByBuycontentIDs.buycontents
                     }
                   />
                 }
@@ -294,16 +245,11 @@ const StudyResult = () => {
                   <TableForStudiedCards
                     cards={topFiveCardsBySubject.fiveCreatedCards}
                     myContents={
-                      !data
-                        ? []
-                        : data.mycontent_getMycontentByMycontentIDs.mycontents
+                      data.mycontent_getMycontentByMycontentIDs.mycontents
                     }
                     contentType={"newCards"}
                     buyContents={
-                      !buyContentsData
-                        ? []
-                        : buyContentsData
-                            .buycontent_getBuycontentByBuycontentIDs.buycontents
+                      data.buycontent_getBuycontentByBuycontentIDs.buycontents
                     }
                   />
                 }
@@ -326,9 +272,9 @@ const StudyResult = () => {
                         .mycontent_getMycontentByMycontentIDs.mycontents
                 }
                 buyContents={
-                  !buyContentsDataForAllCards
+                  !myContentsDataForAllCards
                     ? []
-                    : buyContentsDataForAllCards
+                    : myContentsDataForAllCards
                         .buycontent_getBuycontentByBuycontentIDs.buycontents
                 }
               />
@@ -345,9 +291,9 @@ const StudyResult = () => {
                         .mycontent_getMycontentByMycontentIDs.mycontents
                 }
                 buyContents={
-                  !buyContentsDataForAllCards
+                  !myContentsDataForAllCards
                     ? []
-                    : buyContentsDataForAllCards
+                    : myContentsDataForAllCards
                         .buycontent_getBuycontentByBuycontentIDs.buycontents
                 }
               />
@@ -364,9 +310,9 @@ const StudyResult = () => {
                         .mycontent_getMycontentByMycontentIDs.mycontents
                 }
                 buyContents={
-                  !buyContentsDataForAllCards
+                  !myContentsDataForAllCards
                     ? []
-                    : buyContentsDataForAllCards
+                    : myContentsDataForAllCards
                         .buycontent_getBuycontentByBuycontentIDs.buycontents
                 }
               />
@@ -383,9 +329,9 @@ const StudyResult = () => {
                         .mycontent_getMycontentByMycontentIDs.mycontents
                 }
                 buyContents={
-                  !buyContentsDataForAllCards
+                  !myContentsDataForAllCards
                     ? []
-                    : buyContentsDataForAllCards
+                    : myContentsDataForAllCards
                         .buycontent_getBuycontentByBuycontentIDs.buycontents
                 }
               />

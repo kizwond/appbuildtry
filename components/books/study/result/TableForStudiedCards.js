@@ -8,6 +8,7 @@ const TableForStudiedCards = ({
   contentType,
 }) => {
   const contents = [...myContents, ...buyContents];
+  console.log({ contents });
   const [cardIdForMore, setCardIdForMore] = useState();
   const [cardContent, setCardContent] = useState(null);
 
@@ -24,9 +25,7 @@ const TableForStudiedCards = ({
           const time = prettyMilliseconds(
             contentType === "studyHours"
               ? card.studyStatus.studyHourInSession
-              : card.studyStatus.recentStudyHour
-              ? card.studyStatus.recentStudyHour
-              : 0,
+              : card.studyStatus.recentStayHour,
             {
               colonNotation: true,
               secondsDecimalDigits: 0,
@@ -118,11 +117,16 @@ const TableForStudiedCards = ({
                 </td>
                 <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
                   {new String(
-                    contents.find(
-                      (content) =>
+                    contents.find((content) => {
+                      console.log({
+                        my: card.content.mycontent_id,
+                        buy: card.content.buycontent_id,
+                      });
+                      return (
                         content._id === card.content.mycontent_id ||
                         content._id === card.content.buycontent_id
-                    ).face1
+                      );
+                    }).face1
                   ).replace(/(<([^>]+)>)/gi, "")}
                 </td>
                 {contentType !== "newCards" && (

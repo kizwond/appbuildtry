@@ -77,6 +77,7 @@ export const FRAGMENT_SESSION_FOR_RESULT = gql`
         recentSelection
         recentStudyRatio
         recentStudyHour
+        recentStayHour
         needStudyTime
         levelCurrent
         levelOriginal

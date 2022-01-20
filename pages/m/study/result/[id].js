@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -21,10 +21,16 @@ import moment from "moment";
 
 const StudyResult = () => {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
+
+  const [clickedCounterForAllDrawers, setClickedCounterForAllDrawers] =
+    useState(0);
 
   const [visibleClickedTimesPage, setVisibleClickedTimesPage] = useState(false);
   const [visibleElapsedTimeOnCard, setVisibleElapsedTimeOnCard] =
+    useState(false);
+  const [visibleClickedTimeOnCard, setVisibleClickedTimeOnCard] =
+    useState(false);
+  const [visibleChagnedLevelOnCard, setVisibleChagnedLevelOnCard] =
     useState(false);
 
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
@@ -44,8 +50,34 @@ const StudyResult = () => {
     }
   );
 
-  useEffect(() => setIsMounted(true), []);
+  useEffect(() => {
+    if (clickedCounterForAllDrawers === 1) {
+      const buyContentsIds = topFiveCardsBySubject.clickedCards
+        .filter((card) => card.content.location === "buy")
+        .map((card) => card.content.mycontent_id);
+      const myContentsIds = topFiveCardsBySubject.clickedCards
+        .filter((card) => card.content.location === "my")
+        .map((card) => card.content.mycontent_id);
+      if (myContentsIds.length > 0) {
+        getMyCardsContentForAllCards({
+          variables: {
+            mycontent_ids: myContentsIds,
+          },
+        });
+      }
+      if (buyContentsIds.length > 0) {
+        getBuyCardsContentForAllCards({
+          variables: {
+            buycontent_ids: buyContentsIds,
+          },
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clickedCounterForAllDrawers]);
+
   const ISSERVER = typeof window === "undefined";
+
   const topFiveCardsBySubject = useMemo(() => {
     if (!ISSERVER) {
       const removeProp = (obj, propToDelete) => {
@@ -72,6 +104,10 @@ const StudyResult = () => {
         "__typename"
       );
 
+      const clickedCards = JSON.parse(
+        sessionStorage.getItem("cardlist_to_send")
+      );
+
       const rankingCardListByNumberOfClickCard = insertedCardList.sort(
         (a, b) =>
           b.studyStatus.clickTimesInSession - a.studyStatus.clickTimesInSession
@@ -89,12 +125,19 @@ const StudyResult = () => {
       );
       const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
 
+      const filteredCardByChangedLevel = insertedCardList.filter(
+        (card) =>
+          card.studyStatus.isUpdated &&
+          card.studyStatus.levelOriginal !== card.studyStatus.levelCurrent
+      );
+
       return {
         rankingCardListByNumberOfClickCard,
         topFiveClicked,
         rankingCardListByElapsedTimeOnCard,
         topFiveStudyHour,
         fiveCreatedCards,
+        clickedCards,
       };
     }
   }, [ISSERVER]);
@@ -136,13 +179,27 @@ const StudyResult = () => {
   if (loading) <div>로딩중..</div>;
   if (error) <div>에러 발생: {error}</div>;
 
-  const closeClickedTimesPage = () => {
+  const closeClickedTimesPage = useCallback(() => {
     setVisibleClickedTimesPage(false);
-  };
-  const closeElapsedTimeOnCard = () => {
+  }, []);
+  const closeElapsedTimeOnCard = useCallback(() => {
     setVisibleElapsedTimeOnCard(false);
-  };
+  }, []);
 
+  const openClickedTimeOnCard = useCallback(() => {
+    setVisibleClickedTimeOnCard(true);
+    setClickedCounterForAllDrawers((pre) => pre + 1);
+  }, []);
+  const closeClickedTimeOnCard = useCallback(() => {
+    setVisibleClickedTimeOnCard(false);
+  }, []);
+  const openChangedLevelOnCard = useCallback(() => {
+    setVisibleChagnedLevelOnCard(true);
+    setClickedCounterForAllDrawers((pre) => pre + 1);
+  }, []);
+  const closeChangedLevelOnCard = useCallback(() => {
+    setVisibleChagnedLevelOnCard(false);
+  }, []);
   return (
     <>
       <Head>
@@ -151,8 +208,7 @@ const StudyResult = () => {
       </Head>
       <M_Layout>
         <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px]">
-          {isMounted &&
-            data &&
+          {data &&
             data.mycontent_getMycontentByMycontentIDs &&
             data.mycontent_getMycontentByMycontentIDs.mycontents && (
               <div className="w-full flex flex-col gap-[8px]">
@@ -193,7 +249,12 @@ const StudyResult = () => {
                       <div>학습 시간 많은 카드</div>
                       <a
                         className="text-[1rem] text-blue-700"
-                        onClick={() => setVisibleElapsedTimeOnCard(true)}
+                        oonClick={() => {
+                          setVisibleElapsedTimeOnCard(true);
+                          if (clickedCounterForAllDrawers < 2) {
+                            setClickedCounterForAllDrawers((pre) => pre + 1);
+                          }
+                        }}
                       >
                         자세히 보기
                       </a>
@@ -236,7 +297,10 @@ const StudyResult = () => {
                   }
                 />
 
-                <DetailOfSelected />
+                <DetailOfSelected
+                  openClickedTimeOnCard={openClickedTimeOnCard}
+                  openChangedLevelOnCard={openChangedLevelOnCard}
+                />
 
                 <SlidingDrawerForAllCards
                   cards={
@@ -257,26 +321,25 @@ const StudyResult = () => {
                 />
               </div>
             )}
-          {isMounted &&
-            topFiveCardsBySubject.rankingCardListByNumberOfClickCard.length ===
-              0 && (
-              <div className="w-full flex flex-col gap-[8px]">
-                <SectionForResult
-                  title="요약"
-                  content={
-                    <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
-                      <BoxForSessionSummary
-                        title={"학습 시작"}
-                        content={moment(
-                          sessionStorage.getItem("started")
-                        ).format("M.D hh:mm")}
-                      />
-                      진행 중이거나 정상적으로 종료되지 않은 세션입니다.
-                    </div>
-                  }
-                />
-              </div>
-            )}
+          {topFiveCardsBySubject.rankingCardListByNumberOfClickCard.length ===
+            0 && (
+            <div className="w-full flex flex-col gap-[8px]">
+              <SectionForResult
+                title="요약"
+                content={
+                  <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
+                    <BoxForSessionSummary
+                      title={"학습 시작"}
+                      content={moment(sessionStorage.getItem("started")).format(
+                        "M.D hh:mm"
+                      )}
+                    />
+                    진행 중이거나 정상적으로 종료되지 않은 세션입니다.
+                  </div>
+                }
+              />
+            </div>
+          )}
         </div>
       </M_Layout>
     </>

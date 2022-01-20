@@ -19,7 +19,6 @@ import DetailOfSelected from "../../../../components/books/study/result/DetailOf
 
 const StudyResult = () => {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
 
   const [clickedCounterForAllDrawers, setClickedCounterForAllDrawers] =
     useState(0);
@@ -124,8 +123,6 @@ const StudyResult = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => setIsMounted(true), []);
-
   const topFiveCardsBySubject = useMemo(() => {
     if (!ISSERVER) {
       const insertedCardList = JSON.parse(
@@ -154,15 +151,16 @@ const StudyResult = () => {
             b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
         );
 
+      const topFiveStudyHour = rankingCardListByElapsedTimeOnCard.filter(
+        (_, i) => i < 5
+      );
+      const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
+
       const filteredCardByChangedLevel = insertedCardList.filter(
         (card) =>
           card.studyStatus.isUpdated &&
           card.studyStatus.levelOriginal !== card.studyStatus.levelCurrent
       );
-      const topFiveStudyHour = rankingCardListByElapsedTimeOnCard.filter(
-        (_, i) => i < 5
-      );
-      const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
 
       return {
         rankingCardListByNumberOfClickCard,
@@ -210,8 +208,7 @@ const StudyResult = () => {
       </Head>
       <M_Layout>
         <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px]">
-          {isMounted &&
-            data &&
+          {data &&
             data.mycontent_getMycontentByMycontentIDs &&
             data.mycontent_getMycontentByMycontentIDs.mycontents && (
               <div className="w-full flex flex-col gap-[8px]">

@@ -28,6 +28,11 @@ const SlidingDrawerForAllCards = ({
       onClose={closeDrawer}
       zIndex={10}
     >
+      {contentType === "clickedCard" && (
+        <div className="text-[0.9rem] text-gray-500">
+          ※ 선택 열의 숫자는 클릭한 카드의 난이도입니다.
+        </div>
+      )}
       {[...myContents, ...buyContents].length > 0 && (
         <TableForStudiedCards
           cards={cards}

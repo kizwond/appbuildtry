@@ -63,6 +63,7 @@ export const FRAGMENT_CARD_SET = gql`
         totalStudyTimes
         totalStudyHour
         totalExamTimes
+        recentStayHour
         recentStudyHour
         totalStayHour
         levelCurrent

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { message, Modal, Space, Drawer, Button, Radio, Input } from "antd";
+import { message, Modal, Space, Drawer, Button, Radio, Select } from "antd";
 import M_LeftDrawerDirectRead from "../M_LeftDrawerDirectRead";
 import {
   ProfileOutlined,
@@ -32,6 +32,7 @@ import Item from "antd/lib/list/Item";
 import Image from "next/image";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
 import { Dictionary } from "../../../../../graphql/query/card_contents";
+const { Option } = Select;
 
 const FloatingMenu = ({
   highlightToggle,
@@ -56,6 +57,7 @@ const FloatingMenu = ({
   prepareCardInDictionary,
   editorOn,
   selectedCardType,
+  fireEditor
 }) => {
   const [bottomVisible, setBottomVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -333,11 +335,20 @@ const FloatingMenu = ({
     }
   }
 
+  function handleChange(value) {
+    console.log(`selected ${value}`);
+    fireEditor(value)
+  }
+
   if (selectedCardType) {
     if (selectedCardType.length > 0) {
       var selections = selectedCardType.map((item) => {
         if (item.cardtype_info.cardtype === "flip") {
-          return <>{item.cardtype_info.name}</>;
+          return (
+            <>
+              <Option value={item._id}>{item.cardtype_info.name}</Option>
+            </>
+          );
         }
       });
     }
@@ -598,7 +609,14 @@ const FloatingMenu = ({
                 </>
               )}
 
-              {selectedCardType && selections}
+              {selectedCardType && (
+                <>
+                  <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange}>
+                  <Option value="default" disabled>카드타입 선택</Option>
+                    {selections}
+                  </Select>
+                </>
+              )}
               {editorOn}
             </Modal>
           </div>

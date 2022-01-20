@@ -75,22 +75,22 @@ const DetailOfSelected = ({
       </StyledAntSelect>
 
       <SectionForResult
-        title={
-          <div className="flex items-end space-x-3">
-            <div>카드수</div>
-            <a
-              className="text-[1rem] text-blue-700"
-              onClick={() => setMoreCardNumber((pre) => !pre)}
-            >
-              {moreCardNumber ? "접기" : "더보기"}
-            </a>
-          </div>
-        }
+        title="카드수"
         content={
-          <TableForNumberOfCardsOnStages
-            numberOfCards={resultOfSession.numCards}
-            more={moreCardNumber}
-          />
+          <div>
+            <TableForNumberOfCardsOnStages
+              numberOfCards={resultOfSession.numCards}
+              more={moreCardNumber}
+            />
+            <div className="text-right">
+              <a
+                className="text-[1rem] text-blue-700"
+                onClick={() => setMoreCardNumber((pre) => !pre)}
+              >
+                {moreCardNumber ? "접기" : "더보기"}
+              </a>
+            </div>
+          </div>
         }
       />
 

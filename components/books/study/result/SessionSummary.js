@@ -52,7 +52,7 @@ const SessionSummary = ({ from }) => {
           )
         )
       ).format("M.D hh:mm"),
-    []
+    [from]
   );
 
   const endedTime = useMemo(
@@ -64,7 +64,7 @@ const SessionSummary = ({ from }) => {
           )
         )
       ).format("M.D hh:mm"),
-    []
+    [from]
   );
 
   const displayTime = useCallback((time) => {

@@ -115,7 +115,7 @@ const StudyResult = () => {
           variables: {
             buycontent_ids: cardsToRequest
               .filter((card) => card.content.location === "buy")
-              .map((card) => card.content.mycontent_id),
+              .map((card) => card.content.buycontent_id),
           },
         });
       }

@@ -64,7 +64,7 @@ const StudyResult = () => {
     if (clickedCounterForAllDrawers === 1) {
       const buyContentsIds = topFiveCardsBySubject.clickedCards
         .filter((card) => card.content.location === "buy")
-        .map((card) => card.content.mycontent_id);
+        .map((card) => card.content.buycontent_id);
       const myContentsIds = topFiveCardsBySubject.clickedCards
         .filter((card) => card.content.location === "my")
         .map((card) => card.content.mycontent_id);
@@ -115,7 +115,7 @@ const StudyResult = () => {
           variables: {
             buycontent_ids: cardsToRequest
               .filter((card) => card.content.location === "buy")
-              .map((card) => card.content.mycontent_id),
+              .map((card) => card.content.buycontent_id),
           },
         });
       }

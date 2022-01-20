@@ -481,7 +481,7 @@ class Editor extends Component {
       flagStar: this.state.flagStar,
       flagComment: this.state.flagComment,
     };
-    console.log(this.props.parentId);
+    // console.log(this.props.parentId);
     console.log("values---------------->", values);
     this.props.onFinish(values, "normal", this.props.parentId);
 

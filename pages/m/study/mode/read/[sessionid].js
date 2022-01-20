@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 // import CardContainer from '../../../../../components/books/study/mode/flip/CardContainer';
 import StudyLayout from "../../../../../components/layout/StudyLayout";
-import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../../../../graphql/query/card_contents";
+import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET, AddCard } from "../../../../../graphql/query/card_contents";
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import {
   ProfileOutlined,
@@ -41,7 +41,7 @@ const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditor
   ssr: false,
 });
 
-const Editor = dynamic(() => import("../../../../../components/books/write/editpage/Editor"),{
+const Editor = dynamic(() => import("../../../../../components/books/write/editpage/Editor"), {
   ssr: false,
 });
 
@@ -62,7 +62,7 @@ const ReadMode = () => {
   const [highlightToggle, setHighlightToggle] = useState(false);
   const [searchToggle, setSearchToggle] = useState(false);
   const [editorOn, setEditorOn] = useState();
-  const [selectedCardType, setSelectedCardType ] = useState();
+  const [selectedCardType, setSelectedCardType] = useState();
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -189,30 +189,130 @@ const ReadMode = () => {
     }
   }, [data, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs, cardtypeset_getbymybookids]);
 
-
   // 읽기모드 에디터 뿌리기
   const prepareCardInDictionary = (radio) => {
-    console.log("카드생성전 데이터 꾸리기!!")
-    if(radio === "next"){
-      const selectionTextCardId = sessionStorage.getItem("selectionTextCardId")
-      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"))
-      const selectionCard = cardListStudying.filter(item=> item._id === selectionTextCardId)
-      const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id
-      const cardTypeId = selectionCard[0].card_info.cardtype_id
+    console.log("카드생성전 데이터 꾸리기!!");
+    if (radio === "next") {
+      const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
+      const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id;
+      const cardTypeId = selectionCard[0].card_info.cardtype_id;
 
-      const selectedCardTypeSet = cardTypeSets.filter(item=> item._id === cardTypeSetId)
-      console.log(selectedCardTypeSet)
-      const cardtype_info_tmp = selectedCardTypeSet[0].cardtypes.filter(item=> item._id === cardTypeId)
-      console.log(cardtype_info_tmp)
-      const cardtype_info = cardtype_info_tmp[0].cardtype_info
-      console.log(cardtype_info)
-      setSelectedCardType(selectedCardTypeSet[0].cardtypes)
+      const selectedCardTypeSet = cardTypeSets.filter((item) => item._id === cardTypeSetId);
+      console.log(selectedCardTypeSet);
+      const cardtype_info_tmp = selectedCardTypeSet[0].cardtypes.filter((item) => item._id === cardTypeId);
+      console.log(cardtype_info_tmp);
+      const cardtype_info = cardtype_info_tmp[0].cardtype_info;
+      console.log(cardtype_info);
+      setSelectedCardType(selectedCardTypeSet[0].cardtypes);
       // cardTypeInfo(cardtype_info, null, null)
     }
     //카드생성버튼을 누를때 전체 책 리스트를 받는다.
     //
+  };
+  const fireEditor = (cardtypeId) => {
+    const selectedCardType_tmp = selectedCardType.filter((item) => item._id === cardtypeId);
+    cardTypeInfo(selectedCardType_tmp[0], null, null);
+  };
+
+  const onFinish = (values, from) => {
+    console.log(values);
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
+    console.log(selectionCard)
+    const mybook_id = selectionCard[0].card_info.mybook_id;
+    const cardtype = selectionCard[0].card_info.cardtype;
+    const cardtype_id = selectionCard[0].card_info.cardtype_id;
+    const current_position_card_id = selectionCard[0].card_info.card_id;
+    const indexSetId = selectionCard[0].card_info.indexset_id;
+    const index_id = selectionCard[0].card_info.index_id;
+    const cardSetId = selectionCard[0].card_info.cardset_id;
+    const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id;
+
+    // console.log(values.parentId);
+    // const mybook_id = localStorage.getItem("book_id");
+    // const cardtype = sessionStorage.getItem("cardtype");
+    // console.log("??????????????????????", cardId);
+    // if (from === "inCard") {
+    //   var current_position_card_id = cardId;
+    //   console.log("should have cardid", cardId);
+    // } else {
+    //   current_position_card_id = null;
+    //   console.log("should be null", cardId);
+    // }
+
+    // const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
+
+    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, indexSetId, index_id,cardSetId,values.face1, values.selection, values.face2, values.annotation, values.flagStar, values.flagComment, cardTypeSetId);
+  };
+
+  const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
+
+  function afteraddcardmutation(data) {
+    console.log(data);
   }
-  const cardTypeInfo = (cardtype_info, parentId, selections) => {
+  async function addcard(
+    mybook_id,
+    cardtype,
+    cardtype_id,
+    current_position_card_id,
+    indexSetId,
+    index_id,
+    cardSetId,
+    face1_contents,
+    selection_contents,
+    face2_contents,
+    annotation_contents,
+    flagStar,
+    flagComment,
+    cardTypeSetId
+  ) {
+    const parentId = null;
+    if (parentId === null) {
+      var hasParent = "no";
+      var parentCard_id = undefined;
+    }
+    try {
+      await cardset_addcardAtSameIndex({
+        variables: {
+          forAddcardAtSameIndex: {
+            currentPositionCardID: current_position_card_id,
+            card_info: {
+              mybook_id: mybook_id,
+              indexset_id: indexSetId,
+              index_id: index_id,
+              cardset_id: cardSetId,
+              cardtypeset_id: cardTypeSetId,
+              cardtype_id,
+              cardtype,
+              hasParent: hasParent,
+              parentCard_id: parentCard_id,
+            },
+            content: {
+              // user_flag: null,
+              // maker_flag: null,
+              face1: face1_contents,
+              selection: selection_contents,
+              face2: face2_contents,
+              annotation: annotation_contents,
+              // memo: null,
+            },
+            makerFlag: {
+              value: Number(flagStar),
+              comment: flagComment,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const cardTypeInfo = (selectedCardType_tmp, parentId, selections) => {
+    const cardtype_info = selectedCardType_tmp.cardtype_info;
     sessionStorage.setItem("cardtype_info", JSON.stringify(cardtype_info));
     sessionStorage.setItem("parentId", parentId);
 
@@ -272,10 +372,10 @@ const ReadMode = () => {
       nicks.push(nick_annotation[i]);
     }
 
-    if (selectedCardType === undefined) {
+    if (selectedCardType_tmp === undefined) {
       var selectedCardTypeOption = cardtype_info.name;
     } else {
-      selectedCardTypeOption = selectedCardType.name;
+      selectedCardTypeOption = selectedCardType_tmp.name;
     }
 
     if (selections > 0) {
@@ -290,16 +390,9 @@ const ReadMode = () => {
 
     const editor = (
       <>
-        <div
+        {/* <div
           style={{ border: "1px solid lightgrey", borderBottom: "0px", padding: "5px", display: "flex", justifyContent: "space-between", fontSize: "0.8rem", alignItems: "center" }}
         >
-          <div style={{ width: "50px" }}>템플릿 : </div>
-          <Select size="small" defaultValue={selectedCardTypeOption} style={{ width: 200, fontSize: "0.75rem" }} onChange={handleChange}>
-            <Option value="default" style={{ fontSize: "0.8rem", color: "black", fontWeight: "700" }} disabled>
-              카드타입선택
-            </Option>
-            {cardTypeListNormal}
-          </Select>
           {cardtypeEditor === "flip" && (
             <>
               {selections == undefined && (
@@ -314,11 +407,11 @@ const ReadMode = () => {
               )}
             </>
           )}
-        </div>
+        </div> */}
 
         <div style={{ marginBottom: "100px" }}>
           <Editor
-            removeSelection={removeSelection}
+            // removeSelection={removeSelection}
             face1={face1}
             face2={face2}
             annot={annot}
@@ -328,8 +421,8 @@ const ReadMode = () => {
             onFinish={onFinish}
             setEditorOn={setEditorOn}
             cardtype_info={cardtype_info}
-            addSelections={addSelections}
-            addPolly={addPolly}
+            // addSelections={addSelections}
+            // addPolly={addPolly}
             // forceUpdateBool={forceUpdateBool}
             // setForceUpdateBool={setForceUpdateBool}
           />
@@ -338,7 +431,6 @@ const ReadMode = () => {
     );
     setEditorOn(editor);
   };
-
 
   function onClickUserFlag() {
     console.log("userflagclicked!!!");
@@ -549,7 +641,6 @@ const ReadMode = () => {
       sessionStorage.removeItem("selectionText");
       return;
     }
-    
   };
 
   const hiddenToggleHandler = (info) => {
@@ -2316,7 +2407,7 @@ const ReadMode = () => {
   });
   function afterdictionary(data) {
     console.log("data", data.cardset_inquireLanguageDictionary.data1);
-    const selectionText = sessionStorage.getItem("selectionText")
+    const selectionText = sessionStorage.getItem("selectionText");
     const original = data.cardset_inquireLanguageDictionary.data1;
     const meaning = original.match(/(KO\">([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100}))/gi);
     const definitionKo = meaning[0].match(/([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100})/gi)[0];
@@ -2336,7 +2427,15 @@ const ReadMode = () => {
     console.log(exampleEg);
     console.log("영어예문", exampleEg1);
     console.log("영어예문2", exampleEg2);
-    const results = { selectionText:selectionText, meaning1: definitionKo, meaning2: additional, meaningEng1: definitionEg1, meaningEng2: definitionEg2, example1: exampleEg1, example2: exampleEg2 };
+    const results = {
+      selectionText: selectionText,
+      meaning1: definitionKo,
+      meaning2: additional,
+      meaningEng1: definitionEg1,
+      meaningEng2: definitionEg2,
+      example1: exampleEg1,
+      example2: exampleEg2,
+    };
     setSearchResult(results);
     sessionStorage.removeItem("selectionText");
   }
@@ -2400,6 +2499,7 @@ const ReadMode = () => {
               prepareCardInDictionary={prepareCardInDictionary}
               editorOn={editorOn}
               selectedCardType={selectedCardType}
+              fireEditor={fireEditor}
             />
           </>
         )}

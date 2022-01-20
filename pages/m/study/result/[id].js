@@ -237,7 +237,9 @@ const StudyResult = () => {
                     <TableForStudiedCards
                       cards={topFiveCardsBySubject.topFiveClicked}
                       myContents={
-                        data.mycontent_getMycontentByMycontentIDs.mycontents
+                        !data
+                          ? []
+                          : data.mycontent_getMycontentByMycontentIDs.mycontents
                       }
                       contentType={"clickedTimes"}
                       buyContents={
@@ -271,7 +273,9 @@ const StudyResult = () => {
                     <TableForStudiedCards
                       cards={topFiveCardsBySubject.topFiveStudyHour}
                       myContents={
-                        data.mycontent_getMycontentByMycontentIDs.mycontents
+                        !data
+                          ? []
+                          : data.mycontent_getMycontentByMycontentIDs.mycontents
                       }
                       contentType={"studyHours"}
                       buyContents={
@@ -290,7 +294,9 @@ const StudyResult = () => {
                     <TableForStudiedCards
                       cards={topFiveCardsBySubject.fiveCreatedCards}
                       myContents={
-                        data.mycontent_getMycontentByMycontentIDs.mycontents
+                        !data
+                          ? []
+                          : data.mycontent_getMycontentByMycontentIDs.mycontents
                       }
                       contentType={"newCards"}
                       buyContents={

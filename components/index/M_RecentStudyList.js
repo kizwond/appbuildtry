@@ -253,17 +253,17 @@ const M_RecentStudyList = () => {
                         ? "시험"
                         : null}
                     </td>
-                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200 flex">
-                      {/* <div className="flex w-full"> */}
-                      <div className="truncate">
-                        {session.sessionScope[0].title}
-                      </div>
-                      {session.sessionScope.length > 1 && (
-                        <div className="flex-none w-[40px]">
-                          {"외 " + (session.sessionScope.length - 1) + "권"}
+                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200">
+                      <div className="flex w-full">
+                        <div className="truncate">
+                          {session.sessionScope[0].title}
                         </div>
-                      )}
-                      {/* </div> */}
+                        {session.sessionScope.length > 1 && (
+                          <div className="flex-none w-[40px]">
+                            {"외 " + (session.sessionScope.length - 1) + "권"}
+                          </div>
+                        )}
+                      </div>
                     </td>
                     <td
                       className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 font-normal text-center"

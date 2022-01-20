@@ -1,17 +1,74 @@
-import { useMutation } from "@apollo/client";
-import { Button, Col, Form, Input, Popconfirm, Row, Select, Space, Table, Tag } from "antd";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import {
+  Button,
+  Col,
+  Drawer,
+  Form,
+  Input,
+  Popconfirm,
+  Row,
+  Select,
+  Space,
+  Table,
+  Tag,
+} from "antd";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
-import { MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER, MUTATION_TERMINATE_MENTORING } from "../../graphql/mutation/mentoring";
+import React, { useCallback, useState } from "react";
+import {
+  MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER,
+  MUTATION_TERMINATE_MENTORING,
+} from "../../graphql/mutation/mentoring";
 import DoubleLinesEllipsisContainer from "../common/styledComponent/DoubleLinesEllipsisContainer";
 import { StyledFlexAlignCenter } from "../common/styledComponent/page";
 import { StyledBookTypeDiv } from "../common/styledComponent/buttons";
 import { DisconnectOutlined, ExportOutlined } from "@ant-design/icons";
+import moment from "moment";
+import styled from "styled-components";
+import { QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID } from "../../graphql/query/allQuery";
 
 const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
   const router = useRouter();
+  const [visibleDrawer, setVisibleDrawer] = useState(false);
+  const openDrawer = useCallback((mybook_id) => {
+    setVisibleDrawer(true);
+    getSessionHisitory({ mybook_id });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const closeDrawer = useCallback(() => {
+    setVisibleDrawer(false);
+  }, []);
 
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+
+  const [getSessionHistoryOnBook, { variables }] = useLazyQuery(
+    QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID,
+    {
+      onCompleted: (received_data) => {
+        if (received_data.session_getSessionByMybookid.status === "200") {
+          console.log("멘토링용 책 섹션 데이터 받음", received_data);
+        } else if (
+          received_data.session_getSessionByMybookid.status === "401"
+        ) {
+          router.push("/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
+
+  const getSessionHisitory = useCallback(async ({ mybook_id }) => {
+    try {
+      getSessionHistoryOnBook({
+        variables: {
+          mybook_id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [terminateMentoring] = useMutation(MUTATION_TERMINATE_MENTORING, {
     onCompleted: (data) => {
@@ -41,18 +98,21 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
     }
   }
 
-  const [reassignMentoringMemberToAnotherGroup] = useMutation(MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER, {
-    onCompleted: (data) => {
-      if (data.mentoring_moveToOtherMentoringGroup.status === "200") {
-        console.log("멘토링 멤버 다른 그룹으로 옮긴 후 받은 데이터", data);
-        setExpandedRowKeys([]);
-      } else if (data.mentoring_moveToOtherMentoringGroup.status === "401") {
-        router.push("/m/account/login");
-      } else {
-        console.log("어떤 문제가 발생함");
-      }
-    },
-  });
+  const [reassignMentoringMemberToAnotherGroup] = useMutation(
+    MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER,
+    {
+      onCompleted: (data) => {
+        if (data.mentoring_moveToOtherMentoringGroup.status === "200") {
+          console.log("멘토링 멤버 다른 그룹으로 옮긴 후 받은 데이터", data);
+          setExpandedRowKeys([]);
+        } else if (data.mentoring_moveToOtherMentoringGroup.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
 
   async function reassignMentoringMember({ target_id, newMentoringGroup_id }) {
     try {
@@ -83,7 +143,12 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
             expandedRowRender: (_record, _index) => (
               <Form
                 layout="inline"
-                onFinish={({ selector }) => reassignMentoringMember({ target_id: _record._id, newMentoringGroup_id: selector })}
+                onFinish={({ selector }) =>
+                  reassignMentoringMember({
+                    target_id: _record._id,
+                    newMentoringGroup_id: selector,
+                  })
+                }
                 onValuesChange={(cv) => console.log(cv)}
                 initialValues={{ selector: menteeGroup[0]._id }}
                 size="small"
@@ -114,7 +179,11 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
               dataIndex: "menteeGroupName",
               width: "15%",
               render: function title(v) {
-                return <DoubleLinesEllipsisContainer>{v}</DoubleLinesEllipsisContainer>;
+                return (
+                  <DoubleLinesEllipsisContainer>
+                    {v}
+                  </DoubleLinesEllipsisContainer>
+                );
               },
             },
             {
@@ -125,9 +194,13 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                 return (
                   <StyledFlexAlignCenter>
                     <StyledFlexAlignCenter>
-                      <StyledBookTypeDiv booktype={_record.bookType}>{_record.bookType === "my" ? null : "$"}</StyledBookTypeDiv>
+                      <StyledBookTypeDiv booktype={_record.bookType}>
+                        {_record.bookType === "my" ? null : "$"}
+                      </StyledBookTypeDiv>
                     </StyledFlexAlignCenter>
-                    <DoubleLinesEllipsisContainer>{v}</DoubleLinesEllipsisContainer>
+                    <DoubleLinesEllipsisContainer>
+                      {v}
+                    </DoubleLinesEllipsisContainer>
                   </StyledFlexAlignCenter>
                 );
               },
@@ -139,7 +212,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
               width: "15%",
             },
             {
-              title: isMenteeEditMode ? "편집" : "최근 학습시간",
+              title: isMenteeEditMode ? "편집" : "최근 학습일",
               dataIndex: "studyHistory",
               width: "35%",
               // eslint-disable-next-line react/display-name
@@ -149,20 +222,40 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                     <Col
                       span={12}
                       onClick={() => {
-                        if (!expandedRowKeys.includes(record._Id) && menteeGroup.filter((gr) => gr._id !== record.menteeGroup_id).length > 0) {
+                        if (
+                          !expandedRowKeys.includes(record._Id) &&
+                          menteeGroup.filter(
+                            (gr) => gr._id !== record.menteeGroup_id
+                          ).length > 0
+                        ) {
                           setExpandedRowKeys([record._id]);
                         }
                       }}
                     >
-                      <Button disabled={menteeGroup.filter((gr) => gr._id !== record.menteeGroup_id).length === 0} icon={<ExportOutlined />} shape="circle" />
+                      <Button
+                        disabled={
+                          menteeGroup.filter(
+                            (gr) => gr._id !== record.menteeGroup_id
+                          ).length === 0
+                        }
+                        icon={<ExportOutlined />}
+                        shape="circle"
+                      />
                     </Col>
                     <Popconfirm
-                      title={record.mentorUsername + "님과의 멘토링을 정말 종료하시겠습니까?"}
+                      title={
+                        record.mentorUsername +
+                        "님과의 멘토링을 정말 종료하시겠습니까?"
+                      }
                       okText="멘토링 종료하기"
                       cancelText="취소"
                       placement="topRight"
                       onConfirm={() => {
-                        terminateMento({ menteeUser_id: record.menteeUser_id, mentorUser_id: record.mentorUser_id, mybook_id: record.mybook_id });
+                        terminateMento({
+                          menteeUser_id: record.menteeUser_id,
+                          mentorUser_id: record.mentorUser_id,
+                          mybook_id: record.mybook_id,
+                        });
                       }}
                     >
                       <Col span={12} onClick={() => {}}>
@@ -171,12 +264,57 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                     </Popconfirm>
                   </Row>
                 ) : (
-                  <>
-                    {v.map((item, index) => (
-                      <span key={index}>{`${index === 2 ? item : `${item}, `}`} </span>
-                    ))}
-                    <Tag style={{ marginLeft: "5px" }}>상세보기</Tag>
-                  </>
+                  <div className="w-full flex gap-2">
+                    {moment(new Date(Number(v))).format("YY.MM.DD")}
+                    <Tag
+                      onClick={() => {
+                        openDrawer(record.mybook_id);
+                      }}
+                    >
+                      상세보기
+                    </Tag>
+                    <DrawerWrapper
+                      title="상세 보기"
+                      placement="right"
+                      width={"100%"}
+                      visible={visibleDrawer}
+                      onClose={closeDrawer}
+                      headerStyle={{ padding: "12px 12px 8px 12px" }}
+                      bodyStyle={{ backgroundColor: "#e9e9e9" }}
+                    >
+                      <div>세션 리스트</div>
+                      <table className="w-full table-fixed">
+                        <thead>
+                          <tr className="border-collapse border-y border-y-gray-200">
+                            <th className="text-[1rem] font-normal bg-slate-100 w-[16%]">
+                              시작일
+                            </th>
+                            <th className="text-[1rem] font-normal bg-slate-100 w-[14%]">
+                              Mode
+                            </th>
+                            <th className="text-[1rem] font-normal bg-slate-100 w-[40%]">
+                              책 이름
+                            </th>
+                            <th className="text-[1rem] font-normal bg-slate-100 w-[15%]"></th>
+                            <th className="text-[1rem] font-normal bg-slate-100 w-[15%]"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-collapse border-b-gray-200">
+                            <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200  text-center"></td>
+                            <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200 text-center"></td>
+                            <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200"></td>
+                            <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 font-normal text-center">
+                              <a>결과</a>
+                            </td>
+                            <td className="text-[1rem] p-[4px] font-normal text-center">
+                              <a>재시작</a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </DrawerWrapper>
+                  </div>
                 ),
             },
           ]}
@@ -187,3 +325,33 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
 };
 
 export default M_MenteesTable;
+
+const DrawerWrapper = styled(Drawer)`
+  top: 40px;
+
+  & .ant-drawer-body * {
+    font-size: 1rem;
+  }
+  & .ant-drawer-wrapper-body {
+    height: ${({ setheight }) => setheight || "auto"}px;
+  }
+  & .ant-card-actions {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    & > li {
+      margin: 0;
+      height: 3.5rem;
+      & > span {
+        width: 100%;
+        height: 100%;
+        & > div {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+`;

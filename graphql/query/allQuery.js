@@ -493,3 +493,26 @@ export const QUERY_SESSION_FOR_RESTARTING_SESSION_BY_SESSION_ID = gql`
     }
   }
 `;
+
+export const QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID = gql`
+  query getSession {
+    session_getSessionByMybookid {
+      status
+      msg
+      sessions {
+        _id
+        sessionScope {
+          mybook_id
+          title
+        }
+        session_info {
+          timeStarted
+          timeFinished
+        }
+        sessionConfig {
+          studyMode
+        }
+      }
+    }
+  }
+`;

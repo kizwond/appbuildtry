@@ -305,13 +305,13 @@ const StudySessionConfig = ({
               }
             }}
           >
-            <div className="flex justify-end w-full align-middle">
+            <div className="flex justify-end w-full item-center">
               {activatedComponent === "config" && <StepBackwardOutlined />}
             </div>
-            <div className="flex-none w-[70px] flex align-middle justify-center">
+            <div className="flex-none w-[70px] flex item-center justify-center">
               {activatedComponent === "index" ? "세션 설정" : "목차 설정"}
             </div>
-            <div className="flex w-full align-middle">
+            <div className="flex w-full item-center">
               {activatedComponent === "index" && <StepForwardOutlined />}
             </div>
           </div>

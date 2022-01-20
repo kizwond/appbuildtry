@@ -34,26 +34,9 @@ const useGetMentoringAndMenteeBooks = () => {
           menteeBooks.mybook_getMybookByMybookIDs.mybooks,
           (book) => book._id === mentee.mybook_id
         ).mybook_info.type,
-        studyHistory:
-          _(
-            _.find(
-              menteeBooks.mybook_getMybookByMybookIDs.mybooks,
-              (book) => book._id === mentee.mybook_id
-            ).stats?.studyHistory
-          )
-            .map((history) => history.studyHour)
-            .take(3)
-            .value() === []
-            ? _(
-                _.find(
-                  menteeBooks.mybook_getMybookByMybookIDs.mybooks,
-                  (book) => book._id === mentee.mybook_id
-                ).stats.studyHistory
-              )
-                .map((history) => history.studyHour)
-                .take(3)
-                .value()
-            : ["0.5", "2", "0"],
+        studyHistory: menteeBooks.mybook_getMybookByMybookIDs.mybooks.find(
+          (book) => book._id === mentee.mybook_id
+        ).stats.recent.timeStudy,
       })),
       sortBy(["menteeSeq"])
     );

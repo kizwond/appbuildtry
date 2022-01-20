@@ -41,7 +41,7 @@ const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditor
   ssr: false,
 });
 
-const Editor = dynamic(() => import("../../../../../components/books/write/editpage/Editor"),{
+const Editor = dynamic(() => import("../../../../../components/books/write/editpage/Editor"), {
   ssr: false,
 });
 
@@ -62,7 +62,7 @@ const ReadMode = () => {
   const [highlightToggle, setHighlightToggle] = useState(false);
   const [searchToggle, setSearchToggle] = useState(false);
   const [editorOn, setEditorOn] = useState();
-  const [selectedCardType, setSelectedCardType ] = useState();
+  const [selectedCardType, setSelectedCardType] = useState();
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -189,36 +189,48 @@ const ReadMode = () => {
     }
   }, [data, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs, cardtypeset_getbymybookids]);
 
-
   // 읽기모드 에디터 뿌리기
   const prepareCardInDictionary = (radio) => {
-    console.log("카드생성전 데이터 꾸리기!!")
-    if(radio === "next"){
-      const selectionTextCardId = sessionStorage.getItem("selectionTextCardId")
-      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"))
-      const selectionCard = cardListStudying.filter(item=> item._id === selectionTextCardId)
-      const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id
-      const cardTypeId = selectionCard[0].card_info.cardtype_id
+    console.log("카드생성전 데이터 꾸리기!!");
+    if (radio === "next") {
+      const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
+      const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id;
+      const cardTypeId = selectionCard[0].card_info.cardtype_id;
 
-      const selectedCardTypeSet = cardTypeSets.filter(item=> item._id === cardTypeSetId)
-      console.log(selectedCardTypeSet)
-      const cardtype_info_tmp = selectedCardTypeSet[0].cardtypes.filter(item=> item._id === cardTypeId)
-      console.log(cardtype_info_tmp)
-      const cardtype_info = cardtype_info_tmp[0].cardtype_info
-      console.log(cardtype_info)
-      setSelectedCardType(selectedCardTypeSet[0].cardtypes)
+      const selectedCardTypeSet = cardTypeSets.filter((item) => item._id === cardTypeSetId);
+      console.log(selectedCardTypeSet);
+      const cardtype_info_tmp = selectedCardTypeSet[0].cardtypes.filter((item) => item._id === cardTypeId);
+      console.log(cardtype_info_tmp);
+      const cardtype_info = cardtype_info_tmp[0].cardtype_info;
+      console.log(cardtype_info);
+      setSelectedCardType(selectedCardTypeSet[0].cardtypes);
       // cardTypeInfo(cardtype_info, null, null)
     }
     //카드생성버튼을 누를때 전체 책 리스트를 받는다.
     //
-  }
+  };
   const fireEditor = (cardtypeId) => {
-    const selectedCardType_tmp = selectedCardType.filter(item=>item._id === cardtypeId)
-    cardTypeInfo(selectedCardType_tmp[0], null, null)
-  }
+    const selectedCardType_tmp = selectedCardType.filter((item) => item._id === cardtypeId);
+    cardTypeInfo(selectedCardType_tmp[0], null, null);
+  };
 
   const onFinish = (values, from) => {
     console.log(values);
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
+    console.log(selectionCard)
+    const mybook_id = selectionCard[0].card_info.mybook_id;
+    const cardtype = selectionCard[0].card_info.cardtype;
+    const cardtype_id = selectionCard[0].card_info.cardtype_id;
+    const current_position_card_id = selectionCard[0].card_info.card_id;
+    const indexSetId = selectionCard[0].card_info.indexset_id;
+    const index_id = selectionCard[0].card_info.index_id;
+    const cardSetId = selectionCard[0].card_info.cardset_id;
+    const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id;
+
     // console.log(values.parentId);
     // const mybook_id = localStorage.getItem("book_id");
     // const cardtype = sessionStorage.getItem("cardtype");
@@ -233,19 +245,22 @@ const ReadMode = () => {
 
     // const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
 
-    // addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, values.face1, values.selection, values.face2, values.annotation, values.flagStar, values.flagComment, cardTypeSetId);
+    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, indexSetId, index_id,cardSetId,values.face1, values.selection, values.face2, values.annotation, values.flagStar, values.flagComment, cardTypeSetId);
   };
 
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 
   function afteraddcardmutation(data) {
-    console.log(data)
+    console.log(data);
   }
   async function addcard(
     mybook_id,
     cardtype,
     cardtype_id,
     current_position_card_id,
+    indexSetId,
+    index_id,
+    cardSetId,
     face1_contents,
     selection_contents,
     face2_contents,
@@ -254,11 +269,11 @@ const ReadMode = () => {
     flagComment,
     cardTypeSetId
   ) {
-    const parentId = null
+    const parentId = null;
     if (parentId === null) {
       var hasParent = "no";
       var parentCard_id = undefined;
-    } 
+    }
     try {
       await cardset_addcardAtSameIndex({
         variables: {
@@ -267,7 +282,7 @@ const ReadMode = () => {
             card_info: {
               mybook_id: mybook_id,
               indexset_id: indexSetId,
-              index_id: first_index,
+              index_id: index_id,
               cardset_id: cardSetId,
               cardtypeset_id: cardTypeSetId,
               cardtype_id,
@@ -295,7 +310,6 @@ const ReadMode = () => {
       console.log(error);
     }
   }
-
 
   const cardTypeInfo = (selectedCardType_tmp, parentId, selections) => {
     const cardtype_info = selectedCardType_tmp.cardtype_info;
@@ -417,7 +431,6 @@ const ReadMode = () => {
     );
     setEditorOn(editor);
   };
-
 
   function onClickUserFlag() {
     console.log("userflagclicked!!!");
@@ -628,7 +641,6 @@ const ReadMode = () => {
       sessionStorage.removeItem("selectionText");
       return;
     }
-    
   };
 
   const hiddenToggleHandler = (info) => {
@@ -2395,7 +2407,7 @@ const ReadMode = () => {
   });
   function afterdictionary(data) {
     console.log("data", data.cardset_inquireLanguageDictionary.data1);
-    const selectionText = sessionStorage.getItem("selectionText")
+    const selectionText = sessionStorage.getItem("selectionText");
     const original = data.cardset_inquireLanguageDictionary.data1;
     const meaning = original.match(/(KO\">([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100}))/gi);
     const definitionKo = meaning[0].match(/([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100})/gi)[0];
@@ -2415,7 +2427,15 @@ const ReadMode = () => {
     console.log(exampleEg);
     console.log("영어예문", exampleEg1);
     console.log("영어예문2", exampleEg2);
-    const results = { selectionText:selectionText, meaning1: definitionKo, meaning2: additional, meaningEng1: definitionEg1, meaningEng2: definitionEg2, example1: exampleEg1, example2: exampleEg2 };
+    const results = {
+      selectionText: selectionText,
+      meaning1: definitionKo,
+      meaning2: additional,
+      meaningEng1: definitionEg1,
+      meaningEng2: definitionEg2,
+      example1: exampleEg1,
+      example2: exampleEg2,
+    };
     setSearchResult(results);
     sessionStorage.removeItem("selectionText");
   }

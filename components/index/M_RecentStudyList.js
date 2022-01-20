@@ -36,25 +36,45 @@ const M_RecentStudyList = () => {
           console.log("세션 결과 데이터 받음", received_data);
 
           sessionStorage.setItem(
-            "cardListStudying",
+            "startTimeForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].session_info
+                .timeStarted
+            )
+          );
+          sessionStorage.setItem(
+            "endTimeForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].session_info
+                .timeFinished
+            )
+          );
+          sessionStorage.setItem(
+            "cardListStudyingForSessionHistory",
             JSON.stringify(
               received_data.session_getSession.sessions[0].cardlistUpdated
             )
           );
           sessionStorage.setItem(
-            "createdCards",
+            "createdCardsForSessionHistory",
             JSON.stringify(
               received_data.session_getSession.sessions[0].createdCards
             )
           );
           sessionStorage.setItem(
-            "resultOfSession",
+            "cardlist_to_send_ForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].clickHistory
+            )
+          );
+          sessionStorage.setItem(
+            "resultOfSessionForSessionHistory",
             JSON.stringify(
               received_data.session_getSession.sessions[0].resultOfSession
             )
           );
           sessionStorage.setItem(
-            "resultByBook",
+            "resultByBookForSessionHistory",
             JSON.stringify(
               produce(
                 received_data.session_getSession.sessions[0].resultByBook,
@@ -70,16 +90,6 @@ const M_RecentStudyList = () => {
             )
           );
 
-          sessionStorage.setItem(
-            "started",
-            received_data.session_getSession.sessions[0].session_info
-              .timeStarted
-          );
-          sessionStorage.setItem(
-            "endTimeOfSession",
-            received_data.session_getSession.sessions[0].session_info
-              .timeFinished
-          );
           router.push(`/m/study/result/${variables.session_id}`);
         } else if (received_data.session_getSession.status === "401") {
           router.push("/account/login");

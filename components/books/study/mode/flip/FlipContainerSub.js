@@ -16,6 +16,7 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
   card_details_session[current_card_info_index].studyStatus.totalStayHour += timer;
+  card_details_session[current_card_info_index].studyStatus.recentStayHour = timer;  
   
   
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;  
@@ -86,6 +87,7 @@ const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
   card_details_session[current_card_info_index].studyStatus.totalStayHour += timer;
+  card_details_session[current_card_info_index].studyStatus.recentStayHour = timer;  
 
   card_details_session[current_card_info_index].studyStatus.needStudyTime = null
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null
@@ -117,6 +119,7 @@ const calculateRestore = (selection, current_card_info_index, timer) => {
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
   card_details_session[current_card_info_index].studyStatus.totalStayHour += timer;
+  card_details_session[current_card_info_index].studyStatus.recentStayHour = timer;  
   
   card_details_session[current_card_info_index].studyStatus.needStudyTime = now;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = now;
@@ -139,7 +142,8 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer, leve
   
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
-  card_details_session[current_card_info_index].studyStatus.totalStayHour += timer;
+  card_details_session[current_card_info_index].studyStatus.totalStayHour += timer;  
+  card_details_session[current_card_info_index].studyStatus.recentStayHour = timer;  
 
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
   card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;

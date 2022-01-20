@@ -13,7 +13,11 @@ import TableForNumberOfCardsOnStages from "./DetailOfSelected/TableForNumberOfCa
 import ChartForClickedTimesByDifficulty from "./DetailOfSelected/ChartForClickedTimesByDifficulty";
 import { useMemo } from "react";
 
-const DetailOfSelected = () => {
+const DetailOfSelected = ({
+  openClickedTimeOnCard,
+  openChangedLevelOnCard,
+  from,
+}) => {
   const [selectedValue, setSelectedValue] = useState("Session");
   const [moreCardNumber, setMoreCardNumber] = useState(false);
   const [moreChangedLevel, setMoreChangedLevel] = useState(false);
@@ -36,16 +40,24 @@ const DetailOfSelected = () => {
     };
     return selectedValue === "Session"
       ? removeProp(
-          JSON.parse(sessionStorage.getItem("resultOfSession")),
+          JSON.parse(
+            sessionStorage.getItem(
+              from === "home"
+                ? "resultOfSessionForSessionHistory"
+                : "resultOfSession"
+            )
+          ),
           "__typename"
         )
       : removeProp(
-          JSON.parse(sessionStorage.getItem("resultByBook")).find(
-            (book) => book.mybook_id === selectedValue
-          ),
+          JSON.parse(
+            sessionStorage.getItem(
+              from === "home" ? "resultByBookForSessionHistory" : "resultByBook"
+            )
+          ).find((book) => book.mybook_id === selectedValue),
           "__typename"
         );
-  }, [selectedValue]);
+  }, [selectedValue, from]);
 
   return (
     <div className="w-full flex flex-col gap-[8px] pt-[8px]">
@@ -88,7 +100,7 @@ const DetailOfSelected = () => {
             <div>클릭 수</div>
             <a
               className="text-[1rem] text-blue-700"
-              onClick={() => console.log("원래있던 테이블로 구성해야함")}
+              onClick={openClickedTimeOnCard}
             >
               자세히보기
             </a>
@@ -102,7 +114,17 @@ const DetailOfSelected = () => {
       />
 
       <SectionForResult
-        title="레벨 변동"
+        title={
+          <div className="flex items-end space-x-3">
+            <div>레벨 변동</div>
+            <a
+              className="text-[1rem] text-blue-700"
+              onClick={openChangedLevelOnCard}
+            >
+              자세히보기
+            </a>
+          </div>
+        }
         content={
           <div>
             <TableForNumberOfChangedLevel

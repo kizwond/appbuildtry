@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -19,10 +19,16 @@ import DetailOfSelected from "../../../../components/books/study/result/DetailOf
 
 const StudyResult = () => {
   const router = useRouter();
-  const [isMounted, setIsMounted] = useState(false);
+
+  const [clickedCounterForAllDrawers, setClickedCounterForAllDrawers] =
+    useState(0);
 
   const [visibleClickedTimesPage, setVisibleClickedTimesPage] = useState(false);
   const [visibleElapsedTimeOnCard, setVisibleElapsedTimeOnCard] =
+    useState(false);
+  const [visibleClickedTimeOnCard, setVisibleClickedTimeOnCard] =
+    useState(false);
+  const [visibleChagnedLevelOnCard, setVisibleChagnedLevelOnCard] =
     useState(false);
 
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
@@ -41,47 +47,46 @@ const StudyResult = () => {
       },
     }
   );
+  const [getMyCardsContentForAllCards, { data: myContentsDataForAllCards }] =
+    useLazyQuery(QUERY_MY_CARD_CONTENTS, {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+    });
+  const [getBuyCardsContentForAllCards, { data: buyContentsDataForAllCards }] =
+    useLazyQuery(QUERY_BUY_CARD_CONTENTS, {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+    });
 
-  useEffect(() => setIsMounted(true), []);
-  const ISSERVER = typeof window === "undefined";
-  const topFiveCardsBySubject = useMemo(() => {
-    if (!ISSERVER) {
-      const insertedCardList = JSON.parse(
-        sessionStorage.getItem("cardListStudying")
-      );
-      const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
-
-      const rankingCardListByNumberOfClickCard = insertedCardList
-        .filter((card) => card.studyStatus.isUpdated)
-        .sort(
-          (a, b) =>
-            b.studyStatus.clickTimesInSession -
-            a.studyStatus.clickTimesInSession
-        );
-      const topFiveClicked = rankingCardListByNumberOfClickCard.filter(
-        (_, i) => i < 5
-      );
-
-      const rankingCardListByElapsedTimeOnCard = insertedCardList
-        .filter((card) => card.studyStatus.isUpdated)
-        .sort(
-          (a, b) =>
-            b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
-        );
-      const topFiveStudyHour = rankingCardListByElapsedTimeOnCard.filter(
-        (_, i) => i < 5
-      );
-      const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
-
-      return {
-        rankingCardListByNumberOfClickCard,
-        topFiveClicked,
-        rankingCardListByElapsedTimeOnCard,
-        topFiveStudyHour,
-        fiveCreatedCards,
-      };
+  useEffect(() => {
+    if (clickedCounterForAllDrawers === 1) {
+      const buyContentsIds = topFiveCardsBySubject.clickedCards
+        .filter((card) => card.content.location === "buy")
+        .map((card) => card.content.mycontent_id);
+      const myContentsIds = topFiveCardsBySubject.clickedCards
+        .filter((card) => card.content.location === "my")
+        .map((card) => card.content.mycontent_id);
+      if (myContentsIds.length > 0) {
+        getMyCardsContentForAllCards({
+          variables: {
+            mycontent_ids: myContentsIds,
+          },
+        });
+      }
+      if (buyContentsIds.length > 0) {
+        getBuyCardsContentForAllCards({
+          variables: {
+            buycontent_ids: buyContentsIds,
+          },
+        });
+      }
     }
-  }, [ISSERVER]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clickedCounterForAllDrawers]);
+
+  const ISSERVER = typeof window === "undefined";
 
   useEffect(() => {
     if (!ISSERVER) {
@@ -110,7 +115,7 @@ const StudyResult = () => {
           variables: {
             buycontent_ids: cardsToRequest
               .filter((card) => card.content.location === "buy")
-              .map((card) => card.content.mycontent_id),
+              .map((card) => card.content.buycontent_id),
           },
         });
       }
@@ -118,15 +123,82 @@ const StudyResult = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const topFiveCardsBySubject = useMemo(() => {
+    if (!ISSERVER) {
+      const insertedCardList = JSON.parse(
+        sessionStorage.getItem("cardListStudying")
+      );
+      const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
+      const clickedCards = JSON.parse(
+        sessionStorage.getItem("cardlist_to_send")
+      );
+
+      const rankingCardListByNumberOfClickCard = insertedCardList
+        .filter((card) => card.studyStatus.isUpdated)
+        .sort(
+          (a, b) =>
+            b.studyStatus.clickTimesInSession -
+            a.studyStatus.clickTimesInSession
+        );
+      const topFiveClicked = rankingCardListByNumberOfClickCard.filter(
+        (_, i) => i < 5
+      );
+
+      const rankingCardListByElapsedTimeOnCard = insertedCardList
+        .filter((card) => card.studyStatus.isUpdated)
+        .sort(
+          (a, b) =>
+            b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
+        );
+
+      const topFiveStudyHour = rankingCardListByElapsedTimeOnCard.filter(
+        (_, i) => i < 5
+      );
+      const fiveCreatedCards = createdCards.filter((_, i) => i < 5);
+
+      const filteredCardByChangedLevel = insertedCardList.filter(
+        (card) =>
+          card.studyStatus.isUpdated &&
+          card.studyStatus.levelOriginal !== card.studyStatus.levelCurrent
+      );
+
+      return {
+        rankingCardListByNumberOfClickCard,
+        topFiveClicked,
+        rankingCardListByElapsedTimeOnCard,
+        topFiveStudyHour,
+        fiveCreatedCards,
+        clickedCards,
+        filteredCardByChangedLevel,
+      };
+    }
+  }, [ISSERVER]);
+
   if (loading) <div>로딩중..</div>;
   if (error) <div>에러 발생: {error}</div>;
 
-  const closeClickedTimesPage = () => {
+  const closeClickedTimesPage = useCallback(() => {
     setVisibleClickedTimesPage(false);
-  };
-  const closeElapsedTimeOnCard = () => {
+  }, []);
+  const closeElapsedTimeOnCard = useCallback(() => {
     setVisibleElapsedTimeOnCard(false);
-  };
+  }, []);
+
+  const openClickedTimeOnCard = useCallback(() => {
+    setVisibleClickedTimeOnCard(true);
+    setClickedCounterForAllDrawers((pre) => pre + 1);
+  }, []);
+  const closeClickedTimeOnCard = useCallback(() => {
+    setVisibleClickedTimeOnCard(false);
+  }, []);
+
+  const openChangedLevelOnCard = useCallback(() => {
+    setVisibleChagnedLevelOnCard(true);
+    setClickedCounterForAllDrawers((pre) => pre + 1);
+  }, []);
+  const closeChangedLevelOnCard = useCallback(() => {
+    setVisibleChagnedLevelOnCard(false);
+  }, []);
 
   return (
     <>
@@ -136,8 +208,7 @@ const StudyResult = () => {
       </Head>
       <M_Layout>
         <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px]">
-          {isMounted &&
-            data &&
+          {data &&
             data.mycontent_getMycontentByMycontentIDs &&
             data.mycontent_getMycontentByMycontentIDs.mycontents && (
               <div className="w-full flex flex-col gap-[8px]">
@@ -149,7 +220,12 @@ const StudyResult = () => {
                       <div>학습 횟수 많은 카드</div>
                       <a
                         className="text-[1rem] text-blue-700"
-                        onClick={() => setVisibleClickedTimesPage(true)}
+                        onClick={() => {
+                          setVisibleClickedTimesPage(true);
+                          if (clickedCounterForAllDrawers < 2) {
+                            setClickedCounterForAllDrawers((pre) => pre + 1);
+                          }
+                        }}
                       >
                         자세히 보기
                       </a>
@@ -178,7 +254,12 @@ const StudyResult = () => {
                       <div>학습 시간 많은 카드</div>
                       <a
                         className="text-[1rem] text-blue-700"
-                        onClick={() => setVisibleElapsedTimeOnCard(true)}
+                        onClick={() => {
+                          setVisibleElapsedTimeOnCard(true);
+                          if (clickedCounterForAllDrawers < 2) {
+                            setClickedCounterForAllDrawers((pre) => pre + 1);
+                          }
+                        }}
                       >
                         자세히 보기
                       </a>
@@ -221,7 +302,10 @@ const StudyResult = () => {
                   }
                 />
 
-                <DetailOfSelected />
+                <DetailOfSelected
+                  openClickedTimeOnCard={openClickedTimeOnCard}
+                  openChangedLevelOnCard={openChangedLevelOnCard}
+                />
 
                 <SlidingDrawerForAllCards
                   cards={
@@ -230,6 +314,18 @@ const StudyResult = () => {
                   closeDrawer={closeClickedTimesPage}
                   visible={visibleClickedTimesPage}
                   contentType={"clickedTimes"}
+                  myContents={
+                    !myContentsDataForAllCards
+                      ? []
+                      : myContentsDataForAllCards
+                          .mycontent_getMycontentByMycontentIDs.mycontents
+                  }
+                  buyContents={
+                    !buyContentsDataForAllCards
+                      ? []
+                      : buyContentsDataForAllCards
+                          .buycontent_getBuycontentByBuycontentIDs.buycontents
+                  }
                 />
 
                 <SlidingDrawerForAllCards
@@ -239,6 +335,56 @@ const StudyResult = () => {
                   closeDrawer={closeElapsedTimeOnCard}
                   visible={visibleElapsedTimeOnCard}
                   contentType={"studyHours"}
+                  myContents={
+                    !myContentsDataForAllCards
+                      ? []
+                      : myContentsDataForAllCards
+                          .mycontent_getMycontentByMycontentIDs.mycontents
+                  }
+                  buyContents={
+                    !buyContentsDataForAllCards
+                      ? []
+                      : buyContentsDataForAllCards
+                          .buycontent_getBuycontentByBuycontentIDs.buycontents
+                  }
+                />
+
+                <SlidingDrawerForAllCards
+                  cards={topFiveCardsBySubject.clickedCards}
+                  closeDrawer={closeClickedTimeOnCard}
+                  visible={visibleClickedTimeOnCard}
+                  contentType={"clickedCard"}
+                  myContents={
+                    !myContentsDataForAllCards
+                      ? []
+                      : myContentsDataForAllCards
+                          .mycontent_getMycontentByMycontentIDs.mycontents
+                  }
+                  buyContents={
+                    !buyContentsDataForAllCards
+                      ? []
+                      : buyContentsDataForAllCards
+                          .buycontent_getBuycontentByBuycontentIDs.buycontents
+                  }
+                />
+
+                <SlidingDrawerForAllCards
+                  cards={topFiveCardsBySubject.filteredCardByChangedLevel}
+                  closeDrawer={closeChangedLevelOnCard}
+                  visible={visibleChagnedLevelOnCard}
+                  contentType={"changedLevel"}
+                  myContents={
+                    !myContentsDataForAllCards
+                      ? []
+                      : myContentsDataForAllCards
+                          .mycontent_getMycontentByMycontentIDs.mycontents
+                  }
+                  buyContents={
+                    !buyContentsDataForAllCards
+                      ? []
+                      : buyContentsDataForAllCards
+                          .buycontent_getBuycontentByBuycontentIDs.buycontents
+                  }
                 />
               </div>
             )}

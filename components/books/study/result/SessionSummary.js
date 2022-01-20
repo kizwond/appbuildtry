@@ -4,10 +4,17 @@ import { useCallback } from "react";
 import { useMemo } from "react";
 import BoxForSessionSummary from "./BoxForSessionSummary";
 
-const SessionSummary = () => {
+const SessionSummary = ({ from }) => {
   const resultOfSession = useMemo(
-    () => JSON.parse(sessionStorage.getItem("resultOfSession")),
-    []
+    () =>
+      JSON.parse(
+        sessionStorage.getItem(
+          from === "home"
+            ? "resultOfSessionForSessionHistory"
+            : "resultOfSession"
+        )
+      ),
+    [from]
   );
 
   const { completed, hold, ing, yet } = resultOfSession.numCards;
@@ -37,14 +44,27 @@ const SessionSummary = () => {
   );
 
   const startedTime = useMemo(
-    () => moment(sessionStorage.getItem("started")).format("M.D hh:mm"),
-    []
+    () =>
+      moment(
+        new Date(
+          sessionStorage.getItem(
+            from === "home" ? "startTimeForSessionHistory" : "started"
+          )
+        )
+      ).format("M.D hh:mm"),
+    [from]
   );
 
   const endedTime = useMemo(
     () =>
-      moment(sessionStorage.getItem("endTimeOfSession")).format("M.D hh:mm"),
-    []
+      moment(
+        new Date(
+          sessionStorage.getItem(
+            from === "home" ? "endTimeForSessionHistory" : "endTimeOfSession"
+          )
+        )
+      ).format("M.D hh:mm"),
+    [from]
   );
 
   const displayTime = useCallback((time) => {

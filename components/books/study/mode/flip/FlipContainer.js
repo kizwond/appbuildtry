@@ -772,7 +772,6 @@ class Container extends Component {
         delete v.studyStatus.elapsedHourFromLastSession;
         delete v.studyStatus.statusCurrent;
         delete v.studyStatus.recentSelectTime;
-        delete v.studyStatus.totalStayHour;
         delete v.studyStatus.recentStudyTime;
         delete v.studyStatus.totalStudyHour;
         delete v.studyStatus.totalStudyTimes;        

@@ -21,10 +21,17 @@ const TableForStudiedCards = ({
           return card.studyStatus.clickTimesInSession;
         }
       : function (card) {
-          const time = prettyMilliseconds(card.studyStatus.studyHourInSession, {
-            colonNotation: true,
-            secondsDecimalDigits: 0,
-          });
+          const time = prettyMilliseconds(
+            contentType === "studyHours"
+              ? card.studyStatus.studyHourInSession
+              : card.studyStatus.recentStudyHour
+              ? card.studyStatus.recentStudyHour
+              : 0,
+            {
+              colonNotation: true,
+              secondsDecimalDigits: 0,
+            }
+          );
           const displayTime = (time) => {
             switch (time.length) {
               case 4:
@@ -38,7 +45,7 @@ const TableForStudiedCards = ({
               case 8:
                 return time;
               default:
-                break;
+                throw new Error(`${time}은 지정된 형식의 시간이 아닙니다.`);
             }
           };
 

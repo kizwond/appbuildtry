@@ -16,6 +16,7 @@ import { useMemo } from "react";
 const DetailOfSelected = ({
   openClickedTimeOnCard,
   openChangedLevelOnCard,
+  from,
 }) => {
   const [selectedValue, setSelectedValue] = useState("Session");
   const [moreCardNumber, setMoreCardNumber] = useState(false);
@@ -39,16 +40,24 @@ const DetailOfSelected = ({
     };
     return selectedValue === "Session"
       ? removeProp(
-          JSON.parse(sessionStorage.getItem("resultOfSession")),
+          JSON.parse(
+            sessionStorage.getItem(
+              from === "home"
+                ? "resultOfSessionForSessionHistory"
+                : "resultOfSession"
+            )
+          ),
           "__typename"
         )
       : removeProp(
-          JSON.parse(sessionStorage.getItem("resultByBook")).find(
-            (book) => book.mybook_id === selectedValue
-          ),
+          JSON.parse(
+            sessionStorage.getItem(
+              from === "home" ? "resultByBookForSessionHistory" : "resultByBook"
+            )
+          ).find((book) => book.mybook_id === selectedValue),
           "__typename"
         );
-  }, [selectedValue]);
+  }, [selectedValue, from]);
 
   return (
     <div className="w-full flex flex-col gap-[8px] pt-[8px]">

@@ -16,7 +16,6 @@ const ChartForClickedTimesByDifficulty = ({ clickedTimesByDifficulty }) => {
     { title: "완료", value: "completed", color: "bg-green-400" },
     { title: "기타", value: "etc", color: "bg-lime-400" },
   ];
-  console.log(clickedTimesByDifficulty);
   return (
     <div className="w-full pr-[25px]">
       <table className="w-full h-full">

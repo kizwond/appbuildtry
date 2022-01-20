@@ -55,6 +55,7 @@ const FloatingMenu = ({
   searchResult,
   prepareCardInDictionary,
   editorOn,
+  selectedCardType,
 }) => {
   const [bottomVisible, setBottomVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -319,19 +320,28 @@ const FloatingMenu = ({
   function createCardInDictionary() {
     console.log("카드만들기 실행!!");
     setCreateCardOn(true);
-    if(caseRadio === "next"){
-      prepareCardInDictionary("next")
+    if (caseRadio === "next") {
+      prepareCardInDictionary("next");
     }
     // prepareCardInDictionary()
   }
   function onChange(e) {
     console.log("radio checked", e.target.value);
     setCaseRadio(e.target.value);
-    if(e.target.value === "next"){
-      prepareCardInDictionary("next")
+    if (e.target.value === "next") {
+      prepareCardInDictionary("next");
     }
   }
 
+  if (selectedCardType) {
+    if (selectedCardType.length > 0) {
+      var selections = selectedCardType.map((item) => {
+        if (item.cardtype_info.cardtype === "flip") {
+          return <>{item.cardtype_info.name}</>;
+        }
+      });
+    }
+  }
   return (
     <>
       <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{ display: "none" }}>
@@ -588,6 +598,7 @@ const FloatingMenu = ({
                 </>
               )}
 
+              {selectedCardType && selections}
               {editorOn}
             </Modal>
           </div>

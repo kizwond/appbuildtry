@@ -62,6 +62,7 @@ const ReadMode = () => {
   const [highlightToggle, setHighlightToggle] = useState(false);
   const [searchToggle, setSearchToggle] = useState(false);
   const [editorOn, setEditorOn] = useState();
+  const [selectedCardType, setSelectedCardType ] = useState();
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -193,9 +194,9 @@ const ReadMode = () => {
   const prepareCardInDictionary = (radio) => {
     console.log("카드생성전 데이터 꾸리기!!")
     if(radio === "next"){
-      const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId")
+      const selectionTextCardId = sessionStorage.getItem("selectionTextCardId")
       const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"))
-      const selectionCard = cardListStudying.filter(item=> item.card_info.cardset_id === selectionTextCardSetId)
+      const selectionCard = cardListStudying.filter(item=> item._id === selectionTextCardId)
       const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id
       const cardTypeId = selectionCard[0].card_info.cardtype_id
 
@@ -204,7 +205,9 @@ const ReadMode = () => {
       const cardtype_info_tmp = selectedCardTypeSet[0].cardtypes.filter(item=> item._id === cardTypeId)
       console.log(cardtype_info_tmp)
       const cardtype_info = cardtype_info_tmp[0].cardtype_info
-
+      console.log(cardtype_info)
+      setSelectedCardType(selectedCardTypeSet[0].cardtypes)
+      // cardTypeInfo(cardtype_info, null, null)
     }
     //카드생성버튼을 누를때 전체 책 리스트를 받는다.
     //
@@ -2396,6 +2399,7 @@ const ReadMode = () => {
               searchResult={searchResult}
               prepareCardInDictionary={prepareCardInDictionary}
               editorOn={editorOn}
+              selectedCardType={selectedCardType}
             />
           </>
         )}

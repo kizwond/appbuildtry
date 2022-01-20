@@ -37,17 +37,13 @@ const M_RecentStudyList = () => {
 
           sessionStorage.setItem(
             "startTimeForSessionHistory",
-            JSON.stringify(
-              received_data.session_getSession.sessions[0].session_info
-                .timeStarted
-            )
+            received_data.session_getSession.sessions[0].session_info
+              .timeStarted
           );
           sessionStorage.setItem(
             "endTimeForSessionHistory",
-            JSON.stringify(
-              received_data.session_getSession.sessions[0].session_info
-                .timeFinished
-            )
+            received_data.session_getSession.sessions[0].session_info
+              .timeFinished
           );
           sessionStorage.setItem(
             "cardListStudyingForSessionHistory",

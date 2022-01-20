@@ -212,7 +212,13 @@ class Container extends Component {
   Diffi5Handler = (diffi, current_card_id, timer) => {
     const now = new Date();
     const card_details_session_origin = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const current_card_info_index = card_details_session_origin.findIndex((item) => item.content.mycontent_id === current_card_id);
+    const current_card_info_index_tmp = card_details_session_origin.findIndex((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info_index_tmp);
+    if(current_card_info_index_tmp === -1){
+      var current_card_info_index = card_details_session_origin.findIndex((item) => item.content.buycontent_id === current_card_id);
+    } else {
+      var current_card_info_index = card_details_session_origin.findIndex((item) => item.content.mycontent_id === current_card_id);
+    }
     const current_card_book_id = card_details_session_origin[current_card_info_index].card_info.mybook_id;
     const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
 
@@ -233,11 +239,16 @@ class Container extends Component {
 
   onDiffClickHandler = (current_card_id, timer, studyRatio) => {
     console.log("난이도 선택하셨네요~");
-
+    console.log(current_card_id)
     const now = new Date();
     const card_details_session_origin = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const current_card_info_index = card_details_session_origin.findIndex((item) => item.content.mycontent_id === current_card_id);
-    console.log(current_card_info_index);
+    const current_card_info_index_tmp = card_details_session_origin.findIndex((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info_index_tmp);
+    if(current_card_info_index_tmp === -1){
+      var current_card_info_index = card_details_session_origin.findIndex((item) => item.content.buycontent_id === current_card_id);
+    } else {
+      var current_card_info_index = card_details_session_origin.findIndex((item) => item.content.mycontent_id === current_card_id);
+    }
 
     const current_card_book_id = card_details_session_origin[current_card_info_index].card_info.mybook_id;
     const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
@@ -297,7 +308,14 @@ class Container extends Component {
     }
 
     //study log 생성
-    const current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    const current_card_info_tmp = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+
+    if(current_card_info_tmp.length === 0){
+      var current_card_info = card_details_session.filter((item) => item.content.buycontent_id === current_card_id);
+    } else {
+      var current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    }
+
     console.log(current_card_info);
     const currentCardId = current_card_info[0]._id;
     const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
@@ -516,8 +534,13 @@ class Container extends Component {
       popoverClicked: false,
     });
     const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
-    console.log(current_card_info);
+    const current_card_info_tmp = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info_tmp);
+    if(current_card_info_tmp.length === 0){
+      var current_card_info = card_details_session.filter((item) => item.content.buycontent_id === current_card_id);
+    } else {
+      var current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    }
     const currentCardId = current_card_info[0]._id;
 
     this.generateBackPassModeStudyStatus(currentCardId, "pass");
@@ -534,8 +557,14 @@ class Container extends Component {
       popoverClicked: false,
     });
     const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
-    console.log(current_card_info);
+    const current_card_info_tmp = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info_tmp);
+    if(current_card_info_tmp.length === 0){
+      var current_card_info = card_details_session.filter((item) => item.content.buycontent_id === current_card_id);
+    } else {
+      var current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    }
+
     const currentCardId = current_card_info[0]._id;
 
     this.generateHoldCompletedRestoretudyStatus(currentCardId, "hold");
@@ -576,8 +605,13 @@ class Container extends Component {
       popoverClicked: false,
     });
     const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
-    console.log(current_card_info);
+    const current_card_info_tmp = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info_tmp);
+    if(current_card_info_tmp === -1){
+      var current_card_info = card_details_session.filter((item) => item.content.buycontent_id === current_card_id);
+    } else {
+      var current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    }
     const currentCardId = current_card_info[0]._id;
 
     this.generateHoldCompletedRestoretudyStatus(currentCardId, "completed");
@@ -603,8 +637,13 @@ class Container extends Component {
       popoverClicked: false,
     });
     const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
-    console.log(current_card_info);
+    const current_card_info_tmp = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    console.log(current_card_info_tmp);
+    if(current_card_info_tmp === -1){
+      var current_card_info = card_details_session.filter((item) => item.content.buycontent_id === current_card_id);
+    } else {
+      var current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+    }
     const currentCardId = current_card_info[0]._id;
 
     this.generateHoldCompletedRestoretudyStatus(currentCardId, "restore");
@@ -827,7 +866,12 @@ class Container extends Component {
       const statusCurrent = card_details_session[currentSeq].studyStatus.statusCurrent;
 
       const current_card_book_id = card_details_session[currentSeq].card_info.mybook_id;
-      const current_card_id = card_details_session[currentSeq].content.mycontent_id;
+      const current_card_id_tmp = card_details_session[currentSeq].content.mycontent_id;
+      if(current_card_id_tmp === null){
+        var current_card_id = card_details_session[currentSeq].content.buycontent_id;
+      } else {
+        var current_card_id = card_details_session[currentSeq].content.mycontent_id;
+      }
       const current_card_levelconfig = this.props.levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
       const levelconfig_option = current_card_levelconfig[0].restudy.option;
       const diffi1 = levelconfig_option.diffi1;

@@ -222,7 +222,11 @@ export const computeNumberOfAllFilteredCards = ({
   return flattenCards;
 };
 
-export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
+export const sortFilteredCards = ({
+  sortOption,
+  numberOfFilteredCards,
+  studyMode,
+}) => {
   const sortedCards = ((numberOfFilteredCards, sortOption) => {
     switch (sortOption) {
       case "standard":
@@ -250,32 +254,93 @@ export const sortFilteredCards = ({ sortOption, numberOfFilteredCards }) => {
   })(numberOfFilteredCards, sortOption);
 
   return sortedCards.map((card, seqInCardlist) => {
-    return {
-      ...card,
-      seqInCardlist,
-      card_info: {
-        ...card.card_info,
-        card_id: card._id,
-      },
-      studyStatus: {
-        ...card.studyStatus,
-        statusOriginal: card.studyStatus.statusCurrent,
-        statusPrev: card.studyStatus.statusCurrent,
+    if (studyMode === "flip") {
+      return {
+        ...card,
+        seqInCardlist,
+        card_info: {
+          ...card.card_info,
+          card_id: card._id,
+        },
+        studyStatus: {
+          ...card.studyStatus,
+          statusOriginal: card.studyStatus.statusCurrent,
+          statusPrev: card.studyStatus.statusCurrent,
 
-        levelOriginal: card.studyStatus.levelCurrent,
+          levelOriginal: card.studyStatus.levelCurrent,
+          levelUpdated : false,
 
-        userFlagOriginal: card.content.userFlag,
-        userFlagPrev: card.content.userFlag,
+          userFlagOriginal: card.content.userFlag,
+          userFlagPrev: card.content.userFlag,
 
-        clickTimesInSession: 0,
-        studyTimesInSession: 0,
-        studyHourInSession: 0,
-        elapsedHourFromLastSession: 0,
+          clickTimesInSession: 0,
+          studyTimesInSession: 0,
+          studyHourInSession: 0,
+          elapsedHourFromLastSession: 0,
 
-        needStudyTimeTmp: null,
-        isUpdated: false,
-      },
-    };
+          needStudyTimeTmp: null,
+          isUpdated: false,
+        },
+      };
+    }
+    if (studyMode === "read") {
+      return {
+        ...card,
+        seqInCardlist,
+        card_info: {
+          ...card.card_info,
+          card_id: card._id,
+        },
+        studyStatus: {
+          ...card.studyStatus,
+          statusOriginal: card.studyStatus.statusCurrent,
+          statusPrev: card.studyStatus.statusCurrent,
+
+          levelOriginal: card.studyStatus.levelCurrent,
+          levelUpdated : false,
+
+          userFlagOriginal: card.content.userFlag,
+          userFlagPrev: card.content.userFlag,
+
+          clickTimesInSession: 0,
+          studyTimesInSession: 0,
+          studyHourInSession: 0,
+          elapsedHourFromLastSession: 0,
+
+          needStudyTimeTmp: null,
+          isUpdated: false,
+        },
+      };
+    }
+    if (studyMode === "exam") {
+      return {
+        ...card,
+        seqInCardlist,
+        card_info: {
+          ...card.card_info,
+          card_id: card._id,
+        },
+        studyStatus: {
+          ...card.studyStatus,
+          statusOriginal: card.studyStatus.statusCurrent,
+          statusPrev: card.studyStatus.statusCurrent,
+
+          levelOriginal: card.studyStatus.levelCurrent,
+          
+
+          userFlagOriginal: card.content.userFlag,
+          userFlagPrev: card.content.userFlag,
+
+          clickTimesInSession: 0,
+          studyTimesInSession: 0,
+          studyHourInSession: 0,
+          elapsedHourFromLastSession: 0,
+
+          needStudyTimeTmp: null,
+          isUpdated: false,
+        },
+      };
+    }
   });
 };
 

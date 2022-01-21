@@ -133,16 +133,14 @@ const StudySessionConfig = ({
     onCompleted: (_data) => {
       if (_data.session_createSession.status === "200") {
         console.log("세션 생성 요청 후 받은 데이터", _data);
-        const sortedCards = sortFilteredCards({
-          numberOfFilteredCards,
-          sortOption: sessionConfig.detailedOption.sortOption,
-        });
+        sessionStorage.setItem("forCheckedKeys", JSON.stringify(checkedKeys));
         writeSessionDataInSessionStorage({
           _data,
           sessionConfig,
-          sortedCards,
-          isRefreshPage,
-          selectedBooks,
+          selectedBooks: !isRefreshPage
+            ? selectedBooks
+            : JSON.parse(sessionStorage.getItem("books_selected")),
+          numberOfFilteredCards,
         });
 
         router.push(

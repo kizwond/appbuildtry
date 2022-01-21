@@ -19,12 +19,6 @@ export const FRAGMENT_MYBOOK = gql`
       seqInWriteLike
     }
     stats {
-      overall {
-        accuLevel
-        numCompleted
-        studyHour
-        numSession
-      }
       recent {
         timeStudy
         timeModify
@@ -43,8 +37,19 @@ export const FRAGMENT_MYBOOK = gql`
       }
       studyHistory {
         date
-        level
-        studyHour
+        level {
+          completed
+          nonCompleted
+        }
+        numCardsByStatus {
+          yet
+          ing
+          hold
+          completed
+        }
+        numFinishedSession
+        totalStudyHour
+        totalClicks
       }
     }
   }

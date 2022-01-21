@@ -158,6 +158,21 @@ const ChartForStudiedCardsPerDay = () => (
   </div>
 );
 
+const LineChartForClickedTimePerDay = () => (
+  <div>
+    <div className="flex items-center w-full gap-6">
+      <div className="flex items-center gap-2">
+        <div className="w-12 h-3 bg-yellow-500"></div>
+        <div className="text-[12px]">미완료카드</div>
+      </div>
+      <div className="flex items-center gap-2">
+        <div className="w-12 h-3 bg-blue-500"></div>
+        <div className="text-[12px]">완료카드</div>
+      </div>
+    </div>
+  </div>
+);
+
 const StyledBar = styled.div`
   height: ${(props) => props.total}%;
   &:before {
@@ -213,6 +228,10 @@ const Test = () => {
       <div className="mb-4">
         카드 상태
         <TableForStatusOfCard />
+      </div>
+      <div className="mb-4">
+        카드 상태
+        <LineChartForClickedTimePerDay />
       </div>
     </div>
   );

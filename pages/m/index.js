@@ -20,7 +20,8 @@ const Home = () => {
 
   useEffect(() => {
     console.log("컴포넌트가 화면에 나타남");
-
+    sessionStorage.removeItem("firstFetchData");
+    sessionStorage.removeItem("examLog");
     if (data) {
       console.log(data);
       if (data.me.status === "401") {

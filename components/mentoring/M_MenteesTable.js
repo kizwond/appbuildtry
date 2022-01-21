@@ -24,51 +24,19 @@ import { StyledBookTypeDiv } from "../common/styledComponent/buttons";
 import { DisconnectOutlined, ExportOutlined } from "@ant-design/icons";
 import moment from "moment";
 import styled from "styled-components";
-import { QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID } from "../../graphql/query/allQuery";
+import StudyHistoryPerBook from "./studyHistoryOfMenteePerBook/StudyHistoryPerBook";
 
 const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
   const router = useRouter();
   const [visibleDrawer, setVisibleDrawer] = useState(false);
-  const openDrawer = useCallback((mybook_id) => {
+  const openDrawer = useCallback(() => {
     setVisibleDrawer(true);
-    getSessionHisitory({ mybook_id });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const closeDrawer = useCallback(() => {
     setVisibleDrawer(false);
   }, []);
 
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-
-  const [getSessionHistoryOnBook, { variables }] = useLazyQuery(
-    QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID,
-    {
-      onCompleted: (received_data) => {
-        if (received_data.session_getSessionByMybookid.status === "200") {
-          console.log("멘토링용 책 섹션 데이터 받음", received_data);
-        } else if (
-          received_data.session_getSessionByMybookid.status === "401"
-        ) {
-          router.push("/account/login");
-        } else {
-          console.log("어떤 문제가 발생함");
-        }
-      },
-    }
-  );
-
-  const getSessionHisitory = useCallback(async ({ mybook_id }) => {
-    try {
-      getSessionHistoryOnBook({
-        variables: {
-          mybook_id,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const [terminateMentoring] = useMutation(MUTATION_TERMINATE_MENTORING, {
     onCompleted: (data) => {
@@ -264,7 +232,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                     </Popconfirm>
                   </Row>
                 ) : (
-                  <div className="w-full flex gap-2">
+                  <div className="flex w-full gap-2">
                     {moment(new Date(Number(v))).format("YY.MM.DD")}
                     <Tag
                       onClick={() => {
@@ -282,37 +250,9 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                       headerStyle={{ padding: "12px 12px 8px 12px" }}
                       bodyStyle={{ backgroundColor: "#e9e9e9" }}
                     >
-                      <div>세션 리스트</div>
-                      <table className="w-full table-fixed">
-                        <thead>
-                          <tr className="border-collapse border-y border-y-gray-200">
-                            <th className="text-[1rem] font-normal bg-slate-100 w-[16%]">
-                              시작일
-                            </th>
-                            <th className="text-[1rem] font-normal bg-slate-100 w-[14%]">
-                              Mode
-                            </th>
-                            <th className="text-[1rem] font-normal bg-slate-100 w-[40%]">
-                              책 이름
-                            </th>
-                            <th className="text-[1rem] font-normal bg-slate-100 w-[15%]"></th>
-                            <th className="text-[1rem] font-normal bg-slate-100 w-[15%]"></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr className="border-b border-collapse border-b-gray-200">
-                            <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200  text-center"></td>
-                            <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200 text-center"></td>
-                            <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200"></td>
-                            <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 font-normal text-center">
-                              <a>결과</a>
-                            </td>
-                            <td className="text-[1rem] p-[4px] font-normal text-center">
-                              <a>재시작</a>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      {visibleDrawer && (
+                        <StudyHistoryPerBook mybook_id={record.mybook_id} />
+                      )}
                     </DrawerWrapper>
                   </div>
                 ),

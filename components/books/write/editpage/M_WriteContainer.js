@@ -640,11 +640,13 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       setSelectedCardType(cardTypes[0].cardtype_info);
       cardTypeInfo(cardTypes[0].cardtype_info, "inCard", null, shareCardId);
       sessionStorage.setItem("cardtype", cardTypes[0].cardtype_info.cardtype);
+      sessionStorage.setItem("selectedCardTypeId", cardTypes[0]._id);
     } else {
       const hello = cardTypes.filter((item) => item.cardtype_info.name === selectedCardType.name);
       setSelectedCardType(hello[0].cardtype_info);
       sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
       cardTypeInfo(hello[0].cardtype_info, "inCard", null, shareCardId);
+      sessionStorage.setItem("selectedCardTypeId", hello[0]._id);
     }
   }
 

@@ -26,8 +26,9 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
     card_details_session[current_card_info_index].studyStatus.elapsedHourFromLastSession = new Date() - card_details_session[current_card_info_index].studyStatus.recentStudyTime
   }
   
-  let {levelCurrent, recentStudyTime, recentStudyRatio, studyTimesInSession}=card_details_session[current_card_info_index].studyStatus
-  let {newLevel, needStudyTime, needStudyTimeTmp} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs)  
+  let {levelCurrent, recentStudyTime, recentStudyRatio, studyTimesInSession, levelUpdated}=card_details_session[current_card_info_index].studyStatus
+  let {newLevel, needStudyTime, needStudyTimeTmp} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs, levelUpdated)  
+  card_details_session[current_card_info_index].studyStatus.levelUpdated = true
   card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = needStudyTimeTmp;
@@ -65,8 +66,8 @@ const calculatePrediction = (selection, current_card_info_index, timer, levelCon
   // console.log('냐하하하하', selection)
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
 
-  let {levelCurrent, recentStudyTime, recentStudyRatio, studyTimesInSession}=card_details_session[current_card_info_index].studyStatus
-  let {needStudyTimeGap} = estimateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs)  
+  let {levelCurrent, recentStudyTime, recentStudyRatio, studyTimesInSession, levelUpdated}=card_details_session[current_card_info_index].studyStatus
+  let {needStudyTimeGap} = estimateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs, levelUpdated)  
 
   return {needStudyTimeGap};
 };

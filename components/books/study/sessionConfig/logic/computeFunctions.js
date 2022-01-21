@@ -268,6 +268,7 @@ export const sortFilteredCards = ({
           statusPrev: card.studyStatus.statusCurrent,
 
           levelOriginal: card.studyStatus.levelCurrent,
+          levelUpdated : false,
 
           userFlagOriginal: card.content.userFlag,
           userFlagPrev: card.content.userFlag,
@@ -296,6 +297,7 @@ export const sortFilteredCards = ({
           statusPrev: card.studyStatus.statusCurrent,
 
           levelOriginal: card.studyStatus.levelCurrent,
+          levelUpdated : false,
 
           userFlagOriginal: card.content.userFlag,
           userFlagPrev: card.content.userFlag,
@@ -324,6 +326,7 @@ export const sortFilteredCards = ({
           statusPrev: card.studyStatus.statusCurrent,
 
           levelOriginal: card.studyStatus.levelCurrent,
+          
 
           userFlagOriginal: card.content.userFlag,
           userFlagPrev: card.content.userFlag,

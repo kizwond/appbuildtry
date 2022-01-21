@@ -1,4 +1,4 @@
-exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs) => {
+exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs, levelUpdated) => {
     
     const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
     const KnowStudyRatio = 95
@@ -11,11 +11,14 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
     try{
         
         console.log('잘 들어왔당가?', levelCurrent, recentStudyTime,studyRatio, studyTimesInSession )
-        
+        console.log('levelUpdated', levelUpdated)
+
         // 세션 첫 학습인 경우
-        if (studyTimesInSession != 1){
+        if (levelUpdated == true){
+            console.log('1111111111111111111111111111111111111')
             newLevel = levelCurrent
-        } else if (studyTimesInSession == 1){
+        } else if (levelUpdated == false){
+            console.log('22222222222222222222222222222222')
             if (levelCurrent == 0){
                 newLevel = Math.round(initialElapsedHour * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
                 console.log('newLevel1', newLevel)
@@ -48,7 +51,7 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
 
 }
 
-exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs) => {
+exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs, levelUpdated) => {
     
     const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
     const KnowStudyRatio = 95
@@ -61,7 +64,7 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
     try{       
         // 세션 첫 학습인 경우
         // console.log('studyTimesInSession', studyTimesInSession)
-        if (studyTimesInSession == 0){
+        if (levelUpdated == false){
             // console.log('levelCurrent', levelCurrent)
             if (levelCurrent == 0){
                 newLevel = Math.round(initialElapsedHour * Math.log(0.8) / Math.log(KnowStudyRatio/100) * 1000) / 1000;                
@@ -76,7 +79,7 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
                 newLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(KnowStudyRatio/100)*1000)/1000
                 // console.log('newLevel2',newLevel)
             }            
-        } else if (studyTimesInSession > 0){
+        } else if (levelUpdated == true){
             newLevel = levelCurrent            
         }
         needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(KnowStudyRatio/100)) / Math.log(0.8) * 24 * 3600000)
@@ -156,7 +159,7 @@ exports.updateSessionResult = (singleResult) => {
     console.log('levelOriginal', levelOriginal)
     console.log('levelCurrent', levelCurrent)
     console.log(recentSelection)
-    if (recentSelection=='difficulty' && studyTimesInSession == 1){  
+    if (levelOriginal != levelCurrent){  
         if (levelOriginal < levelCurrent){
             console.log('1111111')
             resultByBook[mybookPosition].levelChange.total.count += 1
@@ -181,23 +184,23 @@ exports.updateSessionResult = (singleResult) => {
     }
 
     // Mybook에 업데이트 해줄 꺼
-    if (recentSelection=='difficulty' && studyTimesInSession == 1){  
-        resultOfSession.nonCompletedLevelChange.count += 1
-        resultOfSession.nonCompletedLevelChange.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
-        resultByBook[mybookPosition].nonCompletedLevelChange.count += 1
-        resultByBook[mybookPosition].nonCompletedLevelChange.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
+    console.log(levelOriginal)
+    console.log(levelCurrent)
+    if (levelOriginal != levelCurrent){  
+        resultOfSession.levelChangeByStatus.nonCompleted += Math.round((levelCurrent - levelOriginal)*1000)/1000
+        resultByBook[mybookPosition].levelChangeByStatus.nonCompleted += Math.round((levelCurrent - levelOriginal)*1000)/1000
     }
     if  (recentSelection == 'restore' && statusPrev == 'completed'){
-        resultOfSession.nonCompletedLevelChange.count += 1
-        resultOfSession.nonCompletedLevelChange.gap += levelCurrent
-        resultByBook[mybookPosition].nonCompletedLevelChange.count += 1
-        resultByBook[mybookPosition].nonCompletedLevelChange.gap += levelCurrent
+        resultOfSession.levelChangeByStatus.nonCompleted += levelCurrent
+        resultOfSession.levelChangeByStatus.completed += -levelCurrent
+        resultByBook[mybookPosition].levelChangeByStatus.nonCompleted += levelCurrent
+        resultByBook[mybookPosition].levelChangeByStatus.completed += -levelCurrent
     }
     if  (recentSelection == 'completed'){
-        resultOfSession.nonCompletedLevelChange.count += -1
-        resultOfSession.nonCompletedLevelChange.gap += -levelCurrent
-        resultByBook[mybookPosition].nonCompletedLevelChange.count += -1
-        resultByBook[mybookPosition].nonCompletedLevelChange.gap += -levelCurrent
+        resultOfSession.levelChangeByStatus.nonCompleted += -levelCurrent
+        resultOfSession.levelChangeByStatus.completed += levelCurrent
+        resultByBook[mybookPosition].levelChangeByStatus.nonCompleted += -levelCurrent
+        resultByBook[mybookPosition].levelChangeByStatus.completed += levelCurrent
     }
 
     // 스테이터스 별 카드 갯수

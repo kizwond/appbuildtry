@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { GetSession } from "../../../../../graphql/query/session";
 import { QUERY_BOOK_STUDY_LEVEL_CONFIG_BY_BOOK_IDS } from "../../../../../graphql/query/allQuery";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
 import { useRouter } from "next/router";
 import FlipContainer from "../../../../../components/books/study/mode/flip/FlipContainer";
 import StudyLayout from "../../../../../components/layout/StudyLayout";
 import FixedBottomMenuFlipMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuFlipMode";
 import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../../../../graphql/query/card_contents";
+import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import { Button, Modal, Space, Tag, message, Divider } from "antd";
-
+import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
+import { createFalse } from "typescript";
 const FlipMode = () => {
   const { query } = useRouter();
   // console.log(query.sessionid);
@@ -37,6 +39,9 @@ const FlipMode = () => {
   const [face2row3, setFace2row3] = useState(true);
   const [face2row4, setFace2row4] = useState(true);
   const [face2row5, setFace2row5] = useState(true);
+  const [userFlagDetails, setUserFlagDetails] = useState();
+  const [isModalVisibleHidden, setIsModalVisibleHidden] = useState(false);
+  const [userFlag, setUserFlag] = useState(false);
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -96,6 +101,7 @@ const FlipMode = () => {
           const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
           setCardListStudying(cardListStudying);
           setSessionScope(data.session_getSession.sessions[0].sessionScope);
+          setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);
           const cardIdList = cardListStudying.map((item) => {
             return item.content.mycontent_id;
           });
@@ -134,6 +140,7 @@ const FlipMode = () => {
           const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
           setCardListStudying(cardListStudying);
           setSessionScope(data.session_getSession.sessions[0].sessionScope);
+          setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);
           sessionStorage.setItem("card_seq", 0);
           sessionStorage.setItem("origin_seq", 0);
           sessionStorage.removeItem("cardlist_to_send");
@@ -179,6 +186,7 @@ const FlipMode = () => {
         const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
         setCardListStudying(cardListStudying);
         setSessionScope(data.session_getSession.sessions[0].sessionScope);
+        setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);
         sessionStorage.setItem("card_seq", 0);
         sessionStorage.setItem("origin_seq", 0);
         sessionStorage.removeItem("cardlist_to_send");
@@ -218,6 +226,88 @@ const FlipMode = () => {
       }
     }
   }, [data, levelconfig_getLevelconfigs, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs, cardtypeset_getbymybookids]);
+
+  const [cardset_updateUserFlag] = useMutation(MUTATION_UPDATE_USER_FLAG, {
+    onCompleted: afterupdateuserflag,
+  });
+  function afterupdateuserflag(data) {
+    console.log("data", data);
+  }
+
+  const updateUserFlag = useCallback(
+    async (cardset_id, card_id, flag) => {
+      try {
+        await cardset_updateUserFlag({
+          variables: {
+            forUpdateUserFlag: {
+              cardset_id,
+              card_id,
+              value: Number(flag),
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_updateUserFlag]
+  );
+  const [cardset_deleteEffect] = useMutation(ForDeleteEffect, {
+    onCompleted: showdataafterdeleteeffect,
+  });
+  function showdataafterdeleteeffect(data) {
+    console.log("data", data);
+    // setCardListStudying(data.showdataaftereffectfetch.cardlistStudying);
+  }
+
+  const [cardset_addEffect] = useMutation(ForAddEffect, {
+    onCompleted: showdataaftereffectfetch,
+  });
+  function showdataaftereffectfetch(data) {
+    console.log("data", data);
+    // setCardListStudying(data.showdataaftereffectfetch.cardlistStudying);
+  }
+
+  const cardsetAddEffect = useCallback(
+    async (cardset_id, card_id, effectType, targetWord, toolType) => {
+      try {
+        await cardset_addEffect({
+          variables: {
+            forAddEffect: {
+              cardset_id,
+              card_id,
+              effectType,
+              targetWord,
+              toolType: Number(toolType),
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_addEffect]
+  );
+
+  const cardsetDeleteEffect = useCallback(
+    async (cardset_id, card_id, effectType, targetWord) => {
+      try {
+        await cardset_deleteEffect({
+          variables: {
+            forDeleteEffect: {
+              cardset_id,
+              card_id,
+              effectType,
+              targetWord,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_deleteEffect]
+  );
 
   const hide = (toolType) => {
     const selectionText = sessionStorage.getItem("selectionText");
@@ -394,10 +484,21 @@ const FlipMode = () => {
               face2row4={face2row4}
               face2row5={face2row5}
               cardListStudying={cardListStudying}
+              setCardListStudying={setCardListStudying}
               contentsList={contentsList}
               sessionScope={sessionScope}
               levelConfigs={levelConfigs}
               cardTypeSets={cardTypeSets}
+              userFlagDetails={userFlagDetails}
+              isModalVisibleHidden={isModalVisibleHidden}
+              setIsModalVisibleHidden={setIsModalVisibleHidden}
+              cardsetDeleteEffect={cardsetDeleteEffect}
+              updateUserFlag={updateUserFlag}
+              userFlag={userFlag}
+              setUserFlag={setUserFlag}
+              setHiddenToggle={setHiddenToggle}
+              setUnderlineToggle={setUnderlineToggle}
+              setHighlightToggle={setHighlightToggle}
             />
           </>
         )}

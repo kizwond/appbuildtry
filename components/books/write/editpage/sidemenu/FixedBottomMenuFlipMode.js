@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { message, Space, Drawer } from "antd";
+import { message, Space, Drawer, Button } from "antd";
 import {
   HighlightOutlined,
   UnderlineOutlined,
@@ -10,6 +10,7 @@ import {
 
 import StudyToolSetting from "../../../study/mode/StudyToolSetting";
 import StudyGeneralSetting from "../../../study/mode/StudyGeneralSetting";
+import { useRouter } from "next/router";
 
 const FloatingMenu = ({
   highlightToggle,
@@ -30,6 +31,7 @@ const FloatingMenu = ({
   face2On,
   ttsOn
 }) => {
+  const router = useRouter()
   const [bottomVisible, setBottomVisible] = useState(false);
 
   const info = () => {
@@ -221,6 +223,11 @@ const FloatingMenu = ({
   const onClose = () => {
     setBottomVisible(false);
   };
+  const moveToSpreadView = () => {
+    const sessionId = sessionStorage.getItem("session_Id")
+    router.push(`/m/study/mode/read/${sessionId}`)
+    // location.href = `/m/study/mode/read/${sessionId}`
+  }
   return (
     <>
       <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{ display: "none" }}>
@@ -388,6 +395,9 @@ const FloatingMenu = ({
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                   <SoundOutlined style={{ fontSize: "1.5rem" }} />
                   TTS설정
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <Button size="small" onClick={moveToSpreadView}>펼쳐보기</Button>
                 </div>
               </Space>
             </Drawer>

@@ -91,13 +91,12 @@ const TableForRankedCards = ({ data, contentType }) => (
 );
 
 const ChartForStudiedCardsPerDay = ({ data }) => {
-  const { ing, hold, yet, completed } = _.max(
-    data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory,
-    ({ numCardsByStatus: { ing, hold, yet, completed } }) =>
-      completed + ing + hold + yet
-  ).numCardsByStatus;
-
-  const maxStudiedTimes = ing + hold + yet + completed;
+  const maxStudiedTimes = _.max(
+    data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory.map(
+      ({ numCardsByStatus: { ing, hold, yet, completed } }) =>
+        completed + ing + hold + yet
+    )
+  );
 
   return (
     <div>
@@ -180,7 +179,6 @@ const ChartForGainedLevelPerDay = ({ data }) => {
         Math.floor(completed * 1000 + nonCompleted * 1000) / 1000
     )
   );
-  console.log({ maxLevel });
 
   return (
     <div>
@@ -209,7 +207,6 @@ const ChartForGainedLevelPerDay = ({ data }) => {
               const completedLevel = completed;
               const percentageOfCompleted =
                 Math.round((completedLevel / totalLevel) * 100) + "%";
-              console.log({ percentageOfCompleted, percentageOfIncompleted });
               return {
                 date: moment(date).format("M월D일"),
                 totalLevel,

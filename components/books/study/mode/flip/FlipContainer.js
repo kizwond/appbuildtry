@@ -965,8 +965,8 @@ class Container extends Component {
       console.log("case2", text);
     }
     console.log("end");
-    console.log(text)
-    console.log(textRange)
+    console.log(text);
+    console.log(textRange);
 
     if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
@@ -974,7 +974,7 @@ class Container extends Component {
       var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
       var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
       var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
-      if (parentId_tmp1 !== null && parentId_tmp1[0] !== 'id="isPasted"' ) {
+      if (parentId_tmp1 !== null && parentId_tmp1[0] !== 'id="isPasted"') {
         var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
         var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
         var cardId = parentId_tmp3[0].replace("cardId", "");
@@ -1049,6 +1049,33 @@ class Container extends Component {
       const currentSeq = Number(sessionStorage.getItem("card_seq"));
       const statusCurrent = card_details_session[currentSeq].studyStatus.statusCurrent;
 
+      var cardLevel = card_details_session[currentSeq].studyStatus.levelCurrent;
+      var recentStudyTime = card_details_session[currentSeq].studyStatus.recentStudyTime;
+      var recentSelection = card_details_session[currentSeq].studyStatus.recentSelection;
+      var cardInfoPop = (
+        <>
+          <div style={{ fontSize: "0.8rem" }}>
+            <div>현레벨 : {cardLevel}</div>
+            <div>최근학습시간 : {recentStudyTime}</div>
+            <div>마지막난이도 : {recentSelection}</div>
+            <div>기타등등... 카드 정보들</div>
+          </div>
+        </>
+      );
+      var memoPop = (
+        <>
+          <div style={{ fontSize: "0.8rem" }}>
+            <div>메모 블라블라....</div>
+          </div>
+        </>
+      );
+      var annotationPop = (
+        <>
+          <div style={{ fontSize: "0.8rem" }}>
+            <div>주석 블라블라....</div>
+          </div>
+        </>
+      );
       const current_card_book_id = card_details_session[currentSeq].card_info.mybook_id;
       const current_card_id_tmp = card_details_session[currentSeq].content.mycontent_id;
       if (current_card_id_tmp === null) {
@@ -1526,14 +1553,7 @@ class Container extends Component {
                     }}
                     icon={<PlusOutlined style={{ fontSize: "16px" }} />}
                   ></Button>
-                  <Button
-                    size="small"
-                    style={{
-                      border: "none",
-                      backgroundColor: "#f0f0f0",
-                    }}
-                    icon={<FormOutlined style={{ fontSize: "16px" }} />}
-                  ></Button>
+
                   <Button
                     size="small"
                     style={{
@@ -1559,36 +1579,69 @@ class Container extends Component {
                     }}
                     icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
                   ></Button>
-                  <Button
-                    size="small"
-                    style={{
-                      border: "none",
-                      backgroundColor: "#f0f0f0",
-                    }}
-                    icon={<MessageOutlined style={{ fontSize: "16px" }} />}
-                  ></Button>
+                  <Popover
+                    content={memoPop}
+                    placement="bottomRight"
+                    title={
+                      <>
+                        <span style={{ fontSize: "0.8rem" }}>메모</span>
+                      </>
+                    }
+                    trigger="click"
+                  >
+                    <Button
+                      size="small"
+                      style={{
+                        border: "none",
+                        backgroundColor: "#f0f0f0",
+                      }}
+                      icon={<MessageOutlined style={{ fontSize: "16px" }} />}
+                    ></Button>
+                  </Popover>
+
                   {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
                     <>
-                      <Button
-                        size="small"
-                        style={{
-                          border: "none",
-                          backgroundColor: "#f0f0f0",
-                        }}
-                        icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                      ></Button>
+                      <Popover
+                        content={annotationPop}
+                        placement="bottomRight"
+                        title={
+                          <>
+                            <span style={{ fontSize: "0.8rem" }}>주석</span>
+                          </>
+                        }
+                        trigger="click"
+                      >
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                      </Popover>
                     </>
                   ) : (
                     <>
-                      <Button
-                        size="small"
-                        style={{
-                          border: "none",
-                          backgroundColor: "#f0f0f0",
-                        }}
-                        icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                        disabled
-                      ></Button>
+                      <Popover
+                        content={annotationPop}
+                        placement="bottomRight"
+                        title={
+                          <>
+                            <span style={{ fontSize: "0.8rem" }}>주석</span>
+                          </>
+                        }
+                        trigger="click"
+                      >
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                      </Popover>
                     </>
                   )}
                 </div>
@@ -2388,16 +2441,16 @@ class Container extends Component {
 
     return (
       <>
-       <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{ display: "none" }}>
-        <defs>
-          <filter id="marker-shape">
-            <feTurbulence type="fractalNoise" baseFrequency="0 0.15" numOctaves="1" result="warp" />
-            <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="30" in="SourceGraphic" in2="warp" />
-          </filter>
-        </defs>
-      </svg>
+        <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{ display: "none" }}>
+          <defs>
+            <filter id="marker-shape">
+              <feTurbulence type="fractalNoise" baseFrequency="0 0.15" numOctaves="1" result="warp" />
+              <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="30" in="SourceGraphic" in2="warp" />
+            </filter>
+          </defs>
+        </svg>
         <div style={{ height: "100%", display: "flex", flexDirection: "column", marginBottom: "10px" }}>
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <div style={{ position:"fixed", backgroundColor:"white", zIndex:"100000", width:"95%", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
             <div style={{ flexGrow: 1, color: "#8b8b8b" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div
@@ -2431,6 +2484,33 @@ class Container extends Component {
                   }}
                 >
                   <div style={{ lineHeight: "0.8rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px", marginLeft: "5px" }}>
+                    <div>card</div>
+                    <div>level</div>
+                  </div>
+                  <div
+                    style={{
+                      // backgroundColor: "#e2e2e2",
+                      // boxShadow: "inset 2px 2px 3px 0px #acacac",
+                      width: "50%",
+                      flexGrow: 1,
+                    }}
+                  >
+                    <Popover
+                      content={cardInfoPop}
+                      placement="bottomRight"
+                      title={
+                        <>
+                          <span style={{ fontSize: "0.8rem" }}>카드정보</span>
+                        </>
+                      }
+                      trigger="click"
+                    >
+                      <Button size="small" style={{ width: "100%", backgroundColor: "#e2e2e2", border: "none", boxShadow: "1px 1px 1px 0px #acacac" }}>
+                        {cardLevel}
+                      </Button>
+                    </Popover>
+                  </div>
+                  {/* <div style={{ lineHeight: "0.8rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px", marginLeft: "5px" }}>
                     <div>click</div>
                     <div>count</div>
                   </div>
@@ -2449,7 +2529,7 @@ class Container extends Component {
                     }}
                   >
                     {sumClicks}
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div
@@ -2480,9 +2560,10 @@ class Container extends Component {
               학습종료
             </Button>
           </div>
+          <div style={{position:"fixed", top:"124px",width: "95%", border: "1px solid lightgrey", borderRadius: "3px"}}>{statusBar}</div>
           <div style={style_study_layout_bottom}>
             <div style={{ width: "100%", border: "1px solid lightgrey", borderRadius: "3px" }}>
-              <div>{statusBar}</div>
+              {/* <div>{statusBar}</div> */}
               <div style={{ height: "15px", paddingLeft: "5px" }}>{makerFlagContent}</div>
               <div style={contentsDisplay}>
                 {this.state.flip && <div>{face1Contents}</div>}
@@ -2669,7 +2750,7 @@ const style_study_layout_bottom = {
   justifyContent: "space-between",
   width: "100%",
   margin: "auto",
-  marginTop: "5px",
+  marginTop: "115px",
   height: "100%",
 };
 const contentsDisplay = {

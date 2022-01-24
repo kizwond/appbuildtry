@@ -11,15 +11,15 @@ import FroalaEditorComponent from "react-froala-wysiwyg";
 import FroalaEditor from "froala-editor";
 import { Radio, Input, Button, Select } from "antd";
 import { PlusCircleOutlined, MinusCircleOutlined, StarFilled } from "@ant-design/icons";
+import { s3Hash } from "./EditorSub";
 
 const { Option } = Select;
 
 class EditorFromCard extends Component {
   constructor(props) {
     super(props);
-    FroalaEditor.DefineIcon("insertFiles", { SRC: "/image/speaker_Icon.png", ALT: "audioIcon", template: "image" });
     this.state = {
-      editor1: "",
+      editor1: props.getLink,
       editor2: "",
       editor3: "",
       editor4: "",
@@ -59,11 +59,16 @@ class EditorFromCard extends Component {
       answerRadio: null,
       answerFieldNick: "",
     };
+
+    FroalaEditor.DefineIcon("insertFiles", { SRC: "/image/speaker_Icon.png", ALT: "audioIcon", template: "image" });
+    FroalaEditor.DefineIcon("alert", { SRC: "/image/tts_icon.png", NAME: "tts", template: "image" });
     this.config = {
       key: process.env.NEXT_PUBLIC_FROALA_EDITOR_ACTIVATION_KEY,
+      imageUploadToS3: s3Hash,
       editorClass: "editor_try",
       quickInsertEnabled: false,
-      imageUploadURL: "/api/cardset/imageUpload",
+      imageUploadURL: false,
+      // imageUploadURL: "/api/cardset/imageUpload",
       fileUploadURL: "/api/cardset/fileUpload",
       //   videoUploadURL: "/api/cardset/videoUpload",
       filesManagerUploadURL: "/api/cardset/fileUpload",
@@ -109,8 +114,53 @@ class EditorFromCard extends Component {
         "html",
         "undo",
         "redo",
+        "alert",
       ],
     };
+  }
+  componentDidMount() {
+    const dodo = async () => {
+      var text = null;
+      var textRange = null;
+      if (document.getSelection) {
+        text = document.getSelection().toString();
+        textRange = document.getSelection();
+        sessionStorage.setItem("selectionText", text);
+        console.log("case1", text);
+      } else if (typeof document.selection != "undefined") {
+        text = document.selection;
+        console.log("case2", text);
+      }
+      console.log("try", text);
+      await this.props.addPolly(text);
+      const pollyLink = sessionStorage.getItem("getLink");
+      console.log(pollyLink);
+      var matches = document.getElementsByClassName("fr-element fr-view");
+      for (var i = 0; i < matches.length; i++) {
+        console.log(matches[i].innerText);
+        if (matches[i].innerText.includes(text)) {
+          var thisis = matches[i].innerHTML;
+          console.log(thisis);
+          const hello = thisis.replace(text, `${text} <audio controls><source src="${pollyLink}" type="audio/mpeg"></audio><p></p>`);
+          console.log(hello);
+          sessionStorage.setItem("includeLink", hello);
+          this.handleModelChangeEditor1(hello);
+        }
+      }
+    };
+
+    if (this.props.addPolly) {
+      console.log(this.props);
+      FroalaEditor.RegisterCommand("alert", {
+        title: "Hello",
+        focus: false,
+        undo: false,
+        refreshAfterCallback: false,
+        callback: async function () {
+          dodo();
+        },
+      });
+    }
   }
 
   handleFlagStar = (e) => {
@@ -417,7 +467,6 @@ class EditorFromCard extends Component {
     } else {
       selectionsArray = null;
     }
-
     const values = {
       face1: face1_array,
       selection: selectionsArray,

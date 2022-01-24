@@ -12,7 +12,6 @@ import FroalaEditor from "froala-editor";
 import { Radio, Input, Button, Select } from "antd";
 import { PlusCircleOutlined, MinusCircleOutlined, StarFilled, ConsoleSqlOutlined } from "@ant-design/icons";
 import { s3Hash } from "./EditorSub";
-import { ThemeProvider } from "styled-components";
 
 const { Option } = Select;
 
@@ -415,7 +414,6 @@ class Editor extends Component {
     if (num_face1 > 0 && num_face2 === 0 && num_annot > 0) {
       for (var i = 1; i < num_face1 + 1; i++) {
         face1_array.push(this.state["editor" + i]);
-        console.log(this.state["editor" + i]);
       }
       if (num_annot > 0) {
         for (i = num_face1 + 1; i < num_face1 + num_annot + 1; i++) {
@@ -450,18 +448,15 @@ class Editor extends Component {
       if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
         for (i = 1; i < num_face1 + 1; i++) {
           face1_array.push(this.state["editor" + i]);
-          console.log(this.state["editor" + i]);
         }
         if (num_face2 > 0) {
           for (i = num_face1 + 1; i < num_face1 + num_face2 + 1; i++) {
             face2_array.push(this.state["editor" + i]);
-            console.log(this.state["editor" + i]);
           }
         }
         if (num_annot > 0) {
           for (i = num_face1 + num_face2 + 1; i < num_face1 + num_face2 + num_annot + 1; i++) {
             annotation_array.push(this.state["editor" + i]);
-            console.log(this.state["editor" + i]);
           }
         }
       }
@@ -482,15 +477,12 @@ class Editor extends Component {
       flagComment: this.state.flagComment,
     };
     // console.log(this.props.parentId);
-    console.log("values---------------->", values);
     this.props.onFinish(values, "normal", this.props.parentId);
 
     this.props.setEditorOn("");
   };
 
   componentDidUpdate(prevProps, prevState) {
-    console.log("componentDidUpdate");
-
     const originArray = JSON.parse(sessionStorage.getItem("nicks_without_selections"));
     const newArray = JSON.parse(sessionStorage.getItem("nicks_with_selections"));
     const num_selection = sessionStorage.getItem("selections");

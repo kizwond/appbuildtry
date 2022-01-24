@@ -32,7 +32,7 @@ const M_SessionModeAndFilterConfig = ({
         tabBarStyle={{ margin: 0 }}
         is_pc={(isPc || false).toString()}
       >
-        <Tabs.TabPane tab="읽기모드" key="read">
+        {/* <Tabs.TabPane tab="읽기모드" key="read">
           <div className="SessionTabContentWrapper">
             <M_ModeSessionConfig
               detailedOption={readDetailedOption}
@@ -45,8 +45,8 @@ const M_SessionModeAndFilterConfig = ({
               isPc={isPc || false}
             />
           </div>
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="뒤집기모드" key="flip">
+        </Tabs.TabPane> */}
+        <Tabs.TabPane tab="학습모드" key="flip">
           <div className="SessionTabContentWrapper">
             <M_ModeSessionConfig
               detailedOption={flipDetailedOption}

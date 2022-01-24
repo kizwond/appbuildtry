@@ -149,7 +149,7 @@ const ChartForStudiedCardsPerDay = ({ data }) => {
               }) => (
                 <li
                   key={date}
-                  className="relative table-cell align-bottom min-w-[48px] px-1"
+                  className="relative table-cell align-bottom min-w-[48px] max-w-[48px] px-1"
                 >
                   <StyledBar
                     total={totalStudiedTimes}
@@ -174,12 +174,13 @@ const ChartForStudiedCardsPerDay = ({ data }) => {
   );
 };
 const ChartForGainedLevelPerDay = ({ data }) => {
-  const { completed, nonCompleted } = _.max(
-    data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory,
-    ({ level: { completed, nonCompleted } }) => completed + nonCompleted
-  ).level;
-
-  const maxLevel = nonCompleted + completed;
+  const maxLevel = _.max(
+    data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory.map(
+      ({ level: { completed, nonCompleted } }) =>
+        Math.floor(completed * 1000 + nonCompleted * 1000) / 1000
+    )
+  );
+  console.log({ maxLevel });
 
   return (
     <div>
@@ -198,7 +199,8 @@ const ChartForGainedLevelPerDay = ({ data }) => {
           {data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory
             .map(({ level: { completed, nonCompleted }, date }, index, arr) => {
               const totalLevel =
-                (completed * 1000 + nonCompleted * 1000) / 1000;
+                Math.floor(completed * 1000 + nonCompleted * 1000) / 1000;
+              console.log({ totalLevel });
               const barHeightPercentage =
                 Math.round((totalLevel / maxLevel) * 100) + "%";
               const incompletedLevel = nonCompleted;
@@ -230,7 +232,7 @@ const ChartForGainedLevelPerDay = ({ data }) => {
               }) => (
                 <li
                   key={date}
-                  className="relative table-cell align-bottom min-w-[48px] px-1"
+                  className="relative table-cell align-bottom min-w-[48px] max-w-[48px] px-1"
                 >
                   <StyledBar
                     total={totalLevel}

@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 
 export default function useSessionConfig() {
-  const [mode, setMode] = useState("exam");
+  const [mode, setMode] = useState("flip");
 
   const [flipNeedStudyTimeCondition, setFlipNeedStudyTimeCondition] =
     useState("");

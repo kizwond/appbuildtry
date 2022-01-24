@@ -118,8 +118,8 @@ const StudyMainPage = () => {
                   </Space>
                 ) : (
                   <Space>
-                    <Button disabled>바로보기</Button>
-                    <Button disabled>세션 설정 후 시작</Button>
+                    <Button disabled>책 모드</Button>
+                    <Button disabled>카드 모드</Button>
                   </Space>
                 )}
               </div>

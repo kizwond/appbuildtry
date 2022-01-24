@@ -495,8 +495,8 @@ export const QUERY_SESSION_FOR_RESTARTING_SESSION_BY_SESSION_ID = gql`
 `;
 
 export const QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID = gql`
-  query getSession {
-    session_getSessionByMybookid {
+  query getSession($mybook_id: ID, $mybook_ids: [ID]) {
+    session_getSessionByMybookid(mybook_id: $mybook_id) {
       status
       msg
       sessions {
@@ -511,6 +511,58 @@ export const QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID = gql`
         }
         sessionConfig {
           studyMode
+        }
+      }
+    }
+
+    mybook_getMybookByMybookIDs(mybook_ids: $mybook_ids) {
+      status
+      msg
+      mybooks {
+        _id
+        stats {
+          studyHistory {
+            _id
+            date
+            level {
+              completed
+              nonCompleted
+            }
+            numCardsByStatus {
+              yet
+              ing
+              hold
+              completed
+            }
+            totalStudyHour
+            totalClicks
+          }
+        }
+      }
+    }
+
+    cardset_getByMybookIDs(mybook_ids: $mybook_ids) {
+      status
+      msg
+      cardsets {
+        _id
+        cards {
+          _id
+          content {
+            userFlag
+            makerFlag {
+              value
+              comment
+            }
+            location
+            mycontent_id
+            buycontent_id
+            memo
+          }
+          studyStatus {
+            totalStudyTimes
+            totalStudyHour
+          }
         }
       }
     }

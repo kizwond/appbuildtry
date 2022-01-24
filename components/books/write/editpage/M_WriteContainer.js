@@ -334,6 +334,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
           setEditorOnFromCard={setEditorOnFromCard}
           cardtype_info={cardtype_info}
           addSelections={addSelections}
+          addPolly={addPolly}
         />
       </>
     );
@@ -352,6 +353,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
           cardtype_info={cardtype_info}
           mycontent={mycontent}
           card_info={card_info}
+          addPolly={addPolly}
         />
       </>
     );

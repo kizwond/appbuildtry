@@ -1,9 +1,20 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import _ from "lodash";
 import moment from "moment";
 import styled from "styled-components";
-import { QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID } from "../../../graphql/query/allQuery";
+import {
+  QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID,
+  QUERY_MY_CARD_CONTENTS,
+} from "../../../graphql/query/allQuery";
+
+import prettyMilliseconds from "pretty-ms";
+import { Fragment, useState } from "react";
+import { Drawer } from "antd";
 
 const StudyHistoryPerBook = ({ mybook_id }) => {
+  const [drawerVisibleForStudyHourCards, setDrawerVisibleForStudyHourCards] =
+    useState(false);
+
   const { data, variables } = useQuery(QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID, {
     onCompleted: (received_data) => {
       if (received_data.session_getSessionByMybookid.status === "200") {
@@ -29,16 +40,41 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
             <TableForMentorSessionHistory data={data} />
           </div>{" "}
           <div className="mb-3 px-2 bg-white">
-            최근 일주일 학습 실적
+            총 학습 카드 개수
             <ChartForStudiedCardsPerDay data={data} />
           </div>
           <div className="mb-3 px-2 bg-white">
-            최근 일주일 학습 실적
+            총 획득 레벨
             <ChartForGainedLevelPerDay data={data} />
           </div>
           <div className="mb-3 px-2 bg-white">
-            학습 시간 많은 카드
+            학습 시간 많은 카드{" "}
+            <a
+              onClick={() => {
+                setDrawerVisibleForStudyHourCards(true);
+              }}
+            >
+              자세히 보기
+            </a>
             <TableForRankedCards data={data} contentType="hours" />
+            <DrawerWrapper
+              title="상세 보기"
+              placement="right"
+              width={"100%"}
+              visible={drawerVisibleForStudyHourCards}
+              onClose={() => {
+                setDrawerVisibleForStudyHourCards(false);
+              }}
+              headerStyle={{ padding: "12px 12px 8px 12px" }}
+              bodyStyle={{ backgroundColor: "#e9e9e9" }}
+            >
+              {drawerVisibleForStudyHourCards && (
+                <TableForAllCards
+                  cards={data.cardset_getByMybookIDs.cardsets[0].cards}
+                  contentType="hours"
+                />
+              )}
+            </DrawerWrapper>
           </div>
           <div className="mb-3 px-2 bg-white">
             학습 횟수 많은 카드
@@ -52,43 +88,411 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
 
 export default StudyHistoryPerBook;
 
-const TableForRankedCards = ({ data, contentType }) => (
-  <table className="w-full table-fixed">
-    <thead>
-      <tr className="border-collapse border-y border-y-gray-200">
-        <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
-        <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
-          {contentType === "hours" ? "학습시간" : "학습횟수"}
-        </th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
-      </tr>
-    </thead>
-    <tbody>
-      {data.cardset_getByMybookIDs.cardsets[0].cards.map((card, i) => {
-        return (
-          <tr
-            key={card._id}
-            className="border-b border-collapse border-b-gray-200"
-          >
-            <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
-              {i}
-            </td>
-            <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
-              동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세
-            </td>
-            <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
-              {contentType === "hours"
-                ? card.studyStatus.totalStudyHour
-                : card.studyStatus.totalStudyTimes}
-            </td>
-            <td className="text-[1rem] py-[4px] font-normal text-center">→</td>
-          </tr>
-        );
-      })}
-    </tbody>
-  </table>
-);
+const TableForRankedCards = ({ data, contentType }) => {
+  const [cardIdForMore, setCardIdForMore] = useState();
+  const [cardContent, setCardContent] = useState(null);
+
+  const fiveSortedCards = [...data.cardset_getByMybookIDs.cardsets[0].cards]
+    .sort((a, b) =>
+      contentType === "times"
+        ? b.studyStatus.totalStudyTimes - a.studyStatus.totalStudyTimes
+        : b.studyStatus.totalStudyHour - a.studyStatus.totalStudyHour
+    )
+    .filter((card, i) => i < 5);
+
+  const fiveContentIdsForMybook = fiveSortedCards
+    .filter((card) => card.content.location === "my")
+    .map((card) => card.content.mycontent_id);
+  const fiveContentIdsForBuybook = fiveSortedCards
+    .filter((card) => card.content.location === "buy")
+    .map((card) => card.content.buycontent_id);
+
+  const {
+    data: myContentsDataForFiveCards,
+    loading,
+    error,
+  } = useQuery(QUERY_MY_CARD_CONTENTS, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    variables: {
+      mycontent_ids: fiveContentIdsForMybook,
+      buycontent_ids: fiveContentIdsForBuybook,
+    },
+  });
+
+  const fiveContents = myContentsDataForFiveCards && [
+    ...myContentsDataForFiveCards.buycontent_getBuycontentByBuycontentIDs
+      .buycontents,
+    ...myContentsDataForFiveCards.mycontent_getMycontentByMycontentIDs
+      .mycontents,
+  ];
+
+  const getThirdCol =
+    contentType === "times"
+      ? function (card) {
+          return card.studyStatus.totalStudyTimes;
+        }
+      : function (card) {
+          const time = prettyMilliseconds(card.studyStatus.totalStudyHour, {
+            colonNotation: true,
+            secondsDecimalDigits: 0,
+          });
+          const displayTime = (time) => {
+            switch (time.length) {
+              case 4:
+                return "00:0" + time;
+              case 5:
+                return "00:" + time;
+              case 6:
+                return "00" + time;
+              case 7:
+                return "0" + time;
+              case 8:
+                return time;
+              default:
+                throw new Error(`${time}은 지정된 형식의 시간이 아닙니다.`);
+            }
+          };
+
+          return displayTime(time);
+        };
+  return (
+    <table className="w-full table-fixed">
+      <thead>
+        <tr className="border-collapse border-y border-y-gray-200">
+          <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
+          <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
+          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+            {contentType === "hours" ? "학습시간" : "학습횟수"}
+          </th>
+          <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {data &&
+          data.cardset_getByMybookIDs?.cardsets[0]?.cards?.length > 0 &&
+          fiveSortedCards.map((card, index) => {
+            return (
+              <Fragment key={card._id}>
+                <tr className="border-b border-collapse border-b-gray-200">
+                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                    {index + 1}
+                  </td>
+                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
+                    {fiveContents &&
+                      new String(
+                        fiveContents.find(
+                          (content) =>
+                            content._id === card.content.mycontent_id ||
+                            content._id === card.content.buycontent_id
+                        ).face1[0]
+                      ).replace(/(<([^>]+)>)/gi, "")}
+                  </td>
+                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                    {getThirdCol(card)}
+                  </td>
+                  <td
+                    className="text-[1rem] py-[4px] font-normal text-center"
+                    onClick={() => {
+                      if (cardIdForMore !== card._id + index) {
+                        setCardIdForMore(card._id + index);
+                        setCardContent({
+                          contents: fiveContents.find(
+                            (content) =>
+                              content._id === card.content.mycontent_id ||
+                              content._id === card.content.buycontent_id
+                          ),
+                          makerFlag: card.content.makerFlag,
+                          userFlag: card.content.userFlag,
+                          memo: card.content.memo,
+                        });
+                      } else {
+                        setCardContent(null);
+                        setCardIdForMore("");
+                      }
+                    }}
+                  >
+                    →
+                  </td>
+                </tr>
+                {cardContent && cardIdForMore === card._id + index && (
+                  <tr className="border-b border-collapse border-b-gray-200">
+                    <td
+                      colSpan={
+                        contentType === "clickedCard" ||
+                        contentType === "changedLevel"
+                          ? 5
+                          : contentType !== "newCards"
+                          ? 4
+                          : 3
+                      }
+                      className="p-2 text-[1rem]"
+                    >
+                      {!!cardContent.userFlag && (
+                        <div className="w-full p-2 bg-gray-100">
+                          <span className="font-[500]">유저 플래그 :</span>
+                          <span className="ml-2">{cardContent.userFlag}</span>
+                        </div>
+                      )}
+
+                      <div className="w-full p-2 bg-gray-100">
+                        <div className="font-[500]">카드 내용 :</div>
+                        {!!cardContent.makerFlag.value && (
+                          <div className="w-full pl-2">
+                            <span>{cardContent.makerFlag.value}</span>
+                            <span className="ml-1">
+                              {cardContent.makerFlag.comment}
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="w-full pl-2">
+                          {cardContent.contents.face1.map((p, i) => (
+                            <div
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: p }}
+                            ></div>
+                          ))}
+                        </div>
+                        {cardContent.contents.face2.length > 0 &&
+                          cardContent.contents.face2.map((p, i) => (
+                            <div
+                              className="w-full pl-2"
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: p }}
+                            ></div>
+                          ))}
+                        {cardContent.contents.annotation.length > 0 &&
+                          cardContent.contents.annotation.map((p, i) => (
+                            <div
+                              className="w-full pl-2"
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: p }}
+                            ></div>
+                          ))}
+                      </div>
+
+                      {!!cardContent.memo && (
+                        <div className="w-full p-2 mt-2 bg-gray-100">
+                          <div className="font-[500]">메모 :</div>
+                          <div className="w-full pl-2">{cardContent.memo}</div>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            );
+          })}
+      </tbody>
+    </table>
+  );
+};
+
+const TableForAllCards = ({ cards, contentType }) => {
+  const [contents, setContents] = useState([]);
+  const [cardIdForMore, setCardIdForMore] = useState();
+  const [cardContent, setCardContent] = useState(null);
+
+  const allCards = [...cards].sort((a, b) =>
+    contentType === "times"
+      ? b.studyStatus.totalStudyTimes - a.studyStatus.totalStudyTimes
+      : b.studyStatus.totalStudyHour - a.studyStatus.totalStudyHour
+  );
+
+  const displayedCards = allCards.filter(
+    (card, i) => 0 < i < contents.length + 20
+  );
+
+  const cardsToRequestContents = allCards.filter((card, i) =>
+    contents.length === 0
+      ? 0 < i < contents.length + 20
+      : contents.length < i < contents.length + 20
+  );
+
+  const twentyContentIdsForMybook = cardsToRequestContents
+    .filter((card) => card.content.location === "my")
+    .map((card) => card.content.mycontent_id);
+  const twentyContentIdsForBuybook = cardsToRequestContents
+    .filter((card) => card.content.location === "buy")
+    .map((card) => card.content.buycontent_id);
+
+  const { dataContents, loading, error } = useQuery(QUERY_MY_CARD_CONTENTS, {
+    onCompleted: (data) => {
+      if (true) {
+        setContents([
+          ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
+          ...data.mycontent_getMycontentByMycontentIDs.mycontents,
+        ]);
+      }
+    },
+    variables: {
+      mycontent_ids: twentyContentIdsForMybook,
+      buycontent_ids: twentyContentIdsForBuybook,
+    },
+  });
+
+  const getThirdCol =
+    contentType === "times"
+      ? function (card) {
+          return card.studyStatus.totalStudyTimes;
+        }
+      : function (card) {
+          const time = prettyMilliseconds(card.studyStatus.totalStudyHour, {
+            colonNotation: true,
+            secondsDecimalDigits: 0,
+          });
+          const displayTime = (time) => {
+            switch (time.length) {
+              case 4:
+                return "00:0" + time;
+              case 5:
+                return "00:" + time;
+              case 6:
+                return "00" + time;
+              case 7:
+                return "0" + time;
+              case 8:
+                return time;
+              default:
+                throw new Error(`${time}은 지정된 형식의 시간이 아닙니다.`);
+            }
+          };
+
+          return displayTime(time);
+        };
+  return (
+    <table className="w-full table-fixed">
+      <thead>
+        <tr className="border-collapse border-y border-y-gray-200">
+          <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
+          <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
+          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+            {contentType === "hours" ? "학습시간" : "학습횟수"}
+          </th>
+          <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {contents.length > 0 &&
+          displayedCards.map((card, index) => {
+            return (
+              <Fragment key={card._id}>
+                <tr className="border-b border-collapse border-b-gray-200">
+                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                    {index + 1}
+                  </td>
+                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
+                    {contents &&
+                      new String(
+                        contents.find(
+                          (content) =>
+                            content._id === card.content.mycontent_id ||
+                            content._id === card.content.buycontent_id
+                        ).face1[0]
+                      ).replace(/(<([^>]+)>)/gi, "")}
+                  </td>
+                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                    {getThirdCol(card)}
+                  </td>
+                  <td
+                    className="text-[1rem] py-[4px] font-normal text-center"
+                    onClick={() => {
+                      if (cardIdForMore !== card._id + index) {
+                        setCardIdForMore(card._id + index);
+                        setCardContent({
+                          contents: contents.find(
+                            (content) =>
+                              content._id === card.content.mycontent_id ||
+                              content._id === card.content.buycontent_id
+                          ),
+                          makerFlag: card.content.makerFlag,
+                          userFlag: card.content.userFlag,
+                          memo: card.content.memo,
+                        });
+                      } else {
+                        setCardContent(null);
+                        setCardIdForMore("");
+                      }
+                    }}
+                  >
+                    →
+                  </td>
+                </tr>
+                {cardContent && cardIdForMore === card._id + index && (
+                  <tr className="border-b border-collapse border-b-gray-200">
+                    <td
+                      colSpan={
+                        contentType === "clickedCard" ||
+                        contentType === "changedLevel"
+                          ? 5
+                          : contentType !== "newCards"
+                          ? 4
+                          : 3
+                      }
+                      className="p-2 text-[1rem]"
+                    >
+                      {!!cardContent.userFlag && (
+                        <div className="w-full p-2 bg-gray-100">
+                          <span className="font-[500]">유저 플래그 :</span>
+                          <span className="ml-2">{cardContent.userFlag}</span>
+                        </div>
+                      )}
+
+                      <div className="w-full p-2 bg-gray-100">
+                        <div className="font-[500]">카드 내용 :</div>
+                        {!!cardContent.makerFlag.value && (
+                          <div className="w-full pl-2">
+                            <span>{cardContent.makerFlag.value}</span>
+                            <span className="ml-1">
+                              {cardContent.makerFlag.comment}
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="w-full pl-2">
+                          {cardContent.contents.face1.map((p, i) => (
+                            <div
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: p }}
+                            ></div>
+                          ))}
+                        </div>
+                        {cardContent.contents.face2.length > 0 &&
+                          cardContent.contents.face2.map((p, i) => (
+                            <div
+                              className="w-full pl-2"
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: p }}
+                            ></div>
+                          ))}
+                        {cardContent.contents.annotation.length > 0 &&
+                          cardContent.contents.annotation.map((p, i) => (
+                            <div
+                              className="w-full pl-2"
+                              key={i}
+                              dangerouslySetInnerHTML={{ __html: p }}
+                            ></div>
+                          ))}
+                      </div>
+
+                      {!!cardContent.memo && (
+                        <div className="w-full p-2 mt-2 bg-gray-100">
+                          <div className="font-[500]">메모 :</div>
+                          <div className="w-full pl-2">{cardContent.memo}</div>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
+            );
+          })}
+      </tbody>
+    </table>
+  );
+};
 
 const ChartForStudiedCardsPerDay = ({ data }) => {
   const maxStudiedTimes = _.max(
@@ -201,10 +605,10 @@ const ChartForGainedLevelPerDay = ({ data }) => {
               console.log({ totalLevel });
               const barHeightPercentage =
                 Math.round((totalLevel / maxLevel) * 100) + "%";
-              const incompletedLevel = nonCompleted;
+              const incompletedLevel = Math.round(nonCompleted * 1000) / 1000;
               const percentageOfIncompleted =
                 Math.round((incompletedLevel / totalLevel) * 100) + "%";
-              const completedLevel = completed;
+              const completedLevel = Math.round(completed * 1000) / 1000;
               const percentageOfCompleted =
                 Math.round((completedLevel / totalLevel) * 100) + "%";
               return {
@@ -347,3 +751,33 @@ const TableForMentorSessionHistory = ({ data }) => (
     </tbody>
   </table>
 );
+
+const DrawerWrapper = styled(Drawer)`
+  top: 40px;
+
+  & .ant-drawer-body * {
+    font-size: 1rem;
+  }
+  & .ant-drawer-wrapper-body {
+    height: ${({ setheight }) => setheight || "auto"}px;
+  }
+  & .ant-card-actions {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    & > li {
+      margin: 0;
+      height: 3.5rem;
+      & > span {
+        width: 100%;
+        height: 100%;
+        & > div {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+`;

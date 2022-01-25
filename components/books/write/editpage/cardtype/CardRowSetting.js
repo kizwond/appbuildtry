@@ -473,8 +473,8 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               Color
             </Button>
             {displayColorPicker1 ? (
-              <div style={popover1}>
-                <div style={cover1} onClick={handleClose1} />
+              <div style={popover}>
+                <div style={cover} onClick={handleClose1} />
                 <CompactPicker color={border_top_color} onChange={borderTopColorHandler} />
                 {/* <span>none</span> */}
               </div>

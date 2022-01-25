@@ -1307,3 +1307,20 @@ audio {
 .face2 th{
   border: 1px solid grey;;
 }
+
+.fr-view table{
+  display:table;
+  border: 1px solid grey;
+  border-collapse:collapse
+}
+.fr-view td{
+  display:table-cell;
+  border:1px solid grey;
+}
+.fr-view thead{
+  border: 1px solid grey;
+}
+
+.fr-view th{
+  border: 1px solid grey;;
+}

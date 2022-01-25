@@ -1274,19 +1274,36 @@ audio {
   background-color: #ffffff00 !important;
 }
 
-table{
+.face1 table{
   display:table;
   border: 1px solid grey;
   border-collapse:collapse
 }
-td{
+.face1 td{
   display:table-cell;
   border:1px solid grey;
 }
-thead{
+.face1 thead{
   border: 1px solid grey;
 }
 
-th{
+.face1 th{
+  border: 1px solid grey;;
+}
+
+.face2 table{
+  display:table;
+  border: 1px solid grey;
+  border-collapse:collapse
+}
+.face2 td{
+  display:table-cell;
+  border:1px solid grey;
+}
+.face2 thead{
+  border: 1px solid grey;
+}
+
+.face2 th{
   border: 1px solid grey;;
 }

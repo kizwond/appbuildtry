@@ -1904,7 +1904,7 @@ class Container extends Component {
                     <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          // minHeight: "calc(75vh - 150px)",
+                          minHeight: "calc(75vh - 150px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -1984,7 +1984,7 @@ class Container extends Component {
                     <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          // minHeight: "calc(75vh - 150px)",
+                          minHeight: "calc(75vh - 150px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -2063,7 +2063,7 @@ class Container extends Component {
                     <div onClick={this.flip} style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          // minHeight: "calc(75vh - 150px)",
+                          minHeight: "calc(75vh - 150px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -2260,7 +2260,7 @@ class Container extends Component {
                     <div onClick={this.flip} style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          // minHeight: "calc(75vh - 150px)",
+                          minHeight: "calc(75vh - 150px)",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -2450,7 +2450,7 @@ class Container extends Component {
           </defs>
         </svg>
         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-          <div style={{ position: "fixed", backgroundColor: "white", zIndex: "100000", top:"50px", width: "95%", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <div style={{ position: "fixed", backgroundColor: "white", top:"50px", width: "95%", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
             <div style={{ flexGrow: 1, color: "#8b8b8b" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div
@@ -2559,9 +2559,9 @@ class Container extends Component {
             <Button size="small" style={{ fontSize: "0.8rem", width: "53px", height: "69px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishStudy} type="primary">
               학습종료
             </Button>
-            <div style={{ position: "fixed", top: "124px", width: "95%", border: "1px solid lightgrey", borderRadius: "3px" }}>{statusBar}</div>
+            
           </div>
-
+          <div style={{ position: "fixed", top: "124px", width: "95%", border: "1px solid lightgrey", borderRadius: "3px" }}>{statusBar}</div>
           <div style={style_study_layout_bottom}>
             <div style={{ width: "100%" }}>
               {/* <div>{statusBar}</div> */}

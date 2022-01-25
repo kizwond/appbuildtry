@@ -102,15 +102,15 @@ const StudyResult = () => {
         sessionStorage.getItem("cardlist_to_send_ForSessionHistory")
       );
 
-      const rankingCardListByNumberOfClickCard = insertedCardList.sort(
+      const rankingCardListByNumberOfClickCard = [...insertedCardList].sort(
         (a, b) =>
-          b.studyStatus.clickTimesInSession - a.studyStatus.clickTimesInSession
+          b.studyStatus.studyTimesInSession - a.studyStatus.studyTimesInSession
       );
       const topFiveClicked = rankingCardListByNumberOfClickCard.filter(
         (_, i) => i < 5
       );
 
-      const rankingCardListByElapsedTimeOnCard = insertedCardList.sort(
+      const rankingCardListByElapsedTimeOnCard = [...insertedCardList].sort(
         (a, b) =>
           b.studyStatus.studyHourInSession - a.studyStatus.studyHourInSession
       );

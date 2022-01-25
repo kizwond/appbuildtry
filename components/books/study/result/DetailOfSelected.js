@@ -67,7 +67,11 @@ const DetailOfSelected = ({
         onChange={(v) => setSelectedValue(v)}
       >
         <Select.Option value="Session">세션전체</Select.Option>
-        {JSON.parse(sessionStorage.getItem("resultByBook")).map((book) => (
+        {JSON.parse(
+          sessionStorage.getItem(
+            from === "home" ? "resultByBookForSessionHistory" : "resultByBook"
+          )
+        ).map((book) => (
           <Select.Option value={book.mybook_id} key={book.mybook_id}>
             {book.bookTitle}
           </Select.Option>

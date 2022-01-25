@@ -1,3 +1,4 @@
+import produce from "immer";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import _ from "lodash";
 import moment from "moment";
@@ -5,12 +6,14 @@ import styled from "styled-components";
 import {
   QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID,
   QUERY_MY_CARD_CONTENTS,
+  QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
 } from "../../../graphql/query/allQuery";
 
 import prettyMilliseconds from "pretty-ms";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Drawer } from "antd";
 import TableRowRanked from "./tableCompoent/TableRowRanked";
+import { useRouter } from "next/router";
 
 const StudyHistoryPerBook = ({ mybook_id }) => {
   const [drawerVisibleForStudyHourCards, setDrawerVisibleForStudyHourCards] =
@@ -71,7 +74,7 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
               headerStyle={{ padding: "12px 12px 8px 12px" }}
               bodyStyle={{ backgroundColor: "#e9e9e9" }}
             >
-              <div className="px-2 mb-3 bg-white">
+              <div className="p-2 mb-3 bg-white">
                 {drawerVisibleForStudyHourCards && (
                   <TableForAllCards
                     cards={data.cardset_getByMybookIDs.cardsets[0].cards}
@@ -81,7 +84,7 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
               </div>
             </DrawerWrapper>
           </div>
-          <div className="p-2 mb-3 bg-white">
+          <div className="px-2 mb-3 bg-white">
             학습 횟수 많은 카드
             <a
               onClick={() => {
@@ -193,12 +196,12 @@ const TableForRankedCards = ({ data, contentType }) => {
     <table className="w-full table-fixed">
       <thead>
         <tr className="border-collapse border-y border-y-gray-200">
-          <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
-          <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
-          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+          <th className="text-[1rem] bg-slate-100 w-[10%]">순위</th>
+          <th className="text-[1rem] bg-slate-100">앞면</th>
+          <th className="text-[1rem] bg-slate-100 w-[20%]">
             {contentType === "hours" ? "학습시간" : "학습횟수"}
           </th>
-          <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
+          <th className="text-[1rem] bg-slate-100 w-[13%]"></th>
         </tr>
       </thead>
       <tbody>
@@ -208,10 +211,10 @@ const TableForRankedCards = ({ data, contentType }) => {
             return (
               <Fragment key={card._id}>
                 <tr className="border-b border-collapse border-b-gray-200">
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                     {index + 1}
                   </td>
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
+                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
                     {fiveContents &&
                       new String(
                         fiveContents.find(
@@ -221,11 +224,11 @@ const TableForRankedCards = ({ data, contentType }) => {
                         ).face1[0]
                       ).replace(/(<([^>]+)>)/gi, "")}
                   </td>
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                     {getThirdCol(card)}
                   </td>
                   <td
-                    className="text-[1rem] py-[4px] font-normal text-center"
+                    className="text-[1rem] py-[4px] text-center"
                     onClick={() => {
                       if (cardIdForMore !== card._id + index) {
                         setCardIdForMore(card._id + index);
@@ -338,7 +341,6 @@ const TableForAllCards = ({ cards, contentType }) => {
     (card, i) => lengthForShow - 1 < i && i < (counter + 1) * lengthForShow
   );
 
-  console.log({ moreList, contents, counter });
   const [getMoreContentsData, { data: moreContentsData }] = useLazyQuery(
     QUERY_MY_CARD_CONTENTS,
     {
@@ -444,14 +446,12 @@ const TableForAllCards = ({ cards, contentType }) => {
       <table className="w-full table-fixed">
         <thead>
           <tr className="border-collapse border-y border-y-gray-200">
-            <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">
-              순위
-            </th>
-            <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
-            <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+            <th className="text-[1rem] bg-slate-100 w-[10%]">순위</th>
+            <th className="text-[1rem] bg-slate-100">앞면</th>
+            <th className="text-[1rem] bg-slate-100 w-[20%]">
               {contentType === "hours" ? "학습시간" : "학습횟수"}
             </th>
-            <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
+            <th className="text-[1rem] bg-slate-100 w-[13%]"></th>
           </tr>
         </thead>
         <tbody>
@@ -616,7 +616,6 @@ const ChartForGainedLevelPerDay = ({ data }) => {
             .map(({ level: { completed, nonCompleted }, date }, index, arr) => {
               const totalLevel =
                 Math.floor(completed * 1000 + nonCompleted * 1000) / 1000;
-              console.log({ totalLevel });
               const barHeightPercentage =
                 Math.round((totalLevel / maxLevel) * 100) + "%";
               const incompletedLevel = Math.round(nonCompleted * 1000) / 1000;
@@ -705,66 +704,155 @@ const StyledBar = styled.div`
   }
 `;
 
-const TableForMentorSessionHistory = ({ data }) => (
-  <table className="w-full table-fixed">
-    <thead>
-      <tr className="border-collapse border-y border-y-gray-200">
-        <th className="text-[1rem] font-normal bg-slate-100 w-[15%]">시작일</th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[30%]">
-          학습모드
-        </th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[31%]">시간</th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[24%]"></th>
-      </tr>
-    </thead>
-    <tbody>
-      {data.session_getSessionByMybookid?.sessions?.map((session) => {
-        const startedDate = moment(session.session_info.timeStarted).format(
-          "M/D"
-        );
+const TableForMentorSessionHistory = ({ data }) => {
+  const router = useRouter();
 
-        const studyMode =
-          session.sessionConfig.studyMode === "flip"
-            ? "뒤집기"
-            : session.sessionConfig.studyMode === "read"
-            ? "읽기"
-            : session.sessionConfig.studyMode === "exam"
-            ? "시험"
-            : new Error(
-                `${session.sessionConfig.studyMode}는 알 수 없는 학습 모드입니다`
-              );
+  const [getSessionDataForResult, { variables }] = useLazyQuery(
+    QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
+    {
+      onCompleted: (received_data) => {
+        if (received_data.session_getSession.status === "200") {
+          console.log("세션 결과 데이터 받음", received_data);
 
-        const timeOnSessionStage = `${moment(
-          session.session_info.timeStarted
-        ).format("HH:mm")} ~ ${moment(session.session_info.timeFinished).format(
-          "HH:mm"
-        )}`;
+          sessionStorage.setItem(
+            "startTimeForSessionHistory",
+            received_data.session_getSession.sessions[0].session_info
+              .timeStarted
+          );
+          sessionStorage.setItem(
+            "endTimeForSessionHistory",
+            received_data.session_getSession.sessions[0].session_info
+              .timeFinished
+          );
+          sessionStorage.setItem(
+            "cardListStudyingForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].cardlistUpdated
+            )
+          );
+          sessionStorage.setItem(
+            "createdCardsForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].createdCards
+            )
+          );
+          sessionStorage.setItem(
+            "cardlist_to_send_ForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].clickHistory
+            )
+          );
+          sessionStorage.setItem(
+            "resultOfSessionForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].resultOfSession
+            )
+          );
+          sessionStorage.setItem(
+            "resultByBookForSessionHistory",
+            JSON.stringify(
+              produce(
+                received_data.session_getSession.sessions[0].resultByBook,
+                (draft) => {
+                  draft.forEach((book) => {
+                    book.bookTitle =
+                      received_data.session_getSession.sessions[0].sessionScope.find(
+                        (scope) => scope.mybook_id === book.mybook_id
+                      ).title;
+                  });
+                }
+              )
+            )
+          );
 
-        const isWithBook = session.sessionScope.length > 1 ? "(혼합)" : null;
-        return (
-          <tr
-            key={session._id}
-            className="border-b border-collapse border-b-gray-200"
-          >
-            <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200  text-center">
-              {startedDate}
-            </td>
-            <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200 text-center">
-              {studyMode}
-              {isWithBook}
-            </td>
-            <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200 text-center">
-              {timeOnSessionStage}
-            </td>
-            <td className="text-[1rem] font-normal text-center">
-              <a>자세히보기</a>
-            </td>
-          </tr>
-        );
-      })}
-    </tbody>
-  </table>
-);
+          router.push(`/m/mentoring/resultOfMentee/${variables.session_id}`);
+        } else if (received_data.session_getSession.status === "401") {
+          router.push("/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
+
+  const getSessionResult = useCallback(async ({ session_id }) => {
+    try {
+      getSessionDataForResult({
+        variables: {
+          session_id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <table className="w-full table-fixed">
+      <thead>
+        <tr className="border-collapse border-y border-y-gray-200">
+          <th className="text-[1rem] bg-slate-100 w-[15%]">시작일</th>
+          <th className="text-[1rem] bg-slate-100 w-[30%]">학습모드</th>
+          <th className="text-[1rem] bg-slate-100 w-[31%]">시간</th>
+          <th className="text-[1rem] bg-slate-100 w-[24%]"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.session_getSessionByMybookid?.sessions?.map((session) => {
+          const startedDate = moment(session.session_info.timeStarted).format(
+            "M/D"
+          );
+
+          const studyMode =
+            session.sessionConfig.studyMode === "flip"
+              ? "뒤집기"
+              : session.sessionConfig.studyMode === "read"
+              ? "읽기"
+              : session.sessionConfig.studyMode === "exam"
+              ? "시험"
+              : new Error(
+                  `${session.sessionConfig.studyMode}는 알 수 없는 학습 모드입니다`
+                );
+
+          const timeOnSessionStage = `${moment(
+            session.session_info.timeStarted
+          ).format("HH:mm")} ~ ${moment(
+            session.session_info.timeFinished
+          ).format("HH:mm")}`;
+
+          const isWithBook = session.sessionScope.length > 1 ? "(혼합)" : null;
+          return (
+            <tr
+              key={session._id}
+              className="border-b border-collapse border-b-gray-200"
+            >
+              <td className="text-[1rem] border-r border-collapse border-r-gray-200  text-center">
+                {startedDate}
+              </td>
+              <td className="text-[1rem] border-r border-collapse border-r-gray-200 text-center">
+                {studyMode}
+                {isWithBook}
+              </td>
+              <td className="text-[1rem] border-r border-collapse border-r-gray-200 text-center">
+                {timeOnSessionStage}
+              </td>
+              <td
+                className="text-[1rem] text-center"
+                onClick={() => {
+                  console.log("자세히보기");
+                  getSessionResult({ session_id: session._id });
+                }}
+              >
+                <a>자세히보기</a>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+};
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;

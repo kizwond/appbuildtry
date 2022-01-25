@@ -214,17 +214,11 @@ const M_RecentStudyList = () => {
         <table className="w-full table-fixed">
           <thead>
             <tr className="border-collapse border-y border-y-gray-200">
-              <th className="text-[1rem] font-normal bg-slate-100 w-[16%]">
-                시작일
-              </th>
-              <th className="text-[1rem] font-normal bg-slate-100 w-[14%]">
-                Mode
-              </th>
-              <th className="text-[1rem] font-normal bg-slate-100 w-[40%]">
-                책 이름
-              </th>
-              <th className="text-[1rem] font-normal bg-slate-100 w-[15%]"></th>
-              <th className="text-[1rem] font-normal bg-slate-100 w-[15%]"></th>
+              <th className="text-[1rem] bg-slate-100 w-[16%]">시작일</th>
+              <th className="text-[1rem] bg-slate-100 w-[14%]">Mode</th>
+              <th className="text-[1rem] bg-slate-100 w-[40%]">책 이름</th>
+              <th className="text-[1rem] bg-slate-100 w-[15%]"></th>
+              <th className="text-[1rem] bg-slate-100 w-[15%]"></th>
             </tr>
           </thead>
           <tbody>
@@ -238,13 +232,13 @@ const M_RecentStudyList = () => {
                     key={session._id}
                     className="border-b border-collapse border-b-gray-200"
                   >
-                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200  text-center">
+                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200  text-center">
                       {session.session_info.timeStarted &&
                         moment(session.session_info.timeStarted).format(
                           "YY.MM.DD"
                         )}
                     </td>
-                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center">
                       {session.sessionConfig.studyMode === "read"
                         ? "읽기"
                         : session.sessionConfig.studyMode === "flip"
@@ -253,7 +247,7 @@ const M_RecentStudyList = () => {
                         ? "시험"
                         : null}
                     </td>
-                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200">
+                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200">
                       <div className="flex w-full">
                         <div className="truncate">
                           {session.sessionScope[0].title}
@@ -266,7 +260,7 @@ const M_RecentStudyList = () => {
                       </div>
                     </td>
                     <td
-                      className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 font-normal text-center"
+                      className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center"
                       onClick={() => {
                         getSessionResult({ session_id: session._id });
                       }}
@@ -274,7 +268,7 @@ const M_RecentStudyList = () => {
                       <a>결과</a>
                     </td>
                     <td
-                      className="text-[1rem] p-[4px] font-normal text-center"
+                      className="text-[1rem] p-[4px] text-center"
                       onClick={() => {
                         getSessionConfigData({ session_id: session._id });
                       }}
@@ -302,18 +296,12 @@ const M_RecentStudyList = () => {
             <table className="w-full table-fixed">
               <thead>
                 <tr className="border-collapse border-y border-y-gray-200">
-                  <th className="text-[1rem] font-normal bg-slate-100 w-[18%]">
-                    시작일
-                  </th>
-                  <th className="text-[1rem] font-normal bg-slate-100 w-[14%]">
-                    Mode
-                  </th>
-                  <th className="text-[1rem] font-normal bg-slate-100 w-[28%]">
-                    책 이름
-                  </th>
-                  <th className="text-[1rem] font-normal bg-slate-100 w-[10%]"></th>
-                  <th className="text-[1rem] font-normal bg-slate-100 w-[15%]"></th>
-                  <th className="text-[1rem] font-normal bg-slate-100 w-[15%]"></th>
+                  <th className="text-[1rem] bg-slate-100 w-[18%]">시작일</th>
+                  <th className="text-[1rem] bg-slate-100 w-[14%]">Mode</th>
+                  <th className="text-[1rem] bg-slate-100 w-[28%]">책 이름</th>
+                  <th className="text-[1rem] bg-slate-100 w-[10%]"></th>
+                  <th className="text-[1rem] bg-slate-100 w-[15%]"></th>
+                  <th className="text-[1rem] bg-slate-100 w-[15%]"></th>
                 </tr>
               </thead>
               <tbody>
@@ -322,13 +310,13 @@ const M_RecentStudyList = () => {
                     key={session._id}
                     className="border-b border-collapse border-b-gray-200"
                   >
-                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200  text-center">
+                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200  text-center">
                       {session.session_info.timeStarted &&
                         moment(session.session_info.timeStarted).format(
                           "YY.MM.DD"
                         )}
                     </td>
-                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center">
                       {session.sessionConfig.studyMode === "read"
                         ? "읽기"
                         : session.sessionConfig.studyMode === "flip"
@@ -337,7 +325,7 @@ const M_RecentStudyList = () => {
                         ? "시험"
                         : null}
                     </td>
-                    <td className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200">
+                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200">
                       <div className="flex w-full">
                         <div className="truncate">
                           {session.sessionScope[0].title}
@@ -350,7 +338,7 @@ const M_RecentStudyList = () => {
                       </div>
                     </td>
                     <td
-                      className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200 text-center"
+                      className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center"
                       onClick={() => {
                         getSessionResult({ session_id: session._id });
                       }}
@@ -358,14 +346,14 @@ const M_RecentStudyList = () => {
                       <a>결과</a>
                     </td>
                     <td
-                      className="text-[1rem] p-[4px] font-normal border-r border-collapse border-r-gray-200 text-center"
+                      className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center"
                       onClick={() => {
                         getSessionConfigData({ session_id: session._id });
                       }}
                     >
                       <a>재시작</a>
                     </td>
-                    <td className="text-[1rem] p-[4px] font-normal text-center">
+                    <td className="text-[1rem] p-[4px] text-center">
                       <a>삭제</a>
                     </td>
                   </tr>

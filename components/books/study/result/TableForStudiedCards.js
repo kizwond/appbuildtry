@@ -83,10 +83,10 @@ const TableForStudiedCards = ({
     <table className="w-full table-fixed" cellPadding={0} cellSpacing={0}>
       <thead>
         <tr className="border-collapse border-y border-y-gray-200">
-          <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
-          <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
+          <th className="text-[1rem] bg-slate-100 w-[10%]">순위</th>
+          <th className="text-[1rem] bg-slate-100">앞면</th>
           {contentType !== "newCards" && (
-            <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+            <th className="text-[1rem] bg-slate-100 w-[20%]">
               {contentType === "changedLevel"
                 ? "기존레벨"
                 : contentType === "clickedTimes"
@@ -95,16 +95,12 @@ const TableForStudiedCards = ({
             </th>
           )}
           {contentType === "clickedCard" && (
-            <th className="text-[1rem] font-normal bg-slate-100 w-[13%]">
-              선택
-            </th>
+            <th className="text-[1rem] bg-slate-100 w-[13%]">선택</th>
           )}
           {contentType === "changedLevel" && (
-            <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
-              변경레벨
-            </th>
+            <th className="text-[1rem] bg-slate-100 w-[20%]">변경레벨</th>
           )}
-          <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
+          <th className="text-[1rem] bg-slate-100 w-[13%]"></th>
         </tr>
       </thead>
       <tbody>
@@ -112,10 +108,10 @@ const TableForStudiedCards = ({
           cards.map((card, index) => (
             <Fragment key={card._id + index}>
               <tr className="border-b border-collapse border-b-gray-200">
-                <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                   {index + 1}
                 </td>
-                <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
+                <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
                   {new String(
                     contents.find((content) => {
                       return (
@@ -126,12 +122,12 @@ const TableForStudiedCards = ({
                   ).replace(/(<([^>]+)>)/gi, "")}
                 </td>
                 {contentType !== "newCards" && (
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                     {getThirdCol(card)}
                   </td>
                 )}
                 {contentType === "clickedCard" && (
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                     {getCardStatusForResult(
                       card.studyStatus.recentSelection,
                       card.studyStatus.recentStudyRatio
@@ -139,12 +135,12 @@ const TableForStudiedCards = ({
                   </td>
                 )}
                 {contentType === "changedLevel" && (
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                     {card.studyStatus.levelCurrent}
                   </td>
                 )}
                 <td
-                  className="text-[1rem] py-[4px] font-normal text-center"
+                  className="text-[1rem] py-[4px] text-center"
                   onClick={() => {
                     if (cardIdForMore !== card._id + index) {
                       setCardIdForMore(card._id + index);
@@ -237,10 +233,7 @@ const TableForStudiedCards = ({
           ))}
         {cards.length === 0 && contentType === "newCards" && (
           <tr className="border-b border-collapse border-b-gray-200">
-            <td
-              className="text-[1rem] py-[4px] font-normal text-center"
-              colSpan={3}
-            >
+            <td className="text-[1rem] py-[4px] text-center" colSpan={3}>
               학습 중 새로 만든 카드가 없습니다.
             </td>
           </tr>

@@ -118,10 +118,6 @@ const TableForStudiedCards = ({
                 <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
                   {new String(
                     contents.find((content) => {
-                      console.log({
-                        my: card.content.mycontent_id,
-                        buy: card.content.buycontent_id,
-                      });
                       return (
                         content._id === card.content.mycontent_id ||
                         content._id === card.content.buycontent_id

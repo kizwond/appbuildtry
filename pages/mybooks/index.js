@@ -98,7 +98,7 @@ const StudyMainPage = () => {
               <div>
                 {selectedBooks.length > 0 ? (
                   <Space>
-                    <Button onClick={directStart}>바로보기</Button>
+                    <Button onClick={directStart}>책 모드</Button>
                     <Link
                       as="/books/study/sessionConfig"
                       href={{
@@ -112,7 +112,7 @@ const StudyMainPage = () => {
                       }}
                     >
                       <a>
-                        <Button>세션 설정 후 시작</Button>
+                        <Button>카드 모드</Button>
                       </a>
                     </Link>
                   </Space>

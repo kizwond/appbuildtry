@@ -15,6 +15,8 @@ import TableRowRanked from "./tableCompoent/TableRowRanked";
 const StudyHistoryPerBook = ({ mybook_id }) => {
   const [drawerVisibleForStudyHourCards, setDrawerVisibleForStudyHourCards] =
     useState(false);
+  const [drawerVisibleForStudyTimesCards, setDrawerVisibleForStudyTimesCards] =
+    useState(false);
 
   const { data, variables } = useQuery(QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID, {
     onCompleted: (received_data) => {
@@ -59,7 +61,7 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
             </a>
             <TableForRankedCards data={data} contentType="hours" />
             <DrawerWrapper
-              title="상세 보기"
+              title="학습 시간 많은 카드"
               placement="right"
               width={"100%"}
               visible={drawerVisibleForStudyHourCards}
@@ -69,17 +71,46 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
               headerStyle={{ padding: "12px 12px 8px 12px" }}
               bodyStyle={{ backgroundColor: "#e9e9e9" }}
             >
-              {drawerVisibleForStudyHourCards && (
-                <TableForAllCards
-                  cards={data.cardset_getByMybookIDs.cardsets[0].cards}
-                  contentType="hours"
-                />
-              )}
+              <div className="px-2 mb-3 bg-white">
+                {drawerVisibleForStudyHourCards && (
+                  <TableForAllCards
+                    cards={data.cardset_getByMybookIDs.cardsets[0].cards}
+                    contentType="hours"
+                  />
+                )}
+              </div>
             </DrawerWrapper>
           </div>
-          <div className="px-2 mb-3 bg-white">
+          <div className="p-2 mb-3 bg-white">
             학습 횟수 많은 카드
+            <a
+              onClick={() => {
+                setDrawerVisibleForStudyTimesCards(true);
+              }}
+            >
+              자세히 보기
+            </a>
             <TableForRankedCards data={data} contentType="times" />
+            <DrawerWrapper
+              title="학습 횟수 많은 카드"
+              placement="right"
+              width={"100%"}
+              visible={drawerVisibleForStudyTimesCards}
+              onClose={() => {
+                setDrawerVisibleForStudyTimesCards(false);
+              }}
+              headerStyle={{ padding: "12px 12px 8px 12px" }}
+              bodyStyle={{ backgroundColor: "#e9e9e9" }}
+            >
+              <div className="p-2 mb-3 bg-white">
+                {drawerVisibleForStudyTimesCards && (
+                  <TableForAllCards
+                    cards={data.cardset_getByMybookIDs.cardsets[0].cards}
+                    contentType="times"
+                  />
+                )}
+              </div>
+            </DrawerWrapper>
           </div>
         </>
       )}
@@ -304,10 +335,10 @@ const TableForAllCards = ({ cards, contentType }) => {
   );
 
   const moreList = allCards.filter(
-    (card, i) => lengthForShow - 1 < i && i < counter * lengthForShow
+    (card, i) => lengthForShow - 1 < i && i < (counter + 1) * lengthForShow
   );
 
-  console.log({ moreList, contents });
+  console.log({ moreList, contents, counter });
   const [getMoreContentsData, { data: moreContentsData }] = useLazyQuery(
     QUERY_MY_CARD_CONTENTS,
     {
@@ -326,25 +357,27 @@ const TableForAllCards = ({ cards, contentType }) => {
   useEffect(() => {
     if (counter > 0) {
       const moreCards = allCards.filter((card, i) => lengthForShow - 1 < i);
-      const listToRequest = moreCards.filter(
-        (card, i) =>
-          lengthForShow - 1 < i &&
-          (counter - 1) * lengthForShow - 1 < i &&
-          i < counter * lengthForShow
-      );
+      if (moreCards.length > (counter - 1) * lengthForShow) {
+        const listToRequest = moreCards.filter(
+          (card, i) =>
+            (counter - 1) * lengthForShow - 1 < i && i < counter * lengthForShow
+        );
 
-      console.log(listToRequest);
-      const moreMyContentsIds = listToRequest
-        .filter((card) => card.content.location === "my")
-        .map((card) => card.content.mycontent_id);
-      const moreBuyContetnsIds = listToRequest
-        .filter((card) => card.content.location === "buy")
-        .map((card) => card.content.buycontent_id);
+        console.log({ listToRequest });
+        const moreMyContentsIds = listToRequest
+          .filter((card) => card.content.location === "my")
+          .map((card) => card.content.mycontent_id);
+        const moreBuyContetnsIds = listToRequest
+          .filter((card) => card.content.location === "buy")
+          .map((card) => card.content.buycontent_id);
 
-      getMoreContentsData({
-        mycontent_ids: moreMyContentsIds,
-        buycontent_ids: moreBuyContetnsIds,
-      });
+        getMoreContentsData({
+          variables: {
+            mycontent_ids: moreMyContentsIds,
+            buycontent_ids: moreBuyContetnsIds,
+          },
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [counter]);
@@ -452,7 +485,7 @@ const TableForAllCards = ({ cards, contentType }) => {
                   key={card._id}
                   contentsData={contents}
                   card={card}
-                  index={index}
+                  index={index + lengthForShow}
                   getThirdCol={getThirdCol}
                 />
               );
@@ -462,10 +495,14 @@ const TableForAllCards = ({ cards, contentType }) => {
       <div
         className="mt-2 w-full mx-auto text-[12px] text-blue-500 text-center"
         onClick={() => {
-          setCounter((prev) => prev + 1);
+          if (((counter + 1) * lengthForShow) / cards.length < 1) {
+            setCounter(counter + 1);
+          }
         }}
       >
-        더보기
+        {((counter + 1) * lengthForShow) / cards.length < 1
+          ? "더보기"
+          : "더 없습니다"}
       </div>
     </div>
   );

@@ -216,7 +216,7 @@ class Container extends Component {
 
   saveAnswer = (current_card_info, answer, content) => {
     console.log(current_card_info, answer, content.face1[0]);
-    const submitted = { cardId: current_card_info._id, answer: answer, content:content.face1[0] };
+    const submitted = { cardId: current_card_info._id, card_info: current_card_info, answer: answer, content: content.face1[0] };
     const examLog = JSON.parse(sessionStorage.getItem("examLog"));
     if (examLog === null) {
       sessionStorage.setItem("examLog", JSON.stringify([submitted]));
@@ -265,16 +265,16 @@ class Container extends Component {
   };
 
   finishStudy = () => {
-    const examLog = JSON.parse(sessionStorage.getItem("examLog"))
-    console.log(examLog.filter(item=> item.answer !== ""))
-    const answerExist = examLog.filter(item=>item.answer !== "")
-    const lastIdOfExist = answerExist[answerExist.length-1].cardId
-    console.log(lastIdOfExist)
-    const indexOfLastExist = examLog.findIndex(item => item.cardId === lastIdOfExist)
-    console.log(indexOfLastExist)
-    examLog.splice(indexOfLastExist+1, examLog.length -1)
-    console.log(examLog)
-    sessionStorage.setItem("examLog", JSON.stringify(examLog))
+    const examLog = JSON.parse(sessionStorage.getItem("examLog"));
+    console.log(examLog.filter((item) => item.answer !== ""));
+    const answerExist = examLog.filter((item) => item.answer !== "");
+    const lastIdOfExist = answerExist[answerExist.length - 1].cardId;
+    console.log(lastIdOfExist);
+    const indexOfLastExist = examLog.findIndex((item) => item.cardId === lastIdOfExist);
+    console.log(indexOfLastExist);
+    examLog.splice(indexOfLastExist + 1, examLog.length - 1);
+    console.log(examLog);
+    sessionStorage.setItem("examLog", JSON.stringify(examLog));
     window.location.href = "/m/study/examresult";
   };
 
@@ -742,7 +742,7 @@ class Container extends Component {
                       content_value.selection.length > 0 &&
                       content_value.selection.map((item, index) => (
                         <>
-                          <Radio.Group defaultValue={answerField} buttonStyle="solid" size="small" onChange={(e) => this.saveAnswer(content, e.target.value,content_value)}>
+                          <Radio.Group defaultValue={answerField} buttonStyle="solid" size="small" onChange={(e) => this.saveAnswer(content, e.target.value, content_value)}>
                             {index === 0 && (
                               <>
                                 <Radio.Button value="1">➀</Radio.Button>
@@ -795,7 +795,7 @@ class Container extends Component {
                               <Input type="text" />
                             </>
                           )} */}
-                          <Input type="text" onChange={(e) => this.saveAnswer(content, e.target.value,content_value)} defaultValue={answerField} />
+                          <Input type="text" onChange={(e) => this.saveAnswer(content, e.target.value, content_value)} defaultValue={answerField} />
                         </>
                       ))}
                   </>

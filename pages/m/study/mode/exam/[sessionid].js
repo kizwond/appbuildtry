@@ -173,7 +173,7 @@ const ExamMode = () => {
         console.log("세션스코프 : ", data.session_getSession.sessions[0].sessionScope);
         const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
         const examLogPrepare = cardListStudying.map(item=>{
-          return ({cardId : item._id, answer:"", content:""})
+          return ({cardId : item._id, card_info:item, answer:"", content:""})
         })
         sessionStorage.setItem("examLog", JSON.stringify(examLogPrepare))
         setCardListStudying(cardListStudying);

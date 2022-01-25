@@ -197,7 +197,7 @@ class Container extends Component {
     console.log(listLength);
     if (Number(listLength) - 1 === Number(card_seq)) {
       alert("시험이 끝났습니다. 결과화면으로 이동합니다.");
-      this.finishStudy()
+      this.finishStudy();
     } else {
       if (card_seq === origin_seq) {
         this.setState({
@@ -269,17 +269,18 @@ class Container extends Component {
 
   render() {
     if (this.props.levelConfigs) {
-        const examLog = JSON.parse(sessionStorage.getItem("examLog"));
-        if(examLog !== null){
-            var totalLength = examLog.length
-            var filtered = examLog.filter(item=> item.answer)
-        }
+      const examLog = JSON.parse(sessionStorage.getItem("examLog"));
+      if (examLog !== null) {
+        var totalLength = examLog.length;
+        var filtered = examLog.filter((item) => item.answer);
         if (filtered === -1) {
-            var progress = 0
-          } else {
-            progress = (filtered.length / totalLength) * 100;
-          }
-        
+          var progress = 0;
+        } else {
+          progress = (filtered.length / totalLength) * 100;
+        }
+      } else {
+        var progress = 0;
+      }
     }
 
     if (this.props.cardTypeSets.length > 0) {
@@ -721,8 +722,7 @@ class Container extends Component {
                 answerField = examLog[answerRecordedIndex].answer;
               }
             }
-            
-            
+
             return (
               <>
                 {content.card_info.cardtype === "flip" && (

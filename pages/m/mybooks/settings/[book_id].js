@@ -178,15 +178,21 @@ const BookSetting = () => {
                     listHeight={400}
                     style={{ width: "240px", marginBottom: "8px" }}
                   >
-                    <Select.Option
-                      value="study_data_detail"
-                      label="학습 상세 정보 보기"
-                    >
+                    <Select.Option value="generalSettings" label="일반">
+                      <Space>
+                        <Avatar>
+                          <ScissorOutlined />
+                        </Avatar>
+                        일반
+                      </Space>
+                    </Select.Option>
+
+                    <Select.Option value="study_data_detail" label="학습 통계">
                       <Space>
                         <Avatar>
                           <RiseOutlined />
                         </Avatar>
-                        학습 상세 정보 보기
+                        학습 통계
                       </Space>
                     </Select.Option>
                     <Select.Option value="set_flags" label="플래그 설정">
@@ -199,13 +205,13 @@ const BookSetting = () => {
                     </Select.Option>
                     <Select.Option
                       value="cards_progress"
-                      label="카드 학습 상태 관리"
+                      label="학습 상태 관리"
                     >
                       <Space>
                         <Avatar>
                           <FundViewOutlined />
                         </Avatar>
-                        카드 학습 상태 관리
+                        학습 상태 관리
                       </Space>
                     </Select.Option>
                     <Select.Option
@@ -217,15 +223,6 @@ const BookSetting = () => {
                           <FileSyncOutlined />
                         </Avatar>
                         레벨 및 복습 주기 설정
-                      </Space>
-                    </Select.Option>
-
-                    <Select.Option value="generalSettings" label="일반 설정">
-                      <Space>
-                        <Avatar>
-                          <ScissorOutlined />
-                        </Avatar>
-                        일반 설정
                       </Space>
                     </Select.Option>
                   </Select>

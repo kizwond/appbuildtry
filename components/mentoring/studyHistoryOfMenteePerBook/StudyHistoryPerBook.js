@@ -8,8 +8,9 @@ import {
 } from "../../../graphql/query/allQuery";
 
 import prettyMilliseconds from "pretty-ms";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Drawer } from "antd";
+import TableRowRanked from "./tableCompoent/TableRowRanked";
 
 const StudyHistoryPerBook = ({ mybook_id }) => {
   const [drawerVisibleForStudyHourCards, setDrawerVisibleForStudyHourCards] =
@@ -35,19 +36,19 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
     <div className="">
       {data && (
         <>
-          <div className="mb-3 px-2 bg-white">
+          <div className="px-2 mb-3 bg-white">
             최근 일주일 학습 실적
             <TableForMentorSessionHistory data={data} />
           </div>{" "}
-          <div className="mb-3 px-2 bg-white">
+          <div className="px-2 mb-3 bg-white">
             총 학습 카드 개수
             <ChartForStudiedCardsPerDay data={data} />
           </div>
-          <div className="mb-3 px-2 bg-white">
+          <div className="px-2 mb-3 bg-white">
             총 획득 레벨
             <ChartForGainedLevelPerDay data={data} />
           </div>
-          <div className="mb-3 px-2 bg-white">
+          <div className="px-2 mb-3 bg-white">
             학습 시간 많은 카드{" "}
             <a
               onClick={() => {
@@ -76,7 +77,7 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
               )}
             </DrawerWrapper>
           </div>
-          <div className="mb-3 px-2 bg-white">
+          <div className="px-2 mb-3 bg-white">
             학습 횟수 많은 카드
             <TableForRankedCards data={data} contentType="times" />
           </div>
@@ -292,8 +293,9 @@ const TableForRankedCards = ({ data, contentType }) => {
 
 const TableForAllCards = ({ cards, contentType }) => {
   const [contents, setContents] = useState([]);
-  const [cardIdForMore, setCardIdForMore] = useState();
-  const [cardContent, setCardContent] = useState(null);
+  const [counter, setCounter] = useState(0);
+
+  const lengthForShow = 2;
 
   const allCards = [...cards].sort((a, b) =>
     contentType === "times"
@@ -301,196 +303,171 @@ const TableForAllCards = ({ cards, contentType }) => {
       : b.studyStatus.totalStudyHour - a.studyStatus.totalStudyHour
   );
 
-  const displayedCards = allCards.filter(
-    (card, i) => 0 < i < contents.length + 20
+  const moreList = allCards.filter(
+    (card, i) => lengthForShow - 1 < i && i < counter * lengthForShow
   );
 
-  const cardsToRequestContents = allCards.filter((card, i) =>
-    contents.length === 0
-      ? 0 < i < contents.length + 20
-      : contents.length < i < contents.length + 20
-  );
-
-  const twentyContentIdsForMybook = cardsToRequestContents
-    .filter((card) => card.content.location === "my")
-    .map((card) => card.content.mycontent_id);
-  const twentyContentIdsForBuybook = cardsToRequestContents
-    .filter((card) => card.content.location === "buy")
-    .map((card) => card.content.buycontent_id);
-
-  const { dataContents, loading, error } = useQuery(QUERY_MY_CARD_CONTENTS, {
-    onCompleted: (data) => {
-      if (true) {
+  console.log({ moreList, contents });
+  const [getMoreContentsData, { data: moreContentsData }] = useLazyQuery(
+    QUERY_MY_CARD_CONTENTS,
+    {
+      onCompleted: (data) => {
+        console.log(data);
         setContents([
+          ...contents,
           ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
           ...data.mycontent_getMycontentByMycontentIDs.mycontents,
         ]);
-      }
+      },
+      fetchPolicy: "network-only",
+    }
+  );
+
+  useEffect(() => {
+    if (counter > 0) {
+      const moreCards = allCards.filter((card, i) => lengthForShow - 1 < i);
+      const listToRequest = moreCards.filter(
+        (card, i) =>
+          lengthForShow - 1 < i &&
+          (counter - 1) * lengthForShow - 1 < i &&
+          i < counter * lengthForShow
+      );
+
+      console.log(listToRequest);
+      const moreMyContentsIds = listToRequest
+        .filter((card) => card.content.location === "my")
+        .map((card) => card.content.mycontent_id);
+      const moreBuyContetnsIds = listToRequest
+        .filter((card) => card.content.location === "buy")
+        .map((card) => card.content.buycontent_id);
+
+      getMoreContentsData({
+        mycontent_ids: moreMyContentsIds,
+        buycontent_ids: moreBuyContetnsIds,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [counter]);
+
+  const initialList = allCards.filter((card, i) => i < lengthForShow);
+
+  const initialMyContentsIds = initialList
+    .filter((card) => card.content.location === "my")
+    .map((card) => card.content.mycontent_id);
+  const initialBuyContetnsIds = initialList
+    .filter((card) => card.content.location === "buy")
+    .map((card) => card.content.buycontent_id);
+
+  const {
+    data: initialContentsData,
+    loading,
+    error,
+  } = useQuery(QUERY_MY_CARD_CONTENTS, {
+    onCompleted: (data) => {
+      console.log(data);
     },
     variables: {
-      mycontent_ids: twentyContentIdsForMybook,
-      buycontent_ids: twentyContentIdsForBuybook,
+      mycontent_ids: initialMyContentsIds,
+      buycontent_ids: initialBuyContetnsIds,
     },
   });
 
-  const getThirdCol =
-    contentType === "times"
-      ? function (card) {
-          return card.studyStatus.totalStudyTimes;
-        }
-      : function (card) {
-          const time = prettyMilliseconds(card.studyStatus.totalStudyHour, {
-            colonNotation: true,
-            secondsDecimalDigits: 0,
-          });
-          const displayTime = (time) => {
-            switch (time.length) {
-              case 4:
-                return "00:0" + time;
-              case 5:
-                return "00:" + time;
-              case 6:
-                return "00" + time;
-              case 7:
-                return "0" + time;
-              case 8:
-                return time;
-              default:
-                throw new Error(`${time}은 지정된 형식의 시간이 아닙니다.`);
-            }
-          };
-
-          return displayTime(time);
+  const getThirdCol = useMemo(() => {
+    if (contentType === "times") {
+      return function getStudyTimes(card) {
+        return card.studyStatus.totalStudyTimes;
+      };
+    }
+    if (contentType === "hours") {
+      return function (card) {
+        const time = prettyMilliseconds(card.studyStatus.totalStudyHour, {
+          colonNotation: true,
+          secondsDecimalDigits: 0,
+        });
+        const displayTime = (time) => {
+          switch (time.length) {
+            case 4:
+              return "00:0" + time;
+            case 5:
+              return "00:" + time;
+            case 6:
+              return "00" + time;
+            case 7:
+              return "0" + time;
+            case 8:
+              return time;
+            default:
+              throw new Error(`${time}은 지정된 형식의 시간이 아닙니다.`);
+          }
         };
+
+        return displayTime(time);
+      };
+    }
+  }, [contentType]);
+
   return (
-    <table className="w-full table-fixed">
-      <thead>
-        <tr className="border-collapse border-y border-y-gray-200">
-          <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
-          <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
-          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
-            {contentType === "hours" ? "학습시간" : "학습횟수"}
-          </th>
-          <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
-        </tr>
-      </thead>
-      <tbody>
-        {contents.length > 0 &&
-          displayedCards.map((card, index) => {
-            return (
-              <Fragment key={card._id}>
-                <tr className="border-b border-collapse border-b-gray-200">
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
-                    {index + 1}
-                  </td>
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
-                    {contents &&
-                      new String(
-                        contents.find(
-                          (content) =>
-                            content._id === card.content.mycontent_id ||
-                            content._id === card.content.buycontent_id
-                        ).face1[0]
-                      ).replace(/(<([^>]+)>)/gi, "")}
-                  </td>
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
-                    {getThirdCol(card)}
-                  </td>
-                  <td
-                    className="text-[1rem] py-[4px] font-normal text-center"
-                    onClick={() => {
-                      if (cardIdForMore !== card._id + index) {
-                        setCardIdForMore(card._id + index);
-                        setCardContent({
-                          contents: contents.find(
-                            (content) =>
-                              content._id === card.content.mycontent_id ||
-                              content._id === card.content.buycontent_id
-                          ),
-                          makerFlag: card.content.makerFlag,
-                          userFlag: card.content.userFlag,
-                          memo: card.content.memo,
-                        });
-                      } else {
-                        setCardContent(null);
-                        setCardIdForMore("");
-                      }
-                    }}
-                  >
-                    →
-                  </td>
-                </tr>
-                {cardContent && cardIdForMore === card._id + index && (
-                  <tr className="border-b border-collapse border-b-gray-200">
-                    <td
-                      colSpan={
-                        contentType === "clickedCard" ||
-                        contentType === "changedLevel"
-                          ? 5
-                          : contentType !== "newCards"
-                          ? 4
-                          : 3
-                      }
-                      className="p-2 text-[1rem]"
-                    >
-                      {!!cardContent.userFlag && (
-                        <div className="w-full p-2 bg-gray-100">
-                          <span className="font-[500]">유저 플래그 :</span>
-                          <span className="ml-2">{cardContent.userFlag}</span>
-                        </div>
-                      )}
-
-                      <div className="w-full p-2 bg-gray-100">
-                        <div className="font-[500]">카드 내용 :</div>
-                        {!!cardContent.makerFlag.value && (
-                          <div className="w-full pl-2">
-                            <span>{cardContent.makerFlag.value}</span>
-                            <span className="ml-1">
-                              {cardContent.makerFlag.comment}
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="w-full pl-2">
-                          {cardContent.contents.face1.map((p, i) => (
-                            <div
-                              key={i}
-                              dangerouslySetInnerHTML={{ __html: p }}
-                            ></div>
-                          ))}
-                        </div>
-                        {cardContent.contents.face2.length > 0 &&
-                          cardContent.contents.face2.map((p, i) => (
-                            <div
-                              className="w-full pl-2"
-                              key={i}
-                              dangerouslySetInnerHTML={{ __html: p }}
-                            ></div>
-                          ))}
-                        {cardContent.contents.annotation.length > 0 &&
-                          cardContent.contents.annotation.map((p, i) => (
-                            <div
-                              className="w-full pl-2"
-                              key={i}
-                              dangerouslySetInnerHTML={{ __html: p }}
-                            ></div>
-                          ))}
-                      </div>
-
-                      {!!cardContent.memo && (
-                        <div className="w-full p-2 mt-2 bg-gray-100">
-                          <div className="font-[500]">메모 :</div>
-                          <div className="w-full pl-2">{cardContent.memo}</div>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                )}
-              </Fragment>
-            );
-          })}
-      </tbody>
-    </table>
+    <div>
+      <table className="w-full table-fixed">
+        <thead>
+          <tr className="border-collapse border-y border-y-gray-200">
+            <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">
+              순위
+            </th>
+            <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
+            <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+              {contentType === "hours" ? "학습시간" : "학습횟수"}
+            </th>
+            <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {initialContentsData &&
+            [
+              ...initialContentsData.buycontent_getBuycontentByBuycontentIDs
+                .buycontents,
+              ...initialContentsData.mycontent_getMycontentByMycontentIDs
+                .mycontents,
+            ].length > 0 &&
+            initialList.map((card, index) => {
+              return (
+                <TableRowRanked
+                  key={card._id}
+                  contentsData={[
+                    ...initialContentsData
+                      .buycontent_getBuycontentByBuycontentIDs.buycontents,
+                    ...initialContentsData.mycontent_getMycontentByMycontentIDs
+                      .mycontents,
+                  ]}
+                  card={card}
+                  index={index}
+                  getThirdCol={getThirdCol}
+                />
+              );
+            })}
+          {moreList.length === contents.length &&
+            moreList.map((card, index) => {
+              return (
+                <TableRowRanked
+                  key={card._id}
+                  contentsData={contents}
+                  card={card}
+                  index={index}
+                  getThirdCol={getThirdCol}
+                />
+              );
+            })}
+        </tbody>
+      </table>
+      <div
+        className="mt-2 w-full mx-auto text-[12px] text-blue-500 text-center"
+        onClick={() => {
+          setCounter((prev) => prev + 1);
+        }}
+      >
+        더보기
+      </div>
+    </div>
   );
 };
 

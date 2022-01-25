@@ -1274,4 +1274,19 @@ audio {
   background-color: #ffffff00 !important;
 }
 
+table{
+  display:table;
+  border: 1px solid grey;
+  border-collapse:collapse
+}
+td{
+  display:table-cell;
+  border:1px solid grey;
+}
+thead{
+  border: 1px solid grey;
+}
 
+th{
+  border: 1px solid grey;;
+}

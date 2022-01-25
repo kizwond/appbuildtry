@@ -7,10 +7,10 @@ const TableRowRanked = ({ contentsData, card, index, getThirdCol }) => {
   return (
     <Fragment>
       <tr className="border-b border-collapse border-b-gray-200">
-        <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           {index + 1}
         </td>
-        <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
           {new String(
             contentsData.find(
               (content) =>
@@ -19,11 +19,11 @@ const TableRowRanked = ({ contentsData, card, index, getThirdCol }) => {
             ).face1[0]
           ).replace(/(<([^>]+)>)/gi, "")}
         </td>
-        <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           {getThirdCol(card)}
         </td>
         <td
-          className="text-[1rem] py-[4px] font-normal text-center"
+          className="text-[1rem] py-[4px] text-center"
           onClick={() => {
             if (isShowedCard) {
               setCardContent(null);

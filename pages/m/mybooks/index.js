@@ -127,7 +127,7 @@ const M_StudyMainPage = () => {
                 }
               }}
             >
-              바로 보기
+              책 모드
             </div>
 
             <div
@@ -150,10 +150,10 @@ const M_StudyMainPage = () => {
                     },
                   }}
                 >
-                  <a>세션 설정 후 시작</a>
+                  <a>카드 모드</a>
                 </Link>
               ) : (
-                <a>세션 설정 후 시작</a>
+                <a>카드 모드</a>
               )}
             </div>
           </StyledBottomBar>

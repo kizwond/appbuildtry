@@ -196,12 +196,12 @@ const TableForRankedCards = ({ data, contentType }) => {
     <table className="w-full table-fixed">
       <thead>
         <tr className="border-collapse border-y border-y-gray-200">
-          <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
-          <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
-          <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+          <th className="text-[1rem] bg-slate-100 w-[10%]">순위</th>
+          <th className="text-[1rem] bg-slate-100">앞면</th>
+          <th className="text-[1rem] bg-slate-100 w-[20%]">
             {contentType === "hours" ? "학습시간" : "학습횟수"}
           </th>
-          <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
+          <th className="text-[1rem] bg-slate-100 w-[13%]"></th>
         </tr>
       </thead>
       <tbody>
@@ -211,10 +211,10 @@ const TableForRankedCards = ({ data, contentType }) => {
             return (
               <Fragment key={card._id}>
                 <tr className="border-b border-collapse border-b-gray-200">
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                     {index + 1}
                   </td>
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
+                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
                     {fiveContents &&
                       new String(
                         fiveContents.find(
@@ -224,11 +224,11 @@ const TableForRankedCards = ({ data, contentType }) => {
                         ).face1[0]
                       ).replace(/(<([^>]+)>)/gi, "")}
                   </td>
-                  <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                     {getThirdCol(card)}
                   </td>
                   <td
-                    className="text-[1rem] py-[4px] font-normal text-center"
+                    className="text-[1rem] py-[4px] text-center"
                     onClick={() => {
                       if (cardIdForMore !== card._id + index) {
                         setCardIdForMore(card._id + index);
@@ -446,14 +446,12 @@ const TableForAllCards = ({ cards, contentType }) => {
       <table className="w-full table-fixed">
         <thead>
           <tr className="border-collapse border-y border-y-gray-200">
-            <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">
-              순위
-            </th>
-            <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
-            <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+            <th className="text-[1rem] bg-slate-100 w-[10%]">순위</th>
+            <th className="text-[1rem] bg-slate-100">앞면</th>
+            <th className="text-[1rem] bg-slate-100 w-[20%]">
               {contentType === "hours" ? "학습시간" : "학습횟수"}
             </th>
-            <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
+            <th className="text-[1rem] bg-slate-100 w-[13%]"></th>
           </tr>
         </thead>
         <tbody>
@@ -794,14 +792,10 @@ const TableForMentorSessionHistory = ({ data }) => {
     <table className="w-full table-fixed">
       <thead>
         <tr className="border-collapse border-y border-y-gray-200">
-          <th className="text-[1rem] font-normal bg-slate-100 w-[15%]">
-            시작일
-          </th>
-          <th className="text-[1rem] font-normal bg-slate-100 w-[30%]">
-            학습모드
-          </th>
-          <th className="text-[1rem] font-normal bg-slate-100 w-[31%]">시간</th>
-          <th className="text-[1rem] font-normal bg-slate-100 w-[24%]"></th>
+          <th className="text-[1rem] bg-slate-100 w-[15%]">시작일</th>
+          <th className="text-[1rem] bg-slate-100 w-[30%]">학습모드</th>
+          <th className="text-[1rem] bg-slate-100 w-[31%]">시간</th>
+          <th className="text-[1rem] bg-slate-100 w-[24%]"></th>
         </tr>
       </thead>
       <tbody>
@@ -833,18 +827,18 @@ const TableForMentorSessionHistory = ({ data }) => {
               key={session._id}
               className="border-b border-collapse border-b-gray-200"
             >
-              <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200  text-center">
+              <td className="text-[1rem] border-r border-collapse border-r-gray-200  text-center">
                 {startedDate}
               </td>
-              <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200 text-center">
+              <td className="text-[1rem] border-r border-collapse border-r-gray-200 text-center">
                 {studyMode}
                 {isWithBook}
               </td>
-              <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200 text-center">
+              <td className="text-[1rem] border-r border-collapse border-r-gray-200 text-center">
                 {timeOnSessionStage}
               </td>
               <td
-                className="text-[1rem] font-normal text-center"
+                className="text-[1rem] text-center"
                 onClick={() => {
                   console.log("자세히보기");
                   getSessionResult({ session_id: session._id });

@@ -6,26 +6,24 @@ const TableForMentorSessionHistory = () => (
   <table className="w-full table-fixed">
     <thead>
       <tr className="border-collapse border-y border-y-gray-200">
-        <th className="text-[1rem] font-normal bg-slate-100 w-[15%]">시작일</th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[30%]">
-          학습모드
-        </th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[31%]">시간</th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[24%]"></th>
+        <th className="text-[1rem] bg-slate-100 w-[15%]">시작일</th>
+        <th className="text-[1rem] bg-slate-100 w-[30%]">학습모드</th>
+        <th className="text-[1rem] bg-slate-100 w-[31%]">시간</th>
+        <th className="text-[1rem] bg-slate-100 w-[24%]"></th>
       </tr>
     </thead>
     <tbody>
       <tr className="border-b border-collapse border-b-gray-200">
-        <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200  text-center">
+        <td className="text-[1rem] border-r border-collapse border-r-gray-200  text-center">
           12/30
         </td>
-        <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200 text-center">
+        <td className="text-[1rem] border-r border-collapse border-r-gray-200 text-center">
           뒤집기(혼합)
         </td>
-        <td className="text-[1rem] font-normal border-r border-collapse border-r-gray-200 text-center">
+        <td className="text-[1rem] border-r border-collapse border-r-gray-200 text-center">
           17:18 ~ 03:20
         </td>
-        <td className="text-[1rem] font-normal text-center">
+        <td className="text-[1rem] text-center">
           <a>자세히보기</a>
         </td>
       </tr>
@@ -37,29 +35,29 @@ const TableForRankedCards = () => (
   <table className="w-full table-fixed">
     <thead>
       <tr className="border-collapse border-y border-y-gray-200">
-        <th className="text-[1rem] font-normal bg-slate-100 w-[10%]">순위</th>
-        <th className="text-[1rem] font-normal bg-slate-100">앞면</th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[20%]">
+        <th className="text-[1rem] bg-slate-100 w-[10%]">순위</th>
+        <th className="text-[1rem] bg-slate-100">앞면</th>
+        <th className="text-[1rem] bg-slate-100 w-[20%]">
           {
             // contentType === "changedLevel"
             true ? "학습시간" : "학습횟수"
           }
         </th>
-        <th className="text-[1rem] font-normal bg-slate-100 w-[13%]"></th>
+        <th className="text-[1rem] bg-slate-100 w-[13%]"></th>
       </tr>
     </thead>
     <tbody>
       <tr className="border-b border-collapse border-b-gray-200">
-        <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           1
         </td>
-        <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
           동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라 만세
         </td>
-        <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           00:01:30
         </td>
-        <td className="text-[1rem] py-[4px] font-normal text-center">→</td>
+        <td className="text-[1rem] py-[4px] text-center">→</td>
       </tr>
     </tbody>
   </table>
@@ -69,32 +67,32 @@ const TableForStatusOfCard = () => (
   <table className="w-full table-fixed">
     <thead>
       <tr className="border-collapse border-y border-y-gray-200">
-        <th className="text-[1rem] font-normal bg-slate-100]">종류</th>
-        <th className="text-[1rem] font-normal bg-slate-100">투입카드</th>
-        <th className="text-[1rem] font-normal bg-slate-100">학습전</th>
-        <th className="text-[1rem] font-normal bg-slate-100">학습중</th>
-        <th className="text-[1rem] font-normal bg-slate-100">보류</th>
-        <th className="text-[1rem] font-normal bg-slate-100">완료</th>
+        <th className="text-[1rem] bg-slate-100]">종류</th>
+        <th className="text-[1rem] bg-slate-100">투입카드</th>
+        <th className="text-[1rem] bg-slate-100">학습전</th>
+        <th className="text-[1rem] bg-slate-100">학습중</th>
+        <th className="text-[1rem] bg-slate-100">보류</th>
+        <th className="text-[1rem] bg-slate-100">완료</th>
       </tr>
     </thead>
     <tbody>
       <tr className="border-b border-collapse border-b-gray-200">
-        <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           total
         </td>
-        <td className="text-[1rem] py-[4px] font-normal border-r border-collapse border-r-gray-200 text-center">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           100
         </td>
-        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 font-normal text-center">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           50
         </td>
-        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 font-normal text-center">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           50
         </td>
-        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 font-normal text-center">
+        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           50
         </td>
-        <td className="text-[1rem] py-[4px] font-normal text-center">30</td>
+        <td className="text-[1rem] py-[4px] text-center">30</td>
       </tr>
     </tbody>
   </table>

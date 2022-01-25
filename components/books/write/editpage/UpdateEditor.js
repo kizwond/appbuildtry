@@ -498,6 +498,7 @@ class UpdateEditor extends Component {
     
     console.log(this.props.mycontent);
     console.log(this.props.card_info);
+    console.log("여기맞냐?")
 
     if (this.props.card_info.content.makerFlag.value !== null) {
       this.setState({
@@ -533,8 +534,9 @@ class UpdateEditor extends Component {
     }
     
     //읽기카드만 있을때
-    if (num_face1 > 0 && num_face2 === 0 && num_annot > 0) {
+    if (num_face1 > 0 && num_face2 === 0 ) {
       for (var i = 1; i < num_face1 + 1; i++) {
+       
         this.setState({
           ["editor" + i]: this.props.mycontent.face1[i - 1],
         });
@@ -548,6 +550,8 @@ class UpdateEditor extends Component {
         }
       }
     }
+
+
     if (num_selection) {
       if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 && num_selection > 0) {
         for (i = 1; i < num_face1 + 1; i++) {
@@ -581,8 +585,11 @@ class UpdateEditor extends Component {
         }
       }
     } else {
-      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
+      if (num_face1 > 0 && num_face2 > 0 ) {
         for (i = 1; i < num_face1 + 1; i++) {
+          console.log("==================================")
+          console.log(this.props.mycontent.face1[i - 1])
+          console.log("==================================")
           this.setState({
             ["editor" + i]: this.props.mycontent.face1[i - 1],
           });

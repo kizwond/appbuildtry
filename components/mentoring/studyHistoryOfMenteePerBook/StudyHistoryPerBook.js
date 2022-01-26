@@ -528,7 +528,7 @@ const ChartForStudiedCardsPerDay = ({ data }) => {
           <div className="text-[12px]">완료카드</div>
         </div>
       </div>
-      <div className="w-full overflow-x-scroll overflow-y-hidden">
+      <div className="w-full overflow-x-auto overflow-y-hidden">
         <ul className="table h-[140px] py-5">
           {data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory
             .map(
@@ -610,7 +610,7 @@ const ChartForGainedLevelPerDay = ({ data }) => {
           <div className="text-[12px]">완료카드</div>
         </div>
       </div>
-      <div className="w-full overflow-x-scroll overflow-y-hidden">
+      <div className="w-full overflow-x-auto overflow-y-hidden">
         <ul className="table h-[140px] py-5">
           {data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory
             .map(({ level: { completed, nonCompleted }, date }, index, arr) => {

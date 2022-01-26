@@ -34,16 +34,36 @@ const StudyResult = () => {
   const [getMyCardsContent, { data, loading, error }] = useLazyQuery(
     QUERY_MY_CARD_CONTENTS,
     {
-      onCompleted: (data) => {
-        console.log(data);
+      onCompleted: (received_data) => {
+        if (
+          received_data.mycontent_getMycontentByMycontentIDs.status === "200"
+        ) {
+          console.log("카드 컨텐츠 데이터 받음", received_data);
+        } else if (
+          received_data.mycontent_getMycontentByMycontentIDs.status === "401"
+        ) {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
       },
     }
   );
 
   const [getMyCardsContentForAllCards, { data: myContentsDataForAllCards }] =
     useLazyQuery(QUERY_MY_CARD_CONTENTS, {
-      onCompleted: (data) => {
-        console.log(data);
+      onCompleted: (received_data) => {
+        if (
+          received_data.mycontent_getMycontentByMycontentIDs.status === "200"
+        ) {
+          console.log("모든 카드 컨텐츠 데이터 받음", received_data);
+        } else if (
+          received_data.mycontent_getMycontentByMycontentIDs.status === "401"
+        ) {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
       },
     });
 

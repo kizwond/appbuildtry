@@ -233,22 +233,6 @@ exports.updateSessionResult = (singleResult) => {
             resultByBook[mybookPosition].userFlagChange['flag'+ userFlagOriginal] += 1
         }
     }
-
-    // if (recentSelection == 'finish'){
-    //     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));    
-    //     const cardListRemained = JSON.parse(sessionStorage.getItem("cardListRemained"));
-
-    //     for (i=0; i<resultByBook.length; i++){
-    //         for (const statusOriginal of ['ing', 'yet', 'hold', 'completed']){
-    //             resultByBook[mybookPosition].numCards[statusOriginal].inserted += cardListStudying.filter(card => card.studyStatus.statusOrigianl == statusOriginal && card.card_info.mybook_id == resultByBook[i].mybook_id).length
-    //             resultByBook[mybookPosition].numCards[statusOriginal].selected += resultByBook[mybookPosition].numCards[statusOriginal].inserted + cardListStudying.filter(card => card.studyStatus.statusOrigianl == statusOriginal && card.card_info.mybook_id == resultByBook[i].mybook_id).length
-    //             resultOfSession.numCards[statusOriginal].inserted += resultByBook[mybookPosition].numCards[statusOriginal].inserted
-    //             resultOfSession.numCards[statusOriginal].selected += resultByBook[mybookPosition].numCards[statusOriginal].selected
-    //         }
-    //     }
-    // }
-
-    // console.log('result', resultOfSession)
     
     sessionStorage.setItem("resultOfSession", JSON.stringify(resultOfSession))
     sessionStorage.setItem("resultByBook", JSON.stringify(resultByBook))

@@ -275,6 +275,8 @@ export default M_MenteesTable;
 const DrawerWrapper = styled(Drawer)`
   top: 40px;
 
+  height: calc(100vh - 40px);
+
   & .ant-drawer-body * {
     font-size: 1rem;
   }

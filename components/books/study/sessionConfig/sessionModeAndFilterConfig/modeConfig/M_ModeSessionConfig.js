@@ -17,7 +17,7 @@ const M_ModeSessionConfig = ({
   detailedOption,
   changeProps,
   isPc,
-  isFlipMode,
+  isExamMode,
 }) => {
   const {
     changeSortOption,
@@ -38,11 +38,11 @@ const M_ModeSessionConfig = ({
   const { sortOptionTags, useCardTypeTags, useStatusTags } = tags;
 
   useEffect(() => {
-    if (isFlipMode) {
+    if (isExamMode) {
       changeUseCardType(["flip"]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFlipMode]);
+  }, [isExamMode]);
 
   return (
     <StyledDivConfigWrapper>
@@ -64,7 +64,7 @@ const M_ModeSessionConfig = ({
           <span className="ConfigTitle">카드종류</span>
         </div>
         <div>
-          {isFlipMode ? (
+          {isExamMode ? (
             <RowForLevelTwo>
               <CheckableTag checked={true}>뒤집기카드</CheckableTag>
             </RowForLevelTwo>

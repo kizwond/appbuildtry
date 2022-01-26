@@ -8,13 +8,14 @@ import moment from "moment";
 import { useCallback } from "react";
 import prettyMilliseconds from "pretty-ms";
 import BoxForSummaryOfMainPage from "../../../../components/common/commonComponent/BoxForSummaryOfMainPage";
+import SectionForResult from "../../../../components/books/study/result/SectionForResult";
 const ExamResult = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => setIsMounted(true), []);
+  // const [isMounted, setIsMounted] = useState(false);
+  // useEffect(() => setIsMounted(true), []);
 
-  if (!isMounted) {
-    return <>로딩 중..</>;
-  }
+  // if (!isMounted) {
+  //   return <>로딩 중..</>;
+  // }
   const cards =
     typeof window === "undefined"
       ? []
@@ -28,8 +29,14 @@ const ExamResult = () => {
       </Head>
       <M_Layout>
         <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px] flex flex-col gap-3">
-          {isMounted && <SummaryOfExamResult />}
-          {isMounted && <CardResultWrapper cards={cards} />}
+          <SectionForResult
+            title="시험 요약"
+            content={<SummaryOfExamResult />}
+          />
+          <SectionForResult
+            title="결과"
+            content={<CardResultWrapper cards={cards} />}
+          />
         </div>
       </M_Layout>
     </>
@@ -76,6 +83,9 @@ const SummaryOfExamResult = () => {
         title="실제 학습 시간"
         content={displayTime(time)}
       />
+      <BoxForSummaryOfMainPage title="정답율" content={"56%"} />
+      <BoxForSummaryOfMainPage title="기타항목" content={"3422"} />
+      <BoxForSummaryOfMainPage title="이전시험대비" content={"UP: 3%"} />
     </div>
   );
 };

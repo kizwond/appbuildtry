@@ -25,7 +25,7 @@ const Challenges = () => {
     error: buyBookError,
     loading: buyBookLoading,
   } = useQuery(QUERY_BUY_BOOKS, {
-    onCompleted: () => console.log("도전출판 북 서버에서 받음"),
+    onCompleted: (data) => console.log("도전출판 북 서버에서 받음", data),
   });
 
   const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(
@@ -118,7 +118,6 @@ const Challenges = () => {
                   >
                     도전 출판
                   </span>
-                  {/* <DoubleRightOutlined rotate={visible ? 270 : 90} /> */}
                 </div>
                 <div>
                   <StyledButtonForMainPage
@@ -143,13 +142,10 @@ const Challenges = () => {
                 hoverable
               >
                 <Row>
-                  <Col span={6}>
-                    <Image
-                      src={`/image/bookcover/bookcover${(_index % 6) + 1}.png`}
-                      alt={_book.buybook_info.title}
-                      width={55}
-                      height={75}
-                    />
+                  <Col span={5}>
+                    <div className="w-[55px] h-[75px] bg-cyan-400 flex items-center justify-center text-gray-50 text-[14px]">
+                      CogBook
+                    </div>
                   </Col>
                   <Col span={12}>
                     <div>카테고리: {_book.buybook_info.buybookcateName}</div>
@@ -157,7 +153,7 @@ const Challenges = () => {
                     <div>저자: {_book.buybook_info.authorName}</div>
                     <div>평점: {_book.buybook_info.status}</div>
                   </Col>
-                  <Col span={6}>
+                  <Col span={7}>
                     <div>
                       <Button
                         block

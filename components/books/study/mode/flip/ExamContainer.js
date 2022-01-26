@@ -280,6 +280,7 @@ class Container extends Component {
         delete v.studyStatus.needStudyTimeTmp;
         delete v.studyStatus.isUpdated;
         delete v.studyStatus.levelUpdated;
+        delete v.studyStatus.rightAnswer;
         delete v.studyStatus.__typename;
         delete v.content.hidden;
         delete v.content.underline;

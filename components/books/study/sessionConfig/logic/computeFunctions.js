@@ -323,7 +323,7 @@ export const sortFilteredCards = ({
         studyStatus: {
           ...card.studyStatus,
           recentExamAnswer : null,
-          rightAnser : null,
+          rightAnswer : null,
           isUpdated: false,
         },
       };

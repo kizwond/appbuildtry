@@ -27,22 +27,21 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-import { calculateStudyStatus } from "./FlipContainerSub";
-import { detect, detectAll } from "tinyld";
 import produce from "immer";
+import { calculateExamStatus } from "./ExamContainerSub";
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
   ssr: false,
 });
 
-const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConfigs, cardTypeSets }) => {
+const ExamContainer = ({ cardListStudying, contentsList, sessionScope, levelConfigs, cardTypeSets }) => {
   const router = useRouter();
   const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
   function showdataafterupdateresult(data) {
     console.log("data", data);
     if (data.session_updateResults.status === "200") {
       sessionStorage.setItem("endTimeOfSession", new Date());
-      router.push("/m/study/result");
+      router.push("/m/study/examresult");
     }
   }
 
@@ -85,7 +84,7 @@ const FlipContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
   );
 };
 
-export default FlipContainer;
+export default ExamContainer;
 
 class Container extends Component {
   constructor(props) {
@@ -215,22 +214,17 @@ class Container extends Component {
   };
 
   saveAnswer = (current_card_info, answer, content) => {
-    console.log(current_card_info, answer, content.face1[0]);
-    const submitted = { cardId: current_card_info._id, card_info: current_card_info, answer: answer, content: content.face1[0] };
-    const examLog = JSON.parse(sessionStorage.getItem("examLog"));
-    if (examLog === null) {
-      sessionStorage.setItem("examLog", JSON.stringify([submitted]));
-    } else {
-      const exist = examLog.findIndex((item) => item.cardId === current_card_info._id);
-      if (exist === -1) {
-        const logs = examLog.concat(submitted);
-        sessionStorage.setItem("examLog", JSON.stringify(logs));
-      } else {
-        examLog[exist].answer = answer;
-        examLog[exist].content = content.face1[0];
-        sessionStorage.setItem("examLog", JSON.stringify(examLog));
-      }
-    }
+    console.log(current_card_info, answer, content.face1[0], content.face2[0]);
+
+    //카드리스트스터딩에다가 rightanswer field에다가 face2[0]를 넣어라.
+    // 앞에서 examLog만들던거 삭제하고, 여기에서 바로 잡아넣는걸로 바꿔라.
+
+    // const submitted = { cardId: current_card_info._id, card_info: current_card_info, answer: answer, content: content.face1[0] };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const card_seq = sessionStorage.getItem("card_seq")
+    cardListStudying[card_seq].studyStatus.recentExamAnswer = answer;
+    cardListStudying[card_seq].studyStatus.rightAnswer = content.face2[0].replace(/(<([^>]+)>)/ig,"");
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
   };
 
   // 이전카드 보기
@@ -264,18 +258,53 @@ class Container extends Component {
     });
   };
 
-  finishStudy = () => {
-    const examLog = JSON.parse(sessionStorage.getItem("examLog"));
-    console.log(examLog.filter((item) => item.answer !== ""));
-    const answerExist = examLog.filter((item) => item.answer !== "");
-    const lastIdOfExist = answerExist[answerExist.length - 1].cardId;
-    console.log(lastIdOfExist);
-    const indexOfLastExist = examLog.findIndex((item) => item.cardId === lastIdOfExist);
-    console.log(indexOfLastExist);
-    examLog.splice(indexOfLastExist + 1, examLog.length - 1);
-    console.log(examLog);
-    sessionStorage.setItem("examLog", JSON.stringify(examLog));
-    window.location.href = "/m/study/examresult";
+  finishExam = () => {
+    calculateExamStatus();
+
+    const cardlist_to_send = null;
+    const filtered = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
+    const resultByBook = JSON.parse(sessionStorage.getItem("resultByBook"));
+    const createdCards = null;
+    const dataForRegression = null;
+    if (filtered) {
+      console.log("서버에 시험데이타를 전송할 시간이다!!!!");
+      sessionStorage.setItem("card_seq", 0);
+      const sessionId = sessionStorage.getItem("session_Id");
+      filtered.forEach(function (v) {
+        delete v.__typename;
+        delete v.studyStatus.userFlagPrev;
+        delete v.studyStatus.userFlagOriginal;
+        delete v.studyStatus.statusPrev;
+        delete v.studyStatus.statusOriginal;
+        delete v.studyStatus.needStudyTimeTmp;
+        delete v.studyStatus.isUpdated;
+        delete v.studyStatus.levelUpdated;
+        delete v.studyStatus.__typename;
+        delete v.content.hidden;
+        delete v.content.underline;
+        delete v.content.highlight;
+        delete v.content.makerFlag.__typename;
+        delete v.content.__typename;
+        delete v._id;
+        delete v.card_info.time_created;
+        delete v.card_info.__typename;
+        delete v.seqInCardlist;
+      });
+      this.props.sessionupdateresults(sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression, cardlist_to_send);
+    }
+    // const examLog = JSON.parse(sessionStorage.getItem("examLog"));
+    // console.log(examLog.filter((item) => item.answer !== ""));
+    // const answerExist = examLog.filter((item) => item.answer !== "");
+    // const lastIdOfExist = answerExist[answerExist.length - 1].cardId;
+    // console.log(lastIdOfExist);
+    // const indexOfLastExist = examLog.findIndex((item) => item.cardId === lastIdOfExist);
+    // console.log(indexOfLastExist);
+    // examLog.splice(indexOfLastExist + 1, examLog.length - 1);
+    // console.log(examLog);
+    // sessionStorage.setItem("examLog", JSON.stringify(examLog));
+
+    // examresults를 내가 서버에 보내고나서 화면이동한다.
   };
 
   render() {
@@ -773,31 +802,15 @@ class Container extends Component {
                       ))}
 
                     {(content_value.selection === null || content_value.selection.length === 0) &&
-                      content_value.face2.map((item, index) => (
-                        <>
-                          {/* {item.replace(/'''', ''^'', ''$'', ''*'', ''+'', ''?'', ''.'', ''('', '')'', ''|'', ''{'', ''}'', ''['', '']''/, "") === "1" && (
+                      content_value.face2.map((item, index) => {
+                        if (index === 0) {
+                          return (
                             <>
-                              <div style={{ display: "flex", alignItems: "center" }}>
-                                <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                <span style={{ fontSize: "1.5rem" }}>➀</span>
-                              </div>
+                              <Input type="text" onChange={(e) => this.saveAnswer(content, e.target.value, content_value)} defaultValue={answerField} />
                             </>
-                          )} */}
-
-                          {/* {item.replace(/(<([^>]+)>)/gi, "").replace(/\&nbsp\;/gi,"").replace(/\)/gi,"").replace(/\(/gi,"").replace(/\s+/,"")} */}
-                          {/* {item.match(/[A-Z]/g) === "O" || "X" ? (
-                            <>
-                              <span>O</span>
-                              <span>X</span>
-                            </>
-                          ) : (
-                            <>
-                              <Input type="text" />
-                            </>
-                          )} */}
-                          <Input type="text" onChange={(e) => this.saveAnswer(content, e.target.value, content_value)} defaultValue={answerField} />
-                        </>
-                      ))}
+                          );
+                        }
+                      })}
                   </>
                 )}
               </>
@@ -856,7 +869,7 @@ class Container extends Component {
                 />
               </div>
             </div>
-            <Button size="small" style={{ fontSize: "0.8rem", width: "53px", height: "69px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishStudy} type="primary">
+            <Button size="small" style={{ fontSize: "0.8rem", width: "53px", height: "69px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishExam} type="primary">
               시험종료
             </Button>
           </div>

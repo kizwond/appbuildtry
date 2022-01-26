@@ -26,6 +26,7 @@ const Home = () => {
     }
     else {
      console.log("pc")
+     window.location.href = "/m"
      var from = "pc"
     }
 

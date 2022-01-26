@@ -215,7 +215,7 @@ const M_RecentStudyList = () => {
           <thead>
             <tr className="border-collapse border-y border-y-gray-200">
               <th className="text-[1rem] bg-slate-100 w-[16%]">시작일</th>
-              <th className="text-[1rem] bg-slate-100 w-[14%]">Mode</th>
+              <th className="text-[1rem] bg-slate-100 w-[14%]">모드</th>
               <th className="text-[1rem] bg-slate-100 w-[40%]">책 이름</th>
               <th className="text-[1rem] bg-slate-100 w-[15%]"></th>
               <th className="text-[1rem] bg-slate-100 w-[15%]"></th>
@@ -240,9 +240,9 @@ const M_RecentStudyList = () => {
                     </td>
                     <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center">
                       {session.sessionConfig.studyMode === "read"
-                        ? "읽기"
+                        ? "바로보기"
                         : session.sessionConfig.studyMode === "flip"
-                        ? "뒤집기"
+                        ? "학습"
                         : session.sessionConfig.studyMode === "exam"
                         ? "시험"
                         : null}

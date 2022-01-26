@@ -52,6 +52,7 @@ const M_SessionModeAndFilterConfig = ({
               detailedOption={flipDetailedOption}
               changeProps={changeFlipProps}
               isPc={isPc || false}
+              isFlipMode={true}
             />
             <M_AdvancedFilter
               changeAdvancedFilter={changeAdvancedFilter}

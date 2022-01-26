@@ -1372,61 +1372,91 @@ class Container extends Component {
                 <FlagOutlined
                   onClick={() => this.userFlagChange("0")}
                   style={{
-                    border: "1px solid lightgrey",
+                    // border: "1px solid lightgrey",
+                    width:"30px",
+                    height:"30px",
+                    borderRadius:"15px",
                     background: "white",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight:"24px",
                     color: "white",
+                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px"
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("1")}
                   style={{
-                    border: "1px solid lightgrey",
+                    // border: "1px solid lightgrey",
+                    width:"30px",
+                    height:"30px",
+                    borderRadius:"15px",
                     background: "white",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight:"24px",
                     color: `${this.props.userFlagDetails.flag1.figureColor}`,
+                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px"
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("2")}
                   style={{
-                    border: "1px solid lightgrey",
+                    // border: "1px solid lightgrey",
+                    width:"30px",
+                    height:"30px",
+                    borderRadius:"15px",
                     background: "white",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight:"24px",
                     color: `${this.props.userFlagDetails.flag2.figureColor}`,
+                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px"
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("3")}
                   style={{
-                    border: "1px solid lightgrey",
+                    // border: "1px solid lightgrey",
+                    width:"30px",
+                    height:"30px",
+                    borderRadius:"15px",
                     background: "white",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight:"24px",
                     color: `${this.props.userFlagDetails.flag3.figureColor}`,
+                     boxShadow: "rgb(144 144 144) 1px 1px 2px 0px"
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("4")}
                   style={{
-                    border: "1px solid lightgrey",
+                    // border: "1px solid lightgrey",
+                    width:"30px",
+                    height:"30px",
+                    borderRadius:"15px",
                     background: "white",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight:"24px",
                     color: `${this.props.userFlagDetails.flag4.figureColor}`,
+                     boxShadow: "rgb(144 144 144) 1px 1px 2px 0px"
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("5")}
                   style={{
-                    border: "1px solid lightgrey",
+                    // border: "1px solid lightgrey",
+                    width:"30px",
+                    height:"30px",
+                    borderRadius:"15px",
                     background: "white",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight:"24px",
                     color: `${this.props.userFlagDetails.flag5.figureColor}`,
+                     boxShadow: "rgb(144 144 144) 1px 1px 2px 0px"
                   }}
                 />
               </>
@@ -1601,7 +1631,7 @@ class Container extends Component {
 
                     {this.props.userFlag && (
                       <>
-                        <span style={{ position: "absolute", right: 0, zIndex: "9999" }}>{userFlags}</span>
+                        <span style={{ position: "absolute",  zIndex: "9999" , left:"-6px", top:"-6px"}}>{userFlags}</span>
                       </>
                     )}
                   </div>

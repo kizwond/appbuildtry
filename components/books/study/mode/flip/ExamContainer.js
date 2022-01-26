@@ -172,20 +172,6 @@ class Container extends Component {
 
   milliseconds = (h, m, s) => (h * 60 * 60 + m * 60 + s) * 1000;
 
-  determineStudyFinish = (card_details_session, card_seq, current_card_id, now) => {
-    if (card_details_session.length - 1 == Number(card_seq)) {
-      console.log("원래는 끝난거!!!");
-      this.finishStudy();
-    } else {
-      console.log(card_details_session.length - 1, "======", Number(card_seq));
-      console.log("아직 안끝");
-      //여기다가 새로운 시퀀스 정보를 가공해야함.
-      this.generateCardSeq(card_details_session, now, current_card_id);
-
-      // this.setTimer(0);
-    }
-  };
-
   //상황에따른 새로운 카드 시쿼스 생성
   generateCardSeq = () => {
     const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
@@ -196,7 +182,7 @@ class Container extends Component {
     console.log(listLength);
     if (Number(listLength) - 1 === Number(card_seq)) {
       alert("시험이 끝났습니다. 결과화면으로 이동합니다.");
-      this.finishStudy();
+      this.finishExam();
     } else {
       if (card_seq === origin_seq) {
         this.setState({

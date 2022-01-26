@@ -1,6 +1,9 @@
 import { useCallback } from "react";
+
 import { useRouter } from "next/router";
+import { useLazyQuery } from "@apollo/client";
 import { QUERY_SESSION_FOR_RESULT_BY_SESSION_ID } from "../../../graphql/query/allQuery";
+
 import produce from "immer";
 import moment from "moment";
 

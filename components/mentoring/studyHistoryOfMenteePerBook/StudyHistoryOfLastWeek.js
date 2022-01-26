@@ -7,7 +7,7 @@ import { QUERY_SESSION_FOR_RESULT_BY_SESSION_ID } from "../../../graphql/query/a
 import produce from "immer";
 import moment from "moment";
 
-const StudyHistoryOfLaskWeek = ({ data }) => {
+const StudyHistoryOfLastWeek = ({ data }) => {
   const router = useRouter();
 
   const [getSessionDataForResult, { variables }] = useLazyQuery(
@@ -155,4 +155,4 @@ const StudyHistoryOfLaskWeek = ({ data }) => {
   );
 };
 
-export default StudyHistoryOfLaskWeek;
+export default StudyHistoryOfLastWeek;

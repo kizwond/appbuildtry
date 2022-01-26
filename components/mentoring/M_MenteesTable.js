@@ -24,7 +24,7 @@ import { StyledBookTypeDiv } from "../common/styledComponent/buttons";
 import { DisconnectOutlined, ExportOutlined } from "@ant-design/icons";
 import moment from "moment";
 import styled from "styled-components";
-import StudyHistoryPerBook from "./studyHistoryOfMenteePerBook/StudyHistoryPerBook";
+import StudyHistoryPerBook from "../common/studyHistoryPerBook/StudyHistoryPerBook";
 
 const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
   const router = useRouter();

@@ -907,7 +907,7 @@ class Container extends Component {
     // const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
     const newHiddenArray = cardListStudying[currentCardSeq].content.hidden.filter((item) => item.targetWord !== word);
     console.log(newHiddenArray);
-    cardListStudying[needToBeChangedIndex].content.hidden = newHiddenArray;
+    cardListStudying[currentCardSeq].content.hidden = newHiddenArray;
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     this.props.setCardListStudying(cardListStudying);
     this.props.cardsetDeleteEffect(cardListStudying[currentCardSeq].card_info.cardset_id, cardListStudying[currentCardSeq].card_info.card_id, "hidden", word);
@@ -918,9 +918,9 @@ class Container extends Component {
     const currentCardSeq = sessionStorage.getItem("card_seq");
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     // const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
-    const newUnderlineArray = cardListStudying[needToBeChangedIndex].content.underline.filter((item) => item.targetWord !== word);
+    const newUnderlineArray = cardListStudying[currentCardSeq].content.underline.filter((item) => item.targetWord !== word);
     console.log(newUnderlineArray);
-    cardListStudying[needToBeChangedIndex].content.underline = newUnderlineArray;
+    cardListStudying[currentCardSeq].content.underline = newUnderlineArray;
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     this.props.setCardListStudying(cardListStudying);
     this.props.cardsetDeleteEffect(cardListStudying[currentCardSeq].card_info.cardset_id, cardListStudying[currentCardSeq].card_info.card_id, "underline", word);
@@ -931,9 +931,9 @@ class Container extends Component {
     const currentCardSeq = sessionStorage.getItem("card_seq");
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     // const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
-    const newHighlightArray = cardListStudying[needToBeChangedIndex].content.highlight.filter((item) => item.targetWord !== word);
+    const newHighlightArray = cardListStudying[currentCardSeq].content.highlight.filter((item) => item.targetWord !== word);
     console.log(newHighlightArray);
-    cardListStudying[needToBeChangedIndex].content.highlight = newHighlightArray;
+    cardListStudying[currentCardSeq].content.highlight = newHighlightArray;
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     this.props.setCardListStudying(cardListStudying);
     this.props.cardsetDeleteEffect(cardListStudying[currentCardSeq].card_info.cardset_id, cardListStudying[currentCardSeq].card_info.card_id, "highlight", word);
@@ -1458,6 +1458,89 @@ class Container extends Component {
                 </div>
               </>
             );
+
+            var toolPop = (
+              <>
+                <div>가리기</div>
+                    {content.content.hidden &&
+                      content.content.hidden.map((item) => {
+                        return (
+                          <>
+                            <Tag onClick={() => this.hiddenElementTagHandler(item.targetWord)}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <span>{item.targetWord}</span>
+                                <span
+                                  style={{
+                                    marginLeft: "3px",
+                                    color: "grey",
+                                  }}
+                                >
+                                  <CloseOutlined />
+                                </span>
+                              </div>
+                            </Tag>
+                          </>
+                        );
+                      })}
+                    <div>밑줄</div>
+                    {content.content.underline &&
+                      content.content.underline.map((item) => {
+                        return (
+                          <>
+                            <Tag onClick={() => this.underlineElementTagHandler(item.targetWord)}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <span>{item.targetWord}</span>
+                                <span
+                                  style={{
+                                    marginLeft: "3px",
+                                    color: "grey",
+                                  }}
+                                >
+                                  <CloseOutlined />
+                                </span>
+                              </div>
+                            </Tag>
+                          </>
+                        );
+                      })}
+                    <div>형광펜</div>
+                    {content.content.highlight &&
+                      content.content.highlight.map((item) => {
+                        return (
+                          <>
+                            <Tag onClick={() => this.highlightElementTagHandler(item.targetWord)}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <span>{item.targetWord}</span>
+                                <span
+                                  style={{
+                                    marginLeft: "3px",
+                                    color: "grey",
+                                  }}
+                                >
+                                  <CloseOutlined />
+                                </span>
+                              </div>
+                            </Tag>
+                          </>
+                        );
+                      })}
+              </>
+            );
             return (
               <>
                 <div
@@ -1475,7 +1558,7 @@ class Container extends Component {
                     borderTopRightRadius: "3px",
                   }}
                 >
-                  <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                  <div style={{ width: "24pxpx", lineHeight:"0px", position: "relative", textAlign: "center" }}>
                     {content.content.userFlag === 0 && (
                       <>
                         <FlagOutlined
@@ -1504,7 +1587,7 @@ class Container extends Component {
 
                     {this.props.userFlag && (
                       <>
-                        <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                        <span style={{ position: "absolute", right: 0, zIndex:"9999" }}>{userFlags}</span>
                       </>
                     )}
                   </div>
@@ -1513,125 +1596,62 @@ class Container extends Component {
                     style={{
                       // border: "none",
                       backgroundColor: "white",
-                      borderRadius:"3px",
-                      fontSize:"1rem"
+                      borderRadius: "3px",
+                      fontSize: "1rem",
+                      color: "#939393",
                     }}
                     // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                  >새카드</Button>
+                  >
+                    새카드
+                  </Button>
 
                   <Button
                     size="small"
                     style={{
                       // border: "none",
                       backgroundColor: "white",
-                      borderRadius:"3px",
-                      fontSize:"1rem"
+                      borderRadius: "3px",
+                      fontSize: "1rem",
+                      color: "#939393",
                     }}
                     // icon={<ControlOutlined style={{ fontSize: "16px" }} />}
-                  >상태변경</Button>
+                  >
+                    상태변경
+                  </Button>
 
-                  <Button
-                    unselectable="on"
-                    className="hiddenButton"
-                    onClick={this.hiddenEffectDeleteModal}
-                    size="small"
-                    style={{
-                      // border: "none",
-                      backgroundColor: "white",
-                      borderRadius:"3px",
-                      fontSize: "1rem",
-                    }}
-                    // icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
-                  >툴해제</Button>
-
-                  <Modal title="학습도구해제" footer={null} visible={this.props.isModalVisibleHidden} onOk={this.handleOk} onCancel={this.handleCancel}>
-                    <div>가리기</div>
-                    {content.content.hidden &&
-                      content.content.hidden.map((item) => {
-                        return (
-                          <>
-                            <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <span>{item.targetWord}</span>
-                                <span
-                                  style={{
-                                    marginLeft: "3px",
-                                    color: "grey",
-                                  }}
-                                >
-                                  <CloseOutlined />
-                                </span>
-                              </div>
-                            </Tag>
-                          </>
-                        );
-                      })}
-                    <div>밑줄</div>
-                    {content.content.underline &&
-                      content.content.underline.map((item) => {
-                        return (
-                          <>
-                            <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <span>{item.targetWord}</span>
-                                <span
-                                  style={{
-                                    marginLeft: "3px",
-                                    color: "grey",
-                                  }}
-                                >
-                                  <CloseOutlined />
-                                </span>
-                              </div>
-                            </Tag>
-                          </>
-                        );
-                      })}
-                    <div>형광펜</div>
-                    {content.content.highlight &&
-                      content.content.highlight.map((item) => {
-                        return (
-                          <>
-                            <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <span>{item.targetWord}</span>
-                                <span
-                                  style={{
-                                    marginLeft: "3px",
-                                    color: "grey",
-                                  }}
-                                >
-                                  <CloseOutlined />
-                                </span>
-                              </div>
-                            </Tag>
-                          </>
-                        );
-                      })}
-                  </Modal>
+                  <Popover
+                    content={toolPop}
+                    placement="bottomRight"
+                    title={
+                      <>
+                        <span style={{ fontSize: "0.8rem" }}>툴해제</span>
+                      </>
+                    }
+                    trigger="click"
+                  >
+                    <Button
+                      size="small"
+                      style={{
+                        // border: "none",
+                        backgroundColor: "white",
+                        borderRadius: "3px",
+                        fontSize: "1rem",
+                        color: "#939393",
+                      }}
+                      // icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
+                    >
+                      툴해제
+                    </Button>
+                  </Popover>
 
                   <Button
                     size="small"
                     style={{
                       // border: "none",
                       backgroundColor: "white",
-                      borderRadius:"3px",
+                      borderRadius: "3px",
                       fontSize: "1rem",
+                      color: "#939393",
                     }}
                     // icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
                   >
@@ -1653,8 +1673,9 @@ class Container extends Component {
                       style={{
                         // border: "none",
                         backgroundColor: "white",
-                        borderRadius:"3px",
+                        borderRadius: "3px",
                         fontSize: "1rem",
+                        color: "#939393",
                       }}
                       // icon={<MessageOutlined style={{ fontSize: "16px" }} />}
                     >
@@ -1677,8 +1698,9 @@ class Container extends Component {
                       style={{
                         // border: "none",
                         backgroundColor: "white",
-                        borderRadius:"3px",
+                        borderRadius: "3px",
                         fontSize: "1rem",
+                        color: "#939393",
                       }}
                       // icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
                     >
@@ -2789,10 +2811,9 @@ const style_study_layout_bottom = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
-  width: "95%",
+  width: "100%",
   margin: "auto",
-  position: "absolute",
-  top: "163px",
+  marginTop: "163px",
   height: "calc(100vh - 280px)",
   overflow: "auto",
   border: "1px solid lightgrey",

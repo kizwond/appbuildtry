@@ -115,43 +115,43 @@ const StudyNav = ({ mode }) => {
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>STUDY</div>
                 <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px", boxShadow: "1px 1px 2px 0px #c0c0c0" }}>
-                  <div onClick={() => (location.href = "/m/mybooks")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                  <div onClick={() => (location.href = "/m/mybooks")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" , cursor:"pointer"}}>
                     <Image src="/image/book_shelf.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>마이북</span>
                   </div>
-                  <div onClick={() => (location.href = "/m/mentoring")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                  <div onClick={() => (location.href = "/m/mentoring")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" , cursor:"pointer"}}>
                     <Image src="/image/mentor_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>멘토링</span>
                   </div>
                 </div>
                 <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>SHOP</div>
                 <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px", boxShadow: "1px 1px 2px 0px #c0c0c0" }}>
-                  <div onClick={() => (location.href = "/bookstore")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                  <div onClick={() => (location.href = "/bookstore")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" , cursor:"pointer"}}>
                     <Image src="/image/bookstore_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>서점</span>
                   </div>
-                  <div onClick={() => (location.href = "/m/challenges")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                  <div onClick={() => (location.href = "/m/challenges")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" , cursor:"pointer"}}>
                     <Image src="/image/ranking_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>도전출판</span>
                   </div>
-                  <div onClick={() => (location.href = "/cart")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                  <div onClick={() => (location.href = "/cart")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" , cursor:"pointer"}}>
                     <Image src="/image/basket_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>장바구니</span>
                   </div>
                 </div>
                 <div style={{ ...linkStyleDrawer, paddingLeft: "0px", fontSize: "1rem", color: "grey" }}>ACCOUNT</div>
                 <div style={{ marginBottom: "10px", backgroundColor: "white", borderRadius: "5px", boxShadow: "1px 1px 2px 0px #c0c0c0" }}>
-                  <div onClick={() => (location.href = "/notification")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                  <div onClick={() => (location.href = "/notification")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" , cursor:"pointer"}}>
                     <Image src="/image/notification_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                     <span style={{ marginLeft: "10px" }}>알림</span>
                   </div>
                   {username == null && (
                     <>
-                      <div onClick={() => (location.href = "/m/account/login")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                      <div onClick={() => (location.href = "/m/account/login")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" , cursor:"pointer"}}>
                         <Image src="/image/login_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                         <span style={{ marginLeft: "10px" }}>로그인</span>
                       </div>
-                      <div onClick={() => (location.href = "/m/account/register")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" }}>
+                      <div onClick={() => (location.href = "/m/account/register")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center" , cursor:"pointer"}}>
                         <Image src="/image/register_icon.png" width={"20px"} height={"20px"} alt="excel_export" />
                         <span style={{ marginLeft: "10px" }}>회원가입</span>
                       </div>
@@ -161,7 +161,7 @@ const StudyNav = ({ mode }) => {
 
                 {username !== null && (
                   <>
-                    <div onClick={() => onClickLogout()} style={{ ...linkStyleDrawer, position: "fixed", bottom: 5, display: "flex", alignItems: "center" }}>
+                    <div onClick={() => onClickLogout()} style={{ ...linkStyleDrawer, position: "fixed", bottom: 5, display: "flex", alignItems: "center" , cursor:"pointer"}}>
                       <Image src="/image/logout_icon.png" width={"15px"} height={"15px"} alt="excel_export" />
                       <span style={{ marginLeft: "10px", fontSize: "1rem" }}>로그아웃</span>
                     </div>
@@ -182,10 +182,10 @@ const StudyNav = ({ mode }) => {
             position: "relative",
           }}
         >
-          {mode} mode
+          {mode} 모드
         </div>
 
-        <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem" }}>
+        <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem", cursor:"pointer" }}>
           <Button style={{ backgroundColor: "#ffffff00", border: "none" }} onClick={goToHome} icon={<HomeOutlined style={{ fontSize: burgerSize, color: fontColor }} />}></Button>
         </div>
       </div>

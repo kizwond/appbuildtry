@@ -3,7 +3,7 @@ import { useMutation, useLazyQuery } from "@apollo/client";
 import { GetContents } from "../../../../../graphql/query/getContents";
 import { GetLevelConfig, UpdateResults } from "../../../../../graphql/query/session";
 import Timer from "./Timer";
-import { message, Divider, Tag, Modal, Popover, Space, Button } from "antd";
+import { message, Divider, Tag, Modal, Popover, Space, Button, Input } from "antd";
 import ProgressBar from "./ProgressBar";
 import { GetCardTypeSetByMybookIds } from "../../../../../graphql/query/cardtype";
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
@@ -79,6 +79,7 @@ const FlipContainer = ({
   setHiddenToggle,
   setUnderlineToggle,
   setHighlightToggle,
+  saveMemo,
 }) => {
   const router = useRouter();
   const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
@@ -147,6 +148,7 @@ const FlipContainer = ({
         setHiddenToggle={setHiddenToggle}
         setUnderlineToggle={setUnderlineToggle}
         setHighlightToggle={setHighlightToggle}
+        saveMemo={saveMemo}
       />
     </>
   );
@@ -180,6 +182,7 @@ class Container extends Component {
       ttsOn: true,
       firstTimeTts: true,
       flip: true,
+      memo:""
     };
     this.keyCount = 0;
     this.getKey = this.getKey.bind(this);
@@ -1029,7 +1032,15 @@ class Container extends Component {
       }
     }
   };
-
+  addMemo = (e) => {
+    console.log(e.target.value)
+    this.setState({
+      memo : e.target.value
+    })
+  }
+  saveMemo = (card_info) => {
+    this.props.saveMemo(card_info.cardset_id, card_info.card_id, this.state.memo)
+  }
   render() {
     if (this.props.levelConfigs) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
@@ -1062,20 +1073,8 @@ class Container extends Component {
           </div>
         </>
       );
-      var memoPop = (
-        <>
-          <div style={{ fontSize: "0.8rem" }}>
-            <div>메모 블라블라....</div>
-          </div>
-        </>
-      );
-      var annotationPop = (
-        <>
-          <div style={{ fontSize: "0.8rem" }}>
-            <div>주석 블라블라....</div>
-          </div>
-        </>
-      );
+      
+
       const current_card_book_id = card_details_session[currentSeq].card_info.mybook_id;
       const current_card_id_tmp = card_details_session[currentSeq].content.mycontent_id;
       if (current_card_id_tmp === null) {
@@ -1399,6 +1398,24 @@ class Container extends Component {
                     color: `${this.props.userFlagDetails.flag5.figureColor}`,
                   }}
                 />
+              </>
+            );
+
+            var annotationPop = (
+              <>
+                <div style={{ fontSize: "0.8rem" }}>
+                  <div>{content_value.annotation[0]}</div>
+                </div>
+              </>
+            );
+            var memoPop = (
+              <>
+                <div style={{ fontSize: "0.8rem" }}>
+                  <div>{content.content.memo}</div>
+                  {content.content.memo === null && <>
+                  <Input placeholder="메모추가" onChange={(e)=>this.addMemo(e)}/><Button size="small" onClick={()=>this.saveMemo(content.card_info)} >저장</Button> 
+                  </>}
+                </div>
               </>
             );
             return (

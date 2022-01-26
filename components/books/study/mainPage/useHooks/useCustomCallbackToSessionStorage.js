@@ -79,7 +79,10 @@ export const useCustomCallbackToSessionStore = () => {
         hold: { selected: 0, inserted: 0, started: 0, finished: 0 },
         completed: { selected: 0, inserted: 0, started: 0, finished: 0 },
       },
-      
+      trueFalse : {
+        numTrue : 0,
+        numFalse : 0
+      }
     }),
     []
   );

@@ -322,7 +322,7 @@ export const sortFilteredCards = ({
         },
         studyStatus: {
           ...card.studyStatus,
-          recentAnswer : null,
+          recentExamAnswer : null,
           isUpdated: false,
         },
       };

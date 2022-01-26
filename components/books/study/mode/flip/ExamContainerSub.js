@@ -5,8 +5,6 @@ exports.calculateExamStatus = () => {
     const resultByBook = JSON.parse(sessionStorage.getItem("resultByBook"));
 
     for(i=0; i<cardListStudying.length; i++){
-        console.log('i',i)
-        
         const {recentExamAnswer, rightAnswer} = cardListStudying[i].studyStatus
         const {mybook_id} = cardListStudying[i].card_info
         const mybookPosition = resultByBook.findIndex(result => result.mybook_id == mybook_id)
@@ -29,6 +27,8 @@ exports.calculateExamStatus = () => {
 
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying))    
     sessionStorage.setItem("resultOfSession", JSON.stringify(resultOfSession))    
-    sessionStorage.setItem("resultByBook", JSON.stringify(resultByBook))    
+    sessionStorage.setItem("resultByBook", JSON.stringify(resultByBook))  
+    
+    return
 };
   

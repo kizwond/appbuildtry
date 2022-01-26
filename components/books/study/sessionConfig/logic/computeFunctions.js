@@ -322,21 +322,7 @@ export const sortFilteredCards = ({
         },
         studyStatus: {
           ...card.studyStatus,
-          statusOriginal: card.studyStatus.statusCurrent,
-          statusPrev: card.studyStatus.statusCurrent,
-
-          levelOriginal: card.studyStatus.levelCurrent,
-          
-
-          userFlagOriginal: card.content.userFlag,
-          userFlagPrev: card.content.userFlag,
-
-          clickTimesInSession: 0,
-          studyTimesInSession: 0,
-          studyHourInSession: 0,
-          elapsedHourFromLastSession: 0,
-
-          needStudyTimeTmp: null,
+          recentExamAnswer : null,
           isUpdated: false,
         },
       };

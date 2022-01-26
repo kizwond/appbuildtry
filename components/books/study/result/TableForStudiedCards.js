@@ -19,7 +19,7 @@ const TableForStudiedCards = ({
         }
       : contentType === "clickedTimes"
       ? function (card) {
-          return card.studyStatus.clickTimesInSession;
+          return card.studyStatus.studyTimesInSession;
         }
       : function (card) {
           const time = prettyMilliseconds(

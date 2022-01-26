@@ -329,7 +329,7 @@ const TableForAllCards = ({ cards, contentType }) => {
   const [contents, setContents] = useState([]);
   const [counter, setCounter] = useState(0);
 
-  const lengthForShow = 2;
+  const lengthForShow = 20;
 
   const allCards = [...cards].sort((a, b) =>
     contentType === "times"
@@ -857,6 +857,7 @@ const TableForMentorSessionHistory = ({ data }) => {
 const DrawerWrapper = styled(Drawer)`
   top: 40px;
 
+  height: calc(100vh - 40px);
   & .ant-drawer-body * {
     font-size: 1rem;
   }

@@ -52,7 +52,6 @@ const M_SessionModeAndFilterConfig = ({
               detailedOption={flipDetailedOption}
               changeProps={changeFlipProps}
               isPc={isPc || false}
-              isFlipMode={true}
             />
             <M_AdvancedFilter
               changeAdvancedFilter={changeAdvancedFilter}
@@ -67,6 +66,7 @@ const M_SessionModeAndFilterConfig = ({
               detailedOption={examDetailedOption}
               changeProps={changeExamProps}
               isPc={isPc || false}
+              isExamMode={true}
             />
             <M_AdvancedFilter
               changeAdvancedFilter={changeAdvancedFilter}

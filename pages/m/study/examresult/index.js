@@ -1,19 +1,25 @@
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { useQuery } from '@apollo/client';
-import Head from 'next/head';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import M_Layout from '../../../../components/layout/M_Layout';
+import Head from "next/head";
+import { useMemo, useState } from "react";
+import { useEffect } from "react";
+import M_Layout from "../../../../components/layout/M_Layout";
 
-import { QUERY_MY_CARD_CONTENTS } from '../../../../graphql/query/allQuery';
+import CardResultWrapper from "../../../../components/books/study/examResult/CardResultWrapper";
+import moment from "moment";
+import { useCallback } from "react";
+import prettyMilliseconds from "pretty-ms";
+import BoxForSummaryOfMainPage from "../../../../components/common/commonComponent/BoxForSummaryOfMainPage";
+import SectionForResult from "../../../../components/books/study/result/SectionForResult";
 const ExamResult = () => {
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => setIsMounted(true), []);
+  // const [isMounted, setIsMounted] = useState(false);
+  // useEffect(() => setIsMounted(true), []);
 
-  if (!isMounted) {
-    return <>로딩 중..</>;
-  }
-  const cards = typeof window === 'undefined' ? [] : JSON.parse(sessionStorage.getItem('examLog'));
+  // if (!isMounted) {
+  //   return <>로딩 중..</>;
+  // }
+  const cards =
+    typeof window === "undefined"
+      ? []
+      : JSON.parse(sessionStorage.getItem("examLog"));
   console.log({ cards });
   return (
     <>
@@ -22,8 +28,15 @@ const ExamResult = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <M_Layout>
-        <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px]">
-          {isMounted && <CardResultWrapper cards={cards} />}
+        <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px] flex flex-col gap-3">
+          <SectionForResult
+            title="시험 요약"
+            content={<SummaryOfExamResult />}
+          />
+          <SectionForResult
+            title="결과"
+            content={<CardResultWrapper cards={cards} />}
+          />
         </div>
       </M_Layout>
     </>
@@ -32,62 +45,47 @@ const ExamResult = () => {
 
 export default ExamResult;
 
-const CardResult = ({ seq, face1, answer, face2, cardId }) => {
-  const result = face2.indexOf(answer) > -1;
-  return (
-    <div
-      className={`flex border border-gray-300 border-solid rounded  ${result && 'bg-gray-100 text-gray-700'}`}
-      onClick={() => {
-        console.log('카드 더보기 // 팝업으로 카드 시험 관련 내용 전달');
-      }}
-    >
-      <div className="flex items-center justify-center border-r grow-0 shrink-0 basis-14 border-r-gray-300">{seq}</div>
-
-      <div className="flex-auto min-w-0 p-2 border-r border-r-gray-300">
-        <div className="flex text-base">
-          <div className="flex-none w-12">앞면 :</div>
-          <div className="truncate">{face1}</div>
-        </div>
-        <div className="flex text-base">
-          <div className="flex-none w-12">입력 :</div>
-          <div className="truncate">{answer}</div>
-        </div>
-        <div className="flex text-base">
-          <div className="flex-none w-12">정답 :</div>
-          <div className="truncate">{face2}</div>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-center grow-0 shrink-0 basis-16">
-        {result ? <CheckOutlined className="text-[2.5rem]" /> : <CloseOutlined className="text-[2.5rem]" />}
-      </div>
-    </div>
+const SummaryOfExamResult = () => {
+  const startedTime = useMemo(() => moment(new Date()).format("M.D hh:mm"), []);
+  const endedTime = useMemo(() => moment(new Date()).format("M.D hh:mm"), []);
+  const time = useMemo(
+    () =>
+      prettyMilliseconds(23456, {
+        colonNotation: true,
+        secondsDecimalDigits: 0,
+      }),
+    []
   );
-};
 
-const CardResultWrapper = ({ cards }) => {
-  const { data, loading, error } = useQuery(QUERY_MY_CARD_CONTENTS, {
-    onCompleted: (data) => {
-      console.log(data);
-    },
-    variables: {
-      mycontent_ids: cards.filter((card) => card.card_info.content.location === 'my').map((card) => card.card_info.content.mycontent_id),
-      buycontent_ids: cards.filter((card) => card.card_info.content.location === 'buy').map((card) => card.card_info.content.buycontent_id),
-    },
-  });
+  const displayTime = useCallback((time) => {
+    switch (time.length) {
+      case 4:
+        return "00:0" + time;
+      case 5:
+        return "00:" + time;
+      case 6:
+        return "00" + time;
+      case 7:
+        return "0" + time;
+      case 8:
+        return time;
+
+      default:
+        break;
+    }
+  }, []);
 
   return (
-    <div className="flex flex-col gap-[8px]">
-      {data &&
-        cards.map((card, index) => {
-          const frontOfCard = new String(card.content).replace(/(<([^>]+)>)/gi, '');
-          const face2 = new String(
-            [...data.mycontent_getMycontentByMycontentIDs.mycontents, ...data.buycontent_getBuycontentByBuycontentIDs.buycontents].find((content) => {
-              return content._id === card.card_info.content.mycontent_id || content._id === card.card_info.content.buycontent_id;
-            }).face2
-          ).replace(/(<([^>]+)>)/gi, '');
-          return <CardResult key={card.cardId} face1={frontOfCard} answer={card.answer} face2={face2} seq={index + 1} />;
-        })}
+    <div className="grid w-full grid-cols-3 gap-4">
+      <BoxForSummaryOfMainPage title="시험 시작" content={startedTime} />
+      <BoxForSummaryOfMainPage title="시험 종료" content={endedTime} />
+      <BoxForSummaryOfMainPage
+        title="실제 학습 시간"
+        content={displayTime(time)}
+      />
+      <BoxForSummaryOfMainPage title="정답율" content={"56%"} />
+      <BoxForSummaryOfMainPage title="기타항목" content={"3422"} />
+      <BoxForSummaryOfMainPage title="이전시험대비" content={"UP: 3%"} />
     </div>
   );
 };

@@ -2,7 +2,7 @@ import moment from "moment";
 import prettyMilliseconds from "pretty-ms";
 import { useCallback } from "react";
 import { useMemo } from "react";
-import BoxForSessionSummary from "./BoxForSessionSummary";
+import BoxForSummaryOfMainPage from "../../../common/commonComponent/BoxForSummaryOfMainPage";
 
 const SessionSummary = ({ from }) => {
   const resultOfSession = useMemo(
@@ -87,19 +87,19 @@ const SessionSummary = ({ from }) => {
 
   return (
     <div className="grid w-full grid-cols-3 grid-rows-2 gap-4">
-      <BoxForSessionSummary title={"학습 시작"} content={startedTime} />
-      <BoxForSessionSummary title={"학습 종료"} content={endedTime} />
-      <BoxForSessionSummary
+      <BoxForSummaryOfMainPage title={"학습 시작"} content={startedTime} />
+      <BoxForSummaryOfMainPage title={"학습 종료"} content={endedTime} />
+      <BoxForSummaryOfMainPage
         title={"실제 학습 시간"}
         content={displayTime(time)}
       />
-      <BoxForSessionSummary
+      <BoxForSummaryOfMainPage
         title={"학습 시작 카드"}
         content={
           completed.started + hold.started + ing.started + yet.started + "장"
         }
       />
-      <BoxForSessionSummary
+      <BoxForSummaryOfMainPage
         title={"학습 완료 카드"}
         content={
           completed.finished +
@@ -109,7 +109,7 @@ const SessionSummary = ({ from }) => {
           "장"
         }
       />
-      <BoxForSessionSummary title={"레벨 획득"} content={gainedLevel} />
+      <BoxForSummaryOfMainPage title={"레벨 획득"} content={gainedLevel} />
     </div>
   );
 };

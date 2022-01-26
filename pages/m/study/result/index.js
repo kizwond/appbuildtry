@@ -104,8 +104,8 @@ const StudyResult = () => {
         .filter((card) => card.studyStatus.isUpdated)
         .sort(
           (a, b) =>
-            b.studyStatus.clickTimesInSession -
-            a.studyStatus.clickTimesInSession
+            b.studyStatus.studyTimesInSession -
+            a.studyStatus.studyTimesInSession
         );
       const topFiveClicked = rankingCardListByNumberOfClickCard.filter(
         (_, i) => i < 5

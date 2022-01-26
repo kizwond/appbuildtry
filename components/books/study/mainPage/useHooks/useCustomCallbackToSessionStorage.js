@@ -52,6 +52,10 @@ export const useCustomCallbackToSessionStore = () => {
         flag4: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
         flag5: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
       },
+      examResult : {
+        numTrue : 0,
+        numFalse : 0
+      }
     }),
     []
   );
@@ -78,6 +82,41 @@ export const useCustomCallbackToSessionStore = () => {
         ing: { selected: 0, inserted: 0, started: 0, finished: 0 },
         hold: { selected: 0, inserted: 0, started: 0, finished: 0 },
         completed: { selected: 0, inserted: 0, started: 0, finished: 0 },
+      },
+      clicks: {
+        total: 0,
+        diffi1: 0,
+        diffi2: 0,
+        diffi3: 0,
+        diffi4: 0,
+        diffi5: 0,
+        diffi6: 0,
+        hold: 0,
+        completed: 0,
+        etc: 0,
+      },
+      statusChange: {
+        yet: { yet: 0, ing: 0, hold: 0, completed: 0 },
+        ing: { yet: 0, ing: 0, hold: 0, completed: 0 },
+        hold: { yet: 0, ing: 0, hold: 0, completed: 0 },
+        completed: { yet: 0, ing: 0, hold: 0, completed: 0 },
+      },
+      levelChange: {
+        total: { count: 0, gap: 0 },
+        up: { count: 0, gap: 0 },
+        down: { count: 0, gap: 0 },
+      },
+      levelChangeByStatus: {
+        nonCompleted: 0,
+        completed: 0,
+      },
+      userFlagChange: {
+        flag0: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
+        flag1: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
+        flag2: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
+        flag3: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
+        flag4: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
+        flag5: { flag0: 0, flag1: 0, flag2: 0, flag3: 0, flag4: 0, flag5: 0 },
       },
       examResult : {
         numTrue : 0,

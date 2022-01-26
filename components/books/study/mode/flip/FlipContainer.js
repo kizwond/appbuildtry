@@ -1558,7 +1558,7 @@ class Container extends Component {
                     borderTopRightRadius: "3px",
                   }}
                 >
-                  <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                  <div style={{ width: "24pxpx", lineHeight:"0px", position: "relative", textAlign: "center" }}>
                     {content.content.userFlag === 0 && (
                       <>
                         <FlagOutlined
@@ -2811,10 +2811,9 @@ const style_study_layout_bottom = {
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
-  width: "95%",
+  width: "100%",
   margin: "auto",
-  position: "absolute",
-  top: "163px",
+  marginTop: "163px",
   height: "calc(100vh - 280px)",
   overflow: "auto",
   border: "1px solid lightgrey",

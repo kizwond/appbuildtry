@@ -487,7 +487,7 @@ const FlipMode = () => {
   );
 
   return (
-    <StudyLayout mode="뒤집기">
+    <StudyLayout mode="학습">
       <div
         style={{
           height: "100%",

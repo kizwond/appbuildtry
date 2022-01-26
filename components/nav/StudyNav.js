@@ -182,7 +182,7 @@ const StudyNav = ({ mode }) => {
             position: "relative",
           }}
         >
-          {mode} mode
+          {mode} 모드
         </div>
 
         <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem", cursor:"pointer" }}>

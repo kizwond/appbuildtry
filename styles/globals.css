@@ -1270,6 +1270,23 @@ audio {
   /* 100% {margin-left:0;} */
 }
 
+.user_flags {
+  animation-name: user_flags;
+  animation-duration: 0.3s;
+  /* animation-iteration-count: infinite; */
+  /* animation-direction: reverse; */
+  animation-timing-function: linear;
+  animation-fill-mode: inherit;
+  /* animation-delay: 5s; */
+  animation-fill-mode: backwards;
+}
+
+@keyframes user_flags {
+  0% {opacity:0;}
+  100% {opacity:1;}
+  /* 100% {margin-left:0;} */
+}
+
 .navDrawer .ant-drawer-content-wrapper .ant-drawer-content{
   background-color: #ffffff00 !important;
 }

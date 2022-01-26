@@ -1327,10 +1327,11 @@ class Container extends Component {
       var cardInfoStatusBar = (
         <>
           <span>
-            {card_details_session[currentSeq].studyStatus.statusCurrent === "yet" && "학습전"} 
-            {card_details_session[currentSeq].studyStatus.statusCurrent === "ing" && "학습중"} 
-            {card_details_session[currentSeq].studyStatus.statusCurrent === "hold" && "보류"} 
-            {card_details_session[currentSeq].studyStatus.statusCurrent === "completed" && "졸업"} Lv.{Math.round(card_details_session[currentSeq].studyStatus.levelCurrent*10)/10}
+            {card_details_session[currentSeq].studyStatus.statusCurrent === "yet" && "학습전"}
+            {card_details_session[currentSeq].studyStatus.statusCurrent === "ing" && "학습중"}
+            {card_details_session[currentSeq].studyStatus.statusCurrent === "hold" && "보류"}
+            {card_details_session[currentSeq].studyStatus.statusCurrent === "completed" && "졸업"} Lv.
+            {Math.round(card_details_session[currentSeq].studyStatus.levelCurrent * 10) / 10}
           </span>
         </>
       );
@@ -1369,64 +1370,100 @@ class Container extends Component {
             // console.log("해당컨텐츠 정보", content_value);
             const userFlags = (
               <>
-                <FlagOutlined
+                <StopOutlined
                   onClick={() => this.userFlagChange("0")}
                   style={{
-                    border: "1px solid lightgrey",
+                    // border: "1px solid lightgrey",
+                    width: "30px",
+                    height: "30px",
+                    borderRadius: "15px",
                     background: "white",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
-                    color: "white",
+                    fontSize: "20px",
+                    lineHeight: "24px",
+                    color: "#ff8e8e",
+                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                    marginBottom: "3px",
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("1")}
                   style={{
-                    border: "1px solid lightgrey",
-                    background: "white",
+                    // border: "1px solid lightgrey",
+                    width: "30px",
+                    height: "30px",
+                    borderRadius: "15px",
+                    background: "#ffd1d1",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight: "24px",
                     color: `${this.props.userFlagDetails.flag1.figureColor}`,
+                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                    marginBottom: "3px",
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("2")}
                   style={{
-                    border: "1px solid lightgrey",
-                    background: "white",
+                    // border: "1px solid lightgrey",
+                    width: "30px",
+                    height: "30px",
+                    borderRadius: "15px",
+                    background: "#ffe7bb",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight: "24px",
                     color: `${this.props.userFlagDetails.flag2.figureColor}`,
+                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                    marginBottom: "3px",
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("3")}
                   style={{
-                    border: "1px solid lightgrey",
-                    background: "white",
+                    // border: "1px solid lightgrey",
+                    width: "30px",
+                    height: "30px",
+                    borderRadius: "15px",
+                    background: "#e7e773",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight: "24px",
                     color: `${this.props.userFlagDetails.flag3.figureColor}`,
+                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                    marginBottom: "3px",
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("4")}
                   style={{
-                    border: "1px solid lightgrey",
-                    background: "white",
+                    // border: "1px solid lightgrey",
+                    width: "30px",
+                    height: "30px",
+                    borderRadius: "15px",
+                    background: "#beffbe",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight: "24px",
                     color: `${this.props.userFlagDetails.flag4.figureColor}`,
+                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                    marginBottom: "3px",
                   }}
                 />
                 <FlagFilled
                   onClick={() => this.userFlagChange("5")}
                   style={{
-                    border: "1px solid lightgrey",
-                    background: "white",
+                    // border: "1px solid lightgrey",
+                    width: "30px",
+                    height: "30px",
+                    borderRadius: "15px",
+                    background: "#ceceff",
                     cursor: "pointer",
-                    fontSize: "1.5rem",
+                    fontSize: "20px",
+                    lineHeight: "24px",
                     color: `${this.props.userFlagDetails.flag5.figureColor}`,
+                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                    marginBottom: "3px",
                   }}
                 />
               </>
@@ -1582,6 +1619,9 @@ class Container extends Component {
                             fontSize: "16px",
                             color: "#f0f0f0",
                             border: "1px solid lightgrey",
+                            borderRadius: "3px",
+                            width: "24px",
+                            height: "24px",
                           }}
                         />
                       </>
@@ -1592,7 +1632,10 @@ class Container extends Component {
                           onClick={this.onClickUserFlag}
                           style={{
                             cursor: "pointer",
-                            fontSize: "16px",
+                            fontSize: "21px",
+                            border: "1px solid #f0f0f0",
+                            width: "24px",
+                            height: "24px",
                             color: `${this.props.userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
                           }}
                         />
@@ -1601,7 +1644,9 @@ class Container extends Component {
 
                     {this.props.userFlag && (
                       <>
-                        <span style={{ position: "absolute", right: 0, zIndex: "9999" }}>{userFlags}</span>
+                        <span className="user_flags" style={{ position: "absolute", zIndex: "9999", left: "-4px", top: "30px" }}>
+                          {userFlags}
+                        </span>
                       </>
                     )}
                   </div>
@@ -1615,22 +1660,20 @@ class Container extends Component {
                     }
                     trigger="click"
                   >
-                  <Button
-                    size="small"
-                    style={{
-                      // border: "none",
-                      backgroundColor: "white",
-                      borderRadius: "3px",
-                      fontSize: "0.9rem",
-                      color: "#939393",
-                    }}
-                    // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                  >
-                    새카드
-                  </Button>
+                    <Button
+                      size="small"
+                      style={{
+                        // border: "none",
+                        backgroundColor: "white",
+                        borderRadius: "3px",
+                        fontSize: "0.9rem",
+                        color: "#939393",
+                      }}
+                      // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                    >
+                      새카드
+                    </Button>
                   </Popover>
-
-                  
 
                   <Popover
                     content={"준비중입니다..."}
@@ -1642,21 +1685,20 @@ class Container extends Component {
                     }
                     trigger="click"
                   >
-                  <Button
-                    size="small"
-                    style={{
-                      // border: "none",
-                      backgroundColor: "white",
-                      borderRadius: "3px",
-                      fontSize: "0.9rem",
-                      color: "#939393",
-                    }}
-                    // icon={<ControlOutlined style={{ fontSize: "16px" }} />}
-                  >
-                    상태변경
-                  </Button>
+                    <Button
+                      size="small"
+                      style={{
+                        // border: "none",
+                        backgroundColor: "white",
+                        borderRadius: "3px",
+                        fontSize: "0.9rem",
+                        color: "#939393",
+                      }}
+                      // icon={<ControlOutlined style={{ fontSize: "16px" }} />}
+                    >
+                      상태변경
+                    </Button>
                   </Popover>
-                  
 
                   <Popover
                     content={toolPop}
@@ -1693,21 +1735,20 @@ class Container extends Component {
                     }
                     trigger="click"
                   >
-                   <Button
-                    size="small"
-                    style={{
-                      // border: "none",
-                      backgroundColor: "white",
-                      borderRadius: "3px",
-                      fontSize: "0.9rem",
-                      color: "#939393",
-                    }}
-                    // icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
-                  >
-                    게시판
-                  </Button>
+                    <Button
+                      size="small"
+                      style={{
+                        // border: "none",
+                        backgroundColor: "white",
+                        borderRadius: "3px",
+                        fontSize: "0.9rem",
+                        color: "#939393",
+                      }}
+                      // icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
+                    >
+                      게시판
+                    </Button>
                   </Popover>
-                  
 
                   <Popover
                     content={memoPop}
@@ -2677,6 +2718,7 @@ class Container extends Component {
                 borderRadius: "4px",
                 padding: "5px 5px 0px 5px",
                 border: "1px solid #bcbcbc",
+                height: "57px",
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -2696,17 +2738,23 @@ class Container extends Component {
                   <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem", flexGrow: 0 }} onClick={this.onClickNextCardInBackMode} type="secondary" />
                 )}
               </div>
-              <div style={{ flexBasis: "100%", fontSize: "0.8rem", display: "flex", color: "#737373" }}>
-                <div style={{ width: "24px", marginRight: "5px" }}></div>
-                <div style={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
-                  <div style={{ width: "30%", textAlign: "left" }}>0%</div>
-                  <div>50%</div>
-                  <div>90%</div>
-                </div>
-                <div style={{ width: "3%" }}></div>
-                <div style={{ width: "15%", textAlign: "right" }}>100%</div>
-                <div style={{ width: "24px" }}></div>
-              </div>
+              {!this.state.onBackMode ? (
+                <>
+                  <div style={{ flexBasis: "100%", fontSize: "0.8rem", display: "flex", color: "#737373" }}>
+                    <div style={{ width: "24px", marginRight: "5px" }}></div>
+                    <div style={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
+                      <div style={{ width: "30%", textAlign: "left" }}>0%</div>
+                      <div>50%</div>
+                      <div>90%</div>
+                    </div>
+                    <div style={{ width: "3%" }}></div>
+                    <div style={{ width: "15%", textAlign: "right" }}>100%</div>
+                    <div style={{ width: "24px" }}></div>
+                  </div>
+                </>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>

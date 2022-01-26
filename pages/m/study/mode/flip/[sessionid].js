@@ -10,7 +10,8 @@ import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../.
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import { Button, Modal, Space, Tag, message, Divider } from "antd";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
-import { createFalse } from "typescript";
+import { SAVEMEMO } from "../../../../../graphql/mutation/addMemo";
+
 const FlipMode = () => {
   const { query } = useRouter();
   // console.log(query.sessionid);
@@ -458,6 +459,33 @@ const FlipMode = () => {
       setFace2row5(bool);
     }
   }
+
+  const [cardset_updateMemo] = useMutation(SAVEMEMO, {
+    onCompleted: showdataaftermemoadd,
+  });
+  function showdataaftermemoadd(data) {
+    console.log("data", data);
+  }
+
+  const saveMemo = useCallback(
+    async (cardset_id, card_id, memo) => {
+      try {
+        await cardset_updateMemo({
+          variables: {
+            forUpdateMemo: {
+              cardset_id,
+              card_id,
+              memo,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_updateMemo]
+  );
+
   return (
     <StudyLayout mode="뒤집기">
       <div
@@ -498,6 +526,7 @@ const FlipMode = () => {
               setHiddenToggle={setHiddenToggle}
               setUnderlineToggle={setUnderlineToggle}
               setHighlightToggle={setHighlightToggle}
+              saveMemo={saveMemo}
             />
           </>
         )}

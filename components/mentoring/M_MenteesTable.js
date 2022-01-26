@@ -28,12 +28,15 @@ import StudyHistoryPerBook from "./studyHistoryOfMenteePerBook/StudyHistoryPerBo
 
 const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
   const router = useRouter();
-  const [visibleDrawer, setVisibleDrawer] = useState(false);
-  const openDrawer = useCallback(() => {
-    setVisibleDrawer(true);
+  const [
+    visibleIdOfBookStudyHistoryDrawer,
+    setVisibleIdOfBookStudyHistoryDrawer,
+  ] = useState("");
+  const openDrawer = useCallback((mybook_id) => {
+    setVisibleIdOfBookStudyHistoryDrawer(mybook_id);
   }, []);
   const closeDrawer = useCallback(() => {
-    setVisibleDrawer(false);
+    setVisibleIdOfBookStudyHistoryDrawer("");
   }, []);
 
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
@@ -245,12 +248,15 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                       title="상세 보기"
                       placement="right"
                       width={"100%"}
-                      visible={visibleDrawer}
+                      visible={
+                        visibleIdOfBookStudyHistoryDrawer === record.mybook_id
+                      }
                       onClose={closeDrawer}
                       headerStyle={{ padding: "12px 12px 8px 12px" }}
                       bodyStyle={{ backgroundColor: "#e9e9e9" }}
                     >
-                      {visibleDrawer && (
+                      {visibleIdOfBookStudyHistoryDrawer ===
+                        record.mybook_id && (
                         <StudyHistoryPerBook mybook_id={record.mybook_id} />
                       )}
                     </DrawerWrapper>

@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import styled from "styled-components";
-import { Switch } from "antd";
+import { Switch, Tag } from "antd";
 import {
   StyledDivConfigColStartCards,
   StyledDivConfigRow,
@@ -10,12 +10,14 @@ import M_InputNumberForStudyCard from "./M_InputNumberForStudyCard";
 import M_ConditionOfReviewTime from "./M_ConditionOfReviewTime";
 import ToggleTags from "../common/ToggleTags";
 import { tags } from "../common/dataForContainer";
+import { useEffect } from "react";
 
 const M_ModeSessionConfig = ({
   children,
   detailedOption,
   changeProps,
   isPc,
+  isFlipMode,
 }) => {
   const {
     changeSortOption,
@@ -34,6 +36,14 @@ const M_ModeSessionConfig = ({
     numStartCards,
   } = detailedOption;
   const { sortOptionTags, useCardTypeTags, useStatusTags } = tags;
+
+  useEffect(() => {
+    if (isFlipMode) {
+      changeUseCardType(["flip"]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFlipMode]);
+
   return (
     <StyledDivConfigWrapper>
       <StyledDivConfigRow is_pc={(isPc || false).toString()}>
@@ -54,11 +64,17 @@ const M_ModeSessionConfig = ({
           <span className="ConfigTitle">카드종류</span>
         </div>
         <div>
-          <ToggleTags
-            changeValue={changeUseCardType}
-            value={useCardtype}
-            tags={useCardTypeTags}
-          />
+          {isFlipMode ? (
+            <RowForLevelTwo>
+              <CheckableTag checked={true}>뒤집기카드</CheckableTag>
+            </RowForLevelTwo>
+          ) : (
+            <ToggleTags
+              changeValue={changeUseCardType}
+              value={useCardtype}
+              tags={useCardTypeTags}
+            />
+          )}
         </div>
       </StyledDivConfigRow>
 
@@ -130,6 +146,15 @@ const M_ModeSessionConfig = ({
 };
 
 export default memo(M_ModeSessionConfig);
+
+const CheckableTag = styled(Tag.CheckableTag)`
+  border: 1px solid #1890ff;
+  margin: 2px 2px 2px 2px;
+`;
+
+const RowForLevelTwo = styled.div`
+  margin-left: 6px;
+`;
 
 const StyledDivConfigWrapper = styled.div`
   /* border-left: 1px solid #9bcfff;

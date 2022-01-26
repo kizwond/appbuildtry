@@ -1321,7 +1321,20 @@ class Container extends Component {
         </>
       );
     }
-
+    if (this.props.cardTypeSets.length > 0) {
+      const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const currentSeq = Number(sessionStorage.getItem("card_seq"));
+      var cardInfoStatusBar = (
+        <>
+          <span>
+            {card_details_session[currentSeq].studyStatus.statusCurrent === "yet" && "학습전"} 
+            {card_details_session[currentSeq].studyStatus.statusCurrent === "ing" && "학습중"} 
+            {card_details_session[currentSeq].studyStatus.statusCurrent === "hold" && "보류"} 
+            {card_details_session[currentSeq].studyStatus.statusCurrent === "completed" && "졸업"} Lv.{Math.round(card_details_session[currentSeq].studyStatus.levelCurrent*10)/10}
+          </span>
+        </>
+      );
+    }
     if (this.props.cardTypeSets.length > 0) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       var statusBar = card_details_session.map((content, index) => {
@@ -1348,6 +1361,7 @@ class Container extends Component {
         // console.log(row_font);
         // console.log(content);
         // console.log(contentsList);
+
         const show_contents = contentsList.map((content_value) => {
           if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === currentSeq) {
             // console.log(content_value._id, content.content.buycontent_id);
@@ -1462,83 +1476,83 @@ class Container extends Component {
             var toolPop = (
               <>
                 <div>가리기</div>
-                    {content.content.hidden &&
-                      content.content.hidden.map((item) => {
-                        return (
-                          <>
-                            <Tag onClick={() => this.hiddenElementTagHandler(item.targetWord)}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <span>{item.targetWord}</span>
-                                <span
-                                  style={{
-                                    marginLeft: "3px",
-                                    color: "grey",
-                                  }}
-                                >
-                                  <CloseOutlined />
-                                </span>
-                              </div>
-                            </Tag>
-                          </>
-                        );
-                      })}
-                    <div>밑줄</div>
-                    {content.content.underline &&
-                      content.content.underline.map((item) => {
-                        return (
-                          <>
-                            <Tag onClick={() => this.underlineElementTagHandler(item.targetWord)}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <span>{item.targetWord}</span>
-                                <span
-                                  style={{
-                                    marginLeft: "3px",
-                                    color: "grey",
-                                  }}
-                                >
-                                  <CloseOutlined />
-                                </span>
-                              </div>
-                            </Tag>
-                          </>
-                        );
-                      })}
-                    <div>형광펜</div>
-                    {content.content.highlight &&
-                      content.content.highlight.map((item) => {
-                        return (
-                          <>
-                            <Tag onClick={() => this.highlightElementTagHandler(item.targetWord)}>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <span>{item.targetWord}</span>
-                                <span
-                                  style={{
-                                    marginLeft: "3px",
-                                    color: "grey",
-                                  }}
-                                >
-                                  <CloseOutlined />
-                                </span>
-                              </div>
-                            </Tag>
-                          </>
-                        );
-                      })}
+                {content.content.hidden &&
+                  content.content.hidden.map((item) => {
+                    return (
+                      <>
+                        <Tag onClick={() => this.hiddenElementTagHandler(item.targetWord)}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <span>{item.targetWord}</span>
+                            <span
+                              style={{
+                                marginLeft: "3px",
+                                color: "grey",
+                              }}
+                            >
+                              <CloseOutlined />
+                            </span>
+                          </div>
+                        </Tag>
+                      </>
+                    );
+                  })}
+                <div>밑줄</div>
+                {content.content.underline &&
+                  content.content.underline.map((item) => {
+                    return (
+                      <>
+                        <Tag onClick={() => this.underlineElementTagHandler(item.targetWord)}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <span>{item.targetWord}</span>
+                            <span
+                              style={{
+                                marginLeft: "3px",
+                                color: "grey",
+                              }}
+                            >
+                              <CloseOutlined />
+                            </span>
+                          </div>
+                        </Tag>
+                      </>
+                    );
+                  })}
+                <div>형광펜</div>
+                {content.content.highlight &&
+                  content.content.highlight.map((item) => {
+                    return (
+                      <>
+                        <Tag onClick={() => this.highlightElementTagHandler(item.targetWord)}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <span>{item.targetWord}</span>
+                            <span
+                              style={{
+                                marginLeft: "3px",
+                                color: "grey",
+                              }}
+                            >
+                              <CloseOutlined />
+                            </span>
+                          </div>
+                        </Tag>
+                      </>
+                    );
+                  })}
               </>
             );
             return (
@@ -1558,7 +1572,7 @@ class Container extends Component {
                     borderTopRightRadius: "3px",
                   }}
                 >
-                  <div style={{ width: "24pxpx", lineHeight:"0px", position: "relative", textAlign: "center" }}>
+                  <div style={{ width: "24pxpx", lineHeight: "0px", position: "relative", textAlign: "center" }}>
                     {content.content.userFlag === 0 && (
                       <>
                         <FlagOutlined
@@ -1587,41 +1601,66 @@ class Container extends Component {
 
                     {this.props.userFlag && (
                       <>
-                        <span style={{ position: "absolute", right: 0, zIndex:"9999" }}>{userFlags}</span>
+                        <span style={{ position: "absolute", right: 0, zIndex: "9999" }}>{userFlags}</span>
                       </>
                     )}
                   </div>
+                  <Popover
+                    content={"준비중입니다..."}
+                    placement="bottomLeft"
+                    title={
+                      <>
+                        <span style={{ fontSize: "0.8rem" }}>새카드 추가하기</span>
+                      </>
+                    }
+                    trigger="click"
+                  >
                   <Button
                     size="small"
                     style={{
                       // border: "none",
                       backgroundColor: "white",
                       borderRadius: "3px",
-                      fontSize: "1rem",
+                      fontSize: "0.9rem",
                       color: "#939393",
                     }}
                     // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
                   >
                     새카드
                   </Button>
+                  </Popover>
 
+                  
+
+                  <Popover
+                    content={"준비중입니다..."}
+                    placement="bottomLeft"
+                    title={
+                      <>
+                        <span style={{ fontSize: "0.8rem" }}>학습상태변경</span>
+                      </>
+                    }
+                    trigger="click"
+                  >
                   <Button
                     size="small"
                     style={{
                       // border: "none",
                       backgroundColor: "white",
                       borderRadius: "3px",
-                      fontSize: "1rem",
+                      fontSize: "0.9rem",
                       color: "#939393",
                     }}
                     // icon={<ControlOutlined style={{ fontSize: "16px" }} />}
                   >
                     상태변경
                   </Button>
+                  </Popover>
+                  
 
                   <Popover
                     content={toolPop}
-                    placement="bottomRight"
+                    placement="bottom"
                     title={
                       <>
                         <span style={{ fontSize: "0.8rem" }}>툴해제</span>
@@ -1635,7 +1674,7 @@ class Container extends Component {
                         // border: "none",
                         backgroundColor: "white",
                         borderRadius: "3px",
-                        fontSize: "1rem",
+                        fontSize: "0.9rem",
                         color: "#939393",
                       }}
                       // icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
@@ -1644,19 +1683,31 @@ class Container extends Component {
                     </Button>
                   </Popover>
 
-                  <Button
+                  <Popover
+                    content={"준비중입니다..."}
+                    placement="bottomRight"
+                    title={
+                      <>
+                        <span style={{ fontSize: "0.8rem" }}>질문게시판</span>
+                      </>
+                    }
+                    trigger="click"
+                  >
+                   <Button
                     size="small"
                     style={{
                       // border: "none",
                       backgroundColor: "white",
                       borderRadius: "3px",
-                      fontSize: "1rem",
+                      fontSize: "0.9rem",
                       color: "#939393",
                     }}
                     // icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
                   >
-                    질문게시판
+                    게시판
                   </Button>
+                  </Popover>
+                  
 
                   <Popover
                     content={memoPop}
@@ -1674,7 +1725,7 @@ class Container extends Component {
                         // border: "none",
                         backgroundColor: "white",
                         borderRadius: "3px",
-                        fontSize: "1rem",
+                        fontSize: "0.9rem",
                         color: "#939393",
                       }}
                       // icon={<MessageOutlined style={{ fontSize: "16px" }} />}
@@ -1699,7 +1750,7 @@ class Container extends Component {
                         // border: "none",
                         backgroundColor: "white",
                         borderRadius: "3px",
-                        fontSize: "1rem",
+                        fontSize: "0.9rem",
                         color: "#939393",
                       }}
                       // icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
@@ -2514,68 +2565,34 @@ class Container extends Component {
         </svg>
         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
           <div style={{ position: "fixed", backgroundColor: "white", top: "50px", width: "95%", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-            <div style={{ flexGrow: 1, color: "#8b8b8b" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div
-                  style={{
-                    width: "70%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    border: "1px solid lightgrey",
-
-                    borderRadius: "3px",
-                    padding: 5,
-                    height: "32px",
-                    backgroundColor: "#f1f1f1",
-                  }}
-                >
-                  <div style={{ width: "45px", fontSize: "0.8rem", marginRight: "5px" }}>완료율</div>
+            <div
+              style={{
+                padding: "1px 5px",
+                flexGrow: 1,
+                color: "#8b8b8b",
+                border: "1px solid lightgrey",
+                backgroundColor: "#f1f1f1",
+                borderRadius: "3px",
+                display: "flex",
+                justifyContent: "space-evenly",
+                flexDirection: "column",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ width: "100%", display: "flex", flexDirection: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+                  <div style={{ marginBottom: "0px", fontSize: "0.8rem", marginRight: "5px", width: "37px", flexShrink: 0 }}>완료율</div>
                   <ProgressBar bgcolor={"#32c41e"} completed={progress} />
                 </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: "30%",
-                    border: "1px solid lightgrey",
-                    borderRadius: "3px",
-                    padding: 5,
-                    height: "32px",
-                    backgroundColor: "#f1f1f1",
-                    marginLeft: "5px",
-                  }}
-                >
-                  <div style={{ lineHeight: "0.8rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px", marginLeft: "5px" }}>
-                    <div>card</div>
-                    <div>level</div>
-                  </div>
-                  <div
-                    style={{
-                      // backgroundColor: "#e2e2e2",
-                      // boxShadow: "inset 2px 2px 3px 0px #acacac",
-                      width: "50%",
-                      flexGrow: 1,
-                    }}
-                  >
-                    <Popover
-                      content={cardInfoPop}
-                      placement="bottomRight"
-                      title={
-                        <>
-                          <span style={{ fontSize: "0.8rem" }}>카드정보</span>
-                        </>
-                      }
-                      trigger="click"
-                    >
-                      <Button size="small" style={{ width: "100%", backgroundColor: "#e2e2e2", border: "none", boxShadow: "1px 1px 1px 0px #acacac" }}>
-                        {cardLevel}
-                      </Button>
-                    </Popover>
-                  </div>
-                  {/* <div style={{ lineHeight: "0.8rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px", marginLeft: "5px" }}>
-                    <div>click</div>
-                    <div>count</div>
+
+                <div style={{ width: "100%", display: "flex", flexDirection: "flex", alignItems: "center", marginLeft: "5px", justifyContent: "flex-start" }}>
+                  <div style={{ lineHeight: "1rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px" }}>
+                    <div>카드정보</div>
                   </div>
                   <div
                     style={{
@@ -2584,28 +2601,40 @@ class Container extends Component {
                       textAlign: "right",
                       paddingRight: "5px",
                       width: "50%",
+                      flexGrow: 1,
                       fontFamily: "Mina, sans-serif",
                       fontSize: "0.9rem",
                       lineHeight: "20px",
                       height: "20px",
-                      flexGrow: 1,
+                      borderRadius: "3px",
                     }}
                   >
-                    {sumClicks}
-                  </div> */}
+                    {cardInfoStatusBar}
+                  </div>
                 </div>
+                <Popover
+                  content={cardInfoPop}
+                  placement="bottomRight"
+                  title={
+                    <>
+                      <span style={{ fontSize: "0.8rem" }}>카드정보</span>
+                    </>
+                  }
+                  trigger="click"
+                >
+                  <Button
+                    size="small"
+                    style={{ flexShrink: 0, fontSize: "0.8rem", width: "32px", height: "20px", marginLeft: "5px", borderRadius: "3px", padding: "2px", border: "none" }}
+                  >
+                    상세
+                  </Button>
+                </Popover>
               </div>
               <div
                 style={{
                   display: "flex",
-                  marginTop: "5px",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  border: "1px solid lightgrey",
-                  borderRadius: "3px",
-                  padding: 5,
-                  height: "32px",
-                  backgroundColor: "#f1f1f1",
                 }}
               >
                 <Timer
@@ -2619,11 +2648,13 @@ class Container extends Component {
                 />
               </div>
             </div>
-            <Button size="small" style={{ fontSize: "0.8rem", width: "53px", height: "69px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishStudy} type="primary">
-              학습종료
+            <Button size="small" style={{ fontSize: "1rem", width: "53px", height: "60px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishStudy} type="primary">
+              학습
+              <br />
+              종료
             </Button>
           </div>
-          <div style={{ position: "fixed", top: "124px", width: "95%", border: "1px solid lightgrey", borderRadius: "3px" }}>{statusBar}</div>
+          <div style={{ position: "fixed", top: "115px", width: "95%", border: "1px solid lightgrey", borderRadius: "3px" }}>{statusBar}</div>
           <div style={style_study_layout_bottom}>
             <div style={{ width: "100%" }}>
               {/* <div>{statusBar}</div> */}
@@ -2813,8 +2844,8 @@ const style_study_layout_bottom = {
   justifyContent: "space-between",
   width: "100%",
   margin: "auto",
-  marginTop: "163px",
-  height: "calc(100vh - 280px)",
+  marginTop: "154px",
+  height: "calc(100vh - 267px)",
   overflow: "auto",
   border: "1px solid lightgrey",
   borderRadius: "3px",

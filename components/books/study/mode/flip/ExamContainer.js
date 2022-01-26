@@ -196,7 +196,7 @@ class Container extends Component {
     console.log(listLength);
     if (Number(listLength) - 1 === Number(card_seq)) {
       alert("시험이 끝났습니다. 결과화면으로 이동합니다.");
-      this.finishStudy();
+      this.finishExam();
     } else {
       if (card_seq === origin_seq) {
         this.setState({

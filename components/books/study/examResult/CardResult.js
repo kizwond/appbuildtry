@@ -1,11 +1,13 @@
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
-import stringSimilarity from "string-similarity";
 
-const CardResult = ({ seq, face1, answer, face2, cardId }) => {
-  const result = answer === " " ? false : face2.indexOf(answer) > -1;
-  const similarirty = stringSimilarity.compareTwoStrings(face2, answer);
-
-  console.log({ similarirty });
+const CardResult = ({
+  seq,
+  frontOfCard,
+  answer,
+  rightAnswer,
+  result,
+  cardId,
+}) => {
   return (
     <div
       className={`flex border border-gray-300 border-solid rounded  ${
@@ -22,7 +24,7 @@ const CardResult = ({ seq, face1, answer, face2, cardId }) => {
       <div className="flex-auto min-w-0 p-2 border-r border-r-gray-300">
         <div className="flex text-base">
           <div className="flex-none w-12">앞면 :</div>
-          <div className="truncate">{face1}</div>
+          <div className="truncate">{frontOfCard}</div>
         </div>
         <div className="flex text-base">
           <div className="flex-none w-12">입력 :</div>
@@ -30,7 +32,7 @@ const CardResult = ({ seq, face1, answer, face2, cardId }) => {
         </div>
         <div className="flex text-base">
           <div className="flex-none w-12">정답 :</div>
-          <div className="truncate">{face2}</div>
+          <div className="truncate">{rightAnswer}</div>
         </div>
       </div>
 

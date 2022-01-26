@@ -368,7 +368,7 @@ class UpdateEditor extends Component {
     const annotation_array = [];
 
     //읽기카드만 있을때
-    if (num_face1 > 0 && num_face2 === 0 && num_annot > 0) {
+    if (num_face1 > 0 && num_face2 === 0 ) {
       for (var i = 1; i < num_face1 + 1; i++) {
         face1_array.push(this.state["editor" + i]);
         console.log(this.state["editor" + i]);
@@ -380,7 +380,7 @@ class UpdateEditor extends Component {
       }
     }
     if (num_selection) {
-      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 && num_selection > 0) {
+      if (num_face1 > 0 && num_face2 > 0  && num_selection > 0) {
         for (i = 1; i < num_face1 + 1; i++) {
           face1_array.push(this.state["editor" + i]);
         }
@@ -401,7 +401,7 @@ class UpdateEditor extends Component {
         }
       }
     } else {
-      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0) {
+      if (num_face1 > 0 && num_face2 > 0 ) {
         for (i = 1; i < num_face1 + 1; i++) {
           face1_array.push(this.state["editor" + i]);
           console.log(this.state["editor" + i]);
@@ -553,7 +553,7 @@ class UpdateEditor extends Component {
 
 
     if (num_selection) {
-      if (num_face1 > 0 && num_face2 > 0 && num_annot > 0 && num_selection > 0) {
+      if (num_face1 > 0 && num_face2 > 0 && num_selection > 0) {
         for (i = 1; i < num_face1 + 1; i++) {
           this.setState({
             ["editor" + i]: this.props.mycontent.face1[i - 1],

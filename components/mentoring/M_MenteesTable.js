@@ -277,9 +277,6 @@ const DrawerWrapper = styled(Drawer)`
 
   height: calc(100vh - 40px);
 
-  & .ant-drawer-body * {
-    font-size: 1rem;
-  }
   & .ant-drawer-wrapper-body {
     height: ${({ setheight }) => setheight || "auto"}px;
   }

@@ -148,6 +148,7 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer, leve
 
   card_details_session[current_card_info_index].studyStatus.studyHourInSession += timer;
   card_details_session[current_card_info_index].studyStatus.clickTimesInSession += 1;
+  card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = null;
 
   card_details_session[current_card_info_index].studyStatus.isUpdated = true;
 

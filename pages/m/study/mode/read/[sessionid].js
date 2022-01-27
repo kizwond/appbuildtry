@@ -221,7 +221,7 @@ const ReadMode = () => {
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
-    console.log(selectionCard)
+    console.log(selectionCard);
     const mybook_id = selectionCard[0].card_info.mybook_id;
     const cardtype = selectionCard[0].card_info.cardtype;
     const cardtype_id = selectionCard[0].card_info.cardtype_id;
@@ -245,7 +245,22 @@ const ReadMode = () => {
 
     // const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
 
-    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, indexSetId, index_id,cardSetId,values.face1, values.selection, values.face2, values.annotation, values.flagStar, values.flagComment, cardTypeSetId);
+    addcard(
+      mybook_id,
+      cardtype,
+      cardtype_id,
+      current_position_card_id,
+      indexSetId,
+      index_id,
+      cardSetId,
+      values.face1,
+      values.selection,
+      values.face2,
+      values.annotation,
+      values.flagStar,
+      values.flagComment,
+      cardTypeSetId
+    );
   };
 
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });

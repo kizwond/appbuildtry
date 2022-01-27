@@ -61,19 +61,14 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   function afterGetContent(data) {
     console.log(data);
-    // console.log(contentsList);
     const newArray = contentsList.concat(data.mycontent_getMycontentByMycontentIDs.mycontents);
     var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
-    // console.log(uniq);
     setContentsList(uniq);
   }
 
   function afterGetBuyContent(data) {
-    // console.log(data);
-    // console.log(contentsList);
     const newArray = contentsList.concat(data.buycontent_getBuycontentByBuycontentIDs.buycontents);
     var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
-    // console.log(uniq);
     setContentsList(uniq);
   }
 
@@ -112,13 +107,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   if (cards) {
     var contents = cards.map((content) => {
-    //   console.log("카드에 스타일 입히기 시작", cardTypeSets);
-    //   console.log(content);
+      //   console.log("카드에 스타일 입히기 시작", cardTypeSets);
+      //   console.log(content);
       const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
 
-    //   console.log(current_card_style_set);
+      //   console.log(current_card_style_set);
       const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
-    //   console.log(current_card_style);
+      //   console.log(current_card_style);
       const face_style = current_card_style[0].face_style;
       const row_style = current_card_style[0].row_style;
       const row_font = current_card_style[0].row_font;
@@ -325,7 +320,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               </div>
             </>
           );
-
+          
           return (
             <>
               {content.card_info.cardtype === "read" && (
@@ -1089,11 +1084,35 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   return (
     <>
       <div>{contents}</div>
-      {data1 && (
+      {/* {data1 && (
         <>
-          <FixedBottomMenuDirectRead book_ids={book_ids} index_changed={index_changed} indexSets={indexSets} />
+          <FixedBottomMenuDirectRead
+            hide={hide}
+            underline={underline}
+            highlight={highlight}
+            search={search}
+            underlineToggle={underlineToggle}
+            hiddenToggle={hiddenToggle}
+            highlightToggle={highlightToggle}
+            searchToggle={searchToggle}
+            cardTypeSets={cardTypeSets}
+            hiddenToggleHandler={hiddenToggleHandler}
+            underlineToggleHandler={underlineToggleHandler}
+            highlightToggleHandler={highlightToggleHandler}
+            searchToggleHandler={searchToggleHandler}
+            updateStudyToolApply={updateStudyToolApply}
+            setHiddenToggle={setHiddenToggle}
+            setUnderlineToggle={setUnderlineToggle}
+            setHighlightToggle={setHighlightToggle}
+            setSearchToggle={setSearchToggle}
+            searchResult={searchResult}
+            prepareCardInDictionary={prepareCardInDictionary}
+            editorOn={editorOn}
+            selectedCardType={selectedCardType}
+            fireEditor={fireEditor}
+          />
         </>
-      )}
+      )} */}
     </>
   );
 };

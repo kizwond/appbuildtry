@@ -57,7 +57,19 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
       {data && (
         <div className="w-full flex flex-col gap-[8px]">
           <SectionWrapper
-            title="최근 일주일 학습 실적"
+            title={
+              <div className="flex items-end space-x-3">
+                <div>최근 학습 실적</div>
+                <a
+                  className="text-[1rem] text-blue-700"
+                  onClick={() => {
+                    setDrawerVisibleForStudyHourCards(true);
+                  }}
+                >
+                  자세히 보기
+                </a>
+              </div>
+            }
             content={<StudyHistoryOfLastWeek data={data} />}
           />
           <SectionWrapper

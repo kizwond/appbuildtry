@@ -43,29 +43,28 @@ const SessionSummary = ({ from }) => {
     [resultOfSession]
   );
 
-  const startedTime = useMemo(
-    () =>
-      moment(
-        new Date(
-          sessionStorage.getItem(
-            from === "home" ? "startTimeForSessionHistory" : "started"
-          )
+  const startedTime = useMemo(() => {
+    const time = moment(
+      new Date(
+        sessionStorage.getItem(
+          from === "home" ? "startTimeForSessionHistory" : "started"
         )
-      ).format("M.D hh:mm"),
-    [from]
-  );
+      )
+    ).format("M.D hh:mm");
 
-  const endedTime = useMemo(
-    () =>
-      moment(
-        new Date(
-          sessionStorage.getItem(
-            from === "home" ? "endTimeForSessionHistory" : "endTimeOfSession"
-          )
+    return time === "Invalid date" ? null : time;
+  }, [from]);
+
+  const endedTime = useMemo(() => {
+    const time = moment(
+      new Date(
+        sessionStorage.getItem(
+          from === "home" ? "endTimeForSessionHistory" : "endTimeOfSession"
         )
-      ).format("M.D hh:mm"),
-    [from]
-  );
+      )
+    ).format("M.D hh:mm");
+    return time === "Invalid date" ? null : time;
+  }, [from]);
 
   const displayTime = useCallback((time) => {
     switch (time.length) {

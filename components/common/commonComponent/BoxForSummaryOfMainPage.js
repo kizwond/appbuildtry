@@ -5,7 +5,7 @@ const BoxForSummaryOfMainPage = ({ title, content }) => (
     <div className="text-base text-center font-[600] border border-gray-200  bg-slate-100">
       {title}
     </div>
-    <div className="text-base text-center font-[600] text-[1.16667rem]  py-[10px] border border-gray-200">
+    <div className="text-base text-center font-[600] text-[1.16667rem] h-[40px] py-[10px] border border-gray-200">
       {content}
     </div>
   </div>

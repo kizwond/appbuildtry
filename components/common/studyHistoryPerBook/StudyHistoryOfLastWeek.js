@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 
 import { useRouter } from "next/router";
 import { useLazyQuery } from "@apollo/client";
@@ -10,7 +10,7 @@ import produce from "immer";
 import moment from "moment";
 import _ from "lodash";
 
-const StudyHistoryOfLastWeek = ({ data }) => {
+const StudyHistoryOfLastWeek = ({ data, isAllList }) => {
   const router = useRouter();
 
   const [getSessionDataForResult, { variables }] = useLazyQuery(
@@ -140,6 +140,9 @@ const StudyHistoryOfLastWeek = ({ data }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const list = isAllList
+    ? _([...data.session_getSessionByMybookid.sessions])
+    : _([...data.session_getSessionByMybookid.sessions]).takeRight(5);
   return (
     <table className="w-full table-fixed">
       <thead>
@@ -151,8 +154,7 @@ const StudyHistoryOfLastWeek = ({ data }) => {
         </tr>
       </thead>
       <tbody>
-        {_(data.session_getSessionByMybookid.sessions)
-          .takeRight(5)
+        {list
           .reverse()
           .map((session) => {
             const startedDate = moment(session.session_info.timeStarted).format(
@@ -224,4 +226,4 @@ const StudyHistoryOfLastWeek = ({ data }) => {
   );
 };
 
-export default StudyHistoryOfLastWeek;
+export default memo(StudyHistoryOfLastWeek);

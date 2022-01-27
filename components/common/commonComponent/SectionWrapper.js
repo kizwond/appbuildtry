@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const SectionWrapper = ({ title, content }) => (
   <section className="w-full p-2 bg-white rounded">
     <div className="ForMobilePageMainTitle">{title}</div>
@@ -5,4 +7,4 @@ const SectionWrapper = ({ title, content }) => (
   </section>
 );
 
-export default SectionWrapper;
+export default memo(SectionWrapper);

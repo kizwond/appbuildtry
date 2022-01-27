@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import prettyMilliseconds from "pretty-ms";
-import { Fragment, useState } from "react";
+import { Fragment, memo, useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../../graphql/query/allQuery";
 
 const TableForRankedCards = ({ data, contentType }) => {
@@ -205,4 +205,4 @@ const TableForRankedCards = ({ data, contentType }) => {
   );
 };
 
-export default TableForRankedCards;
+export default memo(TableForRankedCards);

@@ -1,5 +1,6 @@
 import _ from "lodash";
 import moment from "moment";
+import { memo } from "react";
 import styled from "styled-components";
 
 const ChartForGainedLevelPerDay = ({ data }) => {
@@ -92,7 +93,7 @@ const ChartForGainedLevelPerDay = ({ data }) => {
   );
 };
 
-export default ChartForGainedLevelPerDay;
+export default memo(ChartForGainedLevelPerDay);
 
 const StyledBar = styled.div`
   height: ${(props) => props.barHeightPercentage};

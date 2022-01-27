@@ -1,5 +1,6 @@
 import _ from "lodash";
 import moment from "moment";
+import { memo } from "react";
 import styled from "styled-components";
 
 const ChartForStudiedCardsPerDay = ({ data }) => {
@@ -43,15 +44,7 @@ const ChartForStudiedCardsPerDay = ({ data }) => {
                 const percentageOfCompleted = !!totalStudiedTimes
                   ? Math.round((completedTimes / totalStudiedTimes) * 100) + "%"
                   : "0%";
-                console.log({
-                  date,
-                  totalStudiedTimes,
-                  barHeightPercentage,
-                  incompletedTimes,
-                  percentageOfIncompleted,
-                  completedTimes,
-                  percentageOfCompleted,
-                });
+
                 return {
                   date: moment(date).format("M월D일"),
                   totalStudiedTimes,
@@ -104,7 +97,7 @@ const ChartForStudiedCardsPerDay = ({ data }) => {
   );
 };
 
-export default ChartForStudiedCardsPerDay;
+export default memo(ChartForStudiedCardsPerDay);
 
 const StyledBar = styled.div`
   height: ${(props) => props.barHeightPercentage};

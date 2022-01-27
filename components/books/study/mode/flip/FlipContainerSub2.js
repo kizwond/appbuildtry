@@ -65,7 +65,7 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
         } else if (levelUpdated == false){
             if (levelCurrent == 0){
                 theoNewLevel = Math.round(initialElapsedHour /24  * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
-                console.log('newLevel1', newLevel)
+                // console.log('newLevel1', newLevel)
             } else {
                 const levelOfLastSession = levelCurrent
                 const lastRatioOfLastSession = recentStudyRatio
@@ -75,7 +75,7 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
     
                 theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
                 
-                console.log('newLevel2', newLevel)
+                // console.log('newLevel2', newLevel)
             }
             newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
         }

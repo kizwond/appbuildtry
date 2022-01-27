@@ -27,10 +27,12 @@ const FloatingMenu = ({
   selectedCardType,
   cardTypeSets,
   cardTypeSetId,
+  closeNotification
 }) => {
   const [visible, setVisible] = useState(false);
 
   const addCard = () => {
+    closeNotification()
     setCardId("");
     setEditorOnFromCard("");
     if (selectedCardType) {

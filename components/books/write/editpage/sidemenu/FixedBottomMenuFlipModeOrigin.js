@@ -1,86 +1,39 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { message, Modal, Space, Drawer, Button, Radio, Select } from "antd";
-import M_LeftDrawerDirectRead from "../M_LeftDrawerDirectRead";
+import React, { useEffect, useState } from "react";
+import { message, Space, Drawer, Button } from "antd";
 import {
-  ProfileOutlined,
-  FlagFilled,
-  HeartFilled,
-  StarFilled,
-  CheckCircleFilled,
-  PlusOutlined,
-  MenuFoldOutlined,
   HighlightOutlined,
-  MessageOutlined,
   UnderlineOutlined,
-  TagOutlined,
-  PicRightOutlined,
-  QuestionCircleOutlined,
   EyeInvisibleOutlined,
-  FlagOutlined,
-  SettingOutlined,
-  CloseOutlined,
   DashOutlined,
   SoundOutlined,
-  ToolOutlined,
-  ReadOutlined,
-  HighlightTwoTone,
-  EyeInvisibleTwoTone,
 } from "@ant-design/icons";
 
 import StudyToolSetting from "../../../study/mode/StudyToolSetting";
 import StudyGeneralSetting from "../../../study/mode/StudyGeneralSetting";
-import Item from "antd/lib/list/Item";
-import Image from "next/image";
-import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
-import { Dictionary } from "../../../../../graphql/query/card_contents";
 import { useRouter } from "next/router";
-const { Option } = Select;
 
 const FloatingMenu = ({
   highlightToggle,
   highlightToggleHandler,
   hiddenToggleHandler,
   underlineToggleHandler,
-  searchToggleHandler,
   cardTypeSets,
   hiddenToggle,
   underlineToggle,
-  searchToggle,
   hide,
   underline,
   highlight,
-  search,
   updateStudyToolApply,
   setHiddenToggle,
   setUnderlineToggle,
   setHighlightToggle,
-  setSearchToggle,
-  searchResult,
-  prepareCardInDictionary,
-  editorOn,
-  selectedCardType,
-  fireEditor,
   face1On,
   face2On,
-  ttsOn,
+  ttsOn
 }) => {
-  const router = useRouter();
+  const router = useRouter()
   const [bottomVisible, setBottomVisible] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [createCardOn, setCreateCardOn] = useState(false);
-  const [caseRadio, setCaseRadio] = useState("next");
-  const [result, setResult] = useState();
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
   const info = () => {
     var selectionText = sessionStorage.getItem("selectionText");
     console.log(selectionText);
@@ -202,52 +155,6 @@ const FloatingMenu = ({
       );
     });
 
-    const searchSettings = ["백과사전", "영한사전"];
-    var searchButtons = searchSettings.map((item, index) => {
-      if (index === 0) {
-        var marginValue = -51;
-      } else if (index === 1) {
-        marginValue = -97;
-      } else if (index === 2) {
-        marginValue = -143;
-      } else if (index === 3) {
-        marginValue = -189;
-      } else if (index === 4) {
-        marginValue = -235;
-      }
-      return (
-        <>
-          <div
-            className={`searchGroup${index}`}
-            onClick={() => editorModalOpen(item)}
-            style={{
-              position: "absolute",
-              top: `${marginValue}px`,
-              // left: "-7px",
-              cursor: "pointer",
-              width: "50px",
-              height: "40px",
-              borderRadius: "3px",
-              backgroundColor: "white",
-              textAlign: "center",
-              boxShadow: "1px 1px 4px 0px #909090",
-              color: "black",
-            }}
-          >
-            <div
-              style={{
-                cursor: "pointer",
-                textAlign: "center",
-                lineHeight: "40px",
-              }}
-            >
-              {item}
-            </div>
-          </div>
-        </>
-      );
-    });
-
     var highlightButtons = highlightSettings.map((item, index) => {
       if (index === 0) {
         var marginValue = -51;
@@ -311,61 +218,15 @@ const FloatingMenu = ({
     setHiddenToggle(false);
     setUnderlineToggle(false);
     setHighlightToggle(false);
-    setSearchToggle(false);
     setBottomVisible(!bottomVisible);
   }
-  const moveToSpreadView = () => {
-    const sessionId = sessionStorage.getItem("session_Id");
-    router.push(`/m/study/mode/read/${sessionId}`);
-    // location.href = `/m/study/mode/read/${sessionId}`
-  };
   const onClose = () => {
     setBottomVisible(false);
   };
-
-  async function editorModalOpen(menu) {
-    const hello = async () => search(menu);
-    await hello().then(setResult(searchResult));
-
-    if (memu === "영한사전") {
-      showModal();
-    } else {
-      alert("준비중입니다.");
-    }
-  }
-  function createCardInDictionary() {
-    console.log("카드만들기 실행!!");
-    setCreateCardOn(true);
-    if (caseRadio === "next") {
-      prepareCardInDictionary("next");
-    }
-    // prepareCardInDictionary()
-  }
-  function onChange(e) {
-    console.log("radio checked", e.target.value);
-    setCaseRadio(e.target.value);
-    if (e.target.value === "next") {
-      prepareCardInDictionary("next");
-    }
-  }
-
-  function handleChange(value) {
-    console.log(`selected ${value}`);
-    fireEditor(value);
-  }
-
-  if (selectedCardType) {
-    if (selectedCardType.length > 0) {
-      var selections = selectedCardType.map((item) => {
-        if (item.cardtype_info.cardtype === "flip") {
-          return (
-            <>
-              <Option value={item._id}>{item.cardtype_info.name}</Option>
-            </>
-          );
-        }
-      });
-    }
+  const moveToSpreadView = () => {
+    const sessionId = sessionStorage.getItem("session_Id")
+    router.push(`/m/study/mode/read/${sessionId}`)
+    // location.href = `/m/study/mode/read/${sessionId}`
   }
   return (
     <>
@@ -432,7 +293,7 @@ const FloatingMenu = ({
                 onClick={() => hiddenToggleHandler(info)}
                 style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
               >
-                {underlineToggle || highlightToggle || searchToggle ? (
+                {underlineToggle || highlightToggle ? (
                   <>
                     <EyeInvisibleOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
                     <span style={{ color: "#636363" }}>가리기</span>
@@ -462,7 +323,7 @@ const FloatingMenu = ({
                 onClick={() => underlineToggleHandler(info)}
                 style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
               >
-                {hiddenToggle || highlightToggle || searchToggle ? (
+                {hiddenToggle || highlightToggle ? (
                   <>
                     <UnderlineOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
                     <span style={{ color: "#636363" }}>밑줄긋기</span>
@@ -491,7 +352,7 @@ const FloatingMenu = ({
                 onClick={() => highlightToggleHandler(info)}
                 style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
               >
-                {hiddenToggle || underlineToggle || searchToggle ? (
+                {hiddenToggle || underlineToggle ? (
                   <>
                     <HighlightOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
                     <span style={{ color: "#636363" }}>형광펜</span>
@@ -504,44 +365,7 @@ const FloatingMenu = ({
                 )}
               </div>
             )}
-
-            {searchToggle && (
-              <div
-                onClick={() => searchToggleHandler(info)}
-                style={{ padding: "5px 0", backgroundColor: "#262626", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
-              >
-                <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <Image src="/image/dictionary_icon_white.png" width={"20px"} height={"20px"} alt="dictionary" />
-                  사전검색
-                </div>
-
-                {searchButtons}
-              </div>
-            )}
-            {!searchToggle && (
-              <div
-                onClick={() => searchToggleHandler(info)}
-                style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
-              >
-                {hiddenToggle || underlineToggle || highlightToggle ? (
-                  <>
-                    <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                      <Image src="/image/dictionary_icon.png" width={"20px"} height={"20px"} alt="dictionary" />
-                      <span style={{ color: "#636363" }}>사전검색</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                      <Image src="/image/dictionary_icon_white.png" width={"20px"} height={"20px"} alt="dictionary" />
-                      사전검색
-                    </div>
-                  </>
-                )}
-              </div>
-            )}
-
-            {hiddenToggle || underlineToggle || highlightToggle || searchToggle ? (
+            {hiddenToggle || underlineToggle || highlightToggle ? (
               <>
                 <div onClick={hideAll} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                   <DashOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
@@ -563,14 +387,7 @@ const FloatingMenu = ({
                 style={{ padding: 20, display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap: "wrap", fontSize: "0.8rem", color: "#7a7a7a" }}
               >
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <StudyGeneralSetting
-                    setBottomVisible={setBottomVisible}
-                    cardTypeSets={cardTypeSets}
-                    updateStudyToolApply={updateStudyToolApply}
-                    face1On={face1On}
-                    face2On={face2On}
-                    ttsOn={ttsOn}
-                  />
+                  <StudyGeneralSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} face1On={face1On} face2On={face2On} ttsOn={ttsOn}/>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                   <StudyToolSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} />
@@ -580,72 +397,10 @@ const FloatingMenu = ({
                   TTS설정
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <Button size="small" onClick={moveToSpreadView}>
-                    펼쳐보기
-                  </Button>
+                  <Button size="small" onClick={moveToSpreadView}>펼쳐보기</Button>
                 </div>
               </Space>
             </Drawer>
-            <Modal footer={null} title="카드생성" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-              {searchResult && (
-                <>
-                  <div style={{ fontSize: "1rem" }}>선택단어 : {searchResult.selectionText}</div>
-                  <div style={{ fontSize: "1rem" }}>뜻 : {searchResult.meaning1}</div>
-                  <div style={{ fontSize: "1rem" }}>영어뜻 : {searchResult.meaningEng1}</div>
-                  <div style={{ fontSize: "1rem" }}>뜻2 : {searchResult.meaning2}</div>
-                  <div style={{ fontSize: "1rem" }}>영어뜻2 : {searchResult.meaningEng2}</div>
-                  <div style={{ fontSize: "1rem" }}>예문1 : {searchResult.example1}</div>
-                  <div style={{ fontSize: "1rem" }}>예문2 : {searchResult.example2}</div>
-                </>
-              )}
-              <Button size="small" type="primary" onClick={createCardInDictionary}>
-                카드생성
-              </Button>
-              {createCardOn && (
-                <>
-                  <Radio.Group onChange={onChange} value={caseRadio}>
-                    <Space direction="vertical">
-                      <Radio value="next">현재카드 바로 뒤</Radio>
-                      <Radio value="same_last">현재카드 인덱스 맨 뒤</Radio>
-                      <Radio value="diff_last">현재책 다른 인덱스 맨 뒤</Radio>
-                      <Radio value="diff_book">다른책 다른 인덱스 맨 뒤</Radio>
-                    </Space>
-                  </Radio.Group>
-                </>
-              )}
-              {caseRadio === "next" && (
-                <>
-                  <div>현재카드 바로뒤 selection</div>
-                </>
-              )}
-              {caseRadio === "same_last" && (
-                <>
-                  <div>현재카드 인덱스 맨 뒤 selection</div>
-                </>
-              )}
-              {caseRadio === "diff_last" && (
-                <>
-                  <div>현재책 다른 인덱스 맨 뒤 selection</div>
-                </>
-              )}
-              {caseRadio === "diff_book" && (
-                <>
-                  <div>다른책 다른 인덱스 맨 뒤 selection</div>
-                </>
-              )}
-
-              {selectedCardType && (
-                <>
-                  <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange}>
-                    <Option value="default" disabled>
-                      카드타입 선택
-                    </Option>
-                    {selections}
-                  </Select>
-                </>
-              )}
-              {editorOn}
-            </Modal>
           </div>
         </div>
       </div>

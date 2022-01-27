@@ -6,11 +6,17 @@ import { useRouter } from "next/router";
 import FlipContainer from "../../../../../components/books/study/mode/flip/FlipContainer";
 import StudyLayout from "../../../../../components/layout/StudyLayout";
 import FixedBottomMenuFlipMode from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuFlipMode";
-import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET } from "../../../../../graphql/query/card_contents";
+import { GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, GET_CARDTYPESET, AddCard } from "../../../../../graphql/query/card_contents";
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import { Button, Modal, Space, Tag, message, Divider } from "antd";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 import { SAVEMEMO } from "../../../../../graphql/mutation/addMemo";
+import dynamic from "next/dynamic";
+import { Dictionary } from "../../../../../graphql/query/card_contents";
+
+const Editor = dynamic(() => import("../../../../../components/books/write/editpage/Editor"), {
+  ssr: false,
+});
 
 const FlipMode = () => {
   const { query } = useRouter();
@@ -43,6 +49,11 @@ const FlipMode = () => {
   const [userFlagDetails, setUserFlagDetails] = useState();
   const [isModalVisibleHidden, setIsModalVisibleHidden] = useState(false);
   const [userFlag, setUserFlag] = useState(false);
+  const [searchResult, setSearchResult] = useState(false);
+
+  const [searchToggle, setSearchToggle] = useState(false);
+  const [editorOn, setEditorOn] = useState();
+  const [selectedCardType, setSelectedCardType] = useState();
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -227,6 +238,247 @@ const FlipMode = () => {
       }
     }
   }, [data, levelconfig_getLevelconfigs, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs, cardtypeset_getbymybookids]);
+  
+  const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
+
+  function afteraddcardmutation(data) {
+    console.log(data);
+  }
+  async function addcard(
+    mybook_id,
+    cardtype,
+    cardtype_id,
+    current_position_card_id,
+    indexSetId,
+    index_id,
+    cardSetId,
+    face1_contents,
+    selection_contents,
+    face2_contents,
+    annotation_contents,
+    flagStar,
+    flagComment,
+    cardTypeSetId
+  ) {
+    const parentId = null;
+    if (parentId === null) {
+      var hasParent = "no";
+      var parentCard_id = undefined;
+    }
+    try {
+      await cardset_addcardAtSameIndex({
+        variables: {
+          forAddcardAtSameIndex: {
+            currentPositionCardID: current_position_card_id,
+            card_info: {
+              mybook_id: mybook_id,
+              indexset_id: indexSetId,
+              index_id: index_id,
+              cardset_id: cardSetId,
+              cardtypeset_id: cardTypeSetId,
+              cardtype_id,
+              cardtype,
+              hasParent: hasParent,
+              parentCard_id: parentCard_id,
+            },
+            content: {
+              // user_flag: null,
+              // maker_flag: null,
+              face1: face1_contents,
+              selection: selection_contents,
+              face2: face2_contents,
+              annotation: annotation_contents,
+              // memo: null,
+            },
+            makerFlag: {
+              value: Number(flagStar),
+              comment: flagComment,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const onFinish = (values, from) => {
+    console.log(values);
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
+    console.log(selectionCard)
+    const mybook_id = selectionCard[0].card_info.mybook_id;
+    const cardtype = selectionCard[0].card_info.cardtype;
+    const cardtype_id = selectionCard[0].card_info.cardtype_id;
+    const current_position_card_id = selectionCard[0].card_info.card_id;
+    const indexSetId = selectionCard[0].card_info.indexset_id;
+    const index_id = selectionCard[0].card_info.index_id;
+    const cardSetId = selectionCard[0].card_info.cardset_id;
+    const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id;
+
+    // console.log(values.parentId);
+    // const mybook_id = localStorage.getItem("book_id");
+    // const cardtype = sessionStorage.getItem("cardtype");
+    // console.log("??????????????????????", cardId);
+    // if (from === "inCard") {
+    //   var current_position_card_id = cardId;
+    //   console.log("should have cardid", cardId);
+    // } else {
+    //   current_position_card_id = null;
+    //   console.log("should be null", cardId);
+    // }
+
+    // const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
+
+    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, indexSetId, index_id,cardSetId,values.face1, values.selection, values.face2, values.annotation, values.flagStar, values.flagComment, cardTypeSetId);
+  };
+  const cardTypeInfo = (selectedCardType_tmp, parentId, selections) => {
+    const cardtype_info = selectedCardType_tmp.cardtype_info;
+    sessionStorage.setItem("cardtype_info", JSON.stringify(cardtype_info));
+    sessionStorage.setItem("parentId", parentId);
+
+    console.log("cardTypeInfo fired!!!! editor on process");
+    console.log(selections);
+
+    const cardtypeEditor = cardtype_info.cardtype; //에디터에서 플립모드에 셀렉션 부과하려고 필요한 정보
+
+    const num_face1 = cardtype_info.num_of_row.face1;
+    const num_face2 = cardtype_info.num_of_row.face2;
+    if (selections) {
+      if (selections > 0) {
+        var num_selection = selections;
+      }
+    }
+    const num_annotation = cardtype_info.num_of_row.annotation;
+
+    const nick_face1 = cardtype_info.nick_of_row.face1;
+    const nick_face2 = cardtype_info.nick_of_row.face2;
+    const nick_annotation = cardtype_info.nick_of_row.annotation;
+
+    const nicks = [];
+
+    const face1 = [];
+    const face1Nick = [];
+    for (var i = 0; i < num_face1; i++) {
+      face1.push(i);
+      face1Nick.push(nick_face1[i]);
+      nicks.push(nick_face1[i]);
+    }
+
+    if (selections) {
+      if (selections > 0) {
+        const selection = [];
+        const selectionNick = [];
+        for (var i = 0; i < num_selection; i++) {
+          selection.push(i);
+          selectionNick.push(`보기${i + 1}`);
+          nicks.push(`보기${i + 1}`);
+        }
+      }
+    }
+
+    const face2 = [];
+    const face2Nick = [];
+    for (var i = 0; i < num_face2; i++) {
+      face2.push(i);
+      face2Nick.push(nick_face2[i]);
+      nicks.push(nick_face2[i]);
+    }
+
+    const annot = [];
+    const annotNick = [];
+    for (var i = 0; i < num_annotation; i++) {
+      annot.push(i);
+      annotNick.push(nick_annotation[i]);
+      nicks.push(nick_annotation[i]);
+    }
+
+    if (selectedCardType_tmp === undefined) {
+      var selectedCardTypeOption = cardtype_info.name;
+    } else {
+      selectedCardTypeOption = selectedCardType_tmp.name;
+    }
+
+    if (selections > 0) {
+      console.log("here1");
+      sessionStorage.setItem("nicks_with_selections", JSON.stringify(nicks));
+    } else if (cardtypeEditor === "flip") {
+      console.log("here2");
+      sessionStorage.setItem("nicks_without_selections", JSON.stringify(nicks));
+      sessionStorage.removeItem("nicks_with_selections");
+      sessionStorage.setItem("selections_adding", 0);
+    }
+
+    const editor = (
+      <>
+        {/* <div
+          style={{ border: "1px solid lightgrey", borderBottom: "0px", padding: "5px", display: "flex", justifyContent: "space-between", fontSize: "0.8rem", alignItems: "center" }}
+        >
+          {cardtypeEditor === "flip" && (
+            <>
+              {selections == undefined && (
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft: "3px" }} onClick={addSelections}>
+                  보기추가
+                </Button>
+              )}
+              {selections == 0 && (
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft: "3px" }} onClick={addSelections}>
+                  보기추가
+                </Button>
+              )}
+            </>
+          )}
+        </div> */}
+
+        <div style={{ marginBottom: "100px" }}>
+          <Editor
+            // removeSelection={removeSelection}
+            face1={face1}
+            face2={face2}
+            annot={annot}
+            parentId={parentId}
+            nicks={nicks}
+            cardtypeEditor={cardtypeEditor}
+            onFinish={onFinish}
+            setEditorOn={setEditorOn}
+            cardtype_info={cardtype_info}
+            // addSelections={addSelections}
+            // addPolly={addPolly}
+            // forceUpdateBool={forceUpdateBool}
+            // setForceUpdateBool={setForceUpdateBool}
+          />
+        </div>
+      </>
+    );
+    setEditorOn(editor);
+  };
+
+  const prepareCardInDictionary = (radio) => {
+    console.log("카드생성전 데이터 꾸리기!!");
+    if (radio === "next") {
+      const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
+      const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id;
+      const cardTypeId = selectionCard[0].card_info.cardtype_id;
+
+      const selectedCardTypeSet = cardTypeSets.filter((item) => item._id === cardTypeSetId);
+      console.log(selectedCardTypeSet);
+      const cardtype_info_tmp = selectedCardTypeSet[0].cardtypes.filter((item) => item._id === cardTypeId);
+      console.log(cardtype_info_tmp);
+      const cardtype_info = cardtype_info_tmp[0].cardtype_info;
+      console.log(cardtype_info);
+      setSelectedCardType(selectedCardTypeSet[0].cardtypes);
+      // cardTypeInfo(cardtype_info, null, null)
+    }
+    //카드생성버튼을 누를때 전체 책 리스트를 받는다.
+    //
+  };
+  const fireEditor = (cardtypeId) => {
+    const selectedCardType_tmp = selectedCardType.filter((item) => item._id === cardtypeId);
+    cardTypeInfo(selectedCardType_tmp[0], null, null);
+  };
 
   const [cardset_updateUserFlag] = useMutation(MUTATION_UPDATE_USER_FLAG, {
     onCompleted: afterupdateuserflag,
@@ -397,11 +649,28 @@ const FlipMode = () => {
     sessionStorage.removeItem("selectionText");
   };
 
+  const search = (menu) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    if (menu === "영한사전") {
+      searchWord();
+      setSearchToggle(false);
+    } else if (menu === "백과사전") {
+      setSearchToggle(false);
+      sessionStorage.removeItem("selectionText");
+      return;
+    }
+  };
+
   const hiddenToggleHandler = (info) => {
     console.log("userflagclicked!!!");
     setHiddenToggle(!hiddenToggle);
     setUnderlineToggle(false);
     setHighlightToggle(false);
+    setSearchToggle(false);
     if (hiddenToggle === false) {
       message.destroy();
       info();
@@ -413,6 +682,7 @@ const FlipMode = () => {
     setUnderlineToggle(!underlineToggle);
     setHiddenToggle(false);
     setHighlightToggle(false);
+    setSearchToggle(false);
     if (underlineToggle === false) {
       message.destroy();
       info();
@@ -424,11 +694,25 @@ const FlipMode = () => {
     setHighlightToggle(!highlightToggle);
     setHiddenToggle(false);
     setUnderlineToggle(false);
+    setSearchToggle(false);
     if (highlightToggle === false) {
       message.destroy();
       info();
     }
   };
+
+  const searchToggleHandler = (info) => {
+    console.log("searchToggleHandler!!!");
+    setSearchToggle(!searchToggle);
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
+    setHighlightToggle(false);
+    if (searchToggle === false) {
+      message.destroy();
+      info();
+    }
+  };
+
   function updateStudyToolApply(data) {
     setCardTypeSets(data);
   }
@@ -486,6 +770,57 @@ const FlipMode = () => {
     [cardset_updateMemo]
   );
 
+  const [cardset_inquireLanguageDictionary] = useMutation(Dictionary, {
+    onCompleted: afterdictionary,
+  });
+  function afterdictionary(data) {
+    console.log("data", data.cardset_inquireLanguageDictionary.data1);
+    const selectionText = sessionStorage.getItem("selectionText");
+    const original = data.cardset_inquireLanguageDictionary.data1;
+    const meaning = original.match(/(KO\">([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100}))/gi);
+    const definitionKo = meaning[0].match(/([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100})/gi)[0];
+    const additional = meaning[1].match(/([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100})/gi)[0];
+    const definitionEg = original.match(/(def\">([a-z\s(),\.\?]{1,200}))/gi);
+    const definitionEg1 = definitionEg[0].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    const definitionEg2 = definitionEg[1].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    const exampleEg = original.match(/(eg\">([a-z\s(),\.\?]{1,200}))/gi);
+    const exampleEg1 = exampleEg[0].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    const exampleEg2 = exampleEg[1].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    console.log(meaning);
+    console.log("뜻", definitionKo);
+    console.log("뜻2", additional);
+    console.log(definitionEg);
+    console.log("영영뜻", definitionEg1);
+    console.log("영영뜻2", definitionEg2);
+    console.log(exampleEg);
+    console.log("영어예문", exampleEg1);
+    console.log("영어예문2", exampleEg2);
+    const results = {
+      selectionText: selectionText,
+      meaning1: definitionKo,
+      meaning2: additional,
+      meaningEng1: definitionEg1,
+      meaningEng2: definitionEg2,
+      example1: exampleEg1,
+      example2: exampleEg2,
+    };
+    setSearchResult(results);
+    sessionStorage.removeItem("selectionText");
+  }
+
+  const searchWord = useCallback(async () => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    try {
+      await cardset_inquireLanguageDictionary({
+        variables: {
+          targetWord: selectionText,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [cardset_inquireLanguageDictionary]);
+
   return (
     <StudyLayout mode="학습">
       <div
@@ -540,17 +875,26 @@ const FlipMode = () => {
             hide={hide}
             underline={underline}
             highlight={highlight}
+            search={search}
             underlineToggle={underlineToggle}
             hiddenToggle={hiddenToggle}
             highlightToggle={highlightToggle}
+            searchToggle={searchToggle}
             cardTypeSets={cardTypeSets}
             hiddenToggleHandler={hiddenToggleHandler}
             underlineToggleHandler={underlineToggleHandler}
             highlightToggleHandler={highlightToggleHandler}
+            searchToggleHandler={searchToggleHandler}
             updateStudyToolApply={updateStudyToolApply}
             setHiddenToggle={setHiddenToggle}
             setUnderlineToggle={setUnderlineToggle}
             setHighlightToggle={setHighlightToggle}
+            setSearchToggle={setSearchToggle}
+            searchResult={searchResult}
+            prepareCardInDictionary={prepareCardInDictionary}
+            editorOn={editorOn}
+            selectedCardType={selectedCardType}
+            fireEditor={fireEditor}
           />
         </>
       )}

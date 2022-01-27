@@ -49,7 +49,7 @@ const SessionSetting = () => {
 
   return (
     <>
-      <StudyLayout>
+      <StudyLayout mode="책">
         <div style={{width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
           <DirectReadContainer FroalaEditorView={FroalaEditorView} indexChanged={indexChanged} index_changed={index_changed} indexSets={indexSets}/>
         </div>

@@ -97,7 +97,74 @@ const M_RecentStudyList = () => {
             )
           );
 
-          router.push(`/m/study/result/${variables.session_id}`);
+          // router.push(`/m/study/result/${variables.session_id}`);
+        } else if (received_data.session_getSession.status === "401") {
+          router.push("/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
+  const [getExamDataForResult, { variables: variablesExam }] = useLazyQuery(
+    QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
+    {
+      onCompleted: (received_data) => {
+        if (received_data.session_getSession.status === "200") {
+          console.log("세션 결과 데이터 받음", received_data);
+
+          sessionStorage.setItem(
+            "startTimeForSessionHistory",
+            received_data.session_getSession.sessions[0].session_info
+              .timeStarted
+          );
+          sessionStorage.setItem(
+            "endTimeForSessionHistory",
+            received_data.session_getSession.sessions[0].session_info
+              .timeFinished
+          );
+          sessionStorage.setItem(
+            "cardListStudyingForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].cardlistUpdated
+            )
+          );
+          sessionStorage.setItem(
+            "createdCardsForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].createdCards
+            )
+          );
+          sessionStorage.setItem(
+            "cardlist_to_send_ForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].clickHistory
+            )
+          );
+          sessionStorage.setItem(
+            "resultOfSessionForSessionHistory",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].resultOfSession
+            )
+          );
+          sessionStorage.setItem(
+            "resultByBookForSessionHistory",
+            JSON.stringify(
+              produce(
+                received_data.session_getSession.sessions[0].resultByBook,
+                (draft) => {
+                  draft.forEach((book) => {
+                    book.bookTitle =
+                      received_data.session_getSession.sessions[0].sessionScope.find(
+                        (scope) => scope.mybook_id === book.mybook_id
+                      ).title;
+                  });
+                }
+              )
+            )
+          );
+
+          // router.push(`/m/study/result/${variablesExam.session_id}`);
         } else if (received_data.session_getSession.status === "401") {
           router.push("/account/login");
         } else {
@@ -110,6 +177,18 @@ const M_RecentStudyList = () => {
   const getSessionResult = useCallback(async ({ session_id }) => {
     try {
       getSessionDataForResult({
+        variables: {
+          session_id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const getExamResult = useCallback(async ({ session_id }) => {
+    try {
+      getExamDataForResult({
         variables: {
           session_id,
         },
@@ -262,7 +341,16 @@ const M_RecentStudyList = () => {
                     <td
                       className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center"
                       onClick={() => {
-                        getSessionResult({ session_id: session._id });
+                        console.log(session);
+                        if (session.sessionConfig.studyMode === "exam") {
+                          getExamResult({ session_id: session._id });
+                        } else if (session.sessionConfig.studyMode === "flip") {
+                          getSessionResult({ session_id: session._id });
+                        } else {
+                          throw new Error(
+                            `${session.sessionConfig.studyMode}는 없는 모드입니다`
+                          );
+                        }
                       }}
                     >
                       <a>결과</a>

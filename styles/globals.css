@@ -172,8 +172,8 @@ p {
 
 /* 모바일 메인페이지 타이틀 메뉴 설정 */
 .ForMobilePageMainTitle {
-  font-size: 1.16667rem;
-  font-weight: 500;
+  font-size: 1.16667rem !important;
+  font-weight: 500 !important;
 }
 .ForPcPageMainTitle {
   font-size: 15px;
@@ -1234,7 +1234,7 @@ p {
   /* 100% {margin-left:0;} */
 }
 audio {
-  height:20px;
+  height: 20px;
 }
 
 .face1 {
@@ -1249,8 +1249,12 @@ audio {
 }
 
 @keyframes face1 {
-  0% {opacity:0;}
-  100% {opacity:1;}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
   /* 100% {margin-left:0;} */
 }
 .face2 {
@@ -1265,8 +1269,12 @@ audio {
 }
 
 @keyframes face2 {
-  0% {opacity:0;}
-  100% {opacity:1;}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
   /* 100% {margin-left:0;} */
 }
 
@@ -1282,62 +1290,66 @@ audio {
 }
 
 @keyframes user_flags {
-  0% {opacity:0;}
-  100% {opacity:1;}
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
   /* 100% {margin-left:0;} */
 }
 
-.navDrawer .ant-drawer-content-wrapper .ant-drawer-content{
+.navDrawer .ant-drawer-content-wrapper .ant-drawer-content {
   background-color: #ffffff00 !important;
 }
 
-.face1 table{
-  display:table;
+.face1 table {
+  display: table;
   border: 1px solid grey;
-  border-collapse:collapse
+  border-collapse: collapse;
 }
-.face1 td{
-  display:table-cell;
-  border:1px solid grey;
-}
-.face1 thead{
+.face1 td {
+  display: table-cell;
   border: 1px solid grey;
 }
-
-.face1 th{
-  border: 1px solid grey;;
-}
-
-.face2 table{
-  display:table;
-  border: 1px solid grey;
-  border-collapse:collapse
-}
-.face2 td{
-  display:table-cell;
-  border:1px solid grey;
-}
-.face2 thead{
+.face1 thead {
   border: 1px solid grey;
 }
 
-.face2 th{
-  border: 1px solid grey;;
-}
-
-.fr-view table{
-  display:table;
-  border: 1px solid grey;
-  border-collapse:collapse
-}
-.fr-view td{
-  display:table-cell;
-  border:1px solid grey;
-}
-.fr-view thead{
+.face1 th {
   border: 1px solid grey;
 }
 
-.fr-view th{
-  border: 1px solid grey;;
+.face2 table {
+  display: table;
+  border: 1px solid grey;
+  border-collapse: collapse;
+}
+.face2 td {
+  display: table-cell;
+  border: 1px solid grey;
+}
+.face2 thead {
+  border: 1px solid grey;
+}
+
+.face2 th {
+  border: 1px solid grey;
+}
+
+.fr-view table {
+  display: table;
+  border: 1px solid grey;
+  border-collapse: collapse;
+}
+.fr-view td {
+  display: table-cell;
+  border: 1px solid grey;
+}
+.fr-view thead {
+  border: 1px solid grey;
+}
+
+.fr-view th {
+  border: 1px solid grey;
 }

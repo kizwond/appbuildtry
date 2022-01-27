@@ -29,6 +29,8 @@ import M_LevelAndCycleSetting from "../../../../components/books/settings/levelA
 import M_ReAssignBookToAnotherCategory from "../../../../components/books/settings/reasignBookToAnotherCategory/M_ReAssignBookToAnotherCategory";
 import M_ChangeBookTitle from "../../../../components/books/settings/reasignBookToAnotherCategory/M_ChangeBookTitle";
 
+import StudyHistoryPerBook from "../../../../components/common/studyHistoryPerBook/StudyHistoryPerBook";
+
 const BookSetting = () => {
   const { query, push, back } = useRouter();
 
@@ -63,7 +65,7 @@ const BookSetting = () => {
   const content = (menu_item) => {
     switch (menu_item) {
       case "study_data_detail":
-        return null;
+        return <StudyHistoryPerBook mybook_id={query.book_id} />;
         break;
       case "set_flags":
         return <M_FlagSetting />;

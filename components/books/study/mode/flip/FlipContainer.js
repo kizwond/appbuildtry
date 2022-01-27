@@ -829,6 +829,8 @@ class Container extends Component {
         delete v.studyStatus.needStudyTimeTmp;
         delete v.studyStatus.isUpdated;
         delete v.studyStatus.levelUpdated;
+        delete v.studyStatus.sessionStatusPrev;
+        delete v.studyStatus.sessionStatusCurrent;
         delete v.studyStatus.__typename;
         delete v.content.hidden;
         delete v.content.underline;
@@ -862,6 +864,8 @@ class Container extends Component {
         delete v.studyStatus.totalStudyTimes;
         delete v.studyStatus.recentExamTime;
         delete v.studyStatus.totalExamTimes;
+        delete v.studyStatus.sessionStatusPrev;
+        delete v.studyStatus.sessionStatusCurrent;
         delete v.studyStatus.__typename;
 
         delete v.studyStatus.__typename;

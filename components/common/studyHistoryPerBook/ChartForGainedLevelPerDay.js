@@ -30,14 +30,17 @@ const ChartForGainedLevelPerDay = ({ data }) => {
             .map(({ level: { completed, nonCompleted }, date }, index, arr) => {
               const totalLevel =
                 Math.floor(completed * 1000 + nonCompleted * 1000) / 1000;
-              const barHeightPercentage =
-                Math.round((totalLevel / maxLevel) * 100) + "%";
+              const barHeightPercentage = !!maxLevel
+                ? Math.round((totalLevel / maxLevel) * 100) + "%"
+                : "0%";
               const incompletedLevel = Math.round(nonCompleted * 1000) / 1000;
-              const percentageOfIncompleted =
-                Math.round((incompletedLevel / totalLevel) * 100) + "%";
+              const percentageOfIncompleted = !!totalLevel
+                ? Math.round((incompletedLevel / totalLevel) * 100) + "%"
+                : "0%";
               const completedLevel = Math.round(completed * 1000) / 1000;
-              const percentageOfCompleted =
-                Math.round((completedLevel / totalLevel) * 100) + "%";
+              const percentageOfCompleted = !!totalLevel
+                ? Math.round((completedLevel / totalLevel) * 100) + "%"
+                : "0%";
               return {
                 date: moment(date).format("M월D일"),
                 totalLevel,
@@ -49,17 +52,20 @@ const ChartForGainedLevelPerDay = ({ data }) => {
               };
             })
             .map(
-              ({
-                date,
-                totalLevel,
-                barHeightPercentage,
-                incompletedLevel,
-                percentageOfIncompleted,
-                completedLevel,
-                percentageOfCompleted,
-              }) => (
+              (
+                {
+                  date,
+                  totalLevel,
+                  barHeightPercentage,
+                  incompletedLevel,
+                  percentageOfIncompleted,
+                  completedLevel,
+                  percentageOfCompleted,
+                },
+                index
+              ) => (
                 <li
-                  key={date}
+                  key={date + index}
                   className="relative table-cell align-bottom min-w-[48px] max-w-[48px] px-1"
                 >
                   <StyledBar

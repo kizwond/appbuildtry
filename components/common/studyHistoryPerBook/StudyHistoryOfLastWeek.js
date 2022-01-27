@@ -2,7 +2,10 @@ import { useCallback } from "react";
 
 import { useRouter } from "next/router";
 import { useLazyQuery } from "@apollo/client";
-import { QUERY_SESSION_FOR_RESULT_BY_SESSION_ID } from "../../../graphql/query/allQuery";
+import {
+  QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
+  QUERY_EXAM_FOR_RESULT_BY_SESSION_ID,
+} from "../../../graphql/query/allQuery";
 import produce from "immer";
 import moment from "moment";
 import _ from "lodash";
@@ -68,7 +71,7 @@ const StudyHistoryOfLastWeek = ({ data }) => {
             )
           );
 
-          router.push(`/m/mentoring/resultOfMentee/${variables.session_id}`);
+          router.push(`/m/mentoring/resultOfSession/${variables.session_id}`);
         } else if (received_data.session_getSession.status === "401") {
           router.push("/account/login");
         } else {
@@ -81,6 +84,52 @@ const StudyHistoryOfLastWeek = ({ data }) => {
   const getSessionResult = useCallback(async ({ session_id }) => {
     try {
       getSessionDataForResult({
+        variables: {
+          session_id,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [getExamDataForResult, { variables: variablesExam }] = useLazyQuery(
+    QUERY_EXAM_FOR_RESULT_BY_SESSION_ID,
+    {
+      onCompleted: (received_data) => {
+        if (received_data.session_getSession.status === "200") {
+          console.log("시험 결과 데이터 받음", received_data);
+          sessionStorage.setItem(
+            "cardListWithExamResult",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].cardlistUpdated
+            )
+          );
+
+          sessionStorage.setItem(
+            "startTimeForExam",
+            received_data.session_getSession.sessions[0].session_info
+              .timeStarted
+          );
+          sessionStorage.setItem(
+            "endTimeForExam",
+            received_data.session_getSession.sessions[0].session_info
+              .timeFinished
+          );
+
+          router.push(`/m/mentoring/resultOfExam/${variablesExam.session_id}`);
+        } else if (received_data.session_getSession.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
+  const getExamResult = useCallback(async ({ session_id }) => {
+    try {
+      getExamDataForResult({
         variables: {
           session_id,
         },
@@ -153,7 +202,15 @@ const StudyHistoryOfLastWeek = ({ data }) => {
                 <td
                   className="text-[1rem] text-center"
                   onClick={() => {
-                    getSessionResult({ session_id: session._id });
+                    if (session.sessionConfig.studyMode === "exam") {
+                      getExamResult({ session_id: session._id });
+                    } else if (session.sessionConfig.studyMode === "flip") {
+                      getSessionResult({ session_id: session._id });
+                    } else {
+                      throw new Error(
+                        `${session.sessionConfig.studyMode}는 없는 모드입니다`
+                      );
+                    }
                   }}
                 >
                   <a>자세히보기</a>

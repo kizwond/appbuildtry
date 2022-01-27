@@ -3,8 +3,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { QUERY_USER_CATEGORIES_AND_USER_BOOKS } from "../../../graphql/query/allQuery";
+import { MUTATION_CREATE_SESSION } from "../../../graphql/mutation/sessionConfig";
 
 import styled from "styled-components";
 
@@ -43,14 +44,47 @@ const M_StudyMainPage = () => {
     }
   );
 
-  const directStart = () => {
-    if (selectedBooks.length > 0) {
-      router.push({
-        pathname: "/m/study/mode/directread",
-        query: { name: JSON.stringify(selectedBooks) },
+  const [session_createSession, {}] = useMutation(MUTATION_CREATE_SESSION, {
+    onCompleted: (_data) => {
+      if (_data.session_createSession.status === "200") {
+        console.log("책 바로 보기 모드, 세션 생성 요청 후 받은 데이터", _data);
+
+        router.push({
+          pathname: "/m/study/mode/directread",
+          query: { name: JSON.stringify(selectedBooks) },
+        });
+      } else if (_data.session_createSession.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
+  });
+
+  const submitCreateSessionConfigToServer = useCallback(async () => {
+    const sessionScope = selectedBooks.map((book) => ({
+      mybook_id: book.book_id,
+      title: book.book_title,
+      index_ids: data.mybook_getMybookByUserID.mybooks.find(
+        (_book) => book.book_id === _book._id
+      ).recentStudyIndexes,
+    }));
+    try {
+      await session_createSession({
+        variables: {
+          forCreateSession: {
+            sessionScope,
+            sessionConfig: {
+              studyMode: "read",
+            },
+          },
+        },
       });
+    } catch (error) {
+      console.log(error);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedBooks]);
 
   const getCheckedIndexKeys = (data, selectedBooks) => {
     let forCheckedKeys = {};
@@ -121,7 +155,7 @@ const M_StudyMainPage = () => {
             <div
               onClick={() => {
                 if (selectedBooks.length > 0) {
-                  directStart();
+                  submitCreateSessionConfigToServer();
                 } else {
                   message.error("선택하신 카드가 없습니다.", 0.7);
                 }
@@ -170,7 +204,7 @@ const StyledRowMaxWidth = styled.div`
   position: absolute;
   top: 40px;
   height: calc(100vh - 76px);
-  overflow: scroll;
+  overflow: auto;
 
   & .ant-card-small > .ant-card-head {
     border-bottom: none;

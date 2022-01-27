@@ -30,15 +30,28 @@ const ChartForStudiedCardsPerDay = ({ data }) => {
             .map(
               ({ numCardsByStatus: { ing, hold, yet, completed }, date }) => {
                 const totalStudiedTimes = completed + ing + hold + yet;
-                const barHeightPercentage =
-                  Math.round((totalStudiedTimes / maxStudiedTimes) * 100) + "%";
+                const barHeightPercentage = !!maxStudiedTimes
+                  ? Math.round((totalStudiedTimes / maxStudiedTimes) * 100) +
+                    "%"
+                  : "0%";
                 const incompletedTimes = ing + hold + yet;
-                const percentageOfIncompleted =
-                  Math.round((incompletedTimes / totalStudiedTimes) * 100) +
-                  "%";
+                const percentageOfIncompleted = !!totalStudiedTimes
+                  ? Math.round((incompletedTimes / totalStudiedTimes) * 100) +
+                    "%"
+                  : "0%";
                 const completedTimes = completed;
-                const percentageOfCompleted =
-                  Math.round((completedTimes / totalStudiedTimes) * 100) + "%";
+                const percentageOfCompleted = !!totalStudiedTimes
+                  ? Math.round((completedTimes / totalStudiedTimes) * 100) + "%"
+                  : "0%";
+                console.log({
+                  date,
+                  totalStudiedTimes,
+                  barHeightPercentage,
+                  incompletedTimes,
+                  percentageOfIncompleted,
+                  completedTimes,
+                  percentageOfCompleted,
+                });
                 return {
                   date: moment(date).format("M월D일"),
                   totalStudiedTimes,
@@ -51,17 +64,20 @@ const ChartForStudiedCardsPerDay = ({ data }) => {
               }
             )
             .map(
-              ({
-                date,
-                totalStudiedTimes,
-                barHeightPercentage,
-                incompletedTimes,
-                percentageOfIncompleted,
-                completedTimes,
-                percentageOfCompleted,
-              }) => (
+              (
+                {
+                  date,
+                  totalStudiedTimes,
+                  barHeightPercentage,
+                  incompletedTimes,
+                  percentageOfIncompleted,
+                  completedTimes,
+                  percentageOfCompleted,
+                },
+                index
+              ) => (
                 <li
-                  key={date}
+                  key={date + index}
                   className="relative table-cell align-bottom min-w-[48px] max-w-[48px] px-1"
                 >
                   <StyledBar

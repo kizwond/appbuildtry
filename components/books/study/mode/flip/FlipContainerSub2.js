@@ -3,6 +3,7 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
     const {levelchangeSensitivity, restudyRatio, maxRestudyMinuteInsideSession} = levelConfigs.restudy
     const KnowStudyRatio = 95
     const initialElapsedHour = 24
+    // 87.5일 때, max가 나오도록 조정해준다.
     const maxRestudyMinuteInsideSessionAdjusted = maxRestudyMinuteInsideSession / 0.875    
 
     let theoNewLevel, newLevel

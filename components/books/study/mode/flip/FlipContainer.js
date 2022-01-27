@@ -1302,17 +1302,28 @@ class Container extends Component {
           <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary">
             통과
           </Button>
-          <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id)} type="primary">
+          {/* <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id)} type="primary">
             보류
           </Button>
           <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id)} type="primary">
             졸업
-          </Button>
+          </Button> */}
           {/* <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
             학습종료
           </Button> */}
         </Space>
       );
+      // var moreMenu = (
+      //   <>
+      //     <Button
+      //       icon={<StepForwardOutlined />}
+      //       size="small"
+      //       style={{ fontSize: "1rem", flexGrow: 0, marginLeft: "5px" }}
+      //       onClick={() => this.onClickPassHandler(current_card_id)}
+      //       type="secondary"
+      //     ></Button>
+      //   </>
+      // );
       var moreMenu = (
         <>
           <Popover visible={this.state.popoverClicked} onVisibleChange={this.handleClickPopover} placement="left" content={moreMenuContents} trigger="click">
@@ -1340,6 +1351,8 @@ class Container extends Component {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       var statusBar = card_details_session.map((content, index) => {
         const currentSeq = Number(sessionStorage.getItem("card_seq"));
+
+        const statusCurrent = card_details_session[currentSeq].studyStatus.statusCurrent;
         // console.log("카드에 스타일 입히기 시작", cardTypeSets);
         //   console.log(content);
         const cardTypeSets = this.props.cardTypeSets;
@@ -1362,7 +1375,36 @@ class Container extends Component {
         // console.log(row_font);
         // console.log(content);
         // console.log(contentsList);
-
+        if (statusCurrent === "completed" || statusCurrent === "hold") {
+          var diffiButtonsPop = (
+            <>
+              <Space>
+                <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickRestoreHandler(current_card_id)} type="primary">
+                  복원
+                </Button>
+                {/* <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary">
+                  통과
+                </Button> */}
+              </Space>
+            </>
+          );
+        } else {
+          var diffiButtonsPop = (
+            <>
+              <Space>
+                {/* <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id, "normal")} type="primary">
+                  통과
+                </Button> */}
+                <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id, "normal")} type="primary">
+                  보류
+                </Button>
+                <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id, "normal")} type="primary">
+                  졸업
+                </Button>
+              </Space>
+            </>
+          );
+        }
         const show_contents = contentsList.map((content_value) => {
           if ((content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) && index === currentSeq) {
             // console.log(content_value._id, content.content.buycontent_id);
@@ -1676,7 +1718,7 @@ class Container extends Component {
                   </Popover>
 
                   <Popover
-                    content={"준비중입니다..."}
+                    content={diffiButtonsPop}
                     placement="bottomLeft"
                     title={
                       <>

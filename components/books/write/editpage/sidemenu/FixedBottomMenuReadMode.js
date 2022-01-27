@@ -57,7 +57,7 @@ const FloatingMenu = ({
   prepareCardInDictionary,
   editorOn,
   selectedCardType,
-  fireEditor
+  fireEditor,
 }) => {
   const [bottomVisible, setBottomVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -196,7 +196,7 @@ const FloatingMenu = ({
       );
     });
 
-    const searchSettings = ["영한사전", "백과사전"];
+    const searchSettings = ["백과사전", "영한사전"];
     var searchButtons = searchSettings.map((item, index) => {
       if (index === 0) {
         var marginValue = -51;
@@ -213,7 +213,7 @@ const FloatingMenu = ({
         <>
           <div
             className={`searchGroup${index}`}
-            onClick={() => editorModalOpen(index)}
+            onClick={() => editorModalOpen(item)}
             style={{
               position: "absolute",
               top: `${marginValue}px`,
@@ -317,7 +317,11 @@ const FloatingMenu = ({
     const hello = async () => search(menu);
     await hello().then(setResult(searchResult));
 
-    showModal();
+    if (memu === "영한사전") {
+      showModal();
+    } else {
+      alert("준비중입니다.");
+    }
   }
   function createCardInDictionary() {
     console.log("카드만들기 실행!!");
@@ -337,7 +341,7 @@ const FloatingMenu = ({
 
   function handleChange(value) {
     console.log(`selected ${value}`);
-    fireEditor(value)
+    fireEditor(value);
   }
 
   if (selectedCardType) {
@@ -612,7 +616,9 @@ const FloatingMenu = ({
               {selectedCardType && (
                 <>
                   <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange}>
-                  <Option value="default" disabled>카드타입 선택</Option>
+                    <Option value="default" disabled>
+                      카드타입 선택
+                    </Option>
                     {selections}
                   </Select>
                 </>

@@ -62,9 +62,9 @@ const FloatingMenu = ({
   fireEditor,
   face1On,
   face2On,
-  ttsOn
+  ttsOn,
 }) => {
-  const router = useRouter()
+  const router = useRouter();
   const [bottomVisible, setBottomVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [createCardOn, setCreateCardOn] = useState(false);
@@ -202,7 +202,7 @@ const FloatingMenu = ({
       );
     });
 
-    const searchSettings = ["영한사전", "백과사전"];
+    const searchSettings = ["백과사전", "영한사전"];
     var searchButtons = searchSettings.map((item, index) => {
       if (index === 0) {
         var marginValue = -51;
@@ -219,7 +219,7 @@ const FloatingMenu = ({
         <>
           <div
             className={`searchGroup${index}`}
-            onClick={() => editorModalOpen(index)}
+            onClick={() => editorModalOpen(item)}
             style={{
               position: "absolute",
               top: `${marginValue}px`,
@@ -315,10 +315,10 @@ const FloatingMenu = ({
     setBottomVisible(!bottomVisible);
   }
   const moveToSpreadView = () => {
-    const sessionId = sessionStorage.getItem("session_Id")
-    router.push(`/m/study/mode/read/${sessionId}`)
+    const sessionId = sessionStorage.getItem("session_Id");
+    router.push(`/m/study/mode/read/${sessionId}`);
     // location.href = `/m/study/mode/read/${sessionId}`
-  }
+  };
   const onClose = () => {
     setBottomVisible(false);
   };
@@ -327,7 +327,11 @@ const FloatingMenu = ({
     const hello = async () => search(menu);
     await hello().then(setResult(searchResult));
 
-    showModal();
+    if (memu === "영한사전") {
+      showModal();
+    } else {
+      alert("준비중입니다.");
+    }
   }
   function createCardInDictionary() {
     console.log("카드만들기 실행!!");
@@ -347,7 +351,7 @@ const FloatingMenu = ({
 
   function handleChange(value) {
     console.log(`selected ${value}`);
-    fireEditor(value)
+    fireEditor(value);
   }
 
   if (selectedCardType) {
@@ -559,7 +563,14 @@ const FloatingMenu = ({
                 style={{ padding: 20, display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap: "wrap", fontSize: "0.8rem", color: "#7a7a7a" }}
               >
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <StudyGeneralSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} face1On={face1On} face2On={face2On} ttsOn={ttsOn}/>
+                  <StudyGeneralSetting
+                    setBottomVisible={setBottomVisible}
+                    cardTypeSets={cardTypeSets}
+                    updateStudyToolApply={updateStudyToolApply}
+                    face1On={face1On}
+                    face2On={face2On}
+                    ttsOn={ttsOn}
+                  />
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                   <StudyToolSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} />
@@ -569,7 +580,9 @@ const FloatingMenu = ({
                   TTS설정
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <Button size="small" onClick={moveToSpreadView}>펼쳐보기</Button>
+                  <Button size="small" onClick={moveToSpreadView}>
+                    펼쳐보기
+                  </Button>
                 </div>
               </Space>
             </Drawer>
@@ -624,7 +637,9 @@ const FloatingMenu = ({
               {selectedCardType && (
                 <>
                   <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange}>
-                  <Option value="default" disabled>카드타입 선택</Option>
+                    <Option value="default" disabled>
+                      카드타입 선택
+                    </Option>
                     {selections}
                   </Select>
                 </>

@@ -655,10 +655,10 @@ const FlipMode = () => {
     if (selectionText === "") {
       return;
     }
-    if (menu === 0) {
+    if (menu === "영한사전") {
       searchWord();
       setSearchToggle(false);
-    } else if (menu === 1) {
+    } else if (menu === "백과사전") {
       setSearchToggle(false);
       sessionStorage.removeItem("selectionText");
       return;

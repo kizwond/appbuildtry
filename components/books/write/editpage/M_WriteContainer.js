@@ -110,7 +110,9 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }
 
-
+  const closeNotification =() =>{
+    notification.close("newCardInfo")
+  }
   useEffect(() => {
     if (data1) {
       console.log("최초 로드 data : ", data1);
@@ -123,15 +125,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
       if(data1.cardset_getByIndexIDs.cardsets[0].cards.length === 0){
         notification.info({
-          message: '새카드를 생성해 보세요!!!',
-          description:
-            '하단 메뉴 두번째, "카드추가" 버튼을 눌러 새로운 카드를 만들수 있습니다.',
+          message:(<span style={{fontSize:"1rem", fontWeight:"700"}}>카드를 생성 해 보세요!!!</span>),
+          description:(<span style={{fontSize:"0.9rem"}}>하단 메뉴 두번째, &quot;카드추가&quot; 버튼을 눌러 새로운 카드를 만들수 있습니다.</span>)
+           ,
           onClick: () => {
             console.log('Notification Clicked!');
           },
-          placement:"bottomLeft",
+          placement:"topLeft",
           duration:0,
-          bottom:"50px"
+          top:"150px",
+          key:"newCardInfo"
         });
       }
       const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
@@ -2187,6 +2190,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             setCardId={setCardId}
             cardTypeSets={cardTypeSets}
             cardTypeSetId={cardTypeSetId}
+            closeNotification={closeNotification}
           />
         </>
       )}

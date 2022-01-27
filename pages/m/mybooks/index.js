@@ -65,9 +65,6 @@ const M_StudyMainPage = () => {
     const sessionScope = selectedBooks.map((book) => ({
       mybook_id: book.book_id,
       title: book.book_title,
-      index_ids: data.mybook_getMybookByUserID.mybooks.find(
-        (_book) => book.book_id === _book._id
-      ).recentStudyIndexes,
     }));
     try {
       await session_createSession({

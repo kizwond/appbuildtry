@@ -257,7 +257,10 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                     >
                       {visibleIdOfBookStudyHistoryDrawer ===
                         record.mybook_id && (
-                        <StudyHistoryPerBook mybook_id={record.mybook_id} />
+                        <StudyHistoryPerBook
+                          mybook_id={record.mybook_id}
+                          forWhom="mentor"
+                        />
                       )}
                     </DrawerWrapper>
                   </div>

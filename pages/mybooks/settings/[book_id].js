@@ -68,7 +68,7 @@ const BookSetting = () => {
         return (
           <div>
             <div className="BookSettingContentTitle">학습 이력</div>
-            <StudyHistoryPerBook mybook_id={query.book_id} />
+            <StudyHistoryPerBook mybook_id={query.book_id} forWhom="me" />
           </div>
         );
         break;

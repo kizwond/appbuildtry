@@ -10,7 +10,7 @@ import produce from "immer";
 import moment from "moment";
 import _ from "lodash";
 
-const StudyHistoryOfLastWeek = ({ data, isAllList }) => {
+const StudyHistoryOfLastWeek = ({ data, isAllList, forWhom }) => {
   const router = useRouter();
 
   const [getSessionDataForResult, { variables }] = useLazyQuery(
@@ -71,7 +71,11 @@ const StudyHistoryOfLastWeek = ({ data, isAllList }) => {
             )
           );
 
-          router.push(`/m/mentoring/resultOfSession/${variables.session_id}`);
+          router.push(
+            `/m/${
+              forWhom === "me" ? "study/result" : "mentoring/resultOfSession"
+            }/${variables.session_id}`
+          );
         } else if (received_data.session_getSession.status === "401") {
           router.push("/account/login");
         } else {
@@ -118,7 +122,11 @@ const StudyHistoryOfLastWeek = ({ data, isAllList }) => {
               .timeFinished
           );
 
-          router.push(`/m/mentoring/resultOfExam/${variablesExam.session_id}`);
+          router.push(
+            `/m/${
+              forWhom === "me" ? "study/examresult" : "mentoring/resultOfExam"
+            }/${variablesExam.session_id}`
+          );
         } else if (received_data.session_getSession.status === "401") {
           router.push("/m/account/login");
         } else {
@@ -166,6 +174,8 @@ const StudyHistoryOfLastWeek = ({ data, isAllList }) => {
                 ? "뒤집기"
                 : session.sessionConfig.studyMode === "exam"
                 ? "시험"
+                : session.sessionConfig.studyMode === "read"
+                ? "바로보기"
                 : new Error(
                     `${session.sessionConfig.studyMode}는 알 수 없는 학습 모드입니다`
                   );
@@ -208,6 +218,8 @@ const StudyHistoryOfLastWeek = ({ data, isAllList }) => {
                       getExamResult({ session_id: session._id });
                     } else if (session.sessionConfig.studyMode === "flip") {
                       getSessionResult({ session_id: session._id });
+                    } else if (session.sessionConfig.studyMode === "read") {
+                      console.log("아직 페이지 없음");
                     } else {
                       throw new Error(
                         `${session.sessionConfig.studyMode}는 없는 모드입니다`

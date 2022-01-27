@@ -13,7 +13,7 @@ import TableForRankedCards from "./TableForRankedCards";
 import TableForAllCards from "./TableForAllCards";
 import TableForStatusOfCard from "./TableForStatusOfCard";
 
-const StudyHistoryPerBook = ({ mybook_id }) => {
+const StudyHistoryPerBook = ({ mybook_id, forWhom }) => {
   const [drawerVisibleForAllStudyHistory, setDrawerVisibleForAllStudyHistory] =
     useState(false);
   const [drawerVisibleForStudyHourCards, setDrawerVisibleForStudyHourCards] =
@@ -73,7 +73,7 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
                 </a>
               </div>
             }
-            content={<StudyHistoryOfLastWeek data={data} />}
+            content={<StudyHistoryOfLastWeek data={data} forWhom={forWhom} />}
           />
           <DrawerWrapper
             title="최근 학습 실적"
@@ -88,7 +88,11 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
           >
             <div className="p-2 mb-3 bg-white">
               {drawerVisibleForAllStudyHistory && (
-                <StudyHistoryOfLastWeek data={data} isAllList />
+                <StudyHistoryOfLastWeek
+                  data={data}
+                  isAllList
+                  forWhom={forWhom}
+                />
               )}
             </div>
           </DrawerWrapper>

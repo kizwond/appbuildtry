@@ -313,6 +313,8 @@ const M_RecentStudyList = () => {
                           getExamResult({ session_id: session._id });
                         } else if (session.sessionConfig.studyMode === "flip") {
                           getSessionResult({ session_id: session._id });
+                        } else if (session.sessionConfig.studyMode === "read") {
+                          console.log("아직 페이지 없음");
                         } else {
                           throw new Error(
                             `${session.sessionConfig.studyMode}는 없는 모드입니다`
@@ -399,6 +401,8 @@ const M_RecentStudyList = () => {
                           getExamResult({ session_id: session._id });
                         } else if (session.sessionConfig.studyMode === "flip") {
                           getSessionResult({ session_id: session._id });
+                        } else if (session.sessionConfig.studyMode === "read") {
+                          console.log("아직 페이지 없음");
                         } else {
                           throw new Error(
                             `${session.sessionConfig.studyMode}는 없는 모드입니다`

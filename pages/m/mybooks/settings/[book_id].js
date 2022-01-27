@@ -65,7 +65,7 @@ const BookSetting = () => {
   const content = (menu_item) => {
     switch (menu_item) {
       case "study_data_detail":
-        return <StudyHistoryPerBook mybook_id={query.book_id} />;
+        return <StudyHistoryPerBook mybook_id={query.book_id} forWhom="me" />;
         break;
       case "set_flags":
         return <M_FlagSetting />;

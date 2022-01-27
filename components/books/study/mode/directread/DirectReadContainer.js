@@ -2,12 +2,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import { GetCardRelated } from "../../../../../graphql/query/allQuery";
 import dynamic from "next/dynamic";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
-import { Button, Select, Modal, Tag, message, Divider  } from "antd";
+import { Button, Select, Modal, Tag, message, Divider } from "antd";
 import { UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../../graphql/query/card_contents";
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 import { Dictionary } from "../../../../../graphql/query/card_contents";
-import {  ProfileOutlined,
+import {
+  ProfileOutlined,
   FlagFilled,
   HeartFilled,
   StarFilled,
@@ -28,7 +29,9 @@ import {  ProfileOutlined,
   DeleteOutlined,
   EditOutlined,
   FormOutlined,
-  BarChartOutlined, } from "@ant-design/icons";
+  BarChartOutlined,
+  StopOutlined,
+} from "@ant-design/icons";
 import FixedBottomMenuDirectRead from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuDirectRead";
 const { Option } = Select;
 
@@ -75,6 +78,19 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const [indexList, setIndexList] = useState();
   const [makerFlagStyle, setMakerFlagStyle] = useState();
   const [userFlagDetails, setUserFlagDetails] = useState();
+  const [cardListStudying, setCardListStudying] = useState();
+  const [sessionScope, setSessionScope] = useState();
+
+  const [cardInfo, setCardInfo] = useState("");
+  const [userFlag, setUserFlag] = useState();
+
+  const [cardClickMenu, setCardClickMenu] = useState(false);
+  const [hiddenToggle, setHiddenToggle] = useState(false);
+  const [underlineToggle, setUnderlineToggle] = useState(false);
+  const [highlightToggle, setHighlightToggle] = useState(false);
+  const [searchToggle, setSearchToggle] = useState(false);
+  const [editorOn, setEditorOn] = useState();
+  const [selectedCardType, setSelectedCardType] = useState();
 
   const {
     loading,
@@ -129,7 +145,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     [cardset_updateUserFlag]
   );
 
-
   useEffect(() => {
     if (data1) {
       console.log("최초 로드 data : ", data1);
@@ -163,7 +178,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       console.log("why here?");
     }
   }, [data1, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
-// 읽기모드 에디터 뿌리기
+  // 읽기모드 에디터 뿌리기
   const prepareCardInDictionary = (radio) => {
     console.log("카드생성전 데이터 꾸리기!!");
     if (radio === "next") {
@@ -749,7 +764,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "highlight", word);
   }
 
-
   if (cards) {
     var contents = cards.map((content) => {
       //   console.log("카드에 스타일 입히기 시작", cardTypeSets);
@@ -968,64 +982,100 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
           const userFlags = (
             <>
-              <FlagOutlined
+              <StopOutlined
                 onClick={() => userFlagChange("0")}
                 style={{
-                  border: "1px solid lightgrey",
+                  // border: "1px solid lightgrey",
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "15px",
                   background: "white",
                   cursor: "pointer",
-                  fontSize: "1.5rem",
-                  color: "white",
+                  fontSize: "20px",
+                  lineHeight: "24px",
+                  color: "#ff8e8e",
+                  boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                  marginBottom: "3px",
                 }}
               />
               <FlagFilled
                 onClick={() => userFlagChange("1")}
                 style={{
-                  border: "1px solid lightgrey",
-                  background: "white",
+                  // border: "1px solid lightgrey",
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "15px",
+                  background: "#ffd1d1",
                   cursor: "pointer",
-                  fontSize: "1.5rem",
+                  fontSize: "20px",
+                  lineHeight: "24px",
                   color: `${userFlagDetails.flag1.figureColor}`,
+                  boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                  marginBottom: "3px",
                 }}
               />
               <FlagFilled
                 onClick={() => userFlagChange("2")}
                 style={{
-                  border: "1px solid lightgrey",
-                  background: "white",
+                  // border: "1px solid lightgrey",
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "15px",
+                  background: "#ffe7bb",
                   cursor: "pointer",
-                  fontSize: "1.5rem",
+                  fontSize: "20px",
+                  lineHeight: "24px",
                   color: `${userFlagDetails.flag2.figureColor}`,
+                  boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                  marginBottom: "3px",
                 }}
               />
               <FlagFilled
                 onClick={() => userFlagChange("3")}
                 style={{
-                  border: "1px solid lightgrey",
-                  background: "white",
+                  // border: "1px solid lightgrey",
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "15px",
+                  background: "#e7e773",
                   cursor: "pointer",
-                  fontSize: "1.5rem",
+                  fontSize: "20px",
+                  lineHeight: "24px",
                   color: `${userFlagDetails.flag3.figureColor}`,
+                  boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                  marginBottom: "3px",
                 }}
               />
               <FlagFilled
                 onClick={() => userFlagChange("4")}
                 style={{
-                  border: "1px solid lightgrey",
-                  background: "white",
+                  // border: "1px solid lightgrey",
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "15px",
+                  background: "#beffbe",
                   cursor: "pointer",
-                  fontSize: "1.5rem",
+                  fontSize: "20px",
+                  lineHeight: "24px",
                   color: `${userFlagDetails.flag4.figureColor}`,
+                  boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                  marginBottom: "3px",
                 }}
               />
               <FlagFilled
                 onClick={() => userFlagChange("5")}
                 style={{
-                  border: "1px solid lightgrey",
-                  background: "white",
+                  // border: "1px solid lightgrey",
+                  width: "30px",
+                  height: "30px",
+                  borderRadius: "15px",
+                  background: "#ceceff",
                   cursor: "pointer",
-                  fontSize: "1.5rem",
+                  fontSize: "20px",
+                  lineHeight: "24px",
                   color: `${userFlagDetails.flag5.figureColor}`,
+                  boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                  marginBottom: "3px",
                 }}
               />
             </>
@@ -1035,7 +1085,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             <>
               {content.card_info.cardtype === "read" && (
                 <>
-                {content._id === cardId && (
+                  {content._id === cardId && (
                     <>
                       <div
                         style={{
@@ -1527,9 +1577,302 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               )}
               {content.card_info.cardtype === "general" && (
                 <>
+                  {content._id === cardId && (
+                    <>
+                      <div
+                        style={{
+                          backgroundColor: "#f0f0f0",
+                          height: "38px",
+                          padding: "0 5px 0 5px",
+                          // boxShadow: "0px 0px 1px 1px #eeeeee",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-around",
+                          alignItems: "center",
+                          border: "1px solid gainsboro",
+                          borderTopLeftRadius: "10px",
+                          borderTopRightRadius: "10px",
+                        }}
+                      >
+                        <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                          {content.content.userFlag === 0 && (
+                            <>
+                              <FlagOutlined
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "16px",
+                                  color: "#f0f0f0",
+                                  border: "1px solid lightgrey",
+                                }}
+                              />
+                            </>
+                          )}
+                          {content.content.userFlag !== 0 && (
+                            <>
+                              <FlagFilled
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "16px",
+                                  color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                }}
+                              />
+                            </>
+                          )}
+
+                          {userFlag && (
+                            <>
+                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                            </>
+                          )}
+                        </div>
+                        <div unselectable="on" style={{ position: "relative" }}>
+                          <Button
+                            unselectable="on"
+                            className="hiddenButton"
+                            onClick={hiddenEffectDeleteModal}
+                            size="small"
+                            style={{
+                              border: "none",
+                              backgroundColor: "#f0f0f0",
+                            }}
+                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
+                          ></Button>
+
+                          <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                            <div>가리기</div>
+                            {content.content.hidden &&
+                              content.content.hidden.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                            <div>밑줄</div>
+                            {content.content.underline &&
+                              content.content.underline.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                            <div>형광펜</div>
+                            {content.content.highlight &&
+                              content.content.highlight.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                          </Modal>
+                        </div>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
+                          <>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                            ></Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                              disabled
+                            ></Button>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div
+                        style={{
+                          padding: "0px",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "end",
+                        }}
+                      >
+                        {content.content.userFlag === 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: "#ffffff00",
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+                        {content.content.userFlag !== 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+
+                        <div style={{ display: "flex", alignItems: "end" }}>
+                          {content.content.memo !== null && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "#50d663",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "blue",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
                   <div className={`${content._id} child_group other`}>
                     <div style={{ marginBottom: "5px" }}>
-                      <div onClick={() => onClickCard(content._id, "general")}>
+                      <div onClick={() => onClickCard(content._id, "general", null, content.card_info)}>
                         {/* 페이스 스타일 영역 */}
                         {content.content.makerFlag.value !== null && flagArea}
                         <div
@@ -1598,10 +1941,303 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "top-bottom" && (
                 <>
+                  {content._id === cardId && (
+                    <>
+                      <div
+                        style={{
+                          backgroundColor: "#f0f0f0",
+                          height: "38px",
+                          padding: "0 5px 0 5px",
+                          // boxShadow: "0px 0px 1px 1px #eeeeee",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-around",
+                          alignItems: "center",
+                          border: "1px solid gainsboro",
+                          borderTopLeftRadius: "10px",
+                          borderTopRightRadius: "10px",
+                        }}
+                      >
+                        <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                          {content.content.userFlag === 0 && (
+                            <>
+                              <FlagOutlined
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "16px",
+                                  color: "#f0f0f0",
+                                  border: "1px solid lightgrey",
+                                }}
+                              />
+                            </>
+                          )}
+                          {content.content.userFlag !== 0 && (
+                            <>
+                              <FlagFilled
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "16px",
+                                  color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                }}
+                              />
+                            </>
+                          )}
+
+                          {userFlag && (
+                            <>
+                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                            </>
+                          )}
+                        </div>
+                        <div unselectable="on" style={{ position: "relative" }}>
+                          <Button
+                            unselectable="on"
+                            className="hiddenButton"
+                            onClick={hiddenEffectDeleteModal}
+                            size="small"
+                            style={{
+                              border: "none",
+                              backgroundColor: "#f0f0f0",
+                            }}
+                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
+                          ></Button>
+
+                          <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                            <div>가리기</div>
+                            {content.content.hidden &&
+                              content.content.hidden.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                            <div>밑줄</div>
+                            {content.content.underline &&
+                              content.content.underline.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                            <div>형광펜</div>
+                            {content.content.highlight &&
+                              content.content.highlight.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                          </Modal>
+                        </div>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
+                          <>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                            ></Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                              disabled
+                            ></Button>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div
+                        style={{
+                          padding: "0px",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "end",
+                        }}
+                      >
+                        {content.content.userFlag === 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: "#ffffff00",
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+                        {content.content.userFlag !== 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+
+                        <div style={{ display: "flex", alignItems: "end" }}>
+                          {content.content.memo !== null && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "#50d663",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "blue",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
                   <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
-                        onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
+                        onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id, content.card_info)}
                         // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
                       >
                         <div
@@ -1796,10 +2432,303 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               )}
               {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "left-right" && (
                 <>
+                  {content._id === cardId && (
+                    <>
+                      <div
+                        style={{
+                          backgroundColor: "#f0f0f0",
+                          height: "38px",
+                          padding: "0 5px 0 5px",
+                          // boxShadow: "0px 0px 1px 1px #eeeeee",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-around",
+                          alignItems: "center",
+                          border: "1px solid gainsboro",
+                          borderTopLeftRadius: "10px",
+                          borderTopRightRadius: "10px",
+                        }}
+                      >
+                        <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                          {content.content.userFlag === 0 && (
+                            <>
+                              <FlagOutlined
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "16px",
+                                  color: "#f0f0f0",
+                                  border: "1px solid lightgrey",
+                                }}
+                              />
+                            </>
+                          )}
+                          {content.content.userFlag !== 0 && (
+                            <>
+                              <FlagFilled
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "16px",
+                                  color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                }}
+                              />
+                            </>
+                          )}
+
+                          {userFlag && (
+                            <>
+                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                            </>
+                          )}
+                        </div>
+                        <div unselectable="on" style={{ position: "relative" }}>
+                          <Button
+                            unselectable="on"
+                            className="hiddenButton"
+                            onClick={hiddenEffectDeleteModal}
+                            size="small"
+                            style={{
+                              border: "none",
+                              backgroundColor: "#f0f0f0",
+                            }}
+                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
+                          ></Button>
+
+                          <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                            <div>가리기</div>
+                            {content.content.hidden &&
+                              content.content.hidden.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                            <div>밑줄</div>
+                            {content.content.underline &&
+                              content.content.underline.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                            <div>형광펜</div>
+                            {content.content.highlight &&
+                              content.content.highlight.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                          </Modal>
+                        </div>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
+                          <>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                            ></Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                              disabled
+                            ></Button>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div
+                        style={{
+                          padding: "0px",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "end",
+                        }}
+                      >
+                        {content.content.userFlag === 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: "#ffffff00",
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+                        {content.content.userFlag !== 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+
+                        <div style={{ display: "flex", alignItems: "end" }}>
+                          {content.content.memo !== null && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "#50d663",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "blue",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
                   <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
-                        onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id)}
+                        onClick={() => onClickCard(content._id, "flip", content.card_info.parentCard_id, content.card_info)}
                         // style={{ borderLeft: `${content.card_info.hasParent === "yes" && "2px solid green"}` }}
                       >
                         <div
@@ -2147,7 +3076,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       console.log(error);
     }
   }, [cardset_inquireLanguageDictionary]);
-
 
   return (
     <>

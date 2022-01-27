@@ -54,6 +54,7 @@ const StudyNav = ({ mode }) => {
     logout();
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    localStorage.removeItem("username");
     console.log("here");
     window.location.href = "/m";
   };

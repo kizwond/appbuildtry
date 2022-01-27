@@ -1,11 +1,40 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { GetCardRelated } from "../../../../../graphql/query/allQuery";
+import dynamic from "next/dynamic";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
-import { Button, Select, Space } from "antd";
+import { Button, Select, Modal, Tag, message, Divider  } from "antd";
 import { UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../../graphql/query/card_contents";
-import { DeleteOutlined, EditOutlined, HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
+import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
+import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
+import { Dictionary } from "../../../../../graphql/query/card_contents";
+import {  ProfileOutlined,
+  FlagFilled,
+  HeartFilled,
+  StarFilled,
+  CheckCircleFilled,
+  PlusOutlined,
+  MenuFoldOutlined,
+  HighlightOutlined,
+  MessageOutlined,
+  UnderlineOutlined,
+  TagOutlined,
+  PicRightOutlined,
+  QuestionCircleOutlined,
+  EyeInvisibleOutlined,
+  FlagOutlined,
+  SettingOutlined,
+  CloseOutlined,
+  ClearOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  FormOutlined,
+  BarChartOutlined, } from "@ant-design/icons";
 import FixedBottomMenuDirectRead from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuDirectRead";
 const { Option } = Select;
+
+const Editor = dynamic(() => import("../../../../../components/books/write/editpage/Editor"), {
+  ssr: false,
+});
 
 const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, indexSets }) => {
   const ISSERVER = typeof window === "undefined";
@@ -45,6 +74,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const [editMode, setEditMode] = useState("normal");
   const [indexList, setIndexList] = useState();
   const [makerFlagStyle, setMakerFlagStyle] = useState();
+  const [userFlagDetails, setUserFlagDetails] = useState();
 
   const {
     loading,
@@ -72,6 +102,34 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     setContentsList(uniq);
   }
 
+  //userflag update
+  const [cardset_updateUserFlag] = useMutation(MUTATION_UPDATE_USER_FLAG, {
+    onCompleted: afterupdateuserflag,
+  });
+  function afterupdateuserflag(data) {
+    console.log("data", data);
+  }
+
+  const updateUserFlag = useCallback(
+    async (cardset_id, card_id, flag) => {
+      try {
+        await cardset_updateUserFlag({
+          variables: {
+            forUpdateUserFlag: {
+              cardset_id,
+              card_id,
+              value: Number(flag),
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_updateUserFlag]
+  );
+
+
   useEffect(() => {
     if (data1) {
       console.log("최초 로드 data : ", data1);
@@ -82,6 +140,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setMakerFlagStyle(data1.cardtypeset_getbymybookids.cardtypesets[0].makerFlag_style);
       setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
+      setUserFlagDetails(data1.userflagconfig_get.userflagconfigs[0].details);
       const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
         return item.content.mycontent_id;
       });
@@ -104,6 +163,592 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       console.log("why here?");
     }
   }, [data1, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
+// 읽기모드 에디터 뿌리기
+  const prepareCardInDictionary = (radio) => {
+    console.log("카드생성전 데이터 꾸리기!!");
+    if (radio === "next") {
+      const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
+      const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id;
+      const cardTypeId = selectionCard[0].card_info.cardtype_id;
+
+      const selectedCardTypeSet = cardTypeSets.filter((item) => item._id === cardTypeSetId);
+      console.log(selectedCardTypeSet);
+      const cardtype_info_tmp = selectedCardTypeSet[0].cardtypes.filter((item) => item._id === cardTypeId);
+      console.log(cardtype_info_tmp);
+      const cardtype_info = cardtype_info_tmp[0].cardtype_info;
+      console.log(cardtype_info);
+      setSelectedCardType(selectedCardTypeSet[0].cardtypes);
+      // cardTypeInfo(cardtype_info, null, null)
+    }
+    //카드생성버튼을 누를때 전체 책 리스트를 받는다.
+    //
+  };
+  const fireEditor = (cardtypeId) => {
+    const selectedCardType_tmp = selectedCardType.filter((item) => item._id === cardtypeId);
+    cardTypeInfo(selectedCardType_tmp[0], null, null);
+  };
+
+  const onFinish = (values, from) => {
+    console.log(values);
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
+    console.log(selectionCard);
+    const mybook_id = selectionCard[0].card_info.mybook_id;
+    const cardtype = selectionCard[0].card_info.cardtype;
+    const cardtype_id = selectionCard[0].card_info.cardtype_id;
+    const current_position_card_id = selectionCard[0].card_info.card_id;
+    const indexSetId = selectionCard[0].card_info.indexset_id;
+    const index_id = selectionCard[0].card_info.index_id;
+    const cardSetId = selectionCard[0].card_info.cardset_id;
+    const cardTypeSetId = selectionCard[0].card_info.cardtypeset_id;
+
+    // console.log(values.parentId);
+    // const mybook_id = localStorage.getItem("book_id");
+    // const cardtype = sessionStorage.getItem("cardtype");
+    // console.log("??????????????????????", cardId);
+    // if (from === "inCard") {
+    //   var current_position_card_id = cardId;
+    //   console.log("should have cardid", cardId);
+    // } else {
+    //   current_position_card_id = null;
+    //   console.log("should be null", cardId);
+    // }
+
+    // const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
+
+    addcard(
+      mybook_id,
+      cardtype,
+      cardtype_id,
+      current_position_card_id,
+      indexSetId,
+      index_id,
+      cardSetId,
+      values.face1,
+      values.selection,
+      values.face2,
+      values.annotation,
+      values.flagStar,
+      values.flagComment,
+      cardTypeSetId
+    );
+  };
+
+  const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
+
+  function afteraddcardmutation(data) {
+    console.log(data);
+  }
+  async function addcard(
+    mybook_id,
+    cardtype,
+    cardtype_id,
+    current_position_card_id,
+    indexSetId,
+    index_id,
+    cardSetId,
+    face1_contents,
+    selection_contents,
+    face2_contents,
+    annotation_contents,
+    flagStar,
+    flagComment,
+    cardTypeSetId
+  ) {
+    const parentId = null;
+    if (parentId === null) {
+      var hasParent = "no";
+      var parentCard_id = undefined;
+    }
+    try {
+      await cardset_addcardAtSameIndex({
+        variables: {
+          forAddcardAtSameIndex: {
+            currentPositionCardID: current_position_card_id,
+            card_info: {
+              mybook_id: mybook_id,
+              indexset_id: indexSetId,
+              index_id: index_id,
+              cardset_id: cardSetId,
+              cardtypeset_id: cardTypeSetId,
+              cardtype_id,
+              cardtype,
+              hasParent: hasParent,
+              parentCard_id: parentCard_id,
+            },
+            content: {
+              // user_flag: null,
+              // maker_flag: null,
+              face1: face1_contents,
+              selection: selection_contents,
+              face2: face2_contents,
+              annotation: annotation_contents,
+              // memo: null,
+            },
+            makerFlag: {
+              value: Number(flagStar),
+              comment: flagComment,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const cardTypeInfo = (selectedCardType_tmp, parentId, selections) => {
+    const cardtype_info = selectedCardType_tmp.cardtype_info;
+    sessionStorage.setItem("cardtype_info", JSON.stringify(cardtype_info));
+    sessionStorage.setItem("parentId", parentId);
+
+    console.log("cardTypeInfo fired!!!! editor on process");
+    console.log(selections);
+
+    const cardtypeEditor = cardtype_info.cardtype; //에디터에서 플립모드에 셀렉션 부과하려고 필요한 정보
+
+    const num_face1 = cardtype_info.num_of_row.face1;
+    const num_face2 = cardtype_info.num_of_row.face2;
+    if (selections) {
+      if (selections > 0) {
+        var num_selection = selections;
+      }
+    }
+    const num_annotation = cardtype_info.num_of_row.annotation;
+
+    const nick_face1 = cardtype_info.nick_of_row.face1;
+    const nick_face2 = cardtype_info.nick_of_row.face2;
+    const nick_annotation = cardtype_info.nick_of_row.annotation;
+
+    const nicks = [];
+
+    const face1 = [];
+    const face1Nick = [];
+    for (var i = 0; i < num_face1; i++) {
+      face1.push(i);
+      face1Nick.push(nick_face1[i]);
+      nicks.push(nick_face1[i]);
+    }
+
+    if (selections) {
+      if (selections > 0) {
+        const selection = [];
+        const selectionNick = [];
+        for (var i = 0; i < num_selection; i++) {
+          selection.push(i);
+          selectionNick.push(`보기${i + 1}`);
+          nicks.push(`보기${i + 1}`);
+        }
+      }
+    }
+
+    const face2 = [];
+    const face2Nick = [];
+    for (var i = 0; i < num_face2; i++) {
+      face2.push(i);
+      face2Nick.push(nick_face2[i]);
+      nicks.push(nick_face2[i]);
+    }
+
+    const annot = [];
+    const annotNick = [];
+    for (var i = 0; i < num_annotation; i++) {
+      annot.push(i);
+      annotNick.push(nick_annotation[i]);
+      nicks.push(nick_annotation[i]);
+    }
+
+    if (selectedCardType_tmp === undefined) {
+      var selectedCardTypeOption = cardtype_info.name;
+    } else {
+      selectedCardTypeOption = selectedCardType_tmp.name;
+    }
+
+    if (selections > 0) {
+      console.log("here1");
+      sessionStorage.setItem("nicks_with_selections", JSON.stringify(nicks));
+    } else if (cardtypeEditor === "flip") {
+      console.log("here2");
+      sessionStorage.setItem("nicks_without_selections", JSON.stringify(nicks));
+      sessionStorage.removeItem("nicks_with_selections");
+      sessionStorage.setItem("selections_adding", 0);
+    }
+
+    const editor = (
+      <>
+        {/* <div
+          style={{ border: "1px solid lightgrey", borderBottom: "0px", padding: "5px", display: "flex", justifyContent: "space-between", fontSize: "0.8rem", alignItems: "center" }}
+        >
+          {cardtypeEditor === "flip" && (
+            <>
+              {selections == undefined && (
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft: "3px" }} onClick={addSelections}>
+                  보기추가
+                </Button>
+              )}
+              {selections == 0 && (
+                <Button size="small" style={{ fontSize: "0.8rem", marginLeft: "3px" }} onClick={addSelections}>
+                  보기추가
+                </Button>
+              )}
+            </>
+          )}
+        </div> */}
+
+        <div style={{ marginBottom: "100px" }}>
+          <Editor
+            // removeSelection={removeSelection}
+            face1={face1}
+            face2={face2}
+            annot={annot}
+            parentId={parentId}
+            nicks={nicks}
+            cardtypeEditor={cardtypeEditor}
+            onFinish={onFinish}
+            setEditorOn={setEditorOn}
+            cardtype_info={cardtype_info}
+            // addSelections={addSelections}
+            // addPolly={addPolly}
+            // forceUpdateBool={forceUpdateBool}
+            // setForceUpdateBool={setForceUpdateBool}
+          />
+        </div>
+      </>
+    );
+    setEditorOn(editor);
+  };
+
+  function onClickUserFlag() {
+    console.log("userflagclicked!!!");
+    setUserFlag(!userFlag);
+    setCardClickMenu(false);
+  }
+
+  function userFlagChange(flag) {
+    console.log("userFlagChangeClicked!!!");
+    console.log(flag);
+    updateUserFlag(cardInfo.cardset_id, cardInfo.card_id, flag);
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const filtered = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    console.log(filtered);
+    cardListStudying[filtered].content.userFlag = Number(flag);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    setUserFlag(false);
+  }
+
+  function onClickCardMenu() {
+    console.log("userFlagChangeClicked!!!");
+    setCardClickMenu(!cardClickMenu);
+    setUserFlag(false);
+  }
+
+  const getSelectionText2 = () => {
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
+    setHighlightToggle(false);
+    setSearchToggle(false);
+    console.log("hello");
+    var text = null;
+    var textRange = null;
+    console.log(typeof document.selection);
+    console.log(document.selection);
+    if (document.getSelection) {
+      text = document.getSelection().toString();
+      textRange = document.getSelection();
+      sessionStorage.setItem("selectionText", text);
+      console.log("case1", text);
+    } else if (typeof document.selection != "undefined") {
+      text = document.selection;
+      console.log("case2", text);
+    }
+    console.log("end");
+
+    if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
+      var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
+      var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
+      var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
+      var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
+      var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+      if (parentId_tmp1 !== null) {
+        var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+        var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+        var cardId = parentId_tmp3[0].replace("cardId", "");
+      } else {
+        parentId = null;
+      }
+      if (parentId === null) {
+        parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
+        parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
+        var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
+        var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
+        var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+        console.log(parentId_tmp1);
+        if (parentId_tmp1 !== null) {
+          var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+          var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+          var cardId = parentId_tmp3[0].replace("cardId", "");
+        } else {
+          parentId = null;
+        }
+        if (parentId !== null) {
+          sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+          sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+          sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+          sessionStorage.setItem("selectionTextCardId", cardId);
+        } else {
+          parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+          parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+          var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
+          var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
+          var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+          console.log(parentId_tmp1);
+          if (parentId_tmp1 !== null) {
+            var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+            var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+            var cardId = parentId_tmp3[0].replace("cardId", "");
+          } else {
+            parentId = null;
+          }
+          if (parentId !== null) {
+            sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+            sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+            sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+            sessionStorage.setItem("selectionTextCardId", cardId);
+          }
+        }
+      } else {
+        sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+        sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+        sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+        sessionStorage.setItem("selectionTextCardId", cardId);
+      }
+    }
+  };
+
+  const hide = (toolType) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    const newHiddenValue = {
+      targetWord: selectionText,
+      toolType: toolType,
+    };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.hidden.push(newHiddenValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null);
+    console.log(selectionTextCardSetId, selectionTextCardId, "hidden", selectionText, null);
+    // var elem = document.getElementById(parentIdOfSelection);
+
+    // elem.innerHTML = replaced;
+    setHiddenToggle(false);
+    sessionStorage.removeItem("selectionText");
+  };
+
+  const underline = (toolType) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    const newUnderlineValue = {
+      targetWord: selectionText,
+      toolType: toolType,
+    };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.underline.push(newUnderlineValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType);
+    console.log(selectionTextCardSetId, selectionTextCardId, "underline", selectionText, toolType);
+    // var elem = document.getElementById(parentIdOfSelection);
+
+    // elem.innerHTML = replaced;
+    setUnderlineToggle(false);
+    sessionStorage.removeItem("selectionText");
+  };
+
+  const highlight = (toolType) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    // const parentIdOfSelection = sessionStorage.getItem("parentIdOfSelection");
+    // const parentInnerHtml = sessionStorage.getItem("parentInnerHtml");
+    const selectionTextCardSetId = sessionStorage.getItem("selectionTextCardSetId");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+    // const replaced = parentInnerHtml.replace(selectionText, `<span style="visibility:hidden;">${selectionText}</span>`);
+    const newHighlightValue = {
+      targetWord: selectionText,
+      toolType: toolType,
+    };
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === selectionTextCardId);
+    cardListStudying[needToBeChangedIndex].content.highlight.push(newHighlightValue);
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetAddEffect(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType);
+    console.log(selectionTextCardSetId, selectionTextCardId, "highlight", selectionText, toolType);
+    // var elem = document.getElementById(parentIdOfSelection);
+
+    // elem.innerHTML = replaced;
+    setHighlightToggle(false);
+    sessionStorage.removeItem("selectionText");
+  };
+
+  const search = (menu) => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    console.log(selectionText);
+    if (selectionText === "") {
+      return;
+    }
+    if (menu === "영한사전") {
+      searchWord();
+      setSearchToggle(false);
+    } else if (menu === "백과사전") {
+      setSearchToggle(false);
+      sessionStorage.removeItem("selectionText");
+      return;
+    }
+  };
+
+  const hiddenToggleHandler = (info) => {
+    console.log("userflagclicked!!!");
+    setHiddenToggle(!hiddenToggle);
+    setUnderlineToggle(false);
+    setHighlightToggle(false);
+    setSearchToggle(false);
+    if (hiddenToggle === false) {
+      message.destroy();
+      info();
+    }
+  };
+
+  const underlineToggleHandler = (info) => {
+    console.log("underlineToggleHandler!!!");
+    setUnderlineToggle(!underlineToggle);
+    setHiddenToggle(false);
+    setHighlightToggle(false);
+    setSearchToggle(false);
+    if (underlineToggle === false) {
+      message.destroy();
+      info();
+    }
+  };
+
+  const highlightToggleHandler = (info) => {
+    console.log("underlineToggleHandler!!!");
+    setHighlightToggle(!highlightToggle);
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
+    setSearchToggle(false);
+    if (highlightToggle === false) {
+      message.destroy();
+      info();
+    }
+  };
+
+  const searchToggleHandler = (info) => {
+    console.log("searchToggleHandler!!!");
+    setSearchToggle(!searchToggle);
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
+    setHighlightToggle(false);
+    if (searchToggle === false) {
+      message.destroy();
+      info();
+    }
+  };
+
+  const [isModalVisibleHidden, setIsModalVisibleHidden] = useState(false);
+  const [isModalVisibleUnderline, setIsModalVisibleUnderline] = useState(false);
+  const [isModalVisibleHighlight, setIsModalVisibleHighlight] = useState(false);
+
+  const handleOk = () => {
+    setIsModalVisibleHidden(false);
+    setIsModalVisibleUnderline(false);
+    setIsModalVisibleHighlight(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisibleHidden(false);
+    setIsModalVisibleUnderline(false);
+    setIsModalVisibleHighlight(false);
+  };
+
+  const hiddenEffectDeleteModal = () => {
+    setIsModalVisibleHidden(true);
+  };
+  const underlineEffectDeleteModal = () => {
+    setIsModalVisibleUnderline(true);
+  };
+
+  const highlightEffectDeleteModal = () => {
+    setIsModalVisibleHighlight(true);
+  };
+
+  function hiddenElementTagHandler(word) {
+    console.log(word);
+    console.log(cardInfo);
+
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    const newHiddenArray = cardListStudying[needToBeChangedIndex].content.hidden.filter((item) => item.targetWord !== word);
+    console.log(newHiddenArray);
+    cardListStudying[needToBeChangedIndex].content.hidden = newHiddenArray;
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "hidden", word);
+  }
+
+  function underlineElementTagHandler(word) {
+    console.log(word);
+    console.log(cardInfo);
+
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    const newUnderlineArray = cardListStudying[needToBeChangedIndex].content.underline.filter((item) => item.targetWord !== word);
+    console.log(newUnderlineArray);
+    cardListStudying[needToBeChangedIndex].content.underline = newUnderlineArray;
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "underline", word);
+  }
+
+  function highlightElementTagHandler(word) {
+    console.log(word);
+    console.log(cardInfo);
+
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_id);
+    const newHighlightArray = cardListStudying[needToBeChangedIndex].content.highlight.filter((item) => item.targetWord !== word);
+    console.log(newHighlightArray);
+    cardListStudying[needToBeChangedIndex].content.highlight = newHighlightArray;
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    setCardListStudying(cardListStudying);
+    cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "highlight", word);
+  }
+
 
   if (cards) {
     var contents = cards.map((content) => {
@@ -320,13 +965,371 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               </div>
             </>
           );
-          
+
+          const userFlags = (
+            <>
+              <FlagOutlined
+                onClick={() => userFlagChange("0")}
+                style={{
+                  border: "1px solid lightgrey",
+                  background: "white",
+                  cursor: "pointer",
+                  fontSize: "1.5rem",
+                  color: "white",
+                }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("1")}
+                style={{
+                  border: "1px solid lightgrey",
+                  background: "white",
+                  cursor: "pointer",
+                  fontSize: "1.5rem",
+                  color: `${userFlagDetails.flag1.figureColor}`,
+                }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("2")}
+                style={{
+                  border: "1px solid lightgrey",
+                  background: "white",
+                  cursor: "pointer",
+                  fontSize: "1.5rem",
+                  color: `${userFlagDetails.flag2.figureColor}`,
+                }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("3")}
+                style={{
+                  border: "1px solid lightgrey",
+                  background: "white",
+                  cursor: "pointer",
+                  fontSize: "1.5rem",
+                  color: `${userFlagDetails.flag3.figureColor}`,
+                }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("4")}
+                style={{
+                  border: "1px solid lightgrey",
+                  background: "white",
+                  cursor: "pointer",
+                  fontSize: "1.5rem",
+                  color: `${userFlagDetails.flag4.figureColor}`,
+                }}
+              />
+              <FlagFilled
+                onClick={() => userFlagChange("5")}
+                style={{
+                  border: "1px solid lightgrey",
+                  background: "white",
+                  cursor: "pointer",
+                  fontSize: "1.5rem",
+                  color: `${userFlagDetails.flag5.figureColor}`,
+                }}
+              />
+            </>
+          );
+
           return (
             <>
               {content.card_info.cardtype === "read" && (
                 <>
+                {content._id === cardId && (
+                    <>
+                      <div
+                        style={{
+                          backgroundColor: "#f0f0f0",
+                          height: "38px",
+                          padding: "0 5px 0 5px",
+                          // boxShadow: "0px 0px 1px 1px #eeeeee",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-around",
+                          alignItems: "center",
+                          border: "1px solid gainsboro",
+                          borderTopLeftRadius: "10px",
+                          borderTopRightRadius: "10px",
+                        }}
+                      >
+                        <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                          {content.content.userFlag === 0 && (
+                            <>
+                              <FlagOutlined
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "16px",
+                                  color: "#f0f0f0",
+                                  border: "1px solid lightgrey",
+                                }}
+                              />
+                            </>
+                          )}
+                          {content.content.userFlag !== 0 && (
+                            <>
+                              <FlagFilled
+                                onClick={onClickUserFlag}
+                                style={{
+                                  cursor: "pointer",
+                                  fontSize: "16px",
+                                  color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                }}
+                              />
+                            </>
+                          )}
+
+                          {userFlag && (
+                            <>
+                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                            </>
+                          )}
+                        </div>
+                        <div unselectable="on" style={{ position: "relative" }}>
+                          <Button
+                            unselectable="on"
+                            className="hiddenButton"
+                            onClick={hiddenEffectDeleteModal}
+                            size="small"
+                            style={{
+                              border: "none",
+                              backgroundColor: "#f0f0f0",
+                            }}
+                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
+                          ></Button>
+
+                          <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
+                            <div>가리기</div>
+                            {content.content.hidden &&
+                              content.content.hidden.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                            <div>밑줄</div>
+                            {content.content.underline &&
+                              content.content.underline.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                            <div>형광펜</div>
+                            {content.content.highlight &&
+                              content.content.highlight.map((item) => {
+                                return (
+                                  <>
+                                    <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <span>{item.targetWord}</span>
+                                        <span
+                                          style={{
+                                            marginLeft: "3px",
+                                            color: "grey",
+                                          }}
+                                        >
+                                          <CloseOutlined />
+                                        </span>
+                                      </div>
+                                    </Tag>
+                                  </>
+                                );
+                              })}
+                          </Modal>
+                        </div>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        <Button
+                          size="small"
+                          style={{
+                            border: "none",
+                            backgroundColor: "#f0f0f0",
+                          }}
+                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
+                        ></Button>
+                        {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
+                          <>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                            ></Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button
+                              size="small"
+                              style={{
+                                border: "none",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                              disabled
+                            ></Button>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
+                  {content._id !== cardId && (
+                    <>
+                      <div
+                        style={{
+                          padding: "0px",
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                          alignItems: "end",
+                        }}
+                      >
+                        {content.content.userFlag === 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: "#ffffff00",
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+                        {content.content.userFlag !== 0 && (
+                          <>
+                            <div
+                              style={{
+                                backgroundColor: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
+                                height: "2px",
+                                width: "20px",
+                                borderRadius: "2px",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          </>
+                        )}
+
+                        <div style={{ display: "flex", alignItems: "end" }}>
+                          {content.content.memo !== null && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "#50d663",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                          {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "blue",
+                                  height: "2px",
+                                  width: "20px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {" "}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  )}
                   <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
-                    <div onClick={() => onClickCard(content._id, "normal")}>
+                    <div onClick={() => onClickCard(content._id, "normal", null, content.card_info)}>
                       {/* 페이스 스타일 영역 */}
                       {content.content.makerFlag.value !== null && flagArea}
                       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
@@ -992,94 +1995,159 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       return show_contents;
     });
   }
-  const onClickCard = (card_id, from, group) => {
-    console.log("cardClicked!!!!!");
-    console.log("onClickCard", card_id);
-    console.log("from", from);
-    console.log("parent", group);
-    setEditMode("normal");
-    if ((from !== "general" && from !== "normal" && from !== "flip" && group === undefined) || null) {
-      console.log("null or undefined");
-      const selected1 = document.getElementsByClassName("child_group");
-      const selected2 = document.getElementsByClassName("other");
-      for (var a = 0; a < selected2.length; a++) {
-        const section1 = selected2.item(a);
-        section1.style.borderLeft = "none";
-      }
-      for (var a = 0; a < selected1.length; a++) {
-        const section2 = selected1.item(a);
-        section2.style.borderLeft = "none";
-      }
-    } else if (from === "general") {
-      console.log("general");
-      const selected1 = document.getElementsByClassName(card_id);
-      const selected2 = document.getElementsByClassName("other");
-      for (var a = 0; a < selected2.length; a++) {
-        const section1 = selected2.item(a);
-        section1.style.borderLeft = "none";
-      }
-      for (var b = 0; b < selected1.length; b++) {
-        const section2 = selected1.item(b);
-        section2.style.borderLeft = "5px solid #4285f4";
-        // section2.style.borderRadius = "4px";
-      }
-    } else if (from === "normal") {
-      console.log("normal");
-      const selected1 = document.getElementsByClassName(card_id);
-      const selected2 = document.getElementsByClassName("other");
-      for (var a = 0; a < selected2.length; a++) {
-        const section1 = selected2.item(a);
-        section1.style.borderLeft = "none";
-      }
-      for (var b = 0; b < selected1.length; b++) {
-        const section2 = selected1.item(b);
-        section2.style.borderLeft = "5px solid #4285f4";
-        // section2.style.borderRadius = "4px";
-      }
-    } else if (from === "flip" && group === null) {
-      console.log("flip1");
-      const selected4 = document.getElementsByClassName(card_id);
-      const selected2 = document.getElementsByClassName("other");
-      for (var a = 0; a < selected2.length; a++) {
-        const section1 = selected2.item(a);
-        section1.style.borderLeft = "none";
-      }
-      for (var b = 0; b < selected4.length; b++) {
-        const section4 = selected4.item(b);
-        section4.style.borderLeft = "5px solid #4285f4";
-        // section4.style.borderRadius = "4px";
-      }
-    } else if (from === "flip" && group === undefined) {
-      console.log("flip2");
-      const selected4 = document.getElementsByClassName(card_id);
-      const selected2 = document.getElementsByClassName("other");
-      for (var a = 0; a < selected2.length; a++) {
-        const section1 = selected2.item(a);
-        section1.style.borderLeft = "none";
-      }
-      for (var b = 0; b < selected4.length; b++) {
-        const section4 = selected4.item(b);
-        section4.style.borderLeft = "5px solid #4285f4";
-        // section4.style.borderRadius = "4px";
-      }
-    } else {
-      console.log("parent Id");
-      const selected3 = document.getElementsByClassName(group);
-      const selected2 = document.getElementsByClassName("other");
-      for (var a = 0; a < selected2.length; a++) {
-        const section1 = selected2.item(a);
-        section1.style.borderLeft = "none";
-      }
-      for (var c = 0; c < selected3.length; c++) {
-        const section3 = selected3.item(c);
-        console.log(section3);
-        section3.style.borderLeft = "5px solid #4285f4";
-        // section3.style.borderRadius = "4px";
-      }
+  const onClickCard = (card_id, from, group, card_info) => {
+    console.log(card_info);
+    sessionStorage.removeItem("selectionText");
+    const selected1 = document.getElementsByClassName(card_id);
+    const selected2 = document.getElementsByClassName("other");
+
+    for (var a = 0; a < selected2.length; a++) {
+      const section = selected2.item(a);
+      section.style.border = "none";
+      section.style.borderBottomLeftRadius = "0px";
+      section.style.borderBottomRightRadius = "0px";
+      // section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
+    }
+    for (var a = 0; a < selected1.length; a++) {
+      const section = selected1.item(a);
+      section.style.border = "1px solid gainsboro";
+      section.style.borderTop = "none";
+      section.style.borderBottomLeftRadius = "5px";
+      section.style.borderBottomRightRadius = "5px";
+      section.style.padding = "5px 0px";
+
+      // section.style.boxShadow = "#eeeeee 0px 1px 2px 1px";
     }
 
-    setCardId(card_id);
+    if (cardId === card_id) {
+      setCardId("");
+      setCardInfo("");
+      for (var a = 0; a < selected2.length; a++) {
+        const section = selected2.item(a);
+        section.style.border = "none";
+        section.style.borderBottomLeftRadius = "0px";
+        section.style.borderBottomRightRadius = "0px";
+        // section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
+      }
+    } else {
+      setCardId(card_id);
+      setCardInfo(card_info);
+    }
+    setCardClickMenu(false);
+    setUserFlag(false);
+    setHiddenToggle(false);
+    setUnderlineToggle(false);
   };
+
+  const [cardset_addEffect] = useMutation(ForAddEffect, {
+    onCompleted: showdataaftereffectfetch,
+  });
+  function showdataaftereffectfetch(data) {
+    console.log("data", data);
+    // setCardListStudying(data.showdataaftereffectfetch.cardlistStudying);
+  }
+
+  const cardsetAddEffect = useCallback(
+    async (cardset_id, card_id, effectType, targetWord, toolType) => {
+      try {
+        await cardset_addEffect({
+          variables: {
+            forAddEffect: {
+              cardset_id,
+              card_id,
+              effectType,
+              targetWord,
+              toolType: Number(toolType),
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_addEffect]
+  );
+
+  const [cardset_deleteEffect] = useMutation(ForDeleteEffect, {
+    onCompleted: showdataafterdeleteeffect,
+  });
+  function showdataafterdeleteeffect(data) {
+    console.log("data", data);
+    // setCardListStudying(data.showdataaftereffectfetch.cardlistStudying);
+  }
+
+  const cardsetDeleteEffect = useCallback(
+    async (cardset_id, card_id, effectType, targetWord) => {
+      try {
+        await cardset_deleteEffect({
+          variables: {
+            forDeleteEffect: {
+              cardset_id,
+              card_id,
+              effectType,
+              targetWord,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_deleteEffect]
+  );
+
+  const [searchResult, setSearchResult] = useState(false);
+  const [cardset_inquireLanguageDictionary] = useMutation(Dictionary, {
+    onCompleted: afterdictionary,
+  });
+  function afterdictionary(data) {
+    console.log("data", data.cardset_inquireLanguageDictionary.data1);
+    const selectionText = sessionStorage.getItem("selectionText");
+    const original = data.cardset_inquireLanguageDictionary.data1;
+    const meaning = original.match(/(KO\">([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100}))/gi);
+    const definitionKo = meaning[0].match(/([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100})/gi)[0];
+    const additional = meaning[1].match(/([ㄱ-ㅎ|ㅏ-ㅣ|가-힣\s(),\.\?]{1,100})/gi)[0];
+    const definitionEg = original.match(/(def\">([a-z\s(),\.\?]{1,200}))/gi);
+    const definitionEg1 = definitionEg[0].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    const definitionEg2 = definitionEg[1].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    const exampleEg = original.match(/(eg\">([a-z\s(),\.\?]{1,200}))/gi);
+    const exampleEg1 = exampleEg[0].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    const exampleEg2 = exampleEg[1].match(/([a-z\s(),\.\?]{1,200})/gi)[1];
+    console.log(meaning);
+    console.log("뜻", definitionKo);
+    console.log("뜻2", additional);
+    console.log(definitionEg);
+    console.log("영영뜻", definitionEg1);
+    console.log("영영뜻2", definitionEg2);
+    console.log(exampleEg);
+    console.log("영어예문", exampleEg1);
+    console.log("영어예문2", exampleEg2);
+    const results = {
+      selectionText: selectionText,
+      meaning1: definitionKo,
+      meaning2: additional,
+      meaningEng1: definitionEg1,
+      meaningEng2: definitionEg2,
+      example1: exampleEg1,
+      example2: exampleEg2,
+    };
+    setSearchResult(results);
+    sessionStorage.removeItem("selectionText");
+  }
+
+  const searchWord = useCallback(async () => {
+    const selectionText = sessionStorage.getItem("selectionText");
+    try {
+      await cardset_inquireLanguageDictionary({
+        variables: {
+          targetWord: selectionText,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [cardset_inquireLanguageDictionary]);
+
 
   return (
     <>

@@ -175,6 +175,40 @@ export const GetCardRelated = gql`
         ...MyCardTypeSetFragment
       }
     }
+    
+    userflagconfig_get {
+      userflagconfigs {
+        _id
+        details {
+          flag1 {
+            figure
+            figureColor
+            textColor
+          }
+          flag2 {
+            figure
+            figureColor
+            textColor
+          }
+          flag3 {
+            figure
+            figureColor
+            textColor
+          }
+          flag4 {
+            figure
+            figureColor
+            textColor
+          }
+          flag5 {
+            figure
+            figureColor
+            textColor
+          }
+        }
+      }
+    }
+
   }
 `;
 export const GetFlagStyle = gql`

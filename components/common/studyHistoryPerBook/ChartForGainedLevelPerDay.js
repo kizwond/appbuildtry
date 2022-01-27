@@ -24,7 +24,9 @@ const ChartForGainedLevelPerDay = ({ data }) => {
       </div>
       <div className="w-full overflow-x-auto overflow-y-hidden">
         <ul className="table h-[140px] py-5">
-          {data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory
+          {_(data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory)
+            .takeRight(15)
+            .reverse()
             .map(({ level: { completed, nonCompleted }, date }, index, arr) => {
               const totalLevel =
                 Math.floor(completed * 1000 + nonCompleted * 1000) / 1000;
@@ -76,7 +78,8 @@ const ChartForGainedLevelPerDay = ({ data }) => {
                   </StyledBar>
                 </li>
               )
-            )}
+            )
+            .value()}
         </ul>
       </div>
     </div>

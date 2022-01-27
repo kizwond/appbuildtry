@@ -24,7 +24,9 @@ const ChartForStudiedCardsPerDay = ({ data }) => {
       </div>
       <div className="w-full overflow-x-auto overflow-y-hidden">
         <ul className="table h-[140px] py-5">
-          {data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory
+          {_(data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory)
+            .takeRight(15)
+            .reverse()
             .map(
               ({ numCardsByStatus: { ing, hold, yet, completed }, date }) => {
                 const totalStudiedTimes = completed + ing + hold + yet;
@@ -78,7 +80,8 @@ const ChartForStudiedCardsPerDay = ({ data }) => {
                   </StyledBar>
                 </li>
               )
-            )}
+            )
+            .value()}
         </ul>
       </div>
     </div>

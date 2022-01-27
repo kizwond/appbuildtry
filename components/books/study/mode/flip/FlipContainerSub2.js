@@ -3,9 +3,8 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
     const {levelchangeSensitivity, restudyRatio, maxRestudyMinuteInsideSession} = levelConfigs.restudy
     const KnowStudyRatio = 95
     const initialElapsedHour = 24
-    const maxRestudyMinuteInsideSession = 30 / 0.875
-    const minRestudyMin = 5
-    const restudyCoeffInsideSession = 6 / 100
+    // 87.5일 때, max가 나오도록 조정해준다.
+    const maxRestudyMinuteInsideSessionAdjusted = maxRestudyMinuteInsideSession / 0.875    
 
     let theoNewLevel, newLevel
     let needStudyTime, needStudyTimeGap, needStudyTimeTmp
@@ -37,7 +36,7 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
         // needStudyTimeTmp = (studyRatio == KnowStudyRatio) ? null : new Date(Date.now() + minRestudyMin * 60000 * (restudyCoeffInsideSession*studyRatio+1))            
         needStudyTimeTmp = (studyRatio == KnowStudyRatio) 
             ? null 
-            : new Date(Date.now() + Math.max(maxRestudyMinuteInsideSession * 60000 * studyRatio / 100, 150 * 1000)) // 최소는 150초
+            : new Date(Date.now() + Math.max(maxRestudyMinuteInsideSessionAdjusted * 60000 * studyRatio / 100, 150 * 1000)) // 최소는 150초
         needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(studyRatio/100)) / Math.log(0.8) * 24 * 3600000)            
         needStudyTime = new Date(Date.now() + needStudyTimeGap)
         needStudyTime = (needStudyTime < needStudyTimeTmp )? needStudyTimeTmp : needStudyTime        

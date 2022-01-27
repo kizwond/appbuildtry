@@ -102,66 +102,66 @@ const StudyHistoryOfLastWeek = ({ data }) => {
         </tr>
       </thead>
       <tbody>
-        {data?.session_getSessionByMybookid?.sessions &&
-          _(data.session_getSessionByMybookid.sessions)
-            .takeRight(5)
-            .reverse()
-            .map((session) => {
-              const startedDate = moment(
-                session.session_info.timeStarted
-              ).format("M/D");
+        {_(data.session_getSessionByMybookid.sessions)
+          .takeRight(5)
+          .reverse()
+          .map((session) => {
+            const startedDate = moment(session.session_info.timeStarted).format(
+              "M/D"
+            );
 
-              const studyMode =
-                session.sessionConfig.studyMode === "flip"
-                  ? "뒤집기"
-                  : session.sessionConfig.studyMode === "exam"
-                  ? "시험"
-                  : new Error(
-                      `${session.sessionConfig.studyMode}는 알 수 없는 학습 모드입니다`
-                    );
+            const studyMode =
+              session.sessionConfig.studyMode === "flip"
+                ? "뒤집기"
+                : session.sessionConfig.studyMode === "exam"
+                ? "시험"
+                : new Error(
+                    `${session.sessionConfig.studyMode}는 알 수 없는 학습 모드입니다`
+                  );
 
-              const timeOnSessionStage = `${
-                moment(session.session_info.timeStarted).format("HH:mm") ===
-                "Invalid date"
-                  ? ""
-                  : moment(session.session_info.timeStarted).format("HH:mm")
-              } ~ ${
-                moment(session.session_info.timeFinished).format("HH:mm") ===
-                "Invalid date"
-                  ? ""
-                  : moment(session.session_info.timeFinished).format("HH:mm")
-              }`;
-
-              const isWithBook =
-                session.sessionScope.length > 1 ? "(혼합)" : null;
-              return (
-                <tr
-                  key={session._id}
-                  className="border-b border-collapse border-b-gray-200"
+            const isWithBook =
+              session.sessionScope.length > 1 ? "(혼합)" : null;
+            return (
+              <tr
+                key={session._id}
+                className="border-b border-collapse border-b-gray-200"
+              >
+                <td className="text-[1rem] border-r border-collapse border-r-gray-200  text-center">
+                  {startedDate}
+                </td>
+                <td className="text-[1rem] border-r border-collapse border-r-gray-200 text-center">
+                  {studyMode}
+                  {isWithBook}
+                </td>
+                <td className="text-[1rem] border-r border-collapse border-r-gray-200 flex items-center justify-center">
+                  <div className="flex justify-end w-full item-center">
+                    {moment(session.session_info.timeStarted).format(
+                      "HH:mm"
+                    ) !== "Invalid date" &&
+                      moment(session.session_info.timeStarted).format("HH:mm")}
+                  </div>
+                  <div className="flex-none w-[15px] flex item-center justify-center">
+                    ~
+                  </div>
+                  <div className="flex w-full item-center">
+                    {moment(session.session_info.timeFinished).format(
+                      "HH:mm"
+                    ) !== "Invalid date" &&
+                      moment(session.session_info.timeFinished).format("HH:mm")}
+                  </div>
+                </td>
+                <td
+                  className="text-[1rem] text-center"
+                  onClick={() => {
+                    getSessionResult({ session_id: session._id });
+                  }}
                 >
-                  <td className="text-[1rem] border-r border-collapse border-r-gray-200  text-center">
-                    {startedDate}
-                  </td>
-                  <td className="text-[1rem] border-r border-collapse border-r-gray-200 text-center">
-                    {studyMode}
-                    {isWithBook}
-                  </td>
-                  <td className="text-[1rem] border-r border-collapse border-r-gray-200 flex items-center justify-center">
-                    <div className="min-w-[85px]">{timeOnSessionStage}</div>
-                  </td>
-                  <td
-                    className="text-[1rem] text-center"
-                    onClick={() => {
-                      console.log("자세히보기");
-                      getSessionResult({ session_id: session._id });
-                    }}
-                  >
-                    <a>자세히보기</a>
-                  </td>
-                </tr>
-              );
-            })
-            .value()}
+                  <a>자세히보기</a>
+                </td>
+              </tr>
+            );
+          })
+          .value()}
       </tbody>
     </table>
   );

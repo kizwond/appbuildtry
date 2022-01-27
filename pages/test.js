@@ -97,12 +97,12 @@ const TableForStatusOfCard = () => (
     </tbody>
     <div className="text-[1.2rem] w-26 flex items-center justify-center">
       <div className="flex justify-end w-full item-center">
-        {true && "ㅇㅇ"}
+        {false && "ㅇㅇ"}
       </div>
       <div className="flex-none w-[70px] flex item-center justify-center">
         {"세션 설정"}
       </div>
-      <div className="flex w-full item-center">{false && "ㅇㅇ"}</div>
+      <div className="flex w-full item-center">{true && "ㅇㅇ"}</div>
     </div>
   </table>
 );

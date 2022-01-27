@@ -6,6 +6,7 @@ import { QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID } from "../../../graphql/query/a
 import { Drawer } from "antd";
 
 import SectionWrapper from "../../common/commonComponent/SectionWrapper";
+import BoxForSummaryOfMainPage from "../../common/commonComponent/BoxForSummaryOfMainPage";
 import StudyHistoryOfLastWeek from "./StudyHistoryOfLastWeek";
 import ChartForStudiedCardsPerDay from "./ChartForStudiedCardsPerDay";
 import ChartForGainedLevelPerDay from "./ChartForGainedLevelPerDay";
@@ -55,10 +56,47 @@ const StudyHistoryPerBook = ({ mybook_id, forWhom }) => {
     [data]
   );
 
+  const {
+    ing: Ing,
+    hold: Hold,
+    yet: Yet,
+    completed: Completed,
+  } = data
+    ? _(data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory)
+        .takeRight()
+        .value()[0].numCardsByStatus
+    : { ing: 0, hold: 0, yet: 0, completed: 0 };
+
+  const currentNumberOfIncompletedCards = Ing + Hold + Yet;
+
+  const { completed, nonCompleted } = data
+    ? _(data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory)
+        .takeRight()
+        .value()[0].level
+    : { ing: 0, hold: 0, yet: 0, completed: 0 };
+
+  const currentLevelOfIncompletedCards =
+    Math.floor(completed * 100 + nonCompleted * 100) / 100;
+
   return (
     <div className="">
       {data && (
         <div className="w-full flex flex-col gap-[8px]">
+          <SectionWrapper
+            title="요약"
+            content={
+              <div className="grid w-full grid-cols-2 gap-4">
+                <BoxForSummaryOfMainPage
+                  title="미완료 카드수"
+                  content={"" + currentNumberOfIncompletedCards + "장"}
+                />
+                <BoxForSummaryOfMainPage
+                  title="미완료 카드 평균 레벨"
+                  content={currentLevelOfIncompletedCards}
+                />
+              </div>
+            }
+          />
           <SectionWrapper
             title={
               <div className="flex items-end space-x-3">

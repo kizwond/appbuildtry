@@ -7,6 +7,7 @@ import {
   QUERY_SESSION_BY_USER,
   QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
   QUERY_SESSION_FOR_RESTARTING_SESSION_BY_SESSION_ID,
+  QUERY_EXAM_FOR_RESULT_BY_SESSION_ID,
 } from "../../graphql/query/allQuery";
 import { Drawer, Space } from "antd";
 import { useCallback } from "react";
@@ -97,83 +98,15 @@ const M_RecentStudyList = () => {
             )
           );
 
-          // router.push(`/m/study/result/${variables.session_id}`);
+          router.push(`/m/study/result/${variables.session_id}`);
         } else if (received_data.session_getSession.status === "401") {
-          router.push("/account/login");
+          router.push("/m/account/login");
         } else {
           console.log("어떤 문제가 발생함");
         }
       },
     }
   );
-  const [getExamDataForResult, { variables: variablesExam }] = useLazyQuery(
-    QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
-    {
-      onCompleted: (received_data) => {
-        if (received_data.session_getSession.status === "200") {
-          console.log("세션 결과 데이터 받음", received_data);
-
-          sessionStorage.setItem(
-            "startTimeForSessionHistory",
-            received_data.session_getSession.sessions[0].session_info
-              .timeStarted
-          );
-          sessionStorage.setItem(
-            "endTimeForSessionHistory",
-            received_data.session_getSession.sessions[0].session_info
-              .timeFinished
-          );
-          sessionStorage.setItem(
-            "cardListStudyingForSessionHistory",
-            JSON.stringify(
-              received_data.session_getSession.sessions[0].cardlistUpdated
-            )
-          );
-          sessionStorage.setItem(
-            "createdCardsForSessionHistory",
-            JSON.stringify(
-              received_data.session_getSession.sessions[0].createdCards
-            )
-          );
-          sessionStorage.setItem(
-            "cardlist_to_send_ForSessionHistory",
-            JSON.stringify(
-              received_data.session_getSession.sessions[0].clickHistory
-            )
-          );
-          sessionStorage.setItem(
-            "resultOfSessionForSessionHistory",
-            JSON.stringify(
-              received_data.session_getSession.sessions[0].resultOfSession
-            )
-          );
-          sessionStorage.setItem(
-            "resultByBookForSessionHistory",
-            JSON.stringify(
-              produce(
-                received_data.session_getSession.sessions[0].resultByBook,
-                (draft) => {
-                  draft.forEach((book) => {
-                    book.bookTitle =
-                      received_data.session_getSession.sessions[0].sessionScope.find(
-                        (scope) => scope.mybook_id === book.mybook_id
-                      ).title;
-                  });
-                }
-              )
-            )
-          );
-
-          // router.push(`/m/study/result/${variablesExam.session_id}`);
-        } else if (received_data.session_getSession.status === "401") {
-          router.push("/account/login");
-        } else {
-          console.log("어떤 문제가 발생함");
-        }
-      },
-    }
-  );
-
   const getSessionResult = useCallback(async ({ session_id }) => {
     try {
       getSessionDataForResult({
@@ -186,6 +119,40 @@ const M_RecentStudyList = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const [getExamDataForResult, { variables: variablesExam }] = useLazyQuery(
+    QUERY_EXAM_FOR_RESULT_BY_SESSION_ID,
+    {
+      onCompleted: (received_data) => {
+        if (received_data.session_getSession.status === "200") {
+          console.log("시험 결과 데이터 받음", received_data);
+          sessionStorage.setItem(
+            "cardListWithExamResult",
+            JSON.stringify(
+              received_data.session_getSession.sessions[0].cardlistUpdated
+            )
+          );
+
+          sessionStorage.setItem(
+            "startTimeForExam",
+            received_data.session_getSession.sessions[0].session_info
+              .timeStarted
+          );
+          sessionStorage.setItem(
+            "endTimeForExam",
+            received_data.session_getSession.sessions[0].session_info
+              .timeFinished
+          );
+
+          router.push(`/m/study/examresult/${variablesExam.session_id}`);
+        } else if (received_data.session_getSession.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
+  );
   const getExamResult = useCallback(async ({ session_id }) => {
     try {
       getExamDataForResult({

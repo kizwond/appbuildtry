@@ -2,18 +2,28 @@ import moment from "moment";
 import { useMemo } from "react";
 import BoxForSummaryOfMainPage from "../../../../components/common/commonComponent/BoxForSummaryOfMainPage";
 
-const SummaryOfExamResult = ({ cards }) => {
+const SummaryOfExamResult = ({ cards, from }) => {
   const startedTime = useMemo(
     () =>
-      moment(new Date(sessionStorage.getItem("started"))).format("M.D hh:mm"),
-    []
+      from === "home"
+        ? moment(new Date(sessionStorage.getItem("startTimeForExam"))).format(
+            "M.D hh:mm"
+          )
+        : moment(new Date(sessionStorage.getItem("started"))).format(
+            "M.D hh:mm"
+          ),
+    [from]
   );
   const endedTime = useMemo(
     () =>
-      moment(new Date(sessionStorage.getItem("endTimeOfSession"))).format(
-        "M.D hh:mm"
-      ),
-    []
+      from === "home"
+        ? moment(new Date(sessionStorage.getItem("endTimeForExam"))).format(
+            "M.D hh:mm"
+          )
+        : moment(new Date(sessionStorage.getItem("endTimeOfSession"))).format(
+            "M.D hh:mm"
+          ),
+    [from]
   );
 
   const totalNumberOfCards = cards.length;

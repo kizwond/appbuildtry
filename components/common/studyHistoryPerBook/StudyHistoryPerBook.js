@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import styled from "styled-components";
 import { QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID } from "../../../graphql/query/allQuery";
 
@@ -235,7 +235,7 @@ const StudyHistoryPerBook = ({ mybook_id, forWhom }) => {
   );
 };
 
-export default StudyHistoryPerBook;
+export default memo(StudyHistoryPerBook);
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;

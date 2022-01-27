@@ -40,7 +40,7 @@ const RateSlider = ({
         // tooltipVisible={true}
         max={max}
         min={min}
-        value={typeof selected === "number" ? selected : 10}
+        value={typeof selected === "number" ? selected : 80}
         onChange={(value) => {
           if (value > max) {
             onChange(max);

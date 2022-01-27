@@ -324,8 +324,9 @@ class Container extends Component {
 
   //상황에따른 새로운 카드 시쿼스 생성
   generateCardSeq = (card_details_session, now, current_card_id) => {
-    if(this.state.onBackMode){
-      return;
+    if (this.state.onBackMode) {
+      this.stopTimerTotal();
+      this.resetTimer();
     } else {
       this.setState({
         flip: true,
@@ -350,16 +351,16 @@ class Container extends Component {
         sessionStorage.setItem("origin_seq", Number(origin_seq) + 1);
         sessionStorage.setItem("card_seq", Number(origin_seq) + 1);
       }
-  
+
       //study log 생성
       const current_card_info_tmp = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
-  
+
       if (current_card_info_tmp.length === 0) {
         var current_card_info = card_details_session.filter((item) => item.content.buycontent_id === current_card_id);
       } else {
         var current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
       }
-  
+
       console.log(current_card_info);
       const currentCardId = current_card_info[0]._id;
       const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
@@ -374,14 +375,13 @@ class Container extends Component {
       });
       this.stopTimerTotal();
       this.resetTimer();
-  
+
       if (this.props.ttsOn) {
         this.setState({
           ttsOn: true,
         });
       }
     }
-    
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -612,7 +612,7 @@ class Container extends Component {
     const currentCardId = current_card_info[0]._id;
 
     this.generateHoldCompletedRestoretudyStatus(currentCardId, "hold");
-    if (from === "back") {
+    if (this.state.onBackMode) {
       this.setState({
         backModeRestore: false,
       });
@@ -691,7 +691,7 @@ class Container extends Component {
     const currentCardId = current_card_info[0]._id;
 
     this.generateHoldCompletedRestoretudyStatus(currentCardId, "restore");
-    if (from === "back") {
+    if (this.state.onBackMode) {
       console.log(from);
       this.setState({
         backModeRestore: true,
@@ -1121,9 +1121,13 @@ class Container extends Component {
             <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickRestoreHandler(current_card_id)} type="primary">
               복원
             </Button>
-            <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary">
-              통과
-            </Button>
+            {!this.state.onBackMode && (
+              <>
+                <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary">
+                  통과
+                </Button>
+              </>
+            )}
           </>
         );
       } else {
@@ -1171,6 +1175,7 @@ class Container extends Component {
               <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 87.5)} style={{ width: "5%" }}></button>
               <span style={{ width: "3%", backgroundColor: "#dadada", height: "33.41px" }}></span>
               <button
+                className="diffi_button"
                 onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 95)}
                 style={{ width: "25%", fontSize: "0.8rem", display: "flex", flexDirection: "column", alignItems: "center" }}
               >
@@ -1207,26 +1212,27 @@ class Container extends Component {
               justifyContent: "space-between",
             }}
           >
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 2.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 7.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 12.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 17.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 22.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 27.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 32.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 37.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 42.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 47.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 52.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 57.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 62.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 67.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 72.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 77.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 82.5)} style={{ width: "5%" }}></button>
-            <button onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 87.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 2.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 7.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 12.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 17.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 22.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 27.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 32.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 37.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 42.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 47.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 52.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 57.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 62.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 67.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 72.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 77.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 82.5)} style={{ width: "5%" }}></button>
+            <button className="diffi_button" onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 87.5)} style={{ width: "5%" }}></button>
             <span style={{ width: "3%", backgroundColor: "#dadada", height: "33.41px" }}></span>
             <button
+              className="diffi_button"
               onClick={() => this.onDiffClickHandler(current_card_id, this.state.time, 95)}
               style={{ width: "25%", fontSize: "0.8rem", display: "flex", flexDirection: "column", alignItems: "center" }}
             >
@@ -2788,9 +2794,15 @@ class Container extends Component {
                 {!this.state.onBackMode && moreMenu}
                 {this.state.onBackMode && !this.state.backModeRestore && diffiButtons}
                 {/* {this.state.onBackMode && !this.state.backModeRestore && goBackToCurrent} */}
-                {this.state.onBackMode && this.state.backModeRestore && restoreModeGoBackToCurrent}
+                {this.state.onBackMode && this.state.backModeRestore && restoreDiffiButtons}
                 {this.state.onBackMode && (
-                  <Button icon={<StepForwardOutlined />} size="small" style={{ fontSize: "1rem", flexGrow: 0, marginLeft:"5px" }} onClick={this.onClickNextCardInBackMode} type="secondary" />
+                  <Button
+                    icon={<StepForwardOutlined />}
+                    size="small"
+                    style={{ fontSize: "1rem", flexGrow: 0, marginLeft: "5px" }}
+                    onClick={this.onClickNextCardInBackMode}
+                    type="secondary"
+                  />
                 )}
               </div>
               {!this.state.onBackMode && !this.state.restore ? (

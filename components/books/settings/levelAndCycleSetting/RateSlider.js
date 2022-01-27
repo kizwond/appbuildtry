@@ -1,36 +1,33 @@
-import React, { memo } from 'react';
-import { Slider } from 'antd';
+import React, { memo } from "react";
+import { Slider } from "antd";
 
-const RateSlider = ({ configured, selected, onChange, min, max }) => {
+const RateSlider = ({
+  configured,
+  selected,
+  onChange,
+  min,
+  max,
+  step,
+  format,
+}) => {
   function formatter(value) {
-    return `${value}%`;
+    return `${value}${format}`;
   }
   const marks = {
-    0: '0',
-    [min]: configured - min < 10 ? '' : `${min}%`,
-    [max]: max - configured < 10 ? '' : `${max}%`,
-    [configured]:
-      max - configured < 10
-        ? {
-            style: {
-              color: '#f50',
-            },
-            label: <strong>현재 : {configured}%</strong>,
-          }
-        : configured - min < 10
-        ? {
-            style: {
-              color: '#f50',
-            },
-            label: <strong>현재 : {configured}%</strong>,
-          }
-        : {
-            style: {
-              color: '#f50',
-            },
-            label: <strong>현재</strong>,
-          },
-    100: '100%',
+    [min]: configured - min < 10 ? "" : `${min}${format}`,
+    [max]: max - configured < 10 ? "" : `${max}${format}`,
+    [configured]: {
+      style: {
+        color: "#f50",
+      },
+
+      label: (
+        <strong>
+          현재 : {configured}
+          {format}
+        </strong>
+      ),
+    },
   };
 
   return (
@@ -39,7 +36,9 @@ const RateSlider = ({ configured, selected, onChange, min, max }) => {
         marks={marks}
         tipFormatter={formatter}
         tooltipVisible={true}
-        value={typeof selected === 'number' ? selected : 10}
+        max={max}
+        min={min}
+        value={typeof selected === "number" ? selected : 10}
         onChange={(value) => {
           if (value > max) {
             onChange(max);
@@ -49,6 +48,7 @@ const RateSlider = ({ configured, selected, onChange, min, max }) => {
             onChange(value);
           }
         }}
+        step={step}
       />
     </div>
   );

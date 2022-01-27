@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import { Slider } from "antd";
+import { useState } from "react";
 
 const RateSlider = ({
   configured,
@@ -10,8 +11,10 @@ const RateSlider = ({
   step,
   format,
 }) => {
+  const [visible, setVisble] = useState(false);
+
   function formatter(value) {
-    return `${value}${format}`;
+    return <span className="text-[10px]">{`${value}${format}`}</span>;
   }
   const marks = {
     [min]: configured - min < 10 ? "" : `${min}${format}`,
@@ -23,7 +26,7 @@ const RateSlider = ({
 
       label: (
         <strong>
-          현재 : {configured}
+          설정값 : {configured}
           {format}
         </strong>
       ),
@@ -35,7 +38,7 @@ const RateSlider = ({
       <Slider
         marks={marks}
         tipFormatter={formatter}
-        tooltipVisible={true}
+        // tooltipVisible={true}
         max={max}
         min={min}
         value={typeof selected === "number" ? selected : 10}

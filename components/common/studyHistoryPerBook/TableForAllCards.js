@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { QUERY_MY_CARD_CONTENTS } from "../../../graphql/query/allQuery";
@@ -190,4 +190,4 @@ const TableForAllCards = ({ cards, contentType }) => {
   );
 };
 
-export default TableForAllCards;
+export default memo(TableForAllCards);

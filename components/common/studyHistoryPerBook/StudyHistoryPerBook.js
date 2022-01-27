@@ -1,18 +1,20 @@
 import { useQuery } from "@apollo/client";
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import styled from "styled-components";
 import { QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID } from "../../../graphql/query/allQuery";
 
 import { Drawer } from "antd";
 
 import SectionWrapper from "../../common/commonComponent/SectionWrapper";
+import BoxForSummaryOfMainPage from "../../common/commonComponent/BoxForSummaryOfMainPage";
 import StudyHistoryOfLastWeek from "./StudyHistoryOfLastWeek";
 import ChartForStudiedCardsPerDay from "./ChartForStudiedCardsPerDay";
 import ChartForGainedLevelPerDay from "./ChartForGainedLevelPerDay";
 import TableForRankedCards from "./TableForRankedCards";
 import TableForAllCards from "./TableForAllCards";
+import TableForStatusOfCard from "./TableForStatusOfCard";
 
-const StudyHistoryPerBook = ({ mybook_id }) => {
+const StudyHistoryPerBook = ({ mybook_id, forWhom }) => {
   const [drawerVisibleForAllStudyHistory, setDrawerVisibleForAllStudyHistory] =
     useState(false);
   const [drawerVisibleForStudyHourCards, setDrawerVisibleForStudyHourCards] =
@@ -54,10 +56,47 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
     [data]
   );
 
+  const {
+    ing: Ing,
+    hold: Hold,
+    yet: Yet,
+    completed: Completed,
+  } = data
+    ? _(data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory)
+        .takeRight()
+        .value()[0].numCardsByStatus
+    : { ing: 0, hold: 0, yet: 0, completed: 0 };
+
+  const currentNumberOfIncompletedCards = Ing + Hold + Yet;
+
+  const { completed, nonCompleted } = data
+    ? _(data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory)
+        .takeRight()
+        .value()[0].level
+    : { ing: 0, hold: 0, yet: 0, completed: 0 };
+
+  const currentLevelOfIncompletedCards =
+    Math.floor(completed * 100 + nonCompleted * 100) / 100;
+
   return (
     <div className="">
       {data && (
         <div className="w-full flex flex-col gap-[8px]">
+          <SectionWrapper
+            title="요약"
+            content={
+              <div className="grid w-full grid-cols-2 gap-4">
+                <BoxForSummaryOfMainPage
+                  title="미완료 카드수"
+                  content={"" + currentNumberOfIncompletedCards + "장"}
+                />
+                <BoxForSummaryOfMainPage
+                  title="미완료 카드 평균 레벨"
+                  content={currentLevelOfIncompletedCards}
+                />
+              </div>
+            }
+          />
           <SectionWrapper
             title={
               <div className="flex items-end space-x-3">
@@ -72,7 +111,7 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
                 </a>
               </div>
             }
-            content={<StudyHistoryOfLastWeek data={data} />}
+            content={<StudyHistoryOfLastWeek data={data} forWhom={forWhom} />}
           />
           <DrawerWrapper
             title="최근 학습 실적"
@@ -87,9 +126,10 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
           >
             <div className="p-2 mb-3 bg-white">
               {drawerVisibleForAllStudyHistory && (
-                <TableForAllCards
-                  cards={data.cardset_getByMybookIDs.cardsets[0].cards}
-                  contentType="hours"
+                <StudyHistoryOfLastWeek
+                  data={data}
+                  isAllList
+                  forWhom={forWhom}
                 />
               )}
             </div>
@@ -195,38 +235,7 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
   );
 };
 
-export default StudyHistoryPerBook;
-
-const TableForStatusOfCard = ({ hold, yet, completed, ing }) => (
-  <table className="w-full table-fixed">
-    <thead>
-      <tr className="border-collapse border-y border-y-gray-200">
-        <th className="text-[1rem] bg-slate-100">Total</th>
-        <th className="text-[1rem] bg-slate-100">학습전</th>
-        <th className="text-[1rem] bg-slate-100">학습중</th>
-        <th className="text-[1rem] bg-slate-100">보류</th>
-        <th className="text-[1rem] bg-slate-100">완료</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr className="border-b border-collapse border-b-gray-200">
-        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
-          {hold + yet + ing + completed}
-        </td>
-        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
-          {yet}
-        </td>
-        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
-          {ing}
-        </td>
-        <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
-          {hold}
-        </td>
-        <td className="text-[1rem] py-[4px] text-center">{completed}</td>
-      </tr>
-    </tbody>
-  </table>
-);
+export default memo(StudyHistoryPerBook);
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;

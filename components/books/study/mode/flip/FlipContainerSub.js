@@ -10,6 +10,9 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
   
+  card_details_session[current_card_info_index].studyStatus.sessionStatusPrev = card_details_session[current_card_info_index].studyStatus.sessionStatusCurrent
+  card_details_session[current_card_info_index].studyStatus.sessionStatusCurrent = 'ongoing'
+  
   card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
   card_details_session[current_card_info_index].studyStatus.statusCurrent = 'ing';
   
@@ -40,21 +43,19 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   card_details_session[current_card_info_index].studyStatus.totalStudyHour += timer;
   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
   
-  
-  
   card_details_session[current_card_info_index].studyStatus.isUpdated = true;
 
-  const dataForRegression = JSON.parse(sessionStorage.getItem("dataForRegression"));
-  dataForRegression.push({
-    buybook_id : card_details_session[current_card_info_index].card_info.buybook_id,
-    totalStudyTimes : card_details_session[current_card_info_index].studyStatus.totalStudyTimes,
-    levelOriginal : card_details_session[current_card_info_index].studyStatus.levelOriginal,
-    currentLevStudyTimes  : card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes,
-    currentLevStudyHour  : card_details_session[current_card_info_index].studyStatus.currentLevStudyHour,
-    currentLevElapsedHour : card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour,
-    levelCurrent : card_details_session[current_card_info_index].studyStatus.levelCurrent,
-  })
-  sessionStorage.setItem("dataForRegression", JSON.stringify(dataForRegression))
+  // const dataForRegression = JSON.parse(sessionStorage.getItem("dataForRegression"));
+  // dataForRegression.push({
+  //   buybook_id : card_details_session[current_card_info_index].card_info.buybook_id,
+  //   totalStudyTimes : card_details_session[current_card_info_index].studyStatus.totalStudyTimes,
+  //   levelOriginal : card_details_session[current_card_info_index].studyStatus.levelOriginal,
+  //   currentLevStudyTimes  : card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes,
+  //   currentLevStudyHour  : card_details_session[current_card_info_index].studyStatus.currentLevStudyHour,
+  //   currentLevElapsedHour : card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour,
+  //   levelCurrent : card_details_session[current_card_info_index].studyStatus.levelCurrent,
+  // })
+  // sessionStorage.setItem("dataForRegression", JSON.stringify(dataForRegression))
 
   updateSessionResult(card_details_session[current_card_info_index])
   
@@ -81,6 +82,9 @@ const calculateHoldCompleted = (selection, current_card_info_index, timer) => {
   // 복습 필요시점은 null로 바꿔준다.
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+
+  card_details_session[current_card_info_index].studyStatus.sessionStatusPrev = card_details_session[current_card_info_index].studyStatus.sessionStatusCurrent
+  card_details_session[current_card_info_index].studyStatus.sessionStatusCurrent = 'finished'
 
   card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
   card_details_session[current_card_info_index].studyStatus.statusCurrent = selection;
@@ -110,12 +114,16 @@ const calculateRestore = (selection, current_card_info_index, timer) => {
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
 
+  card_details_session[current_card_info_index].studyStatus.sessionStatusPrev = card_details_session[current_card_info_index].studyStatus.sessionStatusCurrent
+  card_details_session[current_card_info_index].studyStatus.sessionStatusCurrent = 'ongoing'
+  
   card_details_session[current_card_info_index].studyStatus.statusPrev = card_details_session[current_card_info_index].studyStatus.statusCurrent;
   if (card_details_session[current_card_info_index].studyStatus.recentStudyRatio == null){
     card_details_session[current_card_info_index].studyStatus.statusCurrent = 'yet';
   } else {
     card_details_session[current_card_info_index].studyStatus.statusCurrent = 'ing';    
   }
+
   
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
@@ -140,6 +148,11 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer, leve
   console.log('냐하하하하', selection)
   const now = new Date();  
   const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
+
+  if (selection == 'pass'){    
+    card_details_session[current_card_info_index].studyStatus.sessionStatusPrev = card_details_session[current_card_info_index].studyStatus.sessionStatusCurrent
+    card_details_session[current_card_info_index].studyStatus.sessionStatusCurrent = 'finish'    
+  }
   
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
   card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
@@ -156,19 +169,6 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer, leve
   updateSessionResult(card_details_session[current_card_info_index])
 
   return card_details_session;
-};
-
-
-
-
-const modifyToDiffi5 = (selection, current_card_info_index, timer) => {
-  console.log('고민되네');
-  return
-};
-
-const modifyToNormalDiffi = (selection, current_card_info_index, timer) => {
-  console.log('고민되네');
-  return 
 };
 
 exports.calculateStudyStatus = (interval, selection, current_card_info_index, timer, levelConfigs, studyRatio) => {  

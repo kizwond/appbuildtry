@@ -79,7 +79,7 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
             title="섹션 내 최대 복습 주기"
             content={
               <>
-                <div>레벨민감도 : {maxRestudyMinuteInsideSession}</div>
+                <div>최대복습주기 : {maxRestudyMinuteInsideSession}분</div>
                 <InputNumber
                   min={5}
                   max={120}
@@ -135,7 +135,7 @@ const M_LevelAndCycleSetting = ({ book_id }) => {
             title="레벨 민감도"
             content={
               <>
-                <div>레벨민감도 : {levelchangeSensitivity}</div>
+                <div>레벨민감도 : {levelchangeSensitivity}%</div>
                 <InputNumber
                   min={50}
                   max={100}

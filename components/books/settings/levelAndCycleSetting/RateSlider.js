@@ -17,18 +17,17 @@ const RateSlider = ({
     return <span className="text-[10px]">{`${value}${format}`}</span>;
   }
   const marks = {
-    [min]: configured - min < 10 ? "" : `${min}${format}`,
-    [max]: max - configured < 10 ? "" : `${max}${format}`,
+    [min]: `${min}${format}`,
+    [max]: `${max}${format}`,
     [configured]: {
-      style: {
-        color: "#f50",
-      },
-
       label: (
-        <strong>
-          설정값 : {configured}
-          {format}
-        </strong>
+        <div className="text-lime-500">
+          <div className="text-[10px]">설정값:</div>
+          <div className="text-[10px]">
+            {configured}
+            {format}
+          </div>
+        </div>
       ),
     },
   };
@@ -41,7 +40,7 @@ const RateSlider = ({
         // tooltipVisible={true}
         max={max}
         min={min}
-        value={typeof selected === "number" ? selected : 10}
+        value={typeof selected === "number" ? selected : 80}
         onChange={(value) => {
           if (value > max) {
             onChange(max);

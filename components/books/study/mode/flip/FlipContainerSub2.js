@@ -1,26 +1,19 @@
 exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs, levelUpdated) => {
     
-    const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
+    const {levelchangeSensitivity, restudyRatio, maxRestudyMinuteInsideSession} = levelConfigs.restudy
     const KnowStudyRatio = 95
-    const initialElapsedHour = 1
-    const minRestudyMin = 5
-    const restudyCoeffForSession = 6 / 100
+    const initialElapsedHour = 24
+    const maxRestudyMinuteInsideSessionAdjusted = maxRestudyMinuteInsideSession / 0.875    
 
-    let newLevel
+    let theoNewLevel, newLevel
     let needStudyTime, needStudyTimeGap, needStudyTimeTmp
     try{
-        
-        console.log('잘 들어왔당가?', levelCurrent, recentStudyTime,studyRatio, studyTimesInSession )
-        console.log('levelUpdated', levelUpdated)
-
         // 세션 첫 학습인 경우
         if (levelUpdated == true){
-            console.log('1111111111111111111111111111111111111')
             newLevel = levelCurrent
         } else if (levelUpdated == false){
-            console.log('22222222222222222222222222222222')
             if (levelCurrent == 0){
-                newLevel = Math.round(initialElapsedHour * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
+                theoNewLevel = Math.round(initialElapsedHour /24  * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
                 console.log('newLevel1', newLevel)
             } else {
                 const levelOfLastSession = levelCurrent
@@ -29,15 +22,20 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
                 const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
                 const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
     
-                newLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
+                theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
+                
                 console.log('newLevel2', newLevel)
             }
+            newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
         }
 
         // 반올림해서 레벨이 0이 되어버리는 것을 막아준다.
         newLevel = (newLevel <=0) ? 0.001 : newLevel
 
-        needStudyTimeTmp = (studyRatio == KnowStudyRatio) ? null : new Date(Date.now() + minRestudyMin * 60000 * (restudyCoeffForSession*studyRatio+1))            
+        // needStudyTimeTmp = (studyRatio == KnowStudyRatio) ? null : new Date(Date.now() + minRestudyMin * 60000 * (restudyCoeffInsideSession*studyRatio+1))            
+        needStudyTimeTmp = (studyRatio == KnowStudyRatio) 
+            ? null 
+            : new Date(Date.now() + Math.max(maxRestudyMinuteInsideSessionAdjusted * 60000 * studyRatio / 100, 150 * 1000)) // 최소는 150초
         needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(studyRatio/100)) / Math.log(0.8) * 24 * 3600000)            
         needStudyTime = new Date(Date.now() + needStudyTimeGap)
         needStudyTime = (needStudyTime < needStudyTimeTmp )? needStudyTimeTmp : needStudyTime        
@@ -55,20 +53,18 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
     
     const {levelchangeSensitivity, restudyRatio} = levelConfigs.restudy
     const KnowStudyRatio = 95
-    const initialElapsedHour = 1
-    const minRestudyMin = 5
-    const restudyCoeffForSession = 6 / 100
+    const initialElapsedHour = 24    
 
-    let newLevel
+    let theoNewLevel, newLevel
     let needStudyTimeGap
     try{       
         // 세션 첫 학습인 경우
-        // console.log('studyTimesInSession', studyTimesInSession)
-        if (levelUpdated == false){
-            // console.log('levelCurrent', levelCurrent)
+        if (levelUpdated == true){
+            newLevel = levelCurrent
+        } else if (levelUpdated == false){
             if (levelCurrent == 0){
-                newLevel = Math.round(initialElapsedHour * Math.log(0.8) / Math.log(KnowStudyRatio/100) * 1000) / 1000;                
-                // console.log('newLevel1',newLevel)
+                theoNewLevel = Math.round(initialElapsedHour /24  * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
+                console.log('newLevel1', newLevel)
             } else {
                 const levelOfLastSession = levelCurrent
                 const lastRatioOfLastSession = recentStudyRatio
@@ -76,12 +72,13 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
                 const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
                 const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
     
-                newLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(KnowStudyRatio/100)*1000)/1000
-                // console.log('newLevel2',newLevel)
-            }            
-        } else if (levelUpdated == true){
-            newLevel = levelCurrent            
+                theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
+                
+                console.log('newLevel2', newLevel)
+            }
+            newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
         }
+
         needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(KnowStudyRatio/100)) / Math.log(0.8) * 24 * 3600000)
         // console.log('needStudyTimeGap',needStudyTimeGap)
         // console.log('needStudyTimeGap', needStudyTimeGap)
@@ -100,6 +97,7 @@ exports.updateSessionResult = (singleResult) => {
     const {
         recentSelection, 
         recentStudyHour,
+        recentStayHour,
         statusOriginal, 
         statusPrev, 
         statusCurrent,
@@ -110,7 +108,9 @@ exports.updateSessionResult = (singleResult) => {
         clickTimesInSession,
         studyTimesInSession,
         userFlagPrev,
-        userFlagOriginal
+        userFlagOriginal,
+        sessionStatusPrev,
+        sessionStatusCurrent
     } = studyStatus
     const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));    
     const resultByBook = JSON.parse(sessionStorage.getItem("resultByBook"));
@@ -118,8 +118,8 @@ exports.updateSessionResult = (singleResult) => {
     const mybookPosition = resultByBook.findIndex(result => result.mybook_id == mybook_id)
     
     // 스터디아워
-    resultOfSession.studyHour += recentStudyHour
-    resultByBook[mybookPosition].studyHour += recentStudyHour
+    resultOfSession.studyHour += recentStayHour
+    resultByBook[mybookPosition].studyHour += recentStayHour
 
     console.log('어라 이거 몇 번?')    
     // 클릭수
@@ -131,9 +131,7 @@ exports.updateSessionResult = (singleResult) => {
             clicksField = 'diffi'+diffiLevelLow            
         } else {
             clicksField = 'diffi'+diffiLevelHigh            
-        }       
-    } else if(['hold','completed'].includes(recentSelection)){
-        clicksField = recentSelection               
+        }                       
     } else {
         clicksField = 'etc'        
     }
@@ -204,19 +202,28 @@ exports.updateSessionResult = (singleResult) => {
     }
 
     // 스테이터스 별 카드 갯수
+        // 뭐를 누르든 일단 시작을 시키다.
     if (clickTimesInSession == 1){
         resultOfSession.numCards[statusOriginal].started += 1
         resultByBook[mybookPosition].numCards[statusOriginal].started += 1
     }
-    if (['pass', 'hold', 'completed'].includes(recentSelection)){
-        resultOfSession.numCards[statusOriginal].finished += 1
-        resultByBook[mybookPosition].numCards[statusOriginal].finished += 1
-    }
+        // 일단 알겠음의 완료 처리
     if (recentSelection == 'difficulty' && recentStudyRatio == 95){
         resultOfSession.numCards[statusOriginal].finished += 1
         resultByBook[mybookPosition].numCards[statusOriginal].finished += 1
     }
-    if (recentSelection == 'restore' && clickTimesInSession > 1){
+        // notStarted나 ongoing 카드의 패스, 보류, 졸업의 완료 처리. pass한 녀석에 대하여 보류나 졸업을 선택한 경우는 완료시키지 않음
+    if (sessionStatusPrev != 'finished' && ['pass', 'hold', 'completed'].includes(recentSelection)){
+        resultOfSession.numCards[statusOriginal].finished += 1
+        resultByBook[mybookPosition].numCards[statusOriginal].finished += 1
+    }
+        // 세션 내에서 보류 또는 졸업한 경우에 대한 복구
+    if (['yet','ing'].includes(statusOriginal) && recentSelection == 'restore'){
+        resultOfSession.numCards[statusOriginal].finished += -1
+        resultByBook[mybookPosition].numCards[statusOriginal].finished += -1
+    }
+        // 패스로 넘어간 녀석에 대한 일종의 복구
+    if (sessionStatusPrev == 'finished' && sessionStatusCurrent == 'ongoing'&& recentSelection == 'difficulty'){
         resultOfSession.numCards[statusOriginal].finished += -1
         resultByBook[mybookPosition].numCards[statusOriginal].finished += -1
     }

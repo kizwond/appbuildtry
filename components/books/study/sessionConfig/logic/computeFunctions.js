@@ -266,6 +266,8 @@ export const sortFilteredCards = ({
           ...card.studyStatus,
           statusOriginal: card.studyStatus.statusCurrent,
           statusPrev: card.studyStatus.statusCurrent,
+          sessionStatusPrev : null,
+          sessionStatusCurrent : 'notStarted',
 
           levelOriginal: card.studyStatus.levelCurrent,
           levelUpdated : false,
@@ -280,6 +282,7 @@ export const sortFilteredCards = ({
 
           needStudyTimeTmp: null,
           isUpdated: false,
+
         },
       };
     }
@@ -293,22 +296,7 @@ export const sortFilteredCards = ({
         },
         studyStatus: {
           ...card.studyStatus,
-          statusOriginal: card.studyStatus.statusCurrent,
-          statusPrev: card.studyStatus.statusCurrent,
 
-          levelOriginal: card.studyStatus.levelCurrent,
-          levelUpdated : false,
-
-          userFlagOriginal: card.content.userFlag,
-          userFlagPrev: card.content.userFlag,
-
-          clickTimesInSession: 0,
-          studyTimesInSession: 0,
-          studyHourInSession: 0,
-          elapsedHourFromLastSession: 0,
-
-          needStudyTimeTmp: null,
-          isUpdated: false,
         },
       };
     }

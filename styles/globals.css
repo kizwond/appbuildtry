@@ -1299,6 +1299,11 @@ audio {
   /* 100% {margin-left:0;} */
 }
 
+.diffi_button:active {
+  background-color: #1890ff;
+  border-radius: 5px;
+
+}
 .navDrawer .ant-drawer-content-wrapper .ant-drawer-content {
   background-color: #ffffff00 !important;
 }

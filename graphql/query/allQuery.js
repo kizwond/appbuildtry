@@ -17,6 +17,7 @@ import {
 import { FRAGMENT_BOOK_STUDY_LEVEL_CONFIG } from "../fragment/bookStudyLevelConfig";
 import {
   FRAGMENT_SESSION_FOR_RESULT,
+  FRAGMENT_EXAM_FOR_RESULT,
   FRAGMENT_SESSION_FOR_RESTARTING_SESSION,
 } from "../fragment/session";
 
@@ -476,6 +477,18 @@ export const QUERY_SESSION_FOR_RESULT_BY_SESSION_ID = gql`
       msg
       sessions {
         ...SessionForResultFragment
+      }
+    }
+  }
+`;
+export const QUERY_EXAM_FOR_RESULT_BY_SESSION_ID = gql`
+  ${FRAGMENT_EXAM_FOR_RESULT}
+  query getSessionForResult($session_id: ID) {
+    session_getSession(session_id: $session_id) {
+      status
+      msg
+      sessions {
+        ...ExamForResultFragment
       }
     }
   }

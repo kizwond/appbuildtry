@@ -345,6 +345,44 @@ export const FRAGMENT_SESSION_FOR_RESULT = gql`
     }
   }
 `;
+
+export const FRAGMENT_EXAM_FOR_RESULT = gql`
+  fragment ExamForResultFragment on Session {
+    _id
+    session_info {
+      user_id
+      isFinished
+      timeStarted
+      timeFinished
+    }
+    sessionScope {
+      mybook_id
+      title
+    }
+    cardlistUpdated {
+      _id
+      card_info {
+        mybook_id
+        buybook_id
+      }
+      content {
+        makerFlag {
+          value
+          comment
+        }
+        userFlag
+        memo
+        location
+        mycontent_id
+        buycontent_id
+      }
+      studyStatus {
+        recentExamAnswer
+        recentExamResult
+      }
+    }
+  }
+`;
 export const FRAGMENT_SESSION_FOR_RESTARTING_SESSION = gql`
   ${FRAGMENT_SESSION_CONFIG}
   fragment SessionForRestartingSessionFragment on Session {

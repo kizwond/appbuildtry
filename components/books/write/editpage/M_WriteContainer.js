@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
-import { Button, Select, Space } from "antd";
+import { Button, Select, Space,notification  } from "antd";
 import {AddPolly, UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
 import { DeleteOutlined, EditOutlined, HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
 
@@ -110,6 +110,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }
 
+
   useEffect(() => {
     if (data1) {
       console.log("최초 로드 data : ", data1);
@@ -120,6 +121,19 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       setMakerFlagStyle(data1.cardtypeset_getbymybookids.cardtypesets[0].makerFlag_style);
       setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
+      if(data1.cardset_getByIndexIDs.cardsets[0].cards.length === 0){
+        notification.info({
+          message: '새카드를 생성해 보세요!!!',
+          description:
+            '하단 메뉴 두번째, "카드추가" 버튼을 눌러 새로운 카드를 만들수 있습니다.',
+          onClick: () => {
+            console.log('Notification Clicked!');
+          },
+          placement:"bottomLeft",
+          duration:0,
+          bottom:"50px"
+        });
+      }
       const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
         return item.content.mycontent_id;
       });
@@ -690,6 +704,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }
 
+  
   if (cards) {
     var contents = cards.map((content) => {
       // console.log("카드에 스타일 입히기 시작", cardTypeSets);
@@ -2052,7 +2067,10 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
       });
       return show_contents;
     });
+    console.log(contents)
+    
   }
+
   const onClickCard = (card_id, from, group) => {
     console.log("cardClicked!!!!!");
     console.log("onClickCard", card_id);

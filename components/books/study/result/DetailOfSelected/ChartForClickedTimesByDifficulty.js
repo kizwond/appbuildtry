@@ -12,8 +12,8 @@ const ChartForClickedTimesByDifficulty = ({ clickedTimesByDifficulty }) => {
     { title: "난이도[60-80]", value: "diffi4", color: "bg-rose-400" },
     { title: "난이도[80-90]", value: "diffi5", color: "bg-cyan-400" },
     { title: "난이도[90-100]", value: "diffi6", color: "bg-indigo-400" },
-    { title: "보류", value: "hold", color: "bg-gray-400" },
-    { title: "완료", value: "completed", color: "bg-green-400" },
+    // { title: "보류", value: "hold", color: "bg-gray-400" },
+    // { title: "완료", value: "completed", color: "bg-green-400" },
     { title: "기타", value: "etc", color: "bg-lime-400" },
   ];
   return (

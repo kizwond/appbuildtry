@@ -13,6 +13,8 @@ import TableForRankedCards from "./TableForRankedCards";
 import TableForAllCards from "./TableForAllCards";
 
 const StudyHistoryPerBook = ({ mybook_id }) => {
+  const [drawerVisibleForAllStudyHistory, setDrawerVisibleForAllStudyHistory] =
+    useState(false);
   const [drawerVisibleForStudyHourCards, setDrawerVisibleForStudyHourCards] =
     useState(false);
   const [drawerVisibleForStudyTimesCards, setDrawerVisibleForStudyTimesCards] =
@@ -63,7 +65,7 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
                 <a
                   className="text-[1rem] text-blue-700"
                   onClick={() => {
-                    setDrawerVisibleForStudyHourCards(true);
+                    setDrawerVisibleForAllStudyHistory(true);
                   }}
                 >
                   자세히 보기
@@ -72,6 +74,27 @@ const StudyHistoryPerBook = ({ mybook_id }) => {
             }
             content={<StudyHistoryOfLastWeek data={data} />}
           />
+          <DrawerWrapper
+            title="최근 학습 실적"
+            placement="right"
+            width={"100%"}
+            visible={drawerVisibleForAllStudyHistory}
+            onClose={() => {
+              setDrawerVisibleForAllStudyHistory(false);
+            }}
+            headerStyle={{ padding: "12px 12px 8px 12px" }}
+            bodyStyle={{ backgroundColor: "#e9e9e9" }}
+          >
+            <div className="p-2 mb-3 bg-white">
+              {drawerVisibleForAllStudyHistory && (
+                <TableForAllCards
+                  cards={data.cardset_getByMybookIDs.cardsets[0].cards}
+                  contentType="hours"
+                />
+              )}
+            </div>
+          </DrawerWrapper>
+
           <SectionWrapper
             title="총 학습 카드 개수"
             content={<ChartForStudiedCardsPerDay data={data} />}

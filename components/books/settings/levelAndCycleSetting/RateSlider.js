@@ -20,15 +20,14 @@ const RateSlider = ({
     [min]: configured - min < 10 ? "" : `${min}${format}`,
     [max]: max - configured < 10 ? "" : `${max}${format}`,
     [configured]: {
-      style: {
-        color: "#f50",
-      },
-
       label: (
-        <strong>
-          설정값 : {configured}
-          {format}
-        </strong>
+        <div className="text-lime-500">
+          <div className="text-[10px]">설정값:</div>
+          <div className="text-[10px]">
+            {configured}
+            {format}
+          </div>
+        </div>
       ),
     },
   };

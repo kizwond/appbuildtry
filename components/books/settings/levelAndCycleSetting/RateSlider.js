@@ -17,8 +17,8 @@ const RateSlider = ({
     return <span className="text-[10px]">{`${value}${format}`}</span>;
   }
   const marks = {
-    [min]: configured - min < 10 ? "" : `${min}${format}`,
-    [max]: max - configured < 10 ? "" : `${max}${format}`,
+    [min]: `${min}${format}`,
+    [max]: `${max}${format}`,
     [configured]: {
       label: (
         <div className="text-lime-500">

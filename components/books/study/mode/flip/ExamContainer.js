@@ -813,54 +813,6 @@ class Container extends Component {
     return (
       <>
         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-          {/* <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-            <div style={{ flexGrow: 1, color: "#8b8b8b" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    border: "1px solid lightgrey",
-                    borderRadius: "3px",
-                    padding: 5,
-                    height: "32px",
-                    backgroundColor: "#f1f1f1",
-                  }}
-                >
-                  <div style={{ width: "45px", fontSize: "0.8rem", marginRight: "5px" }}>완료율</div>
-                  <ProgressBar bgcolor={"#32c41e"} completed={progress} />
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  marginTop: "5px",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  border: "1px solid lightgrey",
-                  borderRadius: "3px",
-                  padding: 5,
-                  height: "32px",
-                  backgroundColor: "#f1f1f1",
-                }}
-              >
-                <Timer
-                  startTimer={this.startTimer}
-                  startTimerTotal={this.startTimerTotal}
-                  stopTimerTotal={this.stopTimerTotal}
-                  startTimerResume={this.startTimerResume}
-                  time={this.state.time}
-                  time_total={this.state.time_total}
-                  isOn_total={this.state.isOn_total}
-                />
-              </div>
-            </div>
-            <Button size="small" style={{ fontSize: "0.8rem", width: "53px", height: "69px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishExam} type="primary">
-              시험종료
-            </Button>
-          </div> */}
           <div style={{ width: "95%", position: "fixed", top: "50px" }}>
             <div
               style={{
@@ -1014,7 +966,7 @@ const style_study_layout_bottom = {
   width: "100%",
   margin: "auto",
   maxWidth: "972px",
-  marginTop: "70px",
+  marginTop: "120px",
   height: "calc(100vh - 223px)",
   overflow: "auto",
   border: "1px solid lightgrey",

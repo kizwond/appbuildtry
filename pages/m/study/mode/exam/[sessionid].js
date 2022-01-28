@@ -225,7 +225,6 @@ const ExamMode = () => {
           height: "100%",
           width: "95%",
           margin: "auto",
-          marginTop: "50px",
         }}
       >
         {contentsList.length > 0 && (

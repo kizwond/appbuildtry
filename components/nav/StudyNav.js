@@ -70,6 +70,7 @@ const StudyNav = ({ mode }) => {
           background: "rgb(68,102,209)",
           background: "linear-gradient(145deg, rgba(68,102,209,1) 0%, rgba(150,189,214,1) 94%, rgba(150,189,214,1) 100%)",
           width: "100%",
+          maxWidth:"1024px",
           height: 40,
           padding: 10,
           display: "flex",
@@ -99,7 +100,7 @@ const StudyNav = ({ mode }) => {
             closable={false}
             onClose={onClose}
             visible={visible}
-            width={200}
+            width={250}
             zIndex={20000}
             className="navDrawer"
             bodyStyle={{ backgroundColor: "#f0f0f0", padding: 10 }}

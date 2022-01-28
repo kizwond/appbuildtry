@@ -7,6 +7,7 @@ const Hero = () => {
     lineHeight: "160px",
     textAlign: "center",
     background: "#d4e0ff",
+    marginTop:"50px"
   };
   return (
     <>

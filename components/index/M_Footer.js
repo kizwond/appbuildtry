@@ -14,8 +14,8 @@ const Footer = () => {
               <div>
                 <span style={{ fontFamily: `Architects Daughter, cursive`, fontWeight: 900, color: logoColor }}>CogBook</span> | 개입정보 취급방침 | 이용약관
               </div>
-              <div>(주)오픈스카이 | 대표자: 윤상일 | 사업자번호: 000-00-00000</div>
-              <div>통신판매업: 2021-0000000-0000 | 개인정보보호책임자: 윤상일 | 이메일: cogbook@opensky.co.kr</div>
+              <div>(주)오픈스카이 | 대표자: 윤상일 | 사업자번호: 408-88-01384</div>
+              <div>통신판매업: 2021-0000000-0000 | 개인정보보호책임자: 윤상일 | 이메일: sangil.yun@opensky.co.kr</div>
               <div>주소: 서울특별시 강남구 논현동 금성빌딩 501b호</div>
               <div>(주)오픈스카이. ALL RIGHTS RESERVED</div>
             </div>

@@ -63,7 +63,9 @@ const Home = () => {
   }
   return (
     <M_Layout>
+
       <Hero />
+
       {data && data.me && data.me.users && <M_RecentStudyList />}
       <NewBooks />
       <M_Footer />

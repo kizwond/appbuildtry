@@ -849,47 +849,7 @@ class Container extends Component {
                     <div style={{ marginBottom: "0px", fontSize: "0.8rem", marginRight: "5px", width: "37px", flexShrink: 0 }}>완료율</div>
                     <ProgressBar bgcolor={"#32c41e"} completed={progress} />
                   </div>
-
-                  <div style={{ width: "100%", display: "flex", flexDirection: "flex", alignItems: "center", marginLeft: "5px", justifyContent: "flex-start" }}>
-                    <div style={{ lineHeight: "1rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px" }}>
-                      <div>카드정보</div>
-                    </div>
-                    <div
-                      style={{
-                        backgroundColor: "#e2e2e2",
-                        boxShadow: "inset 2px 2px 3px 0px #acacac",
-                        textAlign: "right",
-                        paddingRight: "5px",
-                        width: "50%",
-                        flexGrow: 1,
-                        fontFamily: "Mina, sans-serif",
-                        fontSize: "0.9rem",
-                        lineHeight: "20px",
-                        height: "20px",
-                        borderRadius: "3px",
-                      }}
-                    >
-                      {/* {cardInfoStatusBar} */}
-                    </div>
-                  </div>
-                  <Popover
-                    content={"ee"}
-                    // content={cardInfoPop}
-                    placement="bottomRight"
-                    title={
-                      <>
-                        <span style={{ fontSize: "0.8rem" }}>카드정보</span>
-                      </>
-                    }
-                    trigger="click"
-                  >
-                    <Button
-                      size="small"
-                      style={{ flexShrink: 0, fontSize: "0.8rem", width: "32px", height: "20px", marginLeft: "5px", borderRadius: "3px", padding: "2px", border: "none" }}
-                    >
-                      상세
-                    </Button>
-                  </Popover>
+               
                 </div>
                 <div
                   style={{

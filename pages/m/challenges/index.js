@@ -201,9 +201,9 @@ export default Challenges;
 
 const StyledCard = styled(Card)`
   /* 모든 폰트 사이즈 */
-  width: 100vw;
+  width: 100%;
   margin: 0 auto;
-  position: absolute;
+  position: relative;
   top: 40px;
   & .ant-card-body * {
     font-size: 1rem;

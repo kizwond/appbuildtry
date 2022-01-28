@@ -88,7 +88,7 @@ const RightDrawer = () => {
         onClose={onClose}
         visible={visible}
         mask={true}
-        width={250}
+        width={270}
       >
         <Space direction="vertical">
           <div style={{ display: "flex", width: "250px", padding: "10px 10px 2px 10px", alignItems: "center" }}>

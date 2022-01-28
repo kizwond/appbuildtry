@@ -502,7 +502,7 @@ const LeftDrawer = ({ index_changed }) => {
       {indexinfo && (
         <>
           <Drawer
-            width={200}
+            width={250}
             title={
               <>
                 <div style={{display:"flex", alignItems:"center"}}>

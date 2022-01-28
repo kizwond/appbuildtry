@@ -2662,7 +2662,7 @@ class Container extends Component {
           </defs>
         </svg>
         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-          <div style={{ position: "fixed", backgroundColor: "white", top: "50px", width: "95%", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <div style={{ position: "fixed", backgroundColor: "white", top: "50px", width: "95%", maxWidth:"972px", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
             <div
               style={{
                 padding: "1px 5px",
@@ -2752,7 +2752,7 @@ class Container extends Component {
               종료
             </Button>
           </div>
-          <div style={{ position: "fixed", top: "115px", width: "95%", border: "1px solid lightgrey", borderRadius: "3px" }}>{statusBar}</div>
+          <div style={{ position: "fixed", top: "115px", width: "95%",  maxWidth:"972px", border: "1px solid lightgrey", borderRadius: "3px" }}>{statusBar}</div>
           <div style={style_study_layout_bottom}>
             <div style={{ width: "100%" }}>
               {/* <div>{statusBar}</div> */}
@@ -2774,6 +2774,7 @@ class Container extends Component {
             <div
               style={{
                 width: "95%",
+                maxWidth:"972px",
                 display: "flex",
                 flexDirection: "column",
                 margin: "auto",

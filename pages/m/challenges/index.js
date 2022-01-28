@@ -33,7 +33,7 @@ const Challenges = () => {
     {
       onCompleted: (data) => {
         if (data.mybookcateset_getMybookcatesetByUserID.status === "200") {
-          console.log({ receivedBookDataMentoring: data });
+          console.log("내 책 정보 받아오기 ", data);
         } else if (
           data.mybookcateset_getMybookcatesetByUserID.status === "401"
         ) {
@@ -211,7 +211,6 @@ const StyledCard = styled(Card)`
 `;
 
 const DrawerWrapper = styled(Drawer)`
-  position: relative;
   top: 40px;
   & .ant-drawer-title {
     line-height: 16px;

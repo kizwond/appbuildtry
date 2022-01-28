@@ -30,15 +30,15 @@ const ChartForGainedLevelPerDay = ({ data }) => {
             .reverse()
             .map(({ level: { completed, nonCompleted }, date }, index, arr) => {
               const totalLevel =
-                Math.floor(completed * 1000 + nonCompleted * 1000) / 1000;
+                Math.floor(completed * 1000 + nonCompleted * 100) / 100;
               const barHeightPercentage = !!maxLevel
                 ? Math.round((totalLevel / maxLevel) * 100) + "%"
                 : "0%";
-              const incompletedLevel = Math.round(nonCompleted * 1000) / 1000;
+              const incompletedLevel = Math.round(nonCompleted * 100) / 100;
               const percentageOfIncompleted = !!totalLevel
                 ? Math.round((incompletedLevel / totalLevel) * 100) + "%"
                 : "0%";
-              const completedLevel = Math.round(completed * 1000) / 1000;
+              const completedLevel = Math.round(completed * 100) / 100;
               const percentageOfCompleted = !!totalLevel
                 ? Math.round((completedLevel / totalLevel) * 100) + "%"
                 : "0%";

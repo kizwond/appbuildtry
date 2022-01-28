@@ -100,9 +100,9 @@ const StudyHistoryPerBook = ({ mybook_id, forWhom }) => {
           <SectionWrapper
             title={
               <div className="flex items-end space-x-3">
-                <div>최근 학습 실적</div>
+                <div className="!text-[1.16667rem]">최근 학습 실적</div>
                 <a
-                  className="text-[1rem] text-blue-700"
+                  className="!text-[1rem] text-blue-700"
                   onClick={() => {
                     setDrawerVisibleForAllStudyHistory(true);
                   }}
@@ -147,9 +147,9 @@ const StudyHistoryPerBook = ({ mybook_id, forWhom }) => {
           <SectionWrapper
             title={
               <div className="flex items-end space-x-3">
-                <div>학습 시간 많은 카드</div>
+                <div className="!text-[1.16667rem]">학습 시간 많은 카드</div>
                 <a
-                  className="text-[1rem] text-blue-700"
+                  className="!text-[1rem] text-blue-700"
                   onClick={() => {
                     setDrawerVisibleForStudyHourCards(true);
                   }}
@@ -184,9 +184,9 @@ const StudyHistoryPerBook = ({ mybook_id, forWhom }) => {
           <SectionWrapper
             title={
               <div className="flex items-end space-x-3">
-                <div>학습 횟수 많은 카드</div>
+                <div className="!text-[1.16667rem]">학습 횟수 많은 카드</div>
                 <a
-                  className="text-[1rem] text-blue-700"
+                  className="!text-[1rem] text-blue-700"
                   onClick={() => {
                     setDrawerVisibleForStudyTimesCards(true);
                   }}

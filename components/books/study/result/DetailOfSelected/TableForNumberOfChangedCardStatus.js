@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { Fragment, memo } from "react";
 
 const TableForNumberOfChangedCardStatus = ({
@@ -5,22 +6,39 @@ const TableForNumberOfChangedCardStatus = ({
   numberOfCards,
   more,
 }) => {
-  const getTotalNumber = (keyName) =>
-    changedCardStatus.completed[keyName] +
-    changedCardStatus.yet[keyName] +
-    changedCardStatus.hold[keyName] +
-    changedCardStatus.ing[keyName];
-
-  const totalOfYet = getTotalNumber("yet");
-  const totalOfIng = getTotalNumber("ing");
-  const totalOfHold = getTotalNumber("hold");
-  const totalOfCompleted = getTotalNumber("completed");
-
   const totalNumberOfInserted =
     numberOfCards.completed.inserted +
     numberOfCards.yet.inserted +
     numberOfCards.hold.inserted +
     numberOfCards.ing.inserted;
+
+  const tableData = ["yet", "ing", "hold", "completed"].map((preStatus) => ({
+    preStatus,
+    inserted: numberOfCards[preStatus].inserted,
+    afterStatus: ["yet", "ing", "hold", "completed"].map((afterStatus) => ({
+      afterStatus,
+      numberOfCurrentStatus:
+        afterStatus === preStatus
+          ? numberOfCards[preStatus].inserted -
+            Object.values(changedCardStatus[preStatus]).reduce(
+              (a, b) => a + b,
+              0
+            )
+          : changedCardStatus[preStatus][afterStatus],
+      isSameName: afterStatus === preStatus,
+    })),
+  }));
+
+  const getTotalNumber = (_num) =>
+    _.sumBy(
+      tableData,
+      (status) => status.afterStatus[_num].numberOfCurrentStatus
+    );
+
+  const totalOfYet = getTotalNumber(0);
+  const totalOfIng = getTotalNumber(1);
+  const totalOfHold = getTotalNumber(2);
+  const totalOfCompleted = getTotalNumber(3);
 
   return (
     <table className="w-full table-fixed">
@@ -56,9 +74,9 @@ const TableForNumberOfChangedCardStatus = ({
           </td>
         </tr>
         {more &&
-          ["yet", "ing", "hold", "completed"].map((preStatus) => (
+          tableData.map((preStatus) => (
             <tr
-              key={preStatus}
+              key={preStatus.preStatus}
               className="border-b border-collapse border-b-gray-200"
             >
               <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
@@ -73,23 +91,17 @@ const TableForNumberOfChangedCardStatus = ({
                   : "오류"}
               </td>
               <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
-                {numberOfCards[preStatus].inserted}
+                {preStatus.inserted}
               </td>
-              {["yet", "ing", "hold", "completed"].map((afterStatus) => (
-                <Fragment key={`afterStatus:${afterStatus}`}>
-                  {afterStatus === preStatus ? (
-                    <td className="text-[1rem] text-stone-500 bg-zinc-300 border-r border-collapse border-r-gray-200 text-center last:border-r-0">
-                      {numberOfCards[preStatus].inserted -
-                        Object.values(changedCardStatus[preStatus]).reduce(
-                          (a, b) => a + b,
-                          0
-                        )}
-                    </td>
-                  ) : (
-                    <td className="text-[1rem] border-r border-collapse border-r-gray-200 text-center last:border-r-0">
-                      {changedCardStatus[preStatus][afterStatus]}
-                    </td>
-                  )}
+              {preStatus.afterStatus.map((afterStatus) => (
+                <Fragment key={`afterStatus:${afterStatus.afterStatus}`}>
+                  <td
+                    className={`text-[1rem] ${
+                      afterStatus.isSameName ? "text-stone-500 bg-zinc-300" : ""
+                    } border-r border-collapse border-r-gray-200 text-center last:border-r-0`}
+                  >
+                    {afterStatus.numberOfCurrentStatus}
+                  </td>
                 </Fragment>
               ))}
             </tr>

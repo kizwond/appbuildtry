@@ -13,7 +13,7 @@ const Hero = () => {
     <>
       <Carousel autoplay>
           <div>
-            <h3 style={contentStyle}>1</h3>
+            <h3 style={contentStyle}>잘 부탁드립니다~</h3>
           </div>
         </Carousel>
     </>

@@ -345,6 +345,8 @@ const StyledBottomBar = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
+  margin: 0 auto;
+  max-width: 1024px;
   height: 4.2rem;
   display: flex;
   justify-content: space-around;
@@ -388,9 +390,8 @@ export function getServerSideProps({ query }) {
 }
 
 const StyledDiv = styled.div`
-  margin: 0 auto;
+  position: relative;
   height: calc(100vh - 90px);
-  max-width: 1024px;
   min-width: 360px;
   padding-top: 40px;
 

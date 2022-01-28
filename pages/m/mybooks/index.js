@@ -197,8 +197,7 @@ const M_StudyMainPage = () => {
 export default M_StudyMainPage;
 
 const StyledRowMaxWidth = styled.div`
-  margin: 0 auto;
-  position: absolute;
+  position: relative;
   top: 40px;
   height: calc(100vh - 76px);
   overflow: auto;
@@ -232,6 +231,8 @@ const StyledBottomBar = styled.div`
   position: fixed;
   bottom: 0;
   width: 100%;
+  margin: 0 auto;
+  max-width: 1024px;
   height: 4.2rem;
   display: flex;
   justify-content: space-around;

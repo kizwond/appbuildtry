@@ -15,10 +15,16 @@ body {
   padding: 0;
   margin: 0;
   font-family: "Noto Sans KR", sans-serif;
-  width:1024px;
-  margin:auto;
+  width: 1024px;
+  margin: auto;
 }
-
+.ant-drawer-content {
+  max-width: 1024px;
+  margin: 0 auto;
+}
+.ant-drawer-content-wrapper {
+  background-color: white;
+}
 @media screen and (min-width: 992px) and (max-width: 3000px) {
   html {
     font-size: 13px;
@@ -1304,7 +1310,6 @@ audio {
 .diffi_button:active {
   background-color: #1890ff;
   border-radius: 5px;
-
 }
 .navDrawer .ant-drawer-content-wrapper .ant-drawer-content {
   background-color: #ffffff00 !important;

@@ -240,10 +240,8 @@ const BookSetting = () => {
 export default BookSetting;
 
 const StyledMainPageCard = styled(Card)`
-  margin: 0 auto;
-  position: absolute;
+  position: relative;
   top: 40px;
-  width: 100%;
 
   &.ant-card-small > .ant-card-head {
     border-bottom: none;

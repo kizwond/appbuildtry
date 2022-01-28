@@ -31,7 +31,7 @@ const ExamResult = () => {
       </Head>
       <M_Layout>
         {isMounted && (
-          <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px] flex flex-col gap-3">
+          <div className="w-full relative top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px] flex flex-col gap-3">
             <SectionForResult
               title="시험 요약"
               content={<SummaryOfExamResult cards={cards} from="home" />}

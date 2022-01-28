@@ -194,7 +194,7 @@ const StudyResult = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <M_Layout>
-        <div className="w-full mx-auto absolute top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px]">
+        <div className="w-full relative top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] pb-[15px] pt-[8px]">
           {data && (
             <div className="w-full flex flex-col gap-[8px]">
               <SectionForResult title="요약" content={<SessionSummary />} />

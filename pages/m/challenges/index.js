@@ -211,8 +211,8 @@ const StyledCard = styled(Card)`
 `;
 
 const DrawerWrapper = styled(Drawer)`
+  position: relative;
   top: 40px;
-
   & .ant-drawer-title {
     line-height: 16px;
   }

@@ -350,7 +350,7 @@ const MentoringHome = () => {
 export default MentoringHome;
 
 const MentoringWrapper = styled.div`
-  position: absolute;
+  position: relative;
   top: 40px;
   & .ant-tabs-content-holder * {
     font-size: 1rem;

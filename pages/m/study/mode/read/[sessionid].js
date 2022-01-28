@@ -2479,16 +2479,19 @@ const ReadMode = () => {
         </defs>
       </svg>
       <StudyLayout mode="읽기">
-        <div
-          style={{
-            width: "95%",
-            margin: "auto",
-            marginBottom: "120px",
-            marginTop: "50px",
-          }}
-        >
-          <div id="contents">{contents}</div>
-        </div>
+    
+          <div
+            style={{
+              margin:"auto",
+              width: "95%",
+              maxWidth:"972px",
+              marginBottom: "120px",
+              marginTop: "50px",
+            }}
+          >
+            <div id="contents">{contents}</div>
+          </div>
+    
         {data && (
           <>
             <FixedBottomMenuReadMode

@@ -16,6 +16,7 @@ export const GetIndex = gql`
           name
           level
           indextype
+          isUpdated
         }
       }
     }
@@ -38,6 +39,7 @@ export const IndexCreateMutation = gql`
           name     
           level 
           indextype 
+          isUpdated
         }
       }
     }
@@ -60,6 +62,7 @@ export const IndexRenameMutation = gql`
           name     
           level 
           indextype 
+          isUpdated
         }
       }
     }
@@ -82,6 +85,7 @@ export const IndexLevelMutation = gql`
           name     
           level 
           indextype 
+          isUpdated
         }
       }
     }
@@ -104,6 +108,7 @@ export const IndexDeleteMutation = gql`
           name     
           level 
           indextype 
+          isUpdated
         }
       }
     }

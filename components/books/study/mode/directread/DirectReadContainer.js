@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { GetCardRelated } from "../../../../../graphql/query/allQuery";
 import dynamic from "next/dynamic";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
-import { Button, Select, Modal, Tag, message, Divider } from "antd";
+import { Space, Button, Select, Modal, Tag, message, Input, Popover } from "antd";
 import { UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../../graphql/query/card_contents";
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
@@ -31,6 +31,8 @@ import {
   FormOutlined,
   BarChartOutlined,
   StopOutlined,
+  RollbackOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuDirectRead from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuDirectRead";
 const { Option } = Select;
@@ -91,6 +93,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const [searchToggle, setSearchToggle] = useState(false);
   const [editorOn, setEditorOn] = useState();
   const [selectedCardType, setSelectedCardType] = useState();
+  const [updateMemoState, setUpdateMemoState] = useState();
+  const [memo, setMemo] = useState();
 
   const {
     loading,
@@ -543,6 +547,24 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       }
     }
   };
+  const addMemo = (e) => {
+    console.log(e.target.value);
+    setMemo(e.target.value);
+  };
+  const saveMemo = (card_info) => {
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const card_seq = sessionStorage.getItem("card_seq");
+    cardListStudying[card_seq].content.memo = memo;
+    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
+    this.props.saveMemo(card_info.cardset_id, card_info.card_id, memo);
+
+    setUpdateMemoState(false);
+  };
+
+  const updateMemo = (memo) => {
+    setMemo(memo);
+    setUpdateMemoState(true);
+  };
 
   const hide = (toolType) => {
     const selectionText = sessionStorage.getItem("selectionText");
@@ -763,13 +785,15 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     setCardListStudying(cardListStudying);
     cardsetDeleteEffect(cardInfo.cardset_id, cardInfo.card_id, "highlight", word);
   }
-
+  function updateStudyToolApply(data) {
+    setCardTypeSets(data);
+  }
   if (cards) {
     var contents = cards.map((content) => {
       //   console.log("카드에 스타일 입히기 시작", cardTypeSets);
       //   console.log(content);
       const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
-
+      const statusCurrent = content.studyStatus.statusCurrent;
       //   console.log(current_card_style_set);
       const current_card_style = current_card_style_set[0].cardtypes.filter((item) => item._id === content.card_info.cardtype_id);
       //   console.log(current_card_style);
@@ -1080,6 +1104,160 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               />
             </>
           );
+          var annotationPop = (
+            <>
+              <div style={{ fontSize: "0.8rem" }}>
+                <div>{content_value.annotation[0]}</div>
+              </div>
+            </>
+          );
+          var memoPop = (
+            <>
+              <div style={{ fontSize: "0.8rem" }}>
+                {!updateMemoState && (
+                  <>
+                    <div>{content.content.memo}</div>
+                    <div>
+                      <Button size="small" onClick={() => updateMemo(content.content.memo)}>
+                        수정
+                      </Button>
+                    </div>
+                  </>
+                )}
+
+                {updateMemoState && (
+                  <>
+                    <Input value={memo} onChange={(e) => addMemo(e)} />
+                    <Button size="small" onClick={() => saveMemo(content.card_info)}>
+                      저장
+                    </Button>
+                  </>
+                )}
+                {content.content.memo === null && (
+                  <>
+                    <Input placeholder="메모추가" onChange={(e) => addMemo(e)} />
+                    <Button size="small" onClick={() => saveMemo(content.card_info)}>
+                      저장
+                    </Button>
+                  </>
+                )}
+              </div>
+            </>
+          );
+
+          var toolPop = (
+            <>
+              <div>가리기</div>
+              {content.content.hidden &&
+                content.content.hidden.map((item) => {
+                  return (
+                    <>
+                      <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <span>{item.targetWord}</span>
+                          <span
+                            style={{
+                              marginLeft: "3px",
+                              color: "grey",
+                            }}
+                          >
+                            <CloseOutlined />
+                          </span>
+                        </div>
+                      </Tag>
+                    </>
+                  );
+                })}
+              <div>밑줄</div>
+              {content.content.underline &&
+                content.content.underline.map((item) => {
+                  return (
+                    <>
+                      <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <span>{item.targetWord}</span>
+                          <span
+                            style={{
+                              marginLeft: "3px",
+                              color: "grey",
+                            }}
+                          >
+                            <CloseOutlined />
+                          </span>
+                        </div>
+                      </Tag>
+                    </>
+                  );
+                })}
+              <div>형광펜</div>
+              {content.content.highlight &&
+                content.content.highlight.map((item) => {
+                  return (
+                    <>
+                      <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <span>{item.targetWord}</span>
+                          <span
+                            style={{
+                              marginLeft: "3px",
+                              color: "grey",
+                            }}
+                          >
+                            <CloseOutlined />
+                          </span>
+                        </div>
+                      </Tag>
+                    </>
+                  );
+                })}
+            </>
+          );
+
+          if (statusCurrent === "completed" || statusCurrent === "hold") {
+            var diffiButtonsPop = (
+              <>
+                <Space>
+                  <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickRestoreHandler(current_card_id)} type="primary">
+                    복원
+                  </Button>
+                  {/* <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary">
+                    통과
+                  </Button> */}
+                </Space>
+              </>
+            );
+          } else {
+            var diffiButtonsPop = (
+              <>
+                <Space>
+                  {/* <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id, "normal")} type="primary">
+                    통과
+                  </Button> */}
+                  <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id)} type="primary">
+                    보류
+                  </Button>
+                  <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id)} type="primary">
+                    졸업
+                  </Button>
+                </Space>
+              </>
+            );
+          }
 
           return (
             <>
@@ -1090,19 +1268,19 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                       <div
                         style={{
                           backgroundColor: "#f0f0f0",
-                          height: "38px",
+                          height: "32px",
                           padding: "0 5px 0 5px",
                           // boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-around",
                           alignItems: "center",
-                          border: "1px solid gainsboro",
-                          borderTopLeftRadius: "10px",
-                          borderTopRightRadius: "10px",
+                          // border: "1px solid gainsboro",
+                          borderTopLeftRadius: "3px",
+                          borderTopRightRadius: "3px",
                         }}
                       >
-                        <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                        <div style={{ width: "24pxpx", lineHeight: "0px", position: "relative", textAlign: "center" }}>
                           {content.content.userFlag === 0 && (
                             <>
                               <FlagOutlined
@@ -1112,6 +1290,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   fontSize: "16px",
                                   color: "#f0f0f0",
                                   border: "1px solid lightgrey",
+                                  borderRadius: "3px",
+                                  width: "24px",
+                                  height: "24px",
                                 }}
                               />
                             </>
@@ -1122,7 +1303,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                 onClick={onClickUserFlag}
                                 style={{
                                   cursor: "pointer",
-                                  fontSize: "16px",
+                                  fontSize: "21px",
+                                  border: "1px solid #f0f0f0",
+                                  width: "24px",
+                                  height: "24px",
                                   color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
                                 }}
                               />
@@ -1131,177 +1315,161 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
                           {userFlag && (
                             <>
-                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                              <span className="user_flags" style={{ position: "absolute", zIndex: "9999", left: "-4px", top: "30px" }}>
+                                {userFlags}
+                              </span>
                             </>
                           )}
                         </div>
-                        <div unselectable="on" style={{ position: "relative" }}>
+                        <Popover
+                          content={"준비중입니다..."}
+                          placement="bottomLeft"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>새카드 추가하기</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
                           <Button
-                            unselectable="on"
-                            className="hiddenButton"
-                            onClick={hiddenEffectDeleteModal}
                             size="small"
                             style={{
-                              border: "none",
-                              backgroundColor: "#f0f0f0",
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
                             }}
-                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
-                          ></Button>
+                            // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            새카드
+                          </Button>
+                        </Popover>
 
-                          <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
-                            <div>가리기</div>
-                            {content.content.hidden &&
-                              content.content.hidden.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                            <div>밑줄</div>
-                            {content.content.underline &&
-                              content.content.underline.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                            <div>형광펜</div>
-                            {content.content.highlight &&
-                              content.content.highlight.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                          </Modal>
-                        </div>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
+                        <Popover
+                          content={diffiButtonsPop}
+                          placement="bottomLeft"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>학습상태변경</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ControlOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            상태변경
+                          </Button>
+                        </Popover>
 
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
-                          <>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                            ></Button>
-                          </>
-                        ) : (
-                          <>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                              disabled
-                            ></Button>
-                          </>
-                        )}
+                        <Popover
+                          content={toolPop}
+                          placement="bottom"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>툴해제</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
+                          >
+                            툴해제
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={"준비중입니다..."}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>질문게시판</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            게시판
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={memoPop}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>메모</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<MessageOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            메모
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={annotationPop}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>주석</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            주석
+                          </Button>
+                        </Popover>
                       </div>
                     </>
                   )}
@@ -1437,7 +1605,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                 }}
                               >
-                                <FroalaEditorView model={item} />
+                                {/* <FroalaEditorView model={item} /> */}
+                                <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                               </div>
                             </>
                           ))}
@@ -1497,7 +1666,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     textDecoration: `${row_font.annotation[index].underline === "on" ? "underline" : "none"}`,
                                   }}
                                 >
-                                  <FroalaEditorView model={item} />
+                                  {/* <FroalaEditorView model={item} /> */}
+                                  <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                                 </div>
                               </>
                             ))}
@@ -1566,7 +1736,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                 textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                               }}
                             >
-                              <FroalaEditorView model={item} />
+                              {/* <FroalaEditorView model={item} /> */}
+                              <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                             </div>
                           </>
                         ))}
@@ -1582,19 +1753,19 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                       <div
                         style={{
                           backgroundColor: "#f0f0f0",
-                          height: "38px",
+                          height: "32px",
                           padding: "0 5px 0 5px",
                           // boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-around",
                           alignItems: "center",
-                          border: "1px solid gainsboro",
-                          borderTopLeftRadius: "10px",
-                          borderTopRightRadius: "10px",
+                          // border: "1px solid gainsboro",
+                          borderTopLeftRadius: "3px",
+                          borderTopRightRadius: "3px",
                         }}
                       >
-                        <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                        <div style={{ width: "24pxpx", lineHeight: "0px", position: "relative", textAlign: "center" }}>
                           {content.content.userFlag === 0 && (
                             <>
                               <FlagOutlined
@@ -1604,6 +1775,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   fontSize: "16px",
                                   color: "#f0f0f0",
                                   border: "1px solid lightgrey",
+                                  borderRadius: "3px",
+                                  width: "24px",
+                                  height: "24px",
                                 }}
                               />
                             </>
@@ -1614,7 +1788,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                 onClick={onClickUserFlag}
                                 style={{
                                   cursor: "pointer",
-                                  fontSize: "16px",
+                                  fontSize: "21px",
+                                  border: "1px solid #f0f0f0",
+                                  width: "24px",
+                                  height: "24px",
                                   color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
                                 }}
                               />
@@ -1623,177 +1800,161 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
                           {userFlag && (
                             <>
-                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                              <span className="user_flags" style={{ position: "absolute", zIndex: "9999", left: "-4px", top: "30px" }}>
+                                {userFlags}
+                              </span>
                             </>
                           )}
                         </div>
-                        <div unselectable="on" style={{ position: "relative" }}>
+                        <Popover
+                          content={"준비중입니다..."}
+                          placement="bottomLeft"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>새카드 추가하기</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
                           <Button
-                            unselectable="on"
-                            className="hiddenButton"
-                            onClick={hiddenEffectDeleteModal}
                             size="small"
                             style={{
-                              border: "none",
-                              backgroundColor: "#f0f0f0",
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
                             }}
-                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
-                          ></Button>
+                            // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            새카드
+                          </Button>
+                        </Popover>
 
-                          <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
-                            <div>가리기</div>
-                            {content.content.hidden &&
-                              content.content.hidden.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                            <div>밑줄</div>
-                            {content.content.underline &&
-                              content.content.underline.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                            <div>형광펜</div>
-                            {content.content.highlight &&
-                              content.content.highlight.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                          </Modal>
-                        </div>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
+                        <Popover
+                          content={diffiButtonsPop}
+                          placement="bottomLeft"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>학습상태변경</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ControlOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            상태변경
+                          </Button>
+                        </Popover>
 
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
-                          <>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                            ></Button>
-                          </>
-                        ) : (
-                          <>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                              disabled
-                            ></Button>
-                          </>
-                        )}
+                        <Popover
+                          content={toolPop}
+                          placement="bottom"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>툴해제</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
+                          >
+                            툴해제
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={"준비중입니다..."}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>질문게시판</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            게시판
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={memoPop}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>메모</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<MessageOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            메모
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={annotationPop}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>주석</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            주석
+                          </Button>
+                        </Popover>
                       </div>
                     </>
                   )}
@@ -1928,7 +2089,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                 }}
                               >
-                                <FroalaEditorView model={item} />
+                                {/* <FroalaEditorView model={item} /> */}
+                                <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                               </div>
                             </>
                           ))}
@@ -1946,19 +2108,19 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                       <div
                         style={{
                           backgroundColor: "#f0f0f0",
-                          height: "38px",
+                          height: "32px",
                           padding: "0 5px 0 5px",
                           // boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-around",
                           alignItems: "center",
-                          border: "1px solid gainsboro",
-                          borderTopLeftRadius: "10px",
-                          borderTopRightRadius: "10px",
+                          // border: "1px solid gainsboro",
+                          borderTopLeftRadius: "3px",
+                          borderTopRightRadius: "3px",
                         }}
                       >
-                        <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                        <div style={{ width: "24pxpx", lineHeight: "0px", position: "relative", textAlign: "center" }}>
                           {content.content.userFlag === 0 && (
                             <>
                               <FlagOutlined
@@ -1968,6 +2130,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   fontSize: "16px",
                                   color: "#f0f0f0",
                                   border: "1px solid lightgrey",
+                                  borderRadius: "3px",
+                                  width: "24px",
+                                  height: "24px",
                                 }}
                               />
                             </>
@@ -1978,7 +2143,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                 onClick={onClickUserFlag}
                                 style={{
                                   cursor: "pointer",
-                                  fontSize: "16px",
+                                  fontSize: "21px",
+                                  border: "1px solid #f0f0f0",
+                                  width: "24px",
+                                  height: "24px",
                                   color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
                                 }}
                               />
@@ -1987,177 +2155,161 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
                           {userFlag && (
                             <>
-                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                              <span className="user_flags" style={{ position: "absolute", zIndex: "9999", left: "-4px", top: "30px" }}>
+                                {userFlags}
+                              </span>
                             </>
                           )}
                         </div>
-                        <div unselectable="on" style={{ position: "relative" }}>
+                        <Popover
+                          content={"준비중입니다..."}
+                          placement="bottomLeft"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>새카드 추가하기</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
                           <Button
-                            unselectable="on"
-                            className="hiddenButton"
-                            onClick={hiddenEffectDeleteModal}
                             size="small"
                             style={{
-                              border: "none",
-                              backgroundColor: "#f0f0f0",
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
                             }}
-                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
-                          ></Button>
+                            // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            새카드
+                          </Button>
+                        </Popover>
 
-                          <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
-                            <div>가리기</div>
-                            {content.content.hidden &&
-                              content.content.hidden.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                            <div>밑줄</div>
-                            {content.content.underline &&
-                              content.content.underline.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                            <div>형광펜</div>
-                            {content.content.highlight &&
-                              content.content.highlight.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                          </Modal>
-                        </div>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
+                        <Popover
+                          content={diffiButtonsPop}
+                          placement="bottomLeft"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>학습상태변경</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ControlOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            상태변경
+                          </Button>
+                        </Popover>
 
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
-                          <>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                            ></Button>
-                          </>
-                        ) : (
-                          <>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                              disabled
-                            ></Button>
-                          </>
-                        )}
+                        <Popover
+                          content={toolPop}
+                          placement="bottom"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>툴해제</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
+                          >
+                            툴해제
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={"준비중입니다..."}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>질문게시판</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            게시판
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={memoPop}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>메모</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<MessageOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            메모
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={annotationPop}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>주석</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            주석
+                          </Button>
+                        </Popover>
                       </div>
                     </>
                   )}
@@ -2311,7 +2463,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                   }}
                                 >
-                                  <FroalaEditorView model={item} />
+                                  {/* <FroalaEditorView model={item} /> */}
+                                  <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                                 </div>
                               </>
                             ))}
@@ -2359,7 +2512,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                       textDecoration: `${row_font.face1[row_font.face1.length - 1].underline === "on" ? "underline" : "none"}`,
                                     }}
                                   >
-                                    <FroalaEditorView model={item} />
+                                    {/* <FroalaEditorView model={item} /> */}
+                                    <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                                   </div>
                                 </>
                               ))}
@@ -2418,7 +2572,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
                                   }}
                                 >
-                                  <FroalaEditorView model={item} />
+                                  {/* <FroalaEditorView model={item} /> */}
+                                  <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                                 </div>
                               </>
                             ))}
@@ -2437,19 +2592,19 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                       <div
                         style={{
                           backgroundColor: "#f0f0f0",
-                          height: "38px",
+                          height: "32px",
                           padding: "0 5px 0 5px",
                           // boxShadow: "0px 0px 1px 1px #eeeeee",
                           display: "flex",
                           flexDirection: "row",
                           justifyContent: "space-around",
                           alignItems: "center",
-                          border: "1px solid gainsboro",
-                          borderTopLeftRadius: "10px",
-                          borderTopRightRadius: "10px",
+                          // border: "1px solid gainsboro",
+                          borderTopLeftRadius: "3px",
+                          borderTopRightRadius: "3px",
                         }}
                       >
-                        <div style={{ width: "24pxpx", height: "2rem", position: "relative", textAlign: "center" }}>
+                        <div style={{ width: "24pxpx", lineHeight: "0px", position: "relative", textAlign: "center" }}>
                           {content.content.userFlag === 0 && (
                             <>
                               <FlagOutlined
@@ -2459,6 +2614,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   fontSize: "16px",
                                   color: "#f0f0f0",
                                   border: "1px solid lightgrey",
+                                  borderRadius: "3px",
+                                  width: "24px",
+                                  height: "24px",
                                 }}
                               />
                             </>
@@ -2469,7 +2627,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                 onClick={onClickUserFlag}
                                 style={{
                                   cursor: "pointer",
-                                  fontSize: "16px",
+                                  fontSize: "21px",
+                                  border: "1px solid #f0f0f0",
+                                  width: "24px",
+                                  height: "24px",
                                   color: `${userFlagDetails["flag" + String(content.content.userFlag)].figureColor}`,
                                 }}
                               />
@@ -2478,177 +2639,161 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
                           {userFlag && (
                             <>
-                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                              <span className="user_flags" style={{ position: "absolute", zIndex: "9999", left: "-4px", top: "30px" }}>
+                                {userFlags}
+                              </span>
                             </>
                           )}
                         </div>
-                        <div unselectable="on" style={{ position: "relative" }}>
+                        <Popover
+                          content={"준비중입니다..."}
+                          placement="bottomLeft"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>새카드 추가하기</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
                           <Button
-                            unselectable="on"
-                            className="hiddenButton"
-                            onClick={hiddenEffectDeleteModal}
                             size="small"
                             style={{
-                              border: "none",
-                              backgroundColor: "#f0f0f0",
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
                             }}
-                            icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
-                          ></Button>
+                            // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            새카드
+                          </Button>
+                        </Popover>
 
-                          <Modal title="학습도구해제" footer={null} visible={isModalVisibleHidden} onOk={handleOk} onCancel={handleCancel}>
-                            <div>가리기</div>
-                            {content.content.hidden &&
-                              content.content.hidden.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => hiddenElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                            <div>밑줄</div>
-                            {content.content.underline &&
-                              content.content.underline.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => underlineElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                            <div>형광펜</div>
-                            {content.content.highlight &&
-                              content.content.highlight.map((item) => {
-                                return (
-                                  <>
-                                    <Tag onClick={() => highlightElementTagHandler(item.targetWord)}>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <span>{item.targetWord}</span>
-                                        <span
-                                          style={{
-                                            marginLeft: "3px",
-                                            color: "grey",
-                                          }}
-                                        >
-                                          <CloseOutlined />
-                                        </span>
-                                      </div>
-                                    </Tag>
-                                  </>
-                                );
-                              })}
-                          </Modal>
-                        </div>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<FormOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<DeleteOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
+                        <Popover
+                          content={diffiButtonsPop}
+                          placement="bottomLeft"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>학습상태변경</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ControlOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            상태변경
+                          </Button>
+                        </Popover>
 
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<BarChartOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        <Button
-                          size="small"
-                          style={{
-                            border: "none",
-                            backgroundColor: "#f0f0f0",
-                          }}
-                          icon={<MessageOutlined style={{ fontSize: "16px" }} />}
-                        ></Button>
-                        {content_value.annotation.length > 0 && content_value.annotation[0] !== "" ? (
-                          <>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                            ></Button>
-                          </>
-                        ) : (
-                          <>
-                            <Button
-                              size="small"
-                              style={{
-                                border: "none",
-                                backgroundColor: "#f0f0f0",
-                              }}
-                              icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
-                              disabled
-                            ></Button>
-                          </>
-                        )}
+                        <Popover
+                          content={toolPop}
+                          placement="bottom"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>툴해제</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ClearOutlined unselectable="on" style={{ pointerEvents: "none", fontSize: "16px" }} />}
+                          >
+                            툴해제
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={"준비중입니다..."}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>질문게시판</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<ProfileOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            게시판
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={memoPop}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>메모</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<MessageOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            메모
+                          </Button>
+                        </Popover>
+
+                        <Popover
+                          content={annotationPop}
+                          placement="bottomRight"
+                          title={
+                            <>
+                              <span style={{ fontSize: "0.8rem" }}>주석</span>
+                            </>
+                          }
+                          trigger="click"
+                        >
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            // icon={<PicRightOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            주석
+                          </Button>
+                        </Popover>
                       </div>
                     </>
                   )}
@@ -2725,6 +2870,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                       </div>
                     </>
                   )}
+                 
                   <div className={`${content.card_info.parentCard_id} ${content._id} child_group other`}>
                     <div style={{ marginBottom: "0px" }}>
                       <div
@@ -2804,7 +2950,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                       textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                     }}
                                   >
-                                    <FroalaEditorView model={item} />
+                                    {/* <FroalaEditorView model={item} /> */}
+                                    <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                                   </div>
                                 </>
                               ))}
@@ -2844,7 +2991,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                         textDecoration: `${row_font.face1[index].underline === "on" ? "underline" : "none"}`,
                                       }}
                                     >
-                                      <FroalaEditorView model={item} />
+                                      {/* <FroalaEditorView model={item} /> */}
+                                      <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                                     </div>
                                   </>
                                 ))}
@@ -2904,7 +3052,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                       textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
                                     }}
                                   >
-                                    <FroalaEditorView model={item} />
+                                    {/* <FroalaEditorView model={item} /> */}
+                                    <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
                                   </div>
                                 </>
                               ))}
@@ -3079,8 +3228,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   return (
     <>
-      <div>{contents}</div>
-      {/* {data1 && (
+      <div style={{width:"95%", maxWidth:"972px", margin:"auto"}}><div style={{margin:"auto"}}>{contents}</div></div>
+      {data1 && (
         <>
           <FixedBottomMenuDirectRead
             hide={hide}
@@ -3108,9 +3257,91 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             fireEditor={fireEditor}
           />
         </>
-      )} */}
+      )}
     </>
   );
 };
 
 export default DirectReadContainer;
+
+const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
+  // console.log(content);
+  // console.log(cardTypeSets);
+  var altered = item;
+  if (content.content.hidden.length > 0) {
+    content.content.hidden.map((element) => {
+      const color = cardTypeSets[0].studyTool.hidden[element.toolType].color;
+      altered = altered.replace(element.targetWord, `<span style="background-color:${color}; color:${color}">${element.targetWord}</span>`);
+    });
+  }
+  if (content.content.underline.length > 0) {
+    content.content.underline.map((element) => {
+      const color = cardTypeSets[0].studyTool.underline[element.toolType].color;
+      const thickness = cardTypeSets[0].studyTool.underline[element.toolType].attr1;
+      const lineType = cardTypeSets[0].studyTool.underline[element.toolType].attr2;
+      // console.log(element);
+      altered = altered.replace(element.targetWord, `<span style="display:inline-block; border-bottom: ${thickness}px ${lineType} ${color}">${element.targetWord}</span>`);
+    });
+  }
+
+  if (content.content.highlight.length > 0) {
+    content.content.highlight.map((element) => {
+      const color = cardTypeSets[0].studyTool.highlight[element.toolType].color;
+      if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
+        altered = altered.replace(
+          element.targetWord,
+          `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}; --z-index:-1">${
+            element.targetWord
+          }</span>`
+        );
+      } else if (element.toolType === 2) {
+        altered = altered.replace(
+          element.targetWord,
+          `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`
+        );
+      }
+    });
+  }
+
+  var varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
+
+  if (varUA.indexOf("android") > -1) {
+    //안드로이드
+    // console.log("android");
+    var contentsToRender = (
+      <>
+        <div
+          id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
+          dangerouslySetInnerHTML={{ __html: altered }}
+          onContextMenu={getSelectionText2}
+        ></div>
+      </>
+    );
+  } else if (varUA.indexOf("iphone") > -1 || varUA.indexOf("ipad") > -1 || varUA.indexOf("ipod") > -1) {
+    //IOS
+    // console.log("ios");
+    var contentsToRender = (
+      <>
+        <div
+          id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
+          dangerouslySetInnerHTML={{ __html: altered }}
+          onPointerUp={getSelectionText2}
+        ></div>
+      </>
+    );
+  } else {
+    //아이폰, 안드로이드 외
+    // console.log("other");
+    var contentsToRender = (
+      <>
+        <div
+          id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content.card_info.card_id}`}
+          dangerouslySetInnerHTML={{ __html: altered }}
+          onPointerUp={getSelectionText2}
+        ></div>
+      </>
+    );
+  }
+
+  return <>{contentsToRender}</>;
+};

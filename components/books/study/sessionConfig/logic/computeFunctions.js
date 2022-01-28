@@ -202,7 +202,7 @@ export const computeNumberOfAllFilteredCards = ({
       const conditionOfCheckedIndexes = flattenCheckedKeys.includes(
         card.card_info.index_id
       );
-      const conditionOfCardType = useCardtype.includes(card.card_info.cardtype);
+      const conditionOfCardType = useCardtype.includes(card.card_info.cardtype); //읽기 뒤집기 카드만 선택됨
       const conditionOfCardStatus = (() => {
         if (card.studyStatus.statusCurrent !== "ing") {
           return useStatus.includes(card.studyStatus.statusCurrent);

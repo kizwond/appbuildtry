@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import Layout from "../components/layout/Layout";
+import M_Layout from "../components/layout/M_Layout";
 import RecentStudyList from "../components/index/RecentStudyList";
 import Hero from "../components/index/Hero";
 import NewBooks from "../components/index/NewBooks";
@@ -83,12 +83,12 @@ const Home = () => {
   }
 
   return (
-    <Layout>
+    <M_Layout>
       <Hero />
       <RecentStudyList />
       <NewBooks />
       <Footer />
-    </Layout>
+    </M_Layout>
   );
 };
 

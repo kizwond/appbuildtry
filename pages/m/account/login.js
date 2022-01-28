@@ -91,7 +91,9 @@ const LoginComponent = () => {
 const Login = () => {
   return (
     <M_Layout>
+      <div style={{width:"100%", maxWidth:"1024px", margin:"auto"}}>
       <LoginComponent />
+      </div>
       <M_Footer />
     </M_Layout>
   );

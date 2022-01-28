@@ -18,7 +18,6 @@ const IndexTree = ({
   bookData,
   isPc,
 }) => {
-  console.log(checkedKeys);
   const scrolProperty = useMemo(
     () =>
       isPc

@@ -48,7 +48,6 @@ export const NewToggleTag = ({
         },
       }
     : { onClick: () => changeValue(option) };
-  console.log({ isArray, attrTagName, attr2 });
   return (
     <ToggleTag checked={verifyIsChecked(option)} {...attr2} {...attrTagName}>
       {children}

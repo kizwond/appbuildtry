@@ -87,7 +87,7 @@ const FloatingMenu = ({
 
 
   return (
-    <div style={{ width: "100%", alignItems: "center", position: "fixed", bottom: 0, zIndex: 3, fontSize: "0.8rem" }}>
+    <div style={{ width: "100%",maxWidth:"1024px", alignItems: "center", position: "fixed", bottom: 0, zIndex: 3, fontSize: "0.8rem" }}>
       <div
         style={{
           margin: "auto",
@@ -95,6 +95,7 @@ const FloatingMenu = ({
           // borderRadius: "5px 5px 0 0",
           borderBottom: "none",
           width: "100%",
+          
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",

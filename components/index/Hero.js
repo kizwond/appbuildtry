@@ -8,7 +8,8 @@ const Hero = () => {
     textAlign: "center",
     background: "#d4e0ff",
     marginTop:"50px",
-    fontSize:"20px"
+    fontSize:"20px",
+    borderRadius:"5px"
   };
   return (
     <>

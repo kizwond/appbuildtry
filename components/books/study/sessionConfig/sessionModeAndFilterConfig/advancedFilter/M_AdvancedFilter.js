@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { Switch } from "antd";
+import { InputNumber, Space, Switch, Tag } from "antd";
 import styled from "styled-components";
 import {
   StyledDivConfigColStartCards,
@@ -24,8 +24,13 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
     changeMakerFlagOnOff,
     changeExamResult,
     changeExamResultOnOff,
-    changeRecentDifficulty,
+
     changeRecentDifficultyOnOff,
+    changeStartOfStudyRatioRange,
+    changeEndOfStudyRatioRange,
+    changeNonCurrentStudyRatioOnOff,
+    changeCurrentStudyRatioOnOff,
+
     changeRecentStudyTime,
     changeRecentStudyTimeOnOff,
     changeLevel,
@@ -47,6 +52,13 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
   } = advancedFilter;
 
   const { flagTags, recentDifficultyTags, examResultTags } = filterTags;
+
+  const [
+    nonCurrentStudyRatioOnOff,
+    currentStudyRatioOnOff,
+    startOfStudyRatioRange,
+    endOfStudyRatioRange,
+  ] = recentDifficulty.value;
   return (
     <StyledDivWrapper>
       <StyledDivTitleRow is_pc={(isPc || false).toString()}>
@@ -157,12 +169,97 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
             onOff={recentDifficulty.onOff}
           >
             {recentDifficulty.onOff === "on" ? (
-              <ToggleTags
-                changeValue={changeRecentDifficulty}
-                value={recentDifficulty.value}
-                tags={recentDifficultyTags}
-                af
-              />
+              // <ToggleTags
+              //   changeValue={changeRecentDifficulty}
+              //   value={recentDifficulty.value}
+              //   tags={recentDifficultyTags}
+              //   af
+              // />
+
+              //   const Wrapper = styled.div`
+              //   background-color: ${({ checked, tagname }) =>
+              //     checked && tagname === "ing" ? "#f5cdbf" : "transparent"};
+              //   display: inline-block;
+              //   border-top-left-radius: 2px;
+              //   border-top-right-radius: 2px;
+              //   &:first-of-type > .CheckableTag {
+              //     margin: 2px 2px 2px 0;
+              //   }
+              // `;
+
+              //           const CheckableTag = styled(Tag.CheckableTag)`
+              // border: ${({ checked }) =>
+              //   checked ? "1px solid #1890ff" : "1px solid #d9d9d9"};
+              // margin: 2px 2px 2px 2px;
+              // `;
+
+              <div className="flex gap-[4px] py-[2px]">
+                <Tag.CheckableTag
+                  checked={nonCurrentStudyRatioOnOff === "on"}
+                  //  " border border-solid border-[#1890ff] "
+                  className={`${
+                    nonCurrentStudyRatioOnOff === "on"
+                      ? "border border-solid !border-[#1890ff]"
+                      : "border border-solid !border-[#d9d9d9]"
+                  } !m-[0px]`}
+                  onChange={(checked) => {
+                    if (checked) {
+                      changeNonCurrentStudyRatioOnOff("on");
+                    } else {
+                      changeNonCurrentStudyRatioOnOff("off");
+                    }
+                  }}
+                >
+                  결과없음
+                </Tag.CheckableTag>
+                <Tag.CheckableTag
+                  checked={currentStudyRatioOnOff === "on"}
+                  className={`${
+                    currentStudyRatioOnOff === "on"
+                      ? "border border-solid !border-[#1890ff]"
+                      : "border border-solid !border-[#d9d9d9]"
+                  } !m-[0px]`}
+                  onChange={(checked) => {
+                    if (checked) {
+                      changeCurrentStudyRatioOnOff("on");
+                    } else {
+                      changeCurrentStudyRatioOnOff("off");
+                    }
+                  }}
+                >
+                  결과있음
+                </Tag.CheckableTag>
+
+                {currentStudyRatioOnOff === "on" && (
+                  <Space>
+                    <InputNumber
+                      className="AdvancedFilterInputNumber"
+                      size="small"
+                      min={0}
+                      max={
+                        endOfStudyRatioRange == null
+                          ? 99
+                          : endOfStudyRatioRange - 1
+                      }
+                      value={startOfStudyRatioRange}
+                      onChange={changeStartOfStudyRatioRange}
+                    />
+                    ~
+                    <InputNumber
+                      className="AdvancedFilterInputNumber"
+                      size="small"
+                      min={
+                        endOfStudyRatioRange == null
+                          ? 2
+                          : startOfStudyRatioRange + 1
+                      }
+                      max={100}
+                      value={endOfStudyRatioRange}
+                      onChange={changeEndOfStudyRatioRange}
+                    />
+                  </Space>
+                )}
+              </div>
             ) : (
               <InactivatedTags tags={recentDifficultyTags} />
             )}

@@ -14,7 +14,7 @@ const MentoringHome = () => {
   return (
     <>
       <Head>
-        <title>{"멘토링 - I'mTheBook"}</title>
+        <title>멘토링 - CogBook</title>
         <meta charSet="utf-8" />
       </Head>{" "}
       <div>

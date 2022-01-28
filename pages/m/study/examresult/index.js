@@ -24,7 +24,7 @@ const ExamResult = () => {
   return (
     <>
       <Head>
-        <title>Result - CogBook</title>
+        <title>시험결과 - CogBook</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <M_Layout>

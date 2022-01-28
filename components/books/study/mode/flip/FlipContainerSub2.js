@@ -59,13 +59,11 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
     let theoNewLevel, newLevel
     let needStudyTimeGap
     try{       
-        // 세션 첫 학습인 경우
-        if (levelUpdated == true){
-            newLevel = levelCurrent
-        } else if (levelUpdated == false){
+        if (levelUpdated == false){
+            // console.log('levelCurrent', levelCurrent)
             if (levelCurrent == 0){
-                theoNewLevel = Math.round(initialElapsedHour /24  * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
-                // console.log('newLevel1', newLevel)
+                theoNewLevel = Math.round(initialElapsedHour /24 * Math.log(0.8) / Math.log(KnowStudyRatio/100) * 1000) / 1000;                
+                // console.log('newLevel1',newLevel)
             } else {
                 const levelOfLastSession = levelCurrent
                 const lastRatioOfLastSession = recentStudyRatio
@@ -73,12 +71,35 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
                 const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
                 const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
     
-                theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
-                
-                // console.log('newLevel2', newLevel)
-            }
-            newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
+                theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(KnowStudyRatio/100)*1000)/1000
+                // console.log('newLevel2',newLevel)
+            }            
+        } else if (levelUpdated == true){
+            newLevel = levelCurrent            
         }
+
+        newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
+
+        // // 세션 첫 학습인 경우
+        // if (levelUpdated == true){
+        //     newLevel = levelCurrent
+        // } else if (levelUpdated == false){
+        //     if (levelCurrent == 0){
+        //         theoNewLevel = Math.round(initialElapsedHour /24  * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
+        //         // console.log('newLevel1', newLevel)
+        //     } else {
+        //         const levelOfLastSession = levelCurrent
+        //         const lastRatioOfLastSession = recentStudyRatio
+        //         const estimatedElapsedHourOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
+        //         const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
+        //         const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
+    
+        //         theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
+                
+        //         // console.log('newLevel2', newLevel)
+        //     }
+        //     newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
+        // }
 
         needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(KnowStudyRatio/100)) / Math.log(0.8) * 24 * 3600000)
         // console.log('needStudyTimeGap',needStudyTimeGap)

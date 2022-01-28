@@ -137,7 +137,7 @@ const BookSetting = () => {
   return (
     <div>
       <Head>
-        <title>{"책 상세 설정 - I'mTheBook"}</title>
+        <title>책 설정 - CogBook</title>
         <meta charSet="utf-8" />
       </Head>
       {data &&

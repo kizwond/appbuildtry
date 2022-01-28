@@ -235,7 +235,7 @@ const StudySessionConfig = ({
   return (
     <>
       <Head>
-        <title>{"세션설정 - I'mTheBook"}</title>
+        <title>세션 설정 - CogBook</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>{" "}
       <M_Layout>

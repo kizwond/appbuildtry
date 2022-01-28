@@ -2113,10 +2113,11 @@ class Container extends Component {
               <>
                 {content.card_info.cardtype === "read" && (
                   <>
-                    <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div style={{ padding: 5, width: "100%", height: "100%",border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          minHeight: "calc(75vh - 150px)",
+                          // minHeight: "calc(75vh - 150px)",
+                          height: "100%",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -2193,10 +2194,11 @@ class Container extends Component {
                 )}
                 {content.card_info.cardtype === "general" && (
                   <>
-                    <div style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div style={{ padding: 5, width: "100%", height: "100%",border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          minHeight: "calc(75vh - 150px)",
+                          // minHeight: "calc(75vh - 150px)",
+                          height: "100%",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -2272,10 +2274,11 @@ class Container extends Component {
                 )}
                 {content.card_info.cardtype === "flip" && (
                   <>
-                    <div onClick={this.flip} style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div onClick={this.flip} style={{ padding: 5, width: "100%",height: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          minHeight: "calc(75vh - 150px)",
+                          // minHeight: "calc(75vh - 150px)",
+                          height: "100%",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -2469,10 +2472,11 @@ class Container extends Component {
               <>
                 {content.card_info.cardtype === "flip" && (
                   <>
-                    <div onClick={this.flip} style={{ padding: 5, width: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div onClick={this.flip} style={{ padding: 5, width: "100%",height:"100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
-                          minHeight: "calc(75vh - 150px)",
+                          // minHeight: "calc(75vh - 150px)",
+                          height: "100%",
                           width: "100%",
                           display: "flex",
                           alignItems: alignVertical,
@@ -2662,104 +2666,117 @@ class Container extends Component {
           </defs>
         </svg>
         <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-          <div style={{ position: "fixed", backgroundColor: "white", top: "50px", width: "95%", maxWidth:"972px", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+          <div style={{ width: "95%", position: "fixed", top: "50px" }}>
             <div
               style={{
-                padding: "1px 5px",
-                flexGrow: 1,
-                color: "#8b8b8b",
-                border: "1px solid lightgrey",
-                backgroundColor: "#f1f1f1",
-                borderRadius: "3px",
+                margin:"auto",
+                backgroundColor: "white",
+                width: "100%",
+                maxWidth: "972px",
                 display: "flex",
-                justifyContent: "space-evenly",
-                flexDirection: "column",
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
             >
               <div
                 style={{
+                  padding: "1px 5px",
+                  flexGrow: 1,
+                  color: "#8b8b8b",
+                  border: "1px solid lightgrey",
+                  backgroundColor: "#f1f1f1",
+                  borderRadius: "3px",
                   display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  justifyContent: "space-evenly",
+                  flexDirection: "column",
                 }}
               >
-                <div style={{ width: "100%", display: "flex", flexDirection: "flex", alignItems: "center", justifyContent: "flex-start" }}>
-                  <div style={{ marginBottom: "0px", fontSize: "0.8rem", marginRight: "5px", width: "37px", flexShrink: 0 }}>완료율</div>
-                  <ProgressBar bgcolor={"#32c41e"} completed={progress} />
-                </div>
-
-                <div style={{ width: "100%", display: "flex", flexDirection: "flex", alignItems: "center", marginLeft: "5px", justifyContent: "flex-start" }}>
-                  <div style={{ lineHeight: "1rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px" }}>
-                    <div>카드정보</div>
-                  </div>
-                  <div
-                    style={{
-                      backgroundColor: "#e2e2e2",
-                      boxShadow: "inset 2px 2px 3px 0px #acacac",
-                      textAlign: "right",
-                      paddingRight: "5px",
-                      width: "50%",
-                      flexGrow: 1,
-                      fontFamily: "Mina, sans-serif",
-                      fontSize: "0.9rem",
-                      lineHeight: "20px",
-                      height: "20px",
-                      borderRadius: "3px",
-                    }}
-                  >
-                    {cardInfoStatusBar}
-                  </div>
-                </div>
-                <Popover
-                  content={cardInfoPop}
-                  placement="bottomRight"
-                  title={
-                    <>
-                      <span style={{ fontSize: "0.8rem" }}>카드정보</span>
-                    </>
-                  }
-                  trigger="click"
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
                 >
-                  <Button
-                    size="small"
-                    style={{ flexShrink: 0, fontSize: "0.8rem", width: "32px", height: "20px", marginLeft: "5px", borderRadius: "3px", padding: "2px", border: "none" }}
+                  <div style={{ width: "100%", display: "flex", flexDirection: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+                    <div style={{ marginBottom: "0px", fontSize: "0.8rem", marginRight: "5px", width: "37px", flexShrink: 0 }}>완료율</div>
+                    <ProgressBar bgcolor={"#32c41e"} completed={progress} />
+                  </div>
+
+                  <div style={{ width: "100%", display: "flex", flexDirection: "flex", alignItems: "center", marginLeft: "5px", justifyContent: "flex-start" }}>
+                    <div style={{ lineHeight: "1rem", marginBottom: "0px", fontSize: "0.8rem", display: "flex", flexDirection: "column", marginRight: "5px" }}>
+                      <div>카드정보</div>
+                    </div>
+                    <div
+                      style={{
+                        backgroundColor: "#e2e2e2",
+                        boxShadow: "inset 2px 2px 3px 0px #acacac",
+                        textAlign: "right",
+                        paddingRight: "5px",
+                        width: "50%",
+                        flexGrow: 1,
+                        fontFamily: "Mina, sans-serif",
+                        fontSize: "0.9rem",
+                        lineHeight: "20px",
+                        height: "20px",
+                        borderRadius: "3px",
+                      }}
+                    >
+                      {cardInfoStatusBar}
+                    </div>
+                  </div>
+                  <Popover
+                    content={cardInfoPop}
+                    placement="bottomRight"
+                    title={
+                      <>
+                        <span style={{ fontSize: "0.8rem" }}>카드정보</span>
+                      </>
+                    }
+                    trigger="click"
                   >
-                    상세
-                  </Button>
-                </Popover>
+                    <Button
+                      size="small"
+                      style={{ flexShrink: 0, fontSize: "0.8rem", width: "32px", height: "20px", marginLeft: "5px", borderRadius: "3px", padding: "2px", border: "none" }}
+                    >
+                      상세
+                    </Button>
+                  </Popover>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Timer
+                    startTimer={this.startTimer}
+                    startTimerTotal={this.startTimerTotal}
+                    stopTimerTotal={this.stopTimerTotal}
+                    startTimerResume={this.startTimerResume}
+                    time={this.state.time}
+                    time_total={this.state.time_total}
+                    isOn_total={this.state.isOn_total}
+                  />
+                </div>
               </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Timer
-                  startTimer={this.startTimer}
-                  startTimerTotal={this.startTimerTotal}
-                  stopTimerTotal={this.stopTimerTotal}
-                  startTimerResume={this.startTimerResume}
-                  time={this.state.time}
-                  time_total={this.state.time_total}
-                  isOn_total={this.state.isOn_total}
-                />
-              </div>
+              <Button size="small" style={{ fontSize: "1rem", width: "53px", height: "60px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishStudy} type="primary">
+                학습
+                <br />
+                종료
+              </Button>
             </div>
-            <Button size="small" style={{ fontSize: "1rem", width: "53px", height: "60px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishStudy} type="primary">
-              학습
-              <br />
-              종료
-            </Button>
           </div>
-          <div style={{ position: "fixed", top: "115px", width: "95%",  maxWidth:"972px", border: "1px solid lightgrey", borderRadius: "3px" }}>{statusBar}</div>
+          <div style={{ width: "95%", position: "fixed", top: "115px" }}>
+            <div style={{ margin: "auto", width: "100%", maxWidth: "972px", border: "1px solid lightgrey", borderRadius: "3px" }}>{statusBar}</div>
+          </div>
           <div style={style_study_layout_bottom}>
-            <div style={{ width: "100%" }}>
-              {/* <div>{statusBar}</div> */}
+            <div style={{ width: "100%", height:"100%" }}>
               <div style={{ height: "15px", paddingLeft: "5px" }}>{makerFlagContent}</div>
               <div style={contentsDisplay}>
-                {this.state.flip && <div>{face1Contents}</div>}
-                {!this.state.flip && <div>{face2Contents}</div>}
+                {this.state.flip && <div style={{height:"100%"}}>{face1Contents}</div>}
+                {!this.state.flip && <div style={{height:"100%"}}>{face2Contents}</div>}
               </div>
             </div>
           </div>
@@ -2774,7 +2791,7 @@ class Container extends Component {
             <div
               style={{
                 width: "95%",
-                maxWidth:"972px",
+                maxWidth: "972px",
                 display: "flex",
                 flexDirection: "column",
                 margin: "auto",
@@ -2976,6 +2993,7 @@ const style_study_layout_bottom = {
   justifyContent: "space-between",
   width: "100%",
   margin: "auto",
+  maxWidth: "972px",
   marginTop: "154px",
   height: "calc(100vh - 267px)",
   overflow: "auto",
@@ -2986,4 +3004,5 @@ const contentsDisplay = {
   backgroundColor: "white",
   padding: "10px",
   alignItems: "center",
+  height:"95%"
 };

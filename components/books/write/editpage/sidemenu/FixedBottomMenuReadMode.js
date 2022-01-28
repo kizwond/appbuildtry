@@ -367,23 +367,19 @@ const FloatingMenu = ({
           </filter>
         </defs>
       </svg>
-
-      <div style={{ width: "100%", alignItems: "center", position: "fixed", bottom: 0, left: 0, zIndex: 3, fontSize: "0.8rem" }}>
+      <div style={{ width:"100%", position: "fixed", bottom: 0}}>
+      <div style={{ margin:"auto", width: "100%", maxWidth: "1024px", alignItems: "center", left: 0, zIndex: 3, fontSize: "0.8rem" }}>
         <div
           style={{
             margin: "auto",
             background: "#484848",
-            // background: "#e9e9e9",
-            // borderBottom: "none",
             width: "100%",
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
-            // padding: 5,
             boxShadow: "0px -1px 2px 0px #b4b4b4",
             alignItems: "center",
             color: "#c6c6c6",
-            // color: "#5b5b5b",
             borderRadius: "13px 13px 0 0",
           }}
         >
@@ -396,6 +392,7 @@ const FloatingMenu = ({
               listStyle: "none",
               alignItems: "center",
               justifyContent: "space-around",
+              cursor:"pointer"
             }}
           >
             {hiddenToggle && (
@@ -627,6 +624,7 @@ const FloatingMenu = ({
             </Modal>
           </div>
         </div>
+      </div>
       </div>
     </>
   );

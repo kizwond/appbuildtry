@@ -7,6 +7,23 @@ export const FRAGMENT_MY_CARD_TYPE_SET = gql`
       user_id
       mybook_id
     }
+    studyTool {
+      hidden {
+        attr1
+        attr2
+        color
+      }
+      highlight {
+        attr1
+        attr2
+        color
+      }
+      underline {
+        attr1
+        attr2
+        color
+      }
+    }
     makerFlag_style {
       row_style {
         background {

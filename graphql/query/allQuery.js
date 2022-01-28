@@ -139,14 +139,14 @@ export const GetIndex = gql`
 `;
 
 export const GetCardRelated = gql`
-  ${FRAGMENT_CARD_SET_WITHOUT_STUDY_STATUS}
+  ${FRAGMENT_CARD_SET}
   ${FRAGMENT_MY_CARD_TYPE_SET}
   query GetCardRelated($mybook_ids: [ID], $index_ids: [ID]) {
     cardset_getByIndexIDs(index_ids: $index_ids) {
       status
       msg
       cardsets {
-        ...MyCardSetFragmentWithoutStudyStatus
+        ...MyCardSetFragment
       }
     }
 

@@ -75,6 +75,10 @@ export const FRAGMENT_SESSION_CONFIG = gql`
         onOff
         value
       }
+      studyTool {
+        onOff
+        value
+      }
       cardMaker {
         onOff
         value

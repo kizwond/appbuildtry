@@ -5,7 +5,6 @@ export const computeNumberOfCardsPerBook = ({
   cardsets,
   bookList,
 }) => {
-  console.log("나나");
   const currentTime = new Date();
   let todayMidnight = new Date();
   todayMidnight.setDate(todayMidnight.getDate() + 1);
@@ -151,6 +150,7 @@ export const computeNumberOfAllFilteredCards = ({
     cardMaker: { onOff: cardMakerOnOff, value: cardMakerValue },
     userFlag: { onOff: userFlagOnOff, value: userFlagValue },
     makerFlag: { onOff: makerFlagOnOff, value: makerFlagValue },
+    studyTool: { onOff: studyToolOnOff, value: studyToolValue },
     level: { onOff: levelOnOff, value: levelValue },
     examResult: { onOff: examResultOnOff, value: examResultValue },
     recentDifficulty: {
@@ -163,14 +163,6 @@ export const computeNumberOfAllFilteredCards = ({
     },
     studyTimes: { onOff: studyTimesOnOff, value: studyTimesValue },
   } = advancedFilter;
-  console.log({
-    sessionConfig,
-    AF_onOff,
-    cardMakerOnOff,
-    cardMakerValue,
-    userFlagOnOff,
-    userFlagValue,
-  });
 
   const detailedOption =
     sessionConfig.studyMode === "exam"
@@ -188,7 +180,6 @@ export const computeNumberOfAllFilteredCards = ({
   let todayMidnight = new Date();
   todayMidnight.setDate(todayMidnight.getDate() + 1);
   todayMidnight.setHours(0, 0, 0, 0);
-  console.log("실행됨");
   const flattenCheckedKeys = Object.keys(checkedKeys).flatMap(
     (key) => checkedKeys[key]
   );
@@ -240,32 +231,102 @@ export const computeNumberOfAllFilteredCards = ({
       })();
 
       // 고급필터 off 상황이면 모든 카드 true, on 상황에는 개별 필터들 and 조합
-      const isAdaptedAdvancedFilter =
-        AF_onOff === "off" || "다른 고급 하위 필터들 조합";
 
-      const cardMakerFilter =
-        cardMakerOnOff === "off" || "해당 value에 포함되는 카드(include)";
       const userFlagFilter =
-        userFlagOnOff === "off" || "해당 value에 포함되는 카드(include)";
+        userFlagOnOff === "off" ||
+        userFlagValue.includes(card.content.userFlag);
+
       const makerFlagFilter =
-        makerFlagOnOff === "off" || "해당 value에 포함되는 카드(include)";
-      const levelFilter =
-        levelOnOff === "off" || "해당 value에 포함되는 카드(include)";
-      const examResultFilter =
-        examResultOnOff === "off" || "해당 value에 포함되는 카드(include)";
+        makerFlagOnOff === "off" ||
+        makerFlagValue.includes(card.content.makerFlag.value);
+
+      let fromDate = new Date();
+      fromDate.setDate(fromDate.getDate() + recentStudyTimeValue[0]);
+      fromDate.setHours(0, 0, 0, 0);
+      const numberOfFromDate = fromDate.getTime();
+      let endDate = new Date();
+      endDate.setDate(endDate.getDate() + recentStudyTimeValue[1] + 1); //자정까지기 때문에 +1
+      endDate.setHours(0, 0, 0, 0);
+      const numberOfEndDate = endDate.getTime();
+      const recentStudyTime = new Date(card.studyStatus.recentStudyTime);
+      const numberOfRecentStudyTime = recentStudyTime.getTime();
       const recentStudyTimeFilter =
-        recentStudyTimeOnOff === "off" || "해당 value에 포함되는 카드(include)";
+        recentStudyTimeOnOff === "off" ||
+        (numberOfFromDate <= numberOfRecentStudyTime &&
+          numberOfRecentStudyTime <= numberOfEndDate);
+      const levelFilter =
+        levelOnOff === "off" ||
+        (levelValue[0] <= card.studyStatus.levelCurrent &&
+          card.studyStatus.levelCurrent <= levelValue[1]);
+
       const studyTimesFilter =
-        studyTimesOnOff === "off" || "해당 value에 포함되는 카드(include)";
+        studyTimesOnOff === "off" ||
+        (studyTimesValue[0] <= card.studyStatus.totalStudyTimes &&
+          card.studyStatus.totalStudyTimes <= studyTimesValue[1]);
+
+      const [
+        nonCurrentStudyRatioOnOff,
+        currentStudyRatioOnOff,
+        startOfStudyRatioRange,
+        endOfStudyRatioRange,
+      ] = recentDifficultyValue;
 
       const recentDifficultyFilter =
-        recentDifficultyOnOff === "off" || "이건 좀 복잡하게 계산해야함";
+        recentDifficultyOnOff === "off" ||
+        (nonCurrentStudyRatioOnOff === "on"
+          ? card.studyStatus.recentStudyRatio === null
+          : false) ||
+        (currentStudyRatioOnOff === "on"
+          ? card.studyStatus.recentStudyRatio &&
+            startOfStudyRatioRange <= card.studyStatus.recentStudyRatio &&
+            card.studyStatus.recentStudyRatio <= endOfStudyRatioRange
+          : false);
+
+      const examResultFilter =
+        examResultOnOff === "off" ||
+        examResultValue.includes(card.studyStatus.recentExamResult);
+
+      const cardAppliedHiddenContent = card.content.hidden.length > 0;
+      const cardAppliedUnderlineContent = card.content.underline.length > 0;
+      const cardAppliedHighlightContent = card.content.highlight.length > 0;
+      const studyToolFilter =
+        studyToolOnOff === "off" ||
+        (studyToolValue.includes("none")
+          ? !cardAppliedHiddenContent &&
+            !cardAppliedUnderlineContent &&
+            !cardAppliedHighlightContent
+          : false) ||
+        (studyToolValue.includes("hidden")
+          ? cardAppliedHiddenContent
+          : false) ||
+        (studyToolValue.includes("underline")
+          ? cardAppliedUnderlineContent
+          : false) ||
+        (studyToolValue.includes("hightlight")
+          ? cardAppliedHighlightContent
+          : false);
+
+      const cardMakerFilter =
+        cardMakerOnOff === "off" ||
+        cardMakerValue.includes(card.content.location);
+
+      const isAdaptedAdvancedFilter =
+        AF_onOff === "off" ||
+        (userFlagFilter &&
+          makerFlagFilter &&
+          recentStudyTimeFilter &&
+          levelFilter &&
+          studyTimesFilter &&
+          recentDifficultyFilter &&
+          examResultFilter &&
+          studyToolFilter &&
+          cardMakerFilter);
 
       return (
         conditionOfCheckedIndexes &&
         conditionOfCardType &&
         useStatus.includes(card.studyStatus.statusCurrent) &&
-        conditionOfCardStatus
+        conditionOfCardStatus & isAdaptedAdvancedFilter
       );
     });
 

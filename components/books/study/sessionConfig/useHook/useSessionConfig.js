@@ -30,6 +30,8 @@ export default function useSessionConfig() {
   const [advancedFilterOnOff, setAdvancedFilterOnOff] = useState("");
   const [cardMakerOnOff, setCardMakerOnOff] = useState("");
   const [cardMaker, setCardMaker] = useState([]);
+  const [studyToolOnOff, setStudyToolOnOff] = useState("");
+  const [studyTool, setStudyTool] = useState([]);
   const [examResultOnOff, setExamResultOnOff] = useState("");
   const [examResult, setExamResult] = useState([]);
   const [levelOnOff, setLevelOnOff] = useState("");
@@ -130,6 +132,12 @@ export default function useSessionConfig() {
   }, []);
   const changeCardMakerOnOff = useCallback((_onOff) => {
     setCardMakerOnOff(_onOff);
+  }, []);
+  const changeStudyTool = useCallback((_studyTool) => {
+    setStudyTool(_studyTool);
+  }, []);
+  const changeStudyToolOnOff = useCallback((_onOff) => {
+    setStudyToolOnOff(_onOff);
   }, []);
   const changeMakerFlag = useCallback((_makerFlag) => {
     setMakerFlag(_makerFlag);
@@ -252,6 +260,7 @@ export default function useSessionConfig() {
     }
     const {
       cardMaker, //
+      studyTool,
       examResult,
       level,
       onOff,
@@ -274,6 +283,8 @@ export default function useSessionConfig() {
     setAdvancedFilterOnOff(onOff);
     setCardMakerOnOff(cardMaker.onOff);
     setCardMaker(cardMaker.value);
+    setStudyToolOnOff(studyTool.onOff);
+    setStudyTool(studyTool.value);
     setExamResultOnOff(examResult.onOff);
     setExamResult(examResult.value);
     setLevelOnOff(level.onOff);
@@ -357,6 +368,10 @@ export default function useSessionConfig() {
       onOff: cardMakerOnOff,
       value: cardMaker,
     },
+    studyTool: {
+      onOff: studyToolOnOff,
+      value: studyTool,
+    },
     examResult: {
       onOff: examResultOnOff,
       value: examResult,
@@ -398,6 +413,8 @@ export default function useSessionConfig() {
     changeUserFlagOnOff,
     changeCardMaker,
     changeCardMakerOnOff,
+    changeStudyTool,
+    changeStudyToolOnOff,
     changeMakerFlag,
     changeMakerFlagOnOff,
     changeExamResult,

@@ -25,8 +25,8 @@ const CardLevel = ({ onOff, level, changeLevel }) => {
           className="AdvancedFilterInputNumber"
           disabled={!isOn}
           size="small"
-          min={1}
-          max={level[1] == null ? null : level[1] - 1}
+          min={0}
+          max={level[1] == null ? null : level[1]}
           value={level[0]}
           onChange={onChangeFrist}
         />
@@ -35,8 +35,8 @@ const CardLevel = ({ onOff, level, changeLevel }) => {
           className="AdvancedFilterInputNumber"
           disabled={!isOn}
           size="small"
-          min={level[0] == null ? null : level[0] + 1}
-          max={10}
+          min={level[0] == null ? null : level[0]}
+          max={100}
           value={level[1]}
           onChange={onChangeSecond}
         />

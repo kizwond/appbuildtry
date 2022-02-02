@@ -25,6 +25,12 @@ export const filterTags = {
     { option: 4, title: "flag4" },
     { option: 5, title: "flag5" },
   ],
+  studyToolTags: [
+    { option: "none", title: "No Tool" },
+    { option: "hidden", title: "가리기" },
+    { option: "underline", title: "밑줄" },
+    { option: "highlight", title: "형광펜" },
+  ],
   recentDifficultyTags: [
     { option: "none", title: "결과없음" },
     { option: "diffi1", title: "결과있음" },
@@ -33,5 +39,9 @@ export const filterTags = {
     { option: "none", title: "결과없음" },
     { option: "right", title: "맞춘카드" },
     { option: "wrong", title: "틀린카드" },
+  ],
+  cardMakerTags: [
+    { option: "my", title: "나" },
+    { option: "buy", title: "판매자" },
   ],
 };

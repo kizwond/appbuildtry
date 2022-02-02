@@ -26,7 +26,7 @@ const StudyTimes = ({ onOff, studyTimes, changeStudyTimes }) => {
           disabled={!isOn}
           size="small"
           min={0}
-          max={studyTimes[1] == null ? 99 : studyTimes[1] - 1}
+          max={studyTimes[1] == null ? 99 : studyTimes[1]}
           value={studyTimes[0]}
           onChange={onChangeFrist}
         />
@@ -35,7 +35,7 @@ const StudyTimes = ({ onOff, studyTimes, changeStudyTimes }) => {
           className="AdvancedFilterInputNumber"
           disabled={!isOn}
           size="small"
-          min={studyTimes[1] == null ? 2 : studyTimes[0] + 1}
+          min={studyTimes[1] == null ? 2 : studyTimes[0]}
           max={100}
           value={studyTimes[1]}
           onChange={onChangeSecond}

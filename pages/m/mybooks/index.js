@@ -150,6 +150,7 @@ const M_StudyMainPage = () => {
           </StyledRowMaxWidth>
           <StyledBottomBar>
             <div
+              className="cursor-pointer"
               onClick={() => {
                 if (selectedBooks.length > 0) {
                   submitCreateSessionConfigToServer();
@@ -181,7 +182,9 @@ const M_StudyMainPage = () => {
                     },
                   }}
                 >
-                  <a>카드 모드</a>
+                  <a className="w-full h-full flex items-center justify-center cursor-pointer">
+                    카드 모드
+                  </a>
                 </Link>
               ) : (
                 <a>카드 모드</a>

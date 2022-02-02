@@ -20,6 +20,8 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
     changeUserFlagOnOff,
     changeCardMaker,
     changeCardMakerOnOff,
+    changeStudyTool,
+    changeStudyToolOnOff,
     changeMakerFlag,
     changeMakerFlagOnOff,
     changeExamResult,
@@ -42,6 +44,7 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
   const {
     onOff,
     cardMaker,
+    studyTool,
     examResult,
     level,
     makerFlag,
@@ -51,7 +54,13 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
     studyTimes,
   } = advancedFilter;
 
-  const { flagTags, recentDifficultyTags, examResultTags } = filterTags;
+  const {
+    flagTags,
+    recentDifficultyTags,
+    examResultTags,
+    cardMakerTags,
+    studyToolTags,
+  } = filterTags;
 
   const [
     nonCurrentStudyRatioOnOff,
@@ -279,6 +288,40 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
               />
             ) : (
               <InactivatedTags tags={examResultTags} />
+            )}
+          </FilterSubMenu>
+          <FilterSubMenu
+            isPc={isPc}
+            title="학습 툴"
+            changeOnOff={changeStudyToolOnOff}
+            onOff={studyTool.onOff}
+          >
+            {studyTool.onOff === "on" ? (
+              <ToggleTags
+                changeValue={changeStudyTool}
+                value={studyTool.value}
+                tags={studyToolTags}
+                af
+              />
+            ) : (
+              <InactivatedTags tags={studyToolTags} />
+            )}
+          </FilterSubMenu>
+          <FilterSubMenu
+            isPc={isPc}
+            title="카드 만든 사람"
+            changeOnOff={changeCardMakerOnOff}
+            onOff={cardMaker.onOff}
+          >
+            {cardMaker.onOff === "on" ? (
+              <ToggleTags
+                changeValue={changeCardMaker}
+                value={cardMaker.value}
+                tags={cardMakerTags}
+                af
+              />
+            ) : (
+              <InactivatedTags tags={cardMakerTags} />
             )}
           </FilterSubMenu>
         </>

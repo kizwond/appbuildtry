@@ -904,7 +904,6 @@ const FlipMode = () => {
 
     if (filtered) {
       console.log("서버에 학습데이타를 전송할 시간이다!!!!");
-      sessionStorage.setItem("card_seq", 0);
       const sessionId = sessionStorage.getItem("session_Id");
       filtered.forEach(function (v) {
         delete v.__typename;

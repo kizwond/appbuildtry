@@ -23,6 +23,7 @@ const Home = () => {
     sessionStorage.removeItem("firstFetchData");
     sessionStorage.removeItem("examLog");
     sessionStorage.removeItem("cardListStudying")
+    sessionStorage.setItem("card_seq", 0);
     if (data) {
       console.log(data);
       if (data.me.status === "401") {

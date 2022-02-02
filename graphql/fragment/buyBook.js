@@ -5,12 +5,15 @@ export const FRAGMENT_BUY_BOOK = gql`
     _id
     buybook_info {
       title
-      status
-      author_id
       authorName
-      buybookcateName
+      authorCompany
+      status
       hashtag
       timeCreated
+      coverImage
+      introductionOfBook
+      introductionOfAuthor
+      listOfIndex
     }
   }
 `;

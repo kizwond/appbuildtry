@@ -17,7 +17,9 @@ const Layout = ({ children }) => {
         />
       </Head>
       <M_Nav />
-      <div className="w-full max-w-[1024px] mx-auto relative">{children}</div>
+      <div className="w-full max-w-[1024px] mx-auto min-w-[360px] relative">
+        {children}
+      </div>
     </>
   );
 };

@@ -1,24 +1,25 @@
 import { useMutation } from "@apollo/client";
 import { Card, Drawer, Form, Input } from "antd";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import { MUTATION_CREATE_BUY_BOOK_FROM_MY_BOOK } from "../../graphql/mutation/buyBook";
-import { QUERY_BUY_BOOKS } from "../../graphql/query/allQuery";
+import { MUTATION_CREATE_CANDIDATE_BOOK_FROM_MY_BOOK } from "../../graphql/mutation/candidateBook";
 
 const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
+  const router = useRouter();
   const [form] = Form.useForm();
   const { resetFields, submit } = form;
 
-  const [createBuyBookFromMyBook] = useMutation(
-    MUTATION_CREATE_BUY_BOOK_FROM_MY_BOOK,
+  const [createCandiBookFromMyBook] = useMutation(
+    MUTATION_CREATE_CANDIDATE_BOOK_FROM_MY_BOOK,
     {
       onCompleted: (_data) => {
-        if (_data.buybook_createBuybook.msg == "책 생성 성공적!") {
-          console.log("receivedData", _data);
+        if (_data.candibook_createCandibook.status == "200") {
+          console.log("캔디북 생성 성공적", _data);
           resetFields();
           closeDrawer();
-        } else if (_data.buybook_createBuybook.status === "401") {
+        } else if (_data.candibook_createCandibook.status === "401") {
           router.push("/m/account/login");
         } else {
           console.log("어떤 문제가 발생함");
@@ -27,38 +28,30 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
     }
   );
 
-  const createBuyBook = async ({
+  const createCandiBook = async ({
     mybook_id,
-    buybookcateName,
     titleForSale,
+    publisher,
+    authorName,
+    introductionOfBook,
+    introductionOfAuthor,
+    listOfIndex,
+    hashtag,
   }) => {
     try {
-      await createBuyBookFromMyBook({
+      await createCandiBookFromMyBook({
         variables: {
-          forCreateBuybook: {
-            mybook_id,
-            buybookcateName,
-            titleForSale,
+          forCreateCandibook: {
+            originalMybook_id: mybook_id,
+            title: titleForSale,
+            authorName,
+            authorCompany: publisher,
+            hashtag,
+            coverImage: null,
+            introductionOfBook,
+            introductionOfAuthor,
+            listOfIndex,
           },
-        },
-        update: (cache, { data: { buybook_createBuybook } }) => {
-          const _data = cache.readQuery({
-            query: QUERY_BUY_BOOKS,
-          });
-          console.log({ _data, buybook_createBuybook });
-          cache.writeQuery({
-            query: QUERY_BUY_BOOKS,
-            data: {
-              ..._data,
-              buybook_getAllBuybook: {
-                ..._data.buybook_getAllBuybook,
-                buybooks: [
-                  ..._data.buybook_getAllBuybook.buybooks,
-                  ...buybook_createBuybook.buybooks,
-                ],
-              },
-            },
-          });
         },
       });
     } catch (error) {
@@ -117,27 +110,57 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
           wrapperCol={{ span: 16 }}
           onFinish={(values) => {
             console.log(values);
-            createBuyBook({ mybook_id, ...values });
+            createCandiBook({ mybook_id, ...values });
           }}
         >
-          <Form.Item
-            label="카테고리 선택"
-            name="buybookcateName"
-            rules={[
-              {
-                required: true,
-                message: "판매 카테고리를 설정해주세요",
-              },
-            ]}
-          >
-            <Input size="small" allowClear />
-          </Form.Item>
           <Form.Item
             label="판매 책 제목 설정"
             name="titleForSale"
             rules={[{ required: true, message: "판매 책 제목은 필수입니다" }]}
           >
             <Input size="small" allowClear />
+          </Form.Item>
+          <Form.Item
+            label="출판사"
+            name="publisher"
+            rules={[{ required: false, message: "출판사 이름을 입력하세요" }]}
+          >
+            <Input size="small" allowClear />
+          </Form.Item>
+          <Form.Item
+            label="저자"
+            name="authorName"
+            rules={[{ required: true, message: "저자 이름은 필수입니다" }]}
+          >
+            <Input size="small" allowClear />
+          </Form.Item>
+          <Form.Item
+            label="책소개"
+            name="introductionOfBook"
+            rules={[{ required: false, message: "책 소개 부탁 드려요" }]}
+          >
+            <Input.TextArea size="small" allowClear />
+          </Form.Item>
+          <Form.Item
+            label="해쉬태그"
+            name="hashtag"
+            rules={[{ required: false, message: "해쉬태그 부탁 드려요" }]}
+          >
+            <Input.TextArea size="small" allowClear />
+          </Form.Item>
+          <Form.Item
+            label="저자소개"
+            name="introductionOfAuthor"
+            rules={[{ required: false, message: "저자 소개 부탁 드려요" }]}
+          >
+            <Input.TextArea size="small" allowClear />
+          </Form.Item>
+          <Form.Item
+            label="목차"
+            name="listOfIndex"
+            rules={[{ required: false, message: "목차 정보 입력 부탁 드려요" }]}
+          >
+            <Input.TextArea size="small" allowClear />
           </Form.Item>
         </Form>
       </Card>

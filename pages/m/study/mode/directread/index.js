@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import StudyLayout from "../../../../../components/layout/StudyLayout";
+import DirectReadLayout from "../../../../../components/layout/DirectReadLayout";
 import dynamic from "next/dynamic";
 import DirectReadContainer from "../../../../../components/books/study/mode/directread/DirectReadContainer";
 import { useQuery } from "@apollo/client";
@@ -49,11 +49,11 @@ const SessionSetting = () => {
 
   return (
     <>
-      <StudyLayout mode="책">
+      <DirectReadLayout mode="책" indexChanged={indexChanged} index_changed={index_changed} indexSets={indexSets}>
         <div style={{ marginBottom: "120px", marginTop: "50px" }}>
           <DirectReadContainer FroalaEditorView={FroalaEditorView} indexChanged={indexChanged} index_changed={index_changed} indexSets={indexSets}/>
         </div>
-      </StudyLayout>
+      </DirectReadLayout>
     </>
   );
 };

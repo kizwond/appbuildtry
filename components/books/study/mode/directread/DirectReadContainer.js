@@ -159,6 +159,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setMakerFlagStyle(data1.cardtypeset_getbymybookids.cardtypesets[0].makerFlag_style);
       setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
+      
       setUserFlagDetails(data1.userflagconfig_get.userflagconfigs[0].details);
       const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
         return item.content.mycontent_id;

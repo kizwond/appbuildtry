@@ -10,7 +10,6 @@ const M_TabsOfBooksForInfromationTable = ({
   bookData,
   isPc,
 }) => {
-  console.log(checkedKeys);
   return (
     <StyledAntTabs
       width="20%"

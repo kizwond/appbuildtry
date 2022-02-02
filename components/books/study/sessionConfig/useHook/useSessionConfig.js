@@ -36,8 +36,14 @@ export default function useSessionConfig() {
   const [level, setLevel] = useState([]);
   const [makerFlagOnOff, setMakerFlagOnOff] = useState("");
   const [makerFlag, setMakerFlag] = useState([]);
+
   const [recentDifficultyOnOff, setRecentDifficultyOnOff] = useState("");
-  const [recentDifficulty, setRecentDifficulty] = useState([]);
+  const [nonCurrentStudyRatioOnOff, setNonCurrentStudyRatioOnOff] =
+    useState("");
+  const [currentStudyRatioOnOff, setCurrentStudyRatioOnOff] = useState("");
+  const [startOfStudyRatioRange, setStartOfStudyRatioRange] = useState("");
+  const [endOfStudyRatioRange, setEndOfStudyRatioRange] = useState("");
+
   const [recentStudyTimeOnOff, setRecentStudyTimeOnOff] = useState("");
   const [recentStudyTime, setRecentStudyTime] = useState([]);
   const [studyTimesOnOff, setStudyTimesOnOff] = useState("");
@@ -137,9 +143,29 @@ export default function useSessionConfig() {
   const changeExamResultOnOff = useCallback((_onOff) => {
     setExamResultOnOff(_onOff);
   }, []);
-  const changeRecentDifficulty = useCallback((_recentDifficulty) => {
-    setRecentDifficulty(_recentDifficulty);
+
+  const changeStartOfStudyRatioRange = useCallback(
+    (_startOfStudyRatioRange) => {
+      setStartOfStudyRatioRange(_startOfStudyRatioRange);
+    },
+    []
+  );
+  const changeEndOfStudyRatioRange = useCallback((_endOfStudyRatioRange) => {
+    setEndOfStudyRatioRange(_endOfStudyRatioRange);
   }, []);
+  const changeNonCurrentStudyRatioOnOff = useCallback(
+    (_nonCurrentStudyRatioOnOff) => {
+      setNonCurrentStudyRatioOnOff(_nonCurrentStudyRatioOnOff);
+    },
+    []
+  );
+  const changeCurrentStudyRatioOnOff = useCallback(
+    (_currentStudyRatioOnOff) => {
+      setCurrentStudyRatioOnOff(_currentStudyRatioOnOff);
+    },
+    []
+  );
+
   const changeRecentDifficultyOnOff = useCallback((_onOff) => {
     setRecentDifficultyOnOff(_onOff);
   }, []);
@@ -236,6 +262,13 @@ export default function useSessionConfig() {
       makerFlag,
     } = sessionconfigs.advancedFilter;
 
+    const [
+      nonCurrentStudyRatioOnOff,
+      currentStudyRatioOnOff,
+      startOfStudyRatioRange,
+      endOfStudyRatioRange,
+    ] = recentDifficulty.value;
+
     setMode(sessionconfigs.studyMode);
     //고급필터
     setAdvancedFilterOnOff(onOff);
@@ -247,8 +280,13 @@ export default function useSessionConfig() {
     setLevel(level.value);
     setMakerFlagOnOff(makerFlag.onOff);
     setMakerFlag(makerFlag.value);
+
     setRecentDifficultyOnOff(recentDifficulty.onOff);
-    setRecentDifficulty(recentDifficulty.value);
+    setNonCurrentStudyRatioOnOff(nonCurrentStudyRatioOnOff);
+    setCurrentStudyRatioOnOff(currentStudyRatioOnOff);
+    setStartOfStudyRatioRange(startOfStudyRatioRange);
+    setEndOfStudyRatioRange(endOfStudyRatioRange);
+
     setRecentStudyTimeOnOff(recentStudyTime.onOff);
     setRecentStudyTime(recentStudyTime.value);
     setStudyTimesOnOff(studyTimes.onOff);
@@ -337,7 +375,12 @@ export default function useSessionConfig() {
     },
     recentDifficulty: {
       onOff: recentDifficultyOnOff,
-      value: recentDifficulty,
+      value: [
+        nonCurrentStudyRatioOnOff,
+        currentStudyRatioOnOff,
+        startOfStudyRatioRange,
+        endOfStudyRatioRange,
+      ],
     },
     recentStudyTime: {
       onOff: recentStudyTimeOnOff,
@@ -359,8 +402,13 @@ export default function useSessionConfig() {
     changeMakerFlagOnOff,
     changeExamResult,
     changeExamResultOnOff,
-    changeRecentDifficulty,
+
     changeRecentDifficultyOnOff,
+    changeStartOfStudyRatioRange,
+    changeEndOfStudyRatioRange,
+    changeNonCurrentStudyRatioOnOff,
+    changeCurrentStudyRatioOnOff,
+
     changeRecentStudyTime,
     changeRecentStudyTimeOnOff,
     changeLevel,

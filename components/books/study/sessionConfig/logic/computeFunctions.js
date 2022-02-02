@@ -143,7 +143,35 @@ export const computeNumberOfAllFilteredCards = ({
   checkedKeys,
   sessionConfig,
 }) => {
-  const { exam, flip, read } = sessionConfig;
+  const { exam, flip, read, advancedFilter } = sessionConfig;
+
+  const {
+    onOff: AF_onOff,
+    // 총 8개필터
+    cardMaker: { onOff: cardMakerOnOff, value: cardMakerValue },
+    userFlag: { onOff: userFlagOnOff, value: userFlagValue },
+    makerFlag: { onOff: makerFlagOnOff, value: makerFlagValue },
+    level: { onOff: levelOnOff, value: levelValue },
+    examResult: { onOff: examResultOnOff, value: examResultValue },
+    recentDifficulty: {
+      onOff: recentDifficultyOnOff,
+      value: recentDifficultyValue,
+    },
+    recentStudyTime: {
+      onOff: recentStudyTimeOnOff,
+      value: recentStudyTimeValue,
+    },
+    studyTimes: { onOff: studyTimesOnOff, value: studyTimesValue },
+  } = advancedFilter;
+  console.log({
+    sessionConfig,
+    AF_onOff,
+    cardMakerOnOff,
+    cardMakerValue,
+    userFlagOnOff,
+    userFlagValue,
+  });
+
   const detailedOption =
     sessionConfig.studyMode === "exam"
       ? exam
@@ -174,7 +202,7 @@ export const computeNumberOfAllFilteredCards = ({
       const conditionOfCheckedIndexes = flattenCheckedKeys.includes(
         card.card_info.index_id
       );
-      const conditionOfCardType = useCardtype.includes(card.card_info.cardtype);
+      const conditionOfCardType = useCardtype.includes(card.card_info.cardtype); //읽기 뒤집기 카드만 선택됨
       const conditionOfCardStatus = (() => {
         if (card.studyStatus.statusCurrent !== "ing") {
           return useStatus.includes(card.studyStatus.statusCurrent);
@@ -210,6 +238,28 @@ export const computeNumberOfAllFilteredCards = ({
           );
         }
       })();
+
+      // 고급필터 off 상황이면 모든 카드 true, on 상황에는 개별 필터들 and 조합
+      const isAdaptedAdvancedFilter =
+        AF_onOff === "off" || "다른 고급 하위 필터들 조합";
+
+      const cardMakerFilter =
+        cardMakerOnOff === "off" || "해당 value에 포함되는 카드(include)";
+      const userFlagFilter =
+        userFlagOnOff === "off" || "해당 value에 포함되는 카드(include)";
+      const makerFlagFilter =
+        makerFlagOnOff === "off" || "해당 value에 포함되는 카드(include)";
+      const levelFilter =
+        levelOnOff === "off" || "해당 value에 포함되는 카드(include)";
+      const examResultFilter =
+        examResultOnOff === "off" || "해당 value에 포함되는 카드(include)";
+      const recentStudyTimeFilter =
+        recentStudyTimeOnOff === "off" || "해당 value에 포함되는 카드(include)";
+      const studyTimesFilter =
+        studyTimesOnOff === "off" || "해당 value에 포함되는 카드(include)";
+
+      const recentDifficultyFilter =
+        recentDifficultyOnOff === "off" || "이건 좀 복잡하게 계산해야함";
 
       return (
         conditionOfCheckedIndexes &&
@@ -266,11 +316,11 @@ export const sortFilteredCards = ({
           ...card.studyStatus,
           statusOriginal: card.studyStatus.statusCurrent,
           statusPrev: card.studyStatus.statusCurrent,
-          sessionStatusPrev : null,
-          sessionStatusCurrent : 'notStarted',
+          sessionStatusPrev: null,
+          sessionStatusCurrent: "notStarted",
 
           levelOriginal: card.studyStatus.levelCurrent,
-          levelUpdated : false,
+          levelUpdated: false,
 
           userFlagOriginal: card.content.userFlag,
           userFlagPrev: card.content.userFlag,
@@ -282,7 +332,6 @@ export const sortFilteredCards = ({
 
           needStudyTimeTmp: null,
           isUpdated: false,
-
         },
       };
     }
@@ -296,7 +345,6 @@ export const sortFilteredCards = ({
         },
         studyStatus: {
           ...card.studyStatus,
-
         },
       };
     }
@@ -310,8 +358,8 @@ export const sortFilteredCards = ({
         },
         studyStatus: {
           ...card.studyStatus,
-          recentExamAnswer : null,
-          rightAnswer : null,
+          recentExamAnswer: null,
+          rightAnswer: null,
           isUpdated: false,
         },
       };

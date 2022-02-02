@@ -15,7 +15,13 @@ const ToggleTag = memo((props) => {
   );
 });
 
-const NewToggleTag = ({ children, option, value, changeValue, tagname }) => {
+export const NewToggleTag = ({
+  children,
+  option,
+  value,
+  changeValue,
+  tagname,
+}) => {
   const isArray = Array.isArray(value);
   const verifyIsChecked = useCallback(
     (option) => (isArray ? value.includes(option) : value === option),
@@ -42,7 +48,6 @@ const NewToggleTag = ({ children, option, value, changeValue, tagname }) => {
         },
       }
     : { onClick: () => changeValue(option) };
-
   return (
     <ToggleTag checked={verifyIsChecked(option)} {...attr2} {...attrTagName}>
       {children}

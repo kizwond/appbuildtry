@@ -147,7 +147,7 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           <Button size="small" onClick={handleClick1} style={{ width: "80px", fontSize: "0.8rem", background: color1, borderRadius: "10px" }}>
             Color
           </Button>
-          <div className={toolType1} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": color1, "--z-index": -1 }}>
+          <div className={toolType1} style={{ fontSize: "0.8rem", display: "inline-block", backgroundColor: color1 }}>
             ex. 형광펜 예시 입니다~~
           </div>
         </div>
@@ -162,7 +162,7 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           <Button size="small" onClick={handleClick2} style={{ width: "80px", fontSize: "0.8rem", background: color2, borderRadius: "10px" }}>
             Color
           </Button>
-          <div className={toolType2} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": color2, "--z-index": -1 }}>
+          <div className={toolType2} style={{ fontSize: "0.8rem", display: "inline-block", backgroundColor: color2 }}>
             ex. 형광펜 예시 입니다~~
           </div>
         </div>
@@ -207,7 +207,7 @@ const HighlightSetting = ({ cardTypeSets, updateStudyToolApply }) => {
           <Button size="small" onClick={handleClick5} style={{ width: "80px", fontSize: "0.8rem", background: color5, borderRadius: "10px" }}>
             Color
           </Button>
-          <div className={toolType5} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": color5, "--z-index": -1 }}>
+          <div className={toolType5} style={{ fontSize: "0.8rem", display: "inline-block", backgroundColor: color5 }}>
             ex. 형광펜 예시 입니다~~
           </div>
         </div>

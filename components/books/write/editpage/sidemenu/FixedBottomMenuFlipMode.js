@@ -566,8 +566,6 @@ const FloatingMenu = ({
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <StudyGeneralSetting
                       setBottomVisible={setBottomVisible}
-                      cardTypeSets={cardTypeSets}
-                      updateStudyToolApply={updateStudyToolApply}
                       face1On={face1On}
                       face2On={face2On}
                       ttsOn={ttsOn}

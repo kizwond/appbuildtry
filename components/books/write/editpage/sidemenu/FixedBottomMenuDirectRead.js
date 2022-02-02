@@ -25,9 +25,12 @@ import {
   ReadOutlined,
   HighlightTwoTone,
   EyeInvisibleTwoTone,
+  DiffOutlined,
 } from "@ant-design/icons";
 
 import StudyToolSetting from "../../../study/mode/StudyToolSetting";
+import DirectReadFilter from "../../../study/mode/DirectReadFilter";
+import StudyGeneralSetting from "../../../study/mode/ReadGeneralSetting";
 import Item from "antd/lib/list/Item";
 import Image from "next/image";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
@@ -58,6 +61,8 @@ const FloatingMenu = ({
   editorOn,
   selectedCardType,
   fireEditor,
+  face1On,
+  face2On,
 }) => {
   const [bottomVisible, setBottomVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -97,11 +102,11 @@ const FloatingMenu = ({
   };
 
   if (cardTypeSets) {
-    if(cardTypeSets.length > 0){
+    if (cardTypeSets.length > 0) {
       const hiddenSettings = cardTypeSets[0].studyTool.hidden;
       const highlightSettings = cardTypeSets[0].studyTool.highlight;
       const underlineSettings = cardTypeSets[0].studyTool.underline;
-  
+
       var hiddenButtons = hiddenSettings.map((item, index) => {
         if (index === 0) {
           var marginValue = -51;
@@ -147,7 +152,7 @@ const FloatingMenu = ({
           </>
         );
       });
-  
+
       var underlineButtons = underlineSettings.map((item, index) => {
         if (index === 0) {
           var marginValue = -51;
@@ -196,7 +201,7 @@ const FloatingMenu = ({
           </>
         );
       });
-  
+
       const searchSettings = ["백과사전", "영한사전"];
       var searchButtons = searchSettings.map((item, index) => {
         if (index === 0) {
@@ -242,7 +247,7 @@ const FloatingMenu = ({
           </>
         );
       });
-  
+
       var highlightButtons = highlightSettings.map((item, index) => {
         if (index === 0) {
           var marginValue = -51;
@@ -302,7 +307,6 @@ const FloatingMenu = ({
         );
       });
     }
-    
   }
   function hideAll() {
     setHiddenToggle(false);
@@ -317,7 +321,7 @@ const FloatingMenu = ({
   };
 
   async function editorModalOpen(menu) {
-    console.log(menu)
+    console.log(menu);
     if (memu === "영한사전") {
       showModal();
     } else {
@@ -325,7 +329,6 @@ const FloatingMenu = ({
     }
     const hello = async () => search(menu);
     await hello().then(setResult(searchResult));
-    
   }
   function createCardInDictionary() {
     console.log("카드만들기 실행!!");
@@ -371,264 +374,262 @@ const FloatingMenu = ({
           </filter>
         </defs>
       </svg>
-      <div style={{ width:"100%", position: "fixed", bottom: 0}}>
-      <div style={{ margin:"auto", width: "100%", maxWidth: "1024px", alignItems: "center", left: 0, zIndex: 3, fontSize: "0.8rem" }}>
-        <div
-          style={{
-            margin: "auto",
-            background: "#484848",
-            width: "100%",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            boxShadow: "0px -1px 2px 0px #b4b4b4",
-            alignItems: "center",
-            color: "#c6c6c6",
-            borderRadius: "13px 13px 0 0",
-          }}
-        >
+      <div style={{ width: "100%", position: "fixed", bottom: 0 }}>
+        <div style={{ margin: "auto", width: "100%", maxWidth: "1024px", alignItems: "center", left: 0, zIndex: 3, fontSize: "0.8rem" }}>
           <div
             style={{
-              margin: 0,
+              margin: "auto",
+              background: "#484848",
               width: "100%",
               display: "flex",
               flexDirection: "row",
-              listStyle: "none",
+              justifyContent: "space-between",
+              boxShadow: "0px -1px 2px 0px #b4b4b4",
               alignItems: "center",
-              justifyContent: "space-around",
-              cursor:"pointer"
+              color: "#c6c6c6",
+              borderRadius: "13px 13px 0 0",
             }}
           >
-            {hiddenToggle && (
-              <div
-                onClick={() => hiddenToggleHandler(info)}
-                style={{
-                  borderTopLeftRadius: "13px",
-                  padding: "5px 0",
-                  backgroundColor: "#262626",
-                  width: "100%",
-                  position: "relative",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <EyeInvisibleOutlined className="hiddenToggleButton" style={{ fontSize: "1.5rem", color: "white" }} />
-                <span style={{ color: "white" }}>가리기</span>
-                {hiddenButtons}
-              </div>
-            )}
-            {!hiddenToggle && (
-              <div
-                onClick={() => hiddenToggleHandler(info)}
-                style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
-              >
-                {underlineToggle || highlightToggle || searchToggle ? (
+            <div
+              style={{
+                margin: 0,
+                width: "100%",
+                display: "flex",
+                flexDirection: "row",
+                listStyle: "none",
+                alignItems: "center",
+                justifyContent: "space-around",
+                cursor: "pointer",
+              }}
+            >
+              {hiddenToggle && (
+                <div
+                  onClick={() => hiddenToggleHandler(info)}
+                  style={{
+                    borderTopLeftRadius: "13px",
+                    padding: "5px 0",
+                    backgroundColor: "#262626",
+                    width: "100%",
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <EyeInvisibleOutlined className="hiddenToggleButton" style={{ fontSize: "1.5rem", color: "white" }} />
+                  <span style={{ color: "white" }}>가리기</span>
+                  {hiddenButtons}
+                </div>
+              )}
+              {!hiddenToggle && (
+                <div
+                  onClick={() => hiddenToggleHandler(info)}
+                  style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
+                >
+                  {underlineToggle || highlightToggle || searchToggle ? (
+                    <>
+                      <EyeInvisibleOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
+                      <span style={{ color: "#636363" }}>가리기</span>
+                    </>
+                  ) : (
+                    <>
+                      <EyeInvisibleOutlined style={{ fontSize: "1.5rem" }} />
+                      가리기
+                    </>
+                  )}
+                </div>
+              )}
+
+              {underlineToggle && (
+                <div
+                  onClick={() => underlineToggleHandler(info)}
+                  style={{ padding: "5px 0", backgroundColor: "#262626", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
+                >
+                  <UnderlineOutlined className="underlineToggleButton" style={{ fontSize: "1.5rem", color: "white" }} />
+                  <span style={{ color: "white" }}>밑줄긋기</span>
+
+                  {underlineButtons}
+                </div>
+              )}
+              {!underlineToggle && (
+                <div
+                  onClick={() => underlineToggleHandler(info)}
+                  style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
+                >
+                  {hiddenToggle || highlightToggle || searchToggle ? (
+                    <>
+                      <UnderlineOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
+                      <span style={{ color: "#636363" }}>밑줄긋기</span>
+                    </>
+                  ) : (
+                    <>
+                      <UnderlineOutlined style={{ fontSize: "1.5rem" }} />
+                      밑줄긋기
+                    </>
+                  )}
+                </div>
+              )}
+              {highlightToggle && (
+                <div
+                  onClick={() => highlightToggleHandler(info)}
+                  style={{ padding: "5px 0", backgroundColor: "#262626", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
+                >
+                  <HighlightOutlined className="highlightToggleButton" style={{ fontSize: "1.5rem", color: "white" }} />
+                  <span style={{ color: "white" }}>형광펜</span>
+
+                  {highlightButtons}
+                </div>
+              )}
+              {!highlightToggle && (
+                <div
+                  onClick={() => highlightToggleHandler(info)}
+                  style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
+                >
+                  {hiddenToggle || underlineToggle || searchToggle ? (
+                    <>
+                      <HighlightOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
+                      <span style={{ color: "#636363" }}>형광펜</span>
+                    </>
+                  ) : (
+                    <>
+                      <HighlightOutlined style={{ fontSize: "1.5rem" }} />
+                      형광펜
+                    </>
+                  )}
+                </div>
+              )}
+
+              {searchToggle && (
+                <div
+                  onClick={() => searchToggleHandler(info)}
+                  style={{ padding: "5px 0", backgroundColor: "#262626", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
+                >
+                  <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <Image src="/image/dictionary_icon_white.png" width={"20px"} height={"20px"} alt="dictionary" />
+                    사전검색
+                  </div>
+
+                  {searchButtons}
+                </div>
+              )}
+              {!searchToggle && (
+                <div
+                  onClick={() => searchToggleHandler(info)}
+                  style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
+                >
+                  {hiddenToggle || underlineToggle || highlightToggle ? (
+                    <>
+                      <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <Image src="/image/dictionary_icon.png" width={"20px"} height={"20px"} alt="dictionary" />
+                        <span style={{ color: "#636363" }}>사전검색</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <Image src="/image/dictionary_icon_white.png" width={"20px"} height={"20px"} alt="dictionary" />
+                        사전검색
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {hiddenToggle || underlineToggle || highlightToggle || searchToggle ? (
+                <>
+                  <div onClick={hideAll} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <DashOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
+                    <span style={{ color: "#636363" }}>더보기</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div onClick={hideAll} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <DashOutlined style={{ fontSize: "1.5rem" }} />
+                    더보기
+                  </div>
+                </>
+              )}
+
+              <Drawer className="moreBottomDrawer" maskStyle={{ marginTop: "40px" }} height="300px" placement="bottom" closable={false} onClose={onClose} visible={bottomVisible}>
+                <Space
+                  size={16}
+                  style={{ padding: 20, display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap: "wrap", fontSize: "0.8rem", color: "#7a7a7a" }}
+                >
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <StudyGeneralSetting setBottomVisible={setBottomVisible} face1On={face1On} face2On={face2On} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <StudyToolSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    <DirectReadFilter setBottomVisible={setBottomVisible} />
+                  </div>
+                </Space>
+              </Drawer>
+              <Modal footer={null} title="카드생성" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                {searchResult && (
                   <>
-                    <EyeInvisibleOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
-                    <span style={{ color: "#636363" }}>가리기</span>
-                  </>
-                ) : (
-                  <>
-                    <EyeInvisibleOutlined style={{ fontSize: "1.5rem" }} />
-                    가리기
+                    <div style={{ fontSize: "1rem" }}>선택단어 : {searchResult.selectionText}</div>
+                    <div style={{ fontSize: "1rem" }}>뜻 : {searchResult.meaning1}</div>
+                    <div style={{ fontSize: "1rem" }}>영어뜻 : {searchResult.meaningEng1}</div>
+                    <div style={{ fontSize: "1rem" }}>뜻2 : {searchResult.meaning2}</div>
+                    <div style={{ fontSize: "1rem" }}>영어뜻2 : {searchResult.meaningEng2}</div>
+                    <div style={{ fontSize: "1rem" }}>예문1 : {searchResult.example1}</div>
+                    <div style={{ fontSize: "1rem" }}>예문2 : {searchResult.example2}</div>
                   </>
                 )}
-              </div>
-            )}
-
-            {underlineToggle && (
-              <div
-                onClick={() => underlineToggleHandler(info)}
-                style={{ padding: "5px 0", backgroundColor: "#262626", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
-              >
-                <UnderlineOutlined className="underlineToggleButton" style={{ fontSize: "1.5rem", color: "white" }} />
-                <span style={{ color: "white" }}>밑줄긋기</span>
-
-                {underlineButtons}
-              </div>
-            )}
-            {!underlineToggle && (
-              <div
-                onClick={() => underlineToggleHandler(info)}
-                style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
-              >
-                {hiddenToggle || highlightToggle || searchToggle ? (
+                <Button size="small" type="primary" onClick={createCardInDictionary}>
+                  카드생성
+                </Button>
+                {createCardOn && (
                   <>
-                    <UnderlineOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
-                    <span style={{ color: "#636363" }}>밑줄긋기</span>
-                  </>
-                ) : (
-                  <>
-                    <UnderlineOutlined style={{ fontSize: "1.5rem" }} />
-                    밑줄긋기
+                    <Radio.Group onChange={onChange} value={caseRadio}>
+                      <Space direction="vertical">
+                        <Radio value="next">현재카드 바로 뒤</Radio>
+                        <Radio value="same_last">현재카드 인덱스 맨 뒤</Radio>
+                        <Radio value="diff_last">현재책 다른 인덱스 맨 뒤</Radio>
+                        <Radio value="diff_book">다른책 다른 인덱스 맨 뒤</Radio>
+                      </Space>
+                    </Radio.Group>
                   </>
                 )}
-              </div>
-            )}
-            {highlightToggle && (
-              <div
-                onClick={() => highlightToggleHandler(info)}
-                style={{ padding: "5px 0", backgroundColor: "#262626", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
-              >
-                <HighlightOutlined className="highlightToggleButton" style={{ fontSize: "1.5rem", color: "white" }} />
-                <span style={{ color: "white" }}>형광펜</span>
-
-                {highlightButtons}
-              </div>
-            )}
-            {!highlightToggle && (
-              <div
-                onClick={() => highlightToggleHandler(info)}
-                style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
-              >
-                {hiddenToggle || underlineToggle || searchToggle ? (
+                {caseRadio === "next" && (
                   <>
-                    <HighlightOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
-                    <span style={{ color: "#636363" }}>형광펜</span>
-                  </>
-                ) : (
-                  <>
-                    <HighlightOutlined style={{ fontSize: "1.5rem" }} />
-                    형광펜
+                    <div>현재카드 바로뒤 selection</div>
                   </>
                 )}
-              </div>
-            )}
-
-            {searchToggle && (
-              <div
-                onClick={() => searchToggleHandler(info)}
-                style={{ padding: "5px 0", backgroundColor: "#262626", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
-              >
-                <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <Image src="/image/dictionary_icon_white.png" width={"20px"} height={"20px"} alt="dictionary" />
-                  사전검색
-                </div>
-
-                {searchButtons}
-              </div>
-            )}
-            {!searchToggle && (
-              <div
-                onClick={() => searchToggleHandler(info)}
-                style={{ padding: "5px 0", width: "100%", position: "relative", display: "flex", flexDirection: "column", alignItems: "center" }}
-              >
-                {hiddenToggle || underlineToggle || highlightToggle ? (
+                {caseRadio === "same_last" && (
                   <>
-                    <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                      <Image src="/image/dictionary_icon.png" width={"20px"} height={"20px"} alt="dictionary" />
-                      <span style={{ color: "#636363" }}>사전검색</span>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                      <Image src="/image/dictionary_icon_white.png" width={"20px"} height={"20px"} alt="dictionary" />
-                      사전검색
-                    </div>
+                    <div>현재카드 인덱스 맨 뒤 selection</div>
                   </>
                 )}
-              </div>
-            )}
+                {caseRadio === "diff_last" && (
+                  <>
+                    <div>현재책 다른 인덱스 맨 뒤 selection</div>
+                  </>
+                )}
+                {caseRadio === "diff_book" && (
+                  <>
+                    <div>다른책 다른 인덱스 맨 뒤 selection</div>
+                  </>
+                )}
 
-            {hiddenToggle || underlineToggle || highlightToggle || searchToggle ? (
-              <>
-                <div onClick={hideAll} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <DashOutlined style={{ fontSize: "1.5rem", color: "#636363" }} />
-                  <span style={{ color: "#636363" }}>더보기</span>
-                </div>
-              </>
-            ) : (
-              <>
-                <div onClick={hideAll} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <DashOutlined style={{ fontSize: "1.5rem" }} />
-                  더보기
-                </div>
-              </>
-            )}
-
-            <Drawer className="moreBottomDrawer" maskStyle={{ marginTop: "40px" }} height="300px" placement="bottom" closable={false} onClose={onClose} visible={bottomVisible}>
-              <Space
-                size={16}
-                style={{ padding: 20, display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap: "wrap", fontSize: "0.8rem", color: "#7a7a7a" }}
-              >
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <ReadOutlined style={{ fontSize: "1.5rem" }} />
-                  학습설정
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <StudyToolSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                  <SoundOutlined style={{ fontSize: "1.5rem" }} />
-                  TTS설정
-                </div>
-              </Space>
-            </Drawer>
-            <Modal footer={null} title="카드생성" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-              {searchResult && (
-                <>
-                  <div style={{ fontSize: "1rem" }}>선택단어 : {searchResult.selectionText}</div>
-                  <div style={{ fontSize: "1rem" }}>뜻 : {searchResult.meaning1}</div>
-                  <div style={{ fontSize: "1rem" }}>영어뜻 : {searchResult.meaningEng1}</div>
-                  <div style={{ fontSize: "1rem" }}>뜻2 : {searchResult.meaning2}</div>
-                  <div style={{ fontSize: "1rem" }}>영어뜻2 : {searchResult.meaningEng2}</div>
-                  <div style={{ fontSize: "1rem" }}>예문1 : {searchResult.example1}</div>
-                  <div style={{ fontSize: "1rem" }}>예문2 : {searchResult.example2}</div>
-                </>
-              )}
-              <Button size="small" type="primary" onClick={createCardInDictionary}>
-                카드생성
-              </Button>
-              {createCardOn && (
-                <>
-                  <Radio.Group onChange={onChange} value={caseRadio}>
-                    <Space direction="vertical">
-                      <Radio value="next">현재카드 바로 뒤</Radio>
-                      <Radio value="same_last">현재카드 인덱스 맨 뒤</Radio>
-                      <Radio value="diff_last">현재책 다른 인덱스 맨 뒤</Radio>
-                      <Radio value="diff_book">다른책 다른 인덱스 맨 뒤</Radio>
-                    </Space>
-                  </Radio.Group>
-                </>
-              )}
-              {caseRadio === "next" && (
-                <>
-                  <div>현재카드 바로뒤 selection</div>
-                </>
-              )}
-              {caseRadio === "same_last" && (
-                <>
-                  <div>현재카드 인덱스 맨 뒤 selection</div>
-                </>
-              )}
-              {caseRadio === "diff_last" && (
-                <>
-                  <div>현재책 다른 인덱스 맨 뒤 selection</div>
-                </>
-              )}
-              {caseRadio === "diff_book" && (
-                <>
-                  <div>다른책 다른 인덱스 맨 뒤 selection</div>
-                </>
-              )}
-
-              {selectedCardType && (
-                <>
-                  <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange}>
-                    <Option value="default" disabled>
-                      카드타입 선택
-                    </Option>
-                    {selections}
-                  </Select>
-                </>
-              )}
-              {editorOn}
-            </Modal>
+                {selectedCardType && (
+                  <>
+                    <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange}>
+                      <Option value="default" disabled>
+                        카드타입 선택
+                      </Option>
+                      {selections}
+                    </Select>
+                  </>
+                )}
+                {editorOn}
+              </Modal>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </>
   );

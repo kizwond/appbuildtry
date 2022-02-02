@@ -8,28 +8,9 @@ import HighlightSetting from "./HighlightSetting";
 import { Tabs, Switch, Radio } from "antd";
 const { TabPane } = Tabs;
 
-const RightDrawer = ({setBottomVisible,face1On, face2On, ttsOn }) => {
-
-  const ISSERVER = typeof window === "undefined";
-  if (!ISSERVER) {
-    var ttsUse = sessionStorage.getItem("ttsUse");
-    console.log(ttsUse)
-    if(ttsUse !== null){
-      if(ttsUse === "unable"){
-        var ttsAble = false
-      }else {
-        var ttsAble = true
-      }
-    } else {
-      var ttsAble = true
-    }
-    // console.log(session_id);
-  }
-
+const RightDrawer = ({ setBottomVisible,face1On, face2On }) => {
 
   const [visible, setVisible] = useState(false);
-
-  const [ttsBool, setTtsBool] = useState(false);
 
   const [face1row1, setface1row1] = useState(true);
   const [face1row2, setface1row2] = useState(true);
@@ -55,15 +36,7 @@ const RightDrawer = ({setBottomVisible,face1On, face2On, ttsOn }) => {
   function onChangeDirection(checked) {
     console.log(`switch to ${checked}`);
   }
-  function onChangeTTS(checked) {
-    console.log(`switch to ${checked}`);
-    if(checked === true){
-      ttsOn(true)
-    } else {
-      ttsOn(false)
-    }
-    setTtsBool(checked)
-  }
+ 
   function tempFunction(checked){
     console.log(`switch to ${checked}`);
   }
@@ -174,7 +147,7 @@ const RightDrawer = ({setBottomVisible,face1On, face2On, ttsOn }) => {
       <Drawer
         title={
           <>
-            <span style={{ fontSize: "1rem", fontWeight: "700" }}>학습일반설정</span>
+            <span style={{ fontSize: "1rem", fontWeight: "700" }}>학습설정</span>
           </>
         }
         placement="right"
@@ -186,30 +159,6 @@ const RightDrawer = ({setBottomVisible,face1On, face2On, ttsOn }) => {
         style={{ zIndex: 1031 }}
       >
         <Space style={{ padding: "0px 10px 0px 10px", fontSize: "1rem", display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-          <div style={{ width: "230px", fontSize: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>뒤집기방향</span>
-            <Radio.Group size="small" onChange={onChangeDirection} defaultValue="front_back" >
-              <Radio value="left_right" style={{ fontSize: "1rem" }}>
-                좌우
-              </Radio>
-              <Radio value="top_bottom" style={{ fontSize: "1rem" }}>
-                위아래
-              </Radio>
-              <Radio value="front_back" style={{ fontSize: "1rem" }}>
-                앞뒤
-              </Radio>
-            </Radio.Group>
-          </div>
-          <div style={{ width: "230px", fontSize: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>TTS시작</span>
-            {ttsAble === false && <><span style={{fontSize:"0.8rem"}}>※ 지원하지 않는 브라우저입니다.</span><Switch size="small" onChange={onChangeTTS} disabled/></>}
-            {ttsAble === true && <Switch size="small" onChange={onChangeTTS} />}
-            
-          </div>
-          <div style={{ width: "230px", fontSize: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>앞뒷면1행바꾸기</span>
-            <Switch size="small" onChange={onChangeRowChange} />
-          </div>
 
           <div style={{  fontSize: "1rem", display: "flex", flexDirection: "column"}}>
             <div style={{ width: "230px", display: "flex", justifyContent: "space-between" }}>
@@ -299,11 +248,6 @@ const RightDrawer = ({setBottomVisible,face1On, face2On, ttsOn }) => {
                 <span style={{ width: "30px" }}><Switch size="small" onChange={tempFunction} /></span>
               </div>
             </div>
-          </div>
-
-          <div style={{ width: "230px", fontSize: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>주관식입력창</span>
-            <Switch size="small" onChange={onChangeTextInputShow} />
           </div>
         </Space>
       </Drawer>

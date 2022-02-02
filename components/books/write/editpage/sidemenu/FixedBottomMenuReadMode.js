@@ -281,7 +281,12 @@ const FloatingMenu = ({
                 textAlign: "center",
               }}
             >
-              {item.attr1 === "brush2" && (
+              <>
+                  <div className={item.attr1} style={{ height: "15px", fontSize: "0.8rem", display: "inline-block", backgroundColor: item.color }}>
+                    <div style={{ visibility: "hidden" }}> brush{index + 1}</div>
+                  </div>
+                </>
+              {/* {item.attr1 === "brush2" && (
                 <>
                   <div className={item.attr1} style={{ height: "15px", fontSize: "0.8rem", display: "inline-block", backgroundColor: item.color }}>
                     <div style={{ visibility: "hidden" }}> brush{index + 1}</div>
@@ -294,7 +299,7 @@ const FloatingMenu = ({
                     <div style={{ visibility: "hidden" }}> brush{index + 1}</div>
                   </div>
                 </>
-              )}
+              )} */}
             </div>
           </div>
         </>

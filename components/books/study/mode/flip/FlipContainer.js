@@ -80,41 +80,43 @@ const FlipContainer = ({
   setUnderlineToggle,
   setHighlightToggle,
   saveMemo,
+  sessionupdateresults,
+  finishStudy
 }) => {
-  const router = useRouter();
-  const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
-  function showdataafterupdateresult(data) {
-    console.log("data", data);
-    if (data.session_updateResults.status === "200") {
-      sessionStorage.setItem("endTimeOfSession", new Date());
-      router.push("/m/study/result");
-    }
-  }
+  // const router = useRouter();
+  // const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
+  // function showdataafterupdateresult(data) {
+  //   console.log("data", data);
+  //   if (data.session_updateResults.status === "200") {
+  //     sessionStorage.setItem("endTimeOfSession", new Date());
+  //     router.push("/m/study/result");
+  //   }
+  // }
 
-  const sessionupdateresults = useCallback(
-    async (sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression, cardlist_to_send) => {
-      try {
-        await session_updateResults({
-          variables: {
-            forUpdateResults: {
-              session_id: sessionId,
-              createdCards,
-              cardlistUpdated: filtered,
-              clickHistory: cardlist_to_send,
-              resultOfSession,
-              resultByBook: produce(resultByBook, (draft) => {
-                draft.forEach((book) => delete book.bookTitle);
-              }),
-              dataForRegression,
-            },
-          },
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    [session_updateResults]
-  );
+  // const sessionupdateresults = useCallback(
+  //   async (sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression, cardlist_to_send) => {
+  //     try {
+  //       await session_updateResults({
+  //         variables: {
+  //           forUpdateResults: {
+  //             session_id: sessionId,
+  //             createdCards,
+  //             cardlistUpdated: filtered,
+  //             clickHistory: cardlist_to_send,
+  //             resultOfSession,
+  //             resultByBook: produce(resultByBook, (draft) => {
+  //               draft.forEach((book) => delete book.bookTitle);
+  //             }),
+  //             dataForRegression,
+  //           },
+  //         },
+  //       });
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   },
+  //   [session_updateResults]
+  // );
 
   return (
     <>
@@ -149,6 +151,7 @@ const FlipContainer = ({
         setUnderlineToggle={setUnderlineToggle}
         setHighlightToggle={setHighlightToggle}
         saveMemo={saveMemo}
+        finishStudy={finishStudy}
       />
     </>
   );
@@ -311,7 +314,7 @@ class Container extends Component {
   determineStudyFinish = (card_details_session, card_seq, current_card_id, now) => {
     if (card_details_session.length - 1 == Number(card_seq)) {
       console.log("원래는 끝난거!!!");
-      this.finishStudy();
+      this.props.finishStudy();
     } else {
       console.log(card_details_session.length - 1, "======", Number(card_seq));
       console.log("아직 안끝");
@@ -804,89 +807,7 @@ class Container extends Component {
     //서버에 보내기 위한 학습정보 리스트 생성
     this.generateStudyStatus(card_details_session, current_card_info_index);
   };
-  finishStudy = () => {
-    console.log("finishStudy Clicked!!!");
-    this.generateOnFinishStudyStatus();
-    // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
-    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
-    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
-    const resultByBook = JSON.parse(sessionStorage.getItem("resultByBook"));
-    const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
-    const dataForRegression = JSON.parse(sessionStorage.getItem("dataForRegression"));
-    const filtered = cardListStudying.filter((item) => item.studyStatus.isUpdated === true);
-
-    if (filtered) {
-      console.log("서버에 학습데이타를 전송할 시간이다!!!!");
-      sessionStorage.setItem("card_seq", 0);
-      const sessionId = sessionStorage.getItem("session_Id");
-      filtered.forEach(function (v) {
-        delete v.__typename;
-        delete v.studyStatus.userFlagPrev;
-        delete v.studyStatus.userFlagOriginal;
-        delete v.studyStatus.statusPrev;
-        delete v.studyStatus.statusOriginal;
-        delete v.studyStatus.needStudyTimeTmp;
-        delete v.studyStatus.isUpdated;
-        delete v.studyStatus.levelUpdated;
-        delete v.studyStatus.sessionStatusPrev;
-        delete v.studyStatus.sessionStatusCurrent;
-        delete v.studyStatus.__typename;
-        delete v.content.hidden;
-        delete v.content.underline;
-        delete v.content.highlight;
-        delete v.content.makerFlag.__typename;
-        delete v.content.__typename;
-        delete v._id;
-        delete v.card_info.time_created;
-        delete v.card_info.__typename;
-        delete v.seqInCardlist;
-      });
-      cardlist_to_send.forEach(function (v) {
-        delete v.__typename;
-        delete v.studyStatus.userFlagPrev;
-        delete v.studyStatus.userFlagOriginal;
-        delete v.studyStatus.statusPrev;
-        delete v.studyStatus.statusOriginal;
-        delete v.studyStatus.needStudyTimeTmp;
-        delete v.studyStatus.isUpdated;
-        delete v.studyStatus.levelUpdated;
-
-        delete v.studyStatus.originalStudyRatio;
-        delete v.studyStatus.levelOriginal;
-        delete v.studyStatus.studyTimesInSession;
-        delete v.studyStatus.studyHourInSession;
-        delete v.studyStatus.elapsedHourFromLastSession;
-        delete v.studyStatus.statusCurrent;
-        delete v.studyStatus.recentSelectTime;
-        delete v.studyStatus.recentStudyTime;
-        delete v.studyStatus.totalStudyHour;
-        delete v.studyStatus.totalStudyTimes;
-        delete v.studyStatus.recentExamTime;
-        delete v.studyStatus.totalExamTimes;
-        delete v.studyStatus.sessionStatusPrev;
-        delete v.studyStatus.sessionStatusCurrent;
-        delete v.studyStatus.__typename;
-
-        delete v.studyStatus.__typename;
-        delete v.content.hidden;
-        delete v.content.underline;
-        delete v.content.highlight;
-        delete v.content.makerFlag.__typename;
-        delete v.content.__typename;
-        delete v._id;
-        delete v.card_info.time_created;
-        delete v.card_info.__typename;
-        delete v.seqInCardlist;
-      });
-
-      console.log("filtered : ", filtered);
-      console.log("sessionId : ", sessionId);
-      this.props.sessionupdateresults(sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression, cardlist_to_send);
-    } else {
-      console.log("공부끝");
-    }
-  };
+  
   flip = () => {
     this.setState((prevState) => ({
       flip: !prevState.flip,
@@ -2122,6 +2043,7 @@ class Container extends Component {
                           display: "flex",
                           alignItems: alignVertical,
                           justifyContent: alignHorizontal,
+                          overflow: "auto",
                         }}
                       >
                         {/* 페이스 스타일 영역 */}
@@ -2203,6 +2125,7 @@ class Container extends Component {
                           display: "flex",
                           alignItems: alignVertical,
                           justifyContent: alignHorizontal,
+                          overflow: "auto",
                         }}
                       >
                         {/* 페이스 스타일 영역 */}
@@ -2283,6 +2206,7 @@ class Container extends Component {
                           display: "flex",
                           alignItems: alignVertical,
                           justifyContent: alignHorizontal,
+                          overflow: "auto",
                         }}
                       >
                         <div
@@ -2481,6 +2405,7 @@ class Container extends Component {
                           display: "flex",
                           alignItems: alignVertical,
                           justifyContent: alignHorizontal,
+                          overflow: "auto",
                         }}
                       >
                         {/* 페이스2 스타일 영역 */}
@@ -2680,7 +2605,7 @@ class Container extends Component {
             >
               <div
                 style={{
-                  padding: "1px 5px",
+                  padding: "5px 5px",
                   flexGrow: 1,
                   color: "#8b8b8b",
                   border: "1px solid lightgrey",
@@ -2696,6 +2621,7 @@ class Container extends Component {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    marginBottom:"5px",
                   }}
                 >
                   <div style={{ width: "100%", display: "flex", flexDirection: "flex", alignItems: "center", justifyContent: "flex-start" }}>
@@ -2761,11 +2687,11 @@ class Container extends Component {
                   />
                 </div>
               </div>
-              <Button size="small" style={{ fontSize: "1rem", width: "53px", height: "60px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.finishStudy} type="primary">
+              {/* <Button size="small" style={{ fontSize: "1rem", width: "53px", height: "60px", borderRadius: "3px", marginLeft: "5px" }} onClick={this.props.finishStudy} type="primary">
                 학습
                 <br />
                 종료
-              </Button>
+              </Button> */}
             </div>
           </div>
           <div style={{ width: "95%", position: "fixed", top: "115px" }}>
@@ -2928,19 +2854,23 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
   if (content.content.highlight.length > 0) {
     content.content.highlight.map((element) => {
       const color = cardTypeSets[0].studyTool.highlight[element.toolType].color;
-      if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
-        altered = altered.replace(
-          element.targetWord,
-          `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}; --z-index:-1">${
-            element.targetWord
-          }</span>`
-        );
-      } else if (element.toolType === 2) {
-        altered = altered.replace(
-          element.targetWord,
-          `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`
-        );
-      }
+      altered = altered.replace(
+        element.targetWord,
+        `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`
+      );
+      // if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
+      //   altered = altered.replace(
+      //     element.targetWord,
+      //     `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}; --z-index:-1">${
+      //       element.targetWord
+      //     }</span>`
+      //   );
+      // } else if (element.toolType === 2) {
+      //   altered = altered.replace(
+      //     element.targetWord,
+      //     `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`
+      //   );
+      // }
     });
   }
 
@@ -2996,7 +2926,7 @@ const style_study_layout_bottom = {
   maxWidth: "972px",
   marginTop: "154px",
   height: "calc(100vh - 267px)",
-  overflow: "auto",
+
   border: "1px solid lightgrey",
   borderRadius: "3px",
 };
@@ -3004,5 +2934,6 @@ const contentsDisplay = {
   backgroundColor: "white",
   padding: "10px",
   alignItems: "center",
-  height:"95%"
+  height:"95%",
+
 };

@@ -2549,19 +2549,23 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
   if (content.content.highlight.length > 0) {
     content.content.highlight.map((element) => {
       const color = cardTypeSets[0].studyTool.highlight[element.toolType].color;
-      if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
-        altered = altered.replace(
-          element.targetWord,
-          `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}; --z-index:-1">${
-            element.targetWord
-          }</span>`
-        );
-      } else if (element.toolType === 2) {
-        altered = altered.replace(
-          element.targetWord,
-          `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`
-        );
-      }
+      altered = altered.replace(
+        element.targetWord,
+        `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`
+      );
+      // if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
+      //   altered = altered.replace(
+      //     element.targetWord,
+      //     `<span class="brush${element.toolType === 0 || element.toolType === 1 ? 1 : 3}" style="display:inline-block; --bubble-color:${color}; --z-index:-1">${
+      //       element.targetWord
+      //     }</span>`
+      //   );
+      // } else if (element.toolType === 2) {
+      //   altered = altered.replace(
+      //     element.targetWord,
+      //     `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`
+      //   );
+      // }
     });
   }
 

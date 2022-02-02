@@ -13,6 +13,9 @@ import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/s
 import { SAVEMEMO } from "../../../../../graphql/mutation/addMemo";
 import dynamic from "next/dynamic";
 import { Dictionary } from "../../../../../graphql/query/card_contents";
+import { UpdateResults } from "../../../../../graphql/query/session";
+import { calculateStudyStatus } from "../../../../../components/books/study/mode/flip/FlipContainerSub";
+import produce from "immer";
 
 const Editor = dynamic(() => import("../../../../../components/books/write/editpage/Editor"), {
   ssr: false,
@@ -65,6 +68,43 @@ const FlipMode = () => {
     }
     // console.log(session_id);
   }
+
+  const router = useRouter();
+  const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
+  function showdataafterupdateresult(data) {
+    console.log("data", data);
+    if (data.session_updateResults.status === "200") {
+      sessionStorage.setItem("endTimeOfSession", new Date());
+      router.push("/m/study/result");
+    }
+  }
+
+  const sessionupdateresults = useCallback(
+    async (sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression, cardlist_to_send) => {
+      try {
+        await session_updateResults({
+          variables: {
+            forUpdateResults: {
+              session_id: sessionId,
+              createdCards,
+              cardlistUpdated: filtered,
+              clickHistory: cardlist_to_send,
+              resultOfSession,
+              resultByBook: produce(resultByBook, (draft) => {
+                draft.forEach((book) => delete book.bookTitle);
+              }),
+              dataForRegression,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [session_updateResults]
+  );
+
+
 
   const { loading, error, data } = useQuery(GetSession, {
     variables: { session_id: session_id },
@@ -821,8 +861,119 @@ const FlipMode = () => {
     }
   }, [cardset_inquireLanguageDictionary]);
 
+  const generateStudyStatus = (card_details_session, current_card_info_index) => {
+    const updateThis = card_details_session[current_card_info_index];
+    const getUpdateThis = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+    if (getUpdateThis) {
+      var finalUpdate = getUpdateThis.concat(updateThis);
+    } else {
+      finalUpdate = [updateThis];
+    }
+    sessionStorage.setItem("cardlist_to_send", JSON.stringify(finalUpdate));
+  };
+
+  const generateOnFinishStudyStatus = () => {
+    const card_details_session_origin = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const current_card_info_index = sessionStorage.getItem("card_seq");
+    const current_card_book_id = card_details_session_origin[current_card_info_index].card_info.mybook_id;
+    const current_card_levelconfig = levelConfigs.filter((item) => item.levelconfig_info.mybook_id === current_card_book_id);
+
+    const timer = 1000;
+    const now = new Date();
+
+    const card_details_session = calculateStudyStatus(null, "finish", current_card_info_index, timer, current_card_levelconfig[0]);
+
+    //업데이트된 학습정보 세션스토리지에 다시 저장
+    sessionStorage.setItem("cardListStudying", JSON.stringify(card_details_session));
+
+    //서버에 보내기 위한 학습정보 리스트 생성
+    generateStudyStatus(card_details_session, current_card_info_index);
+  };
+
+  const finishStudy = () => {
+    console.log("finishStudy Clicked!!!");
+    generateOnFinishStudyStatus();
+    // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
+    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
+    const resultByBook = JSON.parse(sessionStorage.getItem("resultByBook"));
+    const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
+    const dataForRegression = JSON.parse(sessionStorage.getItem("dataForRegression"));
+    const filtered = cardListStudying.filter((item) => item.studyStatus.isUpdated === true);
+
+    if (filtered) {
+      console.log("서버에 학습데이타를 전송할 시간이다!!!!");
+      const sessionId = sessionStorage.getItem("session_Id");
+      filtered.forEach(function (v) {
+        delete v.__typename;
+        delete v.studyStatus.userFlagPrev;
+        delete v.studyStatus.userFlagOriginal;
+        delete v.studyStatus.statusPrev;
+        delete v.studyStatus.statusOriginal;
+        delete v.studyStatus.needStudyTimeTmp;
+        delete v.studyStatus.isUpdated;
+        delete v.studyStatus.levelUpdated;
+        delete v.studyStatus.sessionStatusPrev;
+        delete v.studyStatus.sessionStatusCurrent;
+        delete v.studyStatus.__typename;
+        delete v.content.hidden;
+        delete v.content.underline;
+        delete v.content.highlight;
+        delete v.content.makerFlag.__typename;
+        delete v.content.__typename;
+        delete v._id;
+        delete v.card_info.time_created;
+        delete v.card_info.__typename;
+        delete v.seqInCardlist;
+      });
+      cardlist_to_send.forEach(function (v) {
+        delete v.__typename;
+        delete v.studyStatus.userFlagPrev;
+        delete v.studyStatus.userFlagOriginal;
+        delete v.studyStatus.statusPrev;
+        delete v.studyStatus.statusOriginal;
+        delete v.studyStatus.needStudyTimeTmp;
+        delete v.studyStatus.isUpdated;
+        delete v.studyStatus.levelUpdated;
+
+        delete v.studyStatus.originalStudyRatio;
+        delete v.studyStatus.levelOriginal;
+        delete v.studyStatus.studyTimesInSession;
+        delete v.studyStatus.studyHourInSession;
+        delete v.studyStatus.elapsedHourFromLastSession;
+        delete v.studyStatus.statusCurrent;
+        delete v.studyStatus.recentSelectTime;
+        delete v.studyStatus.recentStudyTime;
+        delete v.studyStatus.totalStudyHour;
+        delete v.studyStatus.totalStudyTimes;
+        delete v.studyStatus.recentExamTime;
+        delete v.studyStatus.totalExamTimes;
+        delete v.studyStatus.sessionStatusPrev;
+        delete v.studyStatus.sessionStatusCurrent;
+        delete v.studyStatus.__typename;
+
+        delete v.studyStatus.__typename;
+        delete v.content.hidden;
+        delete v.content.underline;
+        delete v.content.highlight;
+        delete v.content.makerFlag.__typename;
+        delete v.content.__typename;
+        delete v._id;
+        delete v.card_info.time_created;
+        delete v.card_info.__typename;
+        delete v.seqInCardlist;
+      });
+
+      console.log("filtered : ", filtered);
+      console.log("sessionId : ", sessionId);
+      sessionupdateresults(sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression, cardlist_to_send);
+    } else {
+      console.log("공부끝");
+    }
+  };
   return (
-    <StudyLayout mode="학습">
+    <StudyLayout mode="학습" finishStudy={finishStudy}>
       <div
         style={{
           height: "100%",
@@ -862,6 +1013,8 @@ const FlipMode = () => {
               setUnderlineToggle={setUnderlineToggle}
               setHighlightToggle={setHighlightToggle}
               saveMemo={saveMemo}
+              sessionupdateresults={sessionupdateresults}
+              finishStudy={finishStudy}
             />
           </>
         )}
@@ -895,6 +1048,7 @@ const FlipMode = () => {
             editorOn={editorOn}
             selectedCardType={selectedCardType}
             fireEditor={fireEditor}
+            finishStudy={finishStudy}
           />
         </>
       )}

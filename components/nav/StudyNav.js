@@ -25,7 +25,7 @@ const backgroundColor = "#4466d1";
 const fontColor = "white";
 const burgerSize = "1.3rem";
 
-const StudyNav = ({ mode }) => {
+const StudyNav = ({ mode, finishStudy }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var usernameTemp = localStorage.getItem("username");
@@ -216,7 +216,15 @@ const StudyNav = ({ mode }) => {
           </div>
 
           <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem", cursor: "pointer" }}>
-            <Button style={{ backgroundColor: "#ffffff00", border: "none" }} onClick={goToHome} icon={<HomeOutlined style={{ fontSize: burgerSize, color: fontColor }} />}></Button>
+            {/* <Button style={{ backgroundColor: "#ffffff00", border: "none" }} onClick={goToHome} icon={<HomeOutlined style={{ fontSize: burgerSize, color: fontColor }} />}></Button> */}
+            <Button
+              size="small"
+              style={{ fontSize: "1rem", borderRadius: "5px" }}
+              onClick={finishStudy}
+              type="primary"
+            >
+              학습종료
+            </Button>
           </div>
         </div>
       </div>

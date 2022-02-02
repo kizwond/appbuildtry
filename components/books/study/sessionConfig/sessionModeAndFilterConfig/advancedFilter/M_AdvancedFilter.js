@@ -1,5 +1,5 @@
 import React, { memo, useState } from "react";
-import { InputNumber, Space, Switch, Tag } from "antd";
+import { InputNumber, message, Space, Switch, Tag } from "antd";
 import styled from "styled-components";
 import {
   StyledDivConfigColStartCards,
@@ -178,30 +178,6 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
             onOff={recentDifficulty.onOff}
           >
             {recentDifficulty.onOff === "on" ? (
-              // <ToggleTags
-              //   changeValue={changeRecentDifficulty}
-              //   value={recentDifficulty.value}
-              //   tags={recentDifficultyTags}
-              //   af
-              // />
-
-              //   const Wrapper = styled.div`
-              //   background-color: ${({ checked, tagname }) =>
-              //     checked && tagname === "ing" ? "#f5cdbf" : "transparent"};
-              //   display: inline-block;
-              //   border-top-left-radius: 2px;
-              //   border-top-right-radius: 2px;
-              //   &:first-of-type > .CheckableTag {
-              //     margin: 2px 2px 2px 0;
-              //   }
-              // `;
-
-              //           const CheckableTag = styled(Tag.CheckableTag)`
-              // border: ${({ checked }) =>
-              //   checked ? "1px solid #1890ff" : "1px solid #d9d9d9"};
-              // margin: 2px 2px 2px 2px;
-              // `;
-
               <div className="flex gap-[4px] py-[2px]">
                 <Tag.CheckableTag
                   checked={nonCurrentStudyRatioOnOff === "on"}
@@ -212,10 +188,20 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
                       : "border border-solid !border-[#d9d9d9]"
                   } !m-[0px]`}
                   onChange={(checked) => {
-                    if (checked) {
-                      changeNonCurrentStudyRatioOnOff("on");
+                    if (
+                      nonCurrentStudyRatioOnOff === "on" &&
+                      currentStudyRatioOnOff === "off"
+                    ) {
+                      message.warning(
+                        "최소 1개의 옵션은 선택하셔야합니다.",
+                        0.7
+                      );
                     } else {
-                      changeNonCurrentStudyRatioOnOff("off");
+                      if (checked) {
+                        changeNonCurrentStudyRatioOnOff("on");
+                      } else {
+                        changeNonCurrentStudyRatioOnOff("off");
+                      }
                     }
                   }}
                 >
@@ -229,10 +215,20 @@ const M_AdvancedFilter = ({ changeAdvancedFilter, advancedFilter, isPc }) => {
                       : "border border-solid !border-[#d9d9d9]"
                   } !m-[0px]`}
                   onChange={(checked) => {
-                    if (checked) {
-                      changeCurrentStudyRatioOnOff("on");
+                    if (
+                      nonCurrentStudyRatioOnOff === "off" &&
+                      currentStudyRatioOnOff === "on"
+                    ) {
+                      message.warning(
+                        "최소 1개의 옵션은 선택하셔야합니다.",
+                        0.7
+                      );
                     } else {
-                      changeCurrentStudyRatioOnOff("off");
+                      if (checked) {
+                        changeCurrentStudyRatioOnOff("on");
+                      } else {
+                        changeCurrentStudyRatioOnOff("off");
+                      }
                     }
                   }}
                 >

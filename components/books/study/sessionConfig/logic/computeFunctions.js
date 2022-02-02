@@ -381,6 +381,7 @@ export const sortFilteredCards = ({
           sessionStatusCurrent: "notStarted",
 
           levelOriginal: card.studyStatus.levelCurrent,
+          levelPrev : card.studyStatus.levelCurrent,
           levelUpdated: false,
 
           userFlagOriginal: card.content.userFlag,

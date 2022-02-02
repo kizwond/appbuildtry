@@ -914,6 +914,7 @@ const FlipMode = () => {
         delete v.studyStatus.needStudyTimeTmp;
         delete v.studyStatus.isUpdated;
         delete v.studyStatus.levelUpdated;
+        delete v.studyStatus.levelPrev;
         delete v.studyStatus.sessionStatusPrev;
         delete v.studyStatus.sessionStatusCurrent;
         delete v.studyStatus.__typename;
@@ -936,8 +937,8 @@ const FlipMode = () => {
         delete v.studyStatus.needStudyTimeTmp;
         delete v.studyStatus.isUpdated;
         delete v.studyStatus.levelUpdated;
-
         delete v.studyStatus.originalStudyRatio;
+        delete v.studyStatus.levelPrev;
         delete v.studyStatus.levelOriginal;
         delete v.studyStatus.studyTimesInSession;
         delete v.studyStatus.studyHourInSession;

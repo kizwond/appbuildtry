@@ -8,32 +8,29 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
 
     let theoNewLevel, newLevel
     let needStudyTime, needStudyTimeGap, needStudyTimeTmp
+
     try{
-        // 세션 첫 학습인 경우
-        if (levelUpdated == true){
-            newLevel = levelCurrent
-        } else if (levelUpdated == false){
-            if (levelCurrent == 0){
-                theoNewLevel = Math.round(initialElapsedHour /24  * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
-                console.log('newLevel1', newLevel)
+        if (levelCurrent == 0){
+            theoNewLevel = Math.round(initialElapsedHour /24  * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
+            console.log('newLevel1', newLevel)
+        } else {
+            const levelOfLastStudy = levelCurrent
+            let estimatedElapsedHourOfLastStudy
+            if (studyRatio > recentStudyRatio){
+                estimatedElapsedHourOfLastStudy = Math.round(levelOfLastStudy * Math.log(studyRatio/100) / Math.log(0.8)*1000)/1000
             } else {
-                const levelOfLastSession = levelCurrent
-                const lastRatioOfLastSession = recentStudyRatio
-                const estimatedElapsedHourOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
-                const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
-                const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
-    
-                theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
-                
-                console.log('newLevel2', newLevel)
+                estimatedElapsedHourOfLastStudy = Math.round(levelOfLastStudy * Math.log(recentStudyRatio/100) / Math.log(0.8)*1000)/1000
             }
-            newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
+            const elapsedHourFromLastStudy = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
+            const totalElapsedHour = estimatedElapsedHourOfLastStudy + elapsedHourFromLastStudy
+
+            theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000                
+            console.log('newLevel2', newLevel)
         }
+        newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
 
         // 반올림해서 레벨이 0이 되어버리는 것을 막아준다.
         newLevel = (newLevel <=0) ? 0.001 : newLevel
-
-        // needStudyTimeTmp = (studyRatio == KnowStudyRatio) ? null : new Date(Date.now() + minRestudyMin * 60000 * (restudyCoeffInsideSession*studyRatio+1))            
         needStudyTimeTmp = (studyRatio == KnowStudyRatio) 
             ? null 
             : new Date(Date.now() + Math.max(maxRestudyMinuteInsideSessionAdjusted * 60000 * studyRatio / 100, 150 * 1000)) // 최소는 150초
@@ -43,9 +40,50 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
         console.log('needStudyTime1',needStudyTime)
 
         return {newLevel, needStudyTime, needStudyTimeTmp}
-    }catch (err){
+
+    }catch(err){
         console.log(err)
     }
+
+
+    // try{
+    //     // // 세션 첫 학습인 경우
+    //     // if (levelUpdated == true){
+    //     //     newLevel = levelCurrent
+    //     // } else if (levelUpdated == false){
+    //     //     if (levelCurrent == 0){
+    //     //         theoNewLevel = Math.round(initialElapsedHour /24  * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
+    //     //         console.log('newLevel1', newLevel)
+    //     //     } else {
+    //     //         const levelOfLastSession = levelCurrent
+    //     //         const lastRatioOfLastSession = recentStudyRatio
+    //     //         const estimatedElapsedHourOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
+    //     //         const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
+    //     //         const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
+    
+    //     //         theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
+                
+    //     //         console.log('newLevel2', newLevel)
+    //     //     }
+    //     //     newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
+    //     // }
+
+    //     // 반올림해서 레벨이 0이 되어버리는 것을 막아준다.
+    //     newLevel = (newLevel <=0) ? 0.001 : newLevel
+
+    //     // needStudyTimeTmp = (studyRatio == KnowStudyRatio) ? null : new Date(Date.now() + minRestudyMin * 60000 * (restudyCoeffInsideSession*studyRatio+1))            
+    //     needStudyTimeTmp = (studyRatio == KnowStudyRatio) 
+    //         ? null 
+    //         : new Date(Date.now() + Math.max(maxRestudyMinuteInsideSessionAdjusted * 60000 * studyRatio / 100, 150 * 1000)) // 최소는 150초
+    //     needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(studyRatio/100)) / Math.log(0.8) * 24 * 3600000)            
+    //     needStudyTime = new Date(Date.now() + needStudyTimeGap)
+    //     needStudyTime = (needStudyTime < needStudyTimeTmp )? needStudyTimeTmp : needStudyTime        
+    //     console.log('needStudyTime1',needStudyTime)
+
+    //     return {newLevel, needStudyTime, needStudyTimeTmp}
+    // }catch (err){
+    //     console.log(err)
+    // }
 
 
 }
@@ -59,50 +97,25 @@ exports.estimateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rece
     let theoNewLevel, newLevel
     let needStudyTimeGap
     try{       
-        if (levelUpdated == false){
-            // console.log('levelCurrent', levelCurrent)
-            if (levelCurrent == 0){
-                theoNewLevel = Math.round(initialElapsedHour /24 * Math.log(0.8) / Math.log(KnowStudyRatio/100) * 1000) / 1000;                
-                // console.log('newLevel1',newLevel)
+        if (levelCurrent == 0){
+            theoNewLevel = Math.round(initialElapsedHour /24 * Math.log(0.8) / Math.log(KnowStudyRatio/100) * 1000) / 1000;                
+        } else {
+            const levelOfLastStudy = levelCurrent
+            let estimatedElapsedHourOfLastStudy
+            if (studyRatio > recentStudyRatio){
+                estimatedElapsedHourOfLastStudy = Math.round(levelOfLastStudy * Math.log(studyRatio/100) / Math.log(0.8)*1000)/1000
             } else {
-                const levelOfLastSession = levelCurrent
-                const lastRatioOfLastSession = recentStudyRatio
-                const estimatedElapsedHourOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
-                const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
-                const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
-    
-                theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(KnowStudyRatio/100)*1000)/1000
-                // console.log('newLevel2',newLevel)
-            }            
-        } else if (levelUpdated == true){
-            newLevel = levelCurrent            
-        }
+                estimatedElapsedHourOfLastStudy = Math.round(levelOfLastStudy * Math.log(recentStudyRatio/100) / Math.log(0.8)*1000)/1000
+            }
+            const elapsedHourFromLastStudy = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
+            const totalElapsedHour = estimatedElapsedHourOfLastStudy + elapsedHourFromLastStudy
 
+            theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(KnowStudyRatio/100)*1000)/1000
+            // console.log('newLevel2',newLevel)
+        }            
+        
         newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
-
-        // // 세션 첫 학습인 경우
-        // if (levelUpdated == true){
-        //     newLevel = levelCurrent
-        // } else if (levelUpdated == false){
-        //     if (levelCurrent == 0){
-        //         theoNewLevel = Math.round(initialElapsedHour /24  * Math.log(0.8) / Math.log(studyRatio/100) * 1000) / 1000;
-        //         // console.log('newLevel1', newLevel)
-        //     } else {
-        //         const levelOfLastSession = levelCurrent
-        //         const lastRatioOfLastSession = recentStudyRatio
-        //         const estimatedElapsedHourOfLastSession = Math.round(levelOfLastSession * Math.log(lastRatioOfLastSession/100) / Math.log(0.8)*1000)/1000
-        //         const elapsedHourFromLastSession = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
-        //         const totalElapsedHour = estimatedElapsedHourOfLastSession + elapsedHourFromLastSession
-    
-        //         theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000
-                
-        //         // console.log('newLevel2', newLevel)
-        //     }
-        //     newLevel = levelCurrent + levelchangeSensitivity / 100 * (theoNewLevel - levelCurrent)
-        // }
-
         needStudyTimeGap = Math.round(newLevel * (Math.log(restudyRatio/100)-Math.log(KnowStudyRatio/100)) / Math.log(0.8) * 24 * 3600000)
-        // console.log('needStudyTimeGap',needStudyTimeGap)
         // console.log('needStudyTimeGap', needStudyTimeGap)
         return {needStudyTimeGap}
     }catch (err){
@@ -123,8 +136,9 @@ exports.updateSessionResult = (singleResult) => {
         statusOriginal, 
         statusPrev, 
         statusCurrent,
+        levelUpdated,
         levelOriginal, 
-        // levelPrev, 
+        levelPrev, 
         recentStudyRatio,
         levelCurrent, 
         clickTimesInSession,
@@ -179,34 +193,59 @@ exports.updateSessionResult = (singleResult) => {
     console.log('levelOriginal', levelOriginal)
     console.log('levelCurrent', levelCurrent)
     console.log(recentSelection)
-    if (levelOriginal != levelCurrent){  
-        if (levelOriginal < levelCurrent){
+        // 이전 레벨 변동 없애주기
+    if (levelUpdated == true){
+        if (levelOriginal < levelPrev){
             console.log('1111111')
-            resultByBook[mybookPosition].levelChange.total.count += 1
-            resultByBook[mybookPosition].levelChange.total.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
-            resultByBook[mybookPosition].levelChange.up.count += 1
-            resultByBook[mybookPosition].levelChange.up.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
-            resultOfSession.levelChange.total.count += 1
-            resultOfSession.levelChange.total.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
-            resultOfSession.levelChange.up.count += 1
-            resultOfSession.levelChange.up.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000            
+            resultByBook[mybookPosition].levelChange.total.count += -1
+            resultByBook[mybookPosition].levelChange.total.gap += -Math.round((levelPrev - levelOriginal)*1000)/1000
+            resultByBook[mybookPosition].levelChange.up.count += -1
+            resultByBook[mybookPosition].levelChange.up.gap += -Math.round((levelPrev - levelOriginal)*1000)/1000
+            resultOfSession.levelChange.total.count += -1
+            resultOfSession.levelChange.total.gap += -Math.round((levelPrev - levelOriginal)*1000)/1000
+            resultOfSession.levelChange.up.count += -1
+            resultOfSession.levelChange.up.gap += -Math.round((levelPrev - levelOriginal)*1000)/1000            
         } else {
             console.log('22222222')
-            resultByBook[mybookPosition].levelChange.total.count += 1
-            resultByBook[mybookPosition].levelChange.total.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
-            resultByBook[mybookPosition].levelChange.down.count += 1
-            resultByBook[mybookPosition].levelChange.down.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
-            resultOfSession.levelChange.total.count += 1
-            resultOfSession.levelChange.total.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
-            resultOfSession.levelChange.down.count += 1
-            resultOfSession.levelChange.down.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000                        
+            resultByBook[mybookPosition].levelChange.total.count += -1
+            resultByBook[mybookPosition].levelChange.total.gap += -Math.round((levelPrev - levelOriginal)*1000)/1000
+            resultByBook[mybookPosition].levelChange.down.count += -1
+            resultByBook[mybookPosition].levelChange.down.gap += -Math.round((levelPrev - levelOriginal)*1000)/1000
+            resultOfSession.levelChange.total.count += -1
+            resultOfSession.levelChange.total.gap += -Math.round((levelPrev - levelOriginal)*1000)/1000
+            resultOfSession.levelChange.down.count += -1
+            resultOfSession.levelChange.down.gap += -Math.round((levelPrev - levelOriginal)*1000)/1000                        
         }
+    }
+
+        // 이번 레벨 변동 반영해주기
+    if (levelOriginal < levelCurrent){
+        console.log('1111111')
+        resultByBook[mybookPosition].levelChange.total.count += 1
+        resultByBook[mybookPosition].levelChange.total.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
+        resultByBook[mybookPosition].levelChange.up.count += 1
+        resultByBook[mybookPosition].levelChange.up.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
+        resultOfSession.levelChange.total.count += 1
+        resultOfSession.levelChange.total.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
+        resultOfSession.levelChange.up.count += 1
+        resultOfSession.levelChange.up.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000            
+    } else {
+        console.log('22222222')
+        resultByBook[mybookPosition].levelChange.total.count += 1
+        resultByBook[mybookPosition].levelChange.total.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
+        resultByBook[mybookPosition].levelChange.down.count += 1
+        resultByBook[mybookPosition].levelChange.down.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
+        resultOfSession.levelChange.total.count += 1
+        resultOfSession.levelChange.total.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000
+        resultOfSession.levelChange.down.count += 1
+        resultOfSession.levelChange.down.gap += Math.round((levelCurrent - levelOriginal)*1000)/1000                        
     }
 
     // Mybook에 업데이트 해줄 꺼
     console.log(levelOriginal)
     console.log(levelCurrent)
-    if (levelOriginal != levelCurrent){  
+    if (recentSelection == 'difficulty'){
+    // levelOriginal != levelCurrent){  
         resultOfSession.levelChangeByStatus.nonCompleted += Math.round((levelCurrent - levelOriginal)*1000)/1000
         resultByBook[mybookPosition].levelChangeByStatus.nonCompleted += Math.round((levelCurrent - levelOriginal)*1000)/1000
     }

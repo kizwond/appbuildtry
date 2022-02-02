@@ -31,7 +31,7 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   
   let {levelCurrent, recentStudyTime, recentStudyRatio, studyTimesInSession, levelUpdated}=card_details_session[current_card_info_index].studyStatus
   let {newLevel, needStudyTime, needStudyTimeTmp} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs, levelUpdated)  
-  card_details_session[current_card_info_index].studyStatus.levelUpdated = true
+  card_details_session[current_card_info_index].studyStatus.levelPrev = levelCurrent
   card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = needStudyTimeTmp;
@@ -44,21 +44,22 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
   
   card_details_session[current_card_info_index].studyStatus.isUpdated = true;
-
+  
   // const dataForRegression = JSON.parse(sessionStorage.getItem("dataForRegression"));
   // dataForRegression.push({
-  //   buybook_id : card_details_session[current_card_info_index].card_info.buybook_id,
-  //   totalStudyTimes : card_details_session[current_card_info_index].studyStatus.totalStudyTimes,
-  //   levelOriginal : card_details_session[current_card_info_index].studyStatus.levelOriginal,
-  //   currentLevStudyTimes  : card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes,
-  //   currentLevStudyHour  : card_details_session[current_card_info_index].studyStatus.currentLevStudyHour,
-  //   currentLevElapsedHour : card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour,
-  //   levelCurrent : card_details_session[current_card_info_index].studyStatus.levelCurrent,
-  // })
-  // sessionStorage.setItem("dataForRegression", JSON.stringify(dataForRegression))
-
-  updateSessionResult(card_details_session[current_card_info_index])
-  
+    //   buybook_id : card_details_session[current_card_info_index].card_info.buybook_id,
+    //   totalStudyTimes : card_details_session[current_card_info_index].studyStatus.totalStudyTimes,
+    //   levelOriginal : card_details_session[current_card_info_index].studyStatus.levelOriginal,
+    //   currentLevStudyTimes  : card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes,
+    //   currentLevStudyHour  : card_details_session[current_card_info_index].studyStatus.currentLevStudyHour,
+    //   currentLevElapsedHour : card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour,
+    //   levelCurrent : card_details_session[current_card_info_index].studyStatus.levelCurrent,
+    // })
+    // sessionStorage.setItem("dataForRegression", JSON.stringify(dataForRegression))
+    
+    updateSessionResult(card_details_session[current_card_info_index])
+    card_details_session[current_card_info_index].studyStatus.levelUpdated = true
+    
 
   return card_details_session;
 };

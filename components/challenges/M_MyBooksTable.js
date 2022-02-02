@@ -1,81 +1,24 @@
 /* eslint-disable react/display-name */
 import styled from "styled-components";
 
-import { Table, Card, Popover, Button, Input, Space, Form } from "antd";
+import { Table, Card, Button } from "antd";
 import { DollarCircleFilled } from "@ant-design/icons";
 
-import {
-  StyledFlexSpaceBetween,
-  StyledTwoLinesEllipsis,
-} from "../common/styledComponent/page";
-import { MUTATION_CREATE_BUY_BOOK_FROM_MY_BOOK } from "../../graphql/mutation/buyBook";
-import { QUERY_BUY_BOOKS } from "../../graphql/query/allQuery";
-import { useMutation } from "@apollo/client";
+import { StyledTwoLinesEllipsis } from "../common/styledComponent/page";
 import NumberOfCardCell from "../books/common/tableComponent/NumberOfCardCell";
+import { useCallback, useState } from "react";
+import M_registerBuyBookDrawer from "./m_registerBuyBookDrawer";
 
 const M_MyBooksTable = ({ bookData, loading, error }) => {
-  const [form] = Form.useForm();
-  const { resetFields, submit } = form;
+  const [drawerVisibleForRegisterBook, setDrawerVisibleForRegisterBook] =
+    useState(false);
 
-  const [createBuyBookFromMyBook] = useMutation(
-    MUTATION_CREATE_BUY_BOOK_FROM_MY_BOOK,
-    {
-      onCompleted: (_data) => {
-        if (_data.buybook_createBuybook.msg == "책 생성 성공적!") {
-          console.log("receivedData", _data);
-          resetFields();
-        } else if (_data.buybook_createBuybook.status === "401") {
-          router.push("/m/account/login");
-        } else {
-          console.log("어떤 문제가 발생함");
-        }
-      },
-    }
+  const closeDrawer = useCallback(
+    () => setDrawerVisibleForRegisterBook(false),
+    []
   );
 
-  const createBuyBook = async ({
-    mybook_id,
-    buybookcateName,
-    titleForSale,
-  }) => {
-    try {
-      await createBuyBookFromMyBook({
-        variables: {
-          forCreateBuybook: {
-            mybook_id,
-            buybookcateName,
-            titleForSale,
-          },
-        },
-        update: (cache, { data: { buybook_createBuybook } }) => {
-          const _data = cache.readQuery({
-            query: QUERY_BUY_BOOKS,
-          });
-          console.log({ _data, buybook_createBuybook });
-          cache.writeQuery({
-            query: QUERY_BUY_BOOKS,
-            data: {
-              ..._data,
-              buybook_getAllBuybook: {
-                ..._data.buybook_getAllBuybook,
-                buybooks: [
-                  ..._data.buybook_getAllBuybook.buybooks,
-                  ...buybook_createBuybook.buybooks,
-                ],
-              },
-            },
-          });
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  if (error) <div>에러</div>;
-  if (loading) <div>에러</div>;
-
-  const { Search } = Input;
+  const [selectedBookId, setSelectedBookId] = useState("");
 
   const myBook2 = bookData && bookData.mybook_getMybookByUserID.mybooks;
 
@@ -170,6 +113,12 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       // title: "상설",
       className: "TableLastColumn",
       align: "center",
+      onCell: (_record) => ({
+        onClick: () => {
+          setDrawerVisibleForRegisterBook(true);
+          setSelectedBookId(_record._id);
+        },
+      }),
       width: 60,
       render: (value, _record, index) => (
         <div>
@@ -200,71 +149,13 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
               ? "EvenNumberRow"
               : "OddNumberRow"
           }
-          expandable={{
-            expandRowByClick: true,
-            // expandIcon: () => null,
-            expandIconColumnIndex: -1,
-            expandedRowRender: (_record, _index) => (
-              <Card
-                style={{ margin: "8px 0 8px", minWidth: 320 }}
-                actions={[
-                  <div
-                    key="accept"
-                    onClick={() => {
-                      submit();
-                    }}
-                  >
-                    취소
-                  </div>,
-                  <div
-                    onClick={() => {
-                      submit();
-                    }}
-                    key="decline"
-                  >
-                    신청
-                  </div>,
-                ]}
-                size="small"
-              >
-                <Form
-                  form={form}
-                  name="requestMentoringForm"
-                  size="small"
-                  labelCol={{ span: 8 }}
-                  wrapperCol={{ span: 16 }}
-                  onFinish={(values) => {
-                    console.log(values);
-                    createBuyBook({ mybook_id: _record._id, ...values });
-                  }}
-                >
-                  <Form.Item
-                    label="카테고리 선택"
-                    name="buybookcateName"
-                    rules={[
-                      {
-                        required: true,
-                        message: "판매 카테고리를 설정해주세요",
-                      },
-                    ]}
-                  >
-                    <Input size="small" allowClear />
-                  </Form.Item>
-                  <Form.Item
-                    label="판매 책 제목 설정"
-                    name="titleForSale"
-                    rules={[
-                      { required: true, message: "판매 책 제목은 필수입니다" },
-                    ]}
-                  >
-                    <Input size="small" allowClear />
-                  </Form.Item>
-                </Form>
-              </Card>
-            ),
-          }}
         />
       )}
+      <M_registerBuyBookDrawer
+        mybook_id={selectedBookId}
+        visible={drawerVisibleForRegisterBook}
+        closeDrawer={closeDrawer}
+      />
     </StyledCard>
   );
 };

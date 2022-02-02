@@ -1,18 +1,23 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { Button, Card, Col, Drawer, Row, Space } from "antd";
+import { useState } from "react";
+
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { FunctionComponent, useState } from "react";
+
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   QUERY_BUY_BOOKS,
   QUERY_USER_CATEGORIES_AND_USER_BOOKS,
   QUERY_USER_BOOKS,
 } from "../../../graphql/query/allQuery";
-import M_MyBooksTable from "../../../components/challenges/M_MyBooksTable.js";
-import styled from "styled-components";
-import M_Layout from "../../../components/layout/M_Layout.js";
-import { FormOutlined } from "@ant-design/icons";
-import Image from "next/image";
 import { MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK } from "../../../graphql/mutation/buyBook";
+
+import styled from "styled-components";
+
+import { Button, Card, Col, Drawer, Input, Row, Space } from "antd";
+import { FormOutlined } from "@ant-design/icons";
+
+import M_MyBooksTable from "../../../components/challenges/M_MyBooksTable.js";
+import M_Layout from "../../../components/layout/M_Layout.js";
 import { StyledFlexSpaceBetween } from "../../../components/common/styledComponent/page";
 import { StyledButtonForMainPage } from "../../../components/common/styledComponent/buttons";
 
@@ -25,7 +30,15 @@ const Challenges = () => {
     error: buyBookError,
     loading: buyBookLoading,
   } = useQuery(QUERY_BUY_BOOKS, {
-    onCompleted: (data) => console.log("도전출판 북 서버에서 받음", data),
+    onCompleted: (data) => {
+      if (data.buybook_getAllBuybook.status == "200") {
+        console.log("도전출판 북 서버에서 받음", data);
+      } else if (data.buybook_getAllBuybook.status === "401") {
+        router.push("/m/account/login");
+      } else {
+        console.log("어떤 문제가 발생함");
+      }
+    },
   });
 
   const [getAllBooksInfo, { data, error, loading }] = useLazyQuery(
@@ -103,19 +116,135 @@ const Challenges = () => {
     <M_Layout>
       {buyBookData && (
         <>
-          <StyledCard
+          <div className="relative top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] flex flex-col gap-3 ">
+            <StyledFlexSpaceBetween className="mt-2">
+              <div className="text-[1.16667rem] font-[500]">북스토어</div>
+              <div>
+                <div className="flex gap-2">
+                  <Button size="small">관리자 메뉴</Button>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      setDrawerRegisterBuyBook(true);
+                      getAllBooks();
+                    }}
+                  >
+                    판매 신청
+                  </Button>
+                </div>
+              </div>
+            </StyledFlexSpaceBetween>
+            <div>
+              <Input.Search className="pl-2" />
+            </div>
+            <div className="grid grid-cols-2 gap-2 ml-2">
+              <div>
+                <div className="w-[140px]">
+                  <div className="h-[160px] w-full relative">
+                    <Image
+                      src="/image/bookcover/bookcover2.png"
+                      layout="fill"
+                      alt={"책이미지"}
+                    />
+                  </div>
+                  <div className="font-sans font-semibold text-base">
+                    책 제목입니다
+                  </div>
+                  <div className="text-sm text-gray-800">저자입니다</div>
+                  <div className="text-xs flex gap-2 items-center">
+                    <div className="text-xs flex">
+                      <div className="w-[10px] h-[10px] relative">
+                        <Image
+                          src="/image/star_rate_black_24dp.svg"
+                          layout="fill"
+                          alt={"책이미지"}
+                        />
+                      </div>
+                      <div className="w-[10px] h-[10px] relative">
+                        <Image
+                          src="/image/star_rate_black_24dp.svg"
+                          layout="fill"
+                          alt={"책이미지"}
+                        />
+                      </div>
+                      <div className="w-[10px] h-[10px] relative">
+                        <Image
+                          src="/image/star_rate_black_24dp.svg"
+                          layout="fill"
+                          alt={"책이미지"}
+                        />
+                      </div>
+                      <div className="w-[10px] h-[10px] relative">
+                        <Image
+                          src="/image/star_rate_black_24dp.svg"
+                          layout="fill"
+                          alt={"책이미지"}
+                        />
+                      </div>
+                    </div>
+                    <div>2명</div>
+                  </div>
+                  <div className="text-sm">12,500원</div>
+                </div>
+              </div>
+              <div>
+                <div className="w-[140px]">
+                  <div className="h-[160px] w-full relative">
+                    <Image
+                      src="/image/bookcover/bookcover2.png"
+                      layout="fill"
+                      alt={"책이미지"}
+                    />
+                  </div>
+                  <div className="font-sans font-semibold text-base">
+                    책 제목입니다
+                  </div>
+                  <div className="text-sm text-gray-800">저자입니다</div>
+                  <div className="text-xs flex gap-2 items-center">
+                    <div className="text-xs flex">
+                      <div className="w-[10px] h-[10px] relative">
+                        <Image
+                          src="/image/star_rate_black_24dp.svg"
+                          layout="fill"
+                          alt={"책이미지"}
+                        />
+                      </div>
+                      <div className="w-[10px] h-[10px] relative">
+                        <Image
+                          src="/image/star_rate_black_24dp.svg"
+                          layout="fill"
+                          alt={"책이미지"}
+                        />
+                      </div>
+                      <div className="w-[10px] h-[10px] relative">
+                        <Image
+                          src="/image/star_rate_black_24dp.svg"
+                          layout="fill"
+                          alt={"책이미지"}
+                        />
+                      </div>
+                      <div className="w-[10px] h-[10px] relative">
+                        <Image
+                          src="/image/star_rate_black_24dp.svg"
+                          layout="fill"
+                          alt={"책이미지"}
+                        />
+                      </div>
+                    </div>
+                    <div>2명</div>
+                  </div>
+                  <div className="text-sm">12,500원</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <StyledCard
             bordered={false}
             size="small"
             title={
               <StyledFlexSpaceBetween>
                 <div>
-                  <span
-                    style={{
-                      marginRight: "10px",
-                      fontSize: "1rem",
-                      fontWeight: "bold",
-                    }}
-                  >
+                  <span className="mr-[10px] text-[1rem] font-bold">
                     도전 출판
                   </span>
                 </div>
@@ -168,7 +297,7 @@ const Challenges = () => {
                 </Row>
               </Card>
             ))}
-          </StyledCard>
+          </StyledCard> */}
           <DrawerWrapper
             title={
               <span
@@ -186,6 +315,7 @@ const Challenges = () => {
             onClose={() => setDrawerRegisterBuyBook(false)}
             headerStyle={{ padding: "8px 12px 8px 12px" }}
             bodyStyle={{ backgroundColor: "#e9e9e9" }}
+            mask={false}
           >
             {drawerRegisterBuyBook && (
               <M_MyBooksTable bookData={data} loading={loading} error={error} />

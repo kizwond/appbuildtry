@@ -11,9 +11,15 @@ export const FRAGMENT_CANDIDATE_BOOK = gql`
     status
     hashtag
     timeCreated
+    timeApproved
     coverImage
     introductionOfBook
     introductionOfAuthor
     listOfIndex
+    amendReq {
+      from
+      date
+      message
+    }
   }
 `;

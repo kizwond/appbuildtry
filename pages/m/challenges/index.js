@@ -121,7 +121,14 @@ const Challenges = () => {
               <div className="text-[1.16667rem] font-[500]">북스토어</div>
               <div>
                 <div className="flex gap-2">
-                  <Button size="small">관리자 메뉴</Button>
+                  <Button
+                    size="small"
+                    onClick={() =>
+                      router.push("/admin/buy-book/examination-stage")
+                    }
+                  >
+                    관리자 메뉴
+                  </Button>
                   <Button
                     size="small"
                     onClick={() => {

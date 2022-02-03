@@ -19,4 +19,3 @@ const s3config = {
 
 
 export const s3Hash = FroalaEditor.S3.getHash(s3config);
-console.log(s3Hash)

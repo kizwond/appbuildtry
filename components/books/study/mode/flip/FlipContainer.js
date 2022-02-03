@@ -81,7 +81,7 @@ const FlipContainer = ({
   setHighlightToggle,
   saveMemo,
   sessionupdateresults,
-  finishStudy
+  finishStudy,
 }) => {
   // const router = useRouter();
   // const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
@@ -807,7 +807,7 @@ class Container extends Component {
     //서버에 보내기 위한 학습정보 리스트 생성
     this.generateStudyStatus(card_details_session, current_card_info_index);
   };
-  
+
   flip = () => {
     this.setState((prevState) => ({
       flip: !prevState.flip,
@@ -2034,7 +2034,7 @@ class Container extends Component {
               <>
                 {content.card_info.cardtype === "read" && (
                   <>
-                    <div style={{ padding: 5, width: "100%", height: "100%",border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div style={{ padding: 5, width: "100%", height: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
                           // minHeight: "calc(75vh - 150px)",
@@ -2116,7 +2116,7 @@ class Container extends Component {
                 )}
                 {content.card_info.cardtype === "general" && (
                   <>
-                    <div style={{ padding: 5, width: "100%", height: "100%",border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div style={{ padding: 5, width: "100%", height: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
                           // minHeight: "calc(75vh - 150px)",
@@ -2197,7 +2197,7 @@ class Container extends Component {
                 )}
                 {content.card_info.cardtype === "flip" && (
                   <>
-                    <div onClick={this.flip} style={{ padding: 5, width: "100%",height: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div onClick={this.flip} style={{ padding: 5, width: "100%", height: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
                           // minHeight: "calc(75vh - 150px)",
@@ -2396,7 +2396,7 @@ class Container extends Component {
               <>
                 {content.card_info.cardtype === "flip" && (
                   <>
-                    <div onClick={this.flip} style={{ padding: 5, width: "100%",height:"100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
+                    <div onClick={this.flip} style={{ padding: 5, width: "100%", height: "100%", border: "1px dashed lightgrey", borderRadius: "5px" }}>
                       <div
                         style={{
                           // minHeight: "calc(75vh - 150px)",
@@ -2594,7 +2594,7 @@ class Container extends Component {
           <div style={{ width: "95%", position: "fixed", top: "50px" }}>
             <div
               style={{
-                margin:"auto",
+                margin: "auto",
                 backgroundColor: "white",
                 width: "100%",
                 maxWidth: "972px",
@@ -2621,7 +2621,7 @@ class Container extends Component {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    marginBottom:"5px",
+                    marginBottom: "5px",
                   }}
                 >
                   <div style={{ width: "100%", display: "flex", flexDirection: "flex", alignItems: "center", justifyContent: "flex-start" }}>
@@ -2698,22 +2698,22 @@ class Container extends Component {
             <div style={{ margin: "auto", width: "100%", maxWidth: "972px", border: "1px solid lightgrey", borderRadius: "3px" }}>{statusBar}</div>
           </div>
           <div style={style_study_layout_bottom}>
-            <div style={{ width: "100%", height:"100%" }}>
+            <div style={{ width: "100%", height: "100%" }}>
               <div style={{ height: "15px", paddingLeft: "5px" }}>{makerFlagContent}</div>
               <div style={contentsDisplay}>
-                {this.state.flip && <div style={{height:"100%"}}>{face1Contents}</div>}
-                {!this.state.flip && <div style={{height:"100%"}}>{face2Contents}</div>}
+                {this.state.flip && <div style={{ height: "100%" }}>{face1Contents}</div>}
+                {!this.state.flip && <div style={{ height: "100%" }}>{face2Contents}</div>}
               </div>
             </div>
           </div>
 
           {this.state.onBackMode && (
             <>
-              <div style={{ width: "100%", textAlign: "center", marginBottom: "113px", position: "fixed", bottom: 0, left: 0}}>{goBackToCurrent}</div>
+              <div style={{ width: "100%", textAlign: "center", marginBottom: "113px", position: "fixed", bottom: 0, left: 0 }}>{goBackToCurrent}</div>
             </>
           )}
 
-          <div style={{ width: "100%", height: "57px", textAlign: "center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0}}>
+          <div style={{ width: "100%", height: "57px", textAlign: "center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0 }}>
             <div
               style={{
                 width: "95%",
@@ -2854,10 +2854,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
   if (content.content.highlight.length > 0) {
     content.content.highlight.map((element) => {
       const color = cardTypeSets[0].studyTool.highlight[element.toolType].color;
-      altered = altered.replace(
-        element.targetWord,
-        `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`
-      );
+      altered = altered.replace(element.targetWord, `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`);
       // if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
       //   altered = altered.replace(
       //     element.targetWord,
@@ -2934,6 +2931,5 @@ const contentsDisplay = {
   backgroundColor: "white",
   padding: "10px",
   alignItems: "center",
-  height:"95%",
-
+  height: "95%",
 };

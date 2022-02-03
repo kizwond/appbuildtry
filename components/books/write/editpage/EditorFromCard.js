@@ -476,10 +476,17 @@ class EditorFromCard extends Component {
       flagStar: this.state.flagStar,
       flagComment: this.state.flagComment,
     };
-    console.log(this.props.parentId);
-    this.props.onFinish(values, "inCard", this.props.parendId);
-
-    this.props.setEditorOnFromCard("");
+    console.log(values);
+    console.log(face1_array);
+    console.log(num_face2);
+    if (face1_array[0] === undefined || face1_array.length === 0) {
+      alert("내용을 입력해 주세요.");
+    } else if (num_face2 !== 0 && face1_array.length === 0) {
+      alert("내용을 입력해 주세요.");
+    } else {
+      this.props.onFinish(values, "inCard", this.props.parentId);
+      this.props.setEditorOnFromCard("");
+    }
   };
 
   componentDidUpdate() {

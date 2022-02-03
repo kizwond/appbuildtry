@@ -2709,11 +2709,11 @@ class Container extends Component {
 
           {this.state.onBackMode && (
             <>
-              <div style={{ width: "100%", textAlign: "center", marginBottom: "113px", position: "fixed", bottom: 0, left: 0, zIndex: 4 }}>{goBackToCurrent}</div>
+              <div style={{ width: "100%", textAlign: "center", marginBottom: "113px", position: "fixed", bottom: 0, left: 0}}>{goBackToCurrent}</div>
             </>
           )}
 
-          <div style={{ width: "100%", height: "57px", textAlign: "center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0, zIndex: 3 }}>
+          <div style={{ width: "100%", height: "57px", textAlign: "center", marginBottom: "50px", position: "fixed", bottom: 0, left: 0}}>
             <div
               style={{
                 width: "95%",

@@ -50,11 +50,11 @@ module.exports = {
       },
     ],
   },
-  resolve: {
-    modules: ["node_modules"],
-  },
   images: {
     domains: ["s3.ap-northeast-2.amazonaws.com"],
+  },
+  resolve: {
+    modules: ["node_modules"],
   },
   // reactStrictMode: true,
 };

@@ -10,8 +10,9 @@ export const FRAGMENT_CANDIDATE_BOOK = gql`
     authorCompany
     status
     hashtag
+    hideOrShow
     timeCreated
-    timeApproved
+    timeStatusChanged
     coverImage
     introductionOfBook
     introductionOfAuthor

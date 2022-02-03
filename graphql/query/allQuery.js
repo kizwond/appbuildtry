@@ -310,6 +310,18 @@ export const QUERY_BUY_BOOKS = gql`
     }
   }
 `;
+export const QUERY_BUY_BOOKS_BY_BUY_BOOK_ID = gql`
+  ${FRAGMENT_BUY_BOOK}
+  query getBuyBookByBuyBookId($buybook_ids: [ID]) {
+    buybook_getBuybookByBuybookIDs(buybook_ids: $buybook_ids) {
+      status
+      msg
+      buybooks {
+        ...BuyBookFragment
+      }
+    }
+  }
+`;
 
 // 유저 플래그
 export const QUERY_USER_FLAG_CONFIG = gql`

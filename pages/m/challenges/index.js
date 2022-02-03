@@ -100,7 +100,7 @@ const Challenges = () => {
             <div>
               <Input.Search className="pl-2" />
             </div>
-            <div className="flex flex-wrap justify-start gap-y-5 gap-x-3 ml-2">
+            <div className="flex flex-wrap justify-start ml-2 gap-y-5 gap-x-3">
               {buyBookData.buybook_getAllBuybook.buybooks.length > 0 &&
                 buyBookData.buybook_getAllBuybook.buybooks.map(
                   ({
@@ -119,7 +119,13 @@ const Challenges = () => {
                       price,
                     },
                   }) => (
-                    <div key={_id}>
+                    <div
+                      key={_id}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        router.push(`/m/challenges/book/${_id}`);
+                      }}
+                    >
                       <div className="h-[210px] w-[162px] relative rounded shadow-md shadow-black/50">
                         {coverImage && (
                           <Image
@@ -130,7 +136,7 @@ const Challenges = () => {
                           />
                         )}
                         {!coverImage && (
-                          <div className="w-full h-full rounded bg-emerald-500 flex justify-center items-center text-sky-50 shadow-md shadow-black/20">
+                          <div className="flex items-center justify-center w-full h-full rounded shadow-md bg-emerald-500 text-sky-50 shadow-black/20">
                             {title}
                           </div>
                         )}
@@ -139,8 +145,8 @@ const Challenges = () => {
                         {title}
                       </StyledTwoLinesEllipsis>
                       <div className="text-sm text-gray-800">{authorName}</div>
-                      <div className="text-xs flex gap-2 items-center">
-                        <div className="text-xs flex">
+                      <div className="flex items-center gap-2 text-xs">
+                        <div className="flex text-xs">
                           <div className="w-[0.75rem] h-[0.75rem] relative">
                             <Image
                               src="/image/star_rate_black_24dp.svg"

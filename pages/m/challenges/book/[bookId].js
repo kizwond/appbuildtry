@@ -1,40 +1,50 @@
+import { useQuery } from "@apollo/client";
 import { useRouter } from "next/router";
 import React from "react";
-import { QUERY_BUY_BOOKS } from "../../../../graphql/query/allQuery";
-import { initializeApollo } from "../../../../lib/apollo";
+import { QUERY_BUY_BOOKS_BY_BUY_BOOK_ID } from "../../../../graphql/query/allQuery";
+import { initializeApollo, addApolloState } from "../../../../lib/apollo";
 
 const BuyBookDetail = (props) => {
   const router = useRouter();
-  console.log(router.query.bookId);
+  // if (router.isFallback) {
+  //   <div>Loading....</div>;
+  // }
   console.log({ props });
+
+  const { data } = useQuery(QUERY_BUY_BOOKS_BY_BUY_BOOK_ID, {
+    onCompleted: (data) => console.log(data),
+    variables: {
+      buybook_ids: [router.query.bookId],
+    },
+  });
   return <div>dd</div>;
 };
 
 export default BuyBookDetail;
 
-export const getStaticProps = async (props) => {
-  console.log(props);
-  const apolloClient = initializeApollo(null, props);
-  await apolloClient.query({
-    query: QUERY_BUY_BOOKS,
-  });
-  console.log({ apolloClient });
-  return {
-    props: {
-      initialApolloState: apolloClient.cache.extract(),
-    },
-  };
-};
+// export const getStaticProps = async ({ params }) => {
+//   console.log({ params });
+//   const apolloClient = initializeApollo();
+//   await apolloClient.query({
+//     query: QUERY_BUY_BOOKS_BY_BUY_BOOK_ID,
+//     variables: { buybook_ids: [params.bookId] },
+//   });
 
-export async function getStaticPaths({ context }) {
-  return {
-    paths: [
-      {
-        params: {
-          bookId: "23",
-        },
-      },
-    ],
-    fallback: true,
-  };
-}
+//   return addApolloState(apolloClient, {
+//     props: {},
+//     revalidate: 1,
+//   });
+// };
+
+// export async function getStaticPaths({ context }) {
+//   return {
+//     paths: [
+//       {
+//         params: {
+//           bookId: "23",
+//         },
+//       },
+//     ],
+//     fallback: true,
+//   };
+// }

@@ -15,3 +15,13 @@ export const MUTATION_CREATE_CANDIDATE_BOOK_FROM_MY_BOOK = gql`
     }
   }
 `;
+
+export const MUTATION_UPLOAD_BOOKCOVER = gql`
+  mutation uploadBookcover($forUploadBookCover: forUploadBookCover) {
+    candibook_uploadBookCover(forUploadBookCover: $forUploadBookCover) {
+      status
+      msg
+      data1
+    }
+  }
+`;

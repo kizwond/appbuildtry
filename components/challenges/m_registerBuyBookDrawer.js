@@ -1,15 +1,18 @@
 import { useMutation } from "@apollo/client";
 import { Card, Drawer, Form, Input } from "antd";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 
 import { MUTATION_CREATE_CANDIDATE_BOOK_FROM_MY_BOOK } from "../../graphql/mutation/candidateBook";
+import UploadBookcover from "./uploadBookcover";
 
 const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const { resetFields, submit } = form;
+
+  const imgRef = useRef();
 
   const [createCandiBookFromMyBook] = useMutation(
     MUTATION_CREATE_CANDIDATE_BOOK_FROM_MY_BOOK,
@@ -47,7 +50,7 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
             authorName,
             authorCompany: publisher,
             hashtag,
-            coverImage: null,
+            coverImage: imgRef.current,
             introductionOfBook,
             introductionOfAuthor,
             listOfIndex,
@@ -113,6 +116,9 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
             createCandiBook({ mybook_id, ...values });
           }}
         >
+          <div className="flex justify-center items-center">
+            <UploadBookcover ref={(ref) => (imgRef.current = ref)} />
+          </div>
           <Form.Item
             label="판매 책 제목 설정"
             name="titleForSale"
@@ -120,6 +126,7 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
           >
             <Input size="small" allowClear />
           </Form.Item>
+
           <Form.Item
             label="출판사"
             name="publisher"

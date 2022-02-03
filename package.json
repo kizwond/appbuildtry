@@ -15,6 +15,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
     "antd": "^4.17.0-alpha.9",
+    "antd-img-crop": "^4.1.0",
     "apollo-upload-client": "^16.0.0",
     "axios": "^0.21.1",
     "deepmerge": "^4.2.2",

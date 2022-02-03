@@ -467,14 +467,25 @@ class Editor extends Component {
     } else {
       selectionsArray = null;
     }
-
+    console.log("awefasdfasdfasdfasdfasdfasdfasdfasd",this.state.flagStar)
+    if(this.state.flagStar === "default"){
+      var flag = 0
+    } else {
+      flag = this.state.flagStar
+    }
+    if(this.state.flagComment === ""){
+      var comment = null
+    } else {
+      comment = this.state.flagComment
+    }
+    console.log(flag)
     const values = {
       face1: face1_array,
       selection: selectionsArray,
       face2: face2_array,
       annotation: annotation_array,
-      flagStar: this.state.flagStar,
-      flagComment: this.state.flagComment,
+      flagStar: flag,
+      flagComment: comment,
     };
     console.log(values);
     console.log(face1_array);

@@ -84,7 +84,7 @@ const FloatingMenu = ({
   const info = () => {
     var selectionText = sessionStorage.getItem("selectionText");
     console.log(selectionText);
-    if (selectionText === null) {
+    if (selectionText === null || selectionText === "") {
       selectionText = "선택영역이 없습니다.";
       message.warning({
         content: selectionText,
@@ -324,10 +324,11 @@ const FloatingMenu = ({
   };
 
   async function editorModalOpen(menu) {
+    console.log(menu)
     const hello = async () => search(menu);
     await hello().then(setResult(searchResult));
 
-    if (memu === "영한사전") {
+    if (menu === "영한사전") {
       showModal();
     } else {
       alert("준비중입니다.");

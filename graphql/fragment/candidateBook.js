@@ -6,6 +6,7 @@ export const FRAGMENT_CANDIDATE_BOOK = gql`
     originalMybook_id
     applicant_id
     title
+    price
     authorName
     authorCompany
     status

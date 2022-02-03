@@ -116,7 +116,7 @@ const Challenges = () => {
     <M_Layout>
       {buyBookData && (
         <>
-          <div className="relative top-[40px] h-[calc(100vh_-_40px)] overflow-y-auto px-[8px] min-w-[360px] flex flex-col gap-3 ">
+          <div className="relative top-[40px] h-[calc(100vh_-_60px)] overflow-auto px-[8px] flex flex-col gap-3 ">
             <StyledFlexSpaceBetween className="mt-2">
               <div className="text-[1.16667rem] font-[500]">북스토어</div>
               <div>
@@ -137,104 +137,194 @@ const Challenges = () => {
             <div>
               <Input.Search className="pl-2" />
             </div>
-            <div className="grid grid-cols-2 gap-2 ml-2">
+            <div className="flex flex-wrap justify-start gap-y-5 gap-x-3 ml-2">
               <div>
-                <div className="w-[140px]">
-                  <div className="h-[160px] w-full relative">
-                    <Image
-                      src="/image/bookcover/bookcover2.png"
-                      layout="fill"
-                      alt={"책이미지"}
-                    />
-                  </div>
-                  <div className="font-sans font-semibold text-base">
-                    책 제목입니다
-                  </div>
-                  <div className="text-sm text-gray-800">저자입니다</div>
-                  <div className="text-xs flex gap-2 items-center">
-                    <div className="text-xs flex">
-                      <div className="w-[10px] h-[10px] relative">
-                        <Image
-                          src="/image/star_rate_black_24dp.svg"
-                          layout="fill"
-                          alt={"책이미지"}
-                        />
-                      </div>
-                      <div className="w-[10px] h-[10px] relative">
-                        <Image
-                          src="/image/star_rate_black_24dp.svg"
-                          layout="fill"
-                          alt={"책이미지"}
-                        />
-                      </div>
-                      <div className="w-[10px] h-[10px] relative">
-                        <Image
-                          src="/image/star_rate_black_24dp.svg"
-                          layout="fill"
-                          alt={"책이미지"}
-                        />
-                      </div>
-                      <div className="w-[10px] h-[10px] relative">
-                        <Image
-                          src="/image/star_rate_black_24dp.svg"
-                          layout="fill"
-                          alt={"책이미지"}
-                        />
-                      </div>
-                    </div>
-                    <div>2명</div>
-                  </div>
-                  <div className="text-sm">12,500원</div>
+                <div className="h-[190px] w-[162px] relative">
+                  <Image
+                    src="/image/bookcover/bookcover2.png"
+                    layout="fill"
+                    alt={"책이미지"}
+                  />
                 </div>
+                <div className="font-sans font-semibold text-base">
+                  책 제목입니다
+                </div>
+                <div className="text-sm text-gray-800">저자입니다</div>
+                <div className="text-xs flex gap-2 items-center">
+                  <div className="text-xs flex">
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                  </div>
+                  <div className="text-xs">2명</div>
+                </div>
+                <div className="text-sm">12,500원</div>
               </div>
               <div>
-                <div className="w-[140px]">
-                  <div className="h-[160px] w-full relative">
-                    <Image
-                      src="/image/bookcover/bookcover2.png"
-                      layout="fill"
-                      alt={"책이미지"}
-                    />
-                  </div>
-                  <div className="font-sans font-semibold text-base">
-                    책 제목입니다
-                  </div>
-                  <div className="text-sm text-gray-800">저자입니다</div>
-                  <div className="text-xs flex gap-2 items-center">
-                    <div className="text-xs flex">
-                      <div className="w-[10px] h-[10px] relative">
-                        <Image
-                          src="/image/star_rate_black_24dp.svg"
-                          layout="fill"
-                          alt={"책이미지"}
-                        />
-                      </div>
-                      <div className="w-[10px] h-[10px] relative">
-                        <Image
-                          src="/image/star_rate_black_24dp.svg"
-                          layout="fill"
-                          alt={"책이미지"}
-                        />
-                      </div>
-                      <div className="w-[10px] h-[10px] relative">
-                        <Image
-                          src="/image/star_rate_black_24dp.svg"
-                          layout="fill"
-                          alt={"책이미지"}
-                        />
-                      </div>
-                      <div className="w-[10px] h-[10px] relative">
-                        <Image
-                          src="/image/star_rate_black_24dp.svg"
-                          layout="fill"
-                          alt={"책이미지"}
-                        />
-                      </div>
-                    </div>
-                    <div>2명</div>
-                  </div>
-                  <div className="text-sm">12,500원</div>
+                <div className="h-[190px] w-[162px] relative">
+                  <Image
+                    src="/image/bookcover/bookcover2.png"
+                    layout="fill"
+                    alt={"책이미지"}
+                  />
                 </div>
+                <div className="font-sans font-semibold text-base">
+                  책 제목입니다
+                </div>
+                <div className="text-sm text-gray-800">저자입니다</div>
+                <div className="text-xs flex gap-2 items-center">
+                  <div className="text-xs flex">
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                  </div>
+                  <div className="text-xs">2명</div>
+                </div>
+                <div className="text-sm">12,500원</div>
+              </div>
+              <div>
+                <div className="h-[190px] w-[162px] relative">
+                  <Image
+                    src="/image/bookcover/bookcover2.png"
+                    layout="fill"
+                    alt={"책이미지"}
+                  />
+                </div>
+                <div className="font-sans font-semibold text-base">
+                  책 제목입니다
+                </div>
+                <div className="text-sm text-gray-800">저자입니다</div>
+                <div className="text-xs flex gap-2 items-center">
+                  <div className="text-xs flex">
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                  </div>
+                  <div className="text-xs">2명</div>
+                </div>
+                <div className="text-sm">12,500원</div>
+              </div>
+              <div>
+                <div className="h-[190px] w-[162px] relative">
+                  <Image
+                    src="/image/bookcover/bookcover2.png"
+                    layout="fill"
+                    alt={"책이미지"}
+                  />
+                </div>
+                <div className="font-sans font-semibold text-base">
+                  책 제목입니다
+                </div>
+                <div className="text-sm text-gray-800">저자입니다</div>
+                <div className="text-xs flex gap-2 items-center">
+                  <div className="text-xs flex">
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                    <div className="w-[0.75rem] h-[0.75rem] relative">
+                      <Image
+                        src="/image/star_rate_black_24dp.svg"
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                  </div>
+                  <div className="text-xs">2명</div>
+                </div>
+                <div className="text-sm">12,500원</div>
               </div>
             </div>
           </div>

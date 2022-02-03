@@ -31,7 +31,7 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   
   let {levelCurrent, recentStudyTime, recentStudyRatio, studyTimesInSession, levelUpdated}=card_details_session[current_card_info_index].studyStatus
   let {newLevel, needStudyTime, needStudyTimeTmp} = calculateNextLevelAndNeedStudyTime(levelCurrent, recentStudyTime,recentStudyRatio, studyRatio, studyTimesInSession, levelConfigs, levelUpdated)  
-  card_details_session[current_card_info_index].studyStatus.levelUpdated = true
+  card_details_session[current_card_info_index].studyStatus.levelPrev = levelCurrent
   card_details_session[current_card_info_index].studyStatus.levelCurrent = newLevel
   card_details_session[current_card_info_index].studyStatus.needStudyTime = needStudyTime;
   card_details_session[current_card_info_index].studyStatus.needStudyTimeTmp = needStudyTimeTmp;
@@ -44,21 +44,22 @@ const calculateStudyCase = (selection, current_card_info_index, timer, levelConf
   card_details_session[current_card_info_index].studyStatus.totalStudyTimes += 1;
   
   card_details_session[current_card_info_index].studyStatus.isUpdated = true;
-
+  
   // const dataForRegression = JSON.parse(sessionStorage.getItem("dataForRegression"));
   // dataForRegression.push({
-  //   buybook_id : card_details_session[current_card_info_index].card_info.buybook_id,
-  //   totalStudyTimes : card_details_session[current_card_info_index].studyStatus.totalStudyTimes,
-  //   levelOriginal : card_details_session[current_card_info_index].studyStatus.levelOriginal,
-  //   currentLevStudyTimes  : card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes,
-  //   currentLevStudyHour  : card_details_session[current_card_info_index].studyStatus.currentLevStudyHour,
-  //   currentLevElapsedHour : card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour,
-  //   levelCurrent : card_details_session[current_card_info_index].studyStatus.levelCurrent,
-  // })
-  // sessionStorage.setItem("dataForRegression", JSON.stringify(dataForRegression))
-
-  updateSessionResult(card_details_session[current_card_info_index])
-  
+    //   buybook_id : card_details_session[current_card_info_index].card_info.buybook_id,
+    //   totalStudyTimes : card_details_session[current_card_info_index].studyStatus.totalStudyTimes,
+    //   levelOriginal : card_details_session[current_card_info_index].studyStatus.levelOriginal,
+    //   currentLevStudyTimes  : card_details_session[current_card_info_index].studyStatus.currentLevStudyTimes,
+    //   currentLevStudyHour  : card_details_session[current_card_info_index].studyStatus.currentLevStudyHour,
+    //   currentLevElapsedHour : card_details_session[current_card_info_index].studyStatus.currentLevElapsedHour,
+    //   levelCurrent : card_details_session[current_card_info_index].studyStatus.levelCurrent,
+    // })
+    // sessionStorage.setItem("dataForRegression", JSON.stringify(dataForRegression))
+    
+    updateSessionResult(card_details_session[current_card_info_index])
+    card_details_session[current_card_info_index].studyStatus.levelUpdated = true
+    
 
   return card_details_session;
 };
@@ -155,7 +156,20 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer, leve
   }
   
   card_details_session[current_card_info_index].studyStatus.recentSelection = selection;
-  card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;  
+  card_details_session[current_card_info_index].studyStatus.recentSelectTime = now;
+  
+  // 피니시일 때 타이머가 정상 집계되지 않는 문제 때문에 어거지로 끌고 옴
+  if (selection == 'finish'){
+    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));  
+    console.log('cardlist_to_send', cardlist_to_send)
+    if (cardlist_to_send != null){
+      const prevSelectTime = cardlist_to_send[cardlist_to_send.length-1].studyStatus.recentSelectTime
+      timer = Date.now() - Date.parse(prevSelectTime)
+    } else {
+      const timeStarted = sessionStorage.getItem("started");  
+      timer = Date.now() - Date.parse(timeStarted)
+    }
+  }
   card_details_session[current_card_info_index].studyStatus.totalStayHour += timer;  
   card_details_session[current_card_info_index].studyStatus.recentStayHour = timer;  
 

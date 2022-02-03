@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import { Upload } from "antd";
 import ImgCrop from "antd-img-crop";
 import { useMutation } from "@apollo/client";
-import { MUTATION_UPLOAD_BOOKCOVER } from "../graphql/mutation/candidateBook";
+import { MUTATION_UPLOAD_BOOKCOVER } from "../../graphql/mutation/candidateBook";
 
-const Demo = () => {
+const UploadBookcover = forwardRef(function UploadName(props, ref) {
   const [uploadCover] = useMutation(MUTATION_UPLOAD_BOOKCOVER);
   const dummyRequest = async ({ file, onSuccess }) => {
     console.log({ file });
@@ -18,6 +18,7 @@ const Demo = () => {
       .then((res) => {
         if (res.data.candibook_uploadBookCover.status === "200") {
           console.log({ res });
+          ref(res.data.candibook_uploadBookCover.data1);
           onSuccess("ok");
         }
       })
@@ -58,9 +59,8 @@ const Demo = () => {
           {fileList.length === 0 ? "+ 표지 등록" : "표지 변경"}
         </Upload>
       </ImgCrop>
-      <pre>{JSON.stringify(fileList, null, 2)}</pre>
     </div>
   );
-};
+});
 
-export default Demo;
+export default UploadBookcover;

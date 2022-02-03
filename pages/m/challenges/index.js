@@ -15,7 +15,10 @@ import { Button, Drawer, Input } from "antd";
 
 import M_MyBooksTable from "../../../components/challenges/M_MyBooksTable.js";
 import M_Layout from "../../../components/layout/M_Layout.js";
-import { StyledFlexSpaceBetween } from "../../../components/common/styledComponent/page";
+import {
+  StyledFlexSpaceBetween,
+  StyledTwoLinesEllipsis,
+} from "../../../components/common/styledComponent/page";
 
 const Challenges = () => {
   const [drawerRegisterBuyBook, setDrawerRegisterBuyBook] = useState(false);
@@ -117,16 +120,24 @@ const Challenges = () => {
                     },
                   }) => (
                     <div key={_id}>
-                      <div className="h-[210px] w-[162px] relative">
-                        <Image
-                          src={coverImage}
-                          layout="fill"
-                          alt={"책이미지"}
-                        />
+                      <div className="h-[210px] w-[162px] relative rounded shadow-md shadow-black/50">
+                        {coverImage && (
+                          <Image
+                            className="rounded"
+                            src={coverImage}
+                            layout="fill"
+                            alt={"책이미지"}
+                          />
+                        )}
+                        {!coverImage && (
+                          <div className="w-full h-full rounded bg-emerald-500 flex justify-center items-center text-sky-50 shadow-md shadow-black/20">
+                            {title}
+                          </div>
+                        )}
                       </div>
-                      <div className="font-sans font-semibold text-base">
+                      <StyledTwoLinesEllipsis className="w-[162px] font-sans font-semibold text-base mt-1">
                         {title}
-                      </div>
+                      </StyledTwoLinesEllipsis>
                       <div className="text-sm text-gray-800">{authorName}</div>
                       <div className="text-xs flex gap-2 items-center">
                         <div className="text-xs flex">

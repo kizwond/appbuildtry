@@ -163,7 +163,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setMakerFlagStyle(data1.cardtypeset_getbymybookids.cardtypesets[0].makerFlag_style);
       setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
-      
+
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
       // 필터링 함수가 들어간다.
       sessionStorage.setItem("cardListStudying", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
@@ -441,7 +441,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   function userFlagChange(flag) {
     console.log("userFlagChangeClicked!!!");
     console.log(flag);
-    console.log(cardInfo)
+    console.log(cardInfo);
     updateUserFlag(cardInfo.card_info.cardset_id, cardInfo._id, flag);
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const filtered = cardListStudying.findIndex((item) => item._id === cardInfo._id);
@@ -471,13 +471,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     if (document.getSelection) {
       text = document.getSelection().toString();
       textRange = document.getSelection();
-      
+
       console.log("case1", text);
     } else if (typeof document.selection != "undefined") {
       text = document.selection;
       console.log("case2", text);
     }
-    sessionStorage.setItem("selectionText",text);
+    sessionStorage.setItem("selectionText", text);
     console.log("end");
 
     if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
@@ -1524,7 +1524,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                         <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                           <div
                             style={{
-                              width: "80%",
+                              width: "100%",
                               backgroundColor: face_style[0].background.color,
                               marginTop: face_style[0].outer_margin.top,
                               marginBottom: face_style[0].outer_margin.bottom,
@@ -2485,7 +2485,38 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                       }}
                                     >
                                       {/* <FroalaEditorView model={item} /> */}
-                                      <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
+                                      
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span>
+                                          {index === 0 && (
+                                            <>
+                                              <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➀</span>
+                                            </>
+                                          )}
+                                          {index === 1 && (
+                                            <>
+                                              <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➁</span>
+                                            </>
+                                          )}
+                                          {index === 2 && (
+                                            <>
+                                              <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➂</span>
+                                            </>
+                                          )}
+                                          {index === 3 && (
+                                            <>
+                                              <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➃</span>
+                                            </>
+                                          )}
+                                          {index === 4 && (
+                                            <>
+                                              <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➄</span>
+                                            </>
+                                          )}
+                                        </span>
+                                        <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
+                                        {/* <FroalaEditorView model={item} /> */}
+                                      </div>
                                     </div>
                                   </>
                                 ))}
@@ -2546,7 +2577,50 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     }}
                                   >
                                     {/* <FroalaEditorView model={item} /> */}
-                                    <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
+                                    
+                                    {item.replace(/(<([^>]+)>)/ig,"") === "1" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➀</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item.replace(/(<([^>]+)>)/ig,"") === "2" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➁</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item.replace(/(<([^>]+)>)/ig,"") === "3" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➂</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item.replace(/(<([^>]+)>)/ig,"") === "4" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➃</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item.replace(/(<([^>]+)>)/ig,"") === "5" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➄</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  
+
+                                  {index !== 0 && <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />}
                                   </div>
                                 </>
                               ))}
@@ -3332,6 +3406,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
     var contentsToRender = (
       <>
         <div
+          className="direct_read"
           id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content._id}`}
           dangerouslySetInnerHTML={{ __html: altered }}
           onContextMenu={getSelectionText2}
@@ -3344,6 +3419,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
     var contentsToRender = (
       <>
         <div
+          className="direct_read"
           id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content._id}`}
           dangerouslySetInnerHTML={{ __html: altered }}
           onPointerUp={getSelectionText2}
@@ -3356,6 +3432,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
     var contentsToRender = (
       <>
         <div
+          className="direct_read"
           id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content._id}`}
           dangerouslySetInnerHTML={{ __html: altered }}
           onMouseUp={getSelectionText2}

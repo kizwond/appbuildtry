@@ -1,6 +1,7 @@
-import { useQuery } from '@apollo/client';
+import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { useEffect } from 'react';
 import {
   QUERY_BUY_BOOKS_BY_BUY_BOOK_ID,
   QUERY_BUY_BOOKS,
@@ -18,6 +19,7 @@ import { initializeApollo, addApolloState } from '../../../../lib/apollo';
 // 그래서 revalidate: 1을 주는 것인가?
 const BuyBookDetail = (props) => {
   const router = useRouter();
+
   if (router.isFallback) {
     return <div>Loading....</div>;
   }
@@ -68,6 +70,7 @@ export const getStaticProps = async ({ params }) => {
 
   return addApolloState(apolloClient, {
     props: {},
+    revalidate: 1,
   });
 };
 

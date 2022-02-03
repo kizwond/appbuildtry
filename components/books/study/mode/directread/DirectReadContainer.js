@@ -47,10 +47,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     var book_id = JSON.parse(sessionStorage.getItem("books_selected"));
     var book_ids = book_id.map((item) => item.book_id);
     // console.log(book_ids);
-    console.log(indexChanged);
+    // console.log(indexChanged);
 
     var first_index_tmp = localStorage.getItem("first_index");
-    console.log(first_index_tmp);
+    // console.log(first_index_tmp);
     if (indexChanged) {
       if (indexChanged === first_index_tmp) {
         var first_index = first_index_tmp;
@@ -95,18 +95,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const [selectedCardType, setSelectedCardType] = useState();
   const [updateMemoState, setUpdateMemoState] = useState();
   const [memo, setMemo] = useState();
-
-  const [face1row1, setFace1row1] = useState(true);
-  const [face1row2, setFace1row2] = useState(true);
-  const [face1row3, setFace1row3] = useState(true);
-  const [face1row4, setFace1row4] = useState(true);
-  const [face1row5, setFace1row5] = useState(true);
-
-  const [face2row1, setFace2row1] = useState(true);
-  const [face2row2, setFace2row2] = useState(true);
-  const [face2row3, setFace2row3] = useState(true);
-  const [face2row4, setFace2row4] = useState(true);
-  const [face2row5, setFace2row5] = useState(true);
 
   const [face1row, setFace1row] = useState({ face1row1: true, face1row2: true, face1row3: true, face1row4: true, face1row5: true });
   const [face2row, setFace2row] = useState({ face2row1: true, face2row2: true, face2row3: true, face2row4: true, face2row5: true });
@@ -175,8 +163,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setMakerFlagStyle(data1.cardtypeset_getbymybookids.cardtypesets[0].makerFlag_style);
       setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
-      sessionStorage.setItem("cardListStudying", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
+      
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
+      // 필터링 함수가 들어간다.
+      sessionStorage.setItem("cardListStudying", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
       setUserFlagDetails(data1.userflagconfig_get.userflagconfigs[0].details);
       const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
         return item.content.mycontent_id;
@@ -451,9 +441,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   function userFlagChange(flag) {
     console.log("userFlagChangeClicked!!!");
     console.log(flag);
-    updateUserFlag(cardInfo.card_info.cardset_id, cardInfo.card_info.card_id, flag);
+    console.log(cardInfo)
+    updateUserFlag(cardInfo.card_info.cardset_id, cardInfo._id, flag);
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const filtered = cardListStudying.findIndex((item) => item.card_info.card_id === cardInfo.card_info.card_id);
+    const filtered = cardListStudying.findIndex((item) => item._id === cardInfo._id);
     console.log(filtered);
     cardListStudying[filtered].content.userFlag = Number(flag);
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
@@ -475,17 +466,18 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     console.log("hello");
     var text = null;
     var textRange = null;
-    console.log(typeof document.selection);
-    console.log(document.selection);
+    // console.log(typeof document.selection);
+    // console.log(document.selection);
     if (document.getSelection) {
       text = document.getSelection().toString();
       textRange = document.getSelection();
-      sessionStorage.setItem("selectionText", text);
+      
       console.log("case1", text);
     } else if (typeof document.selection != "undefined") {
       text = document.selection;
       console.log("case2", text);
     }
+    sessionStorage.setItem("selectionText",text);
     console.log("end");
 
     if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
@@ -769,8 +761,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     var card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
     if (card_details_session && cardTypeSets) {
       var contents = card_details_session.map((content) => {
-        console.log("카드에 스타일 입히기 시작", cardTypeSets);
-        console.log(content);
+        // console.log("카드에 스타일 입히기 시작", cardTypeSets);
+        // console.log(content);
         const current_card_style_set = cardTypeSets.filter((item) => item._id === content.card_info.cardtypeset_id);
         const statusCurrent = content.studyStatus.statusCurrent;
         //   console.log(current_card_style_set);
@@ -3062,7 +3054,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   const onClickCard = (card_id, from, group, card_info) => {
     console.log(card_info);
-    sessionStorage.removeItem("selectionText");
+    // sessionStorage.removeItem("selectionText");
     const selected1 = document.getElementsByClassName(card_id);
     const selected2 = document.getElementsByClassName("other");
 
@@ -3366,7 +3358,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
         <div
           id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content._id}`}
           dangerouslySetInnerHTML={{ __html: altered }}
-          onPointerUp={getSelectionText2}
+          onMouseUp={getSelectionText2}
         ></div>
       </>
     );

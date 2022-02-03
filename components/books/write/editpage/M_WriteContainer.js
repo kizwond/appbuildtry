@@ -1071,9 +1071,17 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                   >
                                     내용편집
                                   </Button>
+                                  <Button
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                  ></Button>
                                 </>
                               ) : (
                                 <>
+                                  <span style={{ fontSize: "0.8rem" }}>구매한 카드는 편집 및 삭제가 불가합니다.</span>
                                   <Button
                                     icon={<EditOutlined />}
                                     onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
@@ -1084,24 +1092,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                   >
                                     내용편집
                                   </Button>
+                                  <Button
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                    disabled
+                                  ></Button>
                                 </>
                               )}
-                              {/* <Button
-                                icon={<EditOutlined />}
-                                onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
-                                size="small"
-                                type="secondary"
-                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                              >
-                                내용편집
-                              </Button> */}
-                              <Button
-                                icon={<DeleteOutlined />}
-                                onClick={() => deletecard(content.card_info.cardset_id, content._id)}
-                                size="small"
-                                type="secondary"
-                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                              ></Button>
                             </Space>
                           </div>
                         </div>
@@ -1270,9 +1270,17 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                   >
                                     내용편집
                                   </Button>
+                                  <Button
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                  ></Button>
                                 </>
                               ) : (
                                 <>
+                                  <span style={{ fontSize: "0.8rem" }}>구매한 카드는 편집 및 삭제가 불가합니다.</span>
                                   <Button
                                     icon={<EditOutlined />}
                                     onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
@@ -1283,24 +1291,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                   >
                                     내용편집
                                   </Button>
+                                  <Button
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                    disabled
+                                  ></Button>
                                 </>
                               )}
-                              {/* <Button
-                                icon={<EditOutlined />}
-                                onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
-                                size="small"
-                                type="secondary"
-                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                              >
-                                내용편집
-                              </Button> */}
-                              <Button
-                                icon={<DeleteOutlined />}
-                                onClick={() => deletecard(content.card_info.cardset_id, content._id)}
-                                size="small"
-                                type="secondary"
-                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                              ></Button>
                             </Space>
                           </div>
                         </div>
@@ -1406,9 +1406,17 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                   >
                                     내용편집
                                   </Button>
+                                  <Button
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                  ></Button>
                                 </>
                               ) : (
                                 <>
+                                  <span style={{ fontSize: "0.8rem" }}>구매한 카드는 편집 및 삭제가 불가합니다.</span>
                                   <Button
                                     icon={<EditOutlined />}
                                     onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
@@ -1419,24 +1427,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                   >
                                     내용편집
                                   </Button>
+                                  <Button
+                                    icon={<DeleteOutlined />}
+                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                    size="small"
+                                    type="secondary"
+                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                    disabled
+                                  ></Button>
                                 </>
                               )}
-                              {/* <Button
-                                icon={<EditOutlined />}
-                                onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
-                                size="small"
-                                type="secondary"
-                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                              >
-                                내용편집
-                              </Button> */}
-                              <Button
-                                icon={<DeleteOutlined />}
-                                onClick={() => deletecard(content.card_info.cardset_id, content._id)}
-                                size="small"
-                                type="secondary"
-                                style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                              ></Button>
                             </Space>
                           </div>
                         </div>
@@ -1564,9 +1564,17 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                     >
                                       내용편집
                                     </Button>
+                                    <Button
+                                      icon={<DeleteOutlined />}
+                                      onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                      size="small"
+                                      type="secondary"
+                                      style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                    ></Button>
                                   </>
                                 ) : (
                                   <>
+                                    <span style={{ fontSize: "0.8rem" }}>구매한 카드는 편집 및 삭제가 불가합니다.</span>
                                     <Button
                                       icon={<EditOutlined />}
                                       onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
@@ -1577,24 +1585,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                     >
                                       내용편집
                                     </Button>
+                                    <Button
+                                      icon={<DeleteOutlined />}
+                                      onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                      size="small"
+                                      type="secondary"
+                                      style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                      disabled
+                                    ></Button>
                                   </>
                                 )}
-                                {/* <Button
-                                  icon={<EditOutlined />}
-                                  onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
-                                  size="small"
-                                  type="secondary"
-                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                >
-                                  내용편집
-                                </Button> */}
-                                <Button
-                                  icon={<DeleteOutlined />}
-                                  onClick={() => deletecard(content.card_info.cardset_id, content._id)}
-                                  size="small"
-                                  type="secondary"
-                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                ></Button>
                               </Space>
                             </div>
                           </div>
@@ -1830,9 +1830,17 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                     >
                                       내용편집
                                     </Button>
+                                    <Button
+                                      icon={<DeleteOutlined />}
+                                      onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                      size="small"
+                                      type="secondary"
+                                      style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                    ></Button>
                                   </>
                                 ) : (
                                   <>
+                                    <span style={{ fontSize: "0.8rem" }}>구매한 카드는 편집 및 삭제가 불가합니다.</span>
                                     <Button
                                       icon={<EditOutlined />}
                                       onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
@@ -1843,25 +1851,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                     >
                                       내용편집
                                     </Button>
+                                    <Button
+                                      icon={<DeleteOutlined />}
+                                      onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                      size="small"
+                                      type="secondary"
+                                      style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                      disabled
+                                    ></Button>
                                   </>
                                 )}
-
-                                {/* <Button
-                                  icon={<EditOutlined />}
-                                  onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
-                                  size="small"
-                                  type="secondary"
-                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                >
-                                  내용편집
-                                </Button> */}
-                                <Button
-                                  icon={<DeleteOutlined />}
-                                  onClick={() => deletecard(content.card_info.cardset_id, content._id)}
-                                  size="small"
-                                  type="secondary"
-                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                ></Button>
                               </Space>
                             </div>
                           </div>
@@ -1894,9 +1893,17 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                     >
                                       내용편집
                                     </Button>
+                                    <Button
+                                      icon={<DeleteOutlined />}
+                                      onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                      size="small"
+                                      type="secondary"
+                                      style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                    ></Button>
                                   </>
                                 ) : (
                                   <>
+                                    <span style={{ fontSize: "0.8rem" }}>구매한 카드는 편집 및 삭제가 불가합니다.</span>
                                     <Button
                                       icon={<EditOutlined />}
                                       onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
@@ -1907,24 +1914,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                     >
                                       내용편집
                                     </Button>
+                                    <Button
+                                      icon={<DeleteOutlined />}
+                                      onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                      size="small"
+                                      type="secondary"
+                                      style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                      disabled
+                                    ></Button>
                                   </>
                                 )}
-                                {/* <Button
-                                  icon={<EditOutlined />}
-                                  onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
-                                  size="small"
-                                  type="secondary"
-                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                >
-                                  내용편집
-                                </Button> */}
-                                <Button
-                                  icon={<DeleteOutlined />}
-                                  onClick={() => deletecard(content.card_info.cardset_id, content._id)}
-                                  size="small"
-                                  type="secondary"
-                                  style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                ></Button>
                               </Space>
                             </div>
                           </div>
@@ -2155,9 +2154,17 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                       >
                                         내용편집
                                       </Button>
+                                      <Button
+                                        icon={<DeleteOutlined />}
+                                        onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                        size="small"
+                                        type="secondary"
+                                        style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                      ></Button>
                                     </>
                                   ) : (
                                     <>
+                                      <span style={{ fontSize: "0.8rem" }}>구매한 카드는 편집 및 삭제가 불가합니다.</span>
                                       <Button
                                         icon={<EditOutlined />}
                                         onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
@@ -2168,24 +2175,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                       >
                                         내용편집
                                       </Button>
+                                      <Button
+                                        icon={<DeleteOutlined />}
+                                        onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                        size="small"
+                                        type="secondary"
+                                        style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                        disabled
+                                      ></Button>
                                     </>
                                   )}
-                                  {/* <Button
-                                    icon={<EditOutlined />}
-                                    onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
-                                    size="small"
-                                    type="secondary"
-                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                  >
-                                    내용편집
-                                  </Button> */}
-                                  <Button
-                                    icon={<DeleteOutlined />}
-                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
-                                    size="small"
-                                    type="secondary"
-                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                  ></Button>
                                 </Space>
                               </div>
                             </div>
@@ -2218,9 +2217,17 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                       >
                                         내용편집
                                       </Button>
+                                      <Button
+                                        icon={<DeleteOutlined />}
+                                        onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                        size="small"
+                                        type="secondary"
+                                        style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                      ></Button>
                                     </>
                                   ) : (
                                     <>
+                                      <span style={{ fontSize: "0.8rem" }}>구매한 카드는 편집 및 삭제가 불가합니다.</span>
                                       <Button
                                         icon={<EditOutlined />}
                                         onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
@@ -2231,24 +2238,16 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                       >
                                         내용편집
                                       </Button>
+                                      <Button
+                                        icon={<DeleteOutlined />}
+                                        onClick={() => deletecard(content.card_info.cardset_id, content._id)}
+                                        size="small"
+                                        type="secondary"
+                                        style={{ fontSize: "0.75rem", borderRadius: "5px" }}
+                                        disabled
+                                      ></Button>
                                     </>
                                   )}
-                                  {/* <Button
-                                    icon={<EditOutlined />}
-                                    onClick={() => onClickCardUpdate(content_value, current_card_style[0], content)}
-                                    size="small"
-                                    type="secondary"
-                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                  >
-                                    내용편집
-                                  </Button> */}
-                                  <Button
-                                    icon={<DeleteOutlined />}
-                                    onClick={() => deletecard(content.card_info.cardset_id, content._id)}
-                                    size="small"
-                                    type="secondary"
-                                    style={{ fontSize: "0.75rem", borderRadius: "5px" }}
-                                  ></Button>
                                 </Space>
                               </div>
                             </div>
@@ -2373,7 +2372,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
 
   return (
     <>
-      <div style={{ width: "90%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
+      <div style={{ width: "95%", margin: "auto", marginBottom: "120px", marginTop: "50px" }}>
         {/* <div>selected index id : {first_index}</div> */}
         <div>{contents}</div>
         <div>{editorOn}</div>

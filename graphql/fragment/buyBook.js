@@ -14,6 +14,7 @@ export const FRAGMENT_BUY_BOOK = gql`
       introductionOfBook
       introductionOfAuthor
       listOfIndex
+      price
     }
   }
 `;

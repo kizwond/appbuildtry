@@ -47,7 +47,7 @@ const UploadBookcover = forwardRef(function UploadName(props, ref) {
 
   return (
     <div>
-      <ImgCrop rotate aspect={1 / 1.3}>
+      <ImgCrop rotate aspect={162 / 210}>
         <Upload
           customRequest={dummyRequest}
           listType="picture-card"

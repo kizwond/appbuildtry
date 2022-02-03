@@ -20,6 +20,7 @@ import {
   FRAGMENT_EXAM_FOR_RESULT,
   FRAGMENT_SESSION_FOR_RESTARTING_SESSION,
 } from "../fragment/session";
+import { FRAGMENT_CANDIDATE_BOOK } from "../fragment/candidateBook";
 
 // 유저 정보 불러오기
 export const QUERY_USER_MINIMUM_INFORMATION_BY_USER_NAME = gql`
@@ -175,7 +176,7 @@ export const GetCardRelated = gql`
         ...MyCardTypeSetFragment
       }
     }
-    
+
     userflagconfig_get {
       userflagconfigs {
         _id
@@ -208,7 +209,6 @@ export const GetCardRelated = gql`
         }
       }
     }
-
   }
 `;
 export const GetFlagStyle = gql`
@@ -611,6 +611,19 @@ export const QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID = gql`
             totalStudyHour
           }
         }
+      }
+    }
+  }
+`;
+
+export const QUERY_ALL_CANIDIDATE_BOOKS = gql`
+  ${FRAGMENT_CANDIDATE_BOOK}
+  query getAllCandidateBooks {
+    candibook_getAllCandibook {
+      status
+      msg
+      candibooks {
+        ...CandidateBookFragment
       }
     }
   }

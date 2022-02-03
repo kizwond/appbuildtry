@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import { Card, Drawer, Form, Input } from "antd";
+import { Card, Drawer, Form, Input, InputNumber } from "antd";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
@@ -40,6 +40,7 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
     introductionOfAuthor,
     listOfIndex,
     hashtag,
+    price,
   }) => {
     try {
       await createCandiBookFromMyBook({
@@ -54,6 +55,7 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
             introductionOfBook,
             introductionOfAuthor,
             listOfIndex,
+            price,
           },
         },
       });
@@ -86,7 +88,7 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
         style={{ margin: "8px 0 8px", minWidth: 320 }}
         actions={[
           <div
-            key="accept"
+            key="decline"
             onClick={() => {
               resetFields();
               closeDrawer();
@@ -98,7 +100,7 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
             onClick={() => {
               submit();
             }}
-            key="decline"
+            key="accept"
           >
             신청
           </div>,
@@ -125,6 +127,18 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
             rules={[{ required: true, message: "판매 책 제목은 필수입니다" }]}
           >
             <Input size="small" allowClear />
+          </Form.Item>
+          <Form.Item
+            label="판매 금액"
+            name="price"
+            rules={[{ required: true, message: "판매 금액은 필수입니다" }]}
+          >
+            <InputNumber
+              size="small"
+              min={0}
+              step={500}
+              formatter={(v) => (!!v ? v + "원" : v)}
+            />
           </Form.Item>
 
           <Form.Item

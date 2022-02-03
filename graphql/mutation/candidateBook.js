@@ -25,3 +25,16 @@ export const MUTATION_UPLOAD_BOOKCOVER = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_CANDIDATE_BOOK_STATUS = gql`
+  ${FRAGMENT_CANDIDATE_BOOK}
+  mutation updateCandidateBookStatus($forUpdateStatus: forUpdateStatus) {
+    candibook_updateStatus(forUpdateStatus: $forUpdateStatus) {
+      status
+      msg
+      candibooks {
+        ...CandidateBookFragment
+      }
+    }
+  }
+`;

@@ -927,7 +927,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                   <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
-                      {content.content.makerFlag.value !== null && flagArea}
+                      {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                         <div
                           style={{
@@ -1126,7 +1126,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                   <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
-                      {content.content.makerFlag.value !== null && flagArea}
+                      {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                       <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                         <div
                           style={{
@@ -1325,7 +1325,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                   <div className={`${content._id} other`} style={{ marginBottom: "0px" }}>
                     <div onClick={() => onClickCard(content._id, "normal")}>
                       {/* 페이스 스타일 영역 */}
-                      {content.content.makerFlag.value !== null && flagArea}
+                      {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                       <div
                         style={{
                           backgroundColor: face_style[0].background.color,
@@ -1462,7 +1462,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                     <div style={{ marginBottom: "0px" }}>
                       <div onClick={() => onClickCard(content._id, "share")}>
                         {/* 페이스 스타일 영역 */}
-                        {content.content.makerFlag.value !== null && flagArea}
+                        {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                         <div
                           style={{
                             backgroundColor: face_style[0].background.color,
@@ -1642,7 +1642,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                           }}
                         >
                           {/* 페이스1 스타일 영역 */}
-                          {content.content.makerFlag.value !== null && flagArea}
+                          {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                           <div
                             style={{
                               backgroundColor: face_style[1].background.color,
@@ -1971,7 +1971,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                           }}
                         >
                           {/* 페이스1 스타일 영역 */}
-                          {content.content.makerFlag.value !== null && flagArea}
+                          {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                           <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", width: "100%" }}>
                             <div
                               style={{

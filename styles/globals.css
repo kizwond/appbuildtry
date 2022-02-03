@@ -1313,6 +1313,23 @@ audio {
   background-color: #ffffff00 !important;
 }
 
+.direct_read table {
+  display: table;
+  border: 1px solid grey;
+  border-collapse: collapse;
+}
+.direct_read td {
+  display: table-cell;
+  border: 1px solid grey;
+}
+.direct_read thead {
+  border: 1px solid grey;
+}
+
+.direct_read th {
+  border: 1px solid grey;
+}
+
 .face1 table {
   display: table;
   border: 1px solid grey;

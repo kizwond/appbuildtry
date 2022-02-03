@@ -1,6 +1,5 @@
 import React, { useState, forwardRef } from "react";
 import { Upload } from "antd";
-import ImgCrop from "antd-img-crop";
 import { useMutation } from "@apollo/client";
 import { MUTATION_UPLOAD_BOOKCOVER } from "../../graphql/mutation/candidateBook";
 
@@ -47,18 +46,16 @@ const UploadBookcover = forwardRef(function UploadName(props, ref) {
 
   return (
     <div>
-      <ImgCrop rotate aspect={162 / 210}>
-        <Upload
-          customRequest={dummyRequest}
-          listType="picture-card"
-          fileList={fileList}
-          onChange={onChange}
-          onPreview={onPreview}
-          maxCount={1}
-        >
-          {fileList.length === 0 ? "+ 표지 등록" : "표지 변경"}
-        </Upload>
-      </ImgCrop>
+      <Upload
+        customRequest={dummyRequest}
+        listType="picture-card"
+        fileList={fileList}
+        onChange={onChange}
+        onPreview={onPreview}
+        maxCount={1}
+      >
+        {fileList.length === 0 ? "+ 표지 등록" : "표지 변경"}
+      </Upload>
     </div>
   );
 });

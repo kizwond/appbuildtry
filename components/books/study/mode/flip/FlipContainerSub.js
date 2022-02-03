@@ -161,9 +161,14 @@ const calculatePassMoveFinish = (selection, current_card_info_index, timer, leve
   // 피니시일 때 타이머가 정상 집계되지 않는 문제 때문에 어거지로 끌고 옴
   if (selection == 'finish'){
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));  
-    const prevSelectTime = cardlist_to_send[cardlist_to_send.length-2].studyStatus.recentSelectTime
-    timer = new Date() - prevSelectTime
-    console.log('timer', timer)
+    console.log('cardlist_to_send', cardlist_to_send)
+    if (cardlist_to_send != null){
+      const prevSelectTime = cardlist_to_send[cardlist_to_send.length-1].studyStatus.recentSelectTime
+      timer = Date.now() - Date.parse(prevSelectTime)
+    } else {
+      const timeStarted = sessionStorage.getItem("started");  
+      timer = Date.now() - Date.parse(timeStarted)
+    }
   }
   card_details_session[current_card_info_index].studyStatus.totalStayHour += timer;  
   card_details_session[current_card_info_index].studyStatus.recentStayHour = timer;  

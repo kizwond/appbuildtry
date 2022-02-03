@@ -22,6 +22,8 @@ exports.calculateNextLevelAndNeedStudyTime = (levelCurrent, recentStudyTime, rec
                 estimatedElapsedHourOfLastStudy = Math.round(levelOfLastStudy * Math.log(recentStudyRatio/100) / Math.log(0.8)*1000)/1000
             }
             const elapsedHourFromLastStudy = Math.round((Date.now() - Date.parse(recentStudyTime))/24/3600000 *1000)/1000
+            // console.log('estimatedElapsedHourOfLastStudy',estimatedElapsedHourOfLastStudy)
+            // console.log('elapsedHourFromLastStudy', elapsedHourFromLastStudy)
             const totalElapsedHour = estimatedElapsedHourOfLastStudy + elapsedHourFromLastStudy
 
             theoNewLevel = Math.round(totalElapsedHour * Math.log(0.8) / Math.log(studyRatio/100)*1000)/1000                

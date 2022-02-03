@@ -15,6 +15,14 @@ export const FRAGMENT_BUY_BOOK = gql`
       introductionOfAuthor
       listOfIndex
       price
+      numCards {
+        total
+        read
+        flip
+        general
+        common
+        subject
+      }
     }
   }
 `;

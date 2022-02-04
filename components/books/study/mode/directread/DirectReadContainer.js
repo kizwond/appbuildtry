@@ -108,7 +108,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const [cardTypeSetForEditor, setCardTypeSetForEditor] = useState([]);
   const [bookSelectedForEditor, setBookSelectedForEditor] = useState("default");
   const [indexSelectedForEditor, setIndexSelectedForEditor] = useState("default");
-  const [cardSetForEditor, setCardSetForEditor] = useState("default");
+  const [cardSetForEditor, setCardSetForEditor] = useState();
 
   const showModal = () => {
     setIsNewCardModalVisible(true);
@@ -280,10 +280,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     const cardtype_id = sessionStorage.getItem("selectedCardTypeId")
     const current_position_card_id = null
     const cardTypeSetId = sessionStorage.getItem("cardtypeset_id")
-    const index_id = indexSelectedForEditor;
+    const index_id = sessionStorage.getItem("index_id_for_newcard");
     const indexSetId = sessionStorage.getItem("indexset_id")
-    
-    const cardSetId = cardSetForEditor
+    const cardSetId = sessionStorage.getItem("cardset_id")
 
     addcard(
       mybook_id,
@@ -394,7 +393,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   function afterGetCardSet(data) {
     console.log(data);
-    setCardSetForEditor(data.cardset_getByIndexIDs.cardsets[0]._id)
+    sessionStorage.setItem("cardset_id", data.cardset_getByIndexIDs.cardsets[0]._id)
   }
 
   if (bookList.length > 0) {
@@ -442,6 +441,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       },
     });
     setIndexSelectedForEditor(value)
+    sessionStorage.setItem("index_id_for_newcard", value);
     console.log(cardTypeSetForEditor[0])
     cardTypeInfoNewCard(cardTypeSetForEditor[0].cardtype_info)
     sessionStorage.setItem("selectedCardTypeId", cardTypeSetForEditor[0]._id);

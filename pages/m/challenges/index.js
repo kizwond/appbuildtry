@@ -1,25 +1,25 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from "@apollo/client";
 import {
   QUERY_BUY_BOOKS,
   QUERY_USER_CATEGORIES_AND_USER_BOOKS,
-} from '../../../graphql/query/allQuery';
+} from "../../../graphql/query/allQuery";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { Button, Drawer, Input } from 'antd';
+import { Button, Drawer, Input } from "antd";
 
-import M_MyBooksTable from '../../../components/challenges/M_MyBooksTable.js';
-import M_Layout from '../../../components/layout/M_Layout.js';
+import M_MyBooksTable from "../../../components/challenges/M_MyBooksTable.js";
+import M_Layout from "../../../components/layout/M_Layout.js";
 import {
   StyledFlexSpaceBetween,
   StyledTwoLinesEllipsis,
-} from '../../../components/common/styledComponent/page';
+} from "../../../components/common/styledComponent/page";
 
 const Challenges = () => {
   const [drawerRegisterBuyBook, setDrawerRegisterBuyBook] = useState(false);
@@ -31,12 +31,12 @@ const Challenges = () => {
     loading: buyBookLoading,
   } = useQuery(QUERY_BUY_BOOKS, {
     onCompleted: (data) => {
-      if (data.buybook_getAllBuybook.status == '200') {
-        console.log('도전출판 북 서버에서 받음', data);
-      } else if (data.buybook_getAllBuybook.status === '401') {
-        router.push('/m/account/login');
+      if (data.buybook_getAllBuybook.status == "200") {
+        console.log("도전출판 북 서버에서 받음", data);
+      } else if (data.buybook_getAllBuybook.status === "401") {
+        router.push("/m/account/login");
       } else {
-        console.log('어떤 문제가 발생함');
+        console.log("어떤 문제가 발생함");
       }
     },
   });
@@ -45,14 +45,14 @@ const Challenges = () => {
     QUERY_USER_CATEGORIES_AND_USER_BOOKS,
     {
       onCompleted: (data) => {
-        if (data.mybookcateset_getMybookcatesetByUserID.status === '200') {
-          console.log('내 책 정보 받아오기 ', data);
+        if (data.mybookcateset_getMybookcatesetByUserID.status === "200") {
+          console.log("내 책 정보 받아오기 ", data);
         } else if (
-          data.mybookcateset_getMybookcatesetByUserID.status === '401'
+          data.mybookcateset_getMybookcatesetByUserID.status === "401"
         ) {
-          router.push('/m/account/login');
+          router.push("/m/account/login");
         } else {
-          console.log('어떤 문제가 발생함');
+          console.log("어떤 문제가 발생함");
         }
       },
     }
@@ -81,7 +81,7 @@ const Challenges = () => {
                   <Button
                     size="small"
                     onClick={() =>
-                      router.push('/admin/buy-book/examination-stage')
+                      router.push("/admin/buy-book/examination-stage")
                     }
                   >
                     관리자 메뉴
@@ -101,7 +101,7 @@ const Challenges = () => {
             <div>
               <Input.Search className="pl-2" />
             </div>
-            <div className="flex flex-wrap justify-start ml-2 gap-y-5 gap-x-3">
+            <div className="flex flex-wrap justify-start ml-2 gap-y-5 gap-x-4">
               {buyBookData.buybook_getAllBuybook.buybooks.length > 0 &&
                 buyBookData.buybook_getAllBuybook.buybooks.map(
                   ({
@@ -123,13 +123,13 @@ const Challenges = () => {
                     <Link href={`/m/challenges/book/${_id}`} key={_id}>
                       <a>
                         <div>
-                          <div className="h-[210px] w-[162px] relative rounded shadow-md shadow-black/50">
+                          <div className="h-[210px] w-[154px] relative rounded shadow-md shadow-black/50">
                             {coverImage && (
                               <Image
                                 className="rounded"
                                 src={coverImage}
                                 layout="fill"
-                                alt={'책이미지'}
+                                alt={"책이미지"}
                               />
                             )}
                             {!coverImage && (
@@ -138,7 +138,7 @@ const Challenges = () => {
                               </div>
                             )}
                           </div>
-                          <StyledTwoLinesEllipsis className="w-[162px] font-sans font-semibold text-base mt-1">
+                          <StyledTwoLinesEllipsis className="w-[154px] font-sans font-semibold text-base mt-1">
                             {title}
                           </StyledTwoLinesEllipsis>
                           <div className="text-sm text-gray-800">
@@ -150,28 +150,28 @@ const Challenges = () => {
                                 <Image
                                   src="/image/star_rate_black_24dp.svg"
                                   layout="fill"
-                                  alt={'starRate'}
+                                  alt={"starRate"}
                                 />
                               </div>
                               <div className="w-[0.75rem] h-[0.75rem] relative">
                                 <Image
                                   src="/image/star_rate_black_24dp.svg"
                                   layout="fill"
-                                  alt={'starRate'}
+                                  alt={"starRate"}
                                 />
                               </div>
                               <div className="w-[0.75rem] h-[0.75rem] relative">
                                 <Image
                                   src="/image/star_rate_black_24dp.svg"
                                   layout="fill"
-                                  alt={'starRate'}
+                                  alt={"starRate"}
                                 />
                               </div>
                               <div className="w-[0.75rem] h-[0.75rem] relative">
                                 <Image
                                   src="/image/star_rate_black_24dp.svg"
                                   layout="fill"
-                                  alt={'starRate'}
+                                  alt={"starRate"}
                                 />
                               </div>
                             </div>
@@ -191,18 +191,18 @@ const Challenges = () => {
               <span
                 className="ForMobilePageMainTitle"
                 style={{
-                  marginRight: '10px',
+                  marginRight: "10px",
                 }}
               >
                 도전 출판 책 등록
               </span>
             }
             placement="right"
-            width={'100%'}
+            width={"100%"}
             visible={drawerRegisterBuyBook}
             onClose={() => setDrawerRegisterBuyBook(false)}
-            headerStyle={{ padding: '8px 12px 8px 12px' }}
-            bodyStyle={{ backgroundColor: '#e9e9e9' }}
+            headerStyle={{ padding: "8px 12px 8px 12px" }}
+            bodyStyle={{ backgroundColor: "#e9e9e9" }}
             mask={false}
           >
             {drawerRegisterBuyBook && (

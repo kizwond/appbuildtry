@@ -1,12 +1,12 @@
-import { useApolloClient, useLazyQuery, useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
-import React from 'react';
-import { useEffect } from 'react';
+import { useApolloClient, useLazyQuery, useQuery } from "@apollo/client";
+import { useRouter } from "next/router";
+import React from "react";
+import { useEffect } from "react";
 import {
   QUERY_BUY_BOOKS_BY_BUY_BOOK_ID,
   QUERY_BUY_BOOKS,
-} from '../../../../graphql/query/allQuery';
-import { initializeApollo, addApolloState } from '../../../../lib/apollo';
+} from "../../../../graphql/query/allQuery";
+import { initializeApollo, addApolloState } from "../../../../lib/apollo";
 
 // 결론 이 페이지는 서버사이드 정적 페이지로 작성한다.
 // 대신 getStaticPath는 따로 작성하지 않고 처음 로딩할 때만 정보를 불러온다.
@@ -70,18 +70,39 @@ export const getStaticProps = async ({ params }) => {
 
   return addApolloState(apolloClient, {
     props: {},
-    revalidate: 1,
   });
 };
 
+// export async function getStaticPaths({ context }) {
+//   return {
+//     // paths:[{
+//     //   params: {
+//     //     bookId: "1",
+//     //   },
+//     // }],
+//     paths: [],
+//     fallback: true,
+//   };
+// }
 export async function getStaticPaths({ context }) {
+  const apolloClient = initializeApollo();
+  await apolloClient.query({
+    query: QUERY_BUY_BOOKS,
+  });
+
+  let paths = [];
+  for (let a in apolloClient.cache.data.data) {
+    if (a !== "ROOT_QUERY") {
+      paths.push({
+        params: {
+          bookId: a.replace("Buybook:", ""),
+        },
+      });
+    }
+  }
+
   return {
-    // paths:[{
-    //   params: {
-    //     bookId: "1",
-    //   },
-    // }],
-    paths: [],
+    paths,
     fallback: true,
   };
 }

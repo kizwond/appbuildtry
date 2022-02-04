@@ -88,7 +88,7 @@ const BuyBookDetail = (props) => {
                 />
               )}
               {!coverImage && (
-                <div className="flex items-center justify-center w-full h-full rounded shadow-md bg-emerald-500 text-sky-50 shadow-black/20">
+                <div className="flex items-center justify-center w-full h-full p-2 rounded shadow-md bg-emerald-500 text-sky-50 shadow-black/20">
                   {title}
                 </div>
               )}

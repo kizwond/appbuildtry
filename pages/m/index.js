@@ -73,12 +73,15 @@ const Home = () => {
       {/* <NewBooks /> */}
       {[1, 2, 3, 4, 5, 6, 7, 8].map((photo) => (
         <div key={photo} className="flex items-center justify-center mt-4">
-          <Image
-            src={`https://s3.ap-northeast-2.amazonaws.com/cogbook.siteimage/%EA%B7%B8%EB%A6%BC${photo}.png`}
-            alt="dd"
-            width={300}
-            height={300}
-          />
+          <div className=" w-[calc(100vw_*_0.75)] h-[calc(100vw_*_0.75)] relative">
+            <Image
+              src={`https://s3.ap-northeast-2.amazonaws.com/cogbook.siteimage/%EA%B7%B8%EB%A6%BC${photo}.png`}
+              alt="dd"
+              layout="fill"
+              // width={300}
+              // height={300}
+            />
+          </div>
         </div>
       ))}
 

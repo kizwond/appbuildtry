@@ -1,7 +1,7 @@
 /* eslint-disable react/display-name */
 import styled from "styled-components";
 
-import { Table, Card, Button } from "antd";
+import { Table, Card, Button, message } from "antd";
 import { DollarCircleFilled } from "@ant-design/icons";
 
 import { StyledTwoLinesEllipsis } from "../common/styledComponent/page";
@@ -115,8 +115,15 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       align: "center",
       onCell: (_record) => ({
         onClick: () => {
-          setDrawerVisibleForRegisterBook(true);
-          setSelectedBookId(_record._id);
+          if (_record.read + _record.flip > 0) {
+            setDrawerVisibleForRegisterBook(true);
+            setSelectedBookId(_record._id);
+          } else {
+            message.warning(
+              "판매용 책을 등록하시려면 뒤집기 카드나 읽기 카드가 필요합니다",
+              1.5
+            );
+          }
         },
       }),
       width: 60,

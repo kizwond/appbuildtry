@@ -155,7 +155,7 @@ const M_StudyMainPage = () => {
                 if (selectedBooks.length > 0) {
                   submitCreateSessionConfigToServer();
                 } else {
-                  message.error("선택하신 카드가 없습니다.", 0.7);
+                  message.error("선택하신 책이 없습니다.", 0.7);
                 }
               }}
             >
@@ -165,7 +165,7 @@ const M_StudyMainPage = () => {
             <div
               onClick={() => {
                 if (!(selectedBooks.length > 0)) {
-                  message.error("선택하신 카드가 없습니다.", 0.7);
+                  message.error("선택하신 책이 없습니다.", 0.7);
                 }
               }}
             >
@@ -182,7 +182,7 @@ const M_StudyMainPage = () => {
                     },
                   }}
                 >
-                  <a className="w-full h-full flex items-center justify-center cursor-pointer">
+                  <a className="flex items-center justify-center w-full h-full cursor-pointer">
                     카드 모드
                   </a>
                 </Link>

@@ -10,6 +10,8 @@ import { initializeApollo, addApolloState } from "../../../../lib/apollo";
 import M_Layout from "../../../../components/layout/M_Layout";
 import { StyledTwoLinesEllipsis } from "../../../../components/common/styledComponent/page";
 import { Button, Card } from "antd";
+import { MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK } from "../../../../graphql/mutation/buyBook";
+import { useMutation } from "@apollo/client";
 
 // 결론 이 페이지는 서버사이드 정적 페이지로 작성한다.
 // 대신 getStaticPath는 따로 작성하지 않고 처음 로딩할 때만 정보를 불러온다.
@@ -23,6 +25,21 @@ import { Button, Card } from "antd";
 const BuyBookDetail = (props) => {
   const router = useRouter();
 
+  const [createMybookFromBuyBook] = useMutation(
+    MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK,
+    { onCompleted: (data) => console.log(data) }
+  );
+  const createMybook = async () => {
+    try {
+      await createMybookFromBuyBook({
+        variables: {
+          buybook_id: router.query.bookId,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   if (router.isFallback) {
     return <div>Loading....</div>;
   }
@@ -100,7 +117,9 @@ const BuyBookDetail = (props) => {
                 <div className="flex gap-2 mt-2">
                   <Button type="primary">카트</Button>
                   <Button type="primary">선물</Button>
-                  <Button type="primary">구매하기</Button>
+                  <Button type="primary" onClick={createMybook}>
+                    구매하기
+                  </Button>
                 </div>
               </div>
             </div>
@@ -111,28 +130,35 @@ const BuyBookDetail = (props) => {
             </div>
             <div className="px-2 text-base">{introductionOfBook}</div>
           </div>
-          <div>{bookId}</div>
-          <div className="relative flex gap-2 text-base">
-            {hashtag &&
-              hashtag.length > 0 &&
-              ["2221212121", "2121222211", "22", "2121", "12111"].map(
-                (hash, idx) => (
+          <div>
+            <div className="px-2 text-lg font-bold border-b border-b-slate-500">
+              저자 소개
+            </div>
+            <div className="px-2 text-base">{introductionOfAuthor}</div>
+          </div>
+          <div>
+            <div className="px-2 text-lg font-bold border-b border-b-slate-500">
+              목차
+            </div>
+            <div className="px-2 text-base">{listOfIndex}</div>
+          </div>
+          <div>
+            <div className="px-2 mb-1 text-lg font-bold border-b border-b-slate-500 ">
+              태그
+            </div>
+            <div className="relative flex gap-2 px-2 text-base">
+              {hashtag &&
+                hashtag.length > 0 &&
+                [hashtag].map((hash, idx) => (
                   <span
                     key={hash + idx}
                     className="px-3 py-1 text-sm rounded bg-lime-500 text-sky-50"
                   >
                     #{hash}
                   </span>
-                )
-              )}
+                ))}
+            </div>
           </div>
-
-          <div>{listOfIndex}</div>
-          <div>{price}</div>
-          <div>{coverImage}</div>
-
-          <div>{introductionOfAuthor}</div>
-          <div>{introductionOfBook}</div>
         </div>
       </M_Layout>
     </>

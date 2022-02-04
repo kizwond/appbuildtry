@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React, { useEffect, useState, useCallback } from "react";
 import M_Layout from "../../components/layout/M_Layout";
 import M_RecentStudyList from "../../components/index/M_RecentStudyList";
@@ -9,6 +10,7 @@ import { logIn } from "../../redux/actions";
 import { useQuery, useMutation } from "@apollo/client";
 import { GET_USER, ResetToekn } from "../../graphql/query/account";
 import { reset } from "../../hooks/reset";
+import { Space } from "antd";
 
 const Home = () => {
   const [resetToken] = useMutation(ResetToekn, { onCompleted: showdata });
@@ -22,7 +24,7 @@ const Home = () => {
     console.log("컴포넌트가 화면에 나타남");
     sessionStorage.removeItem("firstFetchData");
     sessionStorage.removeItem("examLog");
-    sessionStorage.removeItem("cardListStudying")
+    sessionStorage.removeItem("cardListStudying");
     sessionStorage.setItem("card_seq", 0);
     if (data) {
       console.log(data);
@@ -65,11 +67,21 @@ const Home = () => {
   }
   return (
     <M_Layout>
-
       <Hero />
 
       {data && data.me && data.me.users && <M_RecentStudyList />}
-      <NewBooks />
+      {/* <NewBooks /> */}
+      {[1, 2, 3, 4, 5, 6, 7, 8].map((photo) => (
+        <div key={photo} className="flex items-center justify-center mt-4">
+          <Image
+            src={`https://s3.ap-northeast-2.amazonaws.com/cogbook.siteimage/%EA%B7%B8%EB%A6%BC${photo}.png`}
+            alt="dd"
+            width={300}
+            height={300}
+          />
+        </div>
+      ))}
+
       <M_Footer />
     </M_Layout>
   );

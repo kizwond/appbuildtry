@@ -195,41 +195,50 @@ export const computeNumberOfAllFilteredCards = ({
       );
       const conditionOfCardType = useCardtype.includes(card.card_info.cardtype); //읽기 뒤집기 카드만 선택됨
       const conditionOfCardStatus = (() => {
-        if (card.studyStatus.statusCurrent !== "ing") {
+        if (!useStatus.includes("ing")) {
           return useStatus.includes(card.studyStatus.statusCurrent);
         }
-        if (needStudyTimeCondition === "all") {
-          return useStatus.includes(card.studyStatus.statusCurrent);
-        }
-        if (needStudyTimeCondition === "untilNow") {
-          return (
-            useStatus.includes(card.studyStatus.statusCurrent) &&
-            Date.parse(card.studyStatus.needStudyTime) < currentTime
-          );
-        }
-        if (needStudyTimeCondition === "untilToday") {
-          return (
-            useStatus.includes(card.studyStatus.statusCurrent) &&
-            Date.parse(card.studyStatus.needStudyTime) < todayMidnight
-          );
-        }
-        if (needStudyTimeCondition === "custom") {
-          if (card.studyStatus.needStudyTime === null) {
-            return false;
+        if (useStatus.includes("ing")) {
+          if (needStudyTimeCondition === "all") {
+            return useStatus.includes(card.studyStatus.statusCurrent);
           }
-          const needStudyTimePosition =
-            (Date.parse(card.studyStatus.needStudyTime) - todayMidnight) /
-            24 /
-            3600000;
+          if (needStudyTimeCondition === "untilNow") {
+            return (
+              ["yet", "compled", "hold"].includes(
+                card.studyStatus.statusCurrent
+              ) || Date.parse(card.studyStatus.needStudyTime) < currentTime
+            );
+          }
+          if (needStudyTimeCondition === "untilToday") {
+            return (
+              ["yet", "compled", "hold"].includes(
+                card.studyStatus.statusCurrent
+              ) || Date.parse(card.studyStatus.needStudyTime) < todayMidnight
+            );
+          }
+          if (needStudyTimeCondition === "custom") {
+            if (card.studyStatus.needStudyTime === null) {
+              return (
+                ["yet", "compled", "hold"].includes(
+                  card.studyStatus.statusCurrent
+                ) || false
+              );
+            }
+            const needStudyTimePosition =
+              (Date.parse(card.studyStatus.needStudyTime) - todayMidnight) /
+              24 /
+              3600000;
 
-          return (
-            useStatus.includes(card.studyStatus.statusCurrent) &&
-            needStudyTimePosition > needStudyTimeRange[0] - 1 &&
-            needStudyTimePosition < needStudyTimeRange[1]
-          );
+            return (
+              ["yet", "compled", "hold"].includes(
+                card.studyStatus.statusCurrent
+              ) ||
+              (needStudyTimePosition > needStudyTimeRange[0] - 1 &&
+                needStudyTimePosition < needStudyTimeRange[1])
+            );
+          }
         }
       })();
-
       // 고급필터 off 상황이면 모든 카드 true, on 상황에는 개별 필터들 and 조합
 
       const userFlagFilter =
@@ -381,7 +390,7 @@ export const sortFilteredCards = ({
           sessionStatusCurrent: "notStarted",
 
           levelOriginal: card.studyStatus.levelCurrent,
-          levelPrev : card.studyStatus.levelCurrent,
+          levelPrev: card.studyStatus.levelCurrent,
           levelUpdated: false,
 
           userFlagOriginal: card.content.userFlag,

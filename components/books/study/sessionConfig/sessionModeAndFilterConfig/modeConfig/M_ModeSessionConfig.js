@@ -18,6 +18,7 @@ const M_ModeSessionConfig = ({
   changeProps,
   isPc,
   isExamMode,
+  isReadMode,
 }) => {
   const {
     changeSortOption,
@@ -46,18 +47,20 @@ const M_ModeSessionConfig = ({
 
   return (
     <StyledDivConfigWrapper>
-      <StyledDivConfigRow is_pc={(isPc || false).toString()}>
-        <div>
-          <span className="ConfigTitle">보기 순서</span>
-        </div>
-        <div>
-          <ToggleTags
-            changeValue={changeSortOption}
-            value={sortOption}
-            tags={sortOptionTags}
-          />
-        </div>
-      </StyledDivConfigRow>
+      {!isReadMode && (
+        <StyledDivConfigRow is_pc={(isPc || false).toString()}>
+          <div>
+            <span className="ConfigTitle">보기 순서</span>
+          </div>
+          <div>
+            <ToggleTags
+              changeValue={changeSortOption}
+              value={sortOption}
+              tags={sortOptionTags}
+            />
+          </div>
+        </StyledDivConfigRow>
+      )}
 
       <StyledDivConfigRow is_pc={(isPc || false).toString()}>
         <div>
@@ -109,37 +112,39 @@ const M_ModeSessionConfig = ({
         </div>
       </StyledDivConfigRow>
 
-      <StyledDivConfigRow is_pc={(isPc || false).toString()}>
-        <StyledDivConfigColStartCards>
-          <StyledSpanConfigTitle
-            onOff={numStartCards.onOff === "on"}
-            is_pc={(isPc || false).toString()}
-          >
-            학습량
-          </StyledSpanConfigTitle>
-          <Switch
-            className="TitleSwitchButton"
-            size="small"
-            checked={numStartCards.onOff === "on"}
-            onChange={(checked) => {
-              if (checked) {
-                const copyNumStartCards = { ...numStartCards, onOff: "on" };
-                changeNumStartCards(copyNumStartCards);
-              } else {
-                const copyNumStartCards = { ...numStartCards, onOff: "off" };
-                changeNumStartCards(copyNumStartCards);
-              }
-            }}
-          />
-        </StyledDivConfigColStartCards>
-        <div>
-          <M_InputNumberForStudyCard
-            selectedCardStatus={useStatus}
-            numStartCards={numStartCards}
-            changeNumStartCards={changeNumStartCards}
-          />
-        </div>
-      </StyledDivConfigRow>
+      {!isReadMode && (
+        <StyledDivConfigRow is_pc={(isPc || false).toString()}>
+          <StyledDivConfigColStartCards>
+            <StyledSpanConfigTitle
+              onOff={numStartCards.onOff === "on"}
+              is_pc={(isPc || false).toString()}
+            >
+              학습량
+            </StyledSpanConfigTitle>
+            <Switch
+              className="TitleSwitchButton"
+              size="small"
+              checked={numStartCards.onOff === "on"}
+              onChange={(checked) => {
+                if (checked) {
+                  const copyNumStartCards = { ...numStartCards, onOff: "on" };
+                  changeNumStartCards(copyNumStartCards);
+                } else {
+                  const copyNumStartCards = { ...numStartCards, onOff: "off" };
+                  changeNumStartCards(copyNumStartCards);
+                }
+              }}
+            />
+          </StyledDivConfigColStartCards>
+          <div>
+            <M_InputNumberForStudyCard
+              selectedCardStatus={useStatus}
+              numStartCards={numStartCards}
+              changeNumStartCards={changeNumStartCards}
+            />
+          </div>
+        </StyledDivConfigRow>
+      )}
       {children}
     </StyledDivConfigWrapper>
   );

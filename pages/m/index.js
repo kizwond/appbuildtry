@@ -68,7 +68,6 @@ const Home = () => {
   return (
     <M_Layout>
       <Hero />
-
       {data && data.me && data.me.users && <M_RecentStudyList />}
       {/* <NewBooks /> */}
       {[1, 2, 3, 4, 5, 6, 7, 8].map((photo) => (

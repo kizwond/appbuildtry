@@ -49,6 +49,64 @@ const M_StudyMainPage = () => {
       if (_data.session_createSession.status === "200") {
         console.log("책 바로 보기 모드, 세션 생성 요청 후 받은 데이터", _data);
 
+        const filterOption = {
+          detailedOption: {
+            useCardtype: ["read", "flip"],
+            useStatus: ["yet", "ing", "hold", "completed"],
+            needStudyTimeCondition: "all",
+            needStudyTimeRange: [0, 1],
+            numStartCards: {
+              onOff: "off",
+              yet: 50,
+              ing: 50,
+              hold: 0,
+              completed: 0,
+            },
+          },
+          advancedFilter: {
+            onOff: "off",
+            cardMaker: {
+              onOff: "off",
+              value: ["my", "buy"],
+            },
+            studyTool: {
+              onOff: "off",
+              value: ["none", "hidden", "underline", "highlight"],
+            },
+            examResult: {
+              onOff: "off",
+              value: ["none", "right", "wrong"],
+            },
+            level: {
+              onOff: "off",
+              value: [0, 100],
+            },
+            makerFlag: {
+              onOff: "off",
+              value: [0, 1, 2, 3, 4, 5],
+            },
+            userFlag: {
+              onOff: "off",
+              value: [0, 1, 2, 3, 4, 5],
+            },
+            recentDifficulty: {
+              onOff: "off",
+              value: ["on", "on", "1", "100"],
+            },
+            recentStudyTime: {
+              onOff: "off",
+              value: [-3, 0],
+            },
+            studyTimes: {
+              onOff: "off",
+              value: [0, 100],
+            },
+          },
+        };
+
+        console.log(filterOption);
+        sessionStorage.setItem("filterOption", JSON.stringify(filterOption));
+
         router.push({
           pathname: "/m/study/mode/directread",
           query: { name: JSON.stringify(selectedBooks) },

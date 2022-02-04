@@ -37,6 +37,7 @@ import {
   CheckOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuDirectRead from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuDirectRead";
+import { computeNumberOfAllFilteredCards } from '../logic/computeNumberOfReadCards';
 const { Option } = Select;
 
 const Editor = dynamic(() => import("../../../../../components/books/write/editpage/Editor"), {
@@ -189,8 +190,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setBookList(data1.mybook_getMybookByUserID.mybooks);
 
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
-      // 필터링 함수가 들어간다.
-      sessionStorage.setItem("cardListStudying", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
+     
+     
+      // 필터링 함수가 들어간다. 함수에서 세션스토리지에 "cardListStudying" 저장하는 기능 넣어둠
+      computeNumberOfAllFilteredCards({cardsets: data1.cardset_getByIndexIDs.cardsets[0].cards})
+      // 일단 넣어둠. 나중에 원본 파일 정리되면 해당 데이터 매개변수로 넣어야함
+      
+      
       setUserFlagDetails(data1.userflagconfig_get.userflagconfigs[0].details);
       const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
         return item.content.mycontent_id;

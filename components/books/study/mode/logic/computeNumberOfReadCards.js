@@ -1,9 +1,17 @@
 import _ from "lodash";
 
-export const computeNumberOfAllFilteredCards = async ({ sessionConfig }) => {
-  const { detailedOption, advancedFilter } = sessionConfig;
+export const computeNumberOfAllFilteredCards = async ({ cardsets }) => {
+  function getFilterOption() {
+    return new Promise(function (resolve, reject) {
+      const data = JSON.parse(sessionStorage.getItem("filterOption"));
+      resolve(data);
+    });
+  }
 
-  const cardsets = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
+  const filterOption = await getFilterOption();
+
+  const { detailedOption, advancedFilter } = filterOption;
+
   const {
     onOff: AF_onOff,
     // 총 8개필터
@@ -181,5 +189,6 @@ export const computeNumberOfAllFilteredCards = async ({ sessionConfig }) => {
     );
   });
 
-  return flattenCards;
+  console.log(flattenCards);
+  sessionStorage.setItem("cardListStudying", JSON.stringify(flattenCards));
 };

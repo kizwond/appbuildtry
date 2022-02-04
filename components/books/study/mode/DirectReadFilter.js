@@ -159,6 +159,77 @@ const RightDrawer = ({ setBottomVisible }) => {
     setStudyTimesOnOff(_onOff);
   }, []);
 
+  useEffect(() => {
+    if (visible) {
+      const filterOption = JSON.parse(sessionStorage.getItem("filterOption"));
+
+      const { detailedOption, advancedFilter } = filterOption;
+
+      const {
+        cardMaker, //
+        studyTool,
+        examResult,
+        level,
+        onOff,
+        recentDifficulty,
+        recentStudyTime,
+        studyTimes,
+        userFlag,
+        makerFlag,
+      } = advancedFilter;
+
+      const [
+        nonCurrentStudyRatioOnOff,
+        currentStudyRatioOnOff,
+        startOfStudyRatioRange,
+        endOfStudyRatioRange,
+      ] = recentDifficulty.value;
+
+      //고급필터
+      setAdvancedFilterOnOff(onOff);
+      setCardMakerOnOff(cardMaker.onOff);
+      setCardMaker(cardMaker.value);
+      setStudyToolOnOff(studyTool.onOff);
+      setStudyTool(studyTool.value);
+      setExamResultOnOff(examResult.onOff);
+      setExamResult(examResult.value);
+      setLevelOnOff(level.onOff);
+      setLevel(level.value);
+      setMakerFlagOnOff(makerFlag.onOff);
+      setMakerFlag(makerFlag.value);
+
+      setRecentDifficultyOnOff(recentDifficulty.onOff);
+      setNonCurrentStudyRatioOnOff(nonCurrentStudyRatioOnOff);
+      setCurrentStudyRatioOnOff(currentStudyRatioOnOff);
+      setStartOfStudyRatioRange(startOfStudyRatioRange);
+      setEndOfStudyRatioRange(endOfStudyRatioRange);
+
+      setRecentStudyTimeOnOff(recentStudyTime.onOff);
+      setRecentStudyTime(recentStudyTime.value);
+      setStudyTimesOnOff(studyTimes.onOff);
+      setStudyTimes(studyTimes.value);
+      setUserFlagOnOff(userFlag.onOff);
+      setUserFlag(userFlag.value);
+
+      // 아래부터 state 쪼개기 작업
+
+      const {
+        needStudyTimeCondition,
+        needStudyTimeRange,
+        numStartCards,
+        useCardtype,
+        useStatus,
+      } = detailedOption;
+      const copyNumStartCards = { ...numStartCards };
+      delete copyNumStartCards.__typename;
+      setNeedStudyTimeCondition(needStudyTimeCondition);
+      setNeedStudyTimeRange(needStudyTimeRange);
+      setNumStartCards(copyNumStartCards);
+      setUseCardType(useCardtype);
+      setUseStatus(useStatus);
+    }
+  }, [visible]);
+
   const detailedOption = {
     useCardtype: useCardType,
     useStatus: useStatus,
@@ -246,7 +317,7 @@ const RightDrawer = ({ setBottomVisible }) => {
     changeStudyTimesOnOff,
   };
 
-  const sessionConfig = {
+  const filterOption = {
     detailedOption,
     advancedFilter,
   };
@@ -304,11 +375,26 @@ const RightDrawer = ({ setBottomVisible }) => {
           <Button
             onClick={async () => {
               console.time("카드필터계산");
-              const cards = await computeNumberOfAllFilteredCards({
-                sessionConfig,
+              const cardsets = JSON.parse(
+                sessionStorage.getItem("cardListStudyingOrigin")
+              );
+
+              function setFilterOption() {
+                return new Promise(function (resolve, reject) {
+                  sessionStorage.setItem(
+                    "filterOption",
+                    JSON.stringify(filterOption)
+                  );
+                  resolve();
+                });
+              }
+
+              await setFilterOption();
+
+              await computeNumberOfAllFilteredCards({
+                cardsets,
               });
               console.timeEnd("카드필터계산");
-              console.log({ cards });
             }}
           >
             적용하기

@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { FRAGMENT_CARD_SET, FRAGMENT_CARD_SET_WITHOUT_STUDY_STATUS } from "../fragment/cardSet";
 
 export const GetCardTypeSetByMybookIds = gql`
   query GetCardTypeSetByMybookIds($mybook_ids: [ID]) {
@@ -809,6 +810,20 @@ export const CardTypeDelete = gql`
         }
       }
     }
+  }
+`;
+export const GetCardSet = gql`
+${FRAGMENT_CARD_SET}
+  query GetCardSet($index_ids: [ID]) {
+    cardset_getByIndexIDs(index_ids: $index_ids) {
+      status
+      msg
+      cardsets {
+        ...MyCardSetFragment
+      }
+    }
+
+    
   }
 `;
 

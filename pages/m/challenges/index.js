@@ -138,14 +138,14 @@ const Challenges = () => {
                               </div>
                             )}
                           </div>
-                          <StyledTwoLinesEllipsis className="w-[154px] font-sans font-semibold text-base mt-1">
+                          <StyledTwoLinesEllipsis className="w-[154px] font-sans font-semibold text-xl mt-3">
                             {title}
                           </StyledTwoLinesEllipsis>
-                          <div className="text-sm text-gray-800">
+                          <div className="text-base text-gray-800">
                             {authorName}
                           </div>
-                          <div className="flex items-center gap-2 text-xs">
-                            <div className="flex text-xs">
+                          <div className="flex items-center gap-2 text-base">
+                            <div className="flex text-base">
                               <div className="w-[0.75rem] h-[0.75rem] relative">
                                 <Image
                                   src="/image/star_rate_black_24dp.svg"
@@ -175,9 +175,9 @@ const Challenges = () => {
                                 />
                               </div>
                             </div>
-                            <div className="text-xs">2명</div>
+                            <div className="text-base">2명</div>
                           </div>
-                          <div className="text-sm">{price}원</div>
+                          <div className="text-lg">{price + " 원"}</div>
                         </div>
                       </a>
                     </Link>

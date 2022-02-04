@@ -7,6 +7,7 @@ import { UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_C
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 import { Dictionary } from "../../../../../graphql/query/card_contents";
+import { GetIndex, GetCardTypeSet } from "../../../../../graphql/query/allQuery";
 import {
   ProfileOutlined,
   FlagFilled,
@@ -71,7 +72,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   const [cardTypeSetId, setCardTypeSetId] = useState();
   const [cardTypeSets, setCardTypeSets] = useState();
-  const [cardTypes, setCardTypes] = useState();
+  const [cardTypes, setCardTypes] = useState([]);
   const [cardSetId, setCardSetId] = useState();
   const [cards, setCards] = useState([]);
   const [contentsList, setContentsList] = useState([]);
@@ -101,7 +102,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   const [isNewCardModalVisible, setIsNewCardModalVisible] = useState(false);
   const [newCardEditor, setNewCardEditor] = useState();
-  
+  const [bookList, setBookList] = useState([]);
+  const [indexListForEditor, setIndexListForEditor] = useState([]);
+  const [cardTypeSetForEditor, setCardTypeSetForEditor] = useState([]);
+
   const showModal = () => {
     setIsNewCardModalVisible(true);
   };
@@ -178,6 +182,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setMakerFlagStyle(data1.cardtypeset_getbymybookids.cardtypesets[0].makerFlag_style);
       setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
+      setBookList(data1.mybook_getMybookByUserID.mybooks);
 
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
       // 필터링 함수가 들어간다.
@@ -325,6 +330,73 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       console.log(error);
     }
   }
+
+  // 새카드 만들기 부분
+
+  const [indexset_getByMybookids, { loading: loading4, error: error4, data: selectedIndexForNewCardAdd }] = useLazyQuery(GetIndex, {
+    onCompleted: afterGetIndex,
+  });
+
+  function afterGetIndex(data) {
+    console.log(data);
+    setIndexListForEditor(data.indexset_getByMybookids.indexsets[0].indexes)
+  }
+
+  const [cardtypeset_getbymybookids, { loading: loading5, error: error5, data: selectedCardTypeSetForNewCardAdd }] = useLazyQuery(GetCardTypeSet, {
+    onCompleted: afterGetCardTypeSet,
+  });
+
+  function afterGetCardTypeSet(data) {
+    console.log(data);
+    setCardTypeSetForEditor(data.cardtypeset_getbymybookids.cardtypesets[0].cardtypes)
+  }
+
+  if (bookList.length > 0) {
+    var book_list = bookList.map((book) => {
+      return (
+        <>
+          <Option value={book._id} style={{ fontSize: "1rem" }}>
+            {book.mybook_info.title}
+          </Option>
+        </>
+      );
+    });
+  }
+  function bookSelectOnchange(value) {
+    console.log(`selected ${value}`);
+    indexset_getByMybookids({
+      variables: {
+        mybook_ids: value,
+      },
+    });
+    cardtypeset_getbymybookids({
+      variables: {
+        mybook_ids: value,
+      },
+    });
+  }
+  if (indexListForEditor.length > 0) {
+    var index_list = indexListForEditor.map((item) => {
+      return (
+        <>
+          <Option value={item._id} style={{ fontSize: "1rem" }}>
+            {item.name}
+          </Option>
+        </>
+      );
+    });
+  }
+  function indexSelectOnchange(value) {
+    console.log(`selected ${value}`);
+    // indexset_getByMybookids({
+    //   variables: {
+    //     mybook_ids: value,
+    //   },
+    // });
+  }
+  
+
+  // 새카드 만들기 부분
 
   const cardTypeInfo = (selectedCardType_tmp, parentId, selections) => {
     const cardtype_info = selectedCardType_tmp.cardtype_info;
@@ -1346,9 +1418,22 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                             새카드
                           </Button>
                           <Modal title="새카드 추가하기" visible={isNewCardModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
-                            <p>Some contents...</p>
-                            <p>Some contents...</p>
-                            <p>Some contents...</p>
+                            <div>
+                              <Select size="small" defaultValue="default" style={{ width: 200, fontSize: "1rem" }} onChange={bookSelectOnchange}>
+                                <Option value="default" style={{ fontSize: "1rem", color: "black", fontWeight: "700" }} disabled>
+                                  책선택
+                                </Option>
+                                {book_list}
+                              </Select>
+                            </div>
+                            <div>
+                              <Select size="small" defaultValue="default" style={{ width: 200, fontSize: "1rem" }} onChange={indexSelectOnchange}>
+                                <Option value="default" style={{ fontSize: "1rem", color: "black", fontWeight: "700" }} disabled>
+                                 목차선택
+                                </Option>
+                                {index_list}
+                              </Select>
+                            </div>
                           </Modal>
 
                           <Popover

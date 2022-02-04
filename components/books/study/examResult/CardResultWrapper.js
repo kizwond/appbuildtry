@@ -42,7 +42,9 @@ const CardResultWrapper = ({ cards }) => {
                 content._id === card.content.buycontent_id
               );
             }).face1[0]
-          ).replace(/(<([^>]+)>)/gi, "");
+          )
+            .replace(/(<([^>]+)>)/gi, "")
+            .replace(/&nbsp;/g, "");
           const rightAnswer = new String(
             [
               ...data.mycontent_getMycontentByMycontentIDs.mycontents,
@@ -53,7 +55,9 @@ const CardResultWrapper = ({ cards }) => {
                 content._id === card.content.buycontent_id
               );
             }).face2[0]
-          ).replace(/(<([^>]+)>)/gi, "");
+          )
+            .replace(/(<([^>]+)>)/gi, "")
+            .replace(/&nbsp;/g, "");
           return (
             <CardResult
               key={card._id}

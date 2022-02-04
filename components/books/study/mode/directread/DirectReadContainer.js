@@ -99,6 +99,21 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const [face1row, setFace1row] = useState({ face1row1: true, face1row2: true, face1row3: true, face1row4: true, face1row5: true });
   const [face2row, setFace2row] = useState({ face2row1: true, face2row2: true, face2row3: true, face2row4: true, face2row5: true });
 
+  const [isNewCardModalVisible, setIsNewCardModalVisible] = useState(false);
+  const [newCardEditor, setNewCardEditor] = useState();
+  
+  const showModal = () => {
+    setIsNewCardModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsNewCardModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsNewCardModalVisible(false);
+  };
+
   const {
     loading,
     error,
@@ -1292,7 +1307,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                               </>
                             )}
                           </div>
-                          <Popover
+                          {/* <Popover
                             content={"준비중입니다..."}
                             placement="bottomLeft"
                             title={
@@ -1315,7 +1330,26 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                             >
                               새카드
                             </Button>
-                          </Popover>
+                          </Popover> */}
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            onClick={showModal}
+                            // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
+                          >
+                            새카드
+                          </Button>
+                          <Modal title="새카드 추가하기" visible={isNewCardModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
+                            <p>Some contents...</p>
+                            <p>Some contents...</p>
+                            <p>Some contents...</p>
+                          </Modal>
 
                           <Popover
                             content={diffiButtonsPop}
@@ -2482,9 +2516,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                         textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
                                       }}
                                     >
-                                  
                                       <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
-                                  
                                     </div>
                                   </>
                                 ))}

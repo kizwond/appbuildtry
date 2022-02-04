@@ -248,7 +248,7 @@ const Nav = () => {
                     }}
                   >
                     {/* <div onClick={() => (location.href = "/bookstore")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center", cursor:"pointer" }}> */}
-                    <div
+                    {/* <div
                       onClick={() => console.log("서점")}
                       style={{
                         ...linkStyleDrawer,
@@ -265,7 +265,7 @@ const Nav = () => {
                         alt="excel_export"
                       />
                       <span style={{ marginLeft: "10px" }}>서점</span>
-                    </div>
+                    </div> */}
                     <div
                       onClick={() => (location.href = "/m/challenges")}
                       style={{
@@ -308,7 +308,7 @@ const Nav = () => {
                     }}
                   >
                     {/* <div onClick={() => (location.href = "/notification")} style={{ ...linkStyleDrawer, padding: "10px", display: "flex", alignItems: "center", cursor:"pointer" }}> */}
-                    <div
+                    {/* <div
                       onClick={() => console.log("알림")}
                       style={{
                         ...linkStyleDrawer,
@@ -325,6 +325,24 @@ const Nav = () => {
                         alt="excel_export"
                       />
                       <span style={{ marginLeft: "10px" }}>알림</span>
+                    </div> */}
+                    <div
+                      onClick={() => console.log("알림")}
+                      style={{
+                        ...linkStyleDrawer,
+                        padding: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Image
+                        src="/image/guide_icon.png"
+                        width={"20px"}
+                        height={"20px"}
+                        alt="excel_export"
+                      />
+                      <span style={{ marginLeft: "10px" }}>사용가이드</span>
                     </div>
                     {username == null && (
                       <>

@@ -119,7 +119,9 @@ const TableForStudiedCards = ({
                         content._id === card.content.buycontent_id
                       );
                     }).face1
-                  ).replace(/(<([^>]+)>)/gi, "")}
+                  )
+                    .replace(/(<([^>]+)>)/gi, "")
+                    .replace(/&nbsp;/g, "")}
                 </td>
                 {contentType !== "newCards" && (
                   <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">

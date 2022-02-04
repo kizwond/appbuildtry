@@ -17,7 +17,9 @@ const TableRowRanked = ({ contentsData, card, index, getThirdCol }) => {
                 content._id === card.content.mycontent_id ||
                 content._id === card.content.buycontent_id
             ).face1[0]
-          ).replace(/(<([^>]+)>)/gi, "")}
+          )
+            .replace(/(<([^>]+)>)/gi, "")
+            .replace(/&nbsp;/g, "")}
         </td>
         <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           {getThirdCol(card)}

@@ -3,23 +3,13 @@ import { FRAGMENT_MYBOOK } from "../fragment/book";
 import { FRAGMENT_CATEGORYSET } from "../fragment/categorySet";
 import { FRAGMENT_MENTORING } from "../fragment/mentoring";
 import { FRAGMENT_MY_CARD_TYPE_SET } from "../fragment/cardTypeSet";
-import {
-  FRAGMENT_CARD_SET,
-  FRAGMENT_CARD_SET_WITHOUT_STUDY_STATUS,
-} from "../fragment/cardSet";
+import { FRAGMENT_CARD_SET, FRAGMENT_CARD_SET_WITHOUT_STUDY_STATUS } from "../fragment/cardSet";
 import { FRAGMENT_BUY_BOOK } from "../fragment/buyBook";
 import { FRAGMENT_USER_FLAG_CONFIG } from "../fragment/flagConfig";
 import { FRAGMENT_SESSION_CONFIG } from "../fragment/sessionConfig";
-import {
-  FRAGMENT_INDEX_SET,
-  FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER,
-} from "../fragment/indexSet";
+import { FRAGMENT_INDEX_SET, FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER } from "../fragment/indexSet";
 import { FRAGMENT_BOOK_STUDY_LEVEL_CONFIG } from "../fragment/bookStudyLevelConfig";
-import {
-  FRAGMENT_SESSION_FOR_RESULT,
-  FRAGMENT_EXAM_FOR_RESULT,
-  FRAGMENT_SESSION_FOR_RESTARTING_SESSION,
-} from "../fragment/session";
+import { FRAGMENT_SESSION_FOR_RESULT, FRAGMENT_EXAM_FOR_RESULT, FRAGMENT_SESSION_FOR_RESTARTING_SESSION } from "../fragment/session";
 import { FRAGMENT_CANDIDATE_BOOK } from "../fragment/candidateBook";
 
 // 유저 정보 불러오기
@@ -138,11 +128,47 @@ export const GetIndex = gql`
     }
   }
 `;
+export const GetCardTypeSet = gql`
+${FRAGMENT_MY_CARD_TYPE_SET}
+  query GetCardTypeSet($mybook_ids: [ID]) {
+    cardtypeset_getbymybookids(mybook_ids: $mybook_ids) {
+      status
+      msg
+      cardtypesets {
+        ...MyCardTypeSetFragment
+      }
+    }
+  }
+`;
 
 export const GetCardRelated = gql`
   ${FRAGMENT_CARD_SET}
   ${FRAGMENT_MY_CARD_TYPE_SET}
   query GetCardRelated($mybook_ids: [ID], $index_ids: [ID]) {
+    mybook_getMybookByUserID {
+      status
+      msg
+      user_id
+      mybooks {
+        _id
+        mybook_info {
+          mybookcateset_id
+          mybookcate_id
+          title
+          type
+          buybook_id
+          user_id
+          author_id
+          hideOrShow
+          isStudyLike
+          isWriteLike
+          seqInCategory
+          seqInStudyLike
+          seqInWriteLike
+          timeCreated
+        }
+      }
+    }
     cardset_getByIndexIDs(index_ids: $index_ids) {
       status
       msg
@@ -402,9 +428,7 @@ export const QUERY_SESSION_INDEXSET_AND_CARDSET_BY_BOOK_IDS = gql`
 // 책 목차 정보
 export const QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER = gql`
   ${FRAGMENT_INDEX_SET}
-  query getSessionCardsDataByBooksId(
-    $forGetNumCardsbyIndex: forGetNumCardsbyIndex
-  ) {
+  query getSessionCardsDataByBooksId($forGetNumCardsbyIndex: forGetNumCardsbyIndex) {
     session_getNumCardsbyIndex(forGetNumCardsbyIndex: $forGetNumCardsbyIndex) {
       status
       msg

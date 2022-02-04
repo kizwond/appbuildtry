@@ -29,6 +29,9 @@ const BuyBookDetail = (props) => {
     MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK,
     { onCompleted: (data) => console.log(data) }
   );
+  if (router.isFallback) {
+    return <div>로딩 중...</div>;
+  }
   const createMybook = async () => {
     try {
       await createMybookFromBuyBook({
@@ -112,7 +115,7 @@ const BuyBookDetail = (props) => {
                   <span>뒤집기({numCards?.flip ?? 0})</span>
                 </div>
                 <div className="text-xl font-bold">
-                  {price.toLocaleString("ko-KR")} 원
+                  {price && price.toLocaleString("ko-KR")} 원
                 </div>
                 <div className="flex gap-2 mt-2">
                   <Button type="primary">카트</Button>

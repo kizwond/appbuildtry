@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { GetCardRelated } from "../../../../../graphql/query/allQuery";
+import { GetCardRelated, QUERY_MY_CARD_CONTENTS } from "../../../../../graphql/query/allQuery";
 import dynamic from "next/dynamic";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { Space, Button, Select, Modal, Tag, message, Input, Popover, Checkbox  } from "antd";
@@ -137,23 +137,16 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     fetchPolicy: "network-only",
   });
 
-  const [mycontent_getMycontentByMycontentIDs, { loading: loading2, error: error2, data }] = useLazyQuery(GET_CARD_CONTENT, { onCompleted: afterGetContent });
-  const [buycontent_getBuycontentByBuycontentIDs, { loading: loading3, error: error3, data: buyContents }] = useLazyQuery(GET_BUY_CARD_CONTENT, {
-    onCompleted: afterGetBuyContent,
-  });
-
+  const [getContentsByContentIds, { loading: loading2, error: error2, data }] = useLazyQuery(QUERY_MY_CARD_CONTENTS, { onCompleted: afterGetContent });
+ 
   function afterGetContent(data) {
     console.log(data);
-    const newArray = contentsList.concat(data.mycontent_getMycontentByMycontentIDs.mycontents);
+    const newArray = [...contentsList, ...data.mycontent_getMycontentByMycontentIDs.mycontents, ...data.buycontent_getBuycontentByBuycontentIDs.buycontents ];
     var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
     setContentsList(uniq);
   }
 
-  function afterGetBuyContent(data) {
-    const newArray = contentsList.concat(data.buycontent_getBuycontentByBuycontentIDs.buycontents);
-    var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
-    setContentsList(uniq);
-  }
+  
 
   //userflag update
   const [cardset_updateUserFlag] = useMutation(MUTATION_UPDATE_USER_FLAG, {
@@ -210,21 +203,17 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
         return item.content.buycontent_id;
       });
 
-      mycontent_getMycontentByMycontentIDs({
+      getContentsByContentIds({
         variables: {
           mycontent_ids: cardIdList,
-        },
-      });
-
-      buycontent_getBuycontentByBuycontentIDs({
-        variables: {
           buycontent_ids: buyContentsIdsList,
         },
       });
+    
     } else {
       console.log("why here?");
     }
-  }, [data1, first_index, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs]);
+  }, [data1, first_index, getContentsByContentIds]);
 
   // 읽기모드 에디터 뿌리기
   const prepareCardInDictionary = (radio) => {

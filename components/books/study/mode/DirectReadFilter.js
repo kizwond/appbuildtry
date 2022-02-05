@@ -394,6 +394,7 @@ const RightDrawer = ({ setBottomVisible }) => {
               await computeNumberOfAllFilteredCards({
                 cardsets,
               });
+              setVisible(false);
               console.timeEnd("카드필터계산");
             }}
           >

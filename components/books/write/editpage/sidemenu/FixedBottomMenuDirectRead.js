@@ -63,7 +63,10 @@ const FloatingMenu = ({
   fireEditor,
   face1On,
   face2On,
-  selectionOn
+  selectionOn,
+  selectionShow,
+  face1row,
+  face2row,
 }) => {
   const [bottomVisible, setBottomVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -558,7 +561,15 @@ const FloatingMenu = ({
                   style={{ padding: 20, display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap: "wrap", fontSize: "0.8rem", color: "#7a7a7a" }}
                 >
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <StudyGeneralSetting setBottomVisible={setBottomVisible} face1On={face1On} face2On={face2On} selectionOn={selectionOn}/>
+                    <StudyGeneralSetting
+                      setBottomVisible={setBottomVisible}
+                      face1On={face1On}
+                      face2On={face2On}
+                      selectionOn={selectionOn}
+                      selectionShow={selectionShow}
+                      face1row={face1row}
+                      face2row={face2row}
+                    />
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <StudyToolSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} />

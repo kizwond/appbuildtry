@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { GetCardRelated } from "../../../../../graphql/query/allQuery";
 import dynamic from "next/dynamic";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
-import { Space, Button, Select, Modal, Tag, message, Input, Popover } from "antd";
+import { Space, Button, Select, Modal, Tag, message, Input, Popover, Checkbox  } from "antd";
 import { UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../../graphql/query/card_contents";
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
@@ -118,10 +118,14 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   const handleOk = () => {
     setIsNewCardModalVisible(false);
+    setBookSelectedForEditor("default")
+    setIndexSelectedForEditor("default")
   };
 
   const handleCancel = () => {
     setIsNewCardModalVisible(false);
+    setBookSelectedForEditor("default")
+    setIndexSelectedForEditor("default")
   };
 
   const {
@@ -189,7 +193,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
       setBookList(data1.mybook_getMybookByUserID.mybooks);
-
+      sessionStorage.setItem("sameIndexSelectedCheck", "false")
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
      
      
@@ -285,7 +289,14 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     const mybook_id = bookSelectedForEditor
     const cardtype = cardtype_info.cardtype;
     const cardtype_id = sessionStorage.getItem("selectedCardTypeId")
-    const current_position_card_id = null
+    const sameIndexSelectedCheck = sessionStorage.getItem("sameIndexSelectedCheck")
+    console.log(sameIndexSelectedCheck)
+    if(sameIndexSelectedCheck === "true"){
+      var current_position_card_id = cardId
+    } else {
+      current_position_card_id = null
+    }
+    
     const cardTypeSetId = sessionStorage.getItem("cardtypeset_id")
     const index_id = sessionStorage.getItem("index_id_for_newcard");
     const indexSetId = sessionStorage.getItem("indexset_id")
@@ -307,6 +318,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       values.flagComment,
       cardTypeSetId
     );
+    setIsNewCardModalVisible(false);
+    sessionStorage.setItem("sameIndexSelectedCheck", "false")
   };
 
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
@@ -372,6 +385,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     }
   }
 
+  
   // 새카드 만들기 부분
 
   const [indexset_getByMybookids, { loading: loading4, error: error4, data: selectedIndexForNewCardAdd }] = useLazyQuery(GetIndex, {
@@ -635,6 +649,12 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
     setNewCardEditor(editor);
   };
+
+
+  function sameIndexSelected(e) {
+    console.log(`checked`, e.target.checked);
+    sessionStorage.setItem("sameIndexSelectedCheck", e.target.checked)
+  }
 
   // 새카드 만들기 부분 끝
 
@@ -1619,30 +1639,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                               </>
                             )}
                           </div>
-                          {/* <Popover
-                            content={"준비중입니다..."}
-                            placement="bottomLeft"
-                            title={
-                              <>
-                                <span style={{ fontSize: "0.8rem" }}>새카드 추가하기</span>
-                              </>
-                            }
-                            trigger="click"
-                          >
-                            <Button
-                              size="small"
-                              style={{
-                                // border: "none",
-                                backgroundColor: "white",
-                                borderRadius: "3px",
-                                fontSize: "0.9rem",
-                                color: "#939393",
-                              }}
-                              // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                            >
-                              새카드
-                            </Button>
-                          </Popover> */}
+
                           <Button
                             size="small"
                             style={{
@@ -1673,6 +1670,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                 </Option>
                                 {index_list}
                               </Select>
+                              {content.card_info.index_id === indexSelectedForEditor && <><div><Checkbox onChange={sameIndexSelected}>해당카드 바로뒤에 저장</Checkbox></div></>}
                             </div>
                             <div>
                              
@@ -1946,66 +1944,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                               </>
                             ))}
                           </div>
-                          {/* <div
-                            style={{
-                              width: "20%",
-                              backgroundColor: face_style[1].background.color,
-                              marginTop: face_style[1].outer_margin.top,
-                              marginBottom: face_style[1].outer_margin.bottom,
-                              marginLeft: face_style[1].outer_margin.left,
-                              marginRight: face_style[1].outer_margin.right,
-                              paddingTop: face_style[1].inner_padding.top,
-                              paddingBottom: face_style[1].inner_padding.bottom,
-                              paddingLeft: face_style[1].inner_padding.left,
-                              paddingRight: face_style[1].inner_padding.right,
-                              borderTop: `${face_style[1].border.top.thickness}px ${face_style[1].border.top.bordertype} ${face_style[1].border.top.color}`,
-                              borderBottom: `${face_style[1].border.bottom.thickness}px ${face_style[1].border.bottom.bordertype} ${face_style[1].border.bottom.color}`,
-                              borderLeft: `${face_style[1].border.left.thickness}px ${face_style[1].border.left.bordertype} ${face_style[1].border.left.color}`,
-                              borderRight: `${face_style[1].border.right.thickness}px ${face_style[1].border.right.bordertype} ${face_style[1].border.right.color}`,
-                            }}
-                          >
-                            {content_value.annotation.length > 0 &&
-                              content_value.annotation.map((item, index) => (
-                                <>
-                                  <div
-                                    style={{
-                                      backgroundColor: row_style.annotation[index].background.color,
-                                      marginTop: row_style.annotation[index].outer_margin.top,
-                                      marginBottom: row_style.annotation[index].outer_margin.bottom,
-                                      marginLeft: row_style.annotation[index].outer_margin.left,
-                                      marginRight: row_style.annotation[index].outer_margin.right,
-                                      paddingTop: row_style.annotation[index].inner_padding.top,
-                                      paddingBottom: row_style.annotation[index].inner_padding.bottom,
-                                      paddingLeft: row_style.annotation[index].inner_padding.left,
-                                      paddingRight: row_style.annotation[index].inner_padding.right,
-                                      borderTop: `${row_style.annotation[index].border.top.thickness}px ${row_style.annotation[index].border.top.bordertype} ${row_style.annotation[index].border.top.color}`,
-                                      borderBottom: `${row_style.annotation[index].border.bottom.thickness}px ${row_style.annotation[index].border.bottom.bordertype} ${row_style.annotation[index].border.bottom.color}`,
-                                      borderLeft: `${row_style.annotation[index].border.left.thickness}px ${row_style.annotation[index].border.left.bordertype} ${row_style.annotation[index].border.left.color}`,
-                                      borderRight: `${row_style.annotation[index].border.right.thickness}px ${row_style.annotation[index].border.right.bordertype} ${row_style.annotation[index].border.right.color}`,
-                                      textAlign: row_font.annotation[index].align,
-                                      fontWeight: `${row_font.annotation[index].bold === "on" ? 700 : 400}`,
-                                      color: row_font.annotation[index].color,
-                                      fontFamily: `${
-                                        row_font.annotation[index].font === "고딕"
-                                          ? `Nanum Gothic, sans-serif`
-                                          : row_font.annotation[index].font === "명조"
-                                          ? `Nanum Myeongjo, sans-serif`
-                                          : row_font.annotation[index].font === "바탕"
-                                          ? `Gowun Batang, sans-serif`
-                                          : row_font.annotation[index].font === "돋움"
-                                          ? `Gowun Dodum, sans-serif`
-                                          : ""
-                                      } `,
-                                      fontStyle: `${row_font.annotation[index].italic === "on" ? "italic" : "normal"}`,
-                                      fontSize: row_font.annotation[index].size,
-                                      textDecoration: `${row_font.annotation[index].underline === "on" ? "underline" : "none"}`,
-                                    }}
-                                  >
-                                    <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
-                                  </div>
-                                </>
-                              ))}
-                          </div> */}
+                          
                         </div>
                       </div>
                     </div>
@@ -3745,6 +3684,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             face1On={face1On}
             face2On={face2On}
             selectionOn={selectionOn}
+            selectionShow={selectionShow}
+            face1row={face1row}
+            face2row={face2row}
           />
         </>
       )}

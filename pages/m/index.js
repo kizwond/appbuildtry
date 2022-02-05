@@ -55,10 +55,7 @@ const Home = () => {
       // Router.push("/");
       if (data.resetToken.token !== null) {
         localStorage.setItem("accessToken", data.resetToken.token.accessToken);
-        localStorage.setItem(
-          "refreshToken",
-          data.resetToken.token.refreshToken
-        );
+        localStorage.setItem("refreshToken", data.resetToken.token.refreshToken);
       }
       console.log("done");
     } else {
@@ -70,7 +67,7 @@ const Home = () => {
       <Hero />
       {data && data.me && data.me.users && <M_RecentStudyList />}
       {/* <NewBooks /> */}
-      {[1, 2, 3, 4, 5, 6, 7, 8].map((photo) => (
+      {/* {[1, 2, 3, 4, 5, 6, 7, 8].map((photo) => (
         <div key={photo} className="flex items-center justify-center mt-4">
           <div className="w-[calc(100vw_*_0.75)] h-[calc(100vw_*_0.75)] relative">
             <Image
@@ -80,8 +77,85 @@ const Home = () => {
             />
           </div>
         </div>
-      ))}
+      ))} */}
 
+      <div style={{ height: "20px" }}></div>
+      <div style={{fontFamily:"'Cute Font', cursive"}}>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#e4e7eb" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", padding: "15% 10% 5% 10%" }}>
+            <span style={{ fontSize: "4rem", fontWeight: "700" }}>책</span>으로 학습하실때 많이 <span style={{ fontSize: "4rem", fontWeight: "700" }}>답답~</span>하셨죠?
+          </div>
+          <div style={{ flexBasis: "50%" }}>
+            <Image src="/image/study_book.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "white" }}>
+          <div style={{ flexBasis: "50%" }}>
+            <Image src="/image/hello_img.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
+          </div>
+          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", padding: "15% 10% 5% 10%" }}>
+            <span style={{ fontSize: "4rem", fontWeight: "700" }}>콕북</span>이 당신의 <span style={{ fontSize: "4rem", fontWeight: "700" }}>학습</span>을 지원하겠습니다.
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#e4e7eb" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", padding: "15% 10% 5% 10%" }}>
+            필요한 것만 <span style={{ fontSize: "4rem", fontWeight: "700" }}>딱딱 골라서 학습</span>하고 싶으셨죠?
+          </div>
+          <div style={{ flexBasis: "50%" }}>
+            <Image src="/image/hello_img.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "white" }}>
+          <div style={{ flexBasis: "50%" }}>
+            <Image src="/image/hello_img.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
+          </div>
+          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", padding: "15% 10% 5% 10%" }}>
+            좀 <span style={{ fontSize: "4rem", fontWeight: "700" }}>섞어서 공부</span>하고 싶지는 않으셨나요?
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#e4e7eb" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", padding: "15% 10% 5% 10%" }}>
+            <span style={{ fontSize: "4rem", fontWeight: "700" }}>필터</span>된 것을 <span style={{ fontSize: "4rem", fontWeight: "700" }}>순서까지 섞어서 읽어</span>주면 어떨까요?
+          </div>
+          <div style={{ flexBasis: "50%" }}>
+            <Image src="/image/hello_img.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "white" }}>
+          <div style={{ flexBasis: "50%" }}>
+            <Image src="/image/hello_img.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
+          </div>
+          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", padding: "15% 10% 5% 10%" }}>
+            언제 <span style={{ fontSize: "4rem", fontWeight: "700" }}>복습</span>하면 될 지를 정해주면 더 좋겠죠?
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#e4e7eb" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", padding: "15% 10% 5% 10%" }}>
+            학습하면서 기억할 것을 남기시면 <span style={{ fontSize: "4rem", fontWeight: "700" }}>차곡차곡 정리</span>됩니다.
+          </div>
+          <div style={{ flexBasis: "50%" }}>
+            <Image src="/image/hello_img.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            maxHeight: "409px",
+            borderRadius: "5px",
+            backgroundColor: "white",
+            marginBottom: "20px",
+          }}
+        >
+          {/* <div style={{ flexBasis: "50%" }}>
+          <Image src="/image/hello_img.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
+        </div> */}
+          <div style={{ flexBasis: "100%", fontSize: "4rem", color: "#3b3b3b", padding: "10% 10% 5% 10%", textAlign: "center", fontWeight: "700" }}>
+            이게 끝이 아닙니다! 지금부터 하나씩 알아가시죠!
+          </div>
+        </div>
+      </div>
       <M_Footer />
     </M_Layout>
   );

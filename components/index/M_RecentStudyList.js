@@ -249,8 +249,8 @@ const M_RecentStudyList = () => {
   return (
     <article className="text-[1rem] w-full px-[8px] flex flex-col gap-1">
       <header>
-        <Space>
-          <span className="text-gray-700">최근 학습 이력</span>
+        <Space style={{display:"flex"}}>
+          <span className="text-gray-700" style={{fontSize:"1.5rem", fontWeight:700}}>최근 학습 이력</span>
           <a className="text-sky-600" onClick={openDrawer}>
             자세히 보기
           </a>

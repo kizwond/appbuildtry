@@ -3645,7 +3645,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   }
 
   function selectionOn(bool) {
-    console.log(row, bool);
     setSelectionShow(bool);
   }
 

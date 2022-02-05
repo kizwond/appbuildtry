@@ -326,7 +326,7 @@ const FloatingMenu = ({
 
   async function editorModalOpen(menu) {
     console.log(menu);
-    if (memu === "영한사전") {
+    if (menu === "영한사전") {
       showModal();
     } else {
       alert("준비중입니다.");

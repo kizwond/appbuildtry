@@ -1,7 +1,9 @@
+import Image from "next/image";
 const Hero = () => {
   return (
     <>
-      <div style={contentStyle}>잘 부탁드립니다~</div>
+    {/* <Image src="/image/hello_img.jpg" width="100%" height="100%" layout="responsive" objectFit="contain" alt="hello" /> */}
+      <div style={contentStyle}><Image src="/image/hello_neon.jpg" width="1024px" height="400px" layout="responsive" sizes="50vw" alt="hello" className="hero_img" /></div>
     </>
   );
 };
@@ -9,14 +11,11 @@ const Hero = () => {
 export default Hero;
 
 const contentStyle = {
-  height: "320px",
-  color: "#fff",
   width: "100%",
   maxWidth: "1024px",
-  lineHeight: "320px",
   textAlign: "center",
-  background: "#d4e0ff",
-  marginTop: "50px",
+  marginTop: "40px",
   fontSize: "20px",
   borderRadius: "5px",
+  marginBottom:"10px",
 };

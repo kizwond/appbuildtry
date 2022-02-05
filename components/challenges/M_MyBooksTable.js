@@ -71,7 +71,9 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       dataIndex: "categoryName",
       render: (_value, _record) =>
         _record.relationship === "parent" ? (
-          <StyledTwoLinesEllipsis style={{ marginLeft: "2px" }}>
+          <StyledTwoLinesEllipsis
+            style={{ marginLeft: "2px", textAlign: "center" }}
+          >
             {_value}
           </StyledTwoLinesEllipsis>
         ) : null,
@@ -130,7 +132,7 @@ const M_MyBooksTable = ({ bookData, loading, error }) => {
       render: (value, _record, index) => (
         <div>
           <Button type="link" size="small">
-            책 등록하기
+            판매 신청
           </Button>
         </div>
       ),

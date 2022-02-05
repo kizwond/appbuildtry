@@ -196,7 +196,7 @@ const Challenges = () => {
                 marginRight: "10px",
               }}
             >
-              도전 출판 책 등록
+              도전 출판 판매 신청
             </span>
           }
           placement="right"

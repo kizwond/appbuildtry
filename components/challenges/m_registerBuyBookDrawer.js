@@ -73,7 +73,7 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
             marginRight: "10px",
           }}
         >
-          도전 출판 책 등록
+          도전 출판 판매 신청
         </span>
       }
       placement="right"
@@ -118,7 +118,7 @@ const M_registerBuyBookDrawer = ({ mybook_id, visible, closeDrawer }) => {
             createCandiBook({ mybook_id, ...values });
           }}
         >
-          <div className="flex justify-center items-center">
+          <div className="flex items-center justify-center">
             <UploadBookcover ref={(ref) => (imgRef.current = ref)} />
           </div>
           <Form.Item
@@ -195,6 +195,9 @@ const DrawerWrapper = styled(Drawer)`
   top: 40px;
   & .ant-drawer-title {
     line-height: 16px;
+  }
+  & .ant-drawer-body * {
+    font-size: 1.2rem;
   }
 
   & .ant-card-actions {

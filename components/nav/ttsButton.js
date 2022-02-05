@@ -2,40 +2,44 @@ import { SoundOutlined } from "@ant-design/icons";
 import { useLazyQuery } from "@apollo/client";
 import { Button } from "antd";
 import React from "react";
+import { useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../graphql/query/allQuery";
 
 const TTSButton = () => {
-  // const [getContentsByContentIds, { loading: loading2, error: error2, data }] =
-  //   useLazyQuery(QUERY_MY_CARD_CONTENTS);
+  const [ttsArray, setTtsArray] = useState([]);
 
-  // const getTTSData = async () => {
-  //   getContentsByContentIds({
-  //     variables: {
-  //       mycontent_ids: [],
-  //       buycontent_ids: [],
-  //     },
-  //   }).then();
-  //   console.log(contents);
-  // const newArray =
-  //    [
+  const [getContentsByContentIds] = useLazyQuery(QUERY_MY_CARD_CONTENTS, {
+    onCompleted: (data) => {
+      const newArray = [
+        ...contents.data.mycontent_getMycontentByMycontentIDs.mycontents,
+        ...contents.data.buycontent_getBuycontentByBuycontentIDs.buycontents,
+      ];
+    },
+  });
 
-  //       ...contents.data.mycontent_getMycontentByMycontentIDs.mycontents,
-  //       ...contents.data.buycontent_getBuycontentByBuycontentIDs.buycontents,
-  //     ]
+  const getTTSData = async () => {
+    const cardListStudyingOrigin = JSON.parse(
+      sessionStorage.getItem("cardListStudyingOrigin")
+    );
 
-  // const readModeTTSOption = JSON.parse(
-  //   sessionStorage.getItem("readModeTTSOption")
-  // );
-  // const cardListStudyingOrigin = JSON.parse(
-  //   sessionStorage.getItem("cardListStudyingOrigin")
-  // );
-  // console.log({ readModeTTSOption, cardListStudyingOrigin });
-  // };
+    
+    const contents = await getContentsByContentIds({
+      variables: {
+        mycontent_ids: [],
+        buycontent_ids: [],
+      },
+    });
+
+    // const readModeTTSOption = JSON.parse(
+    //   sessionStorage.getItem("readModeTTSOption")
+    // );
+    // console.log({ readModeTTSOption, cardListStudyingOrigin });
+  };
 
   return (
     <Button
       size="small"
-      // onClick={getTTSData}
+      onClick={getTTSData}
       style={{
         fontSize: "1rem",
         borderRadius: "5px",

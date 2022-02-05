@@ -196,12 +196,11 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       
       
       setUserFlagDetails(data1.userflagconfig_get.userflagconfigs[0].details);
-      const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
-        return item.content.mycontent_id;
-      });
-      const buyContentsIdsList = data1.cardset_getByIndexIDs.cardsets[0].cards.map((item) => {
-        return item.content.buycontent_id;
-      });
+      const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.filter((card) => card.content.location === "my")
+      .map((card) => card.content.mycontent_id)
+      const buyContentsIdsList = data1.cardset_getByIndexIDs.cardsets[0].cards.filter((card) => card.content.location === "buy")
+      .map((card) => card.content.buycontent_id);
+     ;
 
       getContentsByContentIds({
         variables: {

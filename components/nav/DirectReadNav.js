@@ -11,6 +11,7 @@ import {
   FileTextOutlined,
   CrownOutlined,
   HomeOutlined,
+  SoundOutlined
 } from "@ant-design/icons";
 import { Divider, Avatar } from "antd";
 import React, { useEffect, useState } from "react";
@@ -96,7 +97,14 @@ const StudyNav = ({ mode,indexChanged, index_changed, indexSets }) => {
             {mode} 모드
           </div>
 
-          <div style={{ flexBasis: "33%", textAlign:"right" }}>
+          <div style={{ flexBasis: "33%", justifyContent:"flex-end",display:"flex" }}>
+            <Button
+            size="small"
+              onClick={()=>console.log("tts clicked!!")}
+              style={{fontSize:"1rem", borderRadius:"5px", marginRight:"5px" }}
+              type="primary"
+              icon={<SoundOutlined />}
+            ></Button>
             <Button
             size="small"
               onClick={goToResult}

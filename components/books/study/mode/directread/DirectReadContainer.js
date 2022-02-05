@@ -1882,7 +1882,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                     <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "normal", null, content)}>
                         {/* 페이스 스타일 영역 */}
-                        {content.content.makerFlag.value !== null && flagArea}
+                        {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                         <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                           <div
                             style={{
@@ -1906,7 +1906,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                               <>
                                 <div
                                   style={{
-                                    visibility: `${face1row[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                    display: `${face1row[`face1row${index + 1}`] === false ? "none" : ""}`,
                                     backgroundColor: row_style.face1[index].background.color,
                                     marginTop: row_style.face1[index].outer_margin.top,
                                     marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -2015,7 +2015,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                     <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "normal")}>
                         {/* 페이스 스타일 영역 */}
-                        {content.content.makerFlag.value !== null && flagArea}
+                        {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                         <div
                           style={{
                             backgroundColor: face_style[0].background.color,
@@ -2368,7 +2368,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                       <div style={{ marginBottom: "5px" }}>
                         <div onClick={() => onClickCard(content._id, "general", null, content)}>
                           {/* 페이스 스타일 영역 */}
-                          {content.content.makerFlag.value !== null && flagArea}
+                          {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                           <div
                             style={{
                               backgroundColor: face_style[0].background.color,
@@ -2743,7 +2743,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                             }}
                           >
                             {/* 페이스1 스타일 영역 */}
-                            {content.content.makerFlag.value !== null && flagArea}
+                            {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                             <div
                               style={{
                                 backgroundColor: face_style[1].background.color,
@@ -2765,7 +2765,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                 <>
                                   <div
                                     style={{
-                                      visibility: `${face1row[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                      display: `${face1row[`face1row${index + 1}`] === false ? "none" : ""}`,
                                       backgroundColor: row_style.face1[index].background.color,
                                       marginTop: row_style.face1[index].outer_margin.top,
                                       marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -2811,7 +2811,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                       // id={`face2_row${index + 1}`}
                                       value={item}
                                       style={{
-                                        visibility: `${face2row[`face2row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                        display: `${face2row[`face2row${index + 1}`] === false ? "none" : ""}`,
                                         backgroundColor: row_style.face2[index].background.color,
                                         marginTop: row_style.face2[index].outer_margin.top,
                                         marginBottom: row_style.face2[index].outer_margin.bottom,
@@ -2952,7 +2952,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                 <>
                                   <div
                                     style={{
-                                      visibility: `${face2row[`face2row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                      display: `${face2row[`face2row${index + 1}`] === false ? "none" : ""}`,
                                       backgroundColor: row_style.face2[index].background.color,
                                       marginTop: row_style.face2[index].outer_margin.top,
                                       marginBottom: row_style.face2[index].outer_margin.bottom,
@@ -3350,7 +3350,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                             }}
                           >
                             {/* 페이스1 스타일 영역 */}
-                            {content.content.makerFlag.value !== null && flagArea}
+                            {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                             <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", width: "100%" }}>
                               <div
                                 style={{
@@ -3374,7 +3374,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   <>
                                     <div
                                       style={{
-                                        visibility: `${face1row[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                        display: `${face1row[`face1row${index + 1}`] === false ? "none" : ""}`,
                                         backgroundColor: row_style.face1[index].background.color,
                                         marginTop: row_style.face1[index].outer_margin.top,
                                         marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -3476,7 +3476,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   <>
                                     <div
                                       style={{
-                                        visibility: `${face2row[`face2row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                        display: `${face2row[`face2row${index + 1}`] === false ? "none" : ""}`,
                                         backgroundColor: row_style.face2[index].background.color,
                                         marginTop: row_style.face2[index].outer_margin.top,
                                         marginBottom: row_style.face2[index].outer_margin.bottom,
@@ -3726,8 +3726,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   return (
     <>
-      <div style={{ width: "95%", maxWidth: "972px", margin: "auto" }}>
+      <div style={{ width: "95%", maxWidth: "972px", margin: "auto"}}>
         <div style={{ margin: "auto" }}>{contents}</div>
+        <div style={{height:"40px"}}></div>
       </div>
       {data1 && (
         <>

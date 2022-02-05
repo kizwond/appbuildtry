@@ -2,6 +2,7 @@ import { SoundOutlined } from "@ant-design/icons";
 import { useLazyQuery } from "@apollo/client";
 import { Button } from "antd";
 import React from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../graphql/query/allQuery";
 
@@ -30,7 +31,11 @@ const TTSButton = () => {
       const tts = contentsListSortedByCardSeq.map((content) => {
         let arr = [];
         content.face1.forEach((c, i) => {
-          if (readModeTTSOption.faceOneTTS[i + 1]) {
+          if (
+            readModeTTSOption.faceOneTTS[i + 1] &&
+            content.face1 !== null &&
+            content.face1.length > 0
+          ) {
             const contentWithoutTags = c
               .replace(/(<([^>]+)>)/gi, "")
               .replace(/&nbsp;/g, "");
@@ -71,9 +76,23 @@ const TTSButton = () => {
       });
 
       const flattenContents = tts.flat();
+      setTtsArray(flattenContents);
       console.log(flattenContents);
     },
   });
+
+  // 유즈이펙트로 tts 데이터 변경될 때만 읽어주면 됨
+  useEffect(() => {
+    if (ttsArray.length > 0) {
+      console.log("여기서 tts 라이브러리 실행 해주삼.");
+    }
+
+    return () => {
+      //  라이브러리 종료 될 때 메모리에서 제거하기 위해서는 여기에 무슨 코드를 넣어야할 수도 있음.
+      // 끝나면 cleanup함수를 호출해야 할 수도?? https://react.vlpt.us/basic/16-useEffect.html
+      // 잘 모르겠음. 지난번에 음성이 다른 페이지에서도 계속 나왔던 기억이 있어서 ... ~~🤭🤭
+    };
+  }, [ttsArray]);
 
   const getTTSData = async () => {
     const cardListStudyingOrigin = JSON.parse(

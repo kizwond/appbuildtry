@@ -82,9 +82,9 @@ const Home = () => {
       <div style={{ height: "20px" }}></div>
       <div style={{ fontFamily: "'Cute Font', cursive" }}>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#c2cfd4" }}>
-          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3vw", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-              <span style={{ fontSize: "4rem", fontWeight: "700" }}>책</span>으로 학습하실때 많이 <span style={{ fontSize: "4rem", fontWeight: "700" }}>답답~</span>하셨죠?
+              <span style={{ fontSize: "4vw", fontWeight: "700" }}>책</span>으로 학습하실때 많이 <span style={{ fontSize: "4vw", fontWeight: "700" }}>답답~</span>하셨죠?
             </div>
           </div>
           <div style={{ flexBasis: "50%" }}>
@@ -95,16 +95,16 @@ const Home = () => {
           <div style={{ flexBasis: "50%" }}>
             <Image src="/image/study_support.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
           </div>
-          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3vw", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-              <span style={{ fontSize: "4rem", fontWeight: "700" }}>콕북</span>이 당신의 <span style={{ fontSize: "4rem", fontWeight: "700" }}>학습</span>을 지원하겠습니다.
+              <span style={{ fontSize: "4vw", fontWeight: "700" }}>콕북</span>이 당신의 <span style={{ fontSize: "4vw", fontWeight: "700" }}>학습</span>을 지원하겠습니다.
             </div>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#e2e6e7" }}>
-          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3vw", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-              필요한 것만 <span style={{ fontSize: "4rem", fontWeight: "700" }}>딱딱 골라서 학습</span>하고 싶으셨죠?
+              필요한 것만 <span style={{ fontSize: "4vw", fontWeight: "700" }}>딱딱 골라서 학습</span>하고 싶으셨죠?
             </div>
           </div>
           <div style={{ flexBasis: "50%" }}>
@@ -115,16 +115,16 @@ const Home = () => {
           <div style={{ flexBasis: "50%" }}>
             <Image src="/image/study_mixing.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
           </div>
-          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3vw", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-              좀 <span style={{ fontSize: "4rem", fontWeight: "700" }}>섞어서 공부</span>하고 싶지는 않으셨나요?
+              좀 <span style={{ fontSize: "4vw", fontWeight: "700" }}>섞어서 공부</span>하고 싶지는 않으셨나요?
             </div>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#f1d7c2" }}>
-          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3vw", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-              <span style={{ fontSize: "4rem", fontWeight: "700" }}>필터</span>된 것을 <span style={{ fontSize: "4rem", fontWeight: "700" }}>순서까지 섞어서 읽어</span>주면
+              <span style={{ fontSize: "4vw", fontWeight: "700" }}>필터</span>된 것을 <span style={{ fontSize: "4vw", fontWeight: "700" }}>순서까지 섞어서 읽어</span>주면
               어떨까요?
             </div>
           </div>
@@ -136,16 +136,16 @@ const Home = () => {
           <div style={{ flexBasis: "50%" }}>
             <Image src="/image/study_planning.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
           </div>
-          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3vw", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-              언제 <span style={{ fontSize: "4rem", fontWeight: "700" }}>복습</span>하면 될 지를 정해주면 더 좋겠죠?
+              언제 <span style={{ fontSize: "4vw", fontWeight: "700" }}>복습</span>하면 될 지를 정해주면 더 좋겠죠?
             </div>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#cbc3b1" }}>
-          <div style={{ flexBasis: "50%", fontSize: "3rem", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "3vw", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-              학습하면서 기억할 것을 남기시면 <span style={{ fontSize: "4rem", fontWeight: "700" }}>차곡차곡 정리</span>됩니다.
+              학습하면서 기억할 것을 남기시면 <span style={{ fontSize: "4vw", fontWeight: "700" }}>차곡차곡 정리</span>됩니다.
             </div>
           </div>
           <div style={{ flexBasis: "50%" }}>
@@ -165,7 +165,7 @@ const Home = () => {
           }}
         >
         
-            <div style={{ flexBasis: "100%", fontSize: "4rem", color: "#3b3b3b", textAlign: "center", fontWeight: "700" }}>이게 끝이 아닙니다! 지금부터 하나씩 알아가시죠!</div>
+            <div style={{ flexBasis: "100%", fontSize: "4vw", color: "#3b3b3b", textAlign: "center", fontWeight: "700" }}>이게 끝이 아닙니다! 지금부터 하나씩 알아가시죠!</div>
           
         </div>
       </div>

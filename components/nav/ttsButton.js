@@ -10,10 +10,23 @@ const TTSButton = () => {
 
   const [getContentsByContentIds] = useLazyQuery(QUERY_MY_CARD_CONTENTS, {
     onCompleted: (data) => {
-      const newArray = [
-        ...contents.data.mycontent_getMycontentByMycontentIDs.mycontents,
-        ...contents.data.buycontent_getBuycontentByBuycontentIDs.buycontents,
+      console.log(data);
+      const contents = [
+        ...data.mycontent_getMycontentByMycontentIDs.mycontents,
+        ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
       ];
+      console.log(contents);
+      const cardListStudying = JSON.parse(
+        sessionStorage.getItem("cardListStudying")
+      );
+      const contentsListSortedByCardSeq = cardListStudying.map((card) =>
+        contents.find(card.content.mycontent_id)
+      );
+      console.log({ contentsListSortedByCardSeq });
+
+      const readModeTTSOption = JSON.parse(
+        sessionStorage.getItem("readModeTTSOption")
+      );
     },
   });
 
@@ -21,18 +34,20 @@ const TTSButton = () => {
     const cardListStudyingOrigin = JSON.parse(
       sessionStorage.getItem("cardListStudyingOrigin")
     );
+    const mycontent_ids = cardListStudyingOrigin
+      .filter((card) => card.content.location === "my")
+      .map((card) => card.content.mycontent_id);
+    const buycontent_ids = cardListStudyingOrigin
+      .filter((card) => card.content.location === "buy")
+      .map((card) => card.content.buycontent_id);
 
-    
-    const contents = await getContentsByContentIds({
+    getContentsByContentIds({
       variables: {
-        mycontent_ids: [],
-        buycontent_ids: [],
+        mycontent_ids,
+        buycontent_ids,
       },
     });
 
-    // const readModeTTSOption = JSON.parse(
-    //   sessionStorage.getItem("readModeTTSOption")
-    // );
     // console.log({ readModeTTSOption, cardListStudyingOrigin });
   };
 

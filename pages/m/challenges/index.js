@@ -178,7 +178,7 @@ const Challenges = () => {
                           <div className="text-base">2명</div>
                         </div>
                         <div className="text-lg">
-                          {price && price.toLocaleString("ko-KR") + " 원"}
+                          {price && price.toLocaleString("ko-KR")} 원
                         </div>
                       </div>
                     </a>

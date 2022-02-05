@@ -43,19 +43,25 @@ const TTSButton = () => {
           content.selection !== null &&
           content.selection.length > 0
         ) {
-          content.selection.forEach((c) => {
+          content.selection.forEach((c, i) => {
             const contentWithoutTags = c
               .replace(/(<([^>]+)>)/gi, "")
               .replace(/&nbsp;/g, "");
-            arr.push("1" + contentWithoutTags);
+            arr.push(`보기${i + 1}번 ${contentWithoutTags}`);
           });
         }
         if (content.face2 !== null || content.face2.length > 0) {
           content.face2.forEach((c, i) => {
             if (readModeTTSOption.faceTwoTTS[i + 1]) {
-              const contentWithoutTags = c
-                .replace(/(<([^>]+)>)/gi, "")
-                .replace(/&nbsp;/g, "");
+              const contentWithoutTags =
+                i === 0 &&
+                readModeTTSOption.faceOneTTS.selection &&
+                content.selection !== null &&
+                content.selection.length > 0
+                  ? "정답은 " +
+                    c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "") +
+                    "번 입니다."
+                  : c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "");
               arr.push(contentWithoutTags);
             }
           });
@@ -67,7 +73,6 @@ const TTSButton = () => {
       const flattenContents = tts.flat();
       console.log(flattenContents);
     },
-    fetchPolicy: "network-only",
   });
 
   const getTTSData = async () => {

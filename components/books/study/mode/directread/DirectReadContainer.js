@@ -101,6 +101,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   const [face1row, setFace1row] = useState({ face1row1: true, face1row2: true, face1row3: true, face1row4: true, face1row5: true });
   const [face2row, setFace2row] = useState({ face2row1: true, face2row2: true, face2row3: true, face2row4: true, face2row5: true });
+  const [selectionShow, setSelectionShow] = useState(true);
 
   const [isNewCardModalVisible, setIsNewCardModalVisible] = useState(false);
   const [newCardEditor, setNewCardEditor] = useState();
@@ -2854,6 +2855,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   <>
                                     <div
                                       style={{
+                                        display: `${selectionShow === false ? "none" : ""}`,
                                         backgroundColor: row_style.face1[row_style.face1.length - 1].background.color,
                                         marginTop: row_style.face1[row_style.face1.length - 1].outer_margin.top,
                                         marginBottom: row_style.face1[row_style.face1.length - 1].outer_margin.bottom,
@@ -3416,6 +3418,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     <>
                                       <div
                                         style={{
+                                          display: `${selectionShow === false ? "none" : ""}`,
                                           backgroundColor: row_style.face1[index].background.color,
                                           marginTop: row_style.face1[index].outer_margin.top,
                                           marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -3693,17 +3696,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       ...face1row,
       [`face1row${row}`]: bool,
     });
-    // if (row === "1") {
-    //   setFace1row1(bool);
-    // } else if (row === "2") {
-    //   setFace1row2(bool);
-    // } else if (row === "3") {
-    //   setFace1row3(bool);
-    // } else if (row === "4") {
-    //   setFace1row4(bool);
-    // } else if (row === "5") {
-    //   setFace1row5(bool);
-    // }
   }
   function face2On(row, bool) {
     console.log(row, bool);
@@ -3711,17 +3703,11 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       ...face2row,
       [`face2row${row}`]: bool,
     });
-    // if (row === "1") {
-    //   setFace2row1(bool);
-    // } else if (row === "2") {
-    //   setFace2row2(bool);
-    // } else if (row === "3") {
-    //   setFace2row3(bool);
-    // } else if (row === "4") {
-    //   setFace2row4(bool);
-    // } else if (row === "5") {
-    //   setFace2row5(bool);
-    // }
+  }
+
+  function selectionOn(bool) {
+    console.log(row, bool);
+    setSelectionShow(bool);
   }
 
   return (
@@ -3758,6 +3744,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             fireEditor={fireEditor}
             face1On={face1On}
             face2On={face2On}
+            selectionOn={selectionOn}
           />
         </>
       )}

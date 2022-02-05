@@ -83,41 +83,6 @@ const FlipContainer = ({
   sessionupdateresults,
   finishStudy,
 }) => {
-  // const router = useRouter();
-  // const [session_updateResults] = useMutation(UpdateResults, { onCompleted: showdataafterupdateresult });
-  // function showdataafterupdateresult(data) {
-  //   console.log("data", data);
-  //   if (data.session_updateResults.status === "200") {
-  //     sessionStorage.setItem("endTimeOfSession", new Date());
-  //     router.push("/m/study/result");
-  //   }
-  // }
-
-  // const sessionupdateresults = useCallback(
-  //   async (sessionId, filtered, resultOfSession, resultByBook, createdCards, dataForRegression, cardlist_to_send) => {
-  //     try {
-  //       await session_updateResults({
-  //         variables: {
-  //           forUpdateResults: {
-  //             session_id: sessionId,
-  //             createdCards,
-  //             cardlistUpdated: filtered,
-  //             clickHistory: cardlist_to_send,
-  //             resultOfSession,
-  //             resultByBook: produce(resultByBook, (draft) => {
-  //               draft.forEach((book) => delete book.bookTitle);
-  //             }),
-  //             dataForRegression,
-  //           },
-  //         },
-  //       });
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
-  //   [session_updateResults]
-  // );
-
   return (
     <>
       <Container
@@ -394,27 +359,6 @@ class Container extends Component {
         alert("학습할 카드가 없습니다. 학습메인으로");
         window.location.href = "/m/study";
       }
-      // if (this.props.contentsList.length > 0) {
-      //   if (this.state.firstTimeTts === true) {
-      //     console.log(this.props.contentsList);
-      //     const show_contents = this.props.contentsList[0];
-      //     console.log(show_contents);
-      //     const face1_tmp = show_contents.face1[0].replace(/<\/?[^>]+(>|$)/g, "");
-      //     if (show_contents.face2[0]) {
-      //       const face2_tmp = show_contents.face2[0].replace(/<\/?[^>]+(>|$)/g, "");
-      //       var face2 = face2_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
-      //     }
-
-      //     const face1 = face1_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
-
-      //     console.log(face1);
-      //     console.log(face2);
-      //     this.speakTextFirstCard(face1, face2);
-      //     this.setState({
-      //       firstTimeTts: false,
-      //     });
-      //   }
-      // }
     }
     const ttsUse = sessionStorage.getItem("ttsUse");
     if (ttsUse === null) {
@@ -434,10 +378,6 @@ class Container extends Component {
             ttsOn: false,
           });
         }
-        // this.speakText();
-        // this.setState({
-        //   ttsOn: false,
-        // });
         if (this.state.flip === false) {
           this.speakTextFace2();
           this.setState({
@@ -1169,67 +1109,11 @@ class Container extends Component {
           </div>
         </div>
       );
-
-      const backModeMoreMenuContents = (
-        <Space>
-          {statusCurrent === "completed" || statusCurrent === "hold" ? (
-            <>
-              <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickRestoreHandler(current_card_id, "back")} type="primary">
-                복원
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id, "back")} type="primary">
-                보류
-              </Button>
-              <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id, "back")} type="primary">
-                졸업
-              </Button>
-            </>
-          )}
-
-          {/* <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
-            학습종료
-          </Button> */}
-        </Space>
-      );
-
-      const restoreBackModeMoreMenuContents = (
-        <Space>
-          <>
-            <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id, "back")} type="primary">
-              보류
-            </Button>
-            <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id, "back")} type="primary">
-              졸업
-            </Button>
-          </>
-
-          {/* <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
-            학습종료
-          </Button> */}
-        </Space>
-      );
       var goBackToCurrent = (
         <>
           <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={this.onClickGoBackToOrigin}>
             원위치에서 학습 이어하기
           </Button>
-          {/* <Popover visible={this.state.popoverClicked} onVisibleChange={this.handleClickPopover} placement="left" content={backModeMoreMenuContents} trigger="click">
-            <Button icon={<DashOutlined />} size="small" style={{ fontSize: "1rem" }} type="secondary" />
-          </Popover> */}
-        </>
-      );
-
-      var restoreModeGoBackToCurrent = (
-        <>
-          <Button size="small" type="primary" style={{ fontSize: "0.8rem" }} onClick={this.onClickGoBackToOrigin}>
-            원위치에서 학습 이어하기
-          </Button>
-          <Popover visible={this.state.popoverClicked} onVisibleChange={this.handleClickPopover} placement="left" content={restoreBackModeMoreMenuContents} trigger="click">
-            <Button icon={<DashOutlined />} size="small" style={{ fontSize: "1rem" }} type="secondary" />
-          </Popover>
         </>
       );
 
@@ -1238,28 +1122,9 @@ class Container extends Component {
           <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary">
             통과
           </Button>
-          {/* <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id)} type="primary">
-            보류
-          </Button>
-          <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id)} type="primary">
-            졸업
-          </Button> */}
-          {/* <Button icon={<CheckCircleOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={this.finishStudy} type="primary">
-            학습종료
-          </Button> */}
         </Space>
       );
-      // var moreMenu = (
-      //   <>
-      //     <Button
-      //       icon={<StepForwardOutlined />}
-      //       size="small"
-      //       style={{ fontSize: "1rem", flexGrow: 0, marginLeft: "5px" }}
-      //       onClick={() => this.onClickPassHandler(current_card_id)}
-      //       type="secondary"
-      //     ></Button>
-      //   </>
-      // );
+
       var moreMenu = (
         <>
           <Popover visible={this.state.popoverClicked} onVisibleChange={this.handleClickPopover} placement="left" content={moreMenuContents} trigger="click">
@@ -2741,7 +2606,6 @@ class Container extends Component {
                 {this.state.restore === true && !this.state.onBackMode && restoreDiffiButtons}
                 {!this.state.onBackMode && moreMenu}
                 {this.state.onBackMode && !this.state.backModeRestore && diffiButtons}
-                {/* {this.state.onBackMode && !this.state.backModeRestore && goBackToCurrent} */}
                 {this.state.onBackMode && this.state.backModeRestore && restoreDiffiButtons}
                 {this.state.onBackMode && (
                   <Button

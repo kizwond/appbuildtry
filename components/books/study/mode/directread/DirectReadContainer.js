@@ -192,6 +192,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
       for (let i = 0; i < cardListStudyingOrigin.length; i++) {
         cardListStudyingOrigin[i].studyStatus.statusOriginal = cardListStudyingOrigin[i].studyStatus.statusCurrent;
+        cardListStudyingOrigin[i].studyStatus.userFlagOriginal = cardListStudyingOrigin[i].content.userFlag;
       }
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(cardListStudyingOrigin));
 

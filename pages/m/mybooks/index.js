@@ -120,6 +120,8 @@ const M_StudyMainPage = () => {
             4: true,
             5: true,
           },
+          rate: 1,
+          pitch: 1,
         };
 
         sessionStorage.setItem("filterOption", JSON.stringify(filterOption));

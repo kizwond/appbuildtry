@@ -189,14 +189,24 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setBookList(data1.mybook_getMybookByUserID.mybooks);
       sessionStorage.setItem("sameIndexSelectedCheck", "false");
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
+      const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"))
+      if(cardlist_to_send){
+        if(cardlist_to_send.length > 0){
+          console.log("cardlist_to_send exist")
+        } 
+      }else {
+        sessionStorage.setItem("cardlist_to_send", JSON.stringify([]));
+      }
+      
       const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
       for (let i = 0; i < cardListStudyingOrigin.length; i++) {
         cardListStudyingOrigin[i].studyStatus.statusOriginal = cardListStudyingOrigin[i].studyStatus.statusCurrent;
+        cardListStudyingOrigin[i].studyStatus.userFlagOriginal = cardListStudyingOrigin[i].content.userFlag;
       }
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(cardListStudyingOrigin));
 
       // 필터링 함수가 들어간다. 함수에서 세션스토리지에 "cardListStudying" 저장하는 기능 넣어둠
-      computeNumberOfAllFilteredCards({ cardsets: data1.cardset_getByIndexIDs.cardsets[0].cards });
+      computeNumberOfAllFilteredCards({ cardsets: cardListStudyingOrigin });
       // 일단 넣어둠. 나중에 원본 파일 정리되면 해당 데이터 매개변수로 넣어야함
 
       setUserFlagDetails(data1.userflagconfig_get.userflagconfigs[0].details);
@@ -306,6 +316,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       cardTypeSetId
     );
     setIsNewCardModalVisible(false);
+    handleOk()
     sessionStorage.setItem("sameIndexSelectedCheck", "false");
   };
 
@@ -771,16 +782,25 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   }
 
   function userFlagChange(flag) {
+    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"))
+    
     console.log("userFlagChangeClicked!!!");
     console.log(flag);
     console.log(cardInfo);
+    
     updateUserFlag(cardInfo.card_info.cardset_id, cardInfo._id, flag);
-    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const filtered = cardListStudying.findIndex((item) => item._id === cardInfo._id);
-    console.log(filtered);
-    cardListStudying[filtered].content.userFlag = Number(flag);
-    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
-    setCardListStudying(cardListStudying);
+    const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"))
+
+    const filteredForOrigin = cardListStudyingOrigin.findIndex((item) => item._id === cardInfo._id);
+    console.log(filteredForOrigin);
+    cardListStudyingOrigin[filteredForOrigin].studyStatus.userFlagOriginal = cardListStudyingOrigin[filteredForOrigin].content.userFlag;
+    cardListStudyingOrigin[filteredForOrigin].content.userFlag = Number(flag);
+
+    cardlist_to_send.push(cardListStudyingOrigin[filteredForOrigin])
+    computeNumberOfAllFilteredCards({ cardsets: cardListStudyingOrigin });
+    sessionStorage.setItem("cardlist_to_send", JSON.stringify(cardlist_to_send))
+    sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(cardListStudyingOrigin));
+    setCardListStudying(cardListStudyingOrigin);
     setUserFlag(false);
   }
 
@@ -1862,7 +1882,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                     <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "normal", null, content)}>
                         {/* 페이스 스타일 영역 */}
-                        {content._id === cardId && (
+                        {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && content._id === cardId && (
                               <>
                                 <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
                                 <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
@@ -1949,7 +1969,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                     <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "normal")}>
                         {/* 페이스 스타일 영역 */}
-                        {content._id === cardId && (
+                        {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) &&content._id === cardId && (
                               <>
                                 <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
                                 <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
@@ -2317,7 +2337,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                       <div style={{ marginBottom: "5px" }}>
                         <div onClick={() => onClickCard(content._id, "general", null, content)}>
                           {/* 페이스 스타일 영역 */}
-                          {content._id === cardId && (
+                          {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) &&content._id === cardId && (
                               <>
                                 <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
                                 <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
@@ -2714,7 +2734,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                             }}
                           >
                             {/* 페이스1 스타일 영역 */}
-                            {content._id === cardId && (
+                            {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) &&content._id === cardId && (
                               <>
                                 <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
                                 <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
@@ -2788,7 +2808,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   </div>
                                 </>
                               ))}
-                              {(content._id === cardId && content_value.selection !== null) && (
+                              {(content._id === cardId && (content_value.selection !== null && content_value.selection.length > 0)) && (
                                 <>
                                   <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
                                     <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;보기&nbsp;&nbsp;</span>
@@ -2894,7 +2914,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
                                 }}
                               >
-                                {(content_value.selection === null ) &&
+                                {(content_value.selection === null || content_value.selection.length === 0) &&
                                   content_value.face2.map((item, index) => (
                                     <>
                                       {content._id === cardId && (
@@ -2948,7 +2968,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     </>
                                   ))}
 
-                                {content_value.selection !== null &&
+                                {(content_value.selection !== null && content_value.selection.length > 0) &&
                                   content_value.face2.map((item, index) => (
                                     <>
                                     {content._id === cardId && (
@@ -3361,6 +3381,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                             }}
                           >
                             {/* 페이스1 스타일 영역 */}
+                            {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) &&content._id === cardId && (
+                              <>
+                                <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
+                                </Divider>
+                              </>
+                            )}
                             {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                             <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", width: "100%" }}>
                               <div

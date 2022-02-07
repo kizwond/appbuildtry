@@ -1,14 +1,8 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { Drawer, Button, Space, Divider, Tag } from "antd";
-import { useQuery, useMutation } from "@apollo/client";
+import React, { useState, useEffect } from "react";
+import { Drawer, InputNumber } from "antd";
 import { ReadOutlined } from "@ant-design/icons";
-import HiddenSetting from "./HiddenSetting";
-import UnderlineSetting from "./UnderlineSetting";
-import HighlightSetting from "./HighlightSetting";
-import { Tabs, Switch, Radio } from "antd";
-import SectionForResult from "../result/SectionForResult";
-import { useMemo } from "react";
-const { TabPane } = Tabs;
+
+import { Tabs, Switch } from "antd";
 
 const RightDrawer = ({
   setBottomVisible,
@@ -38,6 +32,9 @@ const RightDrawer = ({
     5: true,
   });
 
+  const [rateTTS, setRateTTS] = useState(1);
+  const [pitchTTS, setPitchTTS] = useState(1);
+
   const showDrawer = () => {
     setVisible(true);
     setBottomVisible(false);
@@ -51,13 +48,15 @@ const RightDrawer = ({
     const readModeTTSOption = {
       faceOneTTS,
       faceTwoTTS,
+      rate: rateTTS,
+      pitch: pitchTTS,
     };
 
     sessionStorage.setItem(
       "readModeTTSOption",
       JSON.stringify(readModeTTSOption)
     );
-  }, [faceOneTTS, faceTwoTTS]);
+  }, [faceOneTTS, faceTwoTTS, rateTTS, pitchTTS]);
 
   useEffect(() => {
     const readModeDisplayOption = {
@@ -256,305 +255,40 @@ const RightDrawer = ({
               </div>
             ))}
           </div>
-        </div>
-        {/* <Space
-          className="pt-0 pb-0 pl-0 pr-0"
-          style={{
-            padding: "0px 10px 0px 10px",
-            fontSize: "1rem",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "1rem",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span>화면표시</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>표시</span>
-                <span style={{ width: "30px" }}>TTS</span>
+          <div className="flex flex-col gap-y-2">
+            <div className="text-base font-semibold">TTS설정</div>
+            <div className="flex justify-end gap-4">
+              <div className="min-w-[4rem] flex justify-end items-center">
+                속도
+              </div>
+              <div className="min-w-[9rem] flex justify-center items-center">
+                <InputNumber
+                  size="small"
+                  value={rateTTS}
+                  max={2}
+                  min={0.5}
+                  step={0.1}
+                  onChange={(v) => setRateTTS(v)}
+                />
               </div>
             </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px" }}>앞면</span>
-              <span>1행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={face1row1Handler} />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
+            <div className="flex justify-end gap-4">
+              <div className="min-w-[4rem] flex justify-end items-center">
+                음눂이
               </div>
-            </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px", visibility: "hidden" }}>
-                앞면
-              </span>
-              <span>2행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={face1row2Handler} />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
-              </div>
-            </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px", visibility: "hidden" }}>
-                앞면
-              </span>
-              <span>3행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={face1row3Handler} />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
-              </div>
-            </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px", visibility: "hidden" }}>
-                앞면
-              </span>
-              <span>4행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={face1row4Handler} />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
-              </div>
-            </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px", visibility: "hidden" }}>
-                앞면
-              </span>
-              <span>5행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={face1row5Handler} />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
-              </div>
-            </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px" }}>뒷면</span>
-              <span>1행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={face2row1Handler} />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
-              </div>
-            </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px", visibility: "hidden" }}>
-                뒷면
-              </span>
-              <span>2행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={face2row2Handler} />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
-              </div>
-            </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px", visibility: "hidden" }}>
-                뒷면
-              </span>
-              <span>3행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={face2row3Handler} />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
-              </div>
-            </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px", visibility: "hidden" }}>
-                뒷면
-              </span>
-              <span>4행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={face2row4Handler} />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
-              </div>
-            </div>
-            <div
-              style={{
-                width: "230px",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <span style={{ marginLeft: "50px", visibility: "hidden" }}>
-                뒷면
-              </span>
-              <span>5행</span>
-              <div
-                style={{
-                  width: "70px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span style={{ width: "30px" }}>
-                  <Switch
-                    size="small"
-                    defaultChecked
-                    onChange={face2row5Handler}
-                  />
-                </span>
-                <span style={{ width: "30px" }}>
-                  <Switch size="small" onChange={tempFunction} />
-                </span>
+              <div className="min-w-[9rem] flex justify-center items-center">
+                <InputNumber
+                  size="small"
+                  value={pitchTTS}
+                  max={2}
+                  min={0}
+                  step={0.1}
+                  onChange={(v) => setPitchTTS(v)}
+                />
               </div>
             </div>
           </div>
-        </Space> */}
+        </div>
       </Drawer>
     </>
   );

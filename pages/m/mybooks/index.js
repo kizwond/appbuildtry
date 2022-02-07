@@ -123,12 +123,12 @@ const M_StudyMainPage = () => {
           rate: 1,
           pitch: 1,
         };
-
-        sessionStorage.setItem("filterOption", JSON.stringify(filterOption));
         sessionStorage.setItem(
           "readModeTTSOption",
           JSON.stringify(readModeTTSOption)
         );
+
+        sessionStorage.setItem("filterOption", JSON.stringify(filterOption));
 
         router.push({
           pathname: "/m/study/mode/directread",

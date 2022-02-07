@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import { QUERY_MY_CARD_CONTENTS } from "../../../../graphql/query/allQuery";
 import CardResult from "./CardResult";
 
+import decodeHtMLEntities from "../../../common/logic/decodeHtMLEntities";
+
 const CardResultWrapper = ({ cards }) => {
   const router = useRouter();
 
@@ -32,7 +34,7 @@ const CardResultWrapper = ({ cards }) => {
     <div className="flex flex-col gap-[8px]">
       {data &&
         cards.map((card, index) => {
-          const frontOfCard = new String(
+          const frontOfCard = decodeHtMLEntities(
             [
               ...data.mycontent_getMycontentByMycontentIDs.mycontents,
               ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
@@ -42,10 +44,8 @@ const CardResultWrapper = ({ cards }) => {
                 content._id === card.content.buycontent_id
               );
             }).face1[0]
-          )
-            .replace(/(<([^>]+)>)/gi, "")
-            .replace(/&nbsp;/g, "");
-          const rightAnswer = new String(
+          );
+          const rightAnswer = decodeHtMLEntities(
             [
               ...data.mycontent_getMycontentByMycontentIDs.mycontents,
               ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
@@ -55,9 +55,7 @@ const CardResultWrapper = ({ cards }) => {
                 content._id === card.content.buycontent_id
               );
             }).face2[0]
-          )
-            .replace(/(<([^>]+)>)/gi, "")
-            .replace(/&nbsp;/g, "");
+          );
           return (
             <CardResult
               key={card._id}

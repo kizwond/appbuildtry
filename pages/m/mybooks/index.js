@@ -130,6 +130,80 @@ const M_StudyMainPage = () => {
 
         sessionStorage.setItem("filterOption", JSON.stringify(filterOption));
 
+        const resultOfSession = {
+          mybook_id: null,
+          studyHour: 0,
+          statusChange: {
+            yet: { yet: 0, ing: 0, hold: 0, completed: 0 },
+            ing: { yet: 0, ing: 0, hold: 0, completed: 0 },
+            hold: { yet: 0, ing: 0, hold: 0, completed: 0 },
+            completed: { yet: 0, ing: 0, hold: 0, completed: 0 },
+          },
+          userFlagChange: {
+            flag0: {
+              flag0: 0,
+              flag1: 0,
+              flag2: 0,
+              flag3: 0,
+              flag4: 0,
+              flag5: 0,
+            },
+            flag1: {
+              flag0: 0,
+              flag1: 0,
+              flag2: 0,
+              flag3: 0,
+              flag4: 0,
+              flag5: 0,
+            },
+            flag2: {
+              flag0: 0,
+              flag1: 0,
+              flag2: 0,
+              flag3: 0,
+              flag4: 0,
+              flag5: 0,
+            },
+            flag3: {
+              flag0: 0,
+              flag1: 0,
+              flag2: 0,
+              flag3: 0,
+              flag4: 0,
+              flag5: 0,
+            },
+            flag4: {
+              flag0: 0,
+              flag1: 0,
+              flag2: 0,
+              flag3: 0,
+              flag4: 0,
+              flag5: 0,
+            },
+            flag5: {
+              flag0: 0,
+              flag1: 0,
+              flag2: 0,
+              flag3: 0,
+              flag4: 0,
+              flag5: 0,
+            },
+          },
+        };
+        sessionStorage.setItem(
+          "resultOfSession",
+          JSON.stringify(resultOfSession)
+        );
+        sessionStorage.setItem(
+          "resultByBook",
+          JSON.stringify(
+            selectedBooks.map((book) => ({
+              ...resultOfSession,
+              mybook_id: book.book_id,
+            }))
+          )
+        );
+
         router.push({
           pathname: "/m/study/mode/directread",
           query: { name: JSON.stringify(selectedBooks) },

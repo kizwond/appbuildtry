@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../graphql/query/allQuery";
 import { detect, detectAll } from "tinyld";
+import decodeHtMLEntities from "../common/logic/decodeHtMLEntities";
 
 const TTSButton = () => {
   const [ttsArray, setTtsArray] = useState([]);
@@ -13,6 +14,7 @@ const TTSButton = () => {
   const [getContentsByContentIds] = useLazyQuery(QUERY_MY_CARD_CONTENTS, {
     onCompleted: (data) => {
       console.log(data);
+
       const readModeTTSOption = JSON.parse(
         sessionStorage.getItem("readModeTTSOption")
       );
@@ -59,11 +61,7 @@ const TTSButton = () => {
             content.face1 !== null &&
             content.face1.length > 0
           ) {
-            const contentOnlyString = c
-              .replace(/(<([^>]+)>)/gi, "")
-              .replace(/&nbsp;/g, "")
-              .replace(/&#39;/g, "");
-
+            const contentOnlyString = decodeHtMLEntities(c);
             const seperatedWithEngAndKor = seperateEngAndKor(contentOnlyString);
             arr.push(seperatedWithEngAndKor);
           }
@@ -75,10 +73,7 @@ const TTSButton = () => {
           content.selection.length > 0
         ) {
           content.selection.forEach((c, i) => {
-            const contentWithoutTags = c
-              .replace(/(<([^>]+)>)/gi, "")
-              .replace(/&nbsp;/g, "")
-              .replace(/&#39;/g, "");
+            const contentWithoutTags = decodeHtMLEntities(c);
             arr.push(`${i + 1} ${seperateEngAndKor(contentWithoutTags)}`);
           });
         }
@@ -90,15 +85,8 @@ const TTSButton = () => {
                 readModeTTSOption.faceOneTTS.selection &&
                 content.selection !== null &&
                 content.selection.length > 0
-                  ? "정답 " +
-                    c
-                      .replace(/(<([^>]+)>)/gi, "")
-                      .replace(/&nbsp;/g, "")
-                      .replace(/&#39;/g, "")
-                  : c
-                      .replace(/(<([^>]+)>)/gi, "")
-                      .replace(/&nbsp;/g, "")
-                      .replace(/&#39;/g, "");
+                  ? "정답 " + decodeHtMLEntities(c)
+                  : decodeHtMLEntities(c);
               arr.push(seperateEngAndKor(contentWithoutTags));
             }
           });

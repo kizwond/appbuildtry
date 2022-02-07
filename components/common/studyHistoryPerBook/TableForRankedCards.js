@@ -2,6 +2,7 @@ import { useQuery } from "@apollo/client";
 import prettyMilliseconds from "pretty-ms";
 import { Fragment, memo, useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../../graphql/query/allQuery";
+import decodeHtMLEntities from "../../common/logic/decodeHtMLEntities";
 
 const TableForRankedCards = ({ data, contentType }) => {
   const [cardIdForMore, setCardIdForMore] = useState();
@@ -96,15 +97,13 @@ const TableForRankedCards = ({ data, contentType }) => {
                   </td>
                   <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
                     {fiveContents &&
-                      new String(
+                      decodeHtMLEntities(
                         fiveContents.find(
                           (content) =>
                             content._id === card.content.mycontent_id ||
                             content._id === card.content.buycontent_id
                         ).face1[0]
-                      )
-                        .replace(/(<([^>]+)>)/gi, "")
-                        .replace(/&nbsp;/g, "")}
+                      )}
                   </td>
                   <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                     {getThirdCol(card)}

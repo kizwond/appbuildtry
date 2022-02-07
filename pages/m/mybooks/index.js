@@ -104,8 +104,29 @@ const M_StudyMainPage = () => {
           },
         };
 
-        console.log(filterOption);
+        const readModeTTSOption = {
+          faceOneTTS: {
+            1: true,
+            2: true,
+            3: true,
+            4: true,
+            5: true,
+            selection: true,
+          },
+          faceTwoTTS: {
+            1: true,
+            2: true,
+            3: true,
+            4: true,
+            5: true,
+          },
+        };
+
         sessionStorage.setItem("filterOption", JSON.stringify(filterOption));
+        sessionStorage.setItem(
+          "readModeTTSOption",
+          JSON.stringify(readModeTTSOption)
+        );
 
         router.push({
           pathname: "/m/study/mode/directread",

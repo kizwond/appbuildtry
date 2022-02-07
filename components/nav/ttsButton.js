@@ -13,36 +13,93 @@ const TTSButton = () => {
   const [getContentsByContentIds] = useLazyQuery(QUERY_MY_CARD_CONTENTS, {
     onCompleted: (data) => {
       console.log(data);
-      const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
-      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
-      const contents = [...data.mycontent_getMycontentByMycontentIDs.mycontents, ...data.buycontent_getBuycontentByBuycontentIDs.buycontents];
+      const readModeTTSOption = JSON.parse(
+        sessionStorage.getItem("readModeTTSOption")
+      );
+      const cardListStudying = JSON.parse(
+        sessionStorage.getItem("cardListStudying")
+      );
+      const contents = [
+        ...data.mycontent_getMycontentByMycontentIDs.mycontents,
+        ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
+      ];
       console.log(contents);
-      const contentsListSortedByCardSeq = cardListStudying.map((card) => contents.find((content) => content._id === card.content.mycontent_id));
+      const contentsListSortedByCardSeq = cardListStudying.map((card) =>
+        contents.find((content) => content._id === card.content.mycontent_id)
+      );
       console.log({ contentsListSortedByCardSeq });
+
+      const seperateEngAndKor = (str) => {
+        const arrayForTTS = [];
+
+        while (str.length > 0) {
+          const positionOfEnglish =
+            str.search(/[a-zA-Z]/) == -1 ? 1000000 : str.search(/[a-zA-Z]/);
+          const positionOfKorean =
+            str.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/) == -1
+              ? 1000000
+              : str.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/);
+
+          const targetPosition = Math.max(positionOfEnglish, positionOfKorean);
+          const singleParagraph = str.substring(0, targetPosition);
+
+          str = str.replace(singleParagraph, "");
+
+          arrayForTTS.push(singleParagraph);
+        }
+
+        return arrayForTTS;
+      };
 
       const tts = contentsListSortedByCardSeq.map((content) => {
         let arr = [];
         content.face1.forEach((c, i) => {
-          if (readModeTTSOption.faceOneTTS[i + 1] && content.face1 !== null && content.face1.length > 0) {
-            const contentWithoutTags = c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "");
-            arr.push(contentWithoutTags);
+          if (
+            readModeTTSOption.faceOneTTS[i + 1] &&
+            content.face1 !== null &&
+            content.face1.length > 0
+          ) {
+            const contentOnlyString = c
+              .replace(/(<([^>]+)>)/gi, "")
+              .replace(/&nbsp;/g, "")
+              .replace(/&#39;/g, "");
+
+            const seperatedWithEngAndKor = seperateEngAndKor(contentOnlyString);
+            arr.push(seperatedWithEngAndKor);
           }
         });
 
-        if (readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0) {
+        if (
+          readModeTTSOption.faceOneTTS.selection &&
+          content.selection !== null &&
+          content.selection.length > 0
+        ) {
           content.selection.forEach((c, i) => {
-            const contentWithoutTags = c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "");
-            arr.push(`보기${i + 1}번 ${contentWithoutTags}`);
+            const contentWithoutTags = c
+              .replace(/(<([^>]+)>)/gi, "")
+              .replace(/&nbsp;/g, "")
+              .replace(/&#39;/g, "");
+            arr.push(`${i + 1} ${seperateEngAndKor(contentWithoutTags)}`);
           });
         }
         if (content.face2 !== null || content.face2.length > 0) {
           content.face2.forEach((c, i) => {
             if (readModeTTSOption.faceTwoTTS[i + 1]) {
               const contentWithoutTags =
-                i === 0 && readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0
-                  ? "정답은 " + c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "") + "번 입니다."
-                  : c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "");
-              arr.push(contentWithoutTags);
+                i === 0 &&
+                readModeTTSOption.faceOneTTS.selection &&
+                content.selection !== null &&
+                content.selection.length > 0
+                  ? "정답 " +
+                    c
+                      .replace(/(<([^>]+)>)/gi, "")
+                      .replace(/&nbsp;/g, "")
+                      .replace(/&#39;/g, "")
+                  : c
+                      .replace(/(<([^>]+)>)/gi, "")
+                      .replace(/&nbsp;/g, "")
+                      .replace(/&#39;/g, "");
+              arr.push(seperateEngAndKor(contentWithoutTags));
             }
           });
         }
@@ -50,7 +107,7 @@ const TTSButton = () => {
         return arr;
       });
 
-      const flattenContents = tts.flat();
+      const flattenContents = _.flattenDeep(tts);
       setTtsArray(flattenContents);
       console.log(flattenContents);
     },
@@ -58,27 +115,29 @@ const TTSButton = () => {
 
   const speakText = (ttsArray) => {
     window.speechSynthesis.cancel();
-    const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
+    const readModeTTSOption = JSON.parse(
+      sessionStorage.getItem("readModeTTSOption")
+    );
     if (ttsArray.length > 0) {
       ttsArray.map((item, index) => {
-        sessionStorage.setItem("ttsOrder", index)
+        sessionStorage.setItem("ttsOrder", index);
         var detected = detect(item);
-        console.log(index, detected)
-        if(!["ko", "en"].includes(detected)){
-          var lang = "en"
+        console.log(index, detected);
+        if (!["ko", "en"].includes(detected)) {
+          var lang = "en";
         } else {
-          lang = detected
+          lang = detected;
         }
         const speechMsg = new SpeechSynthesisUtterance();
-        speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
-        speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
-        // speechMsg.rate = 1; // 속도: 0.1 ~ 10
-        // speechMsg.pitch = 1; // 음높이: 0 ~ 2
+        // speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
+        // speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
+        speechMsg.rate = 1; // 속도: 0.1 ~ 10
+        speechMsg.pitch = 1; // 음높이: 0 ~ 2
         speechMsg.lang = lang;
         speechMsg.text = item;
         window.speechSynthesis.speak(speechMsg);
       });
-      sessionStorage.removeItem("ttsOrder")
+      sessionStorage.removeItem("ttsOrder");
       // ttsOption 변경시 리셋
       // 목차 변경시 리셋
     }
@@ -100,9 +159,15 @@ const TTSButton = () => {
   }, [ttsArray]);
 
   const getTTSData = async () => {
-    const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
-    const mycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "my").map((card) => card.content.mycontent_id);
-    const buycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "buy").map((card) => card.content.buycontent_id);
+    const cardListStudyingOrigin = JSON.parse(
+      sessionStorage.getItem("cardListStudyingOrigin")
+    );
+    const mycontent_ids = cardListStudyingOrigin
+      .filter((card) => card.content.location === "my")
+      .map((card) => card.content.mycontent_id);
+    const buycontent_ids = cardListStudyingOrigin
+      .filter((card) => card.content.location === "buy")
+      .map((card) => card.content.buycontent_id);
 
     getContentsByContentIds({
       variables: {

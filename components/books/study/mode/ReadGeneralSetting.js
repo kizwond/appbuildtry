@@ -38,11 +38,6 @@ const RightDrawer = ({
     5: true,
   });
 
-  const readModeDisplayOption = {
-    face1row,
-    face2row,
-  };
-
   const showDrawer = () => {
     setVisible(true);
     setBottomVisible(false);

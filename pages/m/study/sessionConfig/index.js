@@ -149,6 +149,31 @@ const StudySessionConfig = ({
       if (_data.session_createSession.status === "200") {
         console.log("세션 생성 요청 후 받은 데이터", _data);
         sessionStorage.setItem("forCheckedKeys", JSON.stringify(checkedKeys));
+
+        const readModeTTSOption = {
+          faceOneTTS: {
+            1: true,
+            2: true,
+            3: true,
+            4: true,
+            5: true,
+            selection: true,
+          },
+          faceTwoTTS: {
+            1: true,
+            2: true,
+            3: true,
+            4: true,
+            5: true,
+          },
+          rate: 1,
+          pitch: 1,
+        };
+        sessionStorage.setItem(
+          "readModeTTSOption",
+          JSON.stringify(readModeTTSOption)
+        );
+
         writeSessionDataInSessionStorage({
           _data,
           sessionConfig,

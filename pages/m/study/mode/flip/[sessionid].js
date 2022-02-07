@@ -58,6 +58,8 @@ const FlipMode = () => {
   const [editorOn, setEditorOn] = useState();
   const [selectedCardType, setSelectedCardType] = useState();
 
+  const [bookList, setBookList] = useState([]);
+
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var session_id_temp = sessionStorage.getItem("session_Id");
@@ -154,6 +156,7 @@ const FlipMode = () => {
           setCardListStudying(cardListStudying);
           setSessionScope(data.session_getSession.sessions[0].sessionScope);
           setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);
+          setBookList(data.mybook_getMybookByUserID.mybooks);
           const cardIdList = cardListStudying.map((item) => {
             return item.content.mycontent_id;
           });
@@ -193,6 +196,7 @@ const FlipMode = () => {
           setCardListStudying(cardListStudying);
           setSessionScope(data.session_getSession.sessions[0].sessionScope);
           setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);
+          setBookList(data.mybook_getMybookByUserID.mybooks);
           sessionStorage.setItem("card_seq", 0);
           sessionStorage.setItem("origin_seq", 0);
           sessionStorage.removeItem("cardlist_to_send");
@@ -239,6 +243,7 @@ const FlipMode = () => {
         setCardListStudying(cardListStudying);
         setSessionScope(data.session_getSession.sessions[0].sessionScope);
         setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);
+        setBookList(data.mybook_getMybookByUserID.mybooks);
         sessionStorage.setItem("card_seq", 0);
         sessionStorage.setItem("origin_seq", 0);
         sessionStorage.removeItem("cardlist_to_send");
@@ -974,7 +979,8 @@ const FlipMode = () => {
     }
   };
   return (
-    <StudyLayout mode="학습" finishStudy={finishStudy}>
+    <StudyLayout mode="학습" finishStudy={finishStudy} ttsOn={ttsOn}
+    setTtsOn={setTtsOn}>
       <div
         style={{
           height: "100%",
@@ -1016,6 +1022,7 @@ const FlipMode = () => {
               saveMemo={saveMemo}
               sessionupdateresults={sessionupdateresults}
               finishStudy={finishStudy}
+              bookList={bookList}
             />
           </>
         )}

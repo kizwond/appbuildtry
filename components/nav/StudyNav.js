@@ -11,6 +11,8 @@ import {
   FileTextOutlined,
   CrownOutlined,
   HomeOutlined,
+  SoundOutlined,
+  PauseOutlined
 } from "@ant-design/icons";
 import { Divider, Avatar } from "antd";
 import React, { useEffect, useState } from "react";
@@ -25,7 +27,7 @@ const backgroundColor = "#4466d1";
 const fontColor = "white";
 const burgerSize = "1.3rem";
 
-const StudyNav = ({ mode, finishStudy }) => {
+const StudyNav = ({ mode, finishStudy, ttsOn, setTtsOn }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var usernameTemp = localStorage.getItem("username");
@@ -61,6 +63,14 @@ const StudyNav = ({ mode, finishStudy }) => {
   const goToHome = () => {
     window.location.href = "/m";
   };
+
+  const getTTSData = () => {
+    if (ttsOn === false) {
+      setTtsOn(true);
+    } else {
+      setTtsOn(false);
+    }
+  };
   return (
     <>
       <div
@@ -88,9 +98,7 @@ const StudyNav = ({ mode, finishStudy }) => {
             boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
           }}
         >
-          <div style={{ flexBasis: "33%" }}>
-            
-          </div>
+          <div style={{ flexBasis: "33%" }}></div>
 
           <div
             style={{
@@ -106,13 +114,34 @@ const StudyNav = ({ mode, finishStudy }) => {
           </div>
 
           <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem", cursor: "pointer" }}>
-            {/* <Button style={{ backgroundColor: "#ffffff00", border: "none" }} onClick={goToHome} icon={<HomeOutlined style={{ fontSize: burgerSize, color: fontColor }} />}></Button> */}
-            <Button
+            {ttsOn === true && <>
+              <Button
               size="small"
-              style={{ fontSize: "1rem", borderRadius: "5px" }}
-              onClick={finishStudy}
+              onClick={getTTSData}
+              style={{
+                fontSize: "1rem",
+                borderRadius: "5px",
+                marginRight: "5px",
+              }}
               type="primary"
-            >
+              icon={<PauseOutlined />}
+            />
+            </>}
+            {ttsOn === false && <>
+              <Button
+              size="small"
+              onClick={getTTSData}
+              style={{
+                fontSize: "1rem",
+                borderRadius: "5px",
+                marginRight: "5px",
+              }}
+              type="primary"
+              icon={<SoundOutlined />}
+            />
+            </>}
+            
+            <Button size="small" style={{ fontSize: "1rem", borderRadius: "5px" }} onClick={finishStudy} type="primary">
               학습종료
             </Button>
           </div>

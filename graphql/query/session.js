@@ -63,6 +63,31 @@ export const GetLevelConfig = gql`
 `;
 export const GetSession = gql`
   query GetSession($session_id: ID) {
+    mybook_getMybookByUserID {
+      status
+      msg
+      user_id
+      mybooks {
+        _id
+        mybook_info {
+          mybookcateset_id
+          mybookcate_id
+          title
+          type
+          buybook_id
+          user_id
+          author_id
+          hideOrShow
+          isStudyLike
+          isWriteLike
+          seqInCategory
+          seqInStudyLike
+          seqInWriteLike
+          timeCreated
+        }
+      }
+    }
+    
     userflagconfig_get {
       userflagconfigs {
         _id

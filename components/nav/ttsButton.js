@@ -5,6 +5,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../graphql/query/allQuery";
+import { detect, detectAll } from "tinyld";
 
 const TTSButton = () => {
   const [ttsArray, setTtsArray] = useState([]);
@@ -12,46 +13,25 @@ const TTSButton = () => {
   const [getContentsByContentIds] = useLazyQuery(QUERY_MY_CARD_CONTENTS, {
     onCompleted: (data) => {
       console.log(data);
-      const readModeTTSOption = JSON.parse(
-        sessionStorage.getItem("readModeTTSOption")
-      );
-      const cardListStudying = JSON.parse(
-        sessionStorage.getItem("cardListStudying")
-      );
-      const contents = [
-        ...data.mycontent_getMycontentByMycontentIDs.mycontents,
-        ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
-      ];
+      const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const contents = [...data.mycontent_getMycontentByMycontentIDs.mycontents, ...data.buycontent_getBuycontentByBuycontentIDs.buycontents];
       console.log(contents);
-      const contentsListSortedByCardSeq = cardListStudying.map((card) =>
-        contents.find((content) => content._id === card.content.mycontent_id)
-      );
+      const contentsListSortedByCardSeq = cardListStudying.map((card) => contents.find((content) => content._id === card.content.mycontent_id));
       console.log({ contentsListSortedByCardSeq });
 
       const tts = contentsListSortedByCardSeq.map((content) => {
         let arr = [];
         content.face1.forEach((c, i) => {
-          if (
-            readModeTTSOption.faceOneTTS[i + 1] &&
-            content.face1 !== null &&
-            content.face1.length > 0
-          ) {
-            const contentWithoutTags = c
-              .replace(/(<([^>]+)>)/gi, "")
-              .replace(/&nbsp;/g, "");
+          if (readModeTTSOption.faceOneTTS[i + 1] && content.face1 !== null && content.face1.length > 0) {
+            const contentWithoutTags = c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "");
             arr.push(contentWithoutTags);
           }
         });
 
-        if (
-          readModeTTSOption.faceOneTTS.selection &&
-          content.selection !== null &&
-          content.selection.length > 0
-        ) {
+        if (readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0) {
           content.selection.forEach((c, i) => {
-            const contentWithoutTags = c
-              .replace(/(<([^>]+)>)/gi, "")
-              .replace(/&nbsp;/g, "");
+            const contentWithoutTags = c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "");
             arr.push(`보기${i + 1}번 ${contentWithoutTags}`);
           });
         }
@@ -59,13 +39,8 @@ const TTSButton = () => {
           content.face2.forEach((c, i) => {
             if (readModeTTSOption.faceTwoTTS[i + 1]) {
               const contentWithoutTags =
-                i === 0 &&
-                readModeTTSOption.faceOneTTS.selection &&
-                content.selection !== null &&
-                content.selection.length > 0
-                  ? "정답은 " +
-                    c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "") +
-                    "번 입니다."
+                i === 0 && readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0
+                  ? "정답은 " + c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "") + "번 입니다."
                   : c.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "");
               arr.push(contentWithoutTags);
             }
@@ -81,10 +56,40 @@ const TTSButton = () => {
     },
   });
 
+  const speakText = (ttsArray) => {
+    window.speechSynthesis.cancel();
+    const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
+    if (ttsArray.length > 0) {
+      ttsArray.map((item, index) => {
+        sessionStorage.setItem("ttsOrder", index)
+        var detected = detect(item);
+        console.log(index, detected)
+        if(!["ko", "en"].includes(detected)){
+          var lang = "en"
+        } else {
+          lang = detected
+        }
+        const speechMsg = new SpeechSynthesisUtterance();
+        speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
+        speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
+        // speechMsg.rate = 1; // 속도: 0.1 ~ 10
+        // speechMsg.pitch = 1; // 음높이: 0 ~ 2
+        speechMsg.lang = lang;
+        speechMsg.text = item;
+        window.speechSynthesis.speak(speechMsg);
+      });
+      sessionStorage.removeItem("ttsOrder")
+      // ttsOption 변경시 리셋
+      // 목차 변경시 리셋
+    }
+  };
+
   // 유즈이펙트로 tts 데이터 변경될 때만 읽어주면 됨
   useEffect(() => {
     if (ttsArray.length > 0) {
       console.log("여기서 tts 라이브러리 실행 해주삼.");
+      console.log("ttsArray===================>", ttsArray);
+      speakText(ttsArray);
     }
 
     return () => {
@@ -95,15 +100,9 @@ const TTSButton = () => {
   }, [ttsArray]);
 
   const getTTSData = async () => {
-    const cardListStudyingOrigin = JSON.parse(
-      sessionStorage.getItem("cardListStudyingOrigin")
-    );
-    const mycontent_ids = cardListStudyingOrigin
-      .filter((card) => card.content.location === "my")
-      .map((card) => card.content.mycontent_id);
-    const buycontent_ids = cardListStudyingOrigin
-      .filter((card) => card.content.location === "buy")
-      .map((card) => card.content.buycontent_id);
+    const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
+    const mycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "my").map((card) => card.content.mycontent_id);
+    const buycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "buy").map((card) => card.content.buycontent_id);
 
     getContentsByContentIds({
       variables: {

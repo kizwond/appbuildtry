@@ -9,7 +9,8 @@ const Layout = (value) => {
         <title>I am theBook</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
       </Head>
-      <StudyNav mode={value.mode} finishStudy={value.finishStudy}/>
+      <StudyNav mode={value.mode} finishStudy={value.finishStudy} ttsOn={value.ttsOn}
+              setTtsOn={value.setTtsOn}/>
       {value.children}
     </>
   );

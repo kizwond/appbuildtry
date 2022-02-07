@@ -575,7 +575,7 @@ const FloatingMenu = ({
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <StudyToolSetting setBottomVisible={setBottomVisible} cardTypeSets={cardTypeSets} updateStudyToolApply={updateStudyToolApply} />
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  {/* <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <SoundOutlined style={{ fontSize: "1.5rem" }} />
                     TTS설정
                   </div>
@@ -583,7 +583,7 @@ const FloatingMenu = ({
                     <Button size="small" onClick={moveToSpreadView}>
                       펼쳐보기
                     </Button>
-                  </div>
+                  </div> */}
                 </Space>
               </Drawer>
               <Modal footer={null} title="카드생성" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>

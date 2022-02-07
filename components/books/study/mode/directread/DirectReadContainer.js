@@ -1862,6 +1862,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                     <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "normal", null, content)}>
                         {/* 페이스 스타일 영역 */}
+                        {content._id === cardId && (
+                              <>
+                                <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
+                                </Divider>
+                              </>
+                            )}
                         {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                         <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                           <div
@@ -1884,6 +1891,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                           >
                             {content_value.face1.map((item, index) => (
                               <>
+                              {content._id === cardId && (
+                                        <>
+                                          <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                          <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;앞면 {index + 1}행&nbsp;&nbsp;</span>
+                                          </Divider>
+                                        </>
+                                      )}
                                 <div
                                   style={{
                                     display: `${face1row[`face1row${index + 1}`] === false ? "none" : ""}`,
@@ -1935,6 +1949,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                     <div className={`${content._id} other`} style={{ marginBottom: "5px" }}>
                       <div onClick={() => onClickCard(content._id, "normal")}>
                         {/* 페이스 스타일 영역 */}
+                        {content._id === cardId && (
+                              <>
+                                <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
+                                </Divider>
+                              </>
+                            )}
                         {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                         <div
                           style={{
@@ -2059,30 +2080,46 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                               </>
                             )}
                           </div>
-                          <Popover
-                            content={"준비중입니다..."}
-                            placement="bottomLeft"
-                            title={
-                              <>
-                                <span style={{ fontSize: "0.8rem" }}>새카드 추가하기</span>
-                              </>
-                            }
-                            trigger="click"
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            onClick={showModal}
+                            // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
                           >
-                            <Button
-                              size="small"
-                              style={{
-                                // border: "none",
-                                backgroundColor: "white",
-                                borderRadius: "3px",
-                                fontSize: "0.9rem",
-                                color: "#939393",
-                              }}
-                              // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                            >
-                              새카드
-                            </Button>
-                          </Popover>
+                            새카드
+                          </Button>
+                          <Modal title="새카드 추가하기" visible={isNewCardModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
+                            <div>
+                              <Select size="small" value={bookSelectedForEditor} style={{ width: 200, fontSize: "1rem" }} onChange={bookSelectOnchange}>
+                                <Option value="default" style={{ fontSize: "1rem", color: "black", fontWeight: "700" }} disabled>
+                                  책선택
+                                </Option>
+                                {book_list}
+                              </Select>
+                            </div>
+                            <div>
+                              <Select size="small" value={indexSelectedForEditor} style={{ width: 200, fontSize: "1rem" }} onChange={indexSelectOnchange}>
+                                <Option value="default" style={{ fontSize: "1rem", color: "black", fontWeight: "700" }} disabled>
+                                  목차선택
+                                </Option>
+                                {index_list}
+                              </Select>
+                              {content.card_info.index_id === indexSelectedForEditor && (
+                                <>
+                                  <div>
+                                    <Checkbox onChange={sameIndexSelected}>해당카드 바로뒤에 저장</Checkbox>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            <div>{indexSelectedForEditor !== "default" && newCardEditor}</div>
+                          </Modal>
 
                           <Popover
                             content={diffiButtonsPop}
@@ -2280,6 +2317,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                       <div style={{ marginBottom: "5px" }}>
                         <div onClick={() => onClickCard(content._id, "general", null, content)}>
                           {/* 페이스 스타일 영역 */}
+                          {content._id === cardId && (
+                              <>
+                                <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
+                                </Divider>
+                              </>
+                            )}
                           {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                           <div
                             style={{
@@ -2300,6 +2344,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                           >
                             {content_value.face1.map((item, index) => (
                               <>
+                              {content._id === cardId && (
+                                        <>
+                                          <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                          <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;앞면 {index + 1}행&nbsp;&nbsp;</span>
+                                          </Divider>
+                                        </>
+                                      )}
                                 <div
                                   style={{
                                     backgroundColor: row_style.face1[index].background.color,
@@ -2406,30 +2457,46 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                               </>
                             )}
                           </div>
-                          <Popover
-                            content={"준비중입니다..."}
-                            placement="bottomLeft"
-                            title={
-                              <>
-                                <span style={{ fontSize: "0.8rem" }}>새카드 추가하기</span>
-                              </>
-                            }
-                            trigger="click"
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            onClick={showModal}
+                            // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
                           >
-                            <Button
-                              size="small"
-                              style={{
-                                // border: "none",
-                                backgroundColor: "white",
-                                borderRadius: "3px",
-                                fontSize: "0.9rem",
-                                color: "#939393",
-                              }}
-                              // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                            >
-                              새카드
-                            </Button>
-                          </Popover>
+                            새카드
+                          </Button>
+                          <Modal title="새카드 추가하기" visible={isNewCardModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
+                            <div>
+                              <Select size="small" value={bookSelectedForEditor} style={{ width: 200, fontSize: "1rem" }} onChange={bookSelectOnchange}>
+                                <Option value="default" style={{ fontSize: "1rem", color: "black", fontWeight: "700" }} disabled>
+                                  책선택
+                                </Option>
+                                {book_list}
+                              </Select>
+                            </div>
+                            <div>
+                              <Select size="small" value={indexSelectedForEditor} style={{ width: 200, fontSize: "1rem" }} onChange={indexSelectOnchange}>
+                                <Option value="default" style={{ fontSize: "1rem", color: "black", fontWeight: "700" }} disabled>
+                                  목차선택
+                                </Option>
+                                {index_list}
+                              </Select>
+                              {content.card_info.index_id === indexSelectedForEditor && (
+                                <>
+                                  <div>
+                                    <Checkbox onChange={sameIndexSelected}>해당카드 바로뒤에 저장</Checkbox>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            <div>{indexSelectedForEditor !== "default" && newCardEditor}</div>
+                          </Modal>
 
                           <Popover
                             content={diffiButtonsPop}
@@ -3036,30 +3103,46 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                               </>
                             )}
                           </div>
-                          <Popover
-                            content={"준비중입니다..."}
-                            placement="bottomLeft"
-                            title={
-                              <>
-                                <span style={{ fontSize: "0.8rem" }}>새카드 추가하기</span>
-                              </>
-                            }
-                            trigger="click"
+                          <Button
+                            size="small"
+                            style={{
+                              // border: "none",
+                              backgroundColor: "white",
+                              borderRadius: "3px",
+                              fontSize: "0.9rem",
+                              color: "#939393",
+                            }}
+                            onClick={showModal}
+                            // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
                           >
-                            <Button
-                              size="small"
-                              style={{
-                                // border: "none",
-                                backgroundColor: "white",
-                                borderRadius: "3px",
-                                fontSize: "0.9rem",
-                                color: "#939393",
-                              }}
-                              // icon={<PlusOutlined style={{ fontSize: "16px" }} />}
-                            >
-                              새카드
-                            </Button>
-                          </Popover>
+                            새카드
+                          </Button>
+                          <Modal title="새카드 추가하기" visible={isNewCardModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
+                            <div>
+                              <Select size="small" value={bookSelectedForEditor} style={{ width: 200, fontSize: "1rem" }} onChange={bookSelectOnchange}>
+                                <Option value="default" style={{ fontSize: "1rem", color: "black", fontWeight: "700" }} disabled>
+                                  책선택
+                                </Option>
+                                {book_list}
+                              </Select>
+                            </div>
+                            <div>
+                              <Select size="small" value={indexSelectedForEditor} style={{ width: 200, fontSize: "1rem" }} onChange={indexSelectOnchange}>
+                                <Option value="default" style={{ fontSize: "1rem", color: "black", fontWeight: "700" }} disabled>
+                                  목차선택
+                                </Option>
+                                {index_list}
+                              </Select>
+                              {content.card_info.index_id === indexSelectedForEditor && (
+                                <>
+                                  <div>
+                                    <Checkbox onChange={sameIndexSelected}>해당카드 바로뒤에 저장</Checkbox>
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                            <div>{indexSelectedForEditor !== "default" && newCardEditor}</div>
+                          </Modal>
 
                           <Popover
                             content={diffiButtonsPop}

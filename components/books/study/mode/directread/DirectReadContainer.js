@@ -2894,7 +2894,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
                                 }}
                               >
-                                {(content_value.selection === null || content_value.selection.length === 0) &&
+                                {(content_value.selection === null ) &&
                                   content_value.face2.map((item, index) => (
                                     <>
                                       {content._id === cardId && (

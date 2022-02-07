@@ -189,6 +189,15 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setBookList(data1.mybook_getMybookByUserID.mybooks);
       sessionStorage.setItem("sameIndexSelectedCheck", "false");
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
+      const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"))
+      if(cardlist_to_send){
+        if(cardlist_to_send.length > 0){
+          console.log("cardlist_to_send exist")
+        } 
+      }else {
+        sessionStorage.setItem("cardlist_to_send", JSON.stringify([]));
+      }
+      
       const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
       for (let i = 0; i < cardListStudyingOrigin.length; i++) {
         cardListStudyingOrigin[i].studyStatus.statusOriginal = cardListStudyingOrigin[i].studyStatus.statusCurrent;
@@ -197,7 +206,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(cardListStudyingOrigin));
 
       // 필터링 함수가 들어간다. 함수에서 세션스토리지에 "cardListStudying" 저장하는 기능 넣어둠
-      computeNumberOfAllFilteredCards({ cardsets: data1.cardset_getByIndexIDs.cardsets[0].cards });
+      computeNumberOfAllFilteredCards({ cardsets: cardListStudyingOrigin });
       // 일단 넣어둠. 나중에 원본 파일 정리되면 해당 데이터 매개변수로 넣어야함
 
       setUserFlagDetails(data1.userflagconfig_get.userflagconfigs[0].details);
@@ -773,16 +782,25 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   }
 
   function userFlagChange(flag) {
+    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"))
+    
     console.log("userFlagChangeClicked!!!");
     console.log(flag);
     console.log(cardInfo);
+    
     updateUserFlag(cardInfo.card_info.cardset_id, cardInfo._id, flag);
-    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const filtered = cardListStudying.findIndex((item) => item._id === cardInfo._id);
-    console.log(filtered);
-    cardListStudying[filtered].content.userFlag = Number(flag);
-    sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
-    setCardListStudying(cardListStudying);
+    const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"))
+
+    const filteredForOrigin = cardListStudyingOrigin.findIndex((item) => item._id === cardInfo._id);
+    console.log(filteredForOrigin);
+    cardListStudyingOrigin[filteredForOrigin].studyStatus.userFlagOriginal = cardListStudyingOrigin[filteredForOrigin].content.userFlag;
+    cardListStudyingOrigin[filteredForOrigin].content.userFlag = Number(flag);
+
+    cardlist_to_send.push(cardListStudyingOrigin[filteredForOrigin])
+    computeNumberOfAllFilteredCards({ cardsets: cardListStudyingOrigin });
+    sessionStorage.setItem("cardlist_to_send", JSON.stringify(cardlist_to_send))
+    sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(cardListStudyingOrigin));
+    setCardListStudying(cardListStudyingOrigin);
     setUserFlag(false);
   }
 

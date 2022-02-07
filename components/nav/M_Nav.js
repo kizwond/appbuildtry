@@ -342,7 +342,7 @@ const Nav = () => {
                         height={"20px"}
                         alt="excel_export"
                       />
-                      <span style={{ marginLeft: "10px" }}>사용가이드</span>
+                      <span style={{ marginLeft: "10px" }}>FAQ</span>
                     </div>
                     {username == null && (
                       <>

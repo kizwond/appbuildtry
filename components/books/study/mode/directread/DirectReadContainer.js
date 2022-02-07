@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { GetCardRelated, QUERY_MY_CARD_CONTENTS } from "../../../../../graphql/query/allQuery";
 import dynamic from "next/dynamic";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
-import { Space, Button, Select, Modal, Tag, message, Input, Popover, Checkbox  } from "antd";
+import { Space, Button, Select, Modal, Tag, message, Input, Popover, Checkbox, Divider } from "antd";
 import { UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../../graphql/query/card_contents";
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
@@ -37,7 +37,7 @@ import {
   CheckOutlined,
 } from "@ant-design/icons";
 import FixedBottomMenuDirectRead from "../../../../../components/books/write/editpage/sidemenu/FixedBottomMenuDirectRead";
-import { computeNumberOfAllFilteredCards } from '../logic/computeNumberOfReadCards';
+import { computeNumberOfAllFilteredCards } from "../logic/computeNumberOfReadCards";
 const { Option } = Select;
 
 const Editor = dynamic(() => import("../../../../../components/books/write/editpage/Editor"), {
@@ -118,14 +118,14 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   const handleOk = () => {
     setIsNewCardModalVisible(false);
-    setBookSelectedForEditor("default")
-    setIndexSelectedForEditor("default")
+    setBookSelectedForEditor("default");
+    setIndexSelectedForEditor("default");
   };
 
   const handleCancel = () => {
     setIsNewCardModalVisible(false);
-    setBookSelectedForEditor("default")
-    setIndexSelectedForEditor("default")
+    setBookSelectedForEditor("default");
+    setIndexSelectedForEditor("default");
   };
 
   const {
@@ -138,15 +138,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   });
 
   const [getContentsByContentIds, { loading: loading2, error: error2, data }] = useLazyQuery(QUERY_MY_CARD_CONTENTS, { onCompleted: afterGetContent });
- 
+
   function afterGetContent(data) {
     console.log(data);
-    const newArray = [...contentsList, ...data.mycontent_getMycontentByMycontentIDs.mycontents, ...data.buycontent_getBuycontentByBuycontentIDs.buycontents ];
+    const newArray = [...contentsList, ...data.mycontent_getMycontentByMycontentIDs.mycontents, ...data.buycontent_getBuycontentByBuycontentIDs.buycontents];
     var uniq = newArray.filter((v, i, a) => a.findIndex((t) => t._id === v._id) === i);
     setContentsList(uniq);
   }
-
-  
 
   //userflag update
   const [cardset_updateUserFlag] = useMutation(MUTATION_UPDATE_USER_FLAG, {
@@ -177,6 +175,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   useEffect(() => {
     if (data1) {
+      sessionStorage.removeItem("cardListStudyingOrigin");
+      sessionStorage.removeItem("cardListStudying");
+
       console.log("최초 로드 data : ", data1);
       //   setIndexList(data1.indexset_getByMybookids.indexsets[0].indexes);
       setCardTypeSetId(data1.cardtypeset_getbymybookids.cardtypesets[0]._id);
@@ -186,29 +187,27 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       setCardSetId(data1.cardset_getByIndexIDs.cardsets[0]._id);
       setCards(data1.cardset_getByIndexIDs.cardsets[0].cards);
       setBookList(data1.mybook_getMybookByUserID.mybooks);
-      sessionStorage.setItem("sameIndexSelectedCheck", "false")
+      sessionStorage.setItem("sameIndexSelectedCheck", "false");
       sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(data1.cardset_getByIndexIDs.cardsets[0].cards));
-     
-     
-      // 필터링 함수가 들어간다. 함수에서 세션스토리지에 "cardListStudying" 저장하는 기능 넣어둠
-      computeNumberOfAllFilteredCards({cardsets: data1.cardset_getByIndexIDs.cardsets[0].cards})
-      // 일단 넣어둠. 나중에 원본 파일 정리되면 해당 데이터 매개변수로 넣어야함
-      
-      
-      setUserFlagDetails(data1.userflagconfig_get.userflagconfigs[0].details);
-      const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.filter((card) => card.content.location === "my")
-      .map((card) => card.content.mycontent_id)
-      const buyContentsIdsList = data1.cardset_getByIndexIDs.cardsets[0].cards.filter((card) => card.content.location === "buy")
-      .map((card) => card.content.buycontent_id);
-     ;
+      const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
+      for (let i = 0; i < cardListStudyingOrigin.length; i++) {
+        cardListStudyingOrigin[i].studyStatus.statusOriginal = cardListStudyingOrigin[i].studyStatus.statusCurrent;
+      }
+      sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(cardListStudyingOrigin));
 
+      // 필터링 함수가 들어간다. 함수에서 세션스토리지에 "cardListStudying" 저장하는 기능 넣어둠
+      computeNumberOfAllFilteredCards({ cardsets: data1.cardset_getByIndexIDs.cardsets[0].cards });
+      // 일단 넣어둠. 나중에 원본 파일 정리되면 해당 데이터 매개변수로 넣어야함
+
+      setUserFlagDetails(data1.userflagconfig_get.userflagconfigs[0].details);
+      const cardIdList = data1.cardset_getByIndexIDs.cardsets[0].cards.filter((card) => card.content.location === "my").map((card) => card.content.mycontent_id);
+      const buyContentsIdsList = data1.cardset_getByIndexIDs.cardsets[0].cards.filter((card) => card.content.location === "buy").map((card) => card.content.buycontent_id);
       getContentsByContentIds({
         variables: {
           mycontent_ids: cardIdList,
           buycontent_ids: buyContentsIdsList,
         },
       });
-    
     } else {
       console.log("why here?");
     }
@@ -273,22 +272,22 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   const onFinishFromNewCard = (values, from) => {
     console.log(values);
-    const cardtype_info = JSON.parse(sessionStorage.getItem("cardtype_info"))
-    const mybook_id = bookSelectedForEditor
+    const cardtype_info = JSON.parse(sessionStorage.getItem("cardtype_info"));
+    const mybook_id = bookSelectedForEditor;
     const cardtype = cardtype_info.cardtype;
-    const cardtype_id = sessionStorage.getItem("selectedCardTypeId")
-    const sameIndexSelectedCheck = sessionStorage.getItem("sameIndexSelectedCheck")
-    console.log(sameIndexSelectedCheck)
-    if(sameIndexSelectedCheck === "true"){
-      var current_position_card_id = cardId
+    const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
+    const sameIndexSelectedCheck = sessionStorage.getItem("sameIndexSelectedCheck");
+    console.log(sameIndexSelectedCheck);
+    if (sameIndexSelectedCheck === "true") {
+      var current_position_card_id = cardId;
     } else {
-      current_position_card_id = null
+      current_position_card_id = null;
     }
-    
-    const cardTypeSetId = sessionStorage.getItem("cardtypeset_id")
+
+    const cardTypeSetId = sessionStorage.getItem("cardtypeset_id");
     const index_id = sessionStorage.getItem("index_id_for_newcard");
-    const indexSetId = sessionStorage.getItem("indexset_id")
-    const cardSetId = sessionStorage.getItem("cardset_id")
+    const indexSetId = sessionStorage.getItem("indexset_id");
+    const cardSetId = sessionStorage.getItem("cardset_id");
 
     addcard(
       mybook_id,
@@ -307,7 +306,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       cardTypeSetId
     );
     setIsNewCardModalVisible(false);
-    sessionStorage.setItem("sameIndexSelectedCheck", "false")
+    sessionStorage.setItem("sameIndexSelectedCheck", "false");
   };
 
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
@@ -373,7 +372,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     }
   }
 
-  
   // 새카드 만들기 부분
 
   const [indexset_getByMybookids, { loading: loading4, error: error4, data: selectedIndexForNewCardAdd }] = useLazyQuery(GetIndex, {
@@ -382,8 +380,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   function afterGetIndex(data) {
     console.log(data);
-    setIndexListForEditor(data.indexset_getByMybookids.indexsets[0].indexes)
-    sessionStorage.setItem("indexset_id", data.indexset_getByMybookids.indexsets[0]._id)
+    setIndexListForEditor(data.indexset_getByMybookids.indexsets[0].indexes);
+    sessionStorage.setItem("indexset_id", data.indexset_getByMybookids.indexsets[0]._id);
   }
 
   const [cardtypeset_getbymybookids, { loading: loading5, error: error5, data: selectedCardTypeSetForNewCardAdd }] = useLazyQuery(GetCardTypeSet, {
@@ -392,8 +390,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   function afterGetCardTypeSet(data) {
     console.log(data);
-    setCardTypeSetForEditor(data.cardtypeset_getbymybookids.cardtypesets[0].cardtypes)
-    sessionStorage.setItem("cardtypeset_id", data.cardtypeset_getbymybookids.cardtypesets[0]._id)
+    setCardTypeSetForEditor(data.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);
+    sessionStorage.setItem("cardtypeset_id", data.cardtypeset_getbymybookids.cardtypesets[0]._id);
   }
 
   const [cardset_getByIndexIDs, { loading: loading6, error: error6, data: cardSetGet }] = useLazyQuery(GetCardSet, {
@@ -402,7 +400,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   function afterGetCardSet(data) {
     console.log(data);
-    sessionStorage.setItem("cardset_id", data.cardset_getByIndexIDs.cardsets[0]._id)
+    sessionStorage.setItem("cardset_id", data.cardset_getByIndexIDs.cardsets[0]._id);
   }
 
   if (bookList.length > 0) {
@@ -418,8 +416,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   }
   function bookSelectOnchange(value) {
     console.log(`selected ${value}`);
-    setBookSelectedForEditor(value)
-    setIndexSelectedForEditor("default")
+    setBookSelectedForEditor(value);
+    setIndexSelectedForEditor("default");
     indexset_getByMybookids({
       variables: {
         mybook_ids: value,
@@ -449,13 +447,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
         index_ids: value,
       },
     });
-    setIndexSelectedForEditor(value)
+    setIndexSelectedForEditor(value);
     sessionStorage.setItem("index_id_for_newcard", value);
-    console.log(cardTypeSetForEditor[0])
-    cardTypeInfoNewCard(cardTypeSetForEditor[0].cardtype_info)
+    console.log(cardTypeSetForEditor[0]);
+    cardTypeInfoNewCard(cardTypeSetForEditor[0].cardtype_info);
     sessionStorage.setItem("selectedCardTypeId", cardTypeSetForEditor[0]._id);
   }
-  
+
   function handleChange(value) {
     sessionStorage.setItem("selections", 0);
     sessionStorage.removeItem("nicks_with_selections");
@@ -638,10 +636,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     setNewCardEditor(editor);
   };
 
-
   function sameIndexSelected(e) {
     console.log(`checked`, e.target.checked);
-    sessionStorage.setItem("sameIndexSelectedCheck", e.target.checked)
+    sessionStorage.setItem("sameIndexSelectedCheck", e.target.checked);
   }
 
   // 새카드 만들기 부분 끝
@@ -794,6 +791,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   }
 
   const getSelectionText2 = () => {
+    console.log(cardId)
     setHiddenToggle(false);
     setUnderlineToggle(false);
     setHighlightToggle(false);
@@ -1111,7 +1109,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
         // console.log(content);
         // console.log(contentsList);
         const show_contents = contentsList.map((content_value) => {
-          console.log(content_value)
           if (content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) {
             // console.log(content_value._id, content.content.buycontent_id);
             if (content_value._id === cardId) {
@@ -1655,16 +1652,19 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                             <div>
                               <Select size="small" value={indexSelectedForEditor} style={{ width: 200, fontSize: "1rem" }} onChange={indexSelectOnchange}>
                                 <Option value="default" style={{ fontSize: "1rem", color: "black", fontWeight: "700" }} disabled>
-                                 목차선택
+                                  목차선택
                                 </Option>
                                 {index_list}
                               </Select>
-                              {content.card_info.index_id === indexSelectedForEditor && <><div><Checkbox onChange={sameIndexSelected}>해당카드 바로뒤에 저장</Checkbox></div></>}
+                              {content.card_info.index_id === indexSelectedForEditor && (
+                                <>
+                                  <div>
+                                    <Checkbox onChange={sameIndexSelected}>해당카드 바로뒤에 저장</Checkbox>
+                                  </div>
+                                </>
+                              )}
                             </div>
-                            <div>
-                             
-                              {indexSelectedForEditor !== "default" && newCardEditor}
-                            </div>
+                            <div>{indexSelectedForEditor !== "default" && newCardEditor}</div>
                           </Modal>
 
                           <Popover
@@ -1814,9 +1814,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   width: "20px",
                                   borderRadius: "2px",
                                 }}
-                              >
-                                {" "}
-                              </div>
+                              ></div>
                             </>
                           )}
                           {content.content.userFlag !== 0 && (
@@ -1828,9 +1826,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   width: "20px",
                                   borderRadius: "2px",
                                 }}
-                              >
-                                {" "}
-                              </div>
+                              ></div>
                             </>
                           )}
 
@@ -1844,9 +1840,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     width: "20px",
                                     borderRadius: "2px",
                                   }}
-                                >
-                                  {" "}
-                                </div>
+                                ></div>
                               </>
                             )}
                             {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
@@ -1858,9 +1852,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     width: "20px",
                                     borderRadius: "2px",
                                   }}
-                                >
-                                  {" "}
-                                </div>
+                                ></div>
                               </>
                             )}
                           </div>
@@ -1933,7 +1925,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                               </>
                             ))}
                           </div>
-                          
                         </div>
                       </div>
                     </div>
@@ -2240,9 +2231,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   width: "20px",
                                   borderRadius: "2px",
                                 }}
-                              >
-                                {" "}
-                              </div>
+                              ></div>
                             </>
                           )}
                           {content.content.userFlag !== 0 && (
@@ -2254,9 +2243,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   width: "20px",
                                   borderRadius: "2px",
                                 }}
-                              >
-                                {" "}
-                              </div>
+                              ></div>
                             </>
                           )}
 
@@ -2270,9 +2257,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     width: "20px",
                                     borderRadius: "2px",
                                   }}
-                                >
-                                  {" "}
-                                </div>
+                                ></div>
                               </>
                             )}
                             {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
@@ -2284,9 +2269,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     width: "20px",
                                     borderRadius: "2px",
                                   }}
-                                >
-                                  {" "}
-                                </div>
+                                ></div>
                               </>
                             )}
                           </div>
@@ -2595,9 +2578,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   width: "20px",
                                   borderRadius: "2px",
                                 }}
-                              >
-                                {" "}
-                              </div>
+                              ></div>
                             </>
                           )}
                           {content.content.userFlag !== 0 && (
@@ -2609,9 +2590,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   width: "20px",
                                   borderRadius: "2px",
                                 }}
-                              >
-                                {" "}
-                              </div>
+                              ></div>
                             </>
                           )}
 
@@ -2625,9 +2604,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     width: "20px",
                                     borderRadius: "2px",
                                   }}
-                                >
-                                  {" "}
-                                </div>
+                                ></div>
                               </>
                             )}
                             {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
@@ -2639,9 +2616,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     width: "20px",
                                     borderRadius: "2px",
                                   }}
-                                >
-                                  {" "}
-                                </div>
+                                ></div>
                               </>
                             )}
                           </div>
@@ -2672,7 +2647,15 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                             }}
                           >
                             {/* 페이스1 스타일 영역 */}
+                            {content._id === cardId && (
+                              <>
+                                <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
+                                </Divider>
+                              </>
+                            )}
                             {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
+
                             <div
                               style={{
                                 backgroundColor: face_style[1].background.color,
@@ -2692,6 +2675,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                             >
                               {content_value.face1.map((item, index) => (
                                 <>
+                                  {content._id === cardId && (
+                                    <>
+                                      <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                      <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;앞면 {index + 1}행&nbsp;&nbsp;</span>
+                                      </Divider>
+                                    </>
+                                  )}
                                   <div
                                     style={{
                                       display: `${face1row[`face1row${index + 1}`] === false ? "none" : ""}`,
@@ -2731,54 +2721,14 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   </div>
                                 </>
                               ))}
-                              {(content_value.selection === null || content_value.selection.length === 0) &&
-                                content_value.face2.map((item, index) => (
-                                  <>
-                                    <div
-                                      className="face2"
-                                      key={`face2_row${index + 1}`}
-                                      // id={`face2_row${index + 1}`}
-                                      value={item}
-                                      style={{
-                                        display: `${face2row[`face2row${index + 1}`] === false ? "none" : ""}`,
-                                        backgroundColor: row_style.face2[index].background.color,
-                                        marginTop: row_style.face2[index].outer_margin.top,
-                                        marginBottom: row_style.face2[index].outer_margin.bottom,
-                                        marginLeft: row_style.face2[index].outer_margin.left,
-                                        marginRight: row_style.face2[index].outer_margin.right,
-                                        paddingTop: row_style.face2[index].inner_padding.top,
-                                        paddingBottom: row_style.face2[index].inner_padding.bottom,
-                                        paddingLeft: row_style.face2[index].inner_padding.left,
-                                        paddingRight: row_style.face2[index].inner_padding.right,
-                                        borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
-                                        borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
-                                        borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
-                                        borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
-                                        textAlign: row_font.face2[index].align,
-                                        fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
-                                        color: row_font.face2[index].color,
-                                        fontFamily: `${
-                                          row_font.face2[index].font === "고딕"
-                                            ? `Nanum Gothic, sans-serif`
-                                            : row_font.face2[index].font === "명조"
-                                            ? `Nanum Myeongjo, sans-serif`
-                                            : row_font.face2[index].font === "바탕"
-                                            ? `Gowun Batang, sans-serif`
-                                            : row_font.face2[index].font === "돋움"
-                                            ? `Gowun Dodum, sans-serif`
-                                            : ""
-                                        } `,
-                                        fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
-                                        fontSize: row_font.face2[index].size,
-                                        textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
-                                      }}
-                                    >
-                                      <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
-                                    </div>
-                                  </>
-                                ))}
-
-                              {(content_value.selection !== null)&&
+                              {(content._id === cardId && content_value.selection !== null) && (
+                                <>
+                                  <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                    <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;보기&nbsp;&nbsp;</span>
+                                  </Divider>
+                                </>
+                              )}
+                              {content_value.selection !== null &&
                                 content_value.selection.map((item, index) => (
                                   <>
                                     <div
@@ -2824,7 +2774,6 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                       }}
                                     >
                                       {/* <FroalaEditorView model={item} /> */}
-
                                       <div style={{ display: "flex", alignItems: "center" }}>
                                         <span>
                                           {index === 0 && (
@@ -2859,8 +2808,167 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     </div>
                                   </>
                                 ))}
+
+                              {/* 페이스2 스타일 영역 */}
+                              <div
+                                style={{
+                                  backgroundColor: face_style[2].background.color,
+                                  marginTop: face_style[2].outer_margin.top,
+                                  marginBottom: face_style[2].outer_margin.bottom,
+                                  marginLeft: face_style[2].outer_margin.left,
+                                  marginRight: face_style[2].outer_margin.right,
+                                  paddingTop: face_style[2].inner_padding.top,
+                                  paddingBottom: face_style[2].inner_padding.bottom,
+                                  paddingLeft: face_style[2].inner_padding.left,
+                                  paddingRight: face_style[2].inner_padding.right,
+                                  borderTop: `${face_style[2].border.top.thickness}px ${face_style[2].border.top.bordertype} ${face_style[2].border.top.color}`,
+                                  borderBottom: `${face_style[2].border.bottom.thickness}px ${face_style[2].border.bottom.bordertype} ${face_style[2].border.bottom.color}`,
+                                  borderLeft: `${face_style[2].border.left.thickness}px ${face_style[2].border.left.bordertype} ${face_style[2].border.left.color}`,
+                                  borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
+                                }}
+                              >
+                                {(content_value.selection === null || content_value.selection.length === 0) &&
+                                  content_value.face2.map((item, index) => (
+                                    <>
+                                      {content._id === cardId && (
+                                        <>
+                                          <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                          <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;뒷면 {index + 1}행&nbsp;&nbsp;</span>
+                                          </Divider>
+                                        </>
+                                      )}
+                                      <div
+                                        className="face2"
+                                        key={`face2_row${index + 1}`}
+                                        // id={`face2_row${index + 1}`}
+                                        value={item}
+                                        style={{
+                                          display: `${face2row[`face2row${index + 1}`] === false ? "none" : ""}`,
+                                          backgroundColor: row_style.face2[index].background.color,
+                                          marginTop: row_style.face2[index].outer_margin.top,
+                                          marginBottom: row_style.face2[index].outer_margin.bottom,
+                                          marginLeft: row_style.face2[index].outer_margin.left,
+                                          marginRight: row_style.face2[index].outer_margin.right,
+                                          paddingTop: row_style.face2[index].inner_padding.top,
+                                          paddingBottom: row_style.face2[index].inner_padding.bottom,
+                                          paddingLeft: row_style.face2[index].inner_padding.left,
+                                          paddingRight: row_style.face2[index].inner_padding.right,
+                                          borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
+                                          borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
+                                          borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
+                                          borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                                          textAlign: row_font.face2[index].align,
+                                          fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
+                                          color: row_font.face2[index].color,
+                                          fontFamily: `${
+                                            row_font.face2[index].font === "고딕"
+                                              ? `Nanum Gothic, sans-serif`
+                                              : row_font.face2[index].font === "명조"
+                                              ? `Nanum Myeongjo, sans-serif`
+                                              : row_font.face2[index].font === "바탕"
+                                              ? `Gowun Batang, sans-serif`
+                                              : row_font.face2[index].font === "돋움"
+                                              ? `Gowun Dodum, sans-serif`
+                                              : ""
+                                          } `,
+                                          fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
+                                          fontSize: row_font.face2[index].size,
+                                          textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
+                                        }}
+                                      >
+                                        <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />
+                                      </div>
+                                    </>
+                                  ))}
+
+                                {content_value.selection !== null &&
+                                  content_value.face2.map((item, index) => (
+                                    <>
+                                    {content._id === cardId && (
+                                        <>
+                                          <Divider orientation="left"  style={{ margin: "-0px 0px -0px 0px",color:"grey", fontSize: "0.8rem", borderColor: "lightgrey" }} orientationMargin={0} dashed>
+                                          <span style={{backgroundColor:"#eaeaea", borderRadius:"5px"}}>&nbsp;&nbsp;뒷면 {index + 1}행&nbsp;&nbsp;</span>
+                                          </Divider>
+                                        </>
+                                      )}
+                                      <div
+                                        style={{
+                                          display: `${face2row[`face2row${index + 1}`] === false ? "none" : ""}`,
+                                          backgroundColor: row_style.face2[index].background.color,
+                                          marginTop: row_style.face2[index].outer_margin.top,
+                                          marginBottom: row_style.face2[index].outer_margin.bottom,
+                                          marginLeft: row_style.face2[index].outer_margin.left,
+                                          marginRight: row_style.face2[index].outer_margin.right,
+                                          paddingTop: row_style.face2[index].inner_padding.top,
+                                          paddingBottom: row_style.face2[index].inner_padding.bottom,
+                                          paddingLeft: row_style.face2[index].inner_padding.left,
+                                          paddingRight: row_style.face2[index].inner_padding.right,
+                                          borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
+                                          borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
+                                          borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
+                                          borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                                          textAlign: row_font.face2[index].align,
+                                          fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
+                                          color: row_font.face2[index].color,
+                                          fontFamily: `${
+                                            row_font.face2[index].font === "고딕"
+                                              ? `Nanum Gothic, sans-serif`
+                                              : row_font.face2[index].font === "명조"
+                                              ? `Nanum Myeongjo, sans-serif`
+                                              : row_font.face2[index].font === "바탕"
+                                              ? `Gowun Batang, sans-serif`
+                                              : row_font.face2[index].font === "돋움"
+                                              ? `Gowun Dodum, sans-serif`
+                                              : ""
+                                          } `,
+                                          fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
+                                          fontSize: row_font.face2[index].size,
+                                          textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
+                                        }}
+                                      >
+                                        {/* <FroalaEditorView model={item} /> */}
+                                        {item.replace(/(<([^>]+)>)/gi, "") === "1" && (
+                                          <>
+                                            <div style={{ display: "flex", alignItems: "center" }}>
+                                              <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span> <span style={{ fontSize: "1.5rem" }}>➀</span>
+                                            </div>
+                                          </>
+                                        )}
+                                        {item.replace(/(<([^>]+)>)/gi, "") === "2" && (
+                                          <>
+                                            <div style={{ display: "flex", alignItems: "center" }}>
+                                              <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span> <span style={{ fontSize: "1.5rem" }}>➁</span>
+                                            </div>
+                                          </>
+                                        )}
+                                        {item.replace(/(<([^>]+)>)/gi, "") === "3" && (
+                                          <>
+                                            <div style={{ display: "flex", alignItems: "center" }}>
+                                              <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span> <span style={{ fontSize: "1.5rem" }}>➂</span>
+                                            </div>
+                                          </>
+                                        )}
+                                        {item.replace(/(<([^>]+)>)/gi, "") === "4" && (
+                                          <>
+                                            <div style={{ display: "flex", alignItems: "center" }}>
+                                              <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span> <span style={{ fontSize: "1.5rem" }}>➃</span>
+                                            </div>
+                                          </>
+                                        )}
+                                        {item.replace(/(<([^>]+)>)/gi, "") === "5" && (
+                                          <>
+                                            <div style={{ display: "flex", alignItems: "center" }}>
+                                              <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span> <span style={{ fontSize: "1.5rem" }}>➄</span>
+                                            </div>
+                                          </>
+                                        )}
+                                        {index !== 0 && <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />}
+                                      </div>
+                                      
+                                    </>
+                                  ))}
+                              </div>
                             </div>
-                            
                           </div>
                         </div>
                       </div>
@@ -3100,9 +3208,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   width: "20px",
                                   borderRadius: "2px",
                                 }}
-                              >
-                                {" "}
-                              </div>
+                              ></div>
                             </>
                           )}
                           {content.content.userFlag !== 0 && (
@@ -3114,9 +3220,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   width: "20px",
                                   borderRadius: "2px",
                                 }}
-                              >
-                                {" "}
-                              </div>
+                              ></div>
                             </>
                           )}
 
@@ -3130,9 +3234,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     width: "20px",
                                     borderRadius: "2px",
                                   }}
-                                >
-                                  {" "}
-                                </div>
+                                ></div>
                               </>
                             )}
                             {content_value.annotation.length > 0 && content_value.annotation[0] !== "" && (
@@ -3144,9 +3246,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                     width: "20px",
                                     borderRadius: "2px",
                                   }}
-                                >
-                                  {" "}
-                                </div>
+                                ></div>
                               </>
                             )}
                           </div>
@@ -3365,6 +3465,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   const onClickCard = (card_id, from, group, card_info) => {
     console.log(card_info);
+    const selectionText = sessionStorage.getItem("selectionText")
     // sessionStorage.removeItem("selectionText");
     const selected1 = document.getElementsByClassName(card_id);
     const selected2 = document.getElementsByClassName("other");
@@ -3388,15 +3489,21 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     }
 
     if (cardId === card_id) {
-      setCardId("");
-      setCardInfo("");
-      for (var a = 0; a < selected2.length; a++) {
-        const section = selected2.item(a);
-        section.style.border = "none";
-        section.style.borderBottomLeftRadius = "0px";
-        section.style.borderBottomRightRadius = "0px";
-        // section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
+      if(selectionText) {
+        console.log("eeee")
+      } else{
+        setCardId("");
+        setCardInfo("");
+        for (var a = 0; a < selected2.length; a++) {
+          const section = selected2.item(a);
+          section.style.border = "none";
+          section.style.borderBottomLeftRadius = "0px";
+          section.style.borderBottomRightRadius = "0px";
+          // section.style.boxShadow = "#ffffff00 0px 0px 0px 0px";
+        }
       }
+     
+      
     } else {
       setCardId(card_id);
       setCardInfo(card_info);
@@ -3537,9 +3644,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   return (
     <>
-      <div style={{ width: "95%", maxWidth: "972px", margin: "auto"}}>
+      <div style={{ width: "95%", maxWidth: "972px", margin: "auto" }}>
         <div style={{ margin: "auto" }}>{contents}</div>
-        <div style={{height:"40px"}}></div>
+        <div style={{ height: "40px" }}></div>
       </div>
       {data1 && (
         <>
@@ -3573,6 +3680,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             selectionShow={selectionShow}
             face1row={face1row}
             face2row={face2row}
+            cardId={cardId}
           />
         </>
       )}

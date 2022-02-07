@@ -492,9 +492,7 @@ const ReadMode = () => {
       console.log("case2", text);
     }
     console.log("end");
-    var thisword = "i am a 소년"
-    var matchstring = thisword.match(/(\w{1,100})/gi)
-    console.log("matchstring", matchstring)
+    
     if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
       var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;

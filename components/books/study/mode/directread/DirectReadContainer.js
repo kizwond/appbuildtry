@@ -1111,6 +1111,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
         // console.log(content);
         // console.log(contentsList);
         const show_contents = contentsList.map((content_value) => {
+          console.log(content_value)
           if (content_value._id === content.content.mycontent_id || content_value._id === content.content.buycontent_id) {
             // console.log(content_value._id, content.content.buycontent_id);
             if (content_value._id === cardId) {
@@ -2777,7 +2778,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   </>
                                 ))}
 
-                              {content_value.selection &&
+                              {(content_value.selection !== null)&&
                                 content_value.selection.map((item, index) => (
                                   <>
                                     <div
@@ -2859,109 +2860,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                   </>
                                 ))}
                             </div>
-                            {/* 페이스2 스타일 영역 */}
-                            <div
-                              style={{
-                                backgroundColor: face_style[2].background.color,
-                                marginTop: face_style[2].outer_margin.top,
-                                marginBottom: face_style[2].outer_margin.bottom,
-                                marginLeft: face_style[2].outer_margin.left,
-                                marginRight: face_style[2].outer_margin.right,
-                                paddingTop: face_style[2].inner_padding.top,
-                                paddingBottom: face_style[2].inner_padding.bottom,
-                                paddingLeft: face_style[2].inner_padding.left,
-                                paddingRight: face_style[2].inner_padding.right,
-                                borderTop: `${face_style[2].border.top.thickness}px ${face_style[2].border.top.bordertype} ${face_style[2].border.top.color}`,
-                                borderBottom: `${face_style[2].border.bottom.thickness}px ${face_style[2].border.bottom.bordertype} ${face_style[2].border.bottom.color}`,
-                                borderLeft: `${face_style[2].border.left.thickness}px ${face_style[2].border.left.bordertype} ${face_style[2].border.left.color}`,
-                                borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
-                              }}
-                            >
-                              {content_value.face2.map((item, index) => (
-                                <>
-                                  <div
-                                    style={{
-                                      display: `${face2row[`face2row${index + 1}`] === false ? "none" : ""}`,
-                                      backgroundColor: row_style.face2[index].background.color,
-                                      marginTop: row_style.face2[index].outer_margin.top,
-                                      marginBottom: row_style.face2[index].outer_margin.bottom,
-                                      marginLeft: row_style.face2[index].outer_margin.left,
-                                      marginRight: row_style.face2[index].outer_margin.right,
-                                      paddingTop: row_style.face2[index].inner_padding.top,
-                                      paddingBottom: row_style.face2[index].inner_padding.bottom,
-                                      paddingLeft: row_style.face2[index].inner_padding.left,
-                                      paddingRight: row_style.face2[index].inner_padding.right,
-                                      borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
-                                      borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
-                                      borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
-                                      borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
-                                      textAlign: row_font.face2[index].align,
-                                      fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
-                                      color: row_font.face2[index].color,
-                                      fontFamily: `${
-                                        row_font.face2[index].font === "고딕"
-                                          ? `Nanum Gothic, sans-serif`
-                                          : row_font.face2[index].font === "명조"
-                                          ? `Nanum Myeongjo, sans-serif`
-                                          : row_font.face2[index].font === "바탕"
-                                          ? `Gowun Batang, sans-serif`
-                                          : row_font.face2[index].font === "돋움"
-                                          ? `Gowun Dodum, sans-serif`
-                                          : ""
-                                      } `,
-                                      fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
-                                      fontSize: row_font.face2[index].size,
-                                      textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
-                                    }}
-                                  >
-                                    {/* <FroalaEditorView model={item} /> */}
-
-                                    {item.replace(/(<([^>]+)>)/gi, "") === "1" && (
-                                      <>
-                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                          <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                          <span style={{ fontSize: "1.5rem" }}>➀</span>
-                                        </div>
-                                      </>
-                                    )}
-                                    {item.replace(/(<([^>]+)>)/gi, "") === "2" && (
-                                      <>
-                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                          <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                          <span style={{ fontSize: "1.5rem" }}>➁</span>
-                                        </div>
-                                      </>
-                                    )}
-                                    {item.replace(/(<([^>]+)>)/gi, "") === "3" && (
-                                      <>
-                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                          <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                          <span style={{ fontSize: "1.5rem" }}>➂</span>
-                                        </div>
-                                      </>
-                                    )}
-                                    {item.replace(/(<([^>]+)>)/gi, "") === "4" && (
-                                      <>
-                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                          <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                          <span style={{ fontSize: "1.5rem" }}>➃</span>
-                                        </div>
-                                      </>
-                                    )}
-                                    {item.replace(/(<([^>]+)>)/gi, "") === "5" && (
-                                      <>
-                                        <div style={{ display: "flex", alignItems: "center" }}>
-                                          <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
-                                          <span style={{ fontSize: "1.5rem" }}>➄</span>
-                                        </div>
-                                      </>
-                                    )}
-
-                                    {index !== 0 && <Alter content={content} item={item} index={index} getSelectionText2={getSelectionText2} cardTypeSets={cardTypeSets} />}
-                                  </div>
-                                </>
-                              ))}
-                            </div>
+                            
                           </div>
                         </div>
                       </div>

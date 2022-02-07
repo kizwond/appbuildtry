@@ -1,14 +1,11 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 import { Button, Alert, message, Popconfirm, Modal } from "antd";
-import {
-  MUTATION_DELETE_MY_BOOK,
-  MUTATION_RESET_MY_BOOK_STUDY_HISTORY,
-} from "../../../../graphql/mutation/myBook";
+import { MUTATION_RESET_MY_BOOK_STUDY_HISTORY } from "../../../../graphql/mutation/myBook";
 import { useRouter } from "next/router";
 
 const M_resetStudyHistory = ({ book_id, bookTitle }) => {
-  const { push, back } = useRouter();
+  const { push } = useRouter();
   const [visible, setVisible] = React.useState(false);
 
   const showPopconfirm = () => {

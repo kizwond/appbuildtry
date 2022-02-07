@@ -1386,3 +1386,6 @@ audio {
 .hero_img{
   border-radius: 0px 0px 5px 5px;
 }
+.ant-divider-inner-text{
+  padding :0px 5px 0px 5px !important;
+}

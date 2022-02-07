@@ -67,6 +67,7 @@ const FloatingMenu = ({
   selectionShow,
   face1row,
   face2row,
+  cardId,
 }) => {
   const [bottomVisible, setBottomVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -87,8 +88,13 @@ const FloatingMenu = ({
   const info = () => {
     var selectionText = sessionStorage.getItem("selectionText");
     console.log(selectionText);
-    if (selectionText === null) {
-      selectionText = "선택영역이 없습니다.";
+    if (selectionText === null || selectionText === "") {
+      if (cardId) {
+        selectionText = "선택영역이 없습니다.";
+      } else {
+        selectionText = "툴을 적용할 카드를 선택해주세요";
+      }
+
       message.warning({
         content: selectionText,
         style: {
@@ -106,6 +112,7 @@ const FloatingMenu = ({
   };
 
   if (cardTypeSets) {
+    const selectionText = sessionStorage.getItem("selectionText");
     if (cardTypeSets.length > 0) {
       const hiddenSettings = cardTypeSets[0].studyTool.hidden;
       const highlightSettings = cardTypeSets[0].studyTool.highlight;
@@ -125,34 +132,36 @@ const FloatingMenu = ({
         }
         return (
           <>
-            <div
-              className={`hiddenGroup${index}`}
-              onClick={() => hide(index)}
-              style={{
-                position: "absolute",
-                top: `${marginValue}px`,
-                cursor: "pointer",
-                width: "50px",
-                height: "40px",
-                borderRadius: "3px",
-                backgroundColor: "white",
-                textAlign: "center",
-                boxShadow: "1px 1px 4px 0px #909090",
-                padding: "10px 10px 10px 10px",
-                color: "black",
-              }}
-            >
+            {selectionText && (
               <div
+                className={`hiddenGroup${index}`}
+                onClick={() => hide(index)}
                 style={{
+                  position: "absolute",
+                  top: `${marginValue}px`,
                   cursor: "pointer",
-                  width: "30px",
-                  height: "20px",
+                  width: "50px",
+                  height: "40px",
                   borderRadius: "3px",
-                  backgroundColor: item.color,
+                  backgroundColor: "white",
                   textAlign: "center",
+                  boxShadow: "1px 1px 4px 0px #909090",
+                  padding: "10px 10px 10px 10px",
+                  color: "black",
                 }}
-              ></div>
-            </div>
+              >
+                <div
+                  style={{
+                    cursor: "pointer",
+                    width: "30px",
+                    height: "20px",
+                    borderRadius: "3px",
+                    backgroundColor: item.color,
+                    textAlign: "center",
+                  }}
+                ></div>
+              </div>
+            )}
           </>
         );
       });
@@ -171,37 +180,39 @@ const FloatingMenu = ({
         }
         return (
           <>
-            <div
-              className={`underlineGroup${index}`}
-              onClick={() => underline(index)}
-              style={{
-                position: "absolute",
-                top: `${marginValue}px`,
-                // left: "-7px",
-                cursor: "pointer",
-                width: "50px",
-                height: "40px",
-                borderRadius: "3px",
-                backgroundColor: "white",
-                textAlign: "center",
-                boxShadow: "1px 1px 4px 0px #909090",
-                padding: "15px 10px 5px 10px",
-                color: "black",
-              }}
-            >
+            {selectionText && (
               <div
+                className={`underlineGroup${index}`}
+                onClick={() => underline(index)}
                 style={{
+                  position: "absolute",
+                  top: `${marginValue}px`,
+                  // left: "-7px",
                   cursor: "pointer",
-                  width: "30px",
-                  height: "1px",
-                  borderBottom: `${item.attr1}px ${item.attr2} ${item.color}`,
+                  width: "50px",
+                  height: "40px",
+                  borderRadius: "3px",
+                  backgroundColor: "white",
                   textAlign: "center",
-                  lineHeight: "20px",
+                  boxShadow: "1px 1px 4px 0px #909090",
+                  padding: "15px 10px 5px 10px",
+                  color: "black",
                 }}
               >
-                {item.attr1}px
+                <div
+                  style={{
+                    cursor: "pointer",
+                    width: "30px",
+                    height: "1px",
+                    borderBottom: `${item.attr1}px ${item.attr2} ${item.color}`,
+                    textAlign: "center",
+                    lineHeight: "20px",
+                  }}
+                >
+                  {item.attr1}px
+                </div>
               </div>
-            </div>
+            )}
           </>
         );
       });
@@ -221,33 +232,35 @@ const FloatingMenu = ({
         }
         return (
           <>
-            <div
-              className={`searchGroup${index}`}
-              onClick={() => editorModalOpen(item)}
-              style={{
-                position: "absolute",
-                top: `${marginValue}px`,
-                // left: "-7px",
-                cursor: "pointer",
-                width: "50px",
-                height: "40px",
-                borderRadius: "3px",
-                backgroundColor: "white",
-                textAlign: "center",
-                boxShadow: "1px 1px 4px 0px #909090",
-                color: "black",
-              }}
-            >
+            {selectionText && (
               <div
+                className={`searchGroup${index}`}
+                onClick={() => editorModalOpen(item)}
                 style={{
+                  position: "absolute",
+                  top: `${marginValue}px`,
+                  // left: "-7px",
                   cursor: "pointer",
+                  width: "50px",
+                  height: "40px",
+                  borderRadius: "3px",
+                  backgroundColor: "white",
                   textAlign: "center",
-                  lineHeight: "40px",
+                  boxShadow: "1px 1px 4px 0px #909090",
+                  color: "black",
                 }}
               >
-                {item}
+                <div
+                  style={{
+                    cursor: "pointer",
+                    textAlign: "center",
+                    lineHeight: "40px",
+                  }}
+                >
+                  {item}
+                </div>
               </div>
-            </div>
+            )}
           </>
         );
       });
@@ -266,47 +279,49 @@ const FloatingMenu = ({
         }
         return (
           <>
-            <div
-              className={`highlightGroup${index}`}
-              onClick={() => highlight(index)}
-              style={{
-                position: "absolute",
-                top: `${marginValue}px`,
-                // left: "-10px",
-                cursor: "pointer",
-                width: "50px",
-                height: "40px",
-                borderRadius: "3px",
-                backgroundColor: "white",
-                textAlign: "center",
-                boxShadow: "1px 1px 4px 0px #909090",
-                padding: "10px 10px 5px 10px",
-                lineHeight: "45px",
-                color: "black",
-              }}
-            >
+            {selectionText && (
               <div
+                className={`highlightGroup${index}`}
+                onClick={() => highlight(index)}
                 style={{
+                  position: "absolute",
+                  top: `${marginValue}px`,
+                  // left: "-10px",
                   cursor: "pointer",
+                  width: "50px",
+                  height: "40px",
+                  borderRadius: "3px",
+                  backgroundColor: "white",
                   textAlign: "center",
+                  boxShadow: "1px 1px 4px 0px #909090",
+                  padding: "10px 10px 5px 10px",
+                  lineHeight: "45px",
+                  color: "black",
                 }}
               >
-                {item.attr1 === "brush2" && (
-                  <>
-                    <div className={item.attr1} style={{ height: "15px", fontSize: "0.8rem", display: "inline-block", backgroundColor: item.color }}>
-                      <div style={{ visibility: "hidden" }}> brush{index + 1}</div>
-                    </div>
-                  </>
-                )}
-                {item.attr1 !== "brush2" && (
-                  <>
-                    <div className={item.attr1} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": item.color, "--z-index": 0 }}>
-                      <div style={{ visibility: "hidden" }}> brush{index + 1}</div>
-                    </div>
-                  </>
-                )}
+                <div
+                  style={{
+                    cursor: "pointer",
+                    textAlign: "center",
+                  }}
+                >
+                  {item.attr1 === "brush2" && (
+                    <>
+                      <div className={item.attr1} style={{ height: "15px", fontSize: "0.8rem", display: "inline-block", backgroundColor: item.color }}>
+                        <div style={{ visibility: "hidden" }}> brush{index + 1}</div>
+                      </div>
+                    </>
+                  )}
+                  {item.attr1 !== "brush2" && (
+                    <>
+                      <div className={item.attr1} style={{ fontSize: "0.8rem", display: "inline-block", "--bubble-color": item.color, "--z-index": 0 }}>
+                        <div style={{ visibility: "hidden" }}> brush{index + 1}</div>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </>
         );
       });
@@ -422,7 +437,7 @@ const FloatingMenu = ({
                 >
                   <EyeInvisibleOutlined className="hiddenToggleButton" style={{ fontSize: "1.5rem", color: "white" }} />
                   <span style={{ color: "white" }}>가리기</span>
-                  {hiddenButtons}
+                  {cardId && hiddenButtons}
                 </div>
               )}
               {!hiddenToggle && (
@@ -452,7 +467,7 @@ const FloatingMenu = ({
                   <UnderlineOutlined className="underlineToggleButton" style={{ fontSize: "1.5rem", color: "white" }} />
                   <span style={{ color: "white" }}>밑줄긋기</span>
 
-                  {underlineButtons}
+                  {cardId && underlineButtons}
                 </div>
               )}
               {!underlineToggle && (
@@ -481,7 +496,7 @@ const FloatingMenu = ({
                   <HighlightOutlined className="highlightToggleButton" style={{ fontSize: "1.5rem", color: "white" }} />
                   <span style={{ color: "white" }}>형광펜</span>
 
-                  {highlightButtons}
+                  {cardId && highlightButtons}
                 </div>
               )}
               {!highlightToggle && (
@@ -513,7 +528,7 @@ const FloatingMenu = ({
                     사전검색
                   </div>
 
-                  {searchButtons}
+                  {cardId && searchButtons}
                 </div>
               )}
               {!searchToggle && (

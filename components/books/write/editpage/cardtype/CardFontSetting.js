@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useCallback } from "react";
 import { useMutation } from "@apollo/client";
 import { Button, Select, Divider, InputNumber } from "antd";
 import { UpdateRowFont } from "../../../../../graphql/query/cardtype";
@@ -27,6 +27,19 @@ const CardFaceSetting = ({
   const [size, set_size] = useState();
   const [underline, set_underline] = useState();
 
+  const resetToPreservedSetting = useCallback(
+    (_face, _row) => {
+      set_align(cardTypeDetail[0].row_font[_face][_row].align);
+      set_bold(cardTypeDetail[0].row_font[_face][_row].bold);
+      set_color(cardTypeDetail[0].row_font[_face][_row].color);
+      set_font(cardTypeDetail[0].row_font[_face][_row].font);
+      set_italic(cardTypeDetail[0].row_font[_face][_row].italic);
+      set_size(cardTypeDetail[0].row_font[_face][_row].size);
+      set_underline(cardTypeDetail[0].row_font[_face][_row].underline);
+    },
+    [cardTypeDetail]
+  );
+
   useEffect(() => {
     if (cardTypeId) {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face1;
@@ -44,14 +57,9 @@ const CardFaceSetting = ({
         </Select.Option>
       ));
       setRowOptions(rows);
-      set_align(cardTypeDetail[0].row_font.face1[0].align);
-      set_bold(cardTypeDetail[0].row_font.face1[0].bold);
-      set_color(cardTypeDetail[0].row_font.face1[0].color);
-      set_font(cardTypeDetail[0].row_font.face1[0].font);
-      set_italic(cardTypeDetail[0].row_font.face1[0].italic);
-      set_size(cardTypeDetail[0].row_font.face1[0].size);
-      set_underline(cardTypeDetail[0].row_font.face1[0].underline);
+      resetToPreservedSetting(faceSelected, rowSelected);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cardTypeId, cardTypeDetail, tabValue]);
 
   const [cardtypeset_updaterowfont] = useMutation(UpdateRowFont, {
@@ -102,6 +110,7 @@ const CardFaceSetting = ({
 
   const selectFaceHandler = (selectedFaceStr) => {
     setFaceSelected(selectedFaceStr);
+    resetToPreservedSetting(selectedFaceStr, rowSelected);
     if (selectedFaceStr === "face1") {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face1;
       let nums = [];
@@ -154,16 +163,7 @@ const CardFaceSetting = ({
   };
   const selectRowHandler = (selectedRowNum) => {
     setRowSelected(selectedRowNum);
-
-    set_align(cardTypeDetail[0].row_font[faceSelected][selectedRowNum].align);
-    set_bold(cardTypeDetail[0].row_font[faceSelected][selectedRowNum].bold);
-    set_color(cardTypeDetail[0].row_font[faceSelected][selectedRowNum].color);
-    set_font(cardTypeDetail[0].row_font[faceSelected][selectedRowNum].font);
-    set_italic(cardTypeDetail[0].row_font[faceSelected][selectedRowNum].italic);
-    set_size(cardTypeDetail[0].row_font[faceSelected][selectedRowNum].size);
-    set_underline(
-      cardTypeDetail[0].row_font[faceSelected][selectedRowNum].underline
-    );
+    resetToPreservedSetting(faceSelected, selectedRowNum);
   };
 
   const handleClick = () => {

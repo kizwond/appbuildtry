@@ -9,7 +9,8 @@ import { GetCardTypeSetByMybookIds } from "../../../../../graphql/query/cardtype
 import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
 import { GetIndex, GetCardTypeSet } from "../../../../../graphql/query/allQuery";
 import { GetCardSet } from "../../../../../graphql/query/cardtype";
-import {  AddCard  } from "../../../../../graphql/query/card_contents";
+import { AddCard } from "../../../../../graphql/query/card_contents";
+import { QUERY_MY_CARD_CONTENTS } from "../../../../../graphql/query/allQuery";
 import {
   ControlOutlined,
   DashOutlined,
@@ -64,16 +65,8 @@ const FlipContainer = ({
   sessionScope,
   levelConfigs,
   cardTypeSets,
-  face1row1,
-  face1row2,
-  face1row3,
-  face1row4,
-  face1row5,
-  face2row1,
-  face2row2,
-  face2row3,
-  face2row4,
-  face2row5,
+  face1row,
+  face2row,
   ttsOn,
   setTtsOn,
   userFlagDetails,
@@ -91,6 +84,8 @@ const FlipContainer = ({
   sessionupdateresults,
   finishStudy,
   bookList,
+  ttsNextState,
+  setTTSNextState,
 }) => {
   const [selectedCardType, setSelectedCardType] = useState();
   const [newCardEditor, setNewCardEditor] = useState();
@@ -98,14 +93,17 @@ const FlipContainer = ({
   const [cardTypeSetForEditor, setCardTypeSetForEditor] = useState([]);
   const [bookSelectedForEditor, setBookSelectedForEditor] = useState("default");
   const [indexSelectedForEditor, setIndexSelectedForEditor] = useState("default");
+  const [ttsArray, setTtsArray] = useState([]);
+  const [played, setPlayed] = useState(false);
+
   const [indexset_getByMybookids, { loading: loading4, error: error4, data: selectedIndexForNewCardAdd }] = useLazyQuery(GetIndex, {
     onCompleted: afterGetIndex,
   });
 
   function afterGetIndex(data) {
     console.log(data);
-    setIndexListForEditor(data.indexset_getByMybookids.indexsets[0].indexes)
-    sessionStorage.setItem("indexset_id", data.indexset_getByMybookids.indexsets[0]._id)
+    setIndexListForEditor(data.indexset_getByMybookids.indexsets[0].indexes);
+    sessionStorage.setItem("indexset_id", data.indexset_getByMybookids.indexsets[0]._id);
   }
 
   const [cardtypeset_getbymybookids, { loading: loading5, error: error5, data: selectedCardTypeSetForNewCardAdd }] = useLazyQuery(GetCardTypeSet, {
@@ -114,8 +112,8 @@ const FlipContainer = ({
 
   function afterGetCardTypeSet(data) {
     console.log(data);
-    setCardTypeSetForEditor(data.cardtypeset_getbymybookids.cardtypesets[0].cardtypes)
-    sessionStorage.setItem("cardtypeset_id", data.cardtypeset_getbymybookids.cardtypesets[0]._id)
+    setCardTypeSetForEditor(data.cardtypeset_getbymybookids.cardtypesets[0].cardtypes);
+    sessionStorage.setItem("cardtypeset_id", data.cardtypeset_getbymybookids.cardtypesets[0]._id);
   }
 
   const [cardset_getByIndexIDs, { loading: loading6, error: error6, data: cardSetGet }] = useLazyQuery(GetCardSet, {
@@ -124,7 +122,7 @@ const FlipContainer = ({
 
   function afterGetCardSet(data) {
     console.log(data);
-    sessionStorage.setItem("cardset_id", data.cardset_getByIndexIDs.cardsets[0]._id)
+    sessionStorage.setItem("cardset_id", data.cardset_getByIndexIDs.cardsets[0]._id);
   }
 
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
@@ -190,6 +188,124 @@ const FlipContainer = ({
     }
   }
 
+  const speakText = (ttsArray) => {
+    window.speechSynthesis.cancel();
+    const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
+    if (ttsArray.length > 0) {
+      ttsArray.map((item, index) => {
+        var detected = detect(item);
+        console.log(index, detected);
+        if (!["ko", "en"].includes(detected)) {
+          var lang = "en";
+        } else {
+          lang = detected;
+        }
+        const speechMsg = new SpeechSynthesisUtterance();
+        // speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
+        // speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
+        speechMsg.rate = 1; // 속도: 0.1 ~ 10
+        speechMsg.pitch = 1; // 음높이: 0 ~ 2
+        speechMsg.lang = lang;
+        speechMsg.text = item;
+        window.speechSynthesis.speak(speechMsg);
+      });
+      // sessionStorage.removeItem("ttsOrder");
+      // ttsOption 변경시 리셋
+      // 목차 변경시 리셋
+    }
+  };
+
+  useEffect(() => {
+    if (ttsArray.length > 0) {
+      speakText(ttsArray);
+    }
+  }, [ttsArray]);
+
+  const getTTSData = useCallback(() => {
+    const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
+    const currentFaceTmp = sessionStorage.getItem("currentFace");
+    if (!currentFaceTmp) {
+      var currentFace = "front";
+      sessionStorage.setItem("currentFace", "front");
+    } else {
+      currentFace = currentFaceTmp;
+    }
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const currentSeq = sessionStorage.getItem("card_seq");
+    const current_card = cardListStudying[currentSeq];
+    const mycontent_id = current_card.content.mycontent_id;
+    const buycontent_id = current_card.content.buycontent_id;
+    // const contentsList = this.props.contentsList;
+
+    const contents = contentsList.filter((content_value) => {
+      if (content_value._id === mycontent_id || content_value._id === buycontent_id) {
+        return content_value;
+      }
+    });
+
+    const seperateEngAndKor = (str) => {
+      const arrayForTTS = [];
+      while (str.length > 0) {
+        const positionOfEnglish = str.search(/[a-zA-Z]/) == -1 ? 1000000 : str.search(/[a-zA-Z]/);
+        const positionOfKorean = str.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/) == -1 ? 1000000 : str.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/);
+        const targetPosition = Math.max(positionOfEnglish, positionOfKorean);
+        const singleParagraph = str.substring(0, targetPosition);
+        str = str.replace(singleParagraph, "");
+        arrayForTTS.push(singleParagraph);
+      }
+      return arrayForTTS;
+    };
+
+    if (contents && currentFace === "front") {
+      let arrFront = [];
+      contents[0].face1.forEach((c, i) => {
+        if (readModeTTSOption.faceOneTTS[i + 1] && contents[0].face1 !== null && contents[0].face1.length > 0) {
+          const contentOnlyString = c
+            .replace(/(<([^>]+)>)/gi, "")
+            .replace(/&nbsp;/g, "")
+            .replace(/&#39;/g, "");
+
+          const seperatedWithEngAndKor = seperateEngAndKor(contentOnlyString);
+          arrFront.push(seperatedWithEngAndKor);
+        }
+      });
+
+      if (readModeTTSOption.faceOneTTS.selection && contents[0].selection !== null && contents[0].selection.length > 0) {
+        contents[0].selection.forEach((c, i) => {
+          const contentWithoutTags = c
+            .replace(/(<([^>]+)>)/gi, "")
+            .replace(/&nbsp;/g, "")
+            .replace(/&#39;/g, "");
+          arrFront.push(`${i + 1} ${seperateEngAndKor(contentWithoutTags)}`);
+        });
+      }
+      const flattenContentsFront = _.flattenDeep(arrFront);
+      setTtsArray(flattenContentsFront);
+    } else if (contents && currentFace === "back") {
+      let arrBack = [];
+      if (contents[0].face2 !== null || contents[0].face2.length > 0) {
+        contents[0].face2.forEach((c, i) => {
+          if (readModeTTSOption.faceTwoTTS[i + 1]) {
+            const contentWithoutTags =
+              i === 0 && readModeTTSOption.faceOneTTS.selection && contents[0].selection !== null && contents[0].selection.length > 0
+                ? "정답 " +
+                  c
+                    .replace(/(<([^>]+)>)/gi, "")
+                    .replace(/&nbsp;/g, "")
+                    .replace(/&#39;/g, "")
+                : c
+                    .replace(/(<([^>]+)>)/gi, "")
+                    .replace(/&nbsp;/g, "")
+                    .replace(/&#39;/g, "");
+            arrBack.push(seperateEngAndKor(contentWithoutTags));
+          }
+        });
+      }
+      const flattenContentsBack = _.flattenDeep(arrBack);
+      setTtsArray(flattenContentsBack);
+    }
+  }, [contentsList]);
+
   return (
     <>
       <Container
@@ -199,16 +315,8 @@ const FlipContainer = ({
         sessionScope={sessionScope}
         levelConfigs={levelConfigs}
         cardTypeSets={cardTypeSets}
-        face1row1={face1row1}
-        face1row2={face1row2}
-        face1row3={face1row3}
-        face1row4={face1row4}
-        face1row5={face1row5}
-        face2row1={face2row1}
-        face2row2={face2row2}
-        face2row3={face2row3}
-        face2row4={face2row4}
-        face2row5={face2row5}
+        face1row={face1row}
+        face2row={face2row}
         ttsOn={ttsOn}
         setTtsOn={setTtsOn}
         userFlagDetails={userFlagDetails}
@@ -241,6 +349,9 @@ const FlipContainer = ({
         newCardEditor={newCardEditor}
         setNewCardEditor={setNewCardEditor}
         addcard={addcard}
+        ttsNextState={ttsNextState}
+        setTTSNextState={setTTSNextState}
+        getTTSData={getTTSData}
       />
     </>
   );
@@ -277,6 +388,7 @@ class Container extends Component {
       memo: "",
       updateMemoState: false,
       newCardModalVisible: false,
+      moreStudy: false,
     };
     this.keyCount = 0;
     this.getKey = this.getKey.bind(this);
@@ -402,16 +514,137 @@ class Container extends Component {
   };
 
   determineStudyFinish = (card_details_session, card_seq, current_card_id, now) => {
-    if (card_details_session.length - 1 == Number(card_seq)) {
-      console.log("원래는 끝난거!!!");
-      this.props.finishStudy();
-    } else {
-      console.log(card_details_session.length - 1, "======", Number(card_seq));
-      console.log("아직 안끝");
-      //여기다가 새로운 시퀀스 정보를 가공해야함.
-      this.generateCardSeq(card_details_session, now, current_card_id);
+    if (this.state.moreStudy === false) {
+      if (card_details_session.length - 1 == Number(card_seq)) {
+        console.log("원래는 끝난거!!!");
+        console.log(card_details_session);
 
-      // this.setTimer(0);
+        if (this.state.onBackMode) {
+          this.stopTimerTotal();
+          this.resetTimer();
+        } else {
+          this.setState({
+            flip: true,
+          });
+          this.setState({
+            moreStudy: true,
+          });
+          const reviewExist_data = card_details_session.filter((item) => {
+            if (item.studyStatus.needStudyTimeTmp !== null) {
+              console.log(item.studyStatus.needStudyTimeTmp, now);
+              return item;
+            }
+          });
+          console.log("복습해야 하는 카드", reviewExist_data);
+          if (reviewExist_data.length > 0) {
+            reviewExist_data.sort(function (a, b) {
+              return a.studyStatus.needStudyTimeTmp > b.studyStatus.needStudyTimeTmp ? 1 : a.studyStatus.needStudyTimeTmp < b.studyStatus.needStudyTimeTmp ? -1 : 0;
+            });
+            const earlist_id = reviewExist_data[0]._id;
+            const shouldBeSeq = card_details_session.findIndex((item) => item._id == earlist_id);
+            sessionStorage.setItem("card_seq", shouldBeSeq);
+          } else {
+            // this.props.finishStudy();
+            console.log("여기서 끝인데????????????????????????");
+          }
+
+          //study log 생성
+          const current_card_info_tmp = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+
+          if (current_card_info_tmp.length === 0) {
+            var current_card_info = card_details_session.filter((item) => item.content.buycontent_id === current_card_id);
+          } else {
+            var current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+          }
+
+          console.log(current_card_info);
+          const currentCardId = current_card_info[0]._id;
+          const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
+          if (studyLogCardIds === null) {
+            sessionStorage.setItem("studyLogCardIds", JSON.stringify([currentCardId]));
+          } else {
+            const cardIds = studyLogCardIds.concat(currentCardId);
+            sessionStorage.setItem("studyLogCardIds", JSON.stringify(cardIds));
+          }
+          this.setState({
+            restore: false,
+          });
+          this.stopTimerTotal();
+          this.resetTimer();
+
+          if (this.props.ttsOn) {
+            this.setState({
+              ttsOn: true,
+            });
+          }
+        }
+      } else {
+        console.log(card_details_session.length - 1, "======", Number(card_seq));
+        console.log("아직 안끝");
+        //여기다가 새로운 시퀀스 정보를 가공해야함.
+        this.generateCardSeq(card_details_session, now, current_card_id);
+
+        // this.setTimer(0);
+      }
+    } else if (this.state.moreStudy === true) {
+      console.log("more study mode!!!!");
+
+      if (this.state.onBackMode) {
+        this.stopTimerTotal();
+        this.resetTimer();
+      } else {
+        this.setState({
+          flip: true,
+        });
+        const reviewExist_data = card_details_session.filter((item) => {
+          if (item.studyStatus.needStudyTimeTmp !== null) {
+            console.log(item.studyStatus.needStudyTimeTmp, now);
+            return item;
+          }
+        });
+        console.log("복습해야 하는 카드", reviewExist_data);
+        if (reviewExist_data.length > 0) {
+          reviewExist_data.sort(function (a, b) {
+            return a.studyStatus.needStudyTimeTmp > b.studyStatus.needStudyTimeTmp ? 1 : a.studyStatus.needStudyTimeTmp < b.studyStatus.needStudyTimeTmp ? -1 : 0;
+          });
+          const earlist_id = reviewExist_data[0]._id;
+          const shouldBeSeq = card_details_session.findIndex((item) => item._id == earlist_id);
+          sessionStorage.setItem("card_seq", shouldBeSeq);
+        } else {
+          this.props.finishStudy();
+          console.log("여기서 끝인데????????????????????????");
+        }
+
+        //study log 생성
+        const current_card_info_tmp = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+
+        if (current_card_info_tmp.length === 0) {
+          var current_card_info = card_details_session.filter((item) => item.content.buycontent_id === current_card_id);
+        } else {
+          var current_card_info = card_details_session.filter((item) => item.content.mycontent_id === current_card_id);
+        }
+
+        console.log(current_card_info);
+        const currentCardId = current_card_info[0]._id;
+        const studyLogCardIds = JSON.parse(sessionStorage.getItem("studyLogCardIds"));
+        if (studyLogCardIds === null) {
+          sessionStorage.setItem("studyLogCardIds", JSON.stringify([currentCardId]));
+        } else {
+          const cardIds = studyLogCardIds.concat(currentCardId);
+          sessionStorage.setItem("studyLogCardIds", JSON.stringify(cardIds));
+        }
+        this.setState({
+          restore: false,
+        });
+        this.stopTimerTotal();
+        this.resetTimer();
+
+        if (this.props.ttsOn) {
+          this.setState({
+            ttsOn: true,
+          });
+        }
+      }
     }
   };
 
@@ -498,18 +731,26 @@ class Container extends Component {
     if (this.props.ttsOn) {
       if (this.state.ttsOn) {
         if (this.state.flip === true) {
-          this.speakTextFace1();
+          this.props.getTTSData();
           this.setState({
             ttsOn: false,
           });
         }
         if (this.state.flip === false) {
-          this.speakTextFace2();
+          this.props.getTTSData();
           this.setState({
             ttsOn: false,
           });
         }
       }
+    }
+    if(this.props.ttsOn !== prevProps.ttsOn){
+      if(this.props.ttsOn === false){
+
+      } else {
+        this.props.getTTSData();
+      }
+      
     }
   }
 
@@ -877,6 +1118,11 @@ class Container extends Component {
     this.setState((prevState) => ({
       flip: !prevState.flip,
     }));
+    if (this.state.flip === true) {
+      sessionStorage.setItem("currentFace", "back");
+    } else {
+      sessionStorage.setItem("currentFace", "front");
+    }
     this.setState({
       ttsOn: true,
     });
@@ -1055,33 +1301,33 @@ class Container extends Component {
   };
 
   // 새카드 추가 관련
-  
+
   showModal = () => {
     this.setState({
-      newCardModalVisible : true
-    })
+      newCardModalVisible: true,
+    });
   };
 
   handleOk = () => {
     this.setState({
-      newCardModalVisible : false
-    })
-    this.props.setBookSelectedForEditor("default")
-    this.props.setIndexSelectedForEditor("default")
+      newCardModalVisible: false,
+    });
+    this.props.setBookSelectedForEditor("default");
+    this.props.setIndexSelectedForEditor("default");
   };
 
   handleCancel = () => {
     this.setState({
-      newCardModalVisible : false
-    })
-    this.props.setBookSelectedForEditor("default")
-    this.props.setIndexSelectedForEditor("default")
+      newCardModalVisible: false,
+    });
+    this.props.setBookSelectedForEditor("default");
+    this.props.setIndexSelectedForEditor("default");
   };
 
-  bookSelectOnchange=(value) =>{
+  bookSelectOnchange = (value) => {
     console.log(`selected ${value}`);
-    this.props.setBookSelectedForEditor(value)
-    this.props.setIndexSelectedForEditor("default")
+    this.props.setBookSelectedForEditor(value);
+    this.props.setIndexSelectedForEditor("default");
     this.props.indexset_getByMybookids({
       variables: {
         mybook_ids: value,
@@ -1092,22 +1338,22 @@ class Container extends Component {
         mybook_ids: value,
       },
     });
-  }
-  indexSelectOnchange=(value)=> {
+  };
+  indexSelectOnchange = (value) => {
     console.log(`selected ${value}`);
     this.props.cardset_getByIndexIDs({
       variables: {
         index_ids: value,
       },
     });
-    this.props.setIndexSelectedForEditor(value)
+    this.props.setIndexSelectedForEditor(value);
     sessionStorage.setItem("index_id_for_newcard", value);
-    console.log(this.props.cardTypeSetForEditor[0])
-    this.cardTypeInfoNewCard(this.props.cardTypeSetForEditor[0].cardtype_info)
+    console.log(this.props.cardTypeSetForEditor[0]);
+    this.cardTypeInfoNewCard(this.props.cardTypeSetForEditor[0].cardtype_info);
     sessionStorage.setItem("selectedCardTypeId", this.props.cardTypeSetForEditor[0]._id);
-  }
+  };
 
-  handleChange=(value)=> {
+  handleChange = (value) => {
     sessionStorage.setItem("selections", 0);
     sessionStorage.removeItem("nicks_with_selections");
     sessionStorage.removeItem("nicks_without_selections");
@@ -1120,8 +1366,8 @@ class Container extends Component {
       sessionStorage.setItem("cardtype", hello[0].cardtype_info.cardtype);
       this.cardTypeInfoNewCard(hello[0].cardtype_info, value[1]);
     }
-  }
-  addSelections=()=> {
+  };
+  addSelections = () => {
     console.log("add selection clicked!!!");
     sessionStorage.removeItem("removed");
     const selections = sessionStorage.getItem("selections");
@@ -1137,8 +1383,8 @@ class Container extends Component {
     }
     const cardtype_info = JSON.parse(sessionStorage.getItem("cardtype_info"));
     this.cardTypeInfoNewCard(cardtype_info, num_selection);
-  }
-  removeSelection=()=> {
+  };
+  removeSelection = () => {
     console.log("removeSelection clicked!!!");
     const selections = sessionStorage.getItem("selections");
     const num_selection = Number(selections) - 1;
@@ -1150,7 +1396,7 @@ class Container extends Component {
 
     sessionStorage.setItem("lastSelectionRemoving", true);
     cardTypeInfoNewCard(cardtype_info, num_selection);
-  }
+  };
 
   cardTypeInfoNewCard = (cardtype_info, selections) => {
     sessionStorage.setItem("cardtype_info", JSON.stringify(cardtype_info));
@@ -1225,8 +1471,8 @@ class Container extends Component {
       sessionStorage.setItem("selections_adding", 0);
     }
 
-    if ( this.props.cardTypeSetForEditor.length > 0) {
-      var cardTypeListNormal =  this.props.cardTypeSetForEditor.map((cardType) => {
+    if (this.props.cardTypeSetForEditor.length > 0) {
+      var cardTypeListNormal = this.props.cardTypeSetForEditor.map((cardType) => {
         return (
           <>
             <Option value={[cardType.cardtype_info.name, "normal"]} style={{ fontSize: "0.8rem" }}>
@@ -1287,32 +1533,32 @@ class Container extends Component {
     this.props.setNewCardEditor(editor);
   };
 
-  sameIndexSelected=(e)=> {
+  sameIndexSelected = (e) => {
     console.log(`checked`, e.target.checked);
-    sessionStorage.setItem("sameIndexSelectedCheck", e.target.checked)
-  }
+    sessionStorage.setItem("sameIndexSelectedCheck", e.target.checked);
+  };
 
   onFinishFromNewCard = (values, from) => {
     console.log(values);
-    const cardtype_info = JSON.parse(sessionStorage.getItem("cardtype_info"))
-    const mybook_id = this.props.bookSelectedForEditor
+    const cardtype_info = JSON.parse(sessionStorage.getItem("cardtype_info"));
+    const mybook_id = this.props.bookSelectedForEditor;
     const cardtype = cardtype_info.cardtype;
-    const cardtype_id = sessionStorage.getItem("selectedCardTypeId")
-    const sameIndexSelectedCheck = sessionStorage.getItem("sameIndexSelectedCheck")
-    console.log(sameIndexSelectedCheck)
-    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"))
-    const card_seq = sessionStorage.getItem("card_seq")
-    const currentCardId = cardListStudying[card_seq]._id
-    if(sameIndexSelectedCheck === "true"){
-      var current_position_card_id = currentCardId
+    const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
+    const sameIndexSelectedCheck = sessionStorage.getItem("sameIndexSelectedCheck");
+    console.log(sameIndexSelectedCheck);
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const card_seq = sessionStorage.getItem("card_seq");
+    const currentCardId = cardListStudying[card_seq]._id;
+    if (sameIndexSelectedCheck === "true") {
+      var current_position_card_id = currentCardId;
     } else {
-      current_position_card_id = null
+      current_position_card_id = null;
     }
-    
-    const cardTypeSetId = sessionStorage.getItem("cardtypeset_id")
+
+    const cardTypeSetId = sessionStorage.getItem("cardtypeset_id");
     const index_id = sessionStorage.getItem("index_id_for_newcard");
-    const indexSetId = sessionStorage.getItem("indexset_id")
-    const cardSetId = sessionStorage.getItem("cardset_id")
+    const indexSetId = sessionStorage.getItem("indexset_id");
+    const cardSetId = sessionStorage.getItem("cardset_id");
 
     this.props.addcard(
       mybook_id,
@@ -1331,14 +1577,14 @@ class Container extends Component {
       cardTypeSetId
     );
     this.setState({
-      newCardModalVisible : false
-    })
-    sessionStorage.setItem("sameIndexSelectedCheck", "false")
+      newCardModalVisible: false,
+    });
+    sessionStorage.setItem("sameIndexSelectedCheck", "false");
   };
   // 새카드 추가 관련 끝
 
   render() {
-    if(this.props.bookList){
+    if (this.props.bookList) {
       if (this.props.bookList.length > 0) {
         var book_list = this.props.bookList.map((book) => {
           return (
@@ -1350,9 +1596,8 @@ class Container extends Component {
           );
         });
       }
-  
     }
-    if(this.props.indexListForEditor){
+    if (this.props.indexListForEditor) {
       if (this.props.indexListForEditor.length > 0) {
         var index_list = this.props.indexListForEditor.map((item) => {
           return (
@@ -1365,8 +1610,7 @@ class Container extends Component {
         });
       }
     }
-    
-    
+
     if (this.props.levelConfigs) {
       const card_details_session = JSON.parse(sessionStorage.getItem("cardListStudying"));
       const resultOfSession = JSON.parse(sessionStorage.getItem("resultOfSession"));
@@ -2389,7 +2633,7 @@ class Container extends Component {
                         {/* 페이스 스타일 영역 */}
                         <div
                           style={{
-                            flexBasis:"100%",
+                            flexBasis: "100%",
                             backgroundColor: face_style[0].background.color,
                             marginTop: face_style[0].outer_margin.top,
                             marginBottom: face_style[0].outer_margin.bottom,
@@ -2412,7 +2656,7 @@ class Container extends Component {
                                 key={`face1_row${index + 1}`}
                                 id={`face1_row${index + 1}`}
                                 style={{
-                                  visibility: `${this.props[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                  visibility: `${this.props.face1row[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
                                   backgroundColor: row_style.face1[index].background.color,
                                   marginTop: row_style.face1[index].outer_margin.top,
                                   marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -2472,7 +2716,7 @@ class Container extends Component {
                         {/* 페이스 스타일 영역 */}
                         <div
                           style={{
-                            flexBasis:"100%",
+                            flexBasis: "100%",
                             backgroundColor: face_style[0].background.color,
                             marginTop: face_style[0].outer_margin.top,
                             marginBottom: face_style[0].outer_margin.bottom,
@@ -2494,7 +2738,7 @@ class Container extends Component {
                                 className="face1"
                                 key={`face1_row${index + 1}`}
                                 style={{
-                                  visibility: `${this.props[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                  visibility: `${this.props.face1row[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
                                   backgroundColor: row_style.face1[index].background.color,
                                   marginTop: row_style.face1[index].outer_margin.top,
                                   marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -2553,7 +2797,7 @@ class Container extends Component {
                       >
                         <div
                           style={{
-                            flexBasis:"100%",
+                            flexBasis: "100%",
                             backgroundColor: face_style[1].background.color,
                             marginTop: face_style[1].outer_margin.top,
                             marginBottom: face_style[1].outer_margin.bottom,
@@ -2575,7 +2819,7 @@ class Container extends Component {
                                 className="face1"
                                 key={`face1_row${index + 1}`}
                                 style={{
-                                  visibility: `${this.props[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                  visibility: `${this.props.face1row[`face1row${index + 1}`] === false ? "hidden" : "visible"}`,
                                   backgroundColor: row_style.face1[index].background.color,
                                   marginTop: row_style.face1[index].outer_margin.top,
                                   marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -2754,7 +2998,7 @@ class Container extends Component {
                         {/* 페이스2 스타일 영역 */}
                         <div
                           style={{
-                            flexBasis:"100%",
+                            flexBasis: "100%",
                             backgroundColor: face_style[2].background.color,
                             marginTop: face_style[2].outer_margin.top,
                             marginBottom: face_style[2].outer_margin.bottom,
@@ -2779,7 +3023,7 @@ class Container extends Component {
                                   key={`face2_row${index + 1}`}
                                   id={`face2_row${index + 1}`}
                                   style={{
-                                    visibility: `${this.props[`face2row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                    visibility: `${this.props.face2row[`face2row${index + 1}`] === false ? "hidden" : "visible"}`,
                                     backgroundColor: row_style.face2[index].background.color,
                                     marginTop: row_style.face2[index].outer_margin.top,
                                     marginBottom: row_style.face2[index].outer_margin.bottom,
@@ -2868,7 +3112,7 @@ class Container extends Component {
                                   // id={`face2_row${index + 1}`}
                                   value={item}
                                   style={{
-                                    visibility: `${this.props[`face2row${index + 1}`] === false ? "hidden" : "visible"}`,
+                                    visibility: `${this.props.face2row[`face2row${index + 1}`] === false ? "hidden" : "visible"}`,
                                     backgroundColor: row_style.face2[index].background.color,
                                     marginTop: row_style.face2[index].outer_margin.top,
                                     marginBottom: row_style.face2[index].outer_margin.bottom,

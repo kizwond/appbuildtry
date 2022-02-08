@@ -63,6 +63,10 @@ const FloatingMenu = ({
   face1On,
   face2On,
   ttsOn,
+  selectionOn,
+  selectionShow,
+  face1row,
+  face2row,
 }) => {
   const router = useRouter();
   const [bottomVisible, setBottomVisible] = useState(false);
@@ -324,7 +328,7 @@ const FloatingMenu = ({
   };
 
   async function editorModalOpen(menu) {
-    console.log(menu)
+    console.log(menu);
     const hello = async () => search(menu);
     await hello().then(setResult(searchResult));
 
@@ -378,8 +382,8 @@ const FloatingMenu = ({
           </filter>
         </defs>
       </svg>
-      <div style={{ width:"100%", position: "fixed", bottom: 0}}>
-        <div style={{ margin:"auto",width: "100%", maxWidth: "1024px", alignItems: "center", zIndex: 3, fontSize: "0.8rem" }}>
+      <div style={{ width: "100%", position: "fixed", bottom: 0 }}>
+        <div style={{ margin: "auto", width: "100%", maxWidth: "1024px", alignItems: "center", zIndex: 3, fontSize: "0.8rem" }}>
           <div
             style={{
               margin: "auto",
@@ -407,7 +411,7 @@ const FloatingMenu = ({
                 listStyle: "none",
                 alignItems: "center",
                 justifyContent: "space-around",
-                cursor:"pointer"
+                cursor: "pointer",
               }}
             >
               {hiddenToggle && (
@@ -570,6 +574,10 @@ const FloatingMenu = ({
                       face1On={face1On}
                       face2On={face2On}
                       ttsOn={ttsOn}
+                      selectionOn={selectionOn}
+                      selectionShow={selectionShow}
+                      face1row={face1row}
+                      face2row={face2row}
                     />
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

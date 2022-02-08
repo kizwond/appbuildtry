@@ -1,4 +1,4 @@
-import { SoundOutlined } from "@ant-design/icons";
+import { SoundOutlined, PauseOutlined } from "@ant-design/icons";
 import { useLazyQuery } from "@apollo/client";
 import { Button } from "antd";
 import React from "react";
@@ -6,10 +6,12 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../graphql/query/allQuery";
 import { detect, detectAll } from "tinyld";
+import _ from "lodash";
 import decodeHtMLEntities from "../common/logic/decodeHtMLEntities";
 
-const TTSButton = () => {
+const TTSButton = ({ ttsOn, setTtsOn }) => {
   const [ttsArray, setTtsArray] = useState([]);
+  const [paused, setPaused] = useState(false);
 
   const [getContentsByContentIds] = useLazyQuery(QUERY_MY_CARD_CONTENTS, {
     onCompleted: (data) => {
@@ -26,21 +28,15 @@ const TTSButton = () => {
         ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
       ];
       console.log(contents);
-      const contentsListSortedByCardSeq = cardListStudying.map((card) =>
-        contents.find((content) => content._id === card.content.mycontent_id)
-      );
+      const contentsListSortedByCardSeq = cardListStudying.map((card) => contents.find((content) => (content._id === card.content.mycontent_id||content._id === card.content.buycontent_id)));
       console.log({ contentsListSortedByCardSeq });
 
       const seperateEngAndKor = (str) => {
         const arrayForTTS = [];
 
         while (str.length > 0) {
-          const positionOfEnglish =
-            str.search(/[a-zA-Z]/) == -1 ? 1000000 : str.search(/[a-zA-Z]/);
-          const positionOfKorean =
-            str.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/) == -1
-              ? 1000000
-              : str.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/);
+          const positionOfEnglish = str.search(/[a-zA-Z]/) == -1 ? 1000000 : str.search(/[a-zA-Z]/);
+          const positionOfKorean = str.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/) == -1 ? 1000000 : str.search(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/);
 
           const targetPosition = Math.max(positionOfEnglish, positionOfKorean);
           const singleParagraph = str.substring(0, targetPosition);
@@ -70,11 +66,7 @@ const TTSButton = () => {
           }
         });
 
-        if (
-          readModeTTSOption.faceOneTTS.selection &&
-          content.selection !== null &&
-          content.selection.length > 0
-        ) {
+        if (readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0) {
           content.selection.forEach((c, i) => {
             const contentWithoutTags = decodeHtMLEntities(c).replace(
               /\/|\~/g,
@@ -109,12 +101,10 @@ const TTSButton = () => {
 
   const speakText = (ttsArray) => {
     window.speechSynthesis.cancel();
-    const readModeTTSOption = JSON.parse(
-      sessionStorage.getItem("readModeTTSOption")
-    );
+    const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
     if (ttsArray.length > 0) {
       ttsArray.map((item, index) => {
-        sessionStorage.setItem("ttsOrder", index);
+        
         var detected = detect(item);
         console.log(index, detected);
         if (!["ko", "en"].includes(detected)) {
@@ -131,7 +121,7 @@ const TTSButton = () => {
         speechMsg.text = item;
         window.speechSynthesis.speak(speechMsg);
       });
-      sessionStorage.removeItem("ttsOrder");
+      // sessionStorage.removeItem("ttsOrder");
       // ttsOption 변경시 리셋
       // 목차 변경시 리셋
     }
@@ -153,15 +143,10 @@ const TTSButton = () => {
   }, [ttsArray]);
 
   const getTTSData = async () => {
-    const cardListStudyingOrigin = JSON.parse(
-      sessionStorage.getItem("cardListStudyingOrigin")
-    );
-    const mycontent_ids = cardListStudyingOrigin
-      .filter((card) => card.content.location === "my")
-      .map((card) => card.content.mycontent_id);
-    const buycontent_ids = cardListStudyingOrigin
-      .filter((card) => card.content.location === "buy")
-      .map((card) => card.content.buycontent_id);
+    setTtsOn(true);
+    const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
+    const mycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "my").map((card) => card.content.mycontent_id);
+    const buycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "buy").map((card) => card.content.buycontent_id);
 
     getContentsByContentIds({
       variables: {
@@ -173,18 +158,68 @@ const TTSButton = () => {
     // console.log({ readModeTTSOption, cardListStudyingOrigin });
   };
 
+  const getTTSDataPause = async () => {
+    console.log("pause clicked!!!");
+    window.speechSynthesis.pause();
+    setPaused(true);
+  };
+
+  const continueTTS = async () => {
+    console.log("continueTTS clicked!!!");
+    window.speechSynthesis.resume();
+    setPaused(false);
+  };
+
   return (
-    <Button
-      size="small"
-      onClick={getTTSData}
-      style={{
-        fontSize: "1rem",
-        borderRadius: "5px",
-        marginRight: "5px",
-      }}
-      type="primary"
-      icon={<SoundOutlined />}
-    />
+    <>
+      {ttsOn === true && paused === false&& (
+        <>
+          <Button
+            size="small"
+            onClick={getTTSDataPause}
+            style={{
+              fontSize: "1rem",
+              borderRadius: "5px",
+              marginRight: "5px",
+            }}
+            type="primary"
+            icon={<PauseOutlined />}
+          />
+        </>
+      )}
+      {ttsOn === false && paused === false && (
+        <>
+          <Button
+            size="small"
+            onClick={getTTSData}
+            style={{
+              fontSize: "1rem",
+              borderRadius: "5px",
+              marginRight: "5px",
+            }}
+            type="primary"
+            icon={<SoundOutlined />}
+          />
+        </>
+      )}
+      {paused === true && (
+        <>
+          <Button
+            size="small"
+            onClick={continueTTS}
+            style={{
+              fontSize: "1rem",
+              borderRadius: "5px",
+              marginRight: "5px",
+            }}
+            type="primary"
+            icon={<SoundOutlined />}
+          >
+            재개
+          </Button>
+        </>
+      )}
+    </>
   );
 };
 

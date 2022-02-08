@@ -38,17 +38,10 @@ const FlipMode = () => {
   const [underlineToggle, setUnderlineToggle] = useState(false);
   const [highlightToggle, setHighlightToggle] = useState(false);
 
-  const [face1row1, setFace1row1] = useState(true);
-  const [face1row2, setFace1row2] = useState(true);
-  const [face1row3, setFace1row3] = useState(true);
-  const [face1row4, setFace1row4] = useState(true);
-  const [face1row5, setFace1row5] = useState(true);
+  const [face1row, setFace1row] = useState({ face1row1: true, face1row2: true, face1row3: true, face1row4: true, face1row5: true });
+  const [face2row, setFace2row] = useState({ face2row1: true, face2row2: true, face2row3: true, face2row4: true, face2row5: true });
+  const [selectionShow, setSelectionShow] = useState(true);
 
-  const [face2row1, setFace2row1] = useState(true);
-  const [face2row2, setFace2row2] = useState(true);
-  const [face2row3, setFace2row3] = useState(true);
-  const [face2row4, setFace2row4] = useState(true);
-  const [face2row5, setFace2row5] = useState(true);
   const [userFlagDetails, setUserFlagDetails] = useState();
   const [isModalVisibleHidden, setIsModalVisibleHidden] = useState(false);
   const [userFlag, setUserFlag] = useState(false);
@@ -59,6 +52,7 @@ const FlipMode = () => {
   const [selectedCardType, setSelectedCardType] = useState();
 
   const [bookList, setBookList] = useState([]);
+  const [ttsNextState, setTTSNextState] = useState(false);
 
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
@@ -105,8 +99,6 @@ const FlipMode = () => {
     },
     [session_updateResults]
   );
-
-
 
   const { loading, error, data } = useQuery(GetSession, {
     variables: { session_id: session_id },
@@ -157,6 +149,7 @@ const FlipMode = () => {
           setSessionScope(data.session_getSession.sessions[0].sessionScope);
           setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);
           setBookList(data.mybook_getMybookByUserID.mybooks);
+          sessionStorage.removeItem("currentFace")
           const cardIdList = cardListStudying.map((item) => {
             return item.content.mycontent_id;
           });
@@ -201,6 +194,7 @@ const FlipMode = () => {
           sessionStorage.setItem("origin_seq", 0);
           sessionStorage.removeItem("cardlist_to_send");
           sessionStorage.removeItem("studyLogCardIds");
+          sessionStorage.removeItem("currentFace")
           const now = new Date();
           sessionStorage.setItem("started", now);
           const cardIdList = cardListStudying.map((item) => {
@@ -248,6 +242,7 @@ const FlipMode = () => {
         sessionStorage.setItem("origin_seq", 0);
         sessionStorage.removeItem("cardlist_to_send");
         sessionStorage.removeItem("studyLogCardIds");
+        sessionStorage.removeItem("currentFace")
         const now = new Date();
         sessionStorage.setItem("started", now);
         const cardIdList = cardListStudying.map((item) => {
@@ -283,7 +278,7 @@ const FlipMode = () => {
       }
     }
   }, [data, levelconfig_getLevelconfigs, mycontent_getMycontentByMycontentIDs, buycontent_getBuycontentByBuycontentIDs, cardtypeset_getbymybookids]);
-  
+
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 
   function afteraddcardmutation(data) {
@@ -352,7 +347,7 @@ const FlipMode = () => {
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
-    console.log(selectionCard)
+    console.log(selectionCard);
     const mybook_id = selectionCard[0].card_info.mybook_id;
     const cardtype = selectionCard[0].card_info.cardtype;
     const cardtype_id = selectionCard[0].card_info.cardtype_id;
@@ -376,7 +371,22 @@ const FlipMode = () => {
 
     // const cardtype_id = sessionStorage.getItem("selectedCardTypeId");
 
-    addcard(mybook_id, cardtype, cardtype_id, current_position_card_id, indexSetId, index_id,cardSetId,values.face1, values.selection, values.face2, values.annotation, values.flagStar, values.flagComment, cardTypeSetId);
+    addcard(
+      mybook_id,
+      cardtype,
+      cardtype_id,
+      current_position_card_id,
+      indexSetId,
+      index_id,
+      cardSetId,
+      values.face1,
+      values.selection,
+      values.face2,
+      values.annotation,
+      values.flagStar,
+      values.flagComment,
+      cardTypeSetId
+    );
   };
   const cardTypeInfo = (selectedCardType_tmp, parentId, selections) => {
     const cardtype_info = selectedCardType_tmp.cardtype_info;
@@ -763,31 +773,49 @@ const FlipMode = () => {
   }
 
   function face1On(row, bool) {
-    if (row === "1") {
-      setFace1row1(bool);
-    } else if (row === "2") {
-      setFace1row2(bool);
-    } else if (row === "3") {
-      setFace1row3(bool);
-    } else if (row === "4") {
-      setFace1row4(bool);
-    } else if (row === "5") {
-      setFace1row5(bool);
-    }
+    console.log(row, bool);
+    setFace1row({
+      ...face1row,
+      [`face1row${row}`]: bool,
+    });
   }
   function face2On(row, bool) {
-    if (row === "1") {
-      setFace2row1(bool);
-    } else if (row === "2") {
-      setFace2row2(bool);
-    } else if (row === "3") {
-      setFace2row3(bool);
-    } else if (row === "4") {
-      setFace2row4(bool);
-    } else if (row === "5") {
-      setFace2row5(bool);
-    }
+    console.log(row, bool);
+    setFace2row({
+      ...face2row,
+      [`face2row${row}`]: bool,
+    });
   }
+
+  function selectionOn(bool) {
+    setSelectionShow(bool);
+  }
+  // function face1On(row, bool) {
+  //   if (row === "1") {
+  //     setFace1row1(bool);
+  //   } else if (row === "2") {
+  //     setFace1row2(bool);
+  //   } else if (row === "3") {
+  //     setFace1row3(bool);
+  //   } else if (row === "4") {
+  //     setFace1row4(bool);
+  //   } else if (row === "5") {
+  //     setFace1row5(bool);
+  //   }
+  // }
+  // function face2On(row, bool) {
+  //   if (row === "1") {
+  //     setFace2row1(bool);
+  //   } else if (row === "2") {
+  //     setFace2row2(bool);
+  //   } else if (row === "3") {
+  //     setFace2row3(bool);
+  //   } else if (row === "4") {
+  //     setFace2row4(bool);
+  //   } else if (row === "5") {
+  //     setFace2row5(bool);
+  //   }
+  // }
 
   const [cardset_updateMemo] = useMutation(SAVEMEMO, {
     onCompleted: showdataaftermemoadd,
@@ -897,6 +925,7 @@ const FlipMode = () => {
 
   const finishStudy = () => {
     console.log("finishStudy Clicked!!!");
+    window.speechSynthesis.cancel();
     generateOnFinishStudyStatus();
     // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
@@ -979,8 +1008,7 @@ const FlipMode = () => {
     }
   };
   return (
-    <StudyLayout mode="학습" finishStudy={finishStudy} ttsOn={ttsOn}
-    setTtsOn={setTtsOn}>
+    <StudyLayout mode="학습" finishStudy={finishStudy} ttsOn={ttsOn} setTtsOn={setTtsOn} ttsNextState={ttsNextState} setTTSNextState={setTTSNextState}>
       <div
         style={{
           height: "100%",
@@ -993,16 +1021,8 @@ const FlipMode = () => {
             <FlipContainer
               ttsOn={ttsOn}
               setTtsOn={setTtsOn}
-              face1row1={face1row1}
-              face1row2={face1row2}
-              face1row3={face1row3}
-              face1row4={face1row4}
-              face1row5={face1row5}
-              face2row1={face2row1}
-              face2row2={face2row2}
-              face2row3={face2row3}
-              face2row4={face2row4}
-              face2row5={face2row5}
+              face1row={face1row}
+              face2row={face2row}
               cardListStudying={cardListStudying}
               setCardListStudying={setCardListStudying}
               contentsList={contentsList}
@@ -1023,6 +1043,8 @@ const FlipMode = () => {
               sessionupdateresults={sessionupdateresults}
               finishStudy={finishStudy}
               bookList={bookList}
+              ttsNextState={ttsNextState}
+              setTTSNextState={setTTSNextState}
             />
           </>
         )}
@@ -1033,6 +1055,10 @@ const FlipMode = () => {
             ttsOn={setTtsOn}
             face1On={face1On}
             face2On={face2On}
+            selectionOn={selectionOn}
+            selectionShow={selectionShow}
+            face1row={face1row}
+            face2row={face2row}
             hide={hide}
             underline={underline}
             highlight={highlight}

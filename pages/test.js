@@ -1,63 +1,33 @@
-import React, { useState } from "react";
-import { Upload } from "antd";
-import { useMutation } from "@apollo/client";
-import { MUTATION_UPLOAD_BOOKCOVER } from "../graphql/mutation/candidateBook";
+import React from 'react'
 
-const Demo = () => {
-  const [uploadCover] = useMutation(MUTATION_UPLOAD_BOOKCOVER);
-  const dummyRequest = async ({ file, onSuccess }) => {
-    console.log({ file });
-    uploadCover({
-      variables: {
-        forUploadBookCover: {
-          file,
-        },
-      },
-    })
-      .then((res) => {
-        if (res.data.candibook_uploadBookCover.status === "200") {
-          console.log({ res });
-          onSuccess("ok");
-        }
-      })
-      .catch((err) => console.log("에러 발생", err));
-  };
-  const [fileList, setFileList] = useState([]);
-
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(() => newFileList);
-  };
-
-  const onPreview = async (file) => {
-    let src = file.url;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj);
-        reader.onload = () => resolve(reader.result);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow.document.write(image.outerHTML);
-  };
-
+const test = () => {
+  
   return (
-    <div>
-      <Upload
-        customRequest={dummyRequest}
-        listType="picture-card"
-        fileList={fileList}
-        onChange={onChange}
-        onPreview={onPreview}
-        maxCount={1}
-      >
-        {fileList.length === 0 ? "+ 표지 등록" : "표지 변경"}
-      </Upload>
-      <pre>{JSON.stringify(fileList, null, 2)}</pre>
-    </div>
+    <table className="w-full table-fixed">
+      <thead>
+        <tr className="border-collapse border-y border-y-gray-200">
+          <th className="text-[1rem] bg-slate-100 w-[20%]">종류</th>
+          <th className="text-[1rem] bg-slate-100">{"'알겠음' 카드수"}</th>
+          <th className="text-[1rem] bg-slate-100">레벨 변동값 평균</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr className="border-b border-collapse border-b-gray-200">
+          <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
+            Total
+          </td>
+          <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
+            {changedLevel.total.count}
+          </td>
+          <td className="text-[1rem] py-[4px] text-center">
+            {averageOfGap > 0
+              ? "+" + averageOfGap
+              : averageOfGap < 0
+              ? "" + averageOfGap
+              : "-"}
+          </td>
+        </tr>
   );
-};
+}
 
-export default Demo;
+export default test;

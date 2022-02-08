@@ -1,4 +1,4 @@
-import { SoundOutlined, PauseOutlined } from "@ant-design/icons";
+import { SoundOutlined, PauseOutlined, RedoOutlined } from "@ant-design/icons";
 import { useLazyQuery } from "@apollo/client";
 import { Button } from "antd";
 import React from "react";
@@ -14,21 +14,17 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
   const [paused, setPaused] = useState(false);
 
   const [getContentsByContentIds] = useLazyQuery(QUERY_MY_CARD_CONTENTS, {
+    fetchPolicy: "network-only",
     onCompleted: (data) => {
       console.log(data);
 
-      const readModeTTSOption = JSON.parse(
-        sessionStorage.getItem("readModeTTSOption")
-      );
-      const cardListStudying = JSON.parse(
-        sessionStorage.getItem("cardListStudying")
-      );
-      const contents = [
-        ...data.mycontent_getMycontentByMycontentIDs.mycontents,
-        ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
-      ];
+      const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
+      const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+      const contents = [...data.mycontent_getMycontentByMycontentIDs.mycontents, ...data.buycontent_getBuycontentByBuycontentIDs.buycontents];
       console.log(contents);
-      const contentsListSortedByCardSeq = cardListStudying.map((card) => contents.find((content) => (content._id === card.content.mycontent_id||content._id === card.content.buycontent_id)));
+      const contentsListSortedByCardSeq = cardListStudying.map((card) =>
+        contents.find((content) => content._id === card.content.mycontent_id || content._id === card.content.buycontent_id)
+      );
       console.log({ contentsListSortedByCardSeq });
 
       const seperateEngAndKor = (str) => {
@@ -52,11 +48,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
       const tts = contentsListSortedByCardSeq.map((content) => {
         let arr = [];
         content.face1.forEach((c, i) => {
-          if (
-            readModeTTSOption.faceOneTTS[i + 1] &&
-            content.face1 !== null &&
-            content.face1.length > 0
-          ) {
+          if (readModeTTSOption.faceOneTTS[i + 1] && content.face1 !== null && content.face1.length > 0) {
             const contentOnlyString = decodeHtMLEntities(c);
             const seperatedWithEngAndKor = seperateEngAndKor(contentOnlyString);
             arr.push(seperatedWithEngAndKor);
@@ -73,10 +65,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           content.face2.forEach((c, i) => {
             if (readModeTTSOption.faceTwoTTS[i + 1]) {
               const contentWithoutTags =
-                i === 0 &&
-                readModeTTSOption.faceOneTTS.selection &&
-                content.selection !== null &&
-                content.selection.length > 0
+                i === 0 && readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0
                   ? "정답 " + decodeHtMLEntities(c)
                   : decodeHtMLEntities(c);
               arr.push(seperateEngAndKor(contentWithoutTags));
@@ -98,7 +87,6 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
     const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
     if (ttsArray.length > 0) {
       ttsArray.map((item, index) => {
-        
         var detected = detect(item);
         console.log(index, detected);
         if (!["ko", "en"].includes(detected)) {
@@ -137,7 +125,25 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
   }, [ttsArray]);
 
   const getTTSData = async () => {
+    window.speechSynthesis.cancel();
     setTtsOn(true);
+    const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
+    const mycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "my").map((card) => card.content.mycontent_id);
+    const buycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "buy").map((card) => card.content.buycontent_id);
+
+    getContentsByContentIds({
+      variables: {
+        mycontent_ids,
+        buycontent_ids,
+      },
+    });
+
+    // console.log({ readModeTTSOption, cardListStudyingOrigin });
+  };
+  const getTTSDataReDo = async () => {
+    window.speechSynthesis.cancel();
+    setTtsOn(true);
+    setPaused(false);
     const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
     const mycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "my").map((card) => card.content.mycontent_id);
     const buycontent_ids = cardListStudyingOrigin.filter((card) => card.content.location === "buy").map((card) => card.content.buycontent_id);
@@ -166,7 +172,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
 
   return (
     <>
-      {ttsOn === true && paused === false&& (
+      {ttsOn === true && paused === false && (
         <>
           <Button
             size="small"
@@ -178,6 +184,17 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
             }}
             type="primary"
             icon={<PauseOutlined />}
+          />
+          <Button
+            size="small"
+            onClick={getTTSDataReDo}
+            style={{
+              fontSize: "1rem",
+              borderRadius: "5px",
+              marginRight: "5px",
+            }}
+            type="primary"
+            icon={<RedoOutlined />}
           />
         </>
       )}
@@ -196,7 +213,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           />
         </>
       )}
-      {paused === true && (
+      {ttsOn === true && paused === true && (
         <>
           <Button
             size="small"
@@ -211,6 +228,17 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           >
             재개
           </Button>
+          <Button
+            size="small"
+            onClick={getTTSDataReDo}
+            style={{
+              fontSize: "1rem",
+              borderRadius: "5px",
+              marginRight: "5px",
+            }}
+            type="primary"
+            icon={<RedoOutlined />}
+          />
         </>
       )}
     </>

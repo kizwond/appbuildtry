@@ -3,7 +3,7 @@ import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Button, Select, Space, notification } from "antd";
-import { AddPolly, UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../graphql/query/card_contents";
+import { AddPolly, UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT,UpdateMakerFlag } from "../../../../graphql/query/card_contents";
 import { DeleteOutlined, EditOutlined, HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -597,10 +597,44 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
     }
   }
 
-  const onFinishUpdateContents = (values, from, mycontent_id) => {
+  const [cardset_updateMakerFlag] = useMutation(UpdateMakerFlag, { onCompleted: afterupdateflag });
+
+  function afterupdateflag(data) {
+    console.log("after update flag", data);
+    setCards(data.cardset_updateMakerFlag.cardsets[0].cards);
+  }
+
+  async function updatemakerflag(cardset_id, card_id, value, commentTmp) {
+    console.log(commentTmp)
+    if(commentTmp === ""){
+      var comment = null
+    } else {
+      comment = commentTmp
+    }
+    try {
+      await cardset_updateMakerFlag({
+        variables: {
+          forUpdateMakerFlag: {
+            cardset_id,
+            card_id,
+            makerFlag: {
+              value : Number(value),
+              comment,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const onFinishUpdateContents = (values, from, mycontent_id, card_info) => {
     console.log(values);
     console.log(mycontent_id);
+    console.log(card_info)
     updatecontents(mycontent_id, values.face1, values.selection, values.face2, values.annotation);
+    updatemakerflag(card_info.card_info.cardset_id, card_info._id, values.flagStar, values.flagComment);
   };
 
   if (cardTypes) {

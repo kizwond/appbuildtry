@@ -88,6 +88,11 @@ const ExamMode = () => {
         console.log(data);
         if (JSON.stringify(dataExist) == JSON.stringify(data)) {
           const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+          const isFinished = sessionStorage.getItem("isFinished")
+          if(isFinished === "true"){
+            alert("시험이 종료되었습니다. 메인화면으로 이동합니다.")
+            window.location.href="/"
+          }
           setCardListStudying(cardListStudying);
           setSessionScope(data.session_getSession.sessions[0].sessionScope);
           const cardIdList = cardListStudying.map((item) => {

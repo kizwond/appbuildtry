@@ -26,6 +26,7 @@ const Home = () => {
     sessionStorage.removeItem("examLog");
     sessionStorage.removeItem("cardListStudying");
     sessionStorage.setItem("card_seq", 0);
+    sessionStorage.removeItem("isFinished")
     if (data) {
       console.log(data);
       if (data.me.status === "401") {

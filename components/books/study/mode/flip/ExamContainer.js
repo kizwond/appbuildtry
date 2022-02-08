@@ -41,6 +41,7 @@ const ExamContainer = ({ cardListStudying, contentsList, sessionScope, levelConf
     console.log("data", data);
     if (data.session_updateResults.status === "200") {
       sessionStorage.setItem("endTimeOfSession", new Date());
+      sessionStorage.setItem("isFinished", "true")
       router.push("/m/study/examresult");
     }
   }

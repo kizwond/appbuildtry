@@ -307,9 +307,9 @@ const M_StudyMainPage = () => {
               />
             </div>
           </StyledRowMaxWidth>
-          <StyledBottomBar>
+          <StyledBottomBar className="bg-blue-400">
             <div
-              className="cursor-pointer"
+              className="align-bottom cursor-pointer"
               onClick={() => {
                 if (selectedBooks.length > 0) {
                   submitCreateSessionConfigToServer();
@@ -318,7 +318,9 @@ const M_StudyMainPage = () => {
                 }
               }}
             >
-              책 모드
+              <div>
+                책 모드<span className="text-[1.1rem]">로 바로 시작</span>
+              </div>
             </div>
 
             <div
@@ -342,11 +344,13 @@ const M_StudyMainPage = () => {
                   }}
                 >
                   <a className="flex items-center justify-center w-full h-full cursor-pointer">
-                    카드 모드
+                    카드 모드<span className="text-[1.1rem]">로 시작</span>
                   </a>
                 </Link>
               ) : (
-                <a>카드 모드</a>
+                <a>
+                  카드 모드<span className="text-[1.1rem]">로 시작</span>
+                </a>
               )}
             </div>
           </StyledBottomBar>
@@ -389,7 +393,6 @@ const StyledBottomBar = styled.div`
   overflow: hidden;
   /* border: 1px solid #d1d1d1; */
   border-top: 1px solid #e1e1e1;
-  background-color: #f5f5f5;
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -409,7 +412,7 @@ const StyledBottomBar = styled.div`
     justify-content: center;
     align-items: center;
     font-weight: 500;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
   & > div:first-child {
     border-right: 1px solid #e1e1e1;

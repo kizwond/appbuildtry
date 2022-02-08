@@ -22,7 +22,7 @@ const M_SessionNavigationBar = ({
             data-component="index"
             onClick={hanlderForNaviButton}
           >
-            목차 설정
+            목차 선택
           </NavigationButton>
           <NavigationButton
             className="NavigationButton GoToSession"
@@ -31,7 +31,7 @@ const M_SessionNavigationBar = ({
             data-component="config"
             onClick={hanlderForNaviButton}
           >
-            세션 설정
+            학습 방식 선택
           </NavigationButton>
         </div>
       </StyledSessionNavigationBar>

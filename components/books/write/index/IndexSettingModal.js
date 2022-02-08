@@ -1,7 +1,18 @@
 import React, { useState } from "react";
 import { Modal, Button, Popover, Form, Input, Space, Select } from "antd";
-import { PlusOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+  AreaChartOutlined,
+  PlusOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import Image from "next/image";
+import styled from "styled-components";
+
+const StyledModal = styled(Modal)`
+  min-width: 340px;
+  & .ant-modal-body {
+    padding: 8px 8px 8px 8px;
+`;
 
 const IndexSettingModal = ({
   indexinfo,
@@ -33,30 +44,52 @@ const IndexSettingModal = ({
         onClick={showModal}
         style={{ fontSize: "1rem" }}
       />
-      <Modal
+      <StyledModal
         footer={null}
         title="목차설정"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <ul
-          style={{
-            display: "flex",
-            listStyle: "none",
-            justifyContent: "space-between",
-            fontSize: "0.8rem",
-            paddingLeft: "0",
-          }}
-        >
-          <li></li>
-          <li>목차명</li>
-          <li>이름변경</li>
-          <li>레벨변경</li>
-          <li>삭제</li>
-          <li>export</li>
-        </ul>
-        {indexinfo.map((item, i) => (
+        <table className="w-full table-fixed">
+          <thead>
+            <tr className="border-collapse border-y border-y-gray-200">
+              <th className="text-[1rem] bg-slate-100 w-[30%]">목차명</th>
+              <th className="text-[1rem] bg-slate-100 w-[10%]">이름변경</th>
+              <th className="text-[1rem] bg-slate-100 w-[20%]">좌</th>
+              <th className="text-[1rem] bg-slate-100 w-[10%]">삭제</th>
+              <th className="text-[1rem] bg-slate-100 w-[10%]">추가</th>
+            </tr>
+          </thead>
+          <tbody>
+            {indexinfo.map((index) => (
+              <tr
+                key={index._id}
+                className="border-b border-collapse border-b-gray-200"
+              >
+                <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
+                  {index.name}
+                </td>
+                <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
+                  <Button
+                    size="small"
+                    shape="circle"
+                    icon={<AreaChartOutlined />}
+                  />
+                </td>
+                <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center"></td>
+                <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center"></td>
+                <td className="text-[1rem] py-[4px] text-center"></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </StyledModal>
+    </>
+  );
+};
+
+/* {indexinfo.map((item, i) => (
           <IndexList
             key={i}
             indexinfo={indexinfo}
@@ -68,11 +101,7 @@ const IndexSettingModal = ({
             onFinishIndexDelete={onFinishIndexDelete}
             onFinishExcelExport={onFinishExcelExport}
           />
-        ))}
-      </Modal>
-    </>
-  );
-};
+        ))} */
 
 const IndexList = ({
   indexinfo,

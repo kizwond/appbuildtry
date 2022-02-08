@@ -27,7 +27,18 @@ const BuyBookDetail = (props) => {
 
   const [createMybookFromBuyBook] = useMutation(
     MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK,
-    { onCompleted: (data) => console.log(data) }
+    {
+      onCompleted: (data) => {
+        if (data.buybook_createMybookFromBuybook.status === "200") {
+          console.log("구매하기 성공 ", data);
+          router.back();
+        } else if (data.buybook_createMybookFromBuybook.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
   );
   if (router.isFallback) {
     return <div>로딩 중...</div>;

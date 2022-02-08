@@ -46,7 +46,7 @@ const M_SessionModeAndFilterConfig = ({
             />
           </div>
         </Tabs.TabPane> */}
-        <Tabs.TabPane tab="학습모드" key="flip">
+        <Tabs.TabPane tab="뒤집기" key="flip">
           <div className="SessionTabContentWrapper">
             <M_ModeSessionConfig
               detailedOption={flipDetailedOption}
@@ -60,7 +60,7 @@ const M_SessionModeAndFilterConfig = ({
             />
           </div>
         </Tabs.TabPane>
-        <Tabs.TabPane tab="시험모드" key="exam">
+        <Tabs.TabPane tab="시험" key="exam">
           <div className="SessionTabContentWrapper">
             <M_ModeSessionConfig
               detailedOption={examDetailedOption}

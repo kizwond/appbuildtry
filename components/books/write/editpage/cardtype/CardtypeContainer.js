@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import CardDetailSetting from "./CardDetailSetting";
 import CardFaceSetting from "./CardFaceSetting";
 import CardRowSetting from "./CardRowSetting";
@@ -13,36 +13,35 @@ const CardTypeContainer = ({
   cardTypeDetail,
   getUpdatedCardTypeList,
 }) => {
+  const [tabValue, setTabValue] = useState("3");
+
+  const changeTabValue = useCallback((_tab) => {
+    setTabValue(_tab);
+  }, []);
+
   return (
     <>
       <div style={{ padding: "0px 10px 0px 10px" }}>
         <Tabs
           className="card_setting_tab"
-          defaultActiveKey="1"
+          activeKey={tabValue}
+          onChange={changeTabValue}
           type="card"
           size="small"
         >
           <TabPane
-            tab={
-              <>
-                <span style={{ fontSize: "0.8rem" }}>면설정</span>
-              </>
-            }
+            tab={<span style={{ fontSize: "0.8rem" }}>면설정</span>}
             key="1"
           >
             <CardFaceSetting
-              cardTypeId={cardTypeId}
               cardTypeSetId={cardTypeSetId}
               cardTypeDetail={cardTypeDetail}
               getUpdatedCardTypeList={getUpdatedCardTypeList}
+              tabValue={tabValue}
             />
           </TabPane>
           <TabPane
-            tab={
-              <>
-                <span style={{ fontSize: "0.8rem" }}>행설정</span>
-              </>
-            }
+            tab={<span style={{ fontSize: "0.8rem" }}>행설정</span>}
             key="2"
           >
             <CardRowSetting
@@ -50,14 +49,11 @@ const CardTypeContainer = ({
               cardTypeSetId={cardTypeSetId}
               cardTypeDetail={cardTypeDetail}
               getUpdatedCardTypeList={getUpdatedCardTypeList}
+              tabValue={tabValue}
             />
           </TabPane>
           <TabPane
-            tab={
-              <>
-                <span style={{ fontSize: "0.8rem" }}>폰트설정</span>
-              </>
-            }
+            tab={<span style={{ fontSize: "0.8rem" }}>폰트설정</span>}
             key="3"
           >
             <CardFontSetting
@@ -65,6 +61,7 @@ const CardTypeContainer = ({
               cardTypeSetId={cardTypeSetId}
               cardTypeDetail={cardTypeDetail}
               getUpdatedCardTypeList={getUpdatedCardTypeList}
+              tabValue={tabValue}
             />
           </TabPane>
         </Tabs>

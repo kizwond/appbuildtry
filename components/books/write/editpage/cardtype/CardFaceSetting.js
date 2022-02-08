@@ -7,12 +7,13 @@ import { CompactPicker } from "react-color";
 const { Option } = Select;
 
 const CardFaceSetting = ({
-  cardTypeId,
   cardTypeSetId,
   cardTypeDetail,
   getUpdatedCardTypeList,
+  tabValue,
 }) => {
   const cardType = cardTypeDetail[0].cardtype_info.cardtype;
+  const [faceSelected, setFaceSelected] = useState(0);
 
   const [backgroundColor, setBackgroundColor] = useState();
   const [opacity, setOpacity] = useState();
@@ -22,8 +23,6 @@ const CardFaceSetting = ({
   const [displayColorPicker2, setDisplayColorPicker2] = useState(false);
   const [displayColorPicker3, setDisplayColorPicker3] = useState(false);
   const [displayColorPicker4, setDisplayColorPicker4] = useState(false);
-
-  const [faceSelected, setFaceSelected] = useState(0);
 
   const [background_color, set_background_color] = useState();
   const [card_direction, set_card_direction] = useState();
@@ -53,76 +52,93 @@ const CardFaceSetting = ({
   const [border_left_color, set_border_left_color] = useState();
   const [border_right_color, set_border_right_color] = useState();
 
+  const resetToPreservedSetting = (faceSelectedNum) => {
+    set_card_direction(
+      cardTypeDetail[0].cardtype_info.flip_option.card_direction
+    );
+    set_left_face_ratio(
+      cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio
+    );
+    setBackgroundColor(
+      cardTypeDetail[0].face_style[faceSelectedNum].background.color
+    );
+    setOpacity(
+      cardTypeDetail[0].face_style[faceSelectedNum].background.opacity
+    );
+
+    set_outer_margin_top(
+      cardTypeDetail[0].face_style[faceSelectedNum].outer_margin.top
+    );
+    set_outer_margin_bottom(
+      cardTypeDetail[0].face_style[faceSelectedNum].outer_margin.bottom
+    );
+    set_outer_margin_left(
+      cardTypeDetail[0].face_style[faceSelectedNum].outer_margin.left
+    );
+    set_outer_margin_right(
+      cardTypeDetail[0].face_style[faceSelectedNum].outer_margin.right
+    );
+
+    set_inner_padding_top(
+      cardTypeDetail[0].face_style[faceSelectedNum].inner_padding.top
+    );
+    set_inner_padding_bottom(
+      cardTypeDetail[0].face_style[faceSelectedNum].inner_padding.bottom
+    );
+    set_inner_padding_left(
+      cardTypeDetail[0].face_style[faceSelectedNum].inner_padding.left
+    );
+    set_inner_padding_right(
+      cardTypeDetail[0].face_style[faceSelectedNum].inner_padding.right
+    );
+
+    set_border_top_type(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.top.bordertype
+    );
+    set_border_bottom_type(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.bottom.bordertype
+    );
+    set_border_left_type(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.left.bordertype
+    );
+    set_border_right_type(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.right.bordertype
+    );
+
+    set_border_top_thickness(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.top.thickness
+    );
+    set_border_bottom_thickness(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.bottom.thickness
+    );
+    set_border_left_thickness(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.left.thickness
+    );
+    set_border_right_thickness(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.right.thickness
+    );
+
+    set_border_top_color(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.top.color
+    );
+    set_border_bottom_color(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.bottom.color
+    );
+    set_border_left_color(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.left.color
+    );
+    set_border_right_color(
+      cardTypeDetail[0].face_style[faceSelectedNum].border.right.color
+    );
+  };
+
   useEffect(() => {
-    console.log("카드 디테일 세팅 화면 온");
-    console.log("cardTypeId", cardTypeId);
     console.log("cardTypeDetail", cardTypeDetail[0]);
-    if (cardTypeId && cardTypeDetail.length > 0) {
-      set_card_direction(
-        cardTypeDetail[0].cardtype_info.flip_option.card_direction
-      );
-      set_left_face_ratio(
-        cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio
-      );
-      setBackgroundColor(cardTypeDetail[0].face_style[0].background.color);
-      setOpacity(cardTypeDetail[0].face_style[0].background.opacity);
-
-      set_outer_margin_top(cardTypeDetail[0].face_style[0].outer_margin.top);
-      set_outer_margin_bottom(
-        cardTypeDetail[0].face_style[0].outer_margin.bottom
-      );
-      set_outer_margin_left(cardTypeDetail[0].face_style[0].outer_margin.left);
-      set_outer_margin_right(
-        cardTypeDetail[0].face_style[0].outer_margin.right
-      );
-
-      set_inner_padding_top(cardTypeDetail[0].face_style[0].inner_padding.top);
-      set_inner_padding_bottom(
-        cardTypeDetail[0].face_style[0].inner_padding.bottom
-      );
-      set_inner_padding_left(
-        cardTypeDetail[0].face_style[0].inner_padding.left
-      );
-      set_inner_padding_right(
-        cardTypeDetail[0].face_style[0].inner_padding.right
-      );
-
-      set_border_top_type(
-        cardTypeDetail[0].face_style[0].border.top.bordertype
-      );
-      set_border_bottom_type(
-        cardTypeDetail[0].face_style[0].border.bottom.bordertype
-      );
-      set_border_left_type(
-        cardTypeDetail[0].face_style[0].border.left.bordertype
-      );
-      set_border_right_type(
-        cardTypeDetail[0].face_style[0].border.right.bordertype
-      );
-
-      set_border_top_thickness(
-        cardTypeDetail[0].face_style[0].border.top.thickness
-      );
-      set_border_bottom_thickness(
-        cardTypeDetail[0].face_style[0].border.bottom.thickness
-      );
-      set_border_left_thickness(
-        cardTypeDetail[0].face_style[0].border.left.thickness
-      );
-      set_border_right_thickness(
-        cardTypeDetail[0].face_style[0].border.right.thickness
-      );
-
-      set_border_top_color(cardTypeDetail[0].face_style[0].border.top.color);
-      set_border_bottom_color(
-        cardTypeDetail[0].face_style[0].border.bottom.color
-      );
-      set_border_left_color(cardTypeDetail[0].face_style[0].border.left.color);
-      set_border_right_color(
-        cardTypeDetail[0].face_style[0].border.right.color
-      );
+    if (cardTypeDetail.length > 0) {
+      resetToPreservedSetting(faceSelected);
     }
-  }, [cardTypeId, cardTypeDetail]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardTypeDetail, tabValue]);
 
   const [cardtypeset_updatefacestyle] = useMutation(UpdateCardFace, {
     onCompleted: afterupdatemutation,
@@ -138,13 +154,12 @@ const CardFaceSetting = ({
   async function updatefacestyle() {
     console.log(faceSelected);
     console.log(cardTypeSetId);
-    console.log(cardTypeId);
     try {
       await cardtypeset_updatefacestyle({
         variables: {
           forUpdateFaceStyle: {
             cardtypeset_id: cardTypeSetId,
-            cardtype_id: cardTypeId,
+            cardtype_id: cardTypeDetail[0]._id,
             target_face: faceSelected,
             flip_option: {
               card_direction: card_direction,
@@ -226,61 +241,10 @@ const CardFaceSetting = ({
 
   const handleSubmit = () => updatefacestyle();
 
-  const selectFaceHandler = (e) => {
-    console.log(e);
-    setFaceSelected(e);
-    // set_card_direction(cardTypeDetail[0].cardtype_info.flip_option.card_direction);
-    // set_left_face_ratio(cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio);
+  const selectFaceHandler = (_face) => {
+    setFaceSelected(_face);
 
-    setBackgroundColor(cardTypeDetail[0].face_style[e].background.color);
-    setOpacity(cardTypeDetail[0].face_style[e].background.opacity);
-
-    set_outer_margin_top(cardTypeDetail[0].face_style[e].outer_margin.top);
-    set_outer_margin_bottom(
-      cardTypeDetail[0].face_style[e].outer_margin.bottom
-    );
-    set_outer_margin_left(cardTypeDetail[0].face_style[e].outer_margin.left);
-    set_outer_margin_right(cardTypeDetail[0].face_style[e].outer_margin.right);
-
-    set_inner_padding_top(cardTypeDetail[0].face_style[e].inner_padding.top);
-    set_inner_padding_bottom(
-      cardTypeDetail[0].face_style[e].inner_padding.bottom
-    );
-    set_inner_padding_left(cardTypeDetail[0].face_style[e].inner_padding.left);
-    set_inner_padding_right(
-      cardTypeDetail[0].face_style[e].inner_padding.right
-    );
-
-    set_border_top_type(cardTypeDetail[0].face_style[e].border.top.bordertype);
-    set_border_bottom_type(
-      cardTypeDetail[0].face_style[e].border.bottom.bordertype
-    );
-    set_border_left_type(
-      cardTypeDetail[0].face_style[e].border.left.bordertype
-    );
-    set_border_right_type(
-      cardTypeDetail[0].face_style[e].border.right.bordertype
-    );
-
-    set_border_top_thickness(
-      cardTypeDetail[0].face_style[e].border.top.thickness
-    );
-    set_border_bottom_thickness(
-      cardTypeDetail[0].face_style[e].border.bottom.thickness
-    );
-    set_border_left_thickness(
-      cardTypeDetail[0].face_style[e].border.left.thickness
-    );
-    set_border_right_thickness(
-      cardTypeDetail[0].face_style[e].border.right.thickness
-    );
-
-    set_border_top_color(cardTypeDetail[0].face_style[e].border.top.color);
-    set_border_bottom_color(
-      cardTypeDetail[0].face_style[e].border.bottom.color
-    );
-    set_border_left_color(cardTypeDetail[0].face_style[e].border.left.color);
-    set_border_right_color(cardTypeDetail[0].face_style[e].border.right.color);
+    resetToPreservedSetting(_face);
   };
 
   const handleClick = () => {
@@ -363,18 +327,18 @@ const CardFaceSetting = ({
             onChange={selectFaceHandler}
           >
             {cardType !== "flip" && (
-              <React.Fragment>
+              <>
                 <Select.Option value={0} style={{ fontSize: "0.8rem" }}>
                   1면
                 </Select.Option>
                 <Select.Option value={1} style={{ fontSize: "0.8rem" }}>
                   주석
                 </Select.Option>
-              </React.Fragment>
+              </>
             )}
 
             {cardType === "flip" && (
-              <React.Fragment>
+              <>
                 <Select.Option value={0} style={{ fontSize: "0.8rem" }}>
                   전체면 [ &nbsp;&nbsp;&nbsp;&nbsp; ]
                 </Select.Option>
@@ -387,13 +351,13 @@ const CardFaceSetting = ({
                 <Select.Option value={3} style={{ fontSize: "0.8rem" }}>
                   주석
                 </Select.Option>
-              </React.Fragment>
+              </>
             )}
           </Select>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         {cardType === "flip" && (
-          <React.Fragment>
+          <>
             <li>
               <div style={{ fontSize: "0.8rem" }}>레이아웃</div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -436,7 +400,7 @@ const CardFaceSetting = ({
             <Divider
               style={{ width: "100%", marginTop: 10, marginBottom: 10 }}
             />
-          </React.Fragment>
+          </>
         )}
 
         <li
@@ -619,6 +583,9 @@ const CardFaceSetting = ({
               style={{ width: 75, fontSize: "0.8rem" }}
               onChange={borderTopTypeHandler}
             >
+              <Option value="none" style={{ fontSize: "0.8rem" }}>
+                none
+              </Option>
               <Option value="solid" style={{ fontSize: "0.8rem" }}>
                 solid
               </Option>
@@ -672,6 +639,9 @@ const CardFaceSetting = ({
               style={{ width: 75, fontSize: "0.8rem" }}
               onChange={borderBottomTypeHandler}
             >
+              <Option value="none" style={{ fontSize: "0.8rem" }}>
+                none
+              </Option>
               <Option value="solid" style={{ fontSize: "0.8rem" }}>
                 solid
               </Option>
@@ -725,6 +695,9 @@ const CardFaceSetting = ({
               style={{ width: 75, fontSize: "0.8rem" }}
               onChange={borderLeftTypeHandler}
             >
+              <Option value="none" style={{ fontSize: "0.8rem" }}>
+                none
+              </Option>
               <Option value="solid" style={{ fontSize: "0.8rem" }}>
                 solid
               </Option>
@@ -778,6 +751,9 @@ const CardFaceSetting = ({
               style={{ width: 75, fontSize: "0.8rem" }}
               onChange={borderRightTypeHandler}
             >
+              <Option value="none" style={{ fontSize: "0.8rem" }}>
+                none
+              </Option>
               <Option value="solid" style={{ fontSize: "0.8rem" }}>
                 solid
               </Option>

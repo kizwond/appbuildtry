@@ -225,7 +225,7 @@ const TableRow = ({
             <div
               className="flex justify-end w-full item-center"
               onClick={() => {
-                chagneIndexLevel("up");
+                chagneIndexLevel("left");
               }}
             >
               <Button
@@ -240,7 +240,7 @@ const TableRow = ({
             <div
               className="flex w-full item-center"
               onClick={() => {
-                chagneIndexLevel("down");
+                chagneIndexLevel("right");
               }}
             >
               <Button

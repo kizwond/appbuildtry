@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { Space, Button, Select, Modal, Tag, message, Input, Popover, Checkbox, Divider } from "antd";
 import { UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT } from "../../../../../graphql/query/card_contents";
-import { MUTATION_UPDATE_USER_FLAG } from "../../../../../graphql/mutation/userFlagApply";
+import { MUTATION_UPDATE_USER_FLAG, MUTATION_UPDATE_STUDY_STATUS } from "../../../../../graphql/mutation/userFlagApply";
 import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/studyUtils";
 import { Dictionary } from "../../../../../graphql/query/card_contents";
 import { GetIndex, GetCardTypeSet } from "../../../../../graphql/query/allQuery";
@@ -174,6 +174,65 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     [cardset_updateUserFlag]
   );
 
+  // status change
+  const [cardset_updateStatus] = useMutation(MUTATION_UPDATE_STUDY_STATUS, {
+    onCompleted: afterupdatestudystatus,
+  });
+  function afterupdatestudystatus(data) {
+    console.log("data", data);
+  }
+
+  const updateStudyStatus = useCallback(
+    async (cardset_id, card_id, statusPrev,statusCurrent) => {
+      try {
+        await cardset_updateStatus({
+          variables: {
+            forUpdateStatus: {
+              cardset_id,
+              card_id,
+              statusPrev,
+              statusCurrent,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_updateStatus]
+  );
+  const onClickUpdateStatus = (info, status) => {
+    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+
+    console.log("onClickUpdateStatus Clicked!!!");
+    console.log(info);
+    console.log(status);
+
+    updateStudyStatus(info.card_info.cardset_id, info._id, info.studyStatus.statusCurrent, status)
+
+    const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
+
+    const filteredForOrigin = cardListStudyingOrigin.findIndex((item) => item._id === info._id);
+
+    if (status == 'restore'){
+      if (cardListStudyingOrigin[filteredForOrigin].studyStatus.recentStudyTime != null){
+        status = 'ing'
+      } else {
+        status = 'yet'
+      }
+    }
+    cardListStudyingOrigin[filteredForOrigin].studyStatus.statusCurrent = status;
+
+    cardlist_to_send.push(cardListStudyingOrigin[filteredForOrigin]);
+    computeNumberOfAllFilteredCards({ cardsets: cardListStudyingOrigin });
+    sessionStorage.setItem("cardlist_to_send", JSON.stringify(cardlist_to_send));
+    sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(cardListStudyingOrigin));
+    setCardListStudying(cardListStudyingOrigin);
+
+  }
+
+
+
   useEffect(() => {
     if (data1) {
       sessionStorage.removeItem("cardListStudyingOrigin");
@@ -325,16 +384,19 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   function afteraddcardmutation(data) {
     console.log(data.cardset_addcardAtSameIndex.cardsets[0].cards);
     const sameIndexCheck = sessionStorage.getItem("sameIndexSelectedCheck");
-    const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));
+    const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
     if (sameIndexCheck === "true") {
       const cardListReceived = data.cardset_addcardAtSameIndex.cardsets[0].cards;
       const filteredIndex = cardListReceived.findIndex((item) => item._id === cardId);
       const filteredData = cardListReceived[filteredIndex + 1];
-      cardlist_to_send.push(filteredData);
+      const {mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id} = filteredData.card_info
+      createdCards.push({mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id});
     } else {
-      cardlist_to_send.push(data.cardset_addcardAtSameIndex.cardsets[0].cards[data.cardset_addcardAtSameIndex.cardsets[0].cards.length - 1]);
+      const filteredData = data.cardset_addcardAtSameIndex.cardsets[0].cards[data.cardset_addcardAtSameIndex.cardsets[0].cards.length - 1];
+      const {mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id} = filteredData.card_info
+      createdCards.push({mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id});
     }
-    sessionStorage.setItem("cardlist_to_send", JSON.stringify(cardlist_to_send));
+    sessionStorage.setItem("createdCards", JSON.stringify(createdCards));
     sessionStorage.setItem("sameIndexSelectedCheck", "false");
   }
   async function addcard(
@@ -938,16 +1000,14 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     setMemo(e.target.value);
   };
   const saveMemo = (card_info) => {
-    console.log(card_info._id)
-    setCardId(card_info._id)
+    console.log(card_info._id);
+    setCardId(card_info._id);
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const needToBeChangedIndex = cardListStudying.findIndex((item) => item._id === card_info._id);
     cardListStudying[needToBeChangedIndex].content.memo = memo;
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
     doSaveMemo(card_info.card_info.cardset_id, card_info._id, memo);
-    onClickHandler()
-    
-
+    onClickHandler();
   };
 
   const onClickHandler = useCallback(() => {
@@ -1484,7 +1544,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             var memoPop = (
               <>
                 <div style={{ fontSize: "0.8rem" }}>
-                  {!updateMemoState && content.content.memo !== null &&  (
+                  {!updateMemoState && content.content.memo !== null && (
                     <>
                       <div>{content.content.memo}</div>
                       <div>
@@ -1602,12 +1662,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               var diffiButtonsPop = (
                 <>
                   <Space>
-                    <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickRestoreHandler(current_card_id)} type="primary">
+                    <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => onClickUpdateStatus(content,"restore")} type="primary">
                       복원
                     </Button>
-                    {/* <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id)} type="primary">
-                      통과
-                    </Button> */}
                   </Space>
                 </>
               );
@@ -1615,13 +1672,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               var diffiButtonsPop = (
                 <>
                   <Space>
-                    {/* <Button icon={<SwapRightOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickPassHandler(current_card_id, "normal")} type="primary">
-                      통과
-                    </Button> */}
-                    <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickHoldHandler(current_card_id)} type="primary">
+                    <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => onClickUpdateStatus(content,"hold")} type="primary">
                       보류
                     </Button>
-                    <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => this.onClickCompletedHandler(current_card_id)} type="primary">
+                    <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => onClickUpdateStatus(content, "completed")} type="primary">
                       졸업
                     </Button>
                   </Space>
@@ -3702,9 +3756,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     if (cardId === card_id) {
       if (selectionText) {
         console.log("eeee");
-      } else if(updateMemoState){
-        console.log("eedddd")
-      }else {
+      } else if (updateMemoState) {
+        console.log("eedddd");
+      } else {
         setCardId("");
         setCardInfo("");
         for (var a = 0; a < selected2.length; a++) {

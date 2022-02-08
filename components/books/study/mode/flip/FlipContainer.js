@@ -131,6 +131,28 @@ const FlipContainer = ({
 
   function afteraddcardmutation(data) {
     console.log(data);
+    console.log(data.cardset_addcardAtSameIndex.cardsets[0].cards);
+    const sameIndexCheck = sessionStorage.getItem("sameIndexSelectedCheck");
+    const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
+
+    const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+    const card_seq = sessionStorage.getItem("card_seq");
+    const currentCardId = cardListStudying[card_seq]._id;
+
+    if (sameIndexCheck === "true") {
+      const cardListReceived = data.cardset_addcardAtSameIndex.cardsets[0].cards;
+      const filteredIndex = cardListReceived.findIndex((item) => item._id === currentCardId);
+      const filteredData = cardListReceived[filteredIndex + 1];
+      const {mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype} = filteredData.card_info
+      const {mycontent_id} = filteredData.content
+      createdCards.push({mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id});
+    } else {
+      const filteredData = data.cardset_addcardAtSameIndex.cardsets[0].cards[data.cardset_addcardAtSameIndex.cardsets[0].cards.length - 1];
+      const {mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype} = filteredData.card_info
+      const {mycontent_id} = filteredData.content
+      createdCards.push({mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id});
+    }
+    sessionStorage.setItem("createdCards", JSON.stringify(createdCards));
   }
   async function addcard(
     mybook_id,
@@ -1578,9 +1600,7 @@ class Container extends Component {
       values.flagComment,
       cardTypeSetId
     );
-    this.setState({
-      newCardModalVisible: false,
-    });
+    this.handleOk()
     sessionStorage.setItem("sameIndexSelectedCheck", "false");
   };
   // 새카드 추가 관련 끝

@@ -47,6 +47,7 @@ const Nav = () => {
     sessionStorage.removeItem("cardListStudying");
     sessionStorage.setItem("card_seq", 0);
     sessionStorage.removeItem("isFinished")
+    sessionStorage.removeItem("cardlist_to_send")
     setVisible(true);
   };
 

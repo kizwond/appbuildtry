@@ -132,11 +132,13 @@ const BuyBookDetail = (props) => {
               책 소개
             </div>
             <div className="px-2 text-base">
-              {introductionOfBook.split("\n").map((line, i) => (
-                <span key={i}>
-                  {line} <br />
-                </span>
-              ))}
+              {introductionOfBook &&
+                introductionOfBook.length > 0 &&
+                introductionOfBook.split("\n").map((line, i) => (
+                  <span key={i}>
+                    {line} <br />
+                  </span>
+                ))}
             </div>
           </div>
           <div>
@@ -144,11 +146,13 @@ const BuyBookDetail = (props) => {
               저자 소개
             </div>
             <div className="px-2 text-base">
-              {introductionOfAuthor.split("\n").map((line, i) => (
-                <span key={i}>
-                  {line} <br />
-                </span>
-              ))}
+              {introductionOfAuthor &&
+                introductionOfAuthor.length > 0 &&
+                introductionOfAuthor.split("\n").map((line, i) => (
+                  <span key={i}>
+                    {line} <br />
+                  </span>
+                ))}
             </div>
           </div>
           <div>
@@ -156,11 +160,13 @@ const BuyBookDetail = (props) => {
               목차
             </div>
             <div className="px-2 text-base">
-              {listOfIndex.split("\n").map((line, i) => (
-                <span key={i}>
-                  {line} <br />
-                </span>
-              ))}
+              {listOfIndex &&
+                listOfIndex.length > 0 &&
+                listOfIndex.split("\n").map((line, i) => (
+                  <span key={i}>
+                    {line} <br />
+                  </span>
+                ))}
             </div>
           </div>
           <div>

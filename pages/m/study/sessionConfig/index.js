@@ -312,7 +312,7 @@ const StudySessionConfig = ({
             <div className="flex justify-end w-full item-center">
               {activatedComponent === "config" && <StepBackwardOutlined />}
             </div>
-            <div className="flex-none w-[115px] flex item-center justify-center">
+            <div className="flex-none w-[122px] flex item-center justify-center">
               {activatedComponent === "index" ? "학습 방식 선택" : "목차 선택"}
             </div>
             <div className="flex w-full item-center">

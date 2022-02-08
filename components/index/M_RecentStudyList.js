@@ -249,8 +249,13 @@ const M_RecentStudyList = () => {
   return (
     <article className="text-[1rem] w-full px-[8px] flex flex-col gap-1">
       <header>
-        <Space style={{display:"flex"}}>
-          <span className="text-gray-700" style={{fontSize:"1.5rem", fontWeight:700}}>최근 학습 이력</span>
+        <Space style={{ display: "flex" }}>
+          <span
+            className="text-gray-700"
+            style={{ fontSize: "1.5rem", fontWeight: 700 }}
+          >
+            최근 학습 이력
+          </span>
           <a className="text-sky-600" onClick={openDrawer}>
             자세히 보기
           </a>
@@ -261,8 +266,8 @@ const M_RecentStudyList = () => {
           <thead>
             <tr className="border-collapse border-y border-y-gray-200">
               <th className="text-[1rem] bg-slate-100 w-[17%]">시작일</th>
-              <th className="text-[1rem] bg-slate-100 w-[19%]">모드</th>
-              <th className="text-[1rem] bg-slate-100 w-[38%]">책 이름</th>
+              <th className="text-[1rem] bg-slate-100 w-[21%]">모드</th>
+              <th className="text-[1rem] bg-slate-100 w-[36%]">책 이름</th>
               <th className="text-[1rem] bg-slate-100 w-[12%]"></th>
               <th className="text-[1rem] bg-slate-100 w-[14%]"></th>
             </tr>
@@ -286,9 +291,9 @@ const M_RecentStudyList = () => {
                     </td>
                     <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center">
                       {session.sessionConfig.studyMode === "read"
-                        ? "책"
+                        ? "책모드"
                         : session.sessionConfig.studyMode === "flip"
-                        ? "카드-학습"
+                        ? "카드-뒤집기"
                         : session.sessionConfig.studyMode === "exam"
                         ? "카드-시험"
                         : null}
@@ -375,9 +380,9 @@ const M_RecentStudyList = () => {
                     </td>
                     <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center">
                       {session.sessionConfig.studyMode === "read"
-                        ? "책"
+                        ? "책모드"
                         : session.sessionConfig.studyMode === "flip"
-                        ? "카드-학습"
+                        ? "카드-뒤집기"
                         : session.sessionConfig.studyMode === "exam"
                         ? "카드-시험"
                         : null}

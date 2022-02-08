@@ -327,7 +327,7 @@ const Nav = () => {
                       <span style={{ marginLeft: "10px" }}>알림</span>
                     </div> */}
                     <div
-                      onClick={() => console.log("알림")}
+                      onClick={() => location.href = "/m/support/faq"}
                       style={{
                         ...linkStyleDrawer,
                         padding: "10px",

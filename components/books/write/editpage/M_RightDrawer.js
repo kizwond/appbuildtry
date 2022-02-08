@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Drawer, Button, Space, Divider } from "antd";
 import M_CardTypeSettingModal from "../../../../components/books/write/cardtype/M_CardTypeSettingModal";
 import M_CardTypeUpdateModal from "../../../../components/books/write/cardtype/M_CardTypeUpdateModal";
-import CardTypeSetting from "./cardtype/CardTypeSetting";
+import SelectionForSettingCardType from "./cardtype/SelectionForSettingCardType";
 import CardtypeContainer from "../../write/editpage/cardtype/CardtypeContainer";
 import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useQuery, useMutation } from "@apollo/client";
@@ -108,7 +108,7 @@ const RightDrawer = () => {
               alignItems: "center",
             }}
           >
-            <CardTypeSetting
+            <SelectionForSettingCardType
               cardTypes={cardTypes}
               book_id={book_id}
               handleChange={handleChange}

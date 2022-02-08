@@ -77,8 +77,8 @@ const Challenges = () => {
             <div className="text-[1.16667rem] font-[500]">북스토어</div>
             <div>
               <div className="flex gap-2">
-                {data?.me?.users?.user_info?.role &&
-                  data.me.users.user_info.role === "admin" && (
+                {buyBookData?.me?.users[0]?.user_info?.role &&
+                  buyBookData.me.users[0].user_info.role === "admin" && (
                     <Button
                       size="small"
                       onClick={() =>

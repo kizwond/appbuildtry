@@ -9,3 +9,12 @@ export const MUTATION_UPDATE_USER_FLAG = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_STUDY_STATUS = gql`
+  mutation MUTATION_UPDATE_STUDY_STATUS($forUpdateStatus: forUpdateStatus) {
+    cardset_updateStatus(forUpdateStatus: $forUpdateStatus) {
+      status
+      msg
+    }
+  }
+`;

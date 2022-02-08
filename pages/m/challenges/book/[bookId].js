@@ -131,19 +131,37 @@ const BuyBookDetail = (props) => {
             <div className="px-2 text-lg font-bold border-b border-b-slate-500">
               책 소개
             </div>
-            <div className="px-2 text-base">{introductionOfBook}</div>
+            <div className="px-2 text-base">
+              {introductionOfBook.split("\n").map((line, i) => (
+                <span key={i}>
+                  {line} <br />
+                </span>
+              ))}
+            </div>
           </div>
           <div>
             <div className="px-2 text-lg font-bold border-b border-b-slate-500">
               저자 소개
             </div>
-            <div className="px-2 text-base">{introductionOfAuthor}</div>
+            <div className="px-2 text-base">
+              {introductionOfAuthor.split("\n").map((line, i) => (
+                <span key={i}>
+                  {line} <br />
+                </span>
+              ))}
+            </div>
           </div>
           <div>
             <div className="px-2 text-lg font-bold border-b border-b-slate-500">
               목차
             </div>
-            <div className="px-2 text-base">{listOfIndex}</div>
+            <div className="px-2 text-base">
+              {listOfIndex.split("\n").map((line, i) => (
+                <span key={i}>
+                  {line} <br />
+                </span>
+              ))}
+            </div>
           </div>
           <div>
             <div className="px-2 mb-1 text-lg font-bold border-b border-b-slate-500 ">

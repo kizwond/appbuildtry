@@ -2,7 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Drawer, Tree } from "antd";
 import { useQuery, useMutation } from "@apollo/client";
 import { GetIndex } from "../../../../graphql/query/allQuery";
-import { IndexCreateMutation, IndexRenameMutation, IndexLevelMutation, IndexDeleteMutation, ExcelExportMutation } from "../../../../graphql/mutation/indexSet";
+import {
+  IndexCreateMutation,
+  IndexRenameMutation,
+  IndexLevelMutation,
+  IndexDeleteMutation,
+  ExcelExportMutation,
+} from "../../../../graphql/mutation/indexSet";
 import IndexSettingModal from "../index/IndexSettingModal";
 import { UnorderedListOutlined } from "@ant-design/icons";
 
@@ -30,17 +36,19 @@ const LeftDrawer = ({ index_changed }) => {
   var indexinfo = data.indexset_getByMybookids.indexsets[0].indexes;
   var indexSetInfo = data.indexset_getByMybookids.indexsets[0];
   //엑셀 익스포트
-  const [cardset_convertCardsetToExcelFile] = useMutation(ExcelExportMutation, { onCompleted: afterexport });
+  const [cardset_convertCardsetToExcelFile] = useMutation(ExcelExportMutation, {
+    onCompleted: afterexport,
+  });
 
   function afterexport(data) {
-    console.log(data)
+    console.log(data);
   }
 
   async function excelexport(indexId) {
     try {
       await cardset_convertCardsetToExcelFile({
         variables: {
-          index_id : indexId
+          index_id: indexId,
         },
       });
     } catch (error) {
@@ -48,12 +56,14 @@ const LeftDrawer = ({ index_changed }) => {
     }
   }
   const onFinishExcelExport = (value) => {
-    console.log(value)
+    console.log(value);
     excelexport(value);
   };
 
   //새 목차 추가
-  const [indexset_addIndex] = useMutation(IndexCreateMutation, { onCompleted: showindexdata });
+  const [indexset_addIndex] = useMutation(IndexCreateMutation, {
+    onCompleted: showindexdata,
+  });
 
   function showindexdata(data) {
     indexinfo = data.indexset_addIndex.indexsets[0].indexes;
@@ -75,12 +85,14 @@ const LeftDrawer = ({ index_changed }) => {
       console.log(error);
     }
   }
-  const onFinish = (values) => {
-    postindex(values.name, values.current_index_id, values.indexset_id);
+  const onFinish = ({ name, current_index_id, indexset_id }) => {
+    postindex(name, current_index_id, indexset_id);
   };
 
   //목차 이름변경
-  const [indexset_updateIndexName] = useMutation(IndexRenameMutation, { onCompleted: showindexdatarename });
+  const [indexset_updateIndexName] = useMutation(IndexRenameMutation, {
+    onCompleted: showindexdatarename,
+  });
 
   function showindexdatarename(data) {
     indexinfo = data.indexset_updateIndexName.indexsets[0].indexes;
@@ -107,7 +119,9 @@ const LeftDrawer = ({ index_changed }) => {
   };
 
   //목차 레벨변경변경
-  const [indexset_updateIndexLevel] = useMutation(IndexLevelMutation, { onCompleted: showindexdatarelevel });
+  const [indexset_updateIndexLevel] = useMutation(IndexLevelMutation, {
+    onCompleted: showindexdatarelevel,
+  });
 
   function showindexdatarelevel(data) {
     indexinfo = data.indexset_updateIndexLevel.indexsets[0].indexes;
@@ -134,17 +148,23 @@ const LeftDrawer = ({ index_changed }) => {
   };
 
   //목차 삭제
-  const [indexset_deleteIndex] = useMutation(IndexDeleteMutation, { onCompleted: showindexdatadelete });
+  const [indexset_deleteIndex] = useMutation(IndexDeleteMutation, {
+    onCompleted: showindexdatadelete,
+  });
 
   function showindexdatadelete(data) {
-    console.log(data)
+    console.log(data);
     indexinfo = data.indexset_deleteIndex.indexsets[0].indexes;
     indexSetInfo = data.indexset_deleteIndex.indexsets[0];
-    console.log(indexinfo)
-    console.log(indexSetInfo)
+    console.log(indexinfo);
+    console.log(indexSetInfo);
   }
 
-  async function postindexdelete(moveto_index_id, current_index_id, indexset_id) {
+  async function postindexdelete(
+    moveto_index_id,
+    current_index_id,
+    indexset_id
+  ) {
     try {
       await indexset_deleteIndex({
         variables: {
@@ -159,8 +179,12 @@ const LeftDrawer = ({ index_changed }) => {
       console.log(error);
     }
   }
-  const onFinishIndexDelete = (values) => {
-    postindexdelete(values.moveto_index_id, values.current_index_id, values.indexset_id);
+  const onFinishIndexDelete = ({ moveto_index_id, current_index_id, indexset_id }) => {
+    postindexdelete(
+      moveto_index_id,
+      current_index_id,
+      indexset_id
+    );
   };
 
   //
@@ -255,7 +279,9 @@ const LeftDrawer = ({ index_changed }) => {
             temp_data_4.push(level_all[i]);
           } else if (level_all[i]["level"] === 5 && temp_data_4.length > 0) {
             for (var a = 0; a < temp_data_4.length; a += 1) {
-              temp_data_4[temp_data_4.length - 1]["children"].push(level_all[i]);
+              temp_data_4[temp_data_4.length - 1]["children"].push(
+                level_all[i]
+              );
               break;
             }
           }
@@ -276,7 +302,9 @@ const LeftDrawer = ({ index_changed }) => {
               temp_data_3.push(level_all[i]);
             } else if (level_all[i]["level"] === 4) {
               for (a = 0; a < temp_data_3.length; a += 1) {
-                temp_data_3[temp_data_3.length - 1]["children"].push(level_all[i]);
+                temp_data_3[temp_data_3.length - 1]["children"].push(
+                  level_all[i]
+                );
                 break;
               }
             }
@@ -299,7 +327,9 @@ const LeftDrawer = ({ index_changed }) => {
               temp_data_2.push(level_all[i]);
             } else if (level_all[i]["level"] === 3) {
               for (a = 0; a < temp_data_2.length; a += 1) {
-                temp_data_2[temp_data_2.length - 1]["children"].push(level_all[i]);
+                temp_data_2[temp_data_2.length - 1]["children"].push(
+                  level_all[i]
+                );
                 break;
               }
             }
@@ -322,7 +352,9 @@ const LeftDrawer = ({ index_changed }) => {
               temp_data_1.push(level_all[i]);
             } else if (level_all[i]["level"] === 2) {
               for (a = 0; a < temp_data_1.length; a += 1) {
-                temp_data_1[temp_data_1.length - 1]["children"].push(level_all[i]);
+                temp_data_1[temp_data_1.length - 1]["children"].push(
+                  level_all[i]
+                );
                 break;
               }
             }
@@ -349,7 +381,9 @@ const LeftDrawer = ({ index_changed }) => {
             temp_data_3.push(level_all[i]);
           } else if (level_all[i]["level"] === 4) {
             for (a = 0; a < temp_data_3.length; a += 1) {
-              temp_data_3[temp_data_3.length - 1]["children"].push(level_all[i]);
+              temp_data_3[temp_data_3.length - 1]["children"].push(
+                level_all[i]
+              );
               break;
             }
           }
@@ -371,7 +405,9 @@ const LeftDrawer = ({ index_changed }) => {
               temp_data_2.push(level_all[i]);
             } else if (level_all[i]["level"] === 3) {
               for (a = 0; a < temp_data_2.length; a += 1) {
-                temp_data_2[temp_data_2.length - 1]["children"].push(level_all[i]);
+                temp_data_2[temp_data_2.length - 1]["children"].push(
+                  level_all[i]
+                );
                 break;
               }
             }
@@ -394,7 +430,9 @@ const LeftDrawer = ({ index_changed }) => {
               temp_data_1.push(level_all[i]);
             } else if (level_all[i]["level"] === 2) {
               for (a = 0; a < temp_data_1.length; a += 1) {
-                temp_data_1[temp_data_1.length - 1]["children"].push(level_all[i]);
+                temp_data_1[temp_data_1.length - 1]["children"].push(
+                  level_all[i]
+                );
                 break;
               }
             }
@@ -420,7 +458,9 @@ const LeftDrawer = ({ index_changed }) => {
             temp_data_2.push(level_all[i]);
           } else if (level_all[i]["level"] === 3) {
             for (a = 0; a < temp_data_2.length; a += 1) {
-              temp_data_2[temp_data_2.length - 1]["children"].push(level_all[i]);
+              temp_data_2[temp_data_2.length - 1]["children"].push(
+                level_all[i]
+              );
               break;
             }
           }
@@ -442,7 +482,9 @@ const LeftDrawer = ({ index_changed }) => {
               temp_data_1.push(level_all[i]);
             } else if (level_all[i]["level"] === 2) {
               for (a = 0; a < temp_data_1.length; a += 1) {
-                temp_data_1[temp_data_1.length - 1]["children"].push(level_all[i]);
+                temp_data_1[temp_data_1.length - 1]["children"].push(
+                  level_all[i]
+                );
                 break;
               }
             }
@@ -467,7 +509,9 @@ const LeftDrawer = ({ index_changed }) => {
             temp_data_1.push(level_all[i]);
           } else if (level_all[i]["level"] === 2) {
             for (a = 0; a < temp_data_1.length; a += 1) {
-              temp_data_1[temp_data_1.length - 1]["children"].push(level_all[i]);
+              temp_data_1[temp_data_1.length - 1]["children"].push(
+                level_all[i]
+              );
               break;
             }
           }
@@ -493,20 +537,28 @@ const LeftDrawer = ({ index_changed }) => {
 
   return (
     <>
-    
-        <div onClick={showDrawer} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <UnorderedListOutlined style={{ fontSize: "1.3rem" }}/>
-            목차보기
-          </div>
-      
+      <div
+        onClick={showDrawer}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <UnorderedListOutlined style={{ fontSize: "1.3rem" }} />
+        목차보기
+      </div>
+
       {indexinfo && (
         <>
           <Drawer
             width={250}
             title={
               <>
-                <div style={{display:"flex", alignItems:"center"}}>
-                  <span style={{ fontSize: "1rem", marginRight:"5px" }}>목차</span>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <span style={{ fontSize: "1rem", marginRight: "5px" }}>
+                    목차
+                  </span>
                   <IndexSettingModal
                     indexSetInfo={indexSetInfo}
                     indexinfo={indexinfo}
@@ -525,7 +577,13 @@ const LeftDrawer = ({ index_changed }) => {
             visible={visible}
             mask={true}
           >
-            <Tree showLine={true} showIcon={false} defaultExpandAll={true} onSelect={onSelect} treeData={treeData} />
+            <Tree
+              showLine={true}
+              showIcon={false}
+              defaultExpandAll={true}
+              onSelect={onSelect}
+              treeData={treeData}
+            />
           </Drawer>
         </>
       )}

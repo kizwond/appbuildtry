@@ -925,6 +925,7 @@ const FlipMode = () => {
 
   const finishStudy = () => {
     console.log("finishStudy Clicked!!!");
+    window.speechSynthesis.cancel();
     generateOnFinishStudyStatus();
     // alert("공부끝!!! 학습데이터를 서버로 전송합니다.");
     const cardlist_to_send = JSON.parse(sessionStorage.getItem("cardlist_to_send"));

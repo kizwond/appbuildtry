@@ -54,6 +54,7 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsO
     window.location.href = "/m";
   };
   const goToResult = () => {
+    window.speechSynthesis.cancel();
     window.location.href = "/m/study/readresult";
   };
 

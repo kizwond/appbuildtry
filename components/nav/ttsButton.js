@@ -28,7 +28,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
         ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
       ];
       console.log(contents);
-      const contentsListSortedByCardSeq = cardListStudying.map((card) => contents.find((content) => content._id === card.content.mycontent_id));
+      const contentsListSortedByCardSeq = cardListStudying.map((card) => contents.find((content) => (content._id === card.content.mycontent_id||content._id === card.content.buycontent_id)));
       console.log({ contentsListSortedByCardSeq });
 
       const seperateEngAndKor = (str) => {

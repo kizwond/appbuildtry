@@ -73,14 +73,23 @@ const RightDrawer = () => {
 
   return (
     <>
-      <div onClick={showDrawer} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div
+        onClick={showDrawer}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
         <SettingOutlined style={{ fontSize: "1.3rem" }} />
         카드설정
       </div>
       <Drawer
         title={
           <>
-            <span style={{ fontSize: "1rem", fontWeight: "700" }}>카드설정</span>
+            <span style={{ fontSize: "1rem", fontWeight: "700" }}>
+              카드설정
+            </span>
           </>
         }
         placement="right"
@@ -91,14 +100,36 @@ const RightDrawer = () => {
         width={270}
       >
         <Space direction="vertical">
-          <div style={{ display: "flex", width: "250px", padding: "10px 10px 2px 10px", alignItems: "center" }}>
-            <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
-            <M_CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
-            <M_CardTypeUpdateModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+          <div
+            style={{
+              display: "flex",
+              width: "250px",
+              padding: "10px 10px 2px 10px",
+              alignItems: "center",
+            }}
+          >
+            <CardTypeSetting
+              cardTypes={cardTypes}
+              book_id={book_id}
+              handleChange={handleChange}
+            />
+            <M_CardTypeSettingModal
+              book_id={book_id}
+              getUpdatedCardTypeList={getUpdatedCardTypeList}
+            />
+            <M_CardTypeUpdateModal
+              book_id={book_id}
+              getUpdatedCardTypeList={getUpdatedCardTypeList}
+            />
           </div>
           {cardTypeDetail && (
             <>
-              <CardtypeContainer cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+              <CardtypeContainer
+                cardTypeId={cardTypeId}
+                cardTypeSetId={cardTypeSetId}
+                cardTypeDetail={cardTypeDetail}
+                getUpdatedCardTypeList={getUpdatedCardTypeList}
+              />
             </>
           )}
         </Space>

@@ -7,9 +7,8 @@ import { CompactPicker } from "react-color";
 const { Option } = Select;
 
 const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedCardTypeList }) => {
-  const [cardType, setCardType] = useState([]);
-  const [current_cardTypeId, set_current_CardTypeId] = useState();
-  const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
+  const cardType = cardTypeDetail[0].cardtype_info.cardtype;
+  
 
   const [faceSelected, setFaceSelected] = useState("default");
   const [rowSelected, setRowSelected] = useState("default");
@@ -54,7 +53,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     console.log("카드 디테일 세팅 화면 온");
     if (cardTypeId) {
       console.log("cardTypeId", cardTypeId);
-      setCardType(cardTypeDetail[0].cardtype_info.cardtype);
+     
     }
   }, [cardTypeId, cardTypeDetail]);
 

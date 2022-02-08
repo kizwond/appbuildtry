@@ -48,8 +48,15 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
       const tts = contentsListSortedByCardSeq.map((content) => {
         let arr = [];
         content.face1.forEach((c, i) => {
-          if (readModeTTSOption.faceOneTTS[i + 1] && content.face1 !== null && content.face1.length > 0) {
-            const contentOnlyString = decodeHtMLEntities(c);
+          if (
+            readModeTTSOption.faceOneTTS[i + 1] &&
+            content.face1 !== null &&
+            content.face1.length > 0
+          ) {
+            const contentOnlyString = decodeHtMLEntities(c).replace(
+              /\/|\~/g,
+              " "
+            );
             const seperatedWithEngAndKor = seperateEngAndKor(contentOnlyString);
             arr.push(seperatedWithEngAndKor);
           }
@@ -57,7 +64,10 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
 
         if (readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0) {
           content.selection.forEach((c, i) => {
-            const contentWithoutTags = decodeHtMLEntities(c);
+            const contentWithoutTags = decodeHtMLEntities(c).replace(
+              /\/|\~/g,
+              " "
+            );
             arr.push(`${i + 1} ${seperateEngAndKor(contentWithoutTags)}`);
           });
         }
@@ -65,9 +75,12 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           content.face2.forEach((c, i) => {
             if (readModeTTSOption.faceTwoTTS[i + 1]) {
               const contentWithoutTags =
-                i === 0 && readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0
-                  ? "정답 " + decodeHtMLEntities(c)
-                  : decodeHtMLEntities(c);
+                i === 0 &&
+                readModeTTSOption.faceOneTTS.selection &&
+                content.selection !== null &&
+                content.selection.length > 0
+                  ? "정답 " + decodeHtMLEntities(c).replace(/\/|\~/g, " ")
+                  : decodeHtMLEntities(c).replace(/\/|\~/g, " ");
               arr.push(seperateEngAndKor(contentWithoutTags));
             }
           });

@@ -1,16 +1,18 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { GetCardType } from "../../../../../graphql/query/cardtype";
-import { useQuery, useMutation } from "@apollo/client";
-import { Form, Input, Button, Divider, Select, Popover, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
-import { UpdateCardType, GetCardTypeSet, UpdateCardFace } from "../../../../../graphql/query/cardtype";
+import { useMutation } from "@apollo/client";
+import { Button, Divider, Select, InputNumber } from "antd";
+import { UpdateCardFace } from "../../../../../graphql/query/cardtype";
 import { CompactPicker } from "react-color";
 
 const { Option } = Select;
 
-const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdatedCardTypeList }) => {
-  const [cardType, setCardType] = useState([]);
-  const [current_cardTypeId, set_current_CardTypeId] = useState();
-  const [current_cardTypeSetId, set_current_CardTypeSetId] = useState();
+const CardFaceSetting = ({
+  cardTypeId,
+  cardTypeSetId,
+  cardTypeDetail,
+  getUpdatedCardTypeList,
+}) => {
+  const cardType = cardTypeDetail[0].cardtype_info.cardtype;
 
   const [backgroundColor, setBackgroundColor] = useState();
   const [opacity, setOpacity] = useState();
@@ -21,7 +23,7 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   const [displayColorPicker3, setDisplayColorPicker3] = useState(false);
   const [displayColorPicker4, setDisplayColorPicker4] = useState(false);
 
-  const [faceSelected, setFaceSelected] = useState("default");
+  const [faceSelected, setFaceSelected] = useState(0);
 
   const [background_color, set_background_color] = useState();
   const [card_direction, set_card_direction] = useState();
@@ -53,20 +55,84 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
 
   useEffect(() => {
     console.log("카드 디테일 세팅 화면 온");
-    if (cardTypeId) {
-      console.log("cardTypeId", cardTypeId);
-      console.log("cardTypeDetail", cardTypeDetail[0]);
-      setCardType(cardTypeDetail[0].cardtype_info.cardtype);
-      set_card_direction(cardTypeDetail[0].cardtype_info.flip_option.card_direction);
-      set_left_face_ratio(cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio);
+    console.log("cardTypeId", cardTypeId);
+    console.log("cardTypeDetail", cardTypeDetail[0]);
+    if (cardTypeId && cardTypeDetail.length > 0) {
+      set_card_direction(
+        cardTypeDetail[0].cardtype_info.flip_option.card_direction
+      );
+      set_left_face_ratio(
+        cardTypeDetail[0].cardtype_info.flip_option.left_face_ratio
+      );
+      setBackgroundColor(cardTypeDetail[0].face_style[0].background.color);
+      setOpacity(cardTypeDetail[0].face_style[0].background.opacity);
+
+      set_outer_margin_top(cardTypeDetail[0].face_style[0].outer_margin.top);
+      set_outer_margin_bottom(
+        cardTypeDetail[0].face_style[0].outer_margin.bottom
+      );
+      set_outer_margin_left(cardTypeDetail[0].face_style[0].outer_margin.left);
+      set_outer_margin_right(
+        cardTypeDetail[0].face_style[0].outer_margin.right
+      );
+
+      set_inner_padding_top(cardTypeDetail[0].face_style[0].inner_padding.top);
+      set_inner_padding_bottom(
+        cardTypeDetail[0].face_style[0].inner_padding.bottom
+      );
+      set_inner_padding_left(
+        cardTypeDetail[0].face_style[0].inner_padding.left
+      );
+      set_inner_padding_right(
+        cardTypeDetail[0].face_style[0].inner_padding.right
+      );
+
+      set_border_top_type(
+        cardTypeDetail[0].face_style[0].border.top.bordertype
+      );
+      set_border_bottom_type(
+        cardTypeDetail[0].face_style[0].border.bottom.bordertype
+      );
+      set_border_left_type(
+        cardTypeDetail[0].face_style[0].border.left.bordertype
+      );
+      set_border_right_type(
+        cardTypeDetail[0].face_style[0].border.right.bordertype
+      );
+
+      set_border_top_thickness(
+        cardTypeDetail[0].face_style[0].border.top.thickness
+      );
+      set_border_bottom_thickness(
+        cardTypeDetail[0].face_style[0].border.bottom.thickness
+      );
+      set_border_left_thickness(
+        cardTypeDetail[0].face_style[0].border.left.thickness
+      );
+      set_border_right_thickness(
+        cardTypeDetail[0].face_style[0].border.right.thickness
+      );
+
+      set_border_top_color(cardTypeDetail[0].face_style[0].border.top.color);
+      set_border_bottom_color(
+        cardTypeDetail[0].face_style[0].border.bottom.color
+      );
+      set_border_left_color(cardTypeDetail[0].face_style[0].border.left.color);
+      set_border_right_color(
+        cardTypeDetail[0].face_style[0].border.right.color
+      );
     }
   }, [cardTypeId, cardTypeDetail]);
 
-  const [cardtypeset_updatefacestyle] = useMutation(UpdateCardFace, { onCompleted: afterupdatemutation });
+  const [cardtypeset_updatefacestyle] = useMutation(UpdateCardFace, {
+    onCompleted: afterupdatemutation,
+  });
 
   function afterupdatemutation(data) {
     console.log("data", data);
-    getUpdatedCardTypeList(data.cardtypeset_updatefacestyle.cardtypesets[0].cardtypes);
+    getUpdatedCardTypeList(
+      data.cardtypeset_updatefacestyle.cardtypesets[0].cardtypes
+    );
   }
 
   async function updatefacestyle() {
@@ -79,8 +145,11 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           forUpdateFaceStyle: {
             cardtypeset_id: cardTypeSetId,
             cardtype_id: cardTypeId,
-            target_face: Number(faceSelected),
-            flip_option: { card_direction: card_direction, left_face_ratio: Number(left_face_ratio) },
+            target_face: faceSelected,
+            flip_option: {
+              card_direction: card_direction,
+              left_face_ratio: Number(left_face_ratio),
+            },
             face_style: {
               background: { color: backgroundColor, opacity: opacity },
               outer_margin: {
@@ -167,27 +236,49 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
     setOpacity(cardTypeDetail[0].face_style[e].background.opacity);
 
     set_outer_margin_top(cardTypeDetail[0].face_style[e].outer_margin.top);
-    set_outer_margin_bottom(cardTypeDetail[0].face_style[e].outer_margin.bottom);
+    set_outer_margin_bottom(
+      cardTypeDetail[0].face_style[e].outer_margin.bottom
+    );
     set_outer_margin_left(cardTypeDetail[0].face_style[e].outer_margin.left);
     set_outer_margin_right(cardTypeDetail[0].face_style[e].outer_margin.right);
 
     set_inner_padding_top(cardTypeDetail[0].face_style[e].inner_padding.top);
-    set_inner_padding_bottom(cardTypeDetail[0].face_style[e].inner_padding.bottom);
+    set_inner_padding_bottom(
+      cardTypeDetail[0].face_style[e].inner_padding.bottom
+    );
     set_inner_padding_left(cardTypeDetail[0].face_style[e].inner_padding.left);
-    set_inner_padding_right(cardTypeDetail[0].face_style[e].inner_padding.right);
+    set_inner_padding_right(
+      cardTypeDetail[0].face_style[e].inner_padding.right
+    );
 
     set_border_top_type(cardTypeDetail[0].face_style[e].border.top.bordertype);
-    set_border_bottom_type(cardTypeDetail[0].face_style[e].border.bottom.bordertype);
-    set_border_left_type(cardTypeDetail[0].face_style[e].border.left.bordertype);
-    set_border_right_type(cardTypeDetail[0].face_style[e].border.right.bordertype);
+    set_border_bottom_type(
+      cardTypeDetail[0].face_style[e].border.bottom.bordertype
+    );
+    set_border_left_type(
+      cardTypeDetail[0].face_style[e].border.left.bordertype
+    );
+    set_border_right_type(
+      cardTypeDetail[0].face_style[e].border.right.bordertype
+    );
 
-    set_border_top_thickness(cardTypeDetail[0].face_style[e].border.top.thickness);
-    set_border_bottom_thickness(cardTypeDetail[0].face_style[e].border.bottom.thickness);
-    set_border_left_thickness(cardTypeDetail[0].face_style[e].border.left.thickness);
-    set_border_right_thickness(cardTypeDetail[0].face_style[e].border.right.thickness);
+    set_border_top_thickness(
+      cardTypeDetail[0].face_style[e].border.top.thickness
+    );
+    set_border_bottom_thickness(
+      cardTypeDetail[0].face_style[e].border.bottom.thickness
+    );
+    set_border_left_thickness(
+      cardTypeDetail[0].face_style[e].border.left.thickness
+    );
+    set_border_right_thickness(
+      cardTypeDetail[0].face_style[e].border.right.thickness
+    );
 
     set_border_top_color(cardTypeDetail[0].face_style[e].border.top.color);
-    set_border_bottom_color(cardTypeDetail[0].face_style[e].border.bottom.color);
+    set_border_bottom_color(
+      cardTypeDetail[0].face_style[e].border.bottom.color
+    );
     set_border_left_color(cardTypeDetail[0].face_style[e].border.left.color);
     set_border_right_color(cardTypeDetail[0].face_style[e].border.right.color);
   };
@@ -256,49 +347,27 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
   return (
     <div style={{ padding: "0px 10px 10px 10px" }}>
       <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
-        <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <li
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <div style={{ fontSize: "0.8rem" }}>면선택</div>
-          <Select size="small" value={faceSelected} style={{ width: 120, fontSize: "0.8rem" }} onChange={selectFaceHandler}>
-            <Option value="default" disabled>
-              면선택
-            </Option>
-            {cardType === "read" && (
+          <Select
+            size="small"
+            value={faceSelected}
+            style={{ width: 120, fontSize: "0.8rem" }}
+            placeholder="면선택"
+            onChange={selectFaceHandler}
+          >
+            {cardType !== "flip" && (
               <React.Fragment>
-                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value={0} style={{ fontSize: "0.8rem" }}>
                   1면
                 </Select.Option>
-                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
-                  주석
-                </Select.Option>
-              </React.Fragment>
-            )}
-            {cardType === "subject" && (
-              <React.Fragment>
-                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
-                  1면
-                </Select.Option>
-                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
-                  주석
-                </Select.Option>
-              </React.Fragment>
-            )}
-            {cardType === "general" && (
-              <React.Fragment>
-                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
-                  1면
-                </Select.Option>
-                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
-                  주석
-                </Select.Option>
-              </React.Fragment>
-            )}
-
-            {cardType === "share" && (
-              <React.Fragment>
-                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
-                  1면
-                </Select.Option>
-                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value={1} style={{ fontSize: "0.8rem" }}>
                   주석
                 </Select.Option>
               </React.Fragment>
@@ -306,16 +375,16 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
 
             {cardType === "flip" && (
               <React.Fragment>
-                <Select.Option value="0" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value={0} style={{ fontSize: "0.8rem" }}>
                   전체면 [ &nbsp;&nbsp;&nbsp;&nbsp; ]
                 </Select.Option>
-                <Select.Option value="1" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value={1} style={{ fontSize: "0.8rem" }}>
                   1면 [ㅁ X]
                 </Select.Option>
-                <Select.Option value="2" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value={2} style={{ fontSize: "0.8rem" }}>
                   2면 [X ㅁ]
                 </Select.Option>
-                <Select.Option value="3" style={{ fontSize: "0.8rem" }}>
+                <Select.Option value={3} style={{ fontSize: "0.8rem" }}>
                   주석
                 </Select.Option>
               </React.Fragment>
@@ -327,9 +396,14 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
           <React.Fragment>
             <li>
               <div style={{ fontSize: "0.8rem" }}>레이아웃</div>
-              <div style={{display:"flex", justifyContent:"space-between"}}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div style={{ fontSize: "0.8rem" }}>방향</div>
-                <Select size="small" value={card_direction} style={{ fontSize: "0.8rem" }} onChange={directionHandler}>
+                <Select
+                  size="small"
+                  value={card_direction}
+                  style={{ fontSize: "0.8rem" }}
+                  onChange={directionHandler}
+                >
                   <Option value="left-right" style={{ fontSize: "0.8rem" }}>
                     좌우
                   </Option>
@@ -338,25 +412,59 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
                   </Option>
                 </Select>
               </div>
-              <div style={{display:"flex", justifyContent:"space-between"}}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <div style={{ fontSize: "0.8rem" }}>1면 비율</div>
-                {card_direction === "left-right" && <InputNumber size="small" value={left_face_ratio} onChange={leftFaceRatioHandler} style={{ fontSize: "0.8rem" }}/>}
-                {card_direction === "top-bottom" && <InputNumber size="small" value={left_face_ratio} onChange={leftFaceRatioHandler} style={{ fontSize: "0.8rem" }} disabled />}
+                {card_direction === "left-right" && (
+                  <InputNumber
+                    size="small"
+                    value={left_face_ratio}
+                    onChange={leftFaceRatioHandler}
+                    style={{ fontSize: "0.8rem" }}
+                  />
+                )}
+                {card_direction === "top-bottom" && (
+                  <InputNumber
+                    size="small"
+                    value={left_face_ratio}
+                    onChange={leftFaceRatioHandler}
+                    style={{ fontSize: "0.8rem" }}
+                    disabled
+                  />
+                )}
               </div>
             </li>
-            <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
+            <Divider
+              style={{ width: "100%", marginTop: 10, marginBottom: 10 }}
+            />
           </React.Fragment>
         )}
-        
-        <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+
+        <li
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <div style={{ fontSize: "0.8rem" }}>면배경색</div>
-          <Button size="small" onClick={handleClick} style={{ width: "80px", fontSize: "0.8rem", background: backgroundColor }}>
+          <Button
+            size="small"
+            onClick={handleClick}
+            style={{
+              width: "80px",
+              fontSize: "0.8rem",
+              background: backgroundColor,
+            }}
+          >
             Color
           </Button>
           {displayColorPicker ? (
             <div style={popover}>
               <div style={cover} onClick={handleClose} />
-              <CompactPicker color={backgroundColor} onChange={handleChangeComplete} />
+              <CompactPicker
+                color={backgroundColor}
+                onChange={handleChangeComplete}
+              />
               {/* <span>none</span> */}
             </div>
           ) : null}
@@ -369,49 +477,148 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li style={{ fontSize: "0.8rem" }}>
           <div>면테두리바깥쪽여백</div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>상</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_top} onChange={outerMarginTopHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={outer_margin_top}
+              onChange={outerMarginTopHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>하</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_bottom} onChange={outerMarginBottomHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={outer_margin_bottom}
+              onChange={outerMarginBottomHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>좌</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_left} onChange={outerMarginLeftHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={outer_margin_left}
+              onChange={outerMarginLeftHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>우</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_right} onChange={outerMarginRightHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={outer_margin_right}
+              onChange={outerMarginRightHandler}
+            />
           </div>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li style={{ fontSize: "0.8rem" }}>
           <div>면테두리안쪽여백</div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>상</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_top} onChange={innerPaddingTopHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={inner_padding_top}
+              onChange={innerPaddingTopHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>하</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_bottom} onChange={innerPaddingBottomHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={inner_padding_bottom}
+              onChange={innerPaddingBottomHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>좌</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_left} onChange={innerPaddingLeftHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={inner_padding_left}
+              onChange={innerPaddingLeftHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>우</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_right} onChange={innerPaddingRightHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={inner_padding_right}
+              onChange={innerPaddingRightHandler}
+            />
           </div>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li style={{ fontSize: "0.8rem" }}>
           <div>면테두리</div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>상</span>
-            <Select size="small" value={border_top_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderTopTypeHandler}>
+            <Select
+              size="small"
+              value={border_top_type}
+              style={{ width: 75, fontSize: "0.8rem" }}
+              onChange={borderTopTypeHandler}
+            >
               <Option value="solid" style={{ fontSize: "0.8rem" }}>
                 solid
               </Option>
@@ -423,21 +630,48 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               </Option>
             </Select>
             {/* <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input> */}
-            <Button size="small" onClick={handleClick1} style={{ width: "50px", fontSize: "0.8rem", background: border_top_color }}>
+            <Button
+              size="small"
+              onClick={handleClick1}
+              style={{
+                width: "50px",
+                fontSize: "0.8rem",
+                background: border_top_color,
+              }}
+            >
               Color
             </Button>
             {displayColorPicker1 ? (
               <div style={popover1}>
                 <div style={cover1} onClick={handleClose1} />
-                <CompactPicker color={border_top_color} onChange={borderTopColorHandler} />
+                <CompactPicker
+                  color={border_top_color}
+                  onChange={borderTopColorHandler}
+                />
                 {/* <span>none</span> */}
               </div>
             ) : null}
-            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_top_thickness} onChange={borderTopThicknessHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem", width: 60 }}
+              value={border_top_thickness}
+              onChange={borderTopThicknessHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>하</span>
-            <Select size="small" value={border_bottom_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderBottomTypeHandler}>
+            <Select
+              size="small"
+              value={border_bottom_type}
+              style={{ width: 75, fontSize: "0.8rem" }}
+              onChange={borderBottomTypeHandler}
+            >
               <Option value="solid" style={{ fontSize: "0.8rem" }}>
                 solid
               </Option>
@@ -449,21 +683,48 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               </Option>
             </Select>
             {/* <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input> */}
-            <Button size="small" onClick={handleClick2} style={{ width: "50px", fontSize: "0.8rem", background: border_bottom_color }}>
+            <Button
+              size="small"
+              onClick={handleClick2}
+              style={{
+                width: "50px",
+                fontSize: "0.8rem",
+                background: border_bottom_color,
+              }}
+            >
               Color
             </Button>
             {displayColorPicker2 ? (
               <div style={popover}>
                 <div style={cover} onClick={handleClose2} />
-                <CompactPicker color={border_bottom_color} onChange={borderBottomColorHandler} />
+                <CompactPicker
+                  color={border_bottom_color}
+                  onChange={borderBottomColorHandler}
+                />
                 {/* <span>none</span> */}
               </div>
             ) : null}
-            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_bottom_thickness} onChange={borderBottomThicknessHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem", width: 60 }}
+              value={border_bottom_thickness}
+              onChange={borderBottomThicknessHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>좌</span>
-            <Select size="small" value={border_left_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderLeftTypeHandler}>
+            <Select
+              size="small"
+              value={border_left_type}
+              style={{ width: 75, fontSize: "0.8rem" }}
+              onChange={borderLeftTypeHandler}
+            >
               <Option value="solid" style={{ fontSize: "0.8rem" }}>
                 solid
               </Option>
@@ -475,21 +736,48 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               </Option>
             </Select>
             {/* <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input> */}
-            <Button size="small" onClick={handleClick3} style={{ width: "50px", fontSize: "0.8rem", background: border_left_color }}>
+            <Button
+              size="small"
+              onClick={handleClick3}
+              style={{
+                width: "50px",
+                fontSize: "0.8rem",
+                background: border_left_color,
+              }}
+            >
               Color
             </Button>
             {displayColorPicker3 ? (
               <div style={popover}>
                 <div style={cover} onClick={handleClose3} />
-                <CompactPicker color={border_left_color} onChange={borderLeftColorHandler} />
+                <CompactPicker
+                  color={border_left_color}
+                  onChange={borderLeftColorHandler}
+                />
                 {/* <span>none</span> */}
               </div>
             ) : null}
-            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_left_thickness} onChange={borderLeftThicknessHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem", width: 60 }}
+              value={border_left_thickness}
+              onChange={borderLeftThicknessHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>우</span>
-            <Select size="small" value={border_right_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderRightTypeHandler}>
+            <Select
+              size="small"
+              value={border_right_type}
+              style={{ width: 75, fontSize: "0.8rem" }}
+              onChange={borderRightTypeHandler}
+            >
               <Option value="solid" style={{ fontSize: "0.8rem" }}>
                 solid
               </Option>
@@ -501,22 +789,42 @@ const CardFaceSetting = ({ cardTypeId, cardTypeSetId, cardTypeDetail, getUpdated
               </Option>
             </Select>
             {/* <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input> */}
-            <Button size="small" onClick={handleClick4} style={{ width: "50px", fontSize: "0.8rem", background: border_right_color }}>
+            <Button
+              size="small"
+              onClick={handleClick4}
+              style={{
+                width: "50px",
+                fontSize: "0.8rem",
+                background: border_right_color,
+              }}
+            >
               Color
             </Button>
             {displayColorPicker4 ? (
               <div style={popover}>
                 <div style={cover} onClick={handleClose4} />
-                <CompactPicker color={border_right_color} onChange={borderRightColorHandler} />
+                <CompactPicker
+                  color={border_right_color}
+                  onChange={borderRightColorHandler}
+                />
                 {/* <span>none</span> */}
               </div>
             ) : null}
-            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_right_thickness} onChange={borderRightThicknessHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem", width: 60 }}
+              value={border_right_thickness}
+              onChange={borderRightThicknessHandler}
+            />
           </div>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li style={{ textAlign: "right" }}>
-          <Button size="small" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
+          <Button
+            size="small"
+            style={{ fontSize: "0.8rem" }}
+            onClick={handleSubmit}
+          >
             적용하기
           </Button>
         </li>

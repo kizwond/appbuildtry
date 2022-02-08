@@ -49,6 +49,8 @@ import dynamic from "next/dynamic";
 import { calculateStudyStatus } from "./FlipContainerSub";
 import { detect, detectAll } from "tinyld";
 import produce from "immer";
+import decodeHtMLEntities from '../../../../common/logic/decodeHtMLEntities'
+
 const { Option } = Select;
 
 const FroalaEditorView = dynamic(() => import("react-froala-wysiwyg/FroalaEditorView"), {
@@ -260,10 +262,10 @@ const FlipContainer = ({
       let arrFront = [];
       contents[0].face1.forEach((c, i) => {
         if (readModeTTSOption.faceOneTTS[i + 1] && contents[0].face1 !== null && contents[0].face1.length > 0) {
-          const contentOnlyString = c
-            .replace(/(<([^>]+)>)/gi, "")
-            .replace(/&nbsp;/g, "")
-            .replace(/&#39;/g, "");
+          const contentOnlyString =  decodeHtMLEntities(c).replace(
+            /\/|\~/g,
+            " "
+          );
 
           const seperatedWithEngAndKor = seperateEngAndKor(contentOnlyString);
           arrFront.push(seperatedWithEngAndKor);
@@ -272,10 +274,10 @@ const FlipContainer = ({
 
       if (readModeTTSOption.faceOneTTS.selection && contents[0].selection !== null && contents[0].selection.length > 0) {
         contents[0].selection.forEach((c, i) => {
-          const contentWithoutTags = c
-            .replace(/(<([^>]+)>)/gi, "")
-            .replace(/&nbsp;/g, "")
-            .replace(/&#39;/g, "");
+          const contentWithoutTags =  decodeHtMLEntities(c).replace(
+            /\/|\~/g,
+            " "
+          );
           arrFront.push(`${i + 1} ${seperateEngAndKor(contentWithoutTags)}`);
         });
       }
@@ -289,14 +291,14 @@ const FlipContainer = ({
             const contentWithoutTags =
               i === 0 && readModeTTSOption.faceOneTTS.selection && contents[0].selection !== null && contents[0].selection.length > 0
                 ? "정답 " +
-                  c
-                    .replace(/(<([^>]+)>)/gi, "")
-                    .replace(/&nbsp;/g, "")
-                    .replace(/&#39;/g, "")
-                : c
-                    .replace(/(<([^>]+)>)/gi, "")
-                    .replace(/&nbsp;/g, "")
-                    .replace(/&#39;/g, "");
+                decodeHtMLEntities(c).replace(
+                  /\/|\~/g,
+                  " "
+                )
+                :  decodeHtMLEntities(c).replace(
+                  /\/|\~/g,
+                  " "
+                );
             arrBack.push(seperateEngAndKor(contentWithoutTags));
           }
         });

@@ -152,7 +152,6 @@ const CardFaceSetting = ({
   }
 
   async function updatefacestyle() {
-    console.log(faceSelected);
     console.log(cardTypeSetId);
     try {
       await cardtypeset_updatefacestyle({
@@ -256,12 +255,10 @@ const CardFaceSetting = ({
   };
 
   const handleChangeComplete = (color) => {
-    console.log(color);
     setBackgroundColor(color.hex);
   };
 
   const handleClick1 = () => {
-    console.log("clicked handleclick 1");
     setDisplayColorPicker1(!displayColorPicker1);
   };
 

@@ -130,15 +130,12 @@ const CardFaceSetting = ({
   };
 
   useEffect(() => {
-    console.log("카드 디테일 세팅 화면 온");
     if (cardTypeId) {
-      console.log("cardTypeId", cardTypeId);
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face1;
       let nums = [];
       for (var i = 1; i < num_of_row + 1; i++) {
         nums.push(i);
       }
-      console.log(nums);
       const rows = nums.map((item) => (
         <React.Fragment key={`${item - 1}`}>
           <Select.Option value={item - 1}>{item}</Select.Option>
@@ -245,21 +242,14 @@ const CardFaceSetting = ({
   const handleSubmit = () => updaterowstyle();
 
   const selectFaceHandler = (_face) => {
-    console.log(_face);
     resetToPreservedSetting(_face, rowSelected);
     setFaceSelected(_face);
     if (_face === "face1") {
-      console.log("face1selected");
-      console.log(
-        "cardTypeDetail : ",
-        cardTypeDetail[0].cardtype_info.num_of_row.face1
-      );
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face1;
       let nums = [];
       for (var i = 1; i < num_of_row + 1; i++) {
         nums.push(i);
       }
-      console.log(nums);
       const rows = nums.map((item) => (
         <React.Fragment key={`${item - 1}`}>
           <Select.Option value={item - 1}>{item}</Select.Option>
@@ -267,13 +257,11 @@ const CardFaceSetting = ({
       ));
       setRowOptions(rows);
     } else if (_face === "face2") {
-      console.log("face2selected");
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face2;
       let nums = [];
       for (var i = 1; i < num_of_row + 1; i++) {
         nums.push(i);
       }
-      console.log(nums);
       const rows = nums.map((item) => (
         <React.Fragment key={`${item - 1}`}>
           <Select.Option value={item - 1}>{item}</Select.Option>
@@ -281,13 +269,11 @@ const CardFaceSetting = ({
       ));
       setRowOptions(rows);
     } else if (_face === "annotation") {
-      console.log("face3selected");
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.annotation;
       let nums = [];
       for (var i = 1; i < num_of_row + 1; i++) {
         nums.push(i);
       }
-      console.log(nums);
       const rows = nums.map((item) => (
         <React.Fragment key={`${item - 1}`}>
           <Select.Option value={item - 1}>{item}</Select.Option>
@@ -310,7 +296,6 @@ const CardFaceSetting = ({
   };
 
   const handleClick1 = () => {
-    console.log("clicked handleclick 1");
     setDisplayColorPicker1(!displayColorPicker1);
   };
 

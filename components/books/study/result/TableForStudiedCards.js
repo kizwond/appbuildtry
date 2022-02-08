@@ -1,5 +1,6 @@
 import prettyMilliseconds from "pretty-ms";
 import { Fragment, useState } from "react";
+import decodeHtMLEntities from "../../../common/logic/decodeHtMLEntities";
 
 const TableForStudiedCards = ({
   cards,
@@ -112,16 +113,14 @@ const TableForStudiedCards = ({
                   {index + 1}
                 </td>
                 <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
-                  {new String(
+                  {decodeHtMLEntities(
                     contents.find((content) => {
                       return (
                         content._id === card.content.mycontent_id ||
                         content._id === card.content.buycontent_id
                       );
-                    }).face1
-                  )
-                    .replace(/(<([^>]+)>)/gi, "")
-                    .replace(/&nbsp;/g, "")}
+                    }).face1[0]
+                  )}
                 </td>
                 {contentType !== "newCards" && (
                   <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">

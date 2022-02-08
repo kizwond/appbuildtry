@@ -30,6 +30,7 @@ import M_ReAssignBookToAnotherCategory from "../../../../components/books/settin
 import M_ChangeBookTitle from "../../../../components/books/settings/reasignBookToAnotherCategory/M_ChangeBookTitle";
 
 import StudyHistoryPerBook from "../../../../components/common/studyHistoryPerBook/StudyHistoryPerBook";
+import M_resetStudyHistory from "../../../../components/books/settings/resetStudyHistory/M_resetStudyHistory";
 
 const BookSetting = () => {
   const { query, push, back } = useRouter();
@@ -71,7 +72,17 @@ const BookSetting = () => {
         return <M_FlagSetting />;
         break;
       case "cards_progress":
-        return null;
+        return (
+          <div>
+            <div className="BookSettingContentTitle">책 삭제</div>
+            <M_resetStudyHistory
+              book_id={query.book_id}
+              bookTitle={
+                data.mybook_getMybookByMybookIDs.mybooks[0].mybook_info.title
+              }
+            />
+          </div>
+        );
         break;
       case "set_level_and_cycle":
         return <M_LevelAndCycleSetting book_id={query.book_id} />;

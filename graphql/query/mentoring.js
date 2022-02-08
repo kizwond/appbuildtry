@@ -30,6 +30,7 @@ export const GET_BOOKS_INFO = gql`
             numCreatedCards
           }
           studyHistory {
+            _id
             date
             level
             studyHour

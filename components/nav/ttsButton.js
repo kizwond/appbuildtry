@@ -6,7 +6,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../graphql/query/allQuery";
 import { detect, detectAll } from "tinyld";
+<<<<<<< HEAD
 import _ from "lodash";
+=======
+import decodeHtMLEntities from "../common/logic/decodeHtMLEntities";
+>>>>>>> bc3c75132510c0335af75b5866ad872095b124fc
 
 const TTSButton = ({ ttsOn, setTtsOn }) => {
   const [ttsArray, setTtsArray] = useState([]);
@@ -15,9 +19,23 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
   const [getContentsByContentIds] = useLazyQuery(QUERY_MY_CARD_CONTENTS, {
     onCompleted: (data) => {
       console.log(data);
+<<<<<<< HEAD
       const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
       const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
       const contents = [...data.mycontent_getMycontentByMycontentIDs.mycontents, ...data.buycontent_getBuycontentByBuycontentIDs.buycontents];
+=======
+
+      const readModeTTSOption = JSON.parse(
+        sessionStorage.getItem("readModeTTSOption")
+      );
+      const cardListStudying = JSON.parse(
+        sessionStorage.getItem("cardListStudying")
+      );
+      const contents = [
+        ...data.mycontent_getMycontentByMycontentIDs.mycontents,
+        ...data.buycontent_getBuycontentByBuycontentIDs.buycontents,
+      ];
+>>>>>>> bc3c75132510c0335af75b5866ad872095b124fc
       console.log(contents);
       const contentsListSortedByCardSeq = cardListStudying.map((card) => contents.find((content) => content._id === card.content.mycontent_id));
       console.log({ contentsListSortedByCardSeq });
@@ -43,12 +61,21 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
       const tts = contentsListSortedByCardSeq.map((content) => {
         let arr = [];
         content.face1.forEach((c, i) => {
+<<<<<<< HEAD
           if (readModeTTSOption.faceOneTTS[i + 1] && content.face1 !== null && content.face1.length > 0) {
             const contentOnlyString = c
               .replace(/(<([^>]+)>)/gi, "")
               .replace(/&nbsp;/g, "")
               .replace(/&#39;/g, "");
 
+=======
+          if (
+            readModeTTSOption.faceOneTTS[i + 1] &&
+            content.face1 !== null &&
+            content.face1.length > 0
+          ) {
+            const contentOnlyString = decodeHtMLEntities(c);
+>>>>>>> bc3c75132510c0335af75b5866ad872095b124fc
             const seperatedWithEngAndKor = seperateEngAndKor(contentOnlyString);
             arr.push(seperatedWithEngAndKor);
           }
@@ -56,10 +83,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
 
         if (readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0) {
           content.selection.forEach((c, i) => {
-            const contentWithoutTags = c
-              .replace(/(<([^>]+)>)/gi, "")
-              .replace(/&nbsp;/g, "")
-              .replace(/&#39;/g, "");
+            const contentWithoutTags = decodeHtMLEntities(c);
             arr.push(`${i + 1} ${seperateEngAndKor(contentWithoutTags)}`);
           });
         }
@@ -67,6 +91,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           content.face2.forEach((c, i) => {
             if (readModeTTSOption.faceTwoTTS[i + 1]) {
               const contentWithoutTags =
+<<<<<<< HEAD
                 i === 0 && readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0
                   ? "정답 " +
                     c
@@ -77,6 +102,14 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
                       .replace(/(<([^>]+)>)/gi, "")
                       .replace(/&nbsp;/g, "")
                       .replace(/&#39;/g, "");
+=======
+                i === 0 &&
+                readModeTTSOption.faceOneTTS.selection &&
+                content.selection !== null &&
+                content.selection.length > 0
+                  ? "정답 " + decodeHtMLEntities(c)
+                  : decodeHtMLEntities(c);
+>>>>>>> bc3c75132510c0335af75b5866ad872095b124fc
               arr.push(seperateEngAndKor(contentWithoutTags));
             }
           });

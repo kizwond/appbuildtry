@@ -92,3 +92,12 @@ export const MUTATION_CHANGE_MY_BOOK_TITLE = gql`
     }
   }
 `;
+
+export const MUTATION_RESET_MY_BOOK_STUDY_HISTORY = gql`
+  mutation resetMyBookStudyHistory($mybook_id: ID) {
+    levelconfig_resetStudyResult(mybook_id: $mybook_id) {
+      status
+      msg
+    }
+  }
+`;

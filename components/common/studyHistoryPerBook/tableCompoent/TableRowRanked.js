@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from "react";
+import decodeHtMLEntities from "../../../common/logic/decodeHtMLEntities";
 
 const TableRowRanked = ({ contentsData, card, index, getThirdCol }) => {
   const [isShowedCard, setIsShowedCard] = useState();
@@ -11,15 +12,13 @@ const TableRowRanked = ({ contentsData, card, index, getThirdCol }) => {
           {index + 1}
         </td>
         <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-left px-[8px] truncate">
-          {new String(
+          {decodeHtMLEntities(
             contentsData.find(
               (content) =>
                 content._id === card.content.mycontent_id ||
                 content._id === card.content.buycontent_id
             ).face1[0]
-          )
-            .replace(/(<([^>]+)>)/gi, "")
-            .replace(/&nbsp;/g, "")}
+          )}
         </td>
         <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
           {getThirdCol(card)}

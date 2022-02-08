@@ -33,7 +33,7 @@ const LoginComponent = () => {
     });
   };
   const error = () => {
-    message.error("뭔가 잘못되었네요. 다시 해봐요.");
+    message.error("아이디 또는 비밀번호가 일치하지 않습니다.");
   };
 
   const [login] = useMutation(SignInMutation, { onCompleted: showdata });

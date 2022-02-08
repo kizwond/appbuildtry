@@ -594,6 +594,10 @@ const FloatingMenu = ({
                   </div>
                 </Space>
               </Drawer>
+              {/* 사전검색 모달 */}
+
+
+              
               <Modal footer={null} title="카드생성" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                 {searchResult && (
                   <>
@@ -654,6 +658,10 @@ const FloatingMenu = ({
                 )}
                 {editorOn}
               </Modal>
+
+
+
+              {/* 사전검색모달 */}
             </div>
           </div>
         </div>

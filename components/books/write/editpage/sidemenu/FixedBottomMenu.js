@@ -121,8 +121,9 @@ const FloatingMenu = ({
             <PlusSquareOutlined style={{ fontSize: "1.3rem" }} onClick={addCard} />
             카드추가
           </div>
-          <M_FlagSettingDrawer cardTypeSets={cardTypeSets} cardTypeSetId={cardTypeSetId} />
           <M_RightDrawer book_id={book_id} />
+          <M_FlagSettingDrawer cardTypeSets={cardTypeSets} cardTypeSetId={cardTypeSetId} />
+          
           <Popover
             placement="topRight"
             content={

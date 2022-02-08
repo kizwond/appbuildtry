@@ -1014,7 +1014,7 @@ const FlipMode = () => {
     }
   };
   return (
-    <StudyLayout mode="학습" finishStudy={finishStudy} ttsOn={ttsOn} setTtsOn={setTtsOn} ttsNextState={ttsNextState} setTTSNextState={setTTSNextState}>
+    <StudyLayout mode="뒤집기" finishStudy={finishStudy} ttsOn={ttsOn} setTtsOn={setTtsOn} ttsNextState={ttsNextState} setTTSNextState={setTTSNextState}>
       <div
         style={{
           height: "100%",

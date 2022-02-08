@@ -2467,6 +2467,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                           {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
                           <div
                             style={{
+                              width: "100%",
                               backgroundColor: face_style[0].background.color,
                               marginTop: face_style[0].outer_margin.top,
                               marginBottom: face_style[0].outer_margin.bottom,

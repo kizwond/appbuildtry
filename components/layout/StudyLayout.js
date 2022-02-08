@@ -10,7 +10,7 @@ const Layout = (value) => {
         <title>I am theBook</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
       </Head>
-      {value.mode === "학습" && (
+      {value.mode === "뒤집기" && (
         <StudyNav
           mode={value.mode}
           finishStudy={value.finishStudy}

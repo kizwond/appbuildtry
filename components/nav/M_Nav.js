@@ -42,6 +42,11 @@ const Nav = () => {
   const [logout] = useMutation(LOGOUT);
 
   const showDrawer = () => {
+    sessionStorage.removeItem("firstFetchData");
+    sessionStorage.removeItem("examLog");
+    sessionStorage.removeItem("cardListStudying");
+    sessionStorage.setItem("card_seq", 0);
+    sessionStorage.removeItem("isFinished")
     setVisible(true);
   };
 

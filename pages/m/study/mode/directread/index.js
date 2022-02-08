@@ -39,6 +39,11 @@ const SessionSetting = () => {
 
   useEffect(() => {
     if (data) {
+      const isFinished = sessionStorage.getItem("isFinished")
+      if(isFinished === "true"){
+        alert("학습이 종료되었습니다. 메인화면으로 이동합니다.")
+        window.location.href = "/"
+      }
       console.log(data);
       localStorage.removeItem("first_index");
       localStorage.setItem("first_index", data.indexset_getByMybookids.indexsets[0].indexes[0]._id);

@@ -45,22 +45,20 @@ const FloatingMenu = ({ cardTypeSets }) => {
                 listStyle: "none",
                 alignItems: "center",
                 justifyContent: "space-around",
+                height:"40px"
               }}
             >
-              <div onClick={hideAll} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              {/* <div onClick={hideAll} style={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <DashOutlined style={{ fontSize: "1.5rem" }} />
                 더보기
-              </div>
+              </div> */}
 
               <Drawer className="moreBottomDrawer" maskStyle={{ marginTop: "40px" }} height="300px" placement="bottom" closable={false} onClose={onClose} visible={bottomVisible}>
                 <Space
                   size={16}
                   style={{ padding: 20, display: "flex", flexDirection: "flex-start", justifyContent: "flex-start", flexWrap: "wrap", fontSize: "0.8rem", color: "#7a7a7a" }}
                 >
-                  <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <SoundOutlined style={{ fontSize: "1.5rem" }} />
-                    TTS설정
-                  </div>
+                  
                 </Space>
               </Drawer>
             </div>

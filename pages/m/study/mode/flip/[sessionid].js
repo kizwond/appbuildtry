@@ -71,6 +71,7 @@ const FlipMode = () => {
     console.log("data", data);
     if (data.session_updateResults.status === "200") {
       sessionStorage.setItem("endTimeOfSession", new Date());
+      sessionStorage.setItem("isFinished", "true")
       router.push("/m/study/result");
     }
   }
@@ -145,6 +146,11 @@ const FlipMode = () => {
         console.log(data);
         if (JSON.stringify(dataExist) == JSON.stringify(data)) {
           const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
+          const isFinished = sessionStorage.getItem("isFinished")
+          if(isFinished === "true"){
+            alert("학습이 종료되었습니다. 메인화면으로 이동합니다.")
+            window.location.href = "/"
+          }
           setCardListStudying(cardListStudying);
           setSessionScope(data.session_getSession.sessions[0].sessionScope);
           setUserFlagDetails(data.userflagconfig_get.userflagconfigs[0].details);

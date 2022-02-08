@@ -443,7 +443,7 @@ class UpdateEditor extends Component {
     } else if (num_face2 !== 0 && face1_array.length === 0) {
       alert("내용을 입력해 주세요.");
     } else {
-      this.props.onFinishUpdateContents(values, "update", this.props.mycontent._id);
+      this.props.onFinishUpdateContents(values, "update", this.props.mycontent._id, this.props.card_info);
       this.props.setEditorOnForUpdate("");
     }
   };
@@ -509,9 +509,16 @@ class UpdateEditor extends Component {
     console.log("여기맞냐?")
 
     if (this.props.card_info.content.makerFlag.value !== null) {
-      this.setState({
-        flagStar: this.props.card_info.content.makerFlag.value,
-      });
+      if(this.props.card_info.content.makerFlag.value === 0){
+        this.setState({
+          flagStar: null,
+        });
+      } else {
+        this.setState({
+          flagStar: String(this.props.card_info.content.makerFlag.value),
+        });
+      }
+      
     }
     if (this.props.card_info.content.makerFlag.comment !== null) {
       this.setState({
@@ -795,7 +802,7 @@ class UpdateEditor extends Component {
             <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "3px" }}>
               <Select
                 size="small"
-                defaultValue={this.state.flagStar}
+                value={this.state.flagStar}
                 style={{ flexBasis: "100px", flexShrink: 0, width: 100, fontSize: "0.8rem", marginRight: "3px" }}
                 onChange={this.handleFlagStar}
               >

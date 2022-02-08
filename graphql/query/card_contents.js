@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { FRAGMENT_CARD_SET, FRAGMENT_CARD_SET_WITHOUT_STUDY_STATUS } from "../fragment/cardSet";
 
 export const AddCard = gql`
   mutation AddCard($forAddcardAtSameIndex: forAddcardAtSameIndex) {
@@ -116,6 +117,19 @@ export const UpdateMyContents = gql`
         selection
         face2
         annotation
+      }
+    }
+  }
+`;
+
+export const UpdateMakerFlag = gql`
+${FRAGMENT_CARD_SET}
+  mutation UpdateMakerFlag($forUpdateMakerFlag: forUpdateMakerFlag) {
+    cardset_updateMakerFlag(forUpdateMakerFlag: $forUpdateMakerFlag) {
+      status
+      msg
+      cardsets {
+        ...MyCardSetFragment
       }
     }
   }

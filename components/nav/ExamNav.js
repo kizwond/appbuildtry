@@ -22,14 +22,13 @@ import { useMutation } from "@apollo/client";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../graphql/query/account";
 import Image from "next/image";
-import M_LeftDrawerDirectRead from "../../components/books/write/editpage/M_LeftDrawerDirectRead";
-import TTSButton from "./ttsButton";
+import TTSButtonForFlip from "./ttsButtonForFlip";
 
 const backgroundColor = "#4466d1";
 const fontColor = "white";
 const burgerSize = "1.3rem";
 
-const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsOn }) => {
+const StudyNav = ({ mode, finishStudy, ttsOn, setTtsOn, ttsNextState,  setTTSNextState}) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var usernameTemp = localStorage.getItem("username");
@@ -43,7 +42,16 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsO
   }
 
   const isLogged = useSelector((state) => state.isLogged);
+  const [visible, setVisible] = useState(false);
   const [logout] = useMutation(LOGOUT);
+
+  const showDrawer = () => {
+    setVisible(true);
+  };
+
+  const onClose = () => {
+    setVisible(false);
+  };
 
   const onClickLogout = () => {
     logout();
@@ -53,10 +61,8 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsO
     console.log("here");
     window.location.href = "/m";
   };
-  const goToResult = () => {
-    window.speechSynthesis.cancel();
-    sessionStorage.setItem("isFinished", "true")
-    window.location.href = "/m/study/readresult";
+  const goToHome = () => {
+    window.location.href = "/m";
   };
 
   // const getTTSData = () => {
@@ -77,14 +83,14 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsO
           zIndex: 999,
         }}
       >
+        {" "}
         <div
           style={{
             margin: "auto",
             width: "100%",
             maxWidth: "1024px",
             background: "rgb(68,102,209)",
-            background:
-              "linear-gradient(145deg, rgba(68,102,209,1) 0%, rgba(150,189,214,1) 94%, rgba(150,189,214,1) 100%)",
+            background: "linear-gradient(145deg, rgba(68,102,209,1) 0%, rgba(150,189,214,1) 94%, rgba(150,189,214,1) 100%)",
             height: 40,
             padding: 10,
             display: "flex",
@@ -93,20 +99,8 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsO
             boxShadow: "rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px",
           }}
         >
-          <div
-            style={{
-              flexBasis: "33%",
-              textAlign: "left",
-              fontSize: "1rem",
-              cursor: "pointer",
-            }}
-          >
-            {/* <Button style={{ backgroundColor: "#ffffff00", border: "none" }} onClick={goToHome} icon={<HomeOutlined style={{ fontSize: burgerSize, color: fontColor }} />}></Button> */}
-            <M_LeftDrawerDirectRead
-              index_changed={index_changed}
-              indexSets={indexSets}
-            />
-          </div>
+          <div style={{ flexBasis: "33%" }}></div>
+
           <div
             style={{
               flexBasis: "33%",
@@ -120,48 +114,8 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsO
             {mode} 모드
           </div>
 
-          <div
-            style={{
-              flexBasis: "33%",
-              justifyContent: "flex-end",
-              display: "flex",
-            }}
-          >
-            <TTSButton ttsOn={ttsOn} setTtsOn={setTtsOn} />
-            {/* {ttsOn === true && <>
-              <Button
-              size="small"
-              onClick={getTTSData}
-              style={{
-                fontSize: "1rem",
-                borderRadius: "5px",
-                marginRight: "5px",
-              }}
-              type="primary"
-              icon={<PauseOutlined />}
-            />
-            </>}
-            {ttsOn === false && <>
-              <Button
-              size="small"
-              onClick={getTTSData}
-              style={{
-                fontSize: "1rem",
-                borderRadius: "5px",
-                marginRight: "5px",
-              }}
-              type="primary"
-              icon={<SoundOutlined />}
-            />
-            </>} */}
-            <Button
-              size="small"
-              onClick={goToResult}
-              style={{ fontSize: "1rem", borderRadius: "5px" }}
-              type="primary"
-            >
-              학습종료
-            </Button>
+          <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem", cursor: "pointer" }}>
+
           </div>
         </div>
       </div>

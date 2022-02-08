@@ -9,6 +9,7 @@ import { ForAddEffect, ForDeleteEffect } from "../../../../../graphql/mutation/s
 import { Dictionary } from "../../../../../graphql/query/card_contents";
 import { GetIndex, GetCardTypeSet } from "../../../../../graphql/query/allQuery";
 import { GetCardSet } from "../../../../../graphql/query/cardtype";
+import { SAVEMEMO } from "../../../../../graphql/mutation/addMemo";
 import {
   ProfileOutlined,
   FlagFilled,
@@ -96,7 +97,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const [searchToggle, setSearchToggle] = useState(false);
   const [editorOn, setEditorOn] = useState();
   const [selectedCardType, setSelectedCardType] = useState();
-  const [updateMemoState, setUpdateMemoState] = useState();
+  const [updateMemoState, setUpdateMemoState] = useState(false);
   const [memo, setMemo] = useState();
 
   const [face1row, setFace1row] = useState({ face1row1: true, face1row2: true, face1row3: true, face1row4: true, face1row5: true });
@@ -905,19 +906,53 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       }
     }
   };
+
+  const [cardset_updateMemo] = useMutation(SAVEMEMO, {
+    onCompleted: showdataaftermemoadd,
+  });
+  function showdataaftermemoadd(data) {
+    console.log("data", data);
+  }
+
+  const doSaveMemo = useCallback(
+    async (cardset_id, card_id, memo) => {
+      try {
+        await cardset_updateMemo({
+          variables: {
+            forUpdateMemo: {
+              cardset_id,
+              card_id,
+              memo,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [cardset_updateMemo]
+  );
+
   const addMemo = (e) => {
     console.log(e.target.value);
     setMemo(e.target.value);
   };
   const saveMemo = (card_info) => {
+    console.log(card_info._id)
+    setCardId(card_info._id)
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
-    const card_seq = sessionStorage.getItem("card_seq");
-    cardListStudying[card_seq].content.memo = memo;
+    const needToBeChangedIndex = cardListStudying.findIndex((item) => item._id === card_info._id);
+    cardListStudying[needToBeChangedIndex].content.memo = memo;
     sessionStorage.setItem("cardListStudying", JSON.stringify(cardListStudying));
-    this.props.saveMemo(card_info.cardset_id, card_info.card_id, memo);
+    doSaveMemo(card_info.card_info.cardset_id, card_info._id, memo);
+    onClickHandler()
+    
 
-    setUpdateMemoState(false);
   };
+
+  const onClickHandler = useCallback(() => {
+    setUpdateMemoState(false);
+  }, [setUpdateMemoState]);
 
   const updateMemo = (memo) => {
     setMemo(memo);
@@ -1449,7 +1484,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             var memoPop = (
               <>
                 <div style={{ fontSize: "0.8rem" }}>
-                  {!updateMemoState && (
+                  {!updateMemoState && content.content.memo !== null &&  (
                     <>
                       <div>{content.content.memo}</div>
                       <div>
@@ -1463,7 +1498,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                   {updateMemoState && (
                     <>
                       <Input value={memo} onChange={(e) => addMemo(e)} />
-                      <Button size="small" onClick={() => saveMemo(content.card_info)}>
+                      <Button size="small" onClick={() => saveMemo(content)}>
                         저장
                       </Button>
                     </>
@@ -1471,7 +1506,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                   {content.content.memo === null && (
                     <>
                       <Input placeholder="메모추가" onChange={(e) => addMemo(e)} />
-                      <Button size="small" onClick={() => saveMemo(content.card_info)}>
+                      <Button size="small" onClick={() => saveMemo(content)}>
                         저장
                       </Button>
                     </>
@@ -3667,7 +3702,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     if (cardId === card_id) {
       if (selectionText) {
         console.log("eeee");
-      } else {
+      } else if(updateMemoState){
+        console.log("eedddd")
+      }else {
         setCardId("");
         setCardInfo("");
         for (var a = 0; a < selected2.length; a++) {

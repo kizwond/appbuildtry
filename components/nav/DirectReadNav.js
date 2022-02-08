@@ -56,16 +56,9 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsO
   const goToResult = () => {
     window.speechSynthesis.cancel();
     sessionStorage.setItem("isFinished", "true")
-    window.location.href = "/m/study/readresult";
+    window.location.href = "/m/mybooks";
   };
 
-  // const getTTSData = () => {
-  //   if (ttsOn === false) {
-  //     setTtsOn(true);
-  //   } else {
-  //     setTtsOn(false);
-  //   }
-  // };
   return (
     <>
       <div

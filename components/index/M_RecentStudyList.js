@@ -14,6 +14,7 @@ import { useCallback } from "react";
 import produce from "immer";
 import styled from "styled-components";
 import { useState } from "react";
+import useCreateReadSession from "../../hooks/useCreateReadSession";
 
 const M_RecentStudyList = () => {
   console.log("학습이력페이지 랜더링");
@@ -249,8 +250,13 @@ const M_RecentStudyList = () => {
   return (
     <article className="text-[1rem] w-full px-[8px] flex flex-col gap-1">
       <header>
-        <Space style={{display:"flex"}}>
-          <span className="text-gray-700" style={{fontSize:"1.5rem", fontWeight:700}}>최근 학습 이력</span>
+        <Space style={{ display: "flex" }}>
+          <span
+            className="text-gray-700"
+            style={{ fontSize: "1.5rem", fontWeight: 700 }}
+          >
+            최근 학습 이력
+          </span>
           <a className="text-sky-600" onClick={openDrawer}>
             자세히 보기
           </a>
@@ -261,8 +267,8 @@ const M_RecentStudyList = () => {
           <thead>
             <tr className="border-collapse border-y border-y-gray-200">
               <th className="text-[1rem] bg-slate-100 w-[17%]">시작일</th>
-              <th className="text-[1rem] bg-slate-100 w-[19%]">모드</th>
-              <th className="text-[1rem] bg-slate-100 w-[38%]">책 이름</th>
+              <th className="text-[1rem] bg-slate-100 w-[21%]">모드</th>
+              <th className="text-[1rem] bg-slate-100 w-[36%]">책 이름</th>
               <th className="text-[1rem] bg-slate-100 w-[12%]"></th>
               <th className="text-[1rem] bg-slate-100 w-[14%]"></th>
             </tr>
@@ -274,65 +280,13 @@ const M_RecentStudyList = () => {
               _.takeRight(data.session_getSessionByUserid.sessions, 5)
                 .reverse()
                 .map((session) => (
-                  <tr
+                  <TableRowForRecentStudy
                     key={session._id}
-                    className="border-b border-collapse border-b-gray-200"
-                  >
-                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200  text-center">
-                      {session.session_info.timeStarted &&
-                        moment(session.session_info.timeStarted).format(
-                          "YY.MM.DD"
-                        )}
-                    </td>
-                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center">
-                      {session.sessionConfig.studyMode === "read"
-                        ? "책"
-                        : session.sessionConfig.studyMode === "flip"
-                        ? "카드-학습"
-                        : session.sessionConfig.studyMode === "exam"
-                        ? "카드-시험"
-                        : null}
-                    </td>
-                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200">
-                      <div className="flex w-full">
-                        <div className="truncate">
-                          {session.sessionScope[0].title}
-                        </div>
-                        {session.sessionScope.length > 1 && (
-                          <div className="flex-none w-[40px]">
-                            {"외 " + (session.sessionScope.length - 1) + "권"}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td
-                      className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center"
-                      onClick={() => {
-                        console.log(session);
-                        if (session.sessionConfig.studyMode === "exam") {
-                          getExamResult({ session_id: session._id });
-                        } else if (session.sessionConfig.studyMode === "flip") {
-                          getSessionResult({ session_id: session._id });
-                        } else if (session.sessionConfig.studyMode === "read") {
-                          console.log("아직 페이지 없음");
-                        } else {
-                          throw new Error(
-                            `${session.sessionConfig.studyMode}는 없는 모드입니다`
-                          );
-                        }
-                      }}
-                    >
-                      <a>결과</a>
-                    </td>
-                    <td
-                      className="text-[1rem] p-[4px] text-center"
-                      onClick={() => {
-                        getSessionConfigData({ session_id: session._id });
-                      }}
-                    >
-                      <a>재시작</a>
-                    </td>
-                  </tr>
+                    session={session}
+                    getExamResult={getExamResult}
+                    getSessionResult={getSessionResult}
+                    getSessionConfigData={getSessionConfigData}
+                  />
                 ))}
           </tbody>
         </table>
@@ -363,73 +317,93 @@ const M_RecentStudyList = () => {
               </thead>
               <tbody>
                 {data.session_getSessionByUserid.sessions.map((session) => (
-                  <tr
+                  <TableRowForRecentStudy
                     key={session._id}
-                    className="border-b border-collapse border-b-gray-200"
-                  >
-                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200  text-center">
-                      {session.session_info.timeStarted &&
-                        moment(session.session_info.timeStarted).format(
-                          "YY.MM.DD"
-                        )}
-                    </td>
-                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center">
-                      {session.sessionConfig.studyMode === "read"
-                        ? "책"
-                        : session.sessionConfig.studyMode === "flip"
-                        ? "카드-학습"
-                        : session.sessionConfig.studyMode === "exam"
-                        ? "카드-시험"
-                        : null}
-                    </td>
-                    <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200">
-                      <div className="flex w-full">
-                        <div className="truncate">
-                          {session.sessionScope[0].title}
-                        </div>
-                        {session.sessionScope.length > 1 && (
-                          <div className="flex-none w-[40px]">
-                            {"외 " + (session.sessionScope.length - 1) + "권"}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td
-                      className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center"
-                      onClick={() => {
-                        if (session.sessionConfig.studyMode === "exam") {
-                          getExamResult({ session_id: session._id });
-                        } else if (session.sessionConfig.studyMode === "flip") {
-                          getSessionResult({ session_id: session._id });
-                        } else if (session.sessionConfig.studyMode === "read") {
-                          console.log("아직 페이지 없음");
-                        } else {
-                          throw new Error(
-                            `${session.sessionConfig.studyMode}는 없는 모드입니다`
-                          );
-                        }
-                      }}
-                    >
-                      <a>결과</a>
-                    </td>
-                    <td
-                      className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center"
-                      onClick={() => {
-                        getSessionConfigData({ session_id: session._id });
-                      }}
-                    >
-                      <a>재시작</a>
-                    </td>
-                    <td className="text-[1rem] p-[4px] text-center">
-                      <a>삭제</a>
-                    </td>
-                  </tr>
+                    session={session}
+                    getExamResult={getExamResult}
+                    getSessionResult={getSessionResult}
+                    getSessionConfigData={getSessionConfigData}
+                  />
                 ))}
               </tbody>
             </table>
           )}
       </DrawerWrapper>
     </article>
+  );
+};
+
+const TableRowForRecentStudy = ({
+  session,
+  getExamResult,
+  getSessionResult,
+  getSessionConfigData,
+}) => {
+  const createReadSession = useCreateReadSession(false, session.sessionScope);
+
+  return (
+    <tr className="border-b border-collapse border-b-gray-200">
+      <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200  text-center">
+        {session.session_info.timeStarted &&
+          moment(session.session_info.timeStarted).format("YY.MM.DD")}
+      </td>
+      <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center">
+        {session.sessionConfig.studyMode === "read"
+          ? "책모드"
+          : session.sessionConfig.studyMode === "flip"
+          ? "카드-뒤집기"
+          : session.sessionConfig.studyMode === "exam"
+          ? "카드-시험"
+          : null}
+      </td>
+      <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200">
+        <div className="flex w-full">
+          <div className="truncate">{session.sessionScope[0].title}</div>
+          {session.sessionScope.length > 1 && (
+            <div className="flex-none w-[40px]">
+              {"외 " + (session.sessionScope.length - 1) + "권"}
+            </div>
+          )}
+        </div>
+      </td>
+      <td
+        className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200 text-center"
+        onClick={() => {
+          console.log(session);
+          if (session.sessionConfig.studyMode === "exam") {
+            getExamResult({ session_id: session._id });
+          } else if (session.sessionConfig.studyMode === "flip") {
+            getSessionResult({ session_id: session._id });
+          } else if (session.sessionConfig.studyMode === "read") {
+            console.log("아직 페이지 없음");
+          } else {
+            throw new Error(
+              `${session.sessionConfig.studyMode}는 없는 모드입니다`
+            );
+          }
+        }}
+      >
+        <a>결과</a>
+      </td>
+      <td
+        className="text-[1rem] p-[4px] text-center"
+        onClick={() => {
+          if (session.sessionConfig.studyMode === "exam") {
+            console.log("아직 시험모드 재시작 없음");
+          } else if (session.sessionConfig.studyMode === "flip") {
+            getSessionConfigData({ session_id: session._id });
+          } else if (session.sessionConfig.studyMode === "read") {
+            createReadSession();
+          } else {
+            throw new Error(
+              `${session.sessionConfig.studyMode}는 없는 모드입니다`
+            );
+          }
+        }}
+      >
+        <a>재시작</a>
+      </td>
+    </tr>
   );
 };
 

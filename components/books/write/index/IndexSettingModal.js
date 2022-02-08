@@ -1,10 +1,47 @@
 import React, { useState } from "react";
 import { Modal, Button, Popover, Form, Input, Space, Select } from "antd";
-import { PlusOutlined, SettingOutlined } from "@ant-design/icons";
+import {
+  AreaChartOutlined,
+  ArrowLeftOutlined,
+  ArrowRightOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  LeftCircleOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  PlusOutlined,
+  RightCircleOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import Image from "next/image";
+import styled from "styled-components";
 
-const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, onFinishChangeLevel, onFinishIndexDelete, onFinishExcelExport }) => {
+const StyledModal = styled(Modal)`
+  min-width: 340px;
+  & .ant-modal-body {
+    padding: 8px 8px 8px 8px;
+`;
+
+const IndexSettingModal = ({
+  indexinfo,
+  onFinish,
+  onFinishRename,
+  indexSetInfo,
+  onFinishChangeLevel,
+  onFinishIndexDelete,
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [name, setName] = useState("");
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleToExpandForAdding = () => {
+    if (isExpanded) {
+      setIsExpanded(false);
+      setName("");
+    } else {
+      setIsExpanded(true);
+    }
+  };
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -18,217 +55,381 @@ const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, 
     setIsModalVisible(false);
   };
 
-  if (indexinfo) {
-    var indexList = indexinfo.map((item) => (
-      <>
-        <IndexList
-          indexinfo={indexinfo}
-          indexSetInfo={indexSetInfo}
-          onFinish={onFinish}
-          index={item}
-          onFinishRename={onFinishRename}
-          onFinishChangeLevel={onFinishChangeLevel}
-          onFinishIndexDelete={onFinishIndexDelete}
-          onFinishExcelExport={onFinishExcelExport}
-        />
-      </>
-    ));
-  }
-
   return (
     <>
-      <SettingOutlined size="small" onClick={showModal} style={{fontSize:"1rem"}} />
-      <Modal footer={null} title="목차설정" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <ul style={{ display: "flex", listStyle: "none", justifyContent: "space-between", fontSize:"0.8rem", paddingLeft:"0" }}>
-          <li></li>
-          <li>목차명</li>
-          <li>이름변경</li>
-          <li>레벨변경</li>
-          <li>삭제</li>
-          <li>export</li>
-        </ul>
-        {indexList}
-      </Modal>
-    </>
-  );
-};
-
-const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, onFinishChangeLevel, onFinishIndexDelete, onFinishExcelExport }) => {
-  const [newInput, setNewInput] = useState(false);
-  const [renameInput, setRenameInput] = useState(false);
-  const [deleteInput, setDeleteInput] = useState(false);
-  const newIndexTitle = <span style={{ fontSize: "0.8rem" }}>새로운 목차의 이름을 입력해 주세요.</span>;
-  const renameIndexTitle = <span style={{ fontSize: "0.8rem" }}>변경할 목차 이름을 입력해 주세요.</span>;
-  const deleteIndexTitle = <span style={{ fontSize: "0.8rem" }}>삭제후 카드를 이동할 목차를 선택해주세요.</span>;
-  const createIndex = (indexset_id, current_index_id, current_level) => (
-    <Form
-      layout={"inline"}
-      size="small"
-      initialValues={{
-        current_index_id: current_index_id,
-        current_level: current_level,
-        indexset_id: indexset_id,
-      }}
-      onFinish={onFinish}
-      className="change_book_title_input_form"
-    >
-      <Space>
-        <Form.Item name={["name"]} rules={[{ required: true }]}>
-          <Input placeholder="" />
-        </Form.Item>
-        <Form.Item name={["current_index_id"]} hidden={true} rules={[{ required: true }]}>
-          <Input placeholder={current_index_id} />
-        </Form.Item>
-        <Form.Item name={["current_level"]} hidden={true} rules={[{ required: true }]}>
-          <Input placeholder={current_level} />
-        </Form.Item>
-        <Form.Item name={["indexset_id"]} hidden={true} rules={[{ required: true }]}>
-          <Input placeholder={indexset_id} />
-        </Form.Item>
-        <Form.Item className="change_book_title_buttons">
-          <Button size="small" type="primary" onClick={() => setNewInput(false)} htmlType="submit" style={{ fontSize: "0.8rem" }}>
-            완료
-          </Button>
-          <Button size="small" onClick={() => setNewInput(false)} style={{ fontSize: "0.8rem" }}>
-            취소
-          </Button>
-        </Form.Item>
-      </Space>
-    </Form>
-  );
-
-  const renameIndex = (indexset_id, current_index_id) => (
-    <Form
-      layout={"inline"}
-      size="small"
-      initialValues={{
-        current_index_id: current_index_id,
-        indexset_id: indexset_id,
-      }}
-      onFinish={onFinishRename}
-      className="change_book_title_input_form"
-    >
-      <Space>
-        <Form.Item name={["name"]} rules={[{ required: true }]}>
-          <Input placeholder="" />
-        </Form.Item>
-        <Form.Item name={["current_index_id"]} hidden={true} rules={[{ required: true }]}>
-          <Input placeholder={current_index_id} />
-        </Form.Item>
-        <Form.Item name={["indexset_id"]} hidden={true} rules={[{ required: true }]}>
-          <Input placeholder={indexset_id} />
-        </Form.Item>
-        <Form.Item className="change_book_title_buttons">
-          <Button size="small" type="primary" onClick={() => setRenameInput(false)} htmlType="submit" style={{ fontSize: "0.8rem" }}>
-            완료
-          </Button>
-          <Button size="small" onClick={() => setRenameInput(false)} style={{ fontSize: "0.8rem" }}>
-            취소
-          </Button>
-        </Form.Item>
-      </Space>
-    </Form>
-  );
-
-  if (indexinfo) {
-    var optionList = indexinfo.map((item) => {
-      if (item._id === index._id) {
-        return null;
-      } else {
-        return (
-          <React.Fragment key={item._id}>
-            <Select.Option value={item._id}>{item.name}</Select.Option>
-          </React.Fragment>
-        );
-      }
-    });
-  }
-
-  const deleteIndex = (indexset_id, current_index_id) => (
-    <Form
-      layout={"inline"}
-      size="small"
-      initialValues={{
-        current_index_id: current_index_id,
-        indexset_id: indexset_id,
-      }}
-      onFinish={onFinishIndexDelete}
-      className="change_book_title_input_form"
-    >
-      <Space>
-        <Form.Item name={["moveto_index_id"]} rules={[{ required: false }]}>
-          <Select style={{ width: 120 }}>
-            <Select.Option value="default">목차선택</Select.Option>
-            {optionList}
-          </Select>
-        </Form.Item>
-        <Form.Item name={["current_index_id"]} hidden={true} rules={[{ required: true }]}>
-          <Input placeholder={current_index_id} />
-        </Form.Item>
-        <Form.Item name={["indexset_id"]} hidden={true} rules={[{ required: true }]}>
-          <Input placeholder={indexset_id} />
-        </Form.Item>
-        <Form.Item className="change_book_title_buttons">
-          <Button size="small" type="primary" onClick={() => setDeleteInput(false)} htmlType="submit" style={{ fontSize: "0.8rem" }}>
-            완료
-          </Button>
-          <Button size="small" onClick={() => setDeleteInput(false)} style={{ fontSize: "0.8rem" }}>
-            취소
-          </Button>
-        </Form.Item>
-      </Space>
-    </Form>
-  );
-  const levelChange = (direction, current_level) => {
-    const prevItemIndex = indexinfo.findIndex((item) => item._id === index._id) - 1;
-    if (prevItemIndex !== -1) {
-      const prevItemLevel = indexinfo[prevItemIndex].level;
-      if (current_level === 1 && direction === "up") {
-        alert("1레벨짜리를 왜 0으로 만들라그랴");
-      } else if (current_level === prevItemLevel + 1 && direction === "down") {
-        alert("왜 부모없이 2레벨을 건너뛰냐");
-      } else {
-        onFinishChangeLevel(direction, index._id, indexSetInfo._id);
-      }
-    } else {
-      alert("최상위 목차레벨변동 없어야지");
-    }
-  };
-
-  const excelExportHandler = (value) => {
-    onFinishExcelExport(value)
-  }
-  return (
-    <>
-      <div style={{ display: "flex", listStyle: "none", justifyContent: "space-between", alignItems:"center", paddingLeft:"0" }}>
-        <div>
-          <Popover placement="rightTop" title={newIndexTitle} visible={newInput} content={createIndex(indexSetInfo._id, index._id, index.level)} trigger="click">
-            <PlusOutlined onClick={() => setNewInput(true)} style={{ fontSize: "1rem" }} />
-          </Popover>
-        </div>
-        <div style={{fontSize:"0.8rem"}}>
-          {index.name}, level : {index.level}
-        </div>
-        <div>
-          <Popover placement="rightTop" title={renameIndexTitle} visible={renameInput} content={renameIndex(indexSetInfo._id, index._id)} trigger="click">
-            <Button size="small" onClick={() => setRenameInput(true)} style={{fontSize:"0.8rem"}}>이름변경</Button>
-          </Popover>
-        </div>
-        <div>
-          <Button size="small" onClick={() => levelChange("up", index.level)} style={{fontSize:"0.8rem"}}>좌</Button>
-          <Button size="small" onClick={() => levelChange("down", index.level)} style={{fontSize:"0.8rem"}}>우</Button>
-        </div>
-        <div>
-          <Popover placement="rightTop" title={deleteIndexTitle} visible={deleteInput} content={deleteIndex(indexSetInfo._id, index._id)} trigger="click">
-            <Button size="small" onClick={() => setDeleteInput(true)} style={{fontSize:"0.8rem"}}>삭제</Button>
-          </Popover>
-        </div>
-        {/* <div>
-            <Button size="small" icon={<Image src="/image/export_excel.png" width={"24px"} height={"24px"} alt="excel_export" />} onClick={() => excelExportHandler(index._id)} style={{border:"none", marginTop:"3px"}}></Button>
-        </div> */}
-      </div>
+      <SettingOutlined
+        size="small"
+        onClick={showModal}
+        style={{ fontSize: "1rem" }}
+      />
+      <StyledModal
+        footer={null}
+        title="목차설정"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <table className="w-full table-fixed">
+          <thead>
+            <tr className="border-collapse border-y border-y-gray-200">
+              <th
+                className="text-[1rem] bg-slate-100 w-[30px]"
+                onClick={toggleToExpandForAdding}
+              >
+                <Button
+                  size="small"
+                  shape="circle"
+                  type="text"
+                  icon={<PlusOutlined />}
+                />
+              </th>
+              <th className="text-[1rem] bg-slate-100 w-[24%]">레벨변경</th>
+              <th className="text-[1rem] bg-slate-100">목차명</th>
+              <th className="text-[1rem] bg-slate-100 w-[10%]"></th>
+              <th className="text-[1rem] bg-slate-100 w-[10%]"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {isExpanded && (
+              <tr className="border-b border-collapse border-b-gray-200">
+                <td colSpan={5}>
+                  <div className="w-full flex gap-2">
+                    <Input
+                      size="small"
+                      className="w-full"
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
+                    />
+                    <Button
+                      size="small"
+                      type="primary"
+                      onClick={() => {
+                        setIsExpanded(false);
+                        setName("");
+                        onFinish({
+                          name,
+                          current_index_id: null,
+                          indexset_id: indexSetInfo._id,
+                        });
+                      }}
+                    >
+                      추가
+                    </Button>
+                    <Button
+                      size="small"
+                      onClick={() => {
+                        setIsExpanded(false);
+                        setName("");
+                      }}
+                    >
+                      취소
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            )}
+            {indexinfo.map((index, i) => (
+              <TableRow
+                key={index._id}
+                index={index}
+                prevItemIndex={i === 0 ? null : i - 1}
+                indexSetInfo={indexSetInfo}
+                onFinish={onFinish}
+                onFinishIndexDelete={onFinishIndexDelete}
+                onFinishChangeLevel={onFinishChangeLevel}
+                onFinishRename={onFinishRename}
+              />
+            ))}
+          </tbody>
+        </table>
+      </StyledModal>
     </>
   );
 };
 
 export default IndexSettingModal;
+
+const TableRow = ({
+  index,
+  onFinish,
+  onFinishRename,
+  indexSetInfo,
+  onFinishChangeLevel,
+  onFinishIndexDelete,
+  prevItemIndex,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [name, setName] = useState("");
+  const [rename, setReName] = useState("");
+  const [indexForCardsInDeletedIndex, setIndexForCardsInDeletedIndex] =
+    useState("");
+  const [content, setContent] = useState("");
+
+  const toggleToExpandForAdding = () => {
+    if (isExpanded) {
+      setIsExpanded(false);
+      setName("");
+      setContent("");
+    } else {
+      setIsExpanded(true);
+      setContent("add");
+    }
+  };
+
+  const toggleToExpandForDeleting = () => {
+    if (isExpanded) {
+      setIsExpanded(false);
+      setContent("");
+    } else {
+      setIsExpanded(true);
+      setContent("delete");
+    }
+  };
+  const toggleToExpandForRenaming = () => {
+    if (isExpanded) {
+      setIsExpanded(false);
+      setName("");
+      setContent("");
+    } else {
+      setIsExpanded(true);
+      setContent("rename");
+    }
+  };
+
+  const prevItemLevel =
+    prevItemIndex === null ? -1 : indexSetInfo.indexes[prevItemIndex].level;
+  const chagneIndexLevel = (direction) => {
+    onFinishChangeLevel(direction, index._id, indexSetInfo._id);
+  };
+
+  const isSome = () => {};
+
+  return (
+    <>
+      <tr className="border-b border-collapse border-b-gray-200">
+        <td
+          className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center"
+          onClick={toggleToExpandForAdding}
+        >
+          <Button
+            size="small"
+            shape="circle"
+            type="text"
+            icon={<PlusOutlined />}
+          />
+        </td>
+
+        <td className="border-r border-collapse border-r-gray-200">
+          <div className="flex justify-center items-center gap-2 text-[18px]">
+            <div
+              className="flex justify-end w-full item-center"
+              onClick={() => {
+                chagneIndexLevel("left");
+              }}
+            >
+              <Button
+                disabled={index.level === 1}
+                shape="circle"
+                size="small"
+                type="text"
+                icon={<ArrowLeftOutlined />}
+              />
+            </div>
+
+            <div
+              className="flex w-full item-center"
+              onClick={() => {
+                chagneIndexLevel("right");
+              }}
+            >
+              <Button
+                disabled={
+                  prevItemLevel === -1 ||
+                  index.level === prevItemLevel + 1 ||
+                  index.level === 3
+                }
+                shape="circle"
+                size="small"
+                type="text"
+                icon={<ArrowRightOutlined />}
+              />
+            </div>
+          </div>
+        </td>
+
+        <td className="text-[1rem] border-r border-collapse border-r-gray-200">
+          <div className="flex items-center">
+            <div
+              className={`${
+                index.level === 1
+                  ? "pl-0"
+                  : index.level === 2
+                  ? "pl-2"
+                  : index.level === 3
+                  ? "pl-4"
+                  : ""
+              }`}
+            >
+              <div className="w-[18px] h-[18px] relative">
+                <Image
+                  src={`/image/svg/level${index.level}.svg`}
+                  layout="fill"
+                  alt={"starRate"}
+                />
+              </div>
+            </div>
+            <div className="truncate">
+              {index.level}
+              {index.name}
+            </div>
+          </div>
+        </td>
+
+        <td
+          className="text-[1rem] py-[4px] text-center"
+          onClick={toggleToExpandForRenaming}
+        >
+          <Button
+            size="small"
+            shape="circle"
+            type="text"
+            icon={<EditOutlined />}
+          />
+        </td>
+        <td
+          className="text-[1rem] py-[4px] text-center"
+          onClick={toggleToExpandForDeleting}
+        >
+          <Button
+            size="small"
+            shape="circle"
+            type="text"
+            icon={<DeleteOutlined />}
+          />
+        </td>
+      </tr>
+      {isExpanded && (
+        <tr className="border-b border-collapse border-b-gray-200">
+          <td colSpan={5}>
+            {content === "add" && (
+              <div className="w-full flex gap-2">
+                <Input
+                  size="small"
+                  className="w-full"
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
+                <Button
+                  size="small"
+                  type="primary"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    setName("");
+                    onFinish({
+                      name,
+                      current_index_id: index._id,
+                      indexset_id: indexSetInfo._id,
+                    });
+                  }}
+                >
+                  추가
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    setName("");
+                  }}
+                >
+                  취소
+                </Button>
+              </div>
+            )}
+            {content === "rename" && (
+              <div className="w-full flex gap-2">
+                <Input
+                  size="small"
+                  className="w-full"
+                  defaultValue={index.name}
+                  onChange={(e) => {
+                    setReName(e.target.value);
+                  }}
+                />
+                <Button
+                  size="small"
+                  type="primary"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    setReName("");
+                    onFinishRename({
+                      name: rename,
+                      current_index_id: index._id,
+                      indexset_id: indexSetInfo._id,
+                    });
+                  }}
+                >
+                  수정
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    setReName("");
+                  }}
+                >
+                  취소
+                </Button>
+              </div>
+            )}
+            {content === "delete" && (
+              <div className="w-full flex gap-2">
+                <Select
+                  size="small"
+                  className="w-full"
+                  placeholder="카드를 옮길 목차를 선택하세요"
+                  onChange={(_index) => {
+                    setIndexForCardsInDeletedIndex(_index);
+                  }}
+                >
+                  {indexSetInfo.indexes
+                    .filter((_index) => _index._id !== index._id)
+                    .map((item) => (
+                      <Select.Option key={item._id} value={item._id}>
+                        {item.name}
+                      </Select.Option>
+                    ))}
+                </Select>
+                <Button
+                  size="small"
+                  type="primary"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    setName("");
+                    onFinishIndexDelete({
+                      moveto_index_id: indexForCardsInDeletedIndex,
+                      current_index_id: index._id,
+                      indexset_id: indexSetInfo._id,
+                    });
+                  }}
+                >
+                  삭제
+                </Button>
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setIsExpanded(false);
+                    setName("");
+                  }}
+                >
+                  취소
+                </Button>
+              </div>
+            )}
+          </td>
+        </tr>
+      )}
+    </>
+  );
+};

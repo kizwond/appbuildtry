@@ -27,7 +27,18 @@ const BuyBookDetail = (props) => {
 
   const [createMybookFromBuyBook] = useMutation(
     MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK,
-    { onCompleted: (data) => console.log(data) }
+    {
+      onCompleted: (data) => {
+        if (data.buybook_createMybookFromBuybook.status === "200") {
+          console.log("구매하기 성공 ", data);
+          router.back();
+        } else if (data.buybook_createMybookFromBuybook.status === "401") {
+          router.push("/m/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
+      },
+    }
   );
   if (router.isFallback) {
     return <div>로딩 중...</div>;
@@ -131,19 +142,43 @@ const BuyBookDetail = (props) => {
             <div className="px-2 text-lg font-bold border-b border-b-slate-500">
               책 소개
             </div>
-            <div className="px-2 text-base">{introductionOfBook}</div>
+            <div className="px-2 text-base">
+              {introductionOfBook &&
+                introductionOfBook.length > 0 &&
+                introductionOfBook.split("\n").map((line, i) => (
+                  <span key={i}>
+                    {line} <br />
+                  </span>
+                ))}
+            </div>
           </div>
           <div>
             <div className="px-2 text-lg font-bold border-b border-b-slate-500">
               저자 소개
             </div>
-            <div className="px-2 text-base">{introductionOfAuthor}</div>
+            <div className="px-2 text-base">
+              {introductionOfAuthor &&
+                introductionOfAuthor.length > 0 &&
+                introductionOfAuthor.split("\n").map((line, i) => (
+                  <span key={i}>
+                    {line} <br />
+                  </span>
+                ))}
+            </div>
           </div>
           <div>
             <div className="px-2 text-lg font-bold border-b border-b-slate-500">
               목차
             </div>
-            <div className="px-2 text-base">{listOfIndex}</div>
+            <div className="px-2 text-base">
+              {listOfIndex &&
+                listOfIndex.length > 0 &&
+                listOfIndex.split("\n").map((line, i) => (
+                  <span key={i}>
+                    {line} <br />
+                  </span>
+                ))}
+            </div>
           </div>
           <div>
             <div className="px-2 mb-1 text-lg font-bold border-b border-b-slate-500 ">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { Drawer, Button, Space, Divider } from "antd";
 import CardTypeSettingModal from "../../../../components/books/write/cardtype/CardTypeSettingModal";
-import CardTypeSetting from "./cardtype/CardTypeSetting";
+import SelectionForSettingCardType from "./cardtype/SelectionForSettingCardType";
 import CardtypeContainer from "../../write/editpage/cardtype/CardtypeContainer";
 import { GetCardTypeSet } from "../../../../graphql/query/cardtype";
 import { useQuery, useMutation } from "@apollo/client";
@@ -100,7 +100,9 @@ const RightDrawer = () => {
       <Drawer
         title={
           <>
-            <span style={{ fontSize: "1rem", fontWeight: "700" }}>카드설정</span>
+            <span style={{ fontSize: "1rem", fontWeight: "700" }}>
+              카드설정
+            </span>
           </>
         }
         placement="right"
@@ -111,13 +113,32 @@ const RightDrawer = () => {
         width={250}
       >
         <Space direction="vertical">
-          <div style={{ display: "flex", width: "250px", padding: "10px 10px 2px 10px", alignItems:"center" }}>
-            <CardTypeSetting cardTypes={cardTypes} book_id={book_id} handleChange={handleChange} />
-            <CardTypeSettingModal book_id={book_id} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+          <div
+            style={{
+              display: "flex",
+              width: "250px",
+              padding: "10px 10px 2px 10px",
+              alignItems: "center",
+            }}
+          >
+            <SelectionForSettingCardType
+              cardTypes={cardTypes}
+              book_id={book_id}
+              handleChange={handleChange}
+            />
+            <CardTypeSettingModal
+              book_id={book_id}
+              getUpdatedCardTypeList={getUpdatedCardTypeList}
+            />
           </div>
           {cardTypeDetail && (
             <>
-              <CardtypeContainer cardTypeId={cardTypeId} cardTypeSetId={cardTypeSetId} cardTypeDetail={cardTypeDetail} getUpdatedCardTypeList={getUpdatedCardTypeList} />
+              <CardtypeContainer
+                cardTypeId={cardTypeId}
+                cardTypeSetId={cardTypeSetId}
+                cardTypeDetail={cardTypeDetail}
+                getUpdatedCardTypeList={getUpdatedCardTypeList}
+              />
             </>
           )}
         </Space>

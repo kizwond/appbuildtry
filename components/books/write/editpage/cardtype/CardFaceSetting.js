@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/client";
 import { Button, Divider, Select, InputNumber } from "antd";
 import { UpdateCardFace } from "../../../../../graphql/query/cardtype";
 import { CompactPicker } from "react-color";
+import Image from "next/image";
 
 const { Option } = Select;
 
@@ -319,9 +320,10 @@ const CardFaceSetting = ({
           <Select
             size="small"
             value={faceSelected}
-            style={{ width: 120, fontSize: "0.8rem" }}
+            style={{ width: 160, fontSize: "0.8rem" }}
             placeholder="면선택"
             onChange={selectFaceHandler}
+            optionLabelProp="label"
           >
             {cardType !== "flip" && (
               <>
@@ -336,16 +338,43 @@ const CardFaceSetting = ({
 
             {cardType === "flip" && (
               <>
-                <Select.Option value={0} style={{ fontSize: "0.8rem" }}>
-                  전체면 [ &nbsp;&nbsp;&nbsp;&nbsp; ]
+                <Select.Option value={0} label="전체면">
+                  <div className="flex justify-between items-center">
+                    전체면
+                    <div className="w-[65px] h-[44px] relative">
+                      <Image
+                        src={`/image/svg/card.svg`}
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                  </div>
                 </Select.Option>
-                <Select.Option value={1} style={{ fontSize: "0.8rem" }}>
-                  1면 [ㅁ X]
+                <Select.Option value={1} label="1면">
+                  <div className="flex justify-between items-center">
+                    1면
+                    <div className="w-[65px] h-[44px] relative">
+                      <Image
+                        src={`/image/svg/face1.svg`}
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                  </div>
                 </Select.Option>
-                <Select.Option value={2} style={{ fontSize: "0.8rem" }}>
-                  2면 [X ㅁ]
+                <Select.Option value={2} label="2면">
+                  <div className="flex justify-between items-center">
+                    2면
+                    <div className="w-[65px] h-[44px] relative">
+                      <Image
+                        src={`/image/svg/face2.svg`}
+                        layout="fill"
+                        alt={"starRate"}
+                      />
+                    </div>
+                  </div>
                 </Select.Option>
-                <Select.Option value={3} style={{ fontSize: "0.8rem" }}>
+                <Select.Option value={3} label="주석">
                   주석
                 </Select.Option>
               </>

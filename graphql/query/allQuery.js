@@ -549,6 +549,7 @@ export const QUERY_SESSION_BY_USER = gql`
       sessions {
         _id
         sessionScope {
+          mybook_id
           title
         }
         session_info {

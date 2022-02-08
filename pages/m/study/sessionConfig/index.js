@@ -298,9 +298,9 @@ const StudySessionConfig = ({
             </StyledSessionConfig>
           </StyledDiv>
         )}
-        <StyledBottomBar>
+        <StyledBottomBar className="bg-blue-400">
           <div
-            className="text-[1.2rem]"
+            className="text-[1.5rem]"
             onClick={() => {
               if (activatedComponent === "index") {
                 changeActivatedComponent("config");
@@ -312,8 +312,8 @@ const StudySessionConfig = ({
             <div className="flex justify-end w-full item-center">
               {activatedComponent === "config" && <StepBackwardOutlined />}
             </div>
-            <div className="flex-none w-[70px] flex item-center justify-center">
-              {activatedComponent === "index" ? "세션 설정" : "목차 설정"}
+            <div className="flex-none w-[122px] flex item-center justify-center">
+              {activatedComponent === "index" ? "학습 방식 선택" : "목차 선택"}
             </div>
             <div className="flex w-full item-center">
               {activatedComponent === "index" && <StepForwardOutlined />}
@@ -322,8 +322,8 @@ const StudySessionConfig = ({
           <div
             className={
               data && numberOfFilteredCards.length > 0
-                ? "text-[1.2rem]"
-                : "text-[1.2rem] text-gray-300"
+                ? "text-[1.5rem]"
+                : "text-[1.5rem] text-gray-300"
             }
             onClick={() => {
               if (numberOfFilteredCards.length > 0) {
@@ -345,7 +345,6 @@ export default StudySessionConfig;
 const StyledBottomBar = styled.div`
   overflow: hidden;
   border-top: 1px solid #e1e1e1;
-  background-color: #f5f5f5;
   position: fixed;
   bottom: 0;
   width: 100%;

@@ -3,7 +3,7 @@ import { GetCardRelated } from "../../../../graphql/query/allQuery";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import FixedBottomMenu from "./sidemenu/FixedBottomMenu";
 import { Button, Select, Space, notification } from "antd";
-import { AddPolly, UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT,UpdateMakerFlag } from "../../../../graphql/query/card_contents";
+import { AddPolly, UpdateMyContents, AddCard, DeleteCard, GET_CARD_CONTENT, GET_BUY_CARD_CONTENT, UpdateMakerFlag } from "../../../../graphql/query/card_contents";
 import { DeleteOutlined, EditOutlined, HeartFilled, StarFilled, CheckCircleFilled, PlusOutlined, ApartmentOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -605,11 +605,11 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   }
 
   async function updatemakerflag(cardset_id, card_id, value, commentTmp) {
-    console.log(commentTmp)
-    if(commentTmp === ""){
-      var comment = null
+    console.log(commentTmp);
+    if (commentTmp === "") {
+      var comment = null;
     } else {
-      comment = commentTmp
+      comment = commentTmp;
     }
     try {
       await cardset_updateMakerFlag({
@@ -618,7 +618,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
             cardset_id,
             card_id,
             makerFlag: {
-              value : Number(value),
+              value: Number(value),
               comment,
             },
           },
@@ -632,7 +632,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
   const onFinishUpdateContents = (values, from, mycontent_id, card_info) => {
     console.log(values);
     console.log(mycontent_id);
-    console.log(card_info)
+    console.log(card_info);
     updatecontents(mycontent_id, values.face1, values.selection, values.face2, values.annotation);
     updatemakerflag(card_info.card_info.cardset_id, card_info._id, values.flagStar, values.flagComment);
   };
@@ -1777,7 +1777,37 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                                       textDecoration: `${row_font.face1[row_font.face1.length - 1].underline === "on" ? "underline" : "none"}`,
                                     }}
                                   >
-                                    <FroalaEditorView model={item} />
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                      <span>
+                                        {index === 0 && (
+                                          <>
+                                            <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➀</span>
+                                          </>
+                                        )}
+                                        {index === 1 && (
+                                          <>
+                                            <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➁</span>
+                                          </>
+                                        )}
+                                        {index === 2 && (
+                                          <>
+                                            <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➂</span>
+                                          </>
+                                        )}
+                                        {index === 3 && (
+                                          <>
+                                            <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➃</span>
+                                          </>
+                                        )}
+                                        {index === 4 && (
+                                          <>
+                                            <span style={{ marginRight: "5px", fontSize: "1.5rem" }}>➄</span>
+                                          </>
+                                        )}
+                                      </span>
+                                      <FroalaEditorView model={item} />
+                                      {/* <FroalaEditorView model={item} /> */}
+                                    </div>
                                   </div>
                                 </>
                               ))}
@@ -1800,46 +1830,133 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
                               borderRight: `${face_style[2].border.right.thickness}px ${face_style[2].border.right.bordertype} ${face_style[2].border.right.color}`,
                             }}
                           >
-                            {content_value.face2.map((item, index) => (
-                              <>
-                                <div
-                                  style={{
-                                    backgroundColor: row_style.face2[index].background.color,
-                                    marginTop: row_style.face2[index].outer_margin.top,
-                                    marginBottom: row_style.face2[index].outer_margin.bottom,
-                                    marginLeft: row_style.face2[index].outer_margin.left,
-                                    marginRight: row_style.face2[index].outer_margin.right,
-                                    paddingTop: row_style.face2[index].inner_padding.top,
-                                    paddingBottom: row_style.face2[index].inner_padding.bottom,
-                                    paddingLeft: row_style.face2[index].inner_padding.left,
-                                    paddingRight: row_style.face2[index].inner_padding.right,
-                                    borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
-                                    borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
-                                    borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
-                                    borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
-                                    textAlign: row_font.face2[index].align,
-                                    fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
-                                    color: row_font.face2[index].color,
-                                    fontFamily: `${
-                                      row_font.face2[index].font === "고딕"
-                                        ? `Nanum Gothic, sans-serif`
-                                        : row_font.face2[index].font === "명조"
-                                        ? `Nanum Myeongjo, sans-serif`
-                                        : row_font.face2[index].font === "바탕"
-                                        ? `Gowun Batang, sans-serif`
-                                        : row_font.face2[index].font === "돋움"
-                                        ? `Gowun Dodum, sans-serif`
-                                        : ""
-                                    } `,
-                                    fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
-                                    fontSize: row_font.face2[index].size,
-                                    textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
-                                  }}
-                                >
-                                  <FroalaEditorView model={item} />
-                                </div>
-                              </>
-                            ))}
+                            {content_value.selection !== null &&
+                              content_value.selection.length > 0 &&
+                              content_value.face2.map((item, index) => (
+                                <>
+                                  <div
+                                    style={{
+                                      backgroundColor: row_style.face2[index].background.color,
+                                      marginTop: row_style.face2[index].outer_margin.top,
+                                      marginBottom: row_style.face2[index].outer_margin.bottom,
+                                      marginLeft: row_style.face2[index].outer_margin.left,
+                                      marginRight: row_style.face2[index].outer_margin.right,
+                                      paddingTop: row_style.face2[index].inner_padding.top,
+                                      paddingBottom: row_style.face2[index].inner_padding.bottom,
+                                      paddingLeft: row_style.face2[index].inner_padding.left,
+                                      paddingRight: row_style.face2[index].inner_padding.right,
+                                      borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
+                                      borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
+                                      borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
+                                      borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                                      textAlign: row_font.face2[index].align,
+                                      fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
+                                      color: row_font.face2[index].color,
+                                      fontFamily: `${
+                                        row_font.face2[index].font === "고딕"
+                                          ? `Nanum Gothic, sans-serif`
+                                          : row_font.face2[index].font === "명조"
+                                          ? `Nanum Myeongjo, sans-serif`
+                                          : row_font.face2[index].font === "바탕"
+                                          ? `Gowun Batang, sans-serif`
+                                          : row_font.face2[index].font === "돋움"
+                                          ? `Gowun Dodum, sans-serif`
+                                          : ""
+                                      } `,
+                                      fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
+                                      fontSize: row_font.face2[index].size,
+                                      textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
+                                    }}
+                                  >
+                                    {item === "1" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➀</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item === "2" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➁</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item === "3" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➂</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item === "4" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➃</span>
+                                      </div>
+                                    </>
+                                  )}
+                                  {item === "5" && (
+                                    <>
+                                      <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ marginRight: "5px", fontSize: "1rem" }}>정답 : </span>
+                                        <span style={{ fontSize: "1.5rem" }}>➄</span>
+                                      </div>
+                                    </>
+                                  )}
+
+                                  {index !== 0 && <FroalaEditorView model={item} />}
+
+  
+                                  </div>
+                                </>
+                              ))}
+
+                            {(content_value.selection === null || content_value.selection.length === 0) &&
+                              content_value.face2.map((item, index) => (
+                                <>
+                                  <div
+                                    style={{
+                                      backgroundColor: row_style.face2[index].background.color,
+                                      marginTop: row_style.face2[index].outer_margin.top,
+                                      marginBottom: row_style.face2[index].outer_margin.bottom,
+                                      marginLeft: row_style.face2[index].outer_margin.left,
+                                      marginRight: row_style.face2[index].outer_margin.right,
+                                      paddingTop: row_style.face2[index].inner_padding.top,
+                                      paddingBottom: row_style.face2[index].inner_padding.bottom,
+                                      paddingLeft: row_style.face2[index].inner_padding.left,
+                                      paddingRight: row_style.face2[index].inner_padding.right,
+                                      borderTop: `${row_style.face2[index].border.top.thickness}px ${row_style.face2[index].border.top.bordertype} ${row_style.face2[index].border.top.color}`,
+                                      borderBottom: `${row_style.face2[index].border.bottom.thickness}px ${row_style.face2[index].border.bottom.bordertype} ${row_style.face2[index].border.bottom.color}`,
+                                      borderLeft: `${row_style.face2[index].border.left.thickness}px ${row_style.face2[index].border.left.bordertype} ${row_style.face2[index].border.left.color}`,
+                                      borderRight: `${row_style.face2[index].border.right.thickness}px ${row_style.face2[index].border.right.bordertype} ${row_style.face2[index].border.right.color}`,
+                                      textAlign: row_font.face2[index].align,
+                                      fontWeight: `${row_font.face2[index].bold === "on" ? 700 : 400}`,
+                                      color: row_font.face2[index].color,
+                                      fontFamily: `${
+                                        row_font.face2[index].font === "고딕"
+                                          ? `Nanum Gothic, sans-serif`
+                                          : row_font.face2[index].font === "명조"
+                                          ? `Nanum Myeongjo, sans-serif`
+                                          : row_font.face2[index].font === "바탕"
+                                          ? `Gowun Batang, sans-serif`
+                                          : row_font.face2[index].font === "돋움"
+                                          ? `Gowun Dodum, sans-serif`
+                                          : ""
+                                      } `,
+                                      fontStyle: `${row_font.face2[index].italic === "on" ? "italic" : "normal"}`,
+                                      fontSize: row_font.face2[index].size,
+                                      textDecoration: `${row_font.face2[index].underline === "on" ? "underline" : "none"}`,
+                                    }}
+                                  >
+                                    <FroalaEditorView model={item} />
+                                  </div>
+                                </>
+                              ))}
                           </div>
                         </div>
                       </div>

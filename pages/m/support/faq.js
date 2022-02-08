@@ -70,7 +70,7 @@ const Faq = () => {
             FAQ
           </div>
           <div>
-            <div className="py-2 text-[18px] font-bold ">자주 묻는 질문</div>
+            <div className="py-2 text-[18px] font-bold">자주 묻는 질문</div>
             <div>
               {content.map(({ title, description, id }) => (
                 <div

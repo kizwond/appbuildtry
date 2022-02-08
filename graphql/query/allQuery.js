@@ -3,13 +3,23 @@ import { FRAGMENT_MYBOOK } from "../fragment/book";
 import { FRAGMENT_CATEGORYSET } from "../fragment/categorySet";
 import { FRAGMENT_MENTORING } from "../fragment/mentoring";
 import { FRAGMENT_MY_CARD_TYPE_SET } from "../fragment/cardTypeSet";
-import { FRAGMENT_CARD_SET, FRAGMENT_CARD_SET_WITHOUT_STUDY_STATUS } from "../fragment/cardSet";
+import {
+  FRAGMENT_CARD_SET,
+  FRAGMENT_CARD_SET_WITHOUT_STUDY_STATUS,
+} from "../fragment/cardSet";
 import { FRAGMENT_BUY_BOOK } from "../fragment/buyBook";
 import { FRAGMENT_USER_FLAG_CONFIG } from "../fragment/flagConfig";
 import { FRAGMENT_SESSION_CONFIG } from "../fragment/sessionConfig";
-import { FRAGMENT_INDEX_SET, FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER } from "../fragment/indexSet";
+import {
+  FRAGMENT_INDEX_SET,
+  FRAGMENT_INDEX_SET_WITHOUT_CARD_NUMBER,
+} from "../fragment/indexSet";
 import { FRAGMENT_BOOK_STUDY_LEVEL_CONFIG } from "../fragment/bookStudyLevelConfig";
-import { FRAGMENT_SESSION_FOR_RESULT, FRAGMENT_EXAM_FOR_RESULT, FRAGMENT_SESSION_FOR_RESTARTING_SESSION } from "../fragment/session";
+import {
+  FRAGMENT_SESSION_FOR_RESULT,
+  FRAGMENT_EXAM_FOR_RESULT,
+  FRAGMENT_SESSION_FOR_RESTARTING_SESSION,
+} from "../fragment/session";
 import { FRAGMENT_CANDIDATE_BOOK } from "../fragment/candidateBook";
 
 // 유저 정보 불러오기
@@ -129,7 +139,7 @@ export const GetIndex = gql`
   }
 `;
 export const GetCardTypeSet = gql`
-${FRAGMENT_MY_CARD_TYPE_SET}
+  ${FRAGMENT_MY_CARD_TYPE_SET}
   query GetCardTypeSet($mybook_ids: [ID]) {
     cardtypeset_getbymybookids(mybook_ids: $mybook_ids) {
       status
@@ -334,6 +344,16 @@ export const QUERY_BUY_BOOKS = gql`
         ...BuyBookFragment
       }
     }
+    me {
+      status
+      msg
+      users {
+        _id
+        user_info {
+          role
+        }
+      }
+    }
   }
 `;
 export const QUERY_BUY_BOOKS_BY_BUY_BOOK_ID = gql`
@@ -428,7 +448,9 @@ export const QUERY_SESSION_INDEXSET_AND_CARDSET_BY_BOOK_IDS = gql`
 // 책 목차 정보
 export const QUERY_INDEX_SET_BY_BOOK_ID_AND_ADVANCED_FILTER = gql`
   ${FRAGMENT_INDEX_SET}
-  query getSessionCardsDataByBooksId($forGetNumCardsbyIndex: forGetNumCardsbyIndex) {
+  query getSessionCardsDataByBooksId(
+    $forGetNumCardsbyIndex: forGetNumCardsbyIndex
+  ) {
     session_getNumCardsbyIndex(forGetNumCardsbyIndex: $forGetNumCardsbyIndex) {
       status
       msg

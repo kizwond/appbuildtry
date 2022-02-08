@@ -48,6 +48,10 @@ const M_StudyMainPage = () => {
     onCompleted: (_data) => {
       if (_data.session_createSession.status === "200") {
         console.log("책 바로 보기 모드, 세션 생성 요청 후 받은 데이터", _data);
+        sessionStorage.setItem(
+          "session_Id",
+          _data.session_createSession.sessions._id
+        );
 
         const filterOption = {
           detailedOption: {

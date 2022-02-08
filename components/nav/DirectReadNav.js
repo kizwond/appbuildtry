@@ -12,6 +12,7 @@ import {
   CrownOutlined,
   HomeOutlined,
   SoundOutlined,
+  PauseOutlined
 } from "@ant-design/icons";
 import { Divider, Avatar } from "antd";
 import React, { useEffect, useState } from "react";
@@ -28,7 +29,7 @@ const backgroundColor = "#4466d1";
 const fontColor = "white";
 const burgerSize = "1.3rem";
 
-const StudyNav = ({ mode, indexChanged, index_changed, indexSets }) => {
+const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsOn }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var usernameTemp = localStorage.getItem("username");
@@ -56,6 +57,13 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets }) => {
     window.location.href = "/m/study/readresult";
   };
 
+  // const getTTSData = () => {
+  //   if (ttsOn === false) {
+  //     setTtsOn(true);
+  //   } else {
+  //     setTtsOn(false);
+  //   }
+  // };
   return (
     <>
       <div
@@ -117,7 +125,33 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets }) => {
               display: "flex",
             }}
           >
-            <TTSButton />
+            <TTSButton ttsOn={ttsOn} setTtsOn={setTtsOn} />
+            {/* {ttsOn === true && <>
+              <Button
+              size="small"
+              onClick={getTTSData}
+              style={{
+                fontSize: "1rem",
+                borderRadius: "5px",
+                marginRight: "5px",
+              }}
+              type="primary"
+              icon={<PauseOutlined />}
+            />
+            </>}
+            {ttsOn === false && <>
+              <Button
+              size="small"
+              onClick={getTTSData}
+              style={{
+                fontSize: "1rem",
+                borderRadius: "5px",
+                marginRight: "5px",
+              }}
+              type="primary"
+              icon={<SoundOutlined />}
+            />
+            </>} */}
             <Button
               size="small"
               onClick={goToResult}

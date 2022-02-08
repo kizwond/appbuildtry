@@ -26,6 +26,7 @@ const SessionSetting = () => {
   const [indexChanged, setIndexChanged] = useState();
   const [indexSetId, setIndexSetId] = useState();
   const [indexSets, setIndexSets] = useState();
+  const [ttsOn, setTtsOn] = useState(false);
 
   const { loading, error, data } = useQuery(GetIndex, {
     variables: { mybook_ids: book_ids },
@@ -49,7 +50,7 @@ const SessionSetting = () => {
 
   return (
     <>
-      <DirectReadLayout mode="책" indexChanged={indexChanged} index_changed={index_changed} indexSets={indexSets}>
+      <DirectReadLayout mode="책" indexChanged={indexChanged} index_changed={index_changed} indexSets={indexSets} ttsOn={ttsOn} setTtsOn={setTtsOn}>
         <div style={{ marginBottom: "120px", marginTop: "50px" }}>
           <DirectReadContainer FroalaEditorView={FroalaEditorView} indexChanged={indexChanged} index_changed={index_changed} indexSets={indexSets}/>
         </div>

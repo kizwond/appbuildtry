@@ -22,12 +22,13 @@ import { useMutation } from "@apollo/client";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT } from "../../graphql/query/account";
 import Image from "next/image";
+import TTSButtonForFlip from "./ttsButtonForFlip";
 
 const backgroundColor = "#4466d1";
 const fontColor = "white";
 const burgerSize = "1.3rem";
 
-const StudyNav = ({ mode, finishStudy, ttsOn, setTtsOn }) => {
+const StudyNav = ({ mode, finishStudy, ttsOn, setTtsOn, ttsNextState,  setTTSNextState}) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var usernameTemp = localStorage.getItem("username");
@@ -64,13 +65,13 @@ const StudyNav = ({ mode, finishStudy, ttsOn, setTtsOn }) => {
     window.location.href = "/m";
   };
 
-  const getTTSData = () => {
-    if (ttsOn === false) {
-      setTtsOn(true);
-    } else {
-      setTtsOn(false);
-    }
-  };
+  // const getTTSData = () => {
+  //   if (ttsOn === false) {
+  //     setTtsOn(true);
+  //   } else {
+  //     setTtsOn(false);
+  //   }
+  // };
   return (
     <>
       <div
@@ -114,32 +115,9 @@ const StudyNav = ({ mode, finishStudy, ttsOn, setTtsOn }) => {
           </div>
 
           <div style={{ flexBasis: "33%", textAlign: "right", fontSize: "1rem", cursor: "pointer" }}>
-            {ttsOn === true && <>
-              <Button
-              size="small"
-              onClick={getTTSData}
-              style={{
-                fontSize: "1rem",
-                borderRadius: "5px",
-                marginRight: "5px",
-              }}
-              type="primary"
-              icon={<PauseOutlined />}
-            />
-            </>}
-            {ttsOn === false && <>
-              <Button
-              size="small"
-              onClick={getTTSData}
-              style={{
-                fontSize: "1rem",
-                borderRadius: "5px",
-                marginRight: "5px",
-              }}
-              type="primary"
-              icon={<SoundOutlined />}
-            />
-            </>}
+          <TTSButtonForFlip ttsOn={ttsOn} setTtsOn={setTtsOn}   ttsNextState={ttsNextState}
+              setTTSNextState={setTTSNextState}/>
+            
             
             <Button size="small" style={{ fontSize: "1rem", borderRadius: "5px" }} onClick={finishStudy} type="primary">
               학습종료

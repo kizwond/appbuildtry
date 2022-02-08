@@ -3,7 +3,15 @@ import { Modal, Button, Popover, Form, Input, Space, Select } from "antd";
 import { PlusOutlined, SettingOutlined } from "@ant-design/icons";
 import Image from "next/image";
 
-const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, onFinishChangeLevel, onFinishIndexDelete, onFinishExcelExport }) => {
+const IndexSettingModal = ({
+  indexinfo,
+  onFinish,
+  onFinishRename,
+  indexSetInfo,
+  onFinishChangeLevel,
+  onFinishIndexDelete,
+  onFinishExcelExport,
+}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -18,28 +26,29 @@ const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, 
     setIsModalVisible(false);
   };
 
-  if (indexinfo) {
-    var indexList = indexinfo.map((item) => (
-      <>
-        <IndexList
-          indexinfo={indexinfo}
-          indexSetInfo={indexSetInfo}
-          onFinish={onFinish}
-          index={item}
-          onFinishRename={onFinishRename}
-          onFinishChangeLevel={onFinishChangeLevel}
-          onFinishIndexDelete={onFinishIndexDelete}
-          onFinishExcelExport={onFinishExcelExport}
-        />
-      </>
-    ));
-  }
-
   return (
     <>
-      <SettingOutlined size="small" onClick={showModal} style={{fontSize:"1rem"}} />
-      <Modal footer={null} title="목차설정" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <ul style={{ display: "flex", listStyle: "none", justifyContent: "space-between", fontSize:"0.8rem", paddingLeft:"0" }}>
+      <SettingOutlined
+        size="small"
+        onClick={showModal}
+        style={{ fontSize: "1rem" }}
+      />
+      <Modal
+        footer={null}
+        title="목차설정"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <ul
+          style={{
+            display: "flex",
+            listStyle: "none",
+            justifyContent: "space-between",
+            fontSize: "0.8rem",
+            paddingLeft: "0",
+          }}
+        >
           <li></li>
           <li>목차명</li>
           <li>이름변경</li>
@@ -47,19 +56,38 @@ const IndexSettingModal = ({ indexinfo, onFinish, onFinishRename, indexSetInfo, 
           <li>삭제</li>
           <li>export</li>
         </ul>
-        {indexList}
+        {indexinfo.map((item, i) => (
+          <IndexList
+            key={i}
+            indexinfo={indexinfo}
+            indexSetInfo={indexSetInfo}
+            onFinish={onFinish}
+            index={item}
+            onFinishRename={onFinishRename}
+            onFinishChangeLevel={onFinishChangeLevel}
+            onFinishIndexDelete={onFinishIndexDelete}
+            onFinishExcelExport={onFinishExcelExport}
+          />
+        ))}
       </Modal>
     </>
   );
 };
 
-const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, onFinishChangeLevel, onFinishIndexDelete, onFinishExcelExport }) => {
+const IndexList = ({
+  indexinfo,
+  index,
+  onFinish,
+  onFinishRename,
+  indexSetInfo,
+  onFinishChangeLevel,
+  onFinishIndexDelete,
+  onFinishExcelExport,
+}) => {
   const [newInput, setNewInput] = useState(false);
   const [renameInput, setRenameInput] = useState(false);
   const [deleteInput, setDeleteInput] = useState(false);
-  const newIndexTitle = <span style={{ fontSize: "0.8rem" }}>새로운 목차의 이름을 입력해 주세요.</span>;
-  const renameIndexTitle = <span style={{ fontSize: "0.8rem" }}>변경할 목차 이름을 입력해 주세요.</span>;
-  const deleteIndexTitle = <span style={{ fontSize: "0.8rem" }}>삭제후 카드를 이동할 목차를 선택해주세요.</span>;
+
   const createIndex = (indexset_id, current_index_id, current_level) => (
     <Form
       layout={"inline"}
@@ -76,20 +104,42 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
         <Form.Item name={["name"]} rules={[{ required: true }]}>
           <Input placeholder="" />
         </Form.Item>
-        <Form.Item name={["current_index_id"]} hidden={true} rules={[{ required: true }]}>
+        <Form.Item
+          name={["current_index_id"]}
+          hidden={true}
+          rules={[{ required: true }]}
+        >
           <Input placeholder={current_index_id} />
         </Form.Item>
-        <Form.Item name={["current_level"]} hidden={true} rules={[{ required: true }]}>
+        <Form.Item
+          name={["current_level"]}
+          hidden={true}
+          rules={[{ required: true }]}
+        >
           <Input placeholder={current_level} />
         </Form.Item>
-        <Form.Item name={["indexset_id"]} hidden={true} rules={[{ required: true }]}>
+        <Form.Item
+          name={["indexset_id"]}
+          hidden={true}
+          rules={[{ required: true }]}
+        >
           <Input placeholder={indexset_id} />
         </Form.Item>
         <Form.Item className="change_book_title_buttons">
-          <Button size="small" type="primary" onClick={() => setNewInput(false)} htmlType="submit" style={{ fontSize: "0.8rem" }}>
+          <Button
+            size="small"
+            type="primary"
+            onClick={() => setNewInput(false)}
+            htmlType="submit"
+            style={{ fontSize: "0.8rem" }}
+          >
             완료
           </Button>
-          <Button size="small" onClick={() => setNewInput(false)} style={{ fontSize: "0.8rem" }}>
+          <Button
+            size="small"
+            onClick={() => setNewInput(false)}
+            style={{ fontSize: "0.8rem" }}
+          >
             취소
           </Button>
         </Form.Item>
@@ -112,17 +162,35 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
         <Form.Item name={["name"]} rules={[{ required: true }]}>
           <Input placeholder="" />
         </Form.Item>
-        <Form.Item name={["current_index_id"]} hidden={true} rules={[{ required: true }]}>
+        <Form.Item
+          name={["current_index_id"]}
+          hidden={true}
+          rules={[{ required: true }]}
+        >
           <Input placeholder={current_index_id} />
         </Form.Item>
-        <Form.Item name={["indexset_id"]} hidden={true} rules={[{ required: true }]}>
+        <Form.Item
+          name={["indexset_id"]}
+          hidden={true}
+          rules={[{ required: true }]}
+        >
           <Input placeholder={indexset_id} />
         </Form.Item>
         <Form.Item className="change_book_title_buttons">
-          <Button size="small" type="primary" onClick={() => setRenameInput(false)} htmlType="submit" style={{ fontSize: "0.8rem" }}>
+          <Button
+            size="small"
+            type="primary"
+            onClick={() => setRenameInput(false)}
+            htmlType="submit"
+            style={{ fontSize: "0.8rem" }}
+          >
             완료
           </Button>
-          <Button size="small" onClick={() => setRenameInput(false)} style={{ fontSize: "0.8rem" }}>
+          <Button
+            size="small"
+            onClick={() => setRenameInput(false)}
+            style={{ fontSize: "0.8rem" }}
+          >
             취소
           </Button>
         </Form.Item>
@@ -162,17 +230,35 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
             {optionList}
           </Select>
         </Form.Item>
-        <Form.Item name={["current_index_id"]} hidden={true} rules={[{ required: true }]}>
+        <Form.Item
+          name={["current_index_id"]}
+          hidden={true}
+          rules={[{ required: true }]}
+        >
           <Input placeholder={current_index_id} />
         </Form.Item>
-        <Form.Item name={["indexset_id"]} hidden={true} rules={[{ required: true }]}>
+        <Form.Item
+          name={["indexset_id"]}
+          hidden={true}
+          rules={[{ required: true }]}
+        >
           <Input placeholder={indexset_id} />
         </Form.Item>
         <Form.Item className="change_book_title_buttons">
-          <Button size="small" type="primary" onClick={() => setDeleteInput(false)} htmlType="submit" style={{ fontSize: "0.8rem" }}>
+          <Button
+            size="small"
+            type="primary"
+            onClick={() => setDeleteInput(false)}
+            htmlType="submit"
+            style={{ fontSize: "0.8rem" }}
+          >
             완료
           </Button>
-          <Button size="small" onClick={() => setDeleteInput(false)} style={{ fontSize: "0.8rem" }}>
+          <Button
+            size="small"
+            onClick={() => setDeleteInput(false)}
+            style={{ fontSize: "0.8rem" }}
+          >
             취소
           </Button>
         </Form.Item>
@@ -180,7 +266,8 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
     </Form>
   );
   const levelChange = (direction, current_level) => {
-    const prevItemIndex = indexinfo.findIndex((item) => item._id === index._id) - 1;
+    const prevItemIndex =
+      indexinfo.findIndex((item) => item._id === index._id) - 1;
     if (prevItemIndex !== -1) {
       const prevItemLevel = indexinfo[prevItemIndex].level;
       if (current_level === 1 && direction === "up") {
@@ -196,31 +283,96 @@ const IndexList = ({ indexinfo, index, onFinish, onFinishRename, indexSetInfo, o
   };
 
   const excelExportHandler = (value) => {
-    onFinishExcelExport(value)
-  }
+    onFinishExcelExport(value);
+  };
   return (
     <>
-      <div style={{ display: "flex", listStyle: "none", justifyContent: "space-between", alignItems:"center", paddingLeft:"0" }}>
+      <div
+        style={{
+          display: "flex",
+          listStyle: "none",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingLeft: "0",
+        }}
+      >
         <div>
-          <Popover placement="rightTop" title={newIndexTitle} visible={newInput} content={createIndex(indexSetInfo._id, index._id, index.level)} trigger="click">
-            <PlusOutlined onClick={() => setNewInput(true)} style={{ fontSize: "1rem" }} />
+          <Popover
+            placement="rightTop"
+            title={
+              <span style={{ fontSize: "0.8rem" }}>
+                새로운 목차의 이름을 입력해 주세요.
+              </span>
+            }
+            visible={newInput}
+            content={createIndex(indexSetInfo._id, index._id, index.level)}
+            trigger="click"
+          >
+            <PlusOutlined
+              onClick={() => setNewInput(true)}
+              style={{ fontSize: "1rem" }}
+            />
           </Popover>
         </div>
-        <div style={{fontSize:"0.8rem"}}>
+        <div style={{ fontSize: "0.8rem" }}>
           {index.name}, level : {index.level}
         </div>
         <div>
-          <Popover placement="rightTop" title={renameIndexTitle} visible={renameInput} content={renameIndex(indexSetInfo._id, index._id)} trigger="click">
-            <Button size="small" onClick={() => setRenameInput(true)} style={{fontSize:"0.8rem"}}>이름변경</Button>
+          <Popover
+            placement="rightTop"
+            title={
+              <span style={{ fontSize: "0.8rem" }}>
+                변경할 목차 이름을 입력해 주세요.
+              </span>
+            }
+            visible={renameInput}
+            content={renameIndex(indexSetInfo._id, index._id)}
+            trigger="click"
+          >
+            <Button
+              size="small"
+              onClick={() => setRenameInput(true)}
+              style={{ fontSize: "0.8rem" }}
+            >
+              이름변경
+            </Button>
           </Popover>
         </div>
         <div>
-          <Button size="small" onClick={() => levelChange("up", index.level)} style={{fontSize:"0.8rem"}}>좌</Button>
-          <Button size="small" onClick={() => levelChange("down", index.level)} style={{fontSize:"0.8rem"}}>우</Button>
+          <Button
+            size="small"
+            onClick={() => levelChange("up", index.level)}
+            style={{ fontSize: "0.8rem" }}
+          >
+            좌
+          </Button>
+          <Button
+            size="small"
+            onClick={() => levelChange("down", index.level)}
+            style={{ fontSize: "0.8rem" }}
+          >
+            우
+          </Button>
         </div>
         <div>
-          <Popover placement="rightTop" title={deleteIndexTitle} visible={deleteInput} content={deleteIndex(indexSetInfo._id, index._id)} trigger="click">
-            <Button size="small" onClick={() => setDeleteInput(true)} style={{fontSize:"0.8rem"}}>삭제</Button>
+          <Popover
+            placement="rightTop"
+            title={
+              <span style={{ fontSize: "0.8rem" }}>
+                삭제후 카드를 이동할 목차를 선택해주세요.
+              </span>
+            }
+            visible={deleteInput}
+            content={deleteIndex(indexSetInfo._id, index._id)}
+            trigger="click"
+          >
+            <Button
+              size="small"
+              onClick={() => setDeleteInput(true)}
+              style={{ fontSize: "0.8rem" }}
+            >
+              삭제
+            </Button>
           </Popover>
         </div>
         {/* <div>

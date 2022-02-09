@@ -183,7 +183,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   }
 
   const updateStudyStatus = useCallback(
-    async (cardset_id, card_id, statusPrev,statusCurrent) => {
+    async (cardset_id, card_id, statusPrev, statusCurrent) => {
       try {
         await cardset_updateStatus({
           variables: {
@@ -208,17 +208,17 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     console.log(info);
     console.log(status);
 
-    updateStudyStatus(info.card_info.cardset_id, info._id, info.studyStatus.statusCurrent, status)
+    updateStudyStatus(info.card_info.cardset_id, info._id, info.studyStatus.statusCurrent, status);
 
     const cardListStudyingOrigin = JSON.parse(sessionStorage.getItem("cardListStudyingOrigin"));
 
     const filteredForOrigin = cardListStudyingOrigin.findIndex((item) => item._id === info._id);
 
-    if (status == 'restore'){
-      if (cardListStudyingOrigin[filteredForOrigin].studyStatus.recentStudyTime != null){
-        status = 'ing'
+    if (status == "restore") {
+      if (cardListStudyingOrigin[filteredForOrigin].studyStatus.recentStudyTime != null) {
+        status = "ing";
       } else {
-        status = 'yet'
+        status = "yet";
       }
     }
     cardListStudyingOrigin[filteredForOrigin].studyStatus.statusCurrent = status;
@@ -228,10 +228,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     sessionStorage.setItem("cardlist_to_send", JSON.stringify(cardlist_to_send));
     sessionStorage.setItem("cardListStudyingOrigin", JSON.stringify(cardListStudyingOrigin));
     setCardListStudying(cardListStudyingOrigin);
-
-  }
-
-
+  };
 
   useEffect(() => {
     if (data1) {
@@ -389,12 +386,12 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       const cardListReceived = data.cardset_addcardAtSameIndex.cardsets[0].cards;
       const filteredIndex = cardListReceived.findIndex((item) => item._id === cardId);
       const filteredData = cardListReceived[filteredIndex + 1];
-      const {mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id} = filteredData.card_info
-      createdCards.push({mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id});
+      const { mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id } = filteredData.card_info;
+      createdCards.push({ mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id });
     } else {
       const filteredData = data.cardset_addcardAtSameIndex.cardsets[0].cards[data.cardset_addcardAtSameIndex.cardsets[0].cards.length - 1];
-      const {mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id} = filteredData.card_info
-      createdCards.push({mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id});
+      const { mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id } = filteredData.card_info;
+      createdCards.push({ mybook_id, indexset_id, index_id, cardset_id, cardtypeset_id, cardtype_id, cardtype, mycontent_id });
     }
     sessionStorage.setItem("createdCards", JSON.stringify(createdCards));
     sessionStorage.setItem("sameIndexSelectedCheck", "false");
@@ -904,15 +901,16 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       text = document.selection;
       console.log("case2", text);
     }
+    console.log(textRange);
     sessionStorage.setItem("selectionText", text);
     console.log("end");
 
     if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
       var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
-      var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
-      var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
-      var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+      var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+      var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+      var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
       if (parentId_tmp1 !== null) {
         var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
         var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
@@ -923,9 +921,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       if (parentId === null) {
         parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
         parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
-        var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
-        var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
-        var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+        var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+        var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+        var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
         console.log(parentId_tmp1);
         if (parentId_tmp1 !== null) {
           var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
@@ -942,9 +940,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
         } else {
           parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
           parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
-          var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
-          var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
-          var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+          var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+          var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+          var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
           console.log(parentId_tmp1);
           if (parentId_tmp1 !== null) {
             var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
@@ -958,6 +956,48 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
             sessionStorage.setItem("selectionTextCardSetId", cardSetId);
             sessionStorage.setItem("selectionTextCardId", cardId);
+          } else {
+            parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+            parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+            var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+            var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+            var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
+            console.log(parentId_tmp1);
+            if (parentId_tmp1 !== null) {
+              var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+              var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+              var cardId = parentId_tmp3[0].replace("cardId", "");
+            } else {
+              parentId = null;
+              console.log("아직도 아니다");
+            }
+            if (parentId !== null) {
+              sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+              sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+              sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+              sessionStorage.setItem("selectionTextCardId", cardId);
+            } else {
+              parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+              parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+              var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+              var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+              var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
+              console.log(parentId_tmp1);
+              if (parentId_tmp1 !== null) {
+                var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+                var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+                var cardId = parentId_tmp3[0].replace("cardId", "");
+              } else {
+                parentId = null;
+                console.log("아직도 아니다2");
+              }
+              if (parentId !== null) {
+                sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+                sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+                sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+                sessionStorage.setItem("selectionTextCardId", cardId);
+              }
+            }
           }
         }
       } else {
@@ -1436,102 +1476,194 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
             const userFlags = (
               <>
-                <StopOutlined
-                  onClick={() => userFlagChange("0")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "white",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: "#ff8e8e",
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("1")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#ffd1d1",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag1.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("2")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#ffe7bb",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag2.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("3")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#e7e773",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag3.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("4")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#beffbe",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag4.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("5")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#ceceff",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag5.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
+                <div>
+                  <StopOutlined
+                    onClick={() => userFlagChange("0")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "white",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: "#ff8e8e",
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("1")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#ffd1d1",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag1.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #ff0000",
+                    }}
+                  >
+                    1
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("2")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#ffe7bb",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag2.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #ffa500",
+                    }}
+                  >
+                    2
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("3")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#e7e773",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag3.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #ffff00",
+                    }}
+                  >
+                    3
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("4")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#beffbe",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag4.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #008000",
+                    }}
+                  >
+                    4
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("5")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#ceceff",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag5.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #0000ff",
+                    }}
+                  >
+                    5
+                  </span>
+                </div>
               </>
             );
             var annotationPop = (
@@ -1662,7 +1794,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               var diffiButtonsPop = (
                 <>
                   <Space>
-                    <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => onClickUpdateStatus(content,"restore")} type="primary">
+                    <Button icon={<RollbackOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => onClickUpdateStatus(content, "restore")} type="primary">
                       복원
                     </Button>
                   </Space>
@@ -1672,7 +1804,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               var diffiButtonsPop = (
                 <>
                   <Space>
-                    <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => onClickUpdateStatus(content,"hold")} type="primary">
+                    <Button icon={<StopOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => onClickUpdateStatus(content, "hold")} type="primary">
                       보류
                     </Button>
                     <Button icon={<CheckOutlined />} size="small" style={{ fontSize: "1rem" }} onClick={() => onClickUpdateStatus(content, "completed")} type="primary">
@@ -2155,6 +2287,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                     </div>
                   </>
                 )}
+
                 {content.card_info.cardtype === "general" && (
                   <>
                     {content._id === cardId && (
@@ -2448,23 +2581,23 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                         </div>
                       </>
                     )}
-                    <div className={`${content._id} child_group other`}>
-                      <div style={{ marginBottom: "5px" }}>
-                        <div onClick={() => onClickCard(content._id, "general", null, content)}>
-                          {/* 페이스 스타일 영역 */}
-                          {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && content._id === cardId && (
-                            <>
-                              <Divider
-                                orientation="left"
-                                style={{ margin: "-0px 0px -0px 0px", color: "grey", fontSize: "0.8rem", borderColor: "lightgrey" }}
-                                orientationMargin={0}
-                                dashed
-                              >
-                                <span style={{ backgroundColor: "#eaeaea", borderRadius: "5px" }}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
-                              </Divider>
-                            </>
-                          )}
-                          {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
+                    <div className={`${content._id} child_group other`} style={{ marginBottom: "5px" }}>
+                      <div onClick={() => onClickCard(content._id, "general", null, content)}>
+                        {/* 페이스 스타일 영역 */}
+                        {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && content._id === cardId && (
+                          <>
+                            <Divider
+                              orientation="left"
+                              style={{ margin: "-0px 0px -0px 0px", color: "grey", fontSize: "0.8rem", borderColor: "lightgrey" }}
+                              orientationMargin={0}
+                              dashed
+                            >
+                              <span style={{ backgroundColor: "#eaeaea", borderRadius: "5px" }}>&nbsp;&nbsp;제작자플래그&nbsp;&nbsp;</span>
+                            </Divider>
+                          </>
+                        )}
+                        {(content.content.makerFlag.value !== 0 || content.content.makerFlag.comment !== null) && flagArea}
+                        <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}>
                           <div
                             style={{
                               width: "100%",
@@ -2499,6 +2632,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                                 )}
                                 <div
                                   style={{
+                                    display: `${face1row[`face1row${index + 1}`] === false ? "none" : ""}`,
                                     backgroundColor: row_style.face1[index].background.color,
                                     marginTop: row_style.face1[index].outer_margin.top,
                                     marginBottom: row_style.face1[index].outer_margin.bottom,
@@ -2539,10 +2673,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                           </div>
                         </div>
                       </div>
-                      <div style={{ height: "5px" }}></div>
                     </div>
                   </>
                 )}
+
                 {content.card_info.cardtype === "flip" && current_card_style[0].cardtype_info.flip_option.card_direction === "top-bottom" && (
                   <>
                     {content._id === cardId && (
@@ -3963,7 +4097,16 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
   if (content.content.hidden.length > 0) {
     content.content.hidden.map((element) => {
       const color = cardTypeSets[0].studyTool.hidden[element.toolType].color;
-      altered = altered.replace(element.targetWord, `<span style="background-color:${color}; color:${color}">${element.targetWord}</span>`);
+      const tmp = element.targetWord;
+      const remake = tmp.replaceAll("'", "&#39;");
+      const remake2 = remake.replaceAll(">", "&gt;");
+      const remake3 = remake2.replaceAll("<", "&lt;");
+      const remake4 = remake3.replaceAll("→", "&rarr;");
+      const remake5 = remake4.replaceAll('"', "&quot;");
+      const remake6 = remake5.replaceAll("•", "&bull;");
+      const remake7 = remake6.replaceAll(/\s\s/g, "&nbsp; ");
+      const remake9 = remake7.replaceAll("·", "&middot;");
+      altered = altered.replaceAll(remake9, `<span style="background-color:${color}; color:${color}">${element.targetWord}</span>`);
     });
   }
   if (content.content.underline.length > 0) {
@@ -3972,14 +4115,32 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
       const thickness = cardTypeSets[0].studyTool.underline[element.toolType].attr1;
       const lineType = cardTypeSets[0].studyTool.underline[element.toolType].attr2;
       // console.log(element);
-      altered = altered.replace(element.targetWord, `<span style="display:inline-block; border-bottom: ${thickness}px ${lineType} ${color}">${element.targetWord}</span>`);
+      const tmp = element.targetWord;
+      const remake = tmp.replaceAll("'", "&#39;");
+      const remake2 = remake.replaceAll(">", "&gt;");
+      const remake3 = remake2.replaceAll("<", "&lt;");
+      const remake4 = remake3.replaceAll("→", "&rarr;");
+      const remake5 = remake4.replaceAll('"', "&quot;");
+      const remake6 = remake5.replaceAll("•", "&bull;");
+      const remake7 = remake6.replaceAll(/\s\s/g, "&nbsp; ");
+      const remake9 = remake7.replaceAll("·", "&middot;");
+      altered = altered.replaceAll(remake9, `<span style="display:inline-block; border-bottom: ${thickness}px ${lineType} ${color}">${element.targetWord}</span>`);
     });
   }
 
   if (content.content.highlight.length > 0) {
     content.content.highlight.map((element) => {
       const color = cardTypeSets[0].studyTool.highlight[element.toolType].color;
-      altered = altered.replace(element.targetWord, `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`);
+      const tmp = element.targetWord;
+      const remake = tmp.replaceAll("'", "&#39;");
+      const remake2 = remake.replaceAll(">", "&gt;");
+      const remake3 = remake2.replaceAll("<", "&lt;");
+      const remake4 = remake3.replaceAll("→", "&rarr;");
+      const remake5 = remake4.replaceAll('"', "&quot;");
+      const remake6 = remake5.replaceAll("•", "&bull;");
+      const remake7 = remake6.replaceAll(/\s\s/g, "&nbsp; ");
+      const remake9 = remake7.replaceAll("·", "&middot;");
+      altered = altered.replaceAll(remake9, `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`);
       // if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
       //   altered = altered.replace(
       //     element.targetWord,

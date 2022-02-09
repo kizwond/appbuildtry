@@ -1,6 +1,6 @@
 import { SoundOutlined, PauseOutlined } from "@ant-design/icons";
 import { useLazyQuery } from "@apollo/client";
-import { Button } from "antd";
+import { Button,Popover } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState,useCallback } from "react";
@@ -9,6 +9,16 @@ import { detect, detectAll } from "tinyld";
 import _ from "lodash";
 
 const TTSButton = ({ ttsOn, setTtsOn, ttsNextState, setTTSNextState }) => {
+
+  const ISSERVER = typeof window === "undefined";
+  if (!ISSERVER) {
+    var ttsUse = sessionStorage.getItem("ttsUse");
+    if(ttsUse === "unable"){
+      var useTTS = false
+    } else {
+      useTTS = true
+    }
+  }
 
   const getTTSDataPause = async () => {
     window.speechSynthesis.cancel();
@@ -19,9 +29,14 @@ const TTSButton = ({ ttsOn, setTtsOn, ttsNextState, setTTSNextState }) => {
     setTtsOn(true)
   };
 
+  const content = (
+    <div>
+      이 브라우저는 음성 합성을 지원하지 않습니다.
+    </div>
+  );
   return (
     <>
-      {ttsOn === true && (
+      {ttsOn === true && useTTS === true &&(
         <>
           <Button
             size="small"
@@ -36,7 +51,7 @@ const TTSButton = ({ ttsOn, setTtsOn, ttsNextState, setTTSNextState }) => {
           />
         </>
       )}
-      {ttsOn === false && (
+      {ttsOn === false && useTTS === true &&(
         <>
           <Button
             size="small"
@@ -49,6 +64,24 @@ const TTSButton = ({ ttsOn, setTtsOn, ttsNextState, setTTSNextState }) => {
             type="primary"
             icon={<SoundOutlined />}
           />
+        </>
+      )}
+
+      {ttsOn === false && useTTS === false &&(
+        <>
+        <Popover trigger="click" content={content} >
+          <Button
+            size="small"
+            style={{
+              fontSize: "1rem",
+              borderRadius: "5px",
+              marginRight: "5px",
+            }}
+            type="primary"
+            icon={<SoundOutlined />}
+            disabled
+          />
+          </Popover>
         </>
       )}
     </>

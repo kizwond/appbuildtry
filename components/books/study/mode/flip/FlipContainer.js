@@ -737,7 +737,10 @@ class Container extends Component {
     console.log("hererrrrrrr")
     this.props.setTtsOn(false)
     window.speechSynthesis.cancel();
-    this.props.getTTSData();
+    if(this.props.ttsOn === true){
+      this.props.getTTSData();
+    }
+    
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.props.contentsList !== prevProps.contentsList) {
@@ -747,15 +750,15 @@ class Container extends Component {
         window.location.href = "/m/study";
       }
     }
-    const ttsUse = sessionStorage.getItem("ttsUse");
-    if (ttsUse === null) {
-      if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
-        console.log("이 브라우저는 음성 합성을 지원하지 않습니다.");
-        sessionStorage.setItem("ttsUse", "unable");
-      } else {
-        sessionStorage.setItem("ttsUse", "able");
-      }
-    }
+    // const ttsUse = sessionStorage.getItem("ttsUse");
+    // if (ttsUse === null) {
+    //   if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+    //     console.log("이 브라우저는 음성 합성을 지원하지 않습니다.");
+    //     sessionStorage.setItem("ttsUse", "unable");
+    //   } else {
+    //     sessionStorage.setItem("ttsUse", "able");
+    //   }
+    // }
     // const currentFaceTmp = sessionStorage.getItem("currentFace"); 
     // if (!currentFaceTmp) {
     //   sessionStorage.setItem("currentFace", "front");

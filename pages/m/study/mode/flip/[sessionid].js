@@ -62,7 +62,18 @@ const FlipMode = () => {
     } else {
       session_id = query.sessionid;
     }
-    // console.log(session_id);
+    
+    const ttsUse = sessionStorage.getItem("ttsUse");
+    if (ttsUse === null) {
+      
+      if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+        console.log("이 브라우저는 음성 합성을 지원하지 않습니다.");
+        sessionStorage.setItem("ttsUse", "unable");
+      } else {
+        sessionStorage.setItem("ttsUse", "able");
+      }
+    }
+
   }
 
   const router = useRouter();

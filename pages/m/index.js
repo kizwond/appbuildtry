@@ -28,6 +28,7 @@ const Home = () => {
     sessionStorage.setItem("card_seq", 0);
     sessionStorage.removeItem("isFinished")
     sessionStorage.removeItem("cardlist_to_send")
+    sessionStorage.removeItem("ttsUse");
     if (data) {
       console.log(data);
       if (data.me.status === "401") {

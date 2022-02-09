@@ -1,6 +1,6 @@
 import { SoundOutlined, PauseOutlined, RedoOutlined } from "@ant-design/icons";
 import { useLazyQuery } from "@apollo/client";
-import { Button } from "antd";
+import { Button,Popover } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -10,6 +10,16 @@ import _ from "lodash";
 import decodeHtMLEntities from "../common/logic/decodeHtMLEntities";
 
 const TTSButton = ({ ttsOn, setTtsOn }) => {
+  const ISSERVER = typeof window === "undefined";
+  if (!ISSERVER) {
+    var ttsUse = sessionStorage.getItem("ttsUse");
+    if(ttsUse === "unable"){
+      var useTTS = false
+    } else {
+      useTTS = true
+    }
+  }
+
   const [ttsArray, setTtsArray] = useState([]);
   const [paused, setPaused] = useState(false);
 
@@ -182,10 +192,14 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
     window.speechSynthesis.resume();
     setPaused(false);
   };
-
+  const content = (
+    <div>
+      이 브라우저는 음성 합성을 지원하지 않습니다.
+    </div>
+  );
   return (
     <>
-      {ttsOn === true && paused === false && (
+      {ttsOn === true && paused === false && useTTS === true&& (
         <>
           <Button
             size="small"
@@ -211,7 +225,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           />
         </>
       )}
-      {ttsOn === false && paused === false && (
+      {ttsOn === false && paused === false && useTTS === true&& (
         <>
           <Button
             size="small"
@@ -226,7 +240,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           />
         </>
       )}
-      {ttsOn === true && paused === true && (
+      {ttsOn === true && paused === true && useTTS === true&& (
         <>
           <Button
             size="small"
@@ -252,6 +266,23 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
             type="primary"
             icon={<RedoOutlined />}
           />
+        </>
+      )}
+      {ttsOn === false && useTTS === false &&(
+        <>
+        <Popover trigger="click" content={content} >
+          <Button
+            size="small"
+            style={{
+              fontSize: "1rem",
+              borderRadius: "5px",
+              marginRight: "5px",
+            }}
+            type="primary"
+            icon={<SoundOutlined />}
+            disabled
+          />
+          </Popover>
         </>
       )}
     </>

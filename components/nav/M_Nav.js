@@ -48,6 +48,7 @@ const Nav = () => {
     sessionStorage.setItem("card_seq", 0);
     sessionStorage.removeItem("isFinished")
     sessionStorage.removeItem("cardlist_to_send")
+    sessionStorage.removeItem("ttsUse");
     setVisible(true);
   };
 

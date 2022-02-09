@@ -13,6 +13,17 @@ const useCreateReadSession = (selectedBooks = false, sessionScope = false) => {
           "session_Id",
           _data.session_createSession.sessions[0]._id
         );
+        if (!selectedBooks) {
+          sessionStorage.setItem(
+            "books_selected",
+            JSON.stringify(
+              sessionScope.map((book) => ({
+                book_id: book.mybook_id,
+                book_title: book.title,
+              }))
+            )
+          );
+        }
 
         const filterOption = {
           detailedOption: {

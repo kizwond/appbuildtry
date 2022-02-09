@@ -341,6 +341,7 @@ const TableRowForRecentStudy = ({
 }) => {
   const createReadSession = useCreateReadSession(false, session.sessionScope);
 
+  console.log(session.sessionScope);
   return (
     <tr className="border-b border-collapse border-b-gray-200">
       <td className="text-[1rem] p-[4px] border-r border-collapse border-r-gray-200  text-center">

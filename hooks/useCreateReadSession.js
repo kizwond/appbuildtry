@@ -11,7 +11,7 @@ const useCreateReadSession = (selectedBooks = false, sessionScope = false) => {
         console.log("책 바로 보기 모드, 세션 생성 요청 후 받은 데이터", _data);
         sessionStorage.setItem(
           "session_Id",
-          _data.session_createSession.sessions._id
+          _data.session_createSession.sessions[0]._id
         );
 
         const filterOption = {

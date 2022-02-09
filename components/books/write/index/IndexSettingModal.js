@@ -1,5 +1,15 @@
 import React, { useState } from "react";
-import { Modal, Button, Popover, Form, Input, Space, Select } from "antd";
+import {
+  Modal,
+  Button,
+  Popover,
+  Form,
+  Input,
+  Space,
+  Select,
+  message,
+  Popconfirm,
+} from "antd";
 import {
   AreaChartOutlined,
   ArrowLeftOutlined,
@@ -15,12 +25,20 @@ import {
 } from "@ant-design/icons";
 import Image from "next/image";
 import styled from "styled-components";
+import { useRef } from "react";
+import { useEffect } from "react";
+import { useCallback } from "react";
 
 const StyledModal = styled(Modal)`
   min-width: 340px;
   & .ant-modal-body {
     padding: 8px 8px 8px 8px;
 `;
+
+const withNothing = (Component) =>
+  function hocCompo({ ...props }) {
+    return <Component {...props} />;
+  };
 
 const IndexSettingModal = ({
   indexinfo,
@@ -32,27 +50,44 @@ const IndexSettingModal = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [name, setName] = useState("");
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [expandedId, setExpandedId] = useState("");
+  const changeExpandedId = useCallback((_id) => {
+    setExpandedId(_id);
+  }, []);
+
+  const [popconfirmVisible, setPopconfirmVisible] = useState(false);
+  const changePopconfirmVisible = useCallback((_bool) => {
+    setPopconfirmVisible(_bool);
+  }, []);
+
+  useEffect(() => {
+    setExpandedId("");
+  }, [isModalVisible]);
 
   const toggleToExpandForAdding = () => {
-    if (isExpanded) {
-      setIsExpanded(false);
+    if (expandedId === "첫번째 행입니다용") {
+      setExpandedId("");
       setName("");
     } else {
-      setIsExpanded(true);
+      setExpandedId("첫번째 행입니다용");
     }
   };
 
   const showModal = () => {
     setIsModalVisible(true);
+    setPopconfirmVisible(false);
   };
 
   const handleOk = () => {
     setIsModalVisible(false);
+    setPopconfirmVisible(false);
   };
 
   const handleCancel = () => {
-    setIsModalVisible(false);
+    setPopconfirmVisible(false);
+    setTimeout(() => {
+      setIsModalVisible(false);
+    }, 100);
   };
 
   return (
@@ -69,31 +104,38 @@ const IndexSettingModal = ({
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <table className="w-full table-fixed">
+        <table
+          className="w-full table-fixed"
+          /* onClick={() => setPopconfirmVisible(false)} */
+        >
           <thead>
             <tr className="border-collapse border-y border-y-gray-200">
               <th
-                className="text-[1rem] bg-slate-100 w-[30px]"
+                className=" bg-slate-100 w-[30px] text-base font-normal text-blue-500 h-[27px] "
                 onClick={toggleToExpandForAdding}
               >
-                <Button
-                  size="small"
-                  shape="circle"
-                  type="text"
-                  icon={<PlusOutlined />}
-                />
+                {expandedId === "첫번째 행입니다용" ? (
+                  "접기"
+                ) : (
+                  <Button
+                    size="small"
+                    shape="circle"
+                    type="text"
+                    icon={<PlusOutlined />}
+                  />
+                )}
               </th>
-              <th className="text-[1rem] bg-slate-100 w-[24%]">레벨변경</th>
-              <th className="text-[1rem] bg-slate-100">목차명</th>
-              <th className="text-[1rem] bg-slate-100 w-[10%]"></th>
-              <th className="text-[1rem] bg-slate-100 w-[10%]"></th>
+              <th className="text-base bg-slate-100 w-[24%]">레벨변경</th>
+              <th className="text-base bg-slate-100">목차명</th>
+              <th className="text-base bg-slate-100 w-[10%]"></th>
+              <th className="text-base bg-slate-100 w-[10%]"></th>
             </tr>
           </thead>
           <tbody>
-            {isExpanded && (
+            {expandedId === "첫번째 행입니다용" && (
               <tr className="border-b border-collapse border-b-gray-200">
-                <td colSpan={5}>
-                  <div className="w-full flex gap-2">
+                <td colSpan={5} className="py-3">
+                  <div className="flex w-full gap-2">
                     <Input
                       size="small"
                       className="w-full"
@@ -105,7 +147,7 @@ const IndexSettingModal = ({
                       size="small"
                       type="primary"
                       onClick={() => {
-                        setIsExpanded(false);
+                        setExpandedId("");
                         setName("");
                         onFinish({
                           name,
@@ -119,7 +161,7 @@ const IndexSettingModal = ({
                     <Button
                       size="small"
                       onClick={() => {
-                        setIsExpanded(false);
+                        setExpandedId("");
                         setName("");
                       }}
                     >
@@ -139,6 +181,11 @@ const IndexSettingModal = ({
                 onFinishIndexDelete={onFinishIndexDelete}
                 onFinishChangeLevel={onFinishChangeLevel}
                 onFinishRename={onFinishRename}
+                isModalVisible={isModalVisible}
+                expandedId={expandedId}
+                changeExpandedId={changeExpandedId}
+                popconfirmVisible={popconfirmVisible}
+                changePopconfirmVisible={changePopconfirmVisible}
               />
             ))}
           </tbody>
@@ -158,41 +205,75 @@ const TableRow = ({
   onFinishChangeLevel,
   onFinishIndexDelete,
   prevItemIndex,
+  isModalVisible,
+  expandedId,
+  changeExpandedId,
+  popconfirmVisible,
+  changePopconfirmVisible,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const turnOffPopConfirm = () => {
+    if (Popconfirm) {
+      changePopconfirmVisible(false);
+    }
+  };
   const [name, setName] = useState("");
   const [rename, setReName] = useState("");
   const [indexForCardsInDeletedIndex, setIndexForCardsInDeletedIndex] =
-    useState("");
+    useState("none");
   const [content, setContent] = useState("");
+  /* const [popconfirmVisible, setPopconfirmVisible] = useState(false); */
+
+  const deleteIndexesSelectorRef = useRef();
+
+  const addNewIndexInputRef = useRef();
+  const renameInputRef = useRef();
+  useEffect(() => {
+    if (expandedId === index._id && content === "add") {
+      addNewIndexInputRef.current.focus();
+    }
+    if (expandedId === index._id && content === "rename") {
+      renameInputRef.current.focus();
+    }
+    if (expandedId === index._id && content === "delete") {
+      deleteIndexesSelectorRef.current.focus();
+    }
+  }, [expandedId, index, content]);
 
   const toggleToExpandForAdding = () => {
-    if (isExpanded) {
-      setIsExpanded(false);
+    if (expandedId === index._id) {
+      changeExpandedId("");
       setName("");
       setContent("");
+      setIndexForCardsInDeletedIndex("none");
+      setReName("");
     } else {
-      setIsExpanded(true);
+      changeExpandedId(index._id);
       setContent("add");
     }
   };
 
   const toggleToExpandForDeleting = () => {
-    if (isExpanded) {
-      setIsExpanded(false);
+    if (expandedId === index._id) {
+      changeExpandedId("");
+      setName("");
       setContent("");
+      setIndexForCardsInDeletedIndex("none");
+      setReName("");
     } else {
-      setIsExpanded(true);
+      changeExpandedId(index._id);
       setContent("delete");
+      setIndexForCardsInDeletedIndex("none");
     }
   };
   const toggleToExpandForRenaming = () => {
-    if (isExpanded) {
-      setIsExpanded(false);
+    if (expandedId === index._id) {
+      changeExpandedId("");
       setName("");
       setContent("");
+      setIndexForCardsInDeletedIndex("none");
+      setReName("");
     } else {
-      setIsExpanded(true);
+      changeExpandedId(index._id);
       setContent("rename");
     }
   };
@@ -203,8 +284,6 @@ const TableRow = ({
     onFinishChangeLevel(direction, index._id, indexSetInfo._id);
   };
 
-  const isSome = () => {};
-
   return (
     <>
       <tr className="border-b border-collapse border-b-gray-200">
@@ -212,12 +291,16 @@ const TableRow = ({
           className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center"
           onClick={toggleToExpandForAdding}
         >
-          <Button
-            size="small"
-            shape="circle"
-            type="text"
-            icon={<PlusOutlined />}
-          />
+          {expandedId === index._id && content === "add" ? (
+            <span className="text-blue-500">접기</span>
+          ) : (
+            <Button
+              size="small"
+              shape="circle"
+              type="text"
+              icon={<PlusOutlined />}
+            />
+          )}
         </td>
 
         <td className="border-r border-collapse border-r-gray-200">
@@ -290,42 +373,52 @@ const TableRow = ({
           className="text-[1rem] py-[4px] text-center"
           onClick={toggleToExpandForRenaming}
         >
-          <Button
-            size="small"
-            shape="circle"
-            type="text"
-            icon={<EditOutlined />}
-          />
+          {expandedId === index._id && content === "rename" ? (
+            <span className="text-blue-500">접기</span>
+          ) : (
+            <Button
+              size="small"
+              shape="circle"
+              type="text"
+              icon={<EditOutlined />}
+            />
+          )}
         </td>
         <td
           className="text-[1rem] py-[4px] text-center"
           onClick={toggleToExpandForDeleting}
         >
-          <Button
-            size="small"
-            shape="circle"
-            type="text"
-            icon={<DeleteOutlined />}
-          />
+          {expandedId === index._id && content === "delete" ? (
+            <span className="text-blue-500">접기</span>
+          ) : (
+            <Button
+              disabled={indexSetInfo.indexes.length === 1}
+              size="small"
+              shape="circle"
+              type="text"
+              icon={<DeleteOutlined />}
+            />
+          )}
         </td>
       </tr>
-      {isExpanded && (
+      {expandedId === index._id && (
         <tr className="border-b border-collapse border-b-gray-200">
-          <td colSpan={5}>
+          <td className="py-3" colSpan={5}>
             {content === "add" && (
-              <div className="w-full flex gap-2">
+              <div className="flex w-full gap-2">
                 <Input
                   size="small"
                   className="w-full"
                   onChange={(e) => {
                     setName(e.target.value);
                   }}
+                  ref={addNewIndexInputRef}
                 />
                 <Button
                   size="small"
                   type="primary"
                   onClick={() => {
-                    setIsExpanded(false);
+                    changeExpandedId("");
                     setName("");
                     onFinish({
                       name,
@@ -339,7 +432,7 @@ const TableRow = ({
                 <Button
                   size="small"
                   onClick={() => {
-                    setIsExpanded(false);
+                    changeExpandedId("");
                     setName("");
                   }}
                 >
@@ -348,7 +441,7 @@ const TableRow = ({
               </div>
             )}
             {content === "rename" && (
-              <div className="w-full flex gap-2">
+              <div className="flex w-full gap-2">
                 <Input
                   size="small"
                   className="w-full"
@@ -356,12 +449,13 @@ const TableRow = ({
                   onChange={(e) => {
                     setReName(e.target.value);
                   }}
+                  ref={renameInputRef}
                 />
                 <Button
                   size="small"
                   type="primary"
                   onClick={() => {
-                    setIsExpanded(false);
+                    changeExpandedId("");
                     setReName("");
                     onFinishRename({
                       name: rename,
@@ -375,7 +469,7 @@ const TableRow = ({
                 <Button
                   size="small"
                   onClick={() => {
-                    setIsExpanded(false);
+                    changeExpandedId("");
                     setReName("");
                   }}
                 >
@@ -384,47 +478,102 @@ const TableRow = ({
               </div>
             )}
             {content === "delete" && (
-              <div className="w-full flex gap-2">
+              <div className="flex flex-col gap-1">
+                <div className="text-base text-gray-700">
+                  카드를 옮길 목차를 선택해주세요.
+                </div>
+
                 <Select
                   size="small"
                   className="w-full"
-                  placeholder="카드를 옮길 목차를 선택하세요"
+                  value={indexForCardsInDeletedIndex}
                   onChange={(_index) => {
                     setIndexForCardsInDeletedIndex(_index);
                   }}
+                  optionLabelProp="label"
+                  ref={deleteIndexesSelectorRef}
+                  onFocus={turnOffPopConfirm}
                 >
                   {indexSetInfo.indexes
                     .filter((_index) => _index._id !== index._id)
                     .map((item) => (
-                      <Select.Option key={item._id} value={item._id}>
+                      <Select.Option
+                        key={item._id}
+                        value={item._id}
+                        label={item.name}
+                      >
                         {item.name}
                       </Select.Option>
                     ))}
+                  <Select.Option value="none" label="목차 선택 안됨">
+                    목차 선택 안함
+                  </Select.Option>
                 </Select>
-                <Button
-                  size="small"
-                  type="primary"
-                  onClick={() => {
-                    setIsExpanded(false);
-                    setName("");
-                    onFinishIndexDelete({
-                      moveto_index_id: indexForCardsInDeletedIndex,
-                      current_index_id: index._id,
-                      indexset_id: indexSetInfo._id,
-                    });
-                  }}
-                >
-                  삭제
-                </Button>
-                <Button
-                  size="small"
-                  onClick={() => {
-                    setIsExpanded(false);
-                    setName("");
-                  }}
-                >
-                  취소
-                </Button>
+                <div className="flex justify-end w-full gap-2">
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      changeExpandedId("");
+                      setIndexForCardsInDeletedIndex(null);
+                    }}
+                  >
+                    취소
+                  </Button>
+                  <Popconfirm
+                    title={
+                      <div>
+                        <div className="text-base">
+                          해당 목차의 카드가 삭제됩니다.
+                        </div>
+                        <div className="text-lg font-medium">
+                          정말 진행하시겠습니까?
+                        </div>
+                      </div>
+                    }
+                    visible={popconfirmVisible}
+                    okText={"삭제"}
+                    okButtonProps={{
+                      danger: true,
+                    }}
+                    cancelText="취소"
+                    onConfirm={async () => {
+                      await onFinishIndexDelete({
+                        moveto_index_id: null,
+                        current_index_id: index._id,
+                        indexset_id: indexSetInfo._id,
+                      });
+                      changePopconfirmVisible(false);
+                      changeExpandedId("");
+                    }}
+                    onCancel={() => {
+                      changePopconfirmVisible(false);
+                      deleteIndexesSelectorRef.current.focus();
+                    }}
+                    placement="topRight"
+                  >
+                    <Button
+                      size="small"
+                      type="primary"
+                      danger
+                      onClick={async () => {
+                        if (indexForCardsInDeletedIndex === "none") {
+                          changePopconfirmVisible(true);
+                          return;
+                        }
+
+                        await onFinishIndexDelete({
+                          moveto_index_id: indexForCardsInDeletedIndex,
+                          current_index_id: index._id,
+                          indexset_id: indexSetInfo._id,
+                        });
+                        changeExpandedId("");
+                        setIndexForCardsInDeletedIndex(null);
+                      }}
+                    >
+                      삭제
+                    </Button>
+                  </Popconfirm>
+                </div>
               </div>
             )}
           </td>

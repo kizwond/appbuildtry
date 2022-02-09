@@ -41,7 +41,7 @@ export const computeNumberOfAllFilteredCards = async ({ cardsets }) => {
     detailedOption;
 
   const flattenCards = cardsets.filter((card, i) => {
-    const isFreePassCards = ["general, share, subject"].includes(
+    const isFreePassCards = ["general", "share", "subject"].includes(
       card.card_info.cardtype
     );
 

@@ -733,7 +733,11 @@ class Container extends Component {
       }
     }
   };
-
+  componentDidMount(){
+    console.log("hererrrrrrr")
+    this.props.setTtsOn(false)
+    window.speechSynthesis.cancel();
+  }
   componentDidUpdate(prevProps, prevState) {
     if (this.props.contentsList !== prevProps.contentsList) {
       console.log(this.props.contentsList);
@@ -751,16 +755,23 @@ class Container extends Component {
         sessionStorage.setItem("ttsUse", "able");
       }
     }
-
+    // const currentFaceTmp = sessionStorage.getItem("currentFace"); 
+    // if (!currentFaceTmp) {
+    //   sessionStorage.setItem("currentFace", "front");
+    // } else if(currentFaceTmp === "back") {
+    //   sessionStorage.setItem("currentFace", "front");
+    // }
     if (this.props.ttsOn) {
       if (this.state.ttsOn) {
         if (this.state.flip === true) {
+          sessionStorage.setItem("currentFace", "front");
           this.props.getTTSData();
           this.setState({
             ttsOn: false,
           });
         }
         if (this.state.flip === false) {
+          sessionStorage.setItem("currentFace", "back");
           this.props.getTTSData();
           this.setState({
             ttsOn: false,
@@ -769,10 +780,17 @@ class Container extends Component {
       }
     }
     if(this.props.ttsOn !== prevProps.ttsOn){
+      console.log("hererrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
       if(this.props.ttsOn === false){
-
+        window.speechSynthesis.cancel();
       } else {
+        // if(this.state.flip === true){
+        //   this.props.getTTSData("back");
+        // } else {
+        //   this.props.getTTSData("front");
+        // }
         this.props.getTTSData();
+        console.log("hererrrrrr2222222222222222222222222222222222r")
       }
       
     }
@@ -1037,77 +1055,77 @@ class Container extends Component {
 
     // this.generateCardSeq(card_details_session, now, current_card_id);
   };
-  speakTextFirstCard = (face1, face2) => {
-    console.log("tts");
-    if (face2) {
-      const hello = async () => this.speakTextFace1(face1);
-      hello().then(this.speakTextFace2(face2));
-    } else {
-      const hello = async () => this.speakTextFace1(face1);
-      hello();
-    }
-  };
-  speakText = () => {
-    console.log("tts");
-    const hello = async () => this.speakTextFace1();
-    hello().then(this.speakTextFace2());
-  };
-  speakTextFace1 = (face1) => {
-    window.speechSynthesis.cancel();
-    if (face1) {
-      var text = face1;
-    } else {
-      const text_tmp = document.getElementById("face1_row1").innerText;
-      text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
-    }
-    // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
+  // speakTextFirstCard = (face1, face2) => {
+  //   console.log("tts");
+  //   if (face2) {
+  //     const hello = async () => this.speakTextFace1(face1);
+  //     hello().then(this.speakTextFace2(face2));
+  //   } else {
+  //     const hello = async () => this.speakTextFace1(face1);
+  //     hello();
+  //   }
+  // };
+  // speakText = () => {
+  //   console.log("tts");
+  //   const hello = async () => this.speakTextFace1();
+  //   hello().then(this.speakTextFace2());
+  // };
+  // speakTextFace1 = (face1) => {
+  //   window.speechSynthesis.cancel();
+  //   if (face1) {
+  //     var text = face1;
+  //   } else {
+  //     const text_tmp = document.getElementById("face1_row1").innerText;
+  //     text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
+  //   }
+  //   // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
 
-    console.log(text);
-    if (text !== null) {
-      const detected = detect(text);
-      console.log(detected);
+  //   console.log(text);
+  //   if (text !== null) {
+  //     const detected = detect(text);
+  //     console.log(detected);
 
-      const speechMsg = new SpeechSynthesisUtterance();
-      speechMsg.rate = 1; // 속도: 0.1 ~ 10
-      speechMsg.pitch = 1; // 음높이: 0 ~ 2
-      speechMsg.lang = detected;
-      speechMsg.text = text;
+  //     const speechMsg = new SpeechSynthesisUtterance();
+  //     speechMsg.rate = 1; // 속도: 0.1 ~ 10
+  //     speechMsg.pitch = 1; // 음높이: 0 ~ 2
+  //     speechMsg.lang = detected;
+  //     speechMsg.text = text;
 
-      // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
-      window.speechSynthesis.speak(speechMsg);
-    }
-  };
+  //     // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
+  //     window.speechSynthesis.speak(speechMsg);
+  //   }
+  // };
 
-  speakTextFace2 = (face2) => {
-    window.speechSynthesis.cancel();
-    if (face2) {
-      var text = face2;
-    } else {
-      const text_id = document.getElementById("face2_row1");
-      if (text_id === null) {
-        return;
-      } else {
-        var text_tmp = document.getElementById("face2_row1").innerText;
-      }
-      text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
-    }
-    // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
+  // speakTextFace2 = (face2) => {
+  //   window.speechSynthesis.cancel();
+  //   if (face2) {
+  //     var text = face2;
+  //   } else {
+  //     const text_id = document.getElementById("face2_row1");
+  //     if (text_id === null) {
+  //       return;
+  //     } else {
+  //       var text_tmp = document.getElementById("face2_row1").innerText;
+  //     }
+  //     text = text_tmp.replace(/\w+\s*(?=\:)\:|[가-힣]+\s*(?=\:)\:/gi, "");
+  //   }
+  //   // window.speechSynthesis.cancel(); // 현재 읽고있다면 초기화
 
-    console.log(text);
-    if (text !== null) {
-      const detected = detect(text);
-      console.log(detected);
+  //   console.log(text);
+  //   if (text !== null) {
+  //     const detected = detect(text);
+  //     console.log(detected);
 
-      const speechMsg = new SpeechSynthesisUtterance();
-      speechMsg.rate = 1; // 속도: 0.1 ~ 10
-      speechMsg.pitch = 1; // 음높이: 0 ~ 2
-      speechMsg.lang = detected;
-      speechMsg.text = text;
+  //     const speechMsg = new SpeechSynthesisUtterance();
+  //     speechMsg.rate = 1; // 속도: 0.1 ~ 10
+  //     speechMsg.pitch = 1; // 음높이: 0 ~ 2
+  //     speechMsg.lang = detected;
+  //     speechMsg.text = text;
 
-      // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
-      window.speechSynthesis.speak(speechMsg);
-    }
-  };
+  //     // SpeechSynthesisUtterance에 저장된 내용을 바탕으로 음성합성 실행
+  //     window.speechSynthesis.speak(speechMsg);
+  //   }
+  // };
 
   //서버에 보내기 위한 학습정보생성
   generateStudyStatus = (card_details_session, current_card_info_index) => {
@@ -1240,10 +1258,10 @@ class Container extends Component {
     if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
       var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
-      var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
-      var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
-      var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
-      if (parentId_tmp1 !== null && parentId_tmp1[0] !== 'id="isPasted"') {
+      var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+      var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+      var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
+      if (parentId_tmp1 !== null) {
         var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
         var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
         var cardId = parentId_tmp3[0].replace("cardId", "");
@@ -1253,11 +1271,11 @@ class Container extends Component {
       if (parentId === null) {
         parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.outerHTML;
         parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.innerHTML;
-        var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
-        var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
-        var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+        var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+        var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+        var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
         console.log(parentId_tmp1);
-        if (parentId_tmp1 !== null && parentId_tmp1[0] !== 'id="isPasted"') {
+        if (parentId_tmp1 !== null) {
           var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
           var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
           var cardId = parentId_tmp3[0].replace("cardId", "");
@@ -1272,11 +1290,11 @@ class Container extends Component {
         } else {
           parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
           parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
-          var parentId_tmp1 = parentNode.match(/(id=\"\w{1,100}\")/gi);
-          var parentId_tmp2 = parentNode.match(/(cardSetId\w{1,100}cardId)/gi);
-          var parentId_tmp3 = parentNode.match(/(cardId\w{1,100})/gi);
+          var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+          var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+          var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
           console.log(parentId_tmp1);
-          if (parentId_tmp1 !== null && parentId_tmp1[0] !== 'id="isPasted"') {
+          if (parentId_tmp1 !== null) {
             var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
             var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
             var cardId = parentId_tmp3[0].replace("cardId", "");
@@ -1288,6 +1306,48 @@ class Container extends Component {
             sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
             sessionStorage.setItem("selectionTextCardSetId", cardSetId);
             sessionStorage.setItem("selectionTextCardId", cardId);
+          } else {
+            parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+            parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+            var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+            var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+            var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
+            console.log(parentId_tmp1);
+            if (parentId_tmp1 !== null) {
+              var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+              var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+              var cardId = parentId_tmp3[0].replace("cardId", "");
+            } else {
+              parentId = null;
+              console.log("아직도 아니다");
+            }
+            if (parentId !== null) {
+              sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+              sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+              sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+              sessionStorage.setItem("selectionTextCardId", cardId);
+            } else {
+              parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+              parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+              var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+              var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+              var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
+              console.log(parentId_tmp1);
+              if (parentId_tmp1 !== null) {
+                var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+                var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+                var cardId = parentId_tmp3[0].replace("cardId", "");
+              } else {
+                parentId = null;
+                console.log("아직도 아니다2");
+              }
+              if (parentId !== null) {
+                sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+                sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+                sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+                sessionStorage.setItem("selectionTextCardId", cardId);
+              }
+            }
           }
         }
       } else {
@@ -1916,102 +1976,194 @@ class Container extends Component {
             // console.log("해당컨텐츠 정보", content_value);
             const userFlags = (
               <>
-                <StopOutlined
-                  onClick={() => this.userFlagChange("0")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "white",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: "#ff8e8e",
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => this.userFlagChange("1")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#ffd1d1",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${this.props.userFlagDetails.flag1.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => this.userFlagChange("2")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#ffe7bb",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${this.props.userFlagDetails.flag2.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => this.userFlagChange("3")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#e7e773",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${this.props.userFlagDetails.flag3.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => this.userFlagChange("4")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#beffbe",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${this.props.userFlagDetails.flag4.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => this.userFlagChange("5")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#ceceff",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${this.props.userFlagDetails.flag5.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
+                <div>
+                  <StopOutlined
+                    onClick={() => userFlagChange("0")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "white",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: "#ff8e8e",
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => this.userFlagChange("1")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#ffd1d1",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${this.props.userFlagDetails.flag1.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #ff0000",
+                    }}
+                  >
+                    1
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => this.userFlagChange("2")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#ffe7bb",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${this.props.userFlagDetails.flag2.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #ffa500",
+                    }}
+                  >
+                    2
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => this.userFlagChange("3")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#e7e773",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${this.props.userFlagDetails.flag3.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #ffff00",
+                    }}
+                  >
+                    3
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => this.userFlagChange("4")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#beffbe",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${this.props.userFlagDetails.flag4.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #008000",
+                    }}
+                  >
+                    4
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => this.userFlagChange("5")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#ceceff",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${this.props.userFlagDetails.flag5.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #0000ff",
+                    }}
+                  >
+                    5
+                  </span>
+                </div>
               </>
             );
 
@@ -3447,6 +3599,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
   if (content.content.hidden.length > 0) {
     content.content.hidden.map((element) => {
       const color = cardTypeSets[0].studyTool.hidden[element.toolType].color;
+      const tmp = element.targetWord;
       const remake = tmp.replaceAll("'", "&#39;");
       const remake2 = remake.replaceAll(">", "&gt;");
       const remake3 = remake2.replaceAll("<", "&lt;");
@@ -3463,6 +3616,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
       const color = cardTypeSets[0].studyTool.underline[element.toolType].color;
       const thickness = cardTypeSets[0].studyTool.underline[element.toolType].attr1;
       const lineType = cardTypeSets[0].studyTool.underline[element.toolType].attr2;
+      const tmp = element.targetWord;
       const remake = tmp.replaceAll("'", "&#39;");
       const remake2 = remake.replaceAll(">", "&gt;");
       const remake3 = remake2.replaceAll("<", "&lt;");
@@ -3478,6 +3632,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
   if (content.content.highlight.length > 0) {
     content.content.highlight.map((element) => {
       const color = cardTypeSets[0].studyTool.highlight[element.toolType].color;
+      const tmp = element.targetWord;
       const remake = tmp.replaceAll("'", "&#39;");
       const remake2 = remake.replaceAll(">", "&gt;");
       const remake3 = remake2.replaceAll("<", "&lt;");

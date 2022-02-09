@@ -1476,102 +1476,194 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
             const userFlags = (
               <>
-                <StopOutlined
-                  onClick={() => userFlagChange("0")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "white",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: "#ff8e8e",
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("1")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#ffd1d1",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag1.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("2")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#ffe7bb",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag2.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("3")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#e7e773",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag3.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("4")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#beffbe",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag4.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
-                <FlagFilled
-                  onClick={() => userFlagChange("5")}
-                  style={{
-                    // border: "1px solid lightgrey",
-                    width: "30px",
-                    height: "30px",
-                    borderRadius: "15px",
-                    background: "#ceceff",
-                    cursor: "pointer",
-                    fontSize: "20px",
-                    lineHeight: "24px",
-                    color: `${userFlagDetails.flag5.figureColor}`,
-                    boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
-                    marginBottom: "3px",
-                  }}
-                />
+                <div>
+                  <StopOutlined
+                    onClick={() => userFlagChange("0")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "white",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: "#ff8e8e",
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("1")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#ffd1d1",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag1.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #ff0000",
+                    }}
+                  >
+                    1
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("2")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#ffe7bb",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag2.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #ffa500",
+                    }}
+                  >
+                    2
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("3")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#e7e773",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag3.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #ffff00",
+                    }}
+                  >
+                    3
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("4")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#beffbe",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag4.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #008000",
+                    }}
+                  >
+                    4
+                  </span>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <FlagFilled
+                    onClick={() => userFlagChange("5")}
+                    style={{
+                      // border: "1px solid lightgrey",
+                      width: "30px",
+                      height: "30px",
+                      borderRadius: "15px",
+                      background: "#ceceff",
+                      cursor: "pointer",
+                      fontSize: "20px",
+                      lineHeight: "24px",
+                      color: `${userFlagDetails.flag5.figureColor}`,
+                      boxShadow: "rgb(144 144 144) 1px 1px 2px 0px",
+                      marginBottom: "3px",
+                    }}
+                  />
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: 9,
+                      top: 7,
+                      color: "black",
+                      width: "14px",
+                      height: "14px",
+                      backgroundColor: "white",
+                      borderRadius: "7px",
+                      lineHeight: "14px",
+                      border: "1px solid #0000ff",
+                    }}
+                  >
+                    5
+                  </span>
+                </div>
               </>
             );
             var annotationPop = (

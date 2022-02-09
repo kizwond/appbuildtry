@@ -1013,6 +1013,7 @@ const ReadMode = () => {
               />
               <FlagFilled
                 onClick={() => userFlagChange("1")}
+                className="cssNumbering"
                 style={{
                   border: "1px solid lightgrey",
                   background: "white",
@@ -1114,7 +1115,7 @@ const ReadMode = () => {
 
                           {userFlag && (
                             <>
-                              <span style={{ position: "absolute", right: 0 }}>{userFlags}</span>
+                              <span className={cssNumberingParent} style={{ position: "absolute", right: 0 }}>{userFlags}</span>
                             </>
                           )}
                         </div>

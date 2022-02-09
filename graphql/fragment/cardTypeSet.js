@@ -294,3 +294,15 @@ export const FRAGMENT_MY_CARD_TYPE_SET = gql`
     }
   }
 `;
+
+export const FRAGMENT_MY_CARD_TYPE_SET_ONLY_CARDTYPE_NAME = gql`
+  fragment MyCardTypenNameFragment on Cardtypeset {
+    _id
+    cardtypes {
+      _id
+      cardtype_info {
+        name
+      }
+    }
+  }
+`;

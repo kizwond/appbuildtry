@@ -2,7 +2,10 @@ import { gql } from "@apollo/client";
 import { FRAGMENT_MYBOOK } from "../fragment/book";
 import { FRAGMENT_CATEGORYSET } from "../fragment/categorySet";
 import { FRAGMENT_MENTORING } from "../fragment/mentoring";
-import { FRAGMENT_MY_CARD_TYPE_SET } from "../fragment/cardTypeSet";
+import {
+  FRAGMENT_MY_CARD_TYPE_SET,
+  FRAGMENT_MY_CARD_TYPE_SET_ONLY_CARDTYPE_NAME,
+} from "../fragment/cardTypeSet";
 import {
   FRAGMENT_CARD_SET,
   FRAGMENT_CARD_SET_WITHOUT_STUDY_STATUS,
@@ -683,6 +686,47 @@ export const QUERY_ALL_CANIDIDATE_BOOKS = gql`
       msg
       candibooks {
         ...CandidateBookFragment
+      }
+    }
+  }
+`;
+
+export const QUERY_CONTENT_AND_CARDTYPE_FOR_CARD_DETAIL = gql`
+  ${FRAGMENT_MY_CARD_TYPE_SET_ONLY_CARDTYPE_NAME}
+  query getCardContentAndTypeInfomation(
+    $mybook_ids: [ID]
+    $buycontent_ids: [ID]
+    $mycontent_ids: [ID]
+  ) {
+    cardtypeset_getbymybookids(mybook_ids: $mybook_ids) {
+      status
+      msg
+      cardtypesets {
+        ...MyCardTypenNameFragment
+      }
+    }
+    mycontent_getMycontentByMycontentIDs(mycontent_ids: $mycontent_ids) {
+      status
+      msg
+      mycontents {
+        _id
+        user_id
+        face1
+        selection
+        face2
+        annotation
+      }
+    }
+    buycontent_getBuycontentByBuycontentIDs(buycontent_ids: $buycontent_ids) {
+      status
+      msg
+      buycontents {
+        _id
+        user_id
+        face1
+        selection
+        face2
+        annotation
       }
     }
   }

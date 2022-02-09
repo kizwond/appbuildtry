@@ -68,6 +68,7 @@ const Home = () => {
   return (
     <M_Layout>
       <Hero />
+      <div style={{fontSize:"2rem", fontWeight:"700", textAlign:"center"}}>현재 네이버 앱을 통한 당사이트 접근시 기능상의 문제점이 발견되었습니다. 네이버앱 이외의 브라우저를 통해 사용하여 주시기 바랍니다. 불편을 끼쳐드려 죄송합니다.</div>
       {data && data.me && data.me.users && <M_RecentStudyList />}
       {/* <NewBooks /> */}
       {/* {[1, 2, 3, 4, 5, 6, 7, 8].map((photo) => (

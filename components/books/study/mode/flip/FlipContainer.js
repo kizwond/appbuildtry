@@ -737,6 +737,7 @@ class Container extends Component {
     console.log("hererrrrrrr")
     this.props.setTtsOn(false)
     window.speechSynthesis.cancel();
+    this.props.getTTSData();
   }
   componentDidUpdate(prevProps, prevState) {
     if (this.props.contentsList !== prevProps.contentsList) {

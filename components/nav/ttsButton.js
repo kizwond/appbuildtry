@@ -1,6 +1,6 @@
 import { SoundOutlined, PauseOutlined, RedoOutlined } from "@ant-design/icons";
 import { useLazyQuery } from "@apollo/client";
-import { Button,Popover } from "antd";
+import { Button, Popover } from "antd";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -13,10 +13,10 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
   const ISSERVER = typeof window === "undefined";
   if (!ISSERVER) {
     var ttsUse = sessionStorage.getItem("ttsUse");
-    if(ttsUse === "unable"){
-      var useTTS = false
+    if (ttsUse === "unable") {
+      var useTTS = false;
     } else {
-      useTTS = true
+      useTTS = true;
     }
   }
 
@@ -58,15 +58,8 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
       const tts = contentsListSortedByCardSeq.map((content) => {
         let arr = [];
         content.face1.forEach((c, i) => {
-          if (
-            readModeTTSOption.faceOneTTS[i + 1] &&
-            content.face1 !== null &&
-            content.face1.length > 0
-          ) {
-            const contentOnlyString = decodeHtMLEntities(c).replace(
-              /\/|\~/g,
-              " "
-            );
+          if (readModeTTSOption.faceOneTTS[i + 1] && content.face1 !== null && content.face1.length > 0) {
+            const contentOnlyString = decodeHtMLEntities(c).replace(/\/|\~/g, " ");
             const seperatedWithEngAndKor = seperateEngAndKor(contentOnlyString);
             arr.push(seperatedWithEngAndKor);
           }
@@ -74,10 +67,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
 
         if (readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0) {
           content.selection.forEach((c, i) => {
-            const contentWithoutTags = decodeHtMLEntities(c).replace(
-              /\/|\~/g,
-              " "
-            );
+            const contentWithoutTags = decodeHtMLEntities(c).replace(/\/|\~/g, " ");
             arr.push(`${i + 1} ${seperateEngAndKor(contentWithoutTags)}`);
           });
         }
@@ -85,10 +75,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           content.face2.forEach((c, i) => {
             if (readModeTTSOption.faceTwoTTS[i + 1]) {
               const contentWithoutTags =
-                i === 0 &&
-                readModeTTSOption.faceOneTTS.selection &&
-                content.selection !== null &&
-                content.selection.length > 0
+                i === 0 && readModeTTSOption.faceOneTTS.selection && content.selection !== null && content.selection.length > 0
                   ? "정답 " + decodeHtMLEntities(c).replace(/\/|\~/g, " ")
                   : decodeHtMLEntities(c).replace(/\/|\~/g, " ");
               arr.push(seperateEngAndKor(contentWithoutTags));
@@ -105,20 +92,44 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
     },
   });
 
+  function setSpeech() {
+    return new Promise(function (resolve, reject) {
+      let synth = window.speechSynthesis;
+      let id;
+
+      id = setInterval(() => {
+        if (synth.getVoices().length !== 0) {
+          resolve(synth.getVoices());
+          clearInterval(id);
+        }
+      }, 100);
+    });
+  }
+
   const speakText = (ttsArray) => {
     window.speechSynthesis.cancel();
-   
+    let voiceEn = [];
+    let voiceKo = [];
+    let s = setSpeech();
+      s.then((voices) => {
+
+        console.log(voices);
+        voiceEn = voices.filter((item) => item.lang === "en-US");
+        voiceKo = voices.filter((item) => item.lang === "ko-KR" && item.voiceURI !== "Microsoft Heami - Korean (Korean)");
+      });
+
     const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
-    var voices = speechSynthesis.getVoices();
 
-    const voiceEn = voices.filter(item=> item.lang === "en-US")
+    // var voices = speechSynthesis.getVoices();
+    // const voiceEn = voices.filter(item=> item.lang === "en-US")
+    // const voiceKo = voices.filter(item=> item.lang === "ko-KR" && item.voiceURI !== "Microsoft Heami - Korean (Korean)")
 
-    const voiceKo = voices.filter(item=> item.lang === "ko-KR" && item.voiceURI !== "Microsoft Heami - Korean (Korean)")
-
+    console.log(voiceEn)
+    console.log(voiceEn)
     if (ttsArray.length > 0) {
       ttsArray.map((item, index) => {
         var detected = detect(item);
-        
+
         if (!["ko", "en"].includes(detected)) {
           var lang = "en";
         } else {
@@ -131,12 +142,11 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
         // speechMsg.pitch = 1; // 음높이: 0 ~ 2
         speechMsg.lang = lang;
         speechMsg.text = item;
-        if(lang === "ko"){
-          speechMsg.voice = voiceKo[0]
-        } else if(lang === "en"){
-          speechMsg.voice = voiceEn[0]
+        if (lang === "ko") {
+          speechMsg.voice = voiceKo[0];
+        } else if (lang === "en") {
+          speechMsg.voice = voiceEn[0];
         }
-        alert(item)
         window.speechSynthesis.speak(speechMsg);
       });
       // sessionStorage.removeItem("ttsOrder");
@@ -144,7 +154,6 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
       // 목차 변경시 리셋
     }
   };
-
 
   // 유즈이펙트로 tts 데이터 변경될 때만 읽어주면 됨
   useEffect(() => {
@@ -206,14 +215,10 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
     window.speechSynthesis.resume();
     setPaused(false);
   };
-  const content = (
-    <div>
-      이 브라우저는 음성 합성을 지원하지 않습니다.
-    </div>
-  );
+  const content = <div>이 브라우저는 음성 합성을 지원하지 않습니다.</div>;
   return (
     <>
-      {ttsOn === true && paused === false && useTTS === true&& (
+      {ttsOn === true && paused === false && useTTS === true && (
         <>
           <Button
             size="small"
@@ -239,7 +244,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           />
         </>
       )}
-      {ttsOn === false && paused === false && useTTS === true&& (
+      {ttsOn === false && paused === false && useTTS === true && (
         <>
           <Button
             size="small"
@@ -254,7 +259,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           />
         </>
       )}
-      {ttsOn === true && paused === true && useTTS === true&& (
+      {ttsOn === true && paused === true && useTTS === true && (
         <>
           <Button
             size="small"
@@ -282,20 +287,20 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           />
         </>
       )}
-      {ttsOn === false && useTTS === false &&(
+      {ttsOn === false && useTTS === false && (
         <>
-        <Popover trigger="click" content={content} >
-          <Button
-            size="small"
-            style={{
-              fontSize: "1rem",
-              borderRadius: "5px",
-              marginRight: "5px",
-            }}
-            type="primary"
-            icon={<SoundOutlined />}
-            disabled
-          />
+          <Popover trigger="click" content={content}>
+            <Button
+              size="small"
+              style={{
+                fontSize: "1rem",
+                borderRadius: "5px",
+                marginRight: "5px",
+              }}
+              type="primary"
+              icon={<SoundOutlined />}
+              disabled
+            />
           </Popover>
         </>
       )}

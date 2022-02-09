@@ -14,7 +14,7 @@ const decodeHtMLEntities = (function () {
         element.textContent = "";
       }
 
-      return str.trim();
+      return str;
     }
     return decodeHTMLEntities;
   }

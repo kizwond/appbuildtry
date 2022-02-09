@@ -63,16 +63,20 @@ const Popover_CardDetail = () => {
   // 앞면 뒷면은 아래 정보로 배열로 돌려서 있으면 표시 없으면 표시안하는 방식으로 구현
   const face1_1_Str =
     contents &&
-    contents.face1.map((row) => decodeHtMLEntities(row).substring(0, 10));
+    contents.face1.map((row) =>
+      decodeHtMLEntities(row).trim().substring(0, 10)
+    );
   const face2_1_Str =
     contents &&
-    contents.face2.map((row) => decodeHtMLEntities(row).substring(0, 10));
+    contents.face2.map((row) =>
+      decodeHtMLEntities(row).trim().substring(0, 10)
+    );
   const selectionStr =
     contents &&
     contents.selection &&
     contents.selection.length > 0 &&
     decodeHtMLEntities(
-      contents.selection.reduce((a, b) => a + " " + b)
+      contents.selection.reduce((a, b) => a.trim() + " " + b.trim())
     ).substring(0, 10);
 
   const annotationStr =
@@ -80,7 +84,7 @@ const Popover_CardDetail = () => {
     contents.annotation &&
     contents.annotation.length > 0 &&
     decodeHtMLEntities(
-      contents.annotation.reduce((a, b) => a + " " + b)
+      contents.annotation.reduce((a, b) => a.trim() + " " + b.trim())
     ).substring(0, 10);
 
   console.log({ face1_1_Str, face2_1_Str, annotationStr, selectionStr });

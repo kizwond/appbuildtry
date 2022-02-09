@@ -110,15 +110,15 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
     alert("heeeeeee")
     const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
     var voices = speechSynthesis.getVoices();
-    console.log(voices)
+    alert(voices)
     const voiceEn = voices.filter(item=> item.lang === "en-US")
-    console.log(voiceEn)
+    alert(voiceEn[0].voiceURI)
     const voiceKo = voices.filter(item=> item.lang === "ko-KR" && item.voiceURI !== "Microsoft Heami - Korean (Korean)")
-    console.log(voiceKo)
+    alert(voiceKo[0].voiceURI)
     if (ttsArray.length > 0) {
       ttsArray.map((item, index) => {
         var detected = detect(item);
-        console.log(index, detected);
+        alert(detected);
         if (!["ko", "en"].includes(detected)) {
           var lang = "en";
         } else {
@@ -136,7 +136,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
         } else if(lang === "en"){
           speechMsg.voice = voiceEn[0]
         }
-        
+        alert("읽기시작")
         window.speechSynthesis.speak(speechMsg);
       });
       // sessionStorage.removeItem("ttsOrder");

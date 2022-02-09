@@ -229,7 +229,7 @@ const FlipContainer = ({
         // speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
         speechMsg.rate = 1; // 속도: 0.1 ~ 10
         speechMsg.pitch = 1; // 음높이: 0 ~ 2
-        speechMsg.lang = lang;
+        speechMsg.lang = "en";
         speechMsg.text = item;
         window.speechSynthesis.speak(speechMsg);
       });

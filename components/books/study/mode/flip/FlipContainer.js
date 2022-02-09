@@ -3447,7 +3447,15 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
   if (content.content.hidden.length > 0) {
     content.content.hidden.map((element) => {
       const color = cardTypeSets[0].studyTool.hidden[element.toolType].color;
-      altered = altered.replace(element.targetWord, `<span style="background-color:${color}; color:${color}">${element.targetWord}</span>`);
+      const remake = tmp.replaceAll("'", "&#39;");
+      const remake2 = remake.replaceAll(">", "&gt;");
+      const remake3 = remake2.replaceAll("<", "&lt;");
+      const remake4 = remake3.replaceAll("→", "&rarr;");
+      const remake5 = remake4.replaceAll('"', "&quot;");
+      const remake6 = remake5.replaceAll("•", "&bull;");
+      const remake7 = remake6.replaceAll(/\s\s/g, "&nbsp; ");
+      const remake9 = remake7.replaceAll("·", "&middot;");
+      altered = altered.replaceAll(remake9, `<span style="background-color:${color}; color:${color}">${element.targetWord}</span>`);
     });
   }
   if (content.content.underline.length > 0) {
@@ -3455,15 +3463,30 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
       const color = cardTypeSets[0].studyTool.underline[element.toolType].color;
       const thickness = cardTypeSets[0].studyTool.underline[element.toolType].attr1;
       const lineType = cardTypeSets[0].studyTool.underline[element.toolType].attr2;
-      // console.log(element);
-      altered = altered.replace(element.targetWord, `<span style="display:inline-block; border-bottom: ${thickness}px ${lineType} ${color}">${element.targetWord}</span>`);
+      const remake = tmp.replaceAll("'", "&#39;");
+      const remake2 = remake.replaceAll(">", "&gt;");
+      const remake3 = remake2.replaceAll("<", "&lt;");
+      const remake4 = remake3.replaceAll("→", "&rarr;");
+      const remake5 = remake4.replaceAll('"', "&quot;");
+      const remake6 = remake5.replaceAll("•", "&bull;");
+      const remake7 = remake6.replaceAll(/\s\s/g, "&nbsp; ");
+      const remake9 = remake7.replaceAll("·", "&middot;");
+      altered = altered.replaceAll(remake9, `<span style="display:inline-block; border-bottom: ${thickness}px ${lineType} ${color}">${element.targetWord}</span>`);
     });
   }
 
   if (content.content.highlight.length > 0) {
     content.content.highlight.map((element) => {
       const color = cardTypeSets[0].studyTool.highlight[element.toolType].color;
-      altered = altered.replace(element.targetWord, `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`);
+      const remake = tmp.replaceAll("'", "&#39;");
+      const remake2 = remake.replaceAll(">", "&gt;");
+      const remake3 = remake2.replaceAll("<", "&lt;");
+      const remake4 = remake3.replaceAll("→", "&rarr;");
+      const remake5 = remake4.replaceAll('"', "&quot;");
+      const remake6 = remake5.replaceAll("•", "&bull;");
+      const remake7 = remake6.replaceAll(/\s\s/g, "&nbsp; ");
+      const remake9 = remake7.replaceAll("·", "&middot;");
+      altered = altered.replaceAll(remake9, `<span class="brush${element.toolType}" style="display:inline-block; background-color:${color}">${element.targetWord}</span>`);
       // if (element.toolType === 0 || element.toolType === 1 || element.toolType === 3 || element.toolType === 4) {
       //   altered = altered.replace(
       //     element.targetWord,

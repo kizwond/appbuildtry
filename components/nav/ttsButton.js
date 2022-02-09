@@ -107,6 +107,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
 
   const speakText = (ttsArray) => {
     window.speechSynthesis.cancel();
+    alert("heeeeeee")
     const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
     var voices = speechSynthesis.getVoices();
     console.log(voices)

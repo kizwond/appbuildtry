@@ -56,6 +56,7 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsO
   const goToResult = () => {
     window.speechSynthesis.cancel();
     sessionStorage.setItem("isFinished", "true")
+    sessionStorage.removeItem("isFinished")
     window.location.href = "/m/mybooks";
   };
 

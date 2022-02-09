@@ -108,6 +108,12 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
   const speakText = (ttsArray) => {
     window.speechSynthesis.cancel();
     const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
+    var voices = speechSynthesis.getVoices();
+    console.log(voices)
+    const voiceEn = voices.filter(item=> item.lang === "en-US")
+    console.log(voiceEn)
+    const voiceKo = voices.filter(item=> item.lang === "ko-KR" && item.voiceURI !== "Microsoft Heami - Korean (Korean)")
+    console.log(voiceKo)
     if (ttsArray.length > 0) {
       ttsArray.map((item, index) => {
         var detected = detect(item);
@@ -118,12 +124,18 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           lang = detected;
         }
         const speechMsg = new SpeechSynthesisUtterance();
-        // speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
-        // speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
-        speechMsg.rate = 1; // 속도: 0.1 ~ 10
-        speechMsg.pitch = 1; // 음높이: 0 ~ 2
+        speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
+        speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
+        // speechMsg.rate = 1; // 속도: 0.1 ~ 10
+        // speechMsg.pitch = 1; // 음높이: 0 ~ 2
         speechMsg.lang = lang;
         speechMsg.text = item;
+        if(lang === "ko"){
+          speechMsg.voice = voiceKo[0]
+        } else if(lang === "en"){
+          speechMsg.voice = voiceEn[0]
+        }
+        
         window.speechSynthesis.speak(speechMsg);
       });
       // sessionStorage.removeItem("ttsOrder");
@@ -131,6 +143,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
       // 목차 변경시 리셋
     }
   };
+
 
   // 유즈이펙트로 tts 데이터 변경될 때만 읽어주면 됨
   useEffect(() => {

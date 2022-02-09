@@ -231,10 +231,10 @@ const FlipContainer = ({
           lang = detected;
         }
         const speechMsg = new SpeechSynthesisUtterance();
-        // speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
-        // speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
-        speechMsg.rate = 1; // 속도: 0.1 ~ 10
-        speechMsg.pitch = 1; // 음높이: 0 ~ 2
+        speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
+        speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
+        // speechMsg.rate = 1; // 속도: 0.1 ~ 10
+        // speechMsg.pitch = 1; // 음높이: 0 ~ 2
         speechMsg.lang = lang;
         speechMsg.text = item;
         if(lang === "ko"){

@@ -32,8 +32,6 @@ const SessionSetting = () => {
     }
   }
 
-  
-
   const [indexChanged, setIndexChanged] = useState();
   const [indexSetId, setIndexSetId] = useState();
   const [indexSets, setIndexSets] = useState();
@@ -48,55 +46,49 @@ const SessionSetting = () => {
     setIndexChanged(value);
   };
 
-  function setSpeech() {
-    return new Promise(function (resolve, reject) {
-      let synth = window.speechSynthesis;
-      let id;
+  // function setSpeech() {
+  //   return new Promise(function (resolve, reject) {
+  //     let synth = window.speechSynthesis;
+  //     let id;
 
-      id = setInterval(() => {
-        if (synth.getVoices().length !== 0) {
-          resolve(synth.getVoices());
-          clearInterval(id);
-        }
-      }, 100);
-    });
-  }
-  const speakText = useCallback(() => {
-    window.speechSynthesis.cancel();
-    let voiceEn = [];
-    let voiceKo = [];
-    let s = setSpeech();
-      s.then((voices) => {
+  //     id = setInterval(() => {
+  //       if (synth.getVoices().length !== 0) {
+  //         resolve(synth.getVoices());
+  //         clearInterval(id);
+  //       }
+  //     }, 100);
+  //   });
+  // }
+  // const speakText = useCallback(() => {
+  //   window.speechSynthesis.cancel();
+  //   let voiceEn = [];
+  //   let voiceKo = [];
+  //   let s = setSpeech();
+  //   s.then((voices) => {
+  //     console.log(voices);
+  //     voiceEn = voices.filter((item) => item.lang === "en-US");
+  //     voiceKo = voices.filter((item) => item.lang === "ko-KR" && item.voiceURI !== "Microsoft Heami - Korean (Korean)");
+  //   });
 
-        console.log(voices);
-        voiceEn = voices.filter((item) => item.lang === "en-US");
-        voiceKo = voices.filter((item) => item.lang === "ko-KR" && item.voiceURI !== "Microsoft Heami - Korean (Korean)");
-      });
+  //   const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
 
-    const readModeTTSOption = JSON.parse(sessionStorage.getItem("readModeTTSOption"));
-
-    // var voices = speechSynthesis.getVoices();
-    // const voiceEn = voices.filter(item=> item.lang === "en-US")
-    // const voiceKo = voices.filter(item=> item.lang === "ko-KR" && item.voiceURI !== "Microsoft Heami - Korean (Korean)")
-
-    console.log(voiceEn)
-    console.log(voiceEn)
-    let lang = "ko"
-        const speechMsg = new SpeechSynthesisUtterance();
-        speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
-        speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
-        // speechMsg.rate = 1; // 속도: 0.1 ~ 10
-        // speechMsg.pitch = 1; // 음높이: 0 ~ 2
-        speechMsg.lang = "ko";
-        speechMsg.text = "학습을 시작합니다.";
-        if (lang === "ko") {
-          speechMsg.voice = voiceKo[0];
-        } else if (lang === "en") {
-          speechMsg.voice = voiceEn[0];
-        }
-        window.speechSynthesis.speak(speechMsg);
-     
-  },[]);
+  //   console.log(voiceEn);
+  //   console.log(voiceEn);
+  //   let lang = "ko";
+  //   const speechMsg = new SpeechSynthesisUtterance();
+  //   speechMsg.rate = readModeTTSOption.rate; // 속도: 0.1 ~ 10
+  //   speechMsg.pitch = readModeTTSOption.pitch; // 음높이: 0 ~ 2
+  //   // speechMsg.rate = 1; // 속도: 0.1 ~ 10
+  //   // speechMsg.pitch = 1; // 음높이: 0 ~ 2
+  //   speechMsg.lang = "ko";
+  //   speechMsg.text = "학습을 시작합니다.";
+  //   if (lang === "ko") {
+  //     speechMsg.voice = voiceKo[0];
+  //   } else if (lang === "en") {
+  //     speechMsg.voice = voiceEn[0];
+  //   }
+  //   window.speechSynthesis.speak(speechMsg);
+  // }, []);
 
   useEffect(() => {
     if (data) {
@@ -112,10 +104,9 @@ const SessionSetting = () => {
       setIndexSetId(data.indexset_getByMybookids.indexsets[0]._id);
       setIndexSets(data.indexset_getByMybookids.indexsets);
 
-      speakText()
-      
+      // speakText();
     }
-  }, [data,speakText]);
+  }, [data]);
 
   return (
     <>

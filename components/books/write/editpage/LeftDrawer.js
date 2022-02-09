@@ -163,7 +163,7 @@ const LeftDrawer = ({ index_changed, indexChanged }) => {
       console.log(error);
     }
   }
-  const onFinishIndexDelete = (values) => {
+  const onFinishIndexDelete = async(values) => {
     console.log(values);
     postindexdelete(values.moveto_index_id, values.current_index_id, values.indexset_id);
   };

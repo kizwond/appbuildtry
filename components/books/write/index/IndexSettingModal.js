@@ -55,11 +55,6 @@ const IndexSettingModal = ({
     setExpandedId(_id);
   }, []);
 
-  const [popconfirmVisible, setPopconfirmVisible] = useState(false);
-  const changePopconfirmVisible = useCallback((_bool) => {
-    setPopconfirmVisible(_bool);
-  }, []);
-
   useEffect(() => {
     setExpandedId("");
   }, [isModalVisible]);
@@ -75,16 +70,13 @@ const IndexSettingModal = ({
 
   const showModal = () => {
     setIsModalVisible(true);
-    setPopconfirmVisible(false);
   };
 
   const handleOk = () => {
     setIsModalVisible(false);
-    setPopconfirmVisible(false);
   };
 
   const handleCancel = () => {
-    setPopconfirmVisible(false);
     setTimeout(() => {
       setIsModalVisible(false);
     }, 100);
@@ -104,10 +96,7 @@ const IndexSettingModal = ({
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <table
-          className="w-full table-fixed"
-          /* onClick={() => setPopconfirmVisible(false)} */
-        >
+        <table className="w-full table-fixed">
           <thead>
             <tr className="border-collapse border-y border-y-gray-200">
               <th
@@ -184,8 +173,6 @@ const IndexSettingModal = ({
                 isModalVisible={isModalVisible}
                 expandedId={expandedId}
                 changeExpandedId={changeExpandedId}
-                popconfirmVisible={popconfirmVisible}
-                changePopconfirmVisible={changePopconfirmVisible}
               />
             ))}
           </tbody>
@@ -208,20 +195,12 @@ const TableRow = ({
   isModalVisible,
   expandedId,
   changeExpandedId,
-  popconfirmVisible,
-  changePopconfirmVisible,
 }) => {
-  const turnOffPopConfirm = () => {
-    if (Popconfirm) {
-      changePopconfirmVisible(false);
-    }
-  };
   const [name, setName] = useState("");
   const [rename, setReName] = useState("");
   const [indexForCardsInDeletedIndex, setIndexForCardsInDeletedIndex] =
     useState("none");
   const [content, setContent] = useState("");
-  /* const [popconfirmVisible, setPopconfirmVisible] = useState(false); */
 
   const deleteIndexesSelectorRef = useRef();
 
@@ -492,7 +471,6 @@ const TableRow = ({
                   }}
                   optionLabelProp="label"
                   ref={deleteIndexesSelectorRef}
-                  onFocus={turnOffPopConfirm}
                 >
                   {indexSetInfo.indexes
                     .filter((_index) => _index._id !== index._id)
@@ -519,48 +497,45 @@ const TableRow = ({
                   >
                     취소
                   </Button>
-                  <Popconfirm
-                    title={
-                      <div>
-                        <div className="text-base">
-                          해당 목차의 카드가 삭제됩니다.
+                  {indexForCardsInDeletedIndex === "none" && (
+                    <Popconfirm
+                      title={
+                        <div>
+                          <div className="text-base">
+                            해당 목차의 카드가 삭제됩니다.
+                          </div>
+                          <div className="text-lg font-medium">
+                            정말 진행하시겠습니까?
+                          </div>
                         </div>
-                        <div className="text-lg font-medium">
-                          정말 진행하시겠습니까?
-                        </div>
-                      </div>
-                    }
-                    visible={popconfirmVisible}
-                    okText={"삭제"}
-                    okButtonProps={{
-                      danger: true,
-                    }}
-                    cancelText="취소"
-                    onConfirm={async () => {
-                      await onFinishIndexDelete({
-                        moveto_index_id: null,
-                        current_index_id: index._id,
-                        indexset_id: indexSetInfo._id,
-                      });
-                      changePopconfirmVisible(false);
-                      changeExpandedId("");
-                    }}
-                    onCancel={() => {
-                      changePopconfirmVisible(false);
-                      deleteIndexesSelectorRef.current.focus();
-                    }}
-                    placement="topRight"
-                  >
+                      }
+                      okText={"삭제"}
+                      okButtonProps={{
+                        danger: true,
+                      }}
+                      cancelText="취소"
+                      onConfirm={async () => {
+                        await onFinishIndexDelete({
+                          moveto_index_id: null,
+                          current_index_id: index._id,
+                          indexset_id: indexSetInfo._id,
+                        });
+                        changeExpandedId("");
+                        setIndexForCardsInDeletedIndex(null);
+                      }}
+                      placement="topRight"
+                    >
+                      <Button size="small" type="primary" danger>
+                        삭제
+                      </Button>
+                    </Popconfirm>
+                  )}
+                  {indexForCardsInDeletedIndex !== "none" && (
                     <Button
                       size="small"
                       type="primary"
                       danger
                       onClick={async () => {
-                        if (indexForCardsInDeletedIndex === "none") {
-                          changePopconfirmVisible(true);
-                          return;
-                        }
-
                         await onFinishIndexDelete({
                           moveto_index_id: indexForCardsInDeletedIndex,
                           current_index_id: index._id,
@@ -572,7 +547,7 @@ const TableRow = ({
                     >
                       삭제
                     </Button>
-                  </Popconfirm>
+                  )}
                 </div>
               </div>
             )}

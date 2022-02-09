@@ -78,8 +78,8 @@ const Challenges = () => {
             <div>
               <div className="flex gap-2">
                 {buyBookData &&
-                  buyBookData.me.users &&
                   buyBookData.me.status == "200" &&
+                  buyBookData.me.users &&
                   buyBookData.me.users[0].user_info.role &&
                   buyBookData.me.users[0].user_info.role === "admin" && (
                     <Button
@@ -108,6 +108,7 @@ const Challenges = () => {
           </div>
           <div className="flex flex-wrap justify-start ml-2 gap-y-5 gap-x-4">
             {buyBookData &&
+              buyBookData.me.status == "200" &&
               buyBookData.buybook_getAllBuybook.buybooks.length > 0 &&
               buyBookData.buybook_getAllBuybook.buybooks.map(
                 ({

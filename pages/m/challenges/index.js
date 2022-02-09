@@ -31,9 +31,9 @@ const Challenges = () => {
     loading: buyBookLoading,
   } = useQuery(QUERY_BUY_BOOKS, {
     onCompleted: (data) => {
-      if (data.buybook_getAllBuybook.status == "200") {
+      if (data.me.status == "200") {
         console.log("도전출판 북 서버에서 받음", data);
-      } else if (data.buybook_getAllBuybook.status === "401") {
+      } else if (data.me.status === "401") {
         router.push("/m/account/login");
       } else {
         console.log("어떤 문제가 발생함");
@@ -77,7 +77,10 @@ const Challenges = () => {
             <div className="text-[1.16667rem] font-[500]">북스토어</div>
             <div>
               <div className="flex gap-2">
-                {buyBookData?.me?.users[0]?.user_info?.role &&
+                {buyBookData &&
+                  buyBookData.me.users &&
+                  buyBookData.me.status == "200" &&
+                  buyBookData.me.users[0].user_info.role &&
                   buyBookData.me.users[0].user_info.role === "admin" && (
                     <Button
                       size="small"

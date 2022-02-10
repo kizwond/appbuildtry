@@ -210,21 +210,23 @@ const MentoringHome = () => {
                       <PlusOutlined className="IconForButton" />
                     </StyledButtonForMainPage>
                   </Space>
-                  <Button
-                    size="small"
-                    onClick={() => setIsMentorEditMode((prev) => !prev)}
-                  >
-                    {isMentorEditMode ? "멘토 관리 중" : "멘토 관리"}
-                  </Button>
-                  <Button
-                    icon={<GroupOutlined />}
-                    size="small"
-                    onClick={() => {
-                      setDrawerMentorGroupVisible(true);
-                    }}
-                  >
-                    멘토그룹관리
-                  </Button>
+                  <Space>
+                    <Button
+                      size="small"
+                      onClick={() => setIsMentorEditMode((prev) => !prev)}
+                    >
+                      {isMentorEditMode ? "멘토 관리 중" : "멘토 관리"}
+                    </Button>
+                    <Button
+                      icon={<GroupOutlined />}
+                      size="small"
+                      onClick={() => {
+                        setDrawerMentorGroupVisible(true);
+                      }}
+                    >
+                      멘토그룹관리
+                    </Button>
+                  </Space>
                 </StyledFlexSpaceBetween>
                 {mentoringData && (
                   <M_MentosTable

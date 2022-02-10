@@ -18,7 +18,22 @@ const { Option } = Select;
 class Editor extends Component {
   constructor(props) {
     super(props);
-    this.myRef = React.createRef();
+    this.myRef1 = React.createRef();
+    this.myRef2 = React.createRef();
+    this.myRef3 = React.createRef();
+    this.myRef4 = React.createRef();
+    this.myRef5 = React.createRef();
+    this.myRef6 = React.createRef();
+    this.myRef7 = React.createRef();
+    this.myRef8 = React.createRef();
+    this.myRef9 = React.createRef();
+    this.myRef10 = React.createRef();
+    this.myRef11 = React.createRef();
+    this.myRef12 = React.createRef();
+    this.myRef13 = React.createRef();
+    this.myRef14 = React.createRef();
+    this.myRef15 = React.createRef();
+    this.myRef16 = React.createRef();
     this.state = {
       editor1: props.getLink,
       editor2: "",
@@ -123,6 +138,8 @@ class Editor extends Component {
     const dodo = async () => {
       var text = null;
       var textRange = null;
+      
+      console.log("getselections111111111111111111111111")
       if (document.getSelection) {
         text = document.getSelection().toString().trim();
         textRange = document.getSelection();
@@ -141,11 +158,15 @@ class Editor extends Component {
         console.log(matches[i].innerText);
         if (matches[i].innerText.includes(text)) {
           var thisis = matches[i].innerHTML;
+          var outer = matches[i].outerHTML;
+          console.log(this[`myRef${i+1}`].current)
           console.log(thisis);
+          console.log(outer)
           const hello = thisis.replace(text, `${text} <audio controls><source src="${pollyLink}" type="audio/mpeg"></audio><p></p>`);
           console.log(hello);
           sessionStorage.setItem("includeLink", hello);
-          this.handleModelChangeEditor1(hello);
+          this[`handleModelChangeEditor${i+1}`](hello);
+          // this.handleModelChangeEditor1(hello);
         }
       }
     };
@@ -689,6 +710,7 @@ class Editor extends Component {
   };
 
   render() {
+    
     const editorList = this.props.nicks.map((item, index) => {
       // const diffValues = JSON.parse(sessionStorage.getItem("diffValues"));
       // const answerFieldNick = sessionStorage.getItem("answerFieldNick");
@@ -743,6 +765,7 @@ class Editor extends Component {
               <FroalaEditorComponent
                 tag="textarea"
                 className={`editor${index+1}`}
+                ref={this[`myRef${index+1}`]} 
                 config={this.config}
                 model={this.state["editor" + (index + 1).toString()]}
                 onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
@@ -849,6 +872,7 @@ class Editor extends Component {
                 )}
                 <FroalaEditorComponent
                   key={`editor${item}`}
+                  ref={this[`myRef${index+1}`]} 
                   className={`editor${index+1}`}
                   tag="textarea"
                   config={this.config}

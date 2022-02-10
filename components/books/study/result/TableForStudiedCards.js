@@ -86,15 +86,13 @@ const TableForStudiedCards = ({
         <tr className="border-collapse border-y border-y-gray-200">
           <th className="text-[1rem] bg-slate-100 w-[10%]">순위</th>
           <th className="text-[1rem] bg-slate-100">앞면</th>
-          {contentType !== "newCards" && (
-            <th className="text-[1rem] bg-slate-100 w-[20%]">
-              {contentType === "changedLevel"
-                ? "기존레벨"
-                : contentType === "clickedTimes"
-                ? "학습횟수"
-                : "학습시간"}
-            </th>
-          )}
+          <th className="text-[1rem] bg-slate-100 w-[20%]">
+            {contentType === "changedLevel"
+              ? "기존레벨"
+              : contentType === "clickedTimes"
+              ? "학습횟수"
+              : "학습시간"}
+          </th>
           {contentType === "clickedCard" && (
             <th className="text-[1rem] bg-slate-100 w-[13%]">선택</th>
           )}
@@ -122,11 +120,9 @@ const TableForStudiedCards = ({
                     }).face1[0]
                   )}
                 </td>
-                {contentType !== "newCards" && (
-                  <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
-                    {getThirdCol(card)}
-                  </td>
-                )}
+                <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
+                  {getThirdCol(card)}
+                </td>
                 {contentType === "clickedCard" && (
                   <td className="text-[1rem] py-[4px] border-r border-collapse border-r-gray-200 text-center">
                     {getCardStatusForResult(
@@ -171,9 +167,7 @@ const TableForStudiedCards = ({
                       contentType === "clickedCard" ||
                       contentType === "changedLevel"
                         ? 5
-                        : contentType !== "newCards"
-                        ? 4
-                        : 3
+                        : 4
                     }
                     className="p-2 text-[1rem]"
                   >
@@ -232,13 +226,6 @@ const TableForStudiedCards = ({
               )}
             </Fragment>
           ))}
-        {cards.length === 0 && contentType === "newCards" && (
-          <tr className="border-b border-collapse border-b-gray-200">
-            <td className="text-[1rem] py-[4px] text-center" colSpan={3}>
-              학습 중 새로 만든 카드가 없습니다.
-            </td>
-          </tr>
-        )}
       </tbody>
     </table>
   );

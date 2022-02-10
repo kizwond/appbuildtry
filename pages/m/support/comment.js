@@ -169,9 +169,11 @@ const FeedBack = () => {
         <title>Comment - Cogbook</title>
       </Head>
       <M_Layout>
-        <div style={{ marginTop: "50px" }}>불편사항이나 운영자에게 전하고 싶은 말씀을 입력해 주세요^^</div>
+
+        <div style={{ marginTop: "50px", textAlign:"center", marginBottom:"10px" }}>불편사항이나 운영자에게 전하고 싶은 말씀을 입력해 주세요^^</div>
+        
+        <div style={{ display: "flex", flexDirection: "column", marginTop: "5px",  width:"95%" , margin:"auto",marginBottom: "20px"}}>
         {feeds}
-        <div style={{ display: "flex", flexDirection: "column", marginTop: "5px", marginBottom: "20px" }}>
           <TextArea rows={4} placeholder="의견을 작성해 주세요" onChange={handleFeedBackInput} value={feedBackInput} />
           <div style={{ textAlign: "right", marginTop: "10px" }}>
             <Space>
@@ -184,6 +186,7 @@ const FeedBack = () => {
             </Space>
           </div>
         </div>
+        <div style={{height:"20px", marginBottom:"20px"}}></div>
       </M_Layout>
       <M_Footer />
     </>

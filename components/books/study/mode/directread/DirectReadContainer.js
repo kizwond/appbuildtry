@@ -3896,6 +3896,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       } else {
         setCardId("");
         setCardInfo("");
+        sessionStorage.setItem("parentIdOfSelection", "");
+        sessionStorage.setItem("parentInnerHtml", "");
+        sessionStorage.setItem("selectionTextCardSetId", "");
+        sessionStorage.setItem("selectionTextCardId", "");
         for (var a = 0; a < selected2.length; a++) {
           const section = selected2.item(a);
           section.style.border = "none";
@@ -3905,6 +3909,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
         }
       }
     } else {
+      sessionStorage.setItem("parentIdOfSelection", "");
+      sessionStorage.setItem("parentInnerHtml", "");
+      sessionStorage.setItem("selectionTextCardSetId", "");
+      sessionStorage.setItem("selectionTextCardId", "");
       setCardId(card_id);
       setCardInfo(card_info);
     }

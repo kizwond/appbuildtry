@@ -50,13 +50,14 @@ const StudyNav = ({ mode, indexChanged, index_changed, indexSets, ttsOn, setTtsO
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("username");
+    sessionStorage.removeItem("isFinished")
     console.log("here");
     window.location.href = "/m";
   };
   const goToResult = () => {
     window.speechSynthesis.cancel();
     sessionStorage.setItem("isFinished", "true")
-    sessionStorage.removeItem("isFinished")
+    // sessionStorage.removeItem("isFinished")
     window.location.href = "/m/mybooks";
   };
 

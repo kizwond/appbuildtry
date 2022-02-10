@@ -7,7 +7,7 @@ const logoColor = "#b7b7b7";
 const Footer = () => {
   return (
     <>
-      <div style={{ backgroundColor: backgroundColor }}>
+      <div style={{ backgroundColor: backgroundColor, maxWidth:"1024px", margin:"auto" }}>
         <div style={{ color: "#646770", width: "100%", margin: "auto", padding: 20, fontSize: "0.5rem" }}>
           <div style={{ display: "flex", flexDirection:"column" }}>
             <div style={{ width: "100%", marginBottom:"10px" }}>

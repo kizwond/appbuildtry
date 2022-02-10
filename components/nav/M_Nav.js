@@ -351,6 +351,24 @@ const Nav = () => {
                       />
                       <span style={{ marginLeft: "10px" }}>FAQ</span>
                     </div>
+                    <div
+                      onClick={() => location.href = "/m/support/comment"}
+                      style={{
+                        ...linkStyleDrawer,
+                        padding: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Image
+                        src="/image/feedback_icon.png"
+                        width={"20px"}
+                        height={"20px"}
+                        alt="excel_export"
+                      />
+                      <span style={{ marginLeft: "10px" }}>FeedBack</span>
+                    </div>
                     {username == null && (
                       <>
                         <div

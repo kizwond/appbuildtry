@@ -456,6 +456,7 @@ const WriteContainer = ({ indexChanged, index_changed, indexSetId, book_id, Edit
 
   function afteraddcardmutation(data) {
     sessionStorage.setItem("selections", 0);
+    console.log(data)
     setCards(data.cardset_addcardAtSameIndex.cardsets[0].cards);
     sessionStorage.removeItem("parentId");
     sessionStorage.removeItem("nicks_with_selections");

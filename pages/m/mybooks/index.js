@@ -127,15 +127,8 @@ const M_StudyMainPage = () => {
                 책 모드<span className="text-[1.1rem]">로 바로 시작</span>
               </div>
             </div>
-
-            <div
-              onClick={() => {
-                if (!(selectedBooks.length > 0)) {
-                  message.error("선택하신 책이 없습니다.", 0.7);
-                }
-              }}
-            >
-              {selectedBooks.length > 0 ? (
+            {selectedBooks.length > 0 ? (
+              <div>
                 <Link
                   as="/m/study/sessionConfig"
                   href={{
@@ -148,16 +141,23 @@ const M_StudyMainPage = () => {
                     },
                   }}
                 >
-                  <a className="flex items-center justify-center w-full h-full cursor-pointer">
-                    카드 모드<span className="text-[1.1rem]">로 시작</span>
+                  <a className="flex items-center justify-center w-full h-full cursor-pointer hover:text-black hover:text-[1.7rem]">
+                    <span>카드 모드</span>
+                    <span className="text-[1.1rem]">로 시작</span>
                   </a>
                 </Link>
-              ) : (
-                <a>
-                  카드 모드<span className="text-[1.1rem]">로 시작</span>
-                </a>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div
+                className="flex items-center justify-center text-gray-600"
+                onClick={() => {
+                  message.error("선택하신 책이 없습니다.", 0.7);
+                }}
+              >
+                <span className="">카드 모드</span>
+                <span className="text-[1.1rem] cursor-none">로 시작</span>
+              </div>
+            )}
           </StyledBottomBar>
         </M_Layout>
       )}

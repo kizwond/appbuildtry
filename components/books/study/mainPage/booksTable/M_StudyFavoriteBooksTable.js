@@ -154,6 +154,7 @@ const M_StudyFavoriteBooksTable = ({
         onClick: () => {
           movepage(record._id);
         },
+        style: { cursor: "pointer" },
       }),
       render: (_value, _record) => (
         <StyledFlexAllCenter>

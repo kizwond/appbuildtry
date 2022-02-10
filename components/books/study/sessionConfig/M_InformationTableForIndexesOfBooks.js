@@ -46,6 +46,7 @@ const IndexTree = ({
           );
         }
       },
+      style: { cursor: "pointer" },
     };
   };
 

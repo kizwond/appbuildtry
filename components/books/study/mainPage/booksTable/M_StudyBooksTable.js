@@ -225,6 +225,7 @@ const M_StudyBooksTable = ({
         onClick: () => {
           movepage(record._id);
         },
+        style: { cursor: "pointer" },
       }),
       render: (_value, _record) => {
         const obj = {

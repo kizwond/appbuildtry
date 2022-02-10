@@ -300,7 +300,7 @@ const StudySessionConfig = ({
         )}
         <StyledBottomBar className="bg-blue-400">
           <div
-            className="text-[1.5rem]"
+            className="text-[1.5rem] cursor-pointer"
             onClick={() => {
               if (activatedComponent === "index") {
                 changeActivatedComponent("config");
@@ -322,8 +322,8 @@ const StudySessionConfig = ({
           <div
             className={
               data && numberOfFilteredCards.length > 0
-                ? "text-[1.5rem]"
-                : "text-[1.5rem] text-gray-300"
+                ? "text-[1.7rem] cursor-pointer"
+                : "text-[1.5rem] text-gray-600"
             }
             onClick={() => {
               if (numberOfFilteredCards.length > 0) {

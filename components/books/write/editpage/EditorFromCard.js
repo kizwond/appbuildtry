@@ -467,14 +467,24 @@ class EditorFromCard extends Component {
     } else {
       selectionsArray = null;
     }
+    if(this.state.flagStar === "default"){
+      var flag = 0
+    } else {
+      flag = this.state.flagStar
+    }
+    if(this.state.flagComment === ""){
+      var comment = null
+    } else {
+      comment = this.state.flagComment
+    }
     const values = {
       face1: face1_array,
       selection: selectionsArray,
       face2: face2_array,
       annotation: annotation_array,
       parentId: this.props.parentId,
-      flagStar: this.state.flagStar,
-      flagComment: this.state.flagComment,
+      flagStar: flag,
+      flagComment: comment,
     };
     console.log(values);
     console.log(face1_array);

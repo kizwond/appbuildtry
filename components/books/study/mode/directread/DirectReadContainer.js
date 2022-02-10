@@ -883,6 +883,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   const getSelectionText2 = () => {
     console.log(cardId);
+
     setHiddenToggle(false);
     setUnderlineToggle(false);
     setHighlightToggle(false);

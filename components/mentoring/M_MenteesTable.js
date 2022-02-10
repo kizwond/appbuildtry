@@ -165,9 +165,9 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                 return (
                   <StyledFlexAlignCenter>
                     <StyledFlexAlignCenter>
-                      <StyledBookTypeDiv booktype={_record.bookType}>
-                        {_record.bookType === "my" ? null : "$"}
-                      </StyledBookTypeDiv>
+                      <StyledBookTypeDiv
+                        booktype={_record.bookType}
+                      ></StyledBookTypeDiv>
                     </StyledFlexAlignCenter>
                     <DoubleLinesEllipsisContainer>
                       {v}

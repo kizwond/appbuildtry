@@ -16,7 +16,7 @@ const Footer = () => {
               </div>
               <div>(주)오픈스카이 | 대표자: 윤상일 | 사업자번호: 000-00-00000</div>
               <div>통신판매업: 2021-0000000-0000 | 개인정보보호책임자: 윤상일 | 이메일: cogbook@opensky.co.kr</div>
-              <div>주소: 서울특별시 강남구 논현동 금성빌딩 501b호</div>
+              <div>주소: 서울특별시 서초구 사평대로335 금성빌딩 501b호</div>
               <div>(주)오픈스카이. ALL RIGHTS RESERVED</div>
             </div>
             <div style={{ width: "30%", textAlign: "right", display: "flex", flexDirection: "column" }}>

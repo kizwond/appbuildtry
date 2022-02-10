@@ -16,6 +16,7 @@ import TableForStudiedCards from "../../../../components/books/study/result/Tabl
 import SessionSummary from "../../../../components/books/study/result/SessionSummary";
 import SlidingDrawerForAllCards from "../../../../components/books/study/result/SlidingDrawerForAllCards";
 import DetailOfSelected from "../../../../components/books/study/result/DetailOfSelected";
+import TableForCreatedCards from "../../../../components/books/study/result/TableForCreatedCards";
 
 const StudyResult = () => {
   const router = useRouter();
@@ -93,14 +94,18 @@ const StudyResult = () => {
       const cardsToRequest = [
         ...topFiveCardsBySubject.topFiveClicked,
         ...topFiveCardsBySubject.topFiveStudyHour,
-        ...topFiveCardsBySubject.fiveCreatedCards,
       ];
 
       getMyCardsContent({
         variables: {
-          mycontent_ids: cardsToRequest
-            .filter((card) => card.content.location === "my")
-            .map((card) => card.content.mycontent_id),
+          mycontent_ids: [
+            ...cardsToRequest
+              .filter((card) => card.content.location === "my")
+              .map((card) => card.content.mycontent_id),
+            ...topFiveCardsBySubject.fiveCreatedCards.map(
+              (card) => card.mycontent_id
+            ),
+          ],
           buycontent_ids: cardsToRequest
             .filter((card) => card.content.location === "buy")
             .map((card) => card.content.buycontent_id),
@@ -262,15 +267,11 @@ const StudyResult = () => {
               <SectionForResult
                 title="새로 만든 카드"
                 content={
-                  <TableForStudiedCards
-                    cards={topFiveCardsBySubject.fiveCreatedCards}
+                  <TableForCreatedCards
                     myContents={
                       data.mycontent_getMycontentByMycontentIDs.mycontents
                     }
-                    contentType={"newCards"}
-                    buyContents={
-                      data.buycontent_getBuycontentByBuycontentIDs.buycontents
-                    }
+                    cards={topFiveCardsBySubject.fiveCreatedCards}
                   />
                 }
               />

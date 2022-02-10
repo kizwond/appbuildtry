@@ -692,7 +692,7 @@ export const QUERY_ALL_CANIDIDATE_BOOKS = gql`
 `;
 
 export const QUERY_CONTENT_AND_CARDTYPE_FOR_CARD_DETAIL = gql`
-  ${FRAGMENT_MY_CARD_TYPE_SET_ONLY_CARDTYPE_NAME}
+  ${FRAGMENT_MY_CARD_TYPE_SET}
   query getCardContentAndTypeInfomation(
     $mybook_ids: [ID]
     $buycontent_ids: [ID]
@@ -702,7 +702,7 @@ export const QUERY_CONTENT_AND_CARDTYPE_FOR_CARD_DETAIL = gql`
       status
       msg
       cardtypesets {
-        ...MyCardTypenNameFragment
+        ...MyCardTypeSetFragment
       }
     }
     mycontent_getMycontentByMycontentIDs(mycontent_ids: $mycontent_ids) {

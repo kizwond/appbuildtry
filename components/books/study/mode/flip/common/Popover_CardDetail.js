@@ -250,12 +250,15 @@ const FlipCardDetail = () => {
           <div className="flex">
             <div className="min-w-[9rem]">총 뒤집기 시간</div>
             <div>
-              {displayTime(
-                prettyMilliseconds(totalStudyHour, {
-                  colonNotation: true,
-                  secondsDecimalDigits: 0,
-                })
-              )}
+              {totalStudyHour === 0
+                ? 0
+                : totalStudyHour &&
+                  displayTime(
+                    prettyMilliseconds(totalStudyHour, {
+                      colonNotation: true,
+                      secondsDecimalDigits: 0,
+                    })
+                  )}
             </div>
           </div>
         </div>

@@ -3909,6 +3909,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
         }
       }
     } else {
+      sessionStorage.setItem("parentIdOfSelection", "");
+      sessionStorage.setItem("parentInnerHtml", "");
+      sessionStorage.setItem("selectionTextCardSetId", "");
+      sessionStorage.setItem("selectionTextCardId", "");
       setCardId(card_id);
       setCardInfo(card_info);
     }

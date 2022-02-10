@@ -882,8 +882,15 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   }
 
   const getSelectionText2 = () => {
+    sessionStorage.setItem("parentIdOfSelection", "");
+    sessionStorage.setItem("parentInnerHtml", "");
+    sessionStorage.setItem("selectionTextCardSetId", "");
+    sessionStorage.setItem("selectionTextCardId", "");
+    sessionStorage.setItem("selectionText", "");
     console.log(cardId);
-
+    // if(cardId === undefined){
+    //   return
+    // }
     setHiddenToggle(false);
     setUnderlineToggle(false);
     setHighlightToggle(false);
@@ -906,7 +913,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     sessionStorage.setItem("selectionText", text);
     console.log("end");
 
-    if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
+    if (textRange.anchorNode !== null && textRange.anchorNode !== "body" && text !== "") {
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
       var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
       var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
@@ -997,6 +1004,48 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                 sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
                 sessionStorage.setItem("selectionTextCardSetId", cardSetId);
                 sessionStorage.setItem("selectionTextCardId", cardId);
+              } else {
+                parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+                parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+                var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+                var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+                var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
+                console.log(parentId_tmp1);
+                if (parentId_tmp1 !== null) {
+                  var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+                  var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+                  var cardId = parentId_tmp3[0].replace("cardId", "");
+                } else {
+                  parentId = null;
+                  console.log("아직도 아니다2");
+                }
+                if (parentId !== null) {
+                  sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+                  sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+                  sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+                  sessionStorage.setItem("selectionTextCardId", cardId);
+                } else {
+                  parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+                  parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+                  var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+                  var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+                  var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
+                  console.log(parentId_tmp1);
+                  if (parentId_tmp1 !== null) {
+                    var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+                    var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+                    var cardId = parentId_tmp3[0].replace("cardId", "");
+                  } else {
+                    parentId = null;
+                    console.log("아직도 아니다2");
+                  }
+                  if (parentId !== null) {
+                    sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+                    sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+                    sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+                    sessionStorage.setItem("selectionTextCardId", cardId);
+                  }
+                }
               }
             }
           }
@@ -3867,6 +3916,8 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const onClickCard = (card_id, from, group, card_info) => {
     console.log(card_info);
     const selectionText = sessionStorage.getItem("selectionText");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+
     // sessionStorage.removeItem("selectionText");
     const selected1 = document.getElementsByClassName(card_id);
     const selected2 = document.getElementsByClassName("other");
@@ -3890,17 +3941,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     }
 
     if (cardId === card_id) {
-      if (selectionText) {
-        console.log("eeee");
-      } else if (updateMemoState) {
+      if (updateMemoState) {
         console.log("eedddd");
+      } else if (cardId === selectionTextCardId) {
+        console.log("eeeeeeee");
       } else {
         setCardId("");
         setCardInfo("");
-        sessionStorage.setItem("parentIdOfSelection", "");
-        sessionStorage.setItem("parentInnerHtml", "");
-        sessionStorage.setItem("selectionTextCardSetId", "");
-        sessionStorage.setItem("selectionTextCardId", "");
         for (var a = 0; a < selected2.length; a++) {
           const section = selected2.item(a);
           section.style.border = "none";
@@ -3914,6 +3961,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       sessionStorage.setItem("parentInnerHtml", "");
       sessionStorage.setItem("selectionTextCardSetId", "");
       sessionStorage.setItem("selectionTextCardId", "");
+      sessionStorage.setItem("selectionText", "");
+      document.getSelection().empty();
+      document.getSelection().removeAllRanges();
       setCardId(card_id);
       setCardInfo(card_info);
     }

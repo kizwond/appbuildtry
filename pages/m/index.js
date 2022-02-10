@@ -7,18 +7,71 @@ import NewBooks from "../../components/index/NewBooks";
 import M_Footer from "../../components/index/M_Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { logIn } from "../../redux/actions";
-import { useQuery, useMutation } from "@apollo/client";
-import { GET_USER, ResetToekn } from "../../graphql/query/account";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
+import { GET_USER, ResetToekn, UpdateNews, DeleteNews } from "../../graphql/query/account";
 import { reset } from "../../hooks/reset";
-import { Space } from "antd";
+import { Space, List, Typography, Button, Input } from "antd";
+import moment from "moment";
 
 const Home = () => {
-  const [resetToken] = useMutation(ResetToekn, { onCompleted: showdata });
+  const ISSERVER = typeof window === "undefined";
+  if (!ISSERVER) {
+    var role = localStorage.getItem("role");
+    if (role === "admin") {
+      var isAdmin = true;
+    } else {
+      isAdmin = false;
+    }
+  }
 
   const isLogged = useSelector((state) => state.isLogged);
   const dispatch = useDispatch();
   const [loginState, setLoginState] = useState(false);
+  const [newsInput, setNewsInput] = useState();
+  const [newsData, setNewsData] = useState([]);
+
   const { loading, error, data } = useQuery(GET_USER);
+  const [resetToken] = useMutation(ResetToekn, { onCompleted: showdata });
+
+  const [notice_createNotice] = useMutation(UpdateNews, { onCompleted: afternewsupdate });
+  function afternewsupdate(data) {
+    console.log("data", data);
+    setNewsData(data.notice_createNotice.simplePosts);
+    setNewsInput("");
+  }
+
+  const newupdate = useCallback(async () => {
+    try {
+      await notice_createNotice({
+        variables: {
+          content: newsInput,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, [notice_createNotice, newsInput]);
+
+  const [notice_deleteNotice] = useMutation(DeleteNews, { onCompleted: afternewsdelete });
+  function afternewsdelete(data) {
+    console.log("data", data);
+    setNewsData(data.notice_deleteNotice.simplePosts);
+  }
+
+  const noticedelete = useCallback(
+    async (id) => {
+      try {
+        await notice_deleteNotice({
+          variables: {
+            notice_id: id,
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [notice_deleteNotice]
+  );
 
   useEffect(() => {
     console.log("컴포넌트가 화면에 나타남");
@@ -26,14 +79,18 @@ const Home = () => {
     sessionStorage.removeItem("examLog");
     sessionStorage.removeItem("cardListStudying");
     sessionStorage.setItem("card_seq", 0);
-    sessionStorage.removeItem("isFinished")
-    sessionStorage.removeItem("cardlist_to_send")
+    sessionStorage.removeItem("isFinished");
+    sessionStorage.removeItem("cardlist_to_send");
     sessionStorage.removeItem("ttsUse");
     if (data) {
       console.log(data);
+      if (data.notice_getAllNotice.simplePosts !== null) {
+        setNewsData(data.notice_getAllNotice.simplePosts);
+      }
       if (data.me.status === "401") {
         console.log("로그아웃상태입니다.");
         localStorage.removeItem("username");
+        localStorage.removeItem("role");
         setLoginState(false);
         dispatch(logIn(false));
         reset(resetToken);
@@ -41,11 +98,13 @@ const Home = () => {
         console.log("로그인상태입니다.");
         if (data.me.users[0] !== null) {
           localStorage.setItem("username", data.me.users[0].user_info.username);
+          localStorage.setItem("role", data.me.users[0].user_info.role);
         }
-
         setLoginState(true);
         dispatch(logIn(true));
       }
+    } else {
+      console.log("no data?");
     }
   }, [data, dispatch, resetToken]);
 
@@ -65,28 +124,71 @@ const Home = () => {
       console.log("로그아웃상태입니다.");
     }
   }
+
+  function handleNewInput(e) {
+    setNewsInput(e.target.value);
+  }
+  const news = [
+    "Racing car sprays burning fuel into crowd.",
+    "Japanese princess to wed commoner.",
+    "Australian walks 100km after outback crash.",
+    "Man charged over missing wedding girl.",
+    "Los Angeles battles huge wildfires.",
+  ];
+
   return (
     <M_Layout>
       <Hero />
-      <div style={{fontSize:"2rem", fontWeight:"700", textAlign:"center"}}>현재 네이버 앱을 통한 당사이트 접근시 기능상의 문제점이 발견되었습니다. 네이버앱 이외의 브라우저를 통해 사용하여 주시기 바랍니다. 불편을 끼쳐드려 죄송합니다.</div>
+      <div>
+        {" "}
+        <span className="text-gray-700" style={{ fontSize: "1.5rem", fontWeight: 700 }}>
+          공지사항
+        </span>
+      </div>
+      <List
+        style={{ height: "200px", overflow: "auto" }}
+        bordered
+        dataSource={newsData}
+        renderItem={(item, index) => (
+          <List.Item>
+            <Typography.Text mark>[{index + 1}]</Typography.Text> {item.content} <span></span>
+            {isAdmin === true && (
+              <span
+                onClick={() => noticedelete(item._id)}
+                style={{
+                  cursor: "pointer",
+                  marginLeft: "20px",
+                  display: "inline-block",
+                  width: "1rem",
+                  height: "1rem",
+                  border: "1px solid black",
+                  fontSize: "0.8rem",
+                  lineHeight: "1rem",
+                  textAlign: "center",
+                }}
+              >
+                X
+              </span>
+            )}
+          </List.Item>
+        )}
+      />
+      {isAdmin === true && (
+        <div style={{ display: "flex", alignItems: "center", marginTop: "15px" }}>
+          <Input placeholder="공지입력" onChange={handleNewInput} value={newsInput} />
+          <Button size="medium" type="primary" onClick={newupdate}>
+            저장
+          </Button>
+        </div>
+      )}
+
       {data && data.me && data.me.users && <M_RecentStudyList />}
       {/* <NewBooks /> */}
-      {/* {[1, 2, 3, 4, 5, 6, 7, 8].map((photo) => (
-        <div key={photo} className="flex items-center justify-center mt-4">
-          <div className="w-[calc(100vw_*_0.75)] h-[calc(100vw_*_0.75)] relative">
-            <Image
-              src={`https://s3.ap-northeast-2.amazonaws.com/cogbook.siteimage/%EA%B7%B8%EB%A6%BC${photo}.png`}
-              alt="dd"
-              layout="fill"
-            />
-          </div>
-        </div>
-      ))} */}
 
       <div style={{ height: "20px" }}></div>
       <div style={{ fontFamily: "'Cute Font', cursive" }}>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#c2cfd4" }}>
-          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight:"100%", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight: "100%", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
               <span style={{ fontSize: "4vw", fontWeight: "700" }}>책</span>으로 학습하실때 많이 <span style={{ fontSize: "4vw", fontWeight: "700" }}>답답~</span>하셨죠?
             </div>
@@ -99,14 +201,14 @@ const Home = () => {
           <div style={{ flexBasis: "50%" }}>
             <Image src="/image/study_support.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
           </div>
-          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight:"100%", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight: "100%", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
               <span style={{ fontSize: "4vw", fontWeight: "700" }}>콕북</span>이 당신의 <span style={{ fontSize: "4vw", fontWeight: "700" }}>학습</span>을 지원하겠습니다.
             </div>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#e2e6e7" }}>
-          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight:"100%", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight: "100%", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
               필요한 것만 <span style={{ fontSize: "4vw", fontWeight: "700" }}>딱딱 골라서 학습</span>하고 싶으셨죠?
             </div>
@@ -119,17 +221,16 @@ const Home = () => {
           <div style={{ flexBasis: "50%" }}>
             <Image src="/image/study_mixing.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
           </div>
-          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight:"100%", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight: "100%", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
               좀 <span style={{ fontSize: "4vw", fontWeight: "700" }}>섞어서 공부</span>하고 싶지는 않으셨나요?
             </div>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#f1d7c2" }}>
-          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight:"100%", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight: "100%", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
-              <span style={{ fontSize: "4vw", fontWeight: "700" }}>필터</span>된 것을 <span style={{ fontSize: "4vw", fontWeight: "700" }}>순서까지 섞어서 읽어</span>주면
-              어떨까요?
+              <span style={{ fontSize: "4vw", fontWeight: "700" }}>필터</span>된 것을 <span style={{ fontSize: "4vw", fontWeight: "700" }}>순서까지 섞어서 읽어</span>주면 어떨까요?
             </div>
           </div>
           <div style={{ flexBasis: "50%" }}>
@@ -140,14 +241,14 @@ const Home = () => {
           <div style={{ flexBasis: "50%" }}>
             <Image src="/image/study_planning.jpg" width="500px" height="400px" layout="responsive" sizes="50vw" alt="hello" />
           </div>
-          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight:"100%", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight: "100%", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
               언제 <span style={{ fontSize: "4vw", fontWeight: "700" }}>복습</span>하면 될 지를 정해주면 더 좋겠죠?
             </div>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", maxHeight: "409px", borderRadius: "5px", backgroundColor: "#cbc3b1" }}>
-          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight:"100%", color: "#3b3b3b", position: "relative" }}>
+          <div style={{ flexBasis: "50%", fontSize: "clamp(1.5rem, 3vw, 4rem)", lineHeight: "100%", color: "#3b3b3b", position: "relative" }}>
             <div style={{ position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)" }}>
               학습하면서 기억할 것을 남기시면 <span style={{ fontSize: "4vw", fontWeight: "700" }}>차곡차곡 정리</span>됩니다.
             </div>
@@ -168,9 +269,7 @@ const Home = () => {
             position: "relative",
           }}
         >
-        
-            <div style={{ flexBasis: "100%", fontSize: "4vw", color: "#3b3b3b", textAlign: "center", fontWeight: "700" }}>이게 끝이 아닙니다! 지금부터 하나씩 알아가시죠!</div>
-          
+          <div style={{ flexBasis: "100%", fontSize: "4vw", color: "#3b3b3b", textAlign: "center", fontWeight: "700" }}>이게 끝이 아닙니다! 지금부터 하나씩 알아가시죠!</div>
         </div>
       </div>
       <M_Footer />

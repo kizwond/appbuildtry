@@ -30,6 +30,7 @@ const M_StudyMainPage = () => {
     {
       onCompleted: (received_data) => {
         console.log("received_data", received_data);
+        sessionStorage.removeItem("isFinished")
         if (
           received_data.mybookcateset_getMybookcatesetByUserID.status === "200"
         ) {

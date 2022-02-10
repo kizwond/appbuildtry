@@ -90,6 +90,7 @@ const Home = () => {
       if (data.me.status === "401") {
         console.log("로그아웃상태입니다.");
         localStorage.removeItem("username");
+        localStorage.removeItem("role");
         setLoginState(false);
         dispatch(logIn(false));
         reset(resetToken);
@@ -138,12 +139,12 @@ const Home = () => {
   return (
     <M_Layout>
       <Hero />
-      <div> <span
-            className="text-gray-700"
-            style={{ fontSize: "1.5rem", fontWeight: 700 }}
-          >
-            공지사항
-          </span></div>
+      <div>
+        {" "}
+        <span className="text-gray-700" style={{ fontSize: "1.5rem", fontWeight: 700 }}>
+          공지사항
+        </span>
+      </div>
       <List
         style={{ height: "200px", overflow: "auto" }}
         bordered
@@ -156,7 +157,7 @@ const Home = () => {
                 onClick={() => noticedelete(item._id)}
                 style={{
                   cursor: "pointer",
-                  marginLeft:"20px",
+                  marginLeft: "20px",
                   display: "inline-block",
                   width: "1rem",
                   height: "1rem",
@@ -181,7 +182,6 @@ const Home = () => {
         </div>
       )}
 
-     
       {data && data.me && data.me.users && <M_RecentStudyList />}
       {/* <NewBooks /> */}
 

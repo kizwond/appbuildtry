@@ -21,15 +21,15 @@ const SessionSetting = () => {
     var book_id = JSON.parse(sessionStorage.getItem("books_selected"));
     var book_ids = book_id.map((item) => item.book_id);
     // console.log(book_ids);
-    const ttsUse = sessionStorage.getItem("ttsUse");
-    if (ttsUse === null) {
-      if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
-        console.log("이 브라우저는 음성 합성을 지원하지 않습니다.");
-        sessionStorage.setItem("ttsUse", "unable");
-      } else {
-        sessionStorage.setItem("ttsUse", "able");
-      }
-    }
+    // const ttsUse = sessionStorage.getItem("ttsUse");
+    // if (ttsUse === null) {
+    //   if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+    //     console.log("이 브라우저는 음성 합성을 지원하지 않습니다.");
+    //     sessionStorage.setItem("ttsUse", "unable");
+    //   } else {
+    //     sessionStorage.setItem("ttsUse", "able");
+    //   }
+    // }
   }
 
   const [indexChanged, setIndexChanged] = useState();

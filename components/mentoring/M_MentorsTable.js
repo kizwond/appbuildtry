@@ -296,7 +296,7 @@ const M_MentorsTable = ({
                         record.mybook_id && (
                         <StudyHistoryPerBook
                           mybook_id={record.mybook_id}
-                          forWhom="mentor"
+                          forWhom="me"
                         />
                       )}
                     </DrawerWrapper>

@@ -276,6 +276,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                         <StudyHistoryPerBook
                           mybook_id={record.mybook_id}
                           forWhom="mentor"
+                          menteeUser_id={record.menteeUser_id}
                         />
                       )}
                     </DrawerWrapper>

@@ -604,6 +604,89 @@ export const QUERY_SESSION_FOR_RESTARTING_SESSION_BY_SESSION_ID = gql`
 `;
 
 export const QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID = gql`
+  query getSession(
+    $forGetMybookForMentor: forGetMybookForMentor
+    $forGetCardsetByMybookidForMentor: forGetCardsetByMybookidForMentor
+    $forGetSessionByMybookidForMentor: forGetSessionByMybookidForMentor
+  ) {
+    session_getSessionByMybookidForMentor(
+      forGetSessionByMybookidForMentor: $forGetSessionByMybookidForMentor
+    ) {
+      status
+      msg
+      sessions {
+        _id
+        sessionScope {
+          mybook_id
+          title
+        }
+        session_info {
+          timeStarted
+          timeFinished
+        }
+        sessionConfig {
+          studyMode
+        }
+      }
+    }
+
+    mybook_getMybookForMentor(forGetMybookForMentor: $forGetMybookForMentor) {
+      status
+      msg
+      mybooks {
+        _id
+        stats {
+          studyHistory {
+            _id
+            date
+            level {
+              completed
+              nonCompleted
+            }
+            numCardsByStatus {
+              yet
+              ing
+              hold
+              completed
+            }
+            totalStudyHour
+            totalClicks
+          }
+        }
+      }
+    }
+
+    cardset_getCardsetByMybookidForMentor(
+      forGetCardsetByMybookidForMentor: $forGetCardsetByMybookidForMentor
+    ) {
+      status
+      msg
+      cardsets {
+        _id
+        cards {
+          _id
+          content {
+            userFlag
+            makerFlag {
+              value
+              comment
+            }
+            location
+            mycontent_id
+            buycontent_id
+            memo
+          }
+          studyStatus {
+            totalStudyTimes
+            totalStudyHour
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const QUERY_SESSION_STATUS_BY_BOOK_ID = gql`
   query getSession($mybook_id: ID, $mybook_ids: [ID]) {
     session_getSessionByMybookid(mybook_id: $mybook_id) {
       status

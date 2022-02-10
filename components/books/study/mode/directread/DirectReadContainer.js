@@ -881,8 +881,41 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     setUserFlag(false);
   }
 
-  const getSelectionText2 = () => {
+  const getSelectionText2 = (content) => {
+    sessionStorage.setItem("parentIdOfSelection", "");
+    sessionStorage.setItem("parentInnerHtml", "");
+    sessionStorage.setItem("selectionTextCardSetId", "");
+    sessionStorage.setItem("selectionTextCardId", "");
+    sessionStorage.setItem("selectionText", "");
     console.log(cardId);
+    var varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
+
+    if (varUA.indexOf("android") > -1) {
+      //안드로이드
+      var device = "mobile"
+    } else if (varUA.indexOf("iphone") > -1 || varUA.indexOf("ipad") > -1 || varUA.indexOf("ipod") > -1) {
+      //IOS
+      device = "mobile"
+    } else {
+      //아이폰, 안드로이드 외
+      device = "desktop"
+    }
+
+    if(cardId === "" && device === "mobile"){
+      onClickCard(content._id, null, null, content.card_info);
+      document.getSelection().empty();
+      document.getSelection().removeAllRanges();
+      return
+    } else if(cardId !== content._id && device === "mobile"){
+      onClickCard(content._id, null, null, content.card_info);
+      document.getSelection().empty();
+      document.getSelection().removeAllRanges();
+      return
+    }
+    console.log(content)
+    // if(cardId === undefined){
+    //   return
+    // }
     setHiddenToggle(false);
     setUnderlineToggle(false);
     setHighlightToggle(false);
@@ -905,7 +938,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     sessionStorage.setItem("selectionText", text);
     console.log("end");
 
-    if (textRange.anchorNode !== null && textRange.anchorNode !== "body") {
+    if (textRange.anchorNode !== null && textRange.anchorNode !== "body" && text !== "") {
       var parentNode = document.getSelection().anchorNode.parentNode.parentNode.outerHTML;
       var parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.innerHTML;
       var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
@@ -914,7 +947,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       if (parentId_tmp1 !== null) {
         var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
         var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
-        var cardId = parentId_tmp3[0].replace("cardId", "");
+        var cardIdSelection = parentId_tmp3[0].replace("cardId", "");
       } else {
         parentId = null;
       }
@@ -928,7 +961,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
         if (parentId_tmp1 !== null) {
           var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
           var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
-          var cardId = parentId_tmp3[0].replace("cardId", "");
+          var cardIdSelection = parentId_tmp3[0].replace("cardId", "");
         } else {
           parentId = null;
         }
@@ -936,7 +969,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
           sessionStorage.setItem("parentIdOfSelection", parentId[0]);
           sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
           sessionStorage.setItem("selectionTextCardSetId", cardSetId);
-          sessionStorage.setItem("selectionTextCardId", cardId);
+          sessionStorage.setItem("selectionTextCardId", cardIdSelection);
         } else {
           parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
           parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
@@ -947,7 +980,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
           if (parentId_tmp1 !== null) {
             var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
             var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
-            var cardId = parentId_tmp3[0].replace("cardId", "");
+            var cardIdSelection = parentId_tmp3[0].replace("cardId", "");
           } else {
             parentId = null;
           }
@@ -955,7 +988,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             sessionStorage.setItem("parentIdOfSelection", parentId[0]);
             sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
             sessionStorage.setItem("selectionTextCardSetId", cardSetId);
-            sessionStorage.setItem("selectionTextCardId", cardId);
+            sessionStorage.setItem("selectionTextCardId", cardIdSelection);
           } else {
             parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
             parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
@@ -966,7 +999,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             if (parentId_tmp1 !== null) {
               var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
               var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
-              var cardId = parentId_tmp3[0].replace("cardId", "");
+              var cardIdSelection = parentId_tmp3[0].replace("cardId", "");
             } else {
               parentId = null;
               console.log("아직도 아니다");
@@ -975,7 +1008,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               sessionStorage.setItem("parentIdOfSelection", parentId[0]);
               sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
               sessionStorage.setItem("selectionTextCardSetId", cardSetId);
-              sessionStorage.setItem("selectionTextCardId", cardId);
+              sessionStorage.setItem("selectionTextCardId", cardIdSelection);
             } else {
               parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
               parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
@@ -986,7 +1019,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
               if (parentId_tmp1 !== null) {
                 var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
                 var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
-                var cardId = parentId_tmp3[0].replace("cardId", "");
+                var cardIdSelection = parentId_tmp3[0].replace("cardId", "");
               } else {
                 parentId = null;
                 console.log("아직도 아니다2");
@@ -995,7 +1028,49 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                 sessionStorage.setItem("parentIdOfSelection", parentId[0]);
                 sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
                 sessionStorage.setItem("selectionTextCardSetId", cardSetId);
-                sessionStorage.setItem("selectionTextCardId", cardId);
+                sessionStorage.setItem("selectionTextCardId", cardIdSelection);
+              } else {
+                parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+                parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+                var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+                var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+                var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
+                console.log(parentId_tmp1);
+                if (parentId_tmp1 !== null) {
+                  var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+                  var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+                  var cardIdSelection = parentId_tmp3[0].replace("cardId", "");
+                } else {
+                  parentId = null;
+                  console.log("아직도 아니다2");
+                }
+                if (parentId !== null) {
+                  sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+                  sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+                  sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+                  sessionStorage.setItem("selectionTextCardId", cardIdSelection);
+                } else {
+                  parentNode = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.outerHTML;
+                  parentNodeInnerHtml = document.getSelection().anchorNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.innerHTML;
+                  var parentId_tmp1 = parentNode.match(/(id=\"\w{10,100}\")/gi);
+                  var parentId_tmp2 = parentNode.match(/(cardSetId\w{10,100}cardId)/gi);
+                  var parentId_tmp3 = parentNode.match(/(cardId\w{10,100})/gi);
+                  console.log(parentId_tmp1);
+                  if (parentId_tmp1 !== null) {
+                    var parentId = parentId_tmp1[0].match(/(\w{3,100})/gi);
+                    var cardSetId = parentId_tmp2[0].replace("cardSetId", "").replace("cardId", "");
+                    var cardIdSelection = parentId_tmp3[0].replace("cardId", "");
+                  } else {
+                    parentId = null;
+                    console.log("아직도 아니다2");
+                  }
+                  if (parentId !== null) {
+                    sessionStorage.setItem("parentIdOfSelection", parentId[0]);
+                    sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
+                    sessionStorage.setItem("selectionTextCardSetId", cardSetId);
+                    sessionStorage.setItem("selectionTextCardId", cardIdSelection);
+                  }
+                }
               }
             }
           }
@@ -1004,7 +1079,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
         sessionStorage.setItem("parentIdOfSelection", parentId[0]);
         sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
         sessionStorage.setItem("selectionTextCardSetId", cardSetId);
-        sessionStorage.setItem("selectionTextCardId", cardId);
+        sessionStorage.setItem("selectionTextCardId", cardIdSelection);
       }
     }
   };
@@ -3864,8 +3939,23 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   }
 
   const onClickCard = (card_id, from, group, card_info) => {
+    var varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
+
+    if (varUA.indexOf("android") > -1) {
+      //안드로이드
+      var device = "mobile"
+    } else if (varUA.indexOf("iphone") > -1 || varUA.indexOf("ipad") > -1 || varUA.indexOf("ipod") > -1) {
+      //IOS
+      device = "mobile"
+    } else {
+      //아이폰, 안드로이드 외
+      device = "desktop"
+    }
+
     console.log(card_info);
     const selectionText = sessionStorage.getItem("selectionText");
+    const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
+
     // sessionStorage.removeItem("selectionText");
     const selected1 = document.getElementsByClassName(card_id);
     const selected2 = document.getElementsByClassName("other");
@@ -3889,17 +3979,13 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     }
 
     if (cardId === card_id) {
-      if (selectionText) {
-        console.log("eeee");
-      } else if (updateMemoState) {
+      if (updateMemoState) {
         console.log("eedddd");
+      } else if (cardId === selectionTextCardId && device === "desktop") {
+        console.log("eeeeeeee");
       } else {
         setCardId("");
         setCardInfo("");
-        sessionStorage.setItem("parentIdOfSelection", "");
-        sessionStorage.setItem("parentInnerHtml", "");
-        sessionStorage.setItem("selectionTextCardSetId", "");
-        sessionStorage.setItem("selectionTextCardId", "");
         for (var a = 0; a < selected2.length; a++) {
           const section = selected2.item(a);
           section.style.border = "none";
@@ -3913,6 +3999,9 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
       sessionStorage.setItem("parentInnerHtml", "");
       sessionStorage.setItem("selectionTextCardSetId", "");
       sessionStorage.setItem("selectionTextCardId", "");
+      sessionStorage.setItem("selectionText", "");
+      document.getSelection().empty();
+      document.getSelection().removeAllRanges();
       setCardId(card_id);
       setCardInfo(card_info);
     }
@@ -4176,7 +4265,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
           className="direct_read"
           id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content._id}`}
           dangerouslySetInnerHTML={{ __html: altered }}
-          onContextMenu={getSelectionText2}
+          onContextMenu={()=>getSelectionText2(content)}
         ></div>
       </>
     );
@@ -4189,7 +4278,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
           className="direct_read"
           id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content._id}`}
           dangerouslySetInnerHTML={{ __html: altered }}
-          onPointerUp={getSelectionText2}
+          onPointerUp={()=>getSelectionText2(content)}
         ></div>
       </>
     );
@@ -4202,7 +4291,7 @@ const Alter = ({ content, item, index, getSelectionText2, cardTypeSets }) => {
           className="direct_read"
           id={`${content._id}face1row${index + 1}cardSetId${content.card_info.cardset_id}cardId${content._id}`}
           dangerouslySetInnerHTML={{ __html: altered }}
-          onMouseUp={getSelectionText2}
+          onMouseUp={()=>getSelectionText2(content)}
         ></div>
       </>
     );

@@ -31,27 +31,30 @@ const useGetMentorBooks = (mentoringData, previousMentoringData) => {
           mentorBooks.mybook_getMybookByMybookIDs.mybooks,
           (book) => book._id === mentor.mybook_id
         ).mybook_info.type,
-        studyHistory:
-          mentorBooks &&
-          _(
-            _.find(
-              mentorBooks.mybook_getMybookByMybookIDs.mybooks,
-              (book) => book._id === mentor.mybook_id
-            ).stats?.studyHistory
-          )
-            .map((history) => history.studyHour)
-            .take(3)
-            .value() === []
-            ? _(
-                _.find(
-                  mentorBooks.mybook_getMybookByMybookIDs.mybooks,
-                  (book) => book._id === mentor.mybook_id
-                ).stats.studyHistory
-              )
-                .map((history) => history.studyHour)
-                .take(3)
-                .value()
-            : ["0.5", "2", "0"],
+        studyHistory: mentorBooks.mybook_getMybookByMybookIDs.mybooks.find(
+          (book) => book._id === mentor.mybook_id
+        ).stats.recent.timeStudy,
+        // studyHistory:
+        //   mentorBooks &&
+        //   _(
+        //     _.find(
+        //       mentorBooks.mybook_getMybookByMybookIDs.mybooks,
+        //       (book) => book._id === mentor.mybook_id
+        //     ).stats?.studyHistory
+        //   )
+        //     .map((history) => history.studyHour)
+        //     .take(3)
+        //     .value() === []
+        //     ? _(
+        //         _.find(
+        //           mentorBooks.mybook_getMybookByMybookIDs.mybooks,
+        //           (book) => book._id === mentor.mybook_id
+        //         ).stats.studyHistory
+        //       )
+        //         .map((history) => history.studyHour)
+        //         .take(3)
+        //         .value()
+        //     : ["0.5", "2", "0"],
       })),
       sortBy(["mentorSeq"])
     );

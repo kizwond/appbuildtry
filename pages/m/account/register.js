@@ -7,7 +7,7 @@ import { useMutation } from "@apollo/client";
 import { SignUpMutation } from "../../../graphql/query/account";
 
 function routerToLogin() {
-  Router.push("/m/account/login")
+  Router.push("/m/account/login");
 }
 
 const LoginComponent = () => {
@@ -54,8 +54,8 @@ const LoginComponent = () => {
   }
 
   const onFinish = (values) => {
-    alert("현재 회원가입이 불가능합니다.")
-    // postuser(values.user_id, values.password);
+    // alert("현재 회원가입이 불가능합니다.")
+    postuser(values.user_id, values.password);
   };
 
   return (
@@ -66,7 +66,7 @@ const LoginComponent = () => {
         name="register"
         onFinish={onFinish}
         scrollToFirstError
-        style={{fontSize:"0.8rem"}}
+        style={{ fontSize: "0.8rem" }}
       >
         <Form.Item
           name="user_id"
@@ -77,7 +77,7 @@ const LoginComponent = () => {
               message: "사용할 아이디를 입력해주세요.",
             },
           ]}
-          style={{fontSize:"0.8rem"}}
+          style={{ fontSize: "0.8rem" }}
         >
           <Input />
         </Form.Item>
@@ -117,7 +117,11 @@ const LoginComponent = () => {
           <Input.Password />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" style={{fontSize:"0.8rem"}}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ fontSize: "0.8rem" }}
+          >
             회원가입
           </Button>
         </Form.Item>
@@ -129,8 +133,8 @@ const LoginComponent = () => {
 const Register = () => {
   return (
     <M_Layout>
-        <LoginComponent />
-        <M_Footer />
+      <LoginComponent />
+      <M_Footer />
     </M_Layout>
   );
 };
@@ -141,7 +145,7 @@ const register_container = {
   textAlign: "center",
   marginTop: "100px",
   marginBottom: "100px",
-  fontSize:"0.8rem"
+  fontSize: "0.8rem",
 };
 
 export default Register;

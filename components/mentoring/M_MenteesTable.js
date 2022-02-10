@@ -25,6 +25,7 @@ import { DisconnectOutlined, ExportOutlined } from "@ant-design/icons";
 import moment from "moment";
 import styled from "styled-components";
 import StudyHistoryPerBook from "../common/studyHistoryPerBook/StudyHistoryPerBook";
+import Text from "antd/lib/typography/Text";
 
 const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
   const router = useRouter();
@@ -104,6 +105,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
       {newData ? (
         <Table
           size="small"
+          className="mt-2"
           pagination={false}
           dataSource={newData}
           expandable={{
@@ -181,11 +183,21 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
               dataIndex: "menteeName",
               ellipsis: true,
               width: "15%",
+              align: "center",
+              render: function disp(v, record) {
+                return (
+                  <div className="px-1 overflow-hidden">
+                    <div>{record.menteeName}</div>
+                    <div>({record.menteeUsername})</div>
+                  </div>
+                );
+              },
             },
             {
               title: isMenteeEditMode ? "편집" : "최근 학습일",
               dataIndex: "studyHistory",
               width: "35%",
+              align: "center",
               // eslint-disable-next-line react/display-name
               render: (v, record) =>
                 isMenteeEditMode ? (
@@ -235,15 +247,19 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                     </Popconfirm>
                   </Row>
                 ) : (
-                  <div className="flex w-full gap-2">
-                    {moment(new Date(Number(v))).format("YY.MM.DD")}
-                    <Tag
+                  <div className="flex justify-around gap-2">
+                    <div className="min-w-[48px]">
+                      {v ? moment(new Date(Number(v))).format("YY.MM.DD") : "-"}
+                    </div>
+                    <Text
+                      href="#"
+                      target="_blank"
                       onClick={() => {
                         openDrawer(record.mybook_id);
                       }}
                     >
                       상세보기
-                    </Tag>
+                    </Text>
                     <DrawerWrapper
                       title="상세 보기"
                       placement="right"
@@ -260,6 +276,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                         <StudyHistoryPerBook
                           mybook_id={record.mybook_id}
                           forWhom="mentor"
+                          menteeUser_id={record.menteeUser_id}
                         />
                       )}
                     </DrawerWrapper>

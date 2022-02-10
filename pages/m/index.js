@@ -139,40 +139,41 @@ const Home = () => {
   return (
     <M_Layout>
       <Hero />
-      <div>
-        {" "}
+      <div style={{ margin: "auto", width: "98%" }}>
         <span className="text-gray-700" style={{ fontSize: "1.5rem", fontWeight: 700 }}>
           공지사항
         </span>
       </div>
-      <List
-        style={{ height: "200px", overflow: "auto" }}
-        bordered
-        dataSource={newsData}
-        renderItem={(item, index) => (
-          <List.Item>
-            <Typography.Text mark>[{index + 1}]</Typography.Text> {item.content} <span></span>
-            {isAdmin === true && (
-              <span
-                onClick={() => noticedelete(item._id)}
-                style={{
-                  cursor: "pointer",
-                  marginLeft: "20px",
-                  display: "inline-block",
-                  width: "1rem",
-                  height: "1rem",
-                  border: "1px solid black",
-                  fontSize: "0.8rem",
-                  lineHeight: "1rem",
-                  textAlign: "center",
-                }}
-              >
-                X
-              </span>
-            )}
-          </List.Item>
-        )}
-      />
+      <div style={{ margin: "auto", width: "95%", marginBottom:"5px" }}>
+        <List
+          style={{ height: "200px", overflow: "auto" }}
+          bordered
+          dataSource={newsData}
+          renderItem={(item, index) => (
+            <List.Item>
+              <Typography.Text mark>[{index + 1}]</Typography.Text> {item.content} <span></span>
+              {isAdmin === true && (
+                <span
+                  onClick={() => noticedelete(item._id)}
+                  style={{
+                    cursor: "pointer",
+                    marginLeft: "20px",
+                    display: "inline-block",
+                    width: "1rem",
+                    height: "1rem",
+                    border: "1px solid black",
+                    fontSize: "0.8rem",
+                    lineHeight: "1rem",
+                    textAlign: "center",
+                  }}
+                >
+                  X
+                </span>
+              )}
+            </List.Item>
+          )}
+        />
+      </div>
       {isAdmin === true && (
         <div style={{ display: "flex", alignItems: "center", marginTop: "15px" }}>
           <Input placeholder="공지입력" onChange={handleNewInput} value={newsInput} />

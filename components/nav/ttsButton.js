@@ -10,15 +10,15 @@ import _ from "lodash";
 import decodeHtMLEntities from "../common/logic/decodeHtMLEntities";
 
 const TTSButton = ({ ttsOn, setTtsOn }) => {
-  const ISSERVER = typeof window === "undefined";
-  if (!ISSERVER) {
-    var ttsUse = sessionStorage.getItem("ttsUse");
-    if (ttsUse === "unable") {
-      var useTTS = false;
-    } else {
-      useTTS = true;
-    }
-  }
+  // const ISSERVER = typeof window === "undefined";
+  // if (!ISSERVER) {
+  //   var ttsUse = sessionStorage.getItem("ttsUse");
+  //   if (ttsUse === "unable") {
+  //     var useTTS = false;
+  //   } else {
+  //     useTTS = true;
+  //   }
+  // }
 
   const [ttsArray, setTtsArray] = useState([]);
   const [paused, setPaused] = useState(false);
@@ -92,22 +92,23 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
     },
   });
 
-  function setSpeech() {
-    return new Promise(function (resolve, reject) {
-      let synth = window.speechSynthesis;
-      let id;
-
-      id = setInterval(() => {
-        if (synth.getVoices().length !== 0) {
-          resolve(synth.getVoices());
-          clearInterval(id);
-        }
-      }, 100);
-    });
-  }
+  
 
   const speakText = (ttsArray) => {
     window.speechSynthesis.cancel();
+    function setSpeech() {
+      return new Promise(function (resolve, reject) {
+        let synth = window.speechSynthesis;
+        let id;
+  
+        id = setInterval(() => {
+          if (synth.getVoices().length !== 0) {
+            resolve(synth.getVoices());
+            clearInterval(id);
+          }
+        }, 100);
+      });
+    }
     let voiceEn = [];
     let voiceKo = [];
     let s = setSpeech();
@@ -231,7 +232,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
   const content = <div>이 브라우저는 음성 합성을 지원하지 않습니다.</div>;
   return (
     <>
-      {ttsOn === true && paused === false && useTTS === true && (
+      {ttsOn === true && paused === false && (
         <>
           <Button
             size="small"
@@ -257,7 +258,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           />
         </>
       )}
-      {ttsOn === false && paused === false && useTTS === true && (
+      {ttsOn === false && paused === false  && (
         <>
           <Button
             size="small"
@@ -272,7 +273,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           />
         </>
       )}
-      {ttsOn === true && paused === true && useTTS === true && (
+      {ttsOn === true && paused === true  && (
         <>
           <Button
             size="small"
@@ -300,7 +301,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
           />
         </>
       )}
-      {ttsOn === false && useTTS === false && (
+      {/* {ttsOn === false && useTTS === false && (
         <>
           <Popover trigger="click" content={content}>
             <Button
@@ -316,7 +317,7 @@ const TTSButton = ({ ttsOn, setTtsOn }) => {
             />
           </Popover>
         </>
-      )}
+      )} */}
     </>
   );
 };

@@ -10,15 +10,15 @@ import _ from "lodash";
 
 const TTSButton = ({ ttsOn, setTtsOn, ttsNextState, setTTSNextState }) => {
 
-  const ISSERVER = typeof window === "undefined";
-  if (!ISSERVER) {
-    var ttsUse = sessionStorage.getItem("ttsUse");
-    if(ttsUse === "unable"){
-      var useTTS = false
-    } else {
-      useTTS = true
-    }
-  }
+  // const ISSERVER = typeof window === "undefined";
+  // if (!ISSERVER) {
+  //   var ttsUse = sessionStorage.getItem("ttsUse");
+  //   if(ttsUse === "unable"){
+  //     var useTTS = false
+  //   } else {
+  //     useTTS = true
+  //   }
+  // }
 
   const getTTSDataPause = async () => {
     window.speechSynthesis.cancel();
@@ -36,7 +36,7 @@ const TTSButton = ({ ttsOn, setTtsOn, ttsNextState, setTTSNextState }) => {
   );
   return (
     <>
-      {ttsOn === true && useTTS === true &&(
+      {ttsOn === true &&(
         <>
           <Button
             size="small"
@@ -51,7 +51,7 @@ const TTSButton = ({ ttsOn, setTtsOn, ttsNextState, setTTSNextState }) => {
           />
         </>
       )}
-      {ttsOn === false && useTTS === true &&(
+      {ttsOn === false  &&(
         <>
           <Button
             size="small"
@@ -67,7 +67,7 @@ const TTSButton = ({ ttsOn, setTtsOn, ttsNextState, setTTSNextState }) => {
         </>
       )}
 
-      {ttsOn === false && useTTS === false &&(
+      {/* {ttsOn === false && useTTS === false &&(
         <>
         <Popover trigger="click" content={content} >
           <Button
@@ -83,7 +83,7 @@ const TTSButton = ({ ttsOn, setTtsOn, ttsNextState, setTTSNextState }) => {
           />
           </Popover>
         </>
-      )}
+      )} */}
     </>
   );
 };

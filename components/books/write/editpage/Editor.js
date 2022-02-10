@@ -18,6 +18,7 @@ const { Option } = Select;
 class Editor extends Component {
   constructor(props) {
     super(props);
+    this.myRef = React.createRef();
     this.state = {
       editor1: props.getLink,
       editor2: "",
@@ -59,7 +60,7 @@ class Editor extends Component {
       answerRadio: null,
       answerFieldNick: "",
     };
-
+    
     FroalaEditor.DefineIcon("insertFiles", { SRC: "/image/speaker_Icon.png", ALT: "audioIcon", template: "image" });
     FroalaEditor.DefineIcon("alert", { SRC: "/image/tts_icon.png", NAME: "tts", template: "image" });
     this.config = {
@@ -741,6 +742,7 @@ class Editor extends Component {
               )}
               <FroalaEditorComponent
                 tag="textarea"
+                className={`editor${index+1}`}
                 config={this.config}
                 model={this.state["editor" + (index + 1).toString()]}
                 onModelChange={this["handleModelChangeEditor" + (index + 1).toString()]}
@@ -847,6 +849,7 @@ class Editor extends Component {
                 )}
                 <FroalaEditorComponent
                   key={`editor${item}`}
+                  className={`editor${index+1}`}
                   tag="textarea"
                   config={this.config}
                   model={this.state["editor" + (index + 1).toString()]}

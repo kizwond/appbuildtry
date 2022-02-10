@@ -322,7 +322,7 @@ const StudySessionConfig = ({
           <div
             className={
               data && numberOfFilteredCards.length > 0
-                ? "text-[1.7rem] cursor-pointer"
+                ? "text-[1.5rem] hover:text-[1.7rem] cursor-pointer"
                 : "text-[1.5rem] text-gray-600"
             }
             onClick={() => {

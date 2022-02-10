@@ -59,7 +59,7 @@ const FlipCardDetail = () => {
   const { data } = useQuery(QUERY_CONTENT_AND_CARDTYPE_FOR_CARD_DETAIL, {
     onCompleted: (received_data) => {
       if (received_data.cardtypeset_getbymybookids.status === "200") {
-        console.log("카드 상세 정보 받기 완료함", received_data);
+        console.log("카드 상세 팝오버 정보 받기 완료함", received_data);
       } else if (received_data.cardtypeset_getbymybookids.status === "401") {
         router.push("/m/account/login");
       } else {

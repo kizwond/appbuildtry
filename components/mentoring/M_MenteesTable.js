@@ -189,7 +189,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
                   value: item.menteeUsername,
                 })),
                 "text"
-              ),
+              ).sort(),
               onFilter: (value, record) =>
                 record.menteeUsername.indexOf(value) === 0,
               filterSearch: true,

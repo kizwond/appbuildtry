@@ -182,6 +182,12 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
               ellipsis: true,
               width: "15%",
               align: "center",
+              filters: newData.map((item) => ({
+                text: item.menteeUsername,
+                value: item.menteeUsername,
+              })),
+              onFilter: (value, record, i) =>
+                record.menteeUsername.indexOf(value) === 0,
               render: function disp(v, record) {
                 return (
                   <div className="px-1 overflow-hidden">

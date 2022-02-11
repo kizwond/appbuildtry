@@ -146,7 +146,7 @@ const Home = () => {
       </div>
       <div style={{ margin: "auto", width: "95%", marginBottom:"5px" }}>
         <List
-          style={{ height: "200px", overflow: "auto" }}
+          style={{ height: "200px", overflow: "auto", fontSize:"1rem" }}
           bordered
           dataSource={newsData}
           renderItem={(item, index) => (

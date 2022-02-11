@@ -138,8 +138,6 @@ class Editor extends Component {
     const dodo = async () => {
       var text = null;
       var textRange = null;
-      
-      console.log("getselections111111111111111111111111")
       if (document.getSelection) {
         text = document.getSelection().toString().trim();
         textRange = document.getSelection();
@@ -162,7 +160,7 @@ class Editor extends Component {
           console.log(this[`myRef${i+1}`].current)
           console.log(thisis);
           console.log(outer)
-          const hello = thisis.replace(text, `${text} <audio controls><source src="${pollyLink}" type="audio/mpeg"></audio><p></p>`);
+          const hello = thisis.replace(text, `${text} <p style="display:flex; justify-content: center;align-items: center; width:80%;"><audio controls><source src="${pollyLink}" type="audio/mpeg"></audio></><p></p>`);
           console.log(hello);
           sessionStorage.setItem("includeLink", hello);
           this[`handleModelChangeEditor${i+1}`](hello);

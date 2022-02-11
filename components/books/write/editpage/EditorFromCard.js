@@ -140,11 +140,14 @@ class EditorFromCard extends Component {
         console.log(matches[i].innerText);
         if (matches[i].innerText.includes(text)) {
           var thisis = matches[i].innerHTML;
+          var outer = matches[i].outerHTML;
           console.log(thisis);
-          const hello = thisis.replace(text, `${text} <audio controls><source src="${pollyLink}" type="audio/mpeg"></audio><p></p>`);
+          console.log(outer)
+          const hello = thisis.replace(text, `${text} <p style="display:flex; justify-content: center;align-items: center; width:80%;"><audio controls><source src="${pollyLink}" type="audio/mpeg"></audio></><p></p>`);
           console.log(hello);
           sessionStorage.setItem("includeLink", hello);
-          this.handleModelChangeEditor1(hello);
+          this[`handleModelChangeEditor${i+1}`](hello);
+          // this.handleModelChangeEditor1(hello);
         }
       }
     };

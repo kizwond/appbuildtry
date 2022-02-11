@@ -3,13 +3,15 @@ import moment from "moment";
 import { memo } from "react";
 import styled from "styled-components";
 
-const ChartForGainedLevelPerDay = ({ data }) => {
-  const maxLevel = _.max(
-    data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory.map(
-      ({ level: { completed, nonCompleted } }) =>
-        Math.floor(completed * 1000 + nonCompleted * 1000) / 1000
-    )
-  );
+const ChartForGainedLevelPerDay = ({ book }) => {
+  const maxLevel =
+    book &&
+    _.max(
+      book.stats.studyHistory.map(
+        ({ level: { completed, nonCompleted } }) =>
+          Math.floor(completed * 1000 + nonCompleted * 1000) / 1000
+      )
+    );
   _;
   return (
     <div>
@@ -25,68 +27,71 @@ const ChartForGainedLevelPerDay = ({ data }) => {
       </div>
       <div className="w-full overflow-x-auto overflow-y-hidden">
         <ul className="table h-[140px] py-5">
-          {_(data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory)
-            .takeRight(15)
-            .reverse()
-            .map(({ level: { completed, nonCompleted }, date }, index, arr) => {
-              const totalLevel =
-                Math.floor(completed * 1000 + nonCompleted * 100) / 100;
-              const barHeightPercentage = !!maxLevel
-                ? Math.round((totalLevel / maxLevel) * 100) + "%"
-                : "0%";
-              const incompletedLevel = Math.round(nonCompleted * 100) / 100;
-              const percentageOfIncompleted = !!totalLevel
-                ? Math.round((incompletedLevel / totalLevel) * 100) + "%"
-                : "0%";
-              const completedLevel = Math.round(completed * 100) / 100;
-              const percentageOfCompleted = !!totalLevel
-                ? Math.round((completedLevel / totalLevel) * 100) + "%"
-                : "0%";
-              return {
-                date: moment(date).format("M월D일"),
-                totalLevel,
-                barHeightPercentage,
-                incompletedLevel,
-                percentageOfIncompleted,
-                completedLevel,
-                percentageOfCompleted,
-              };
-            })
-            .map(
-              (
-                {
-                  date,
-                  totalLevel,
-                  barHeightPercentage,
-                  incompletedLevel,
-                  percentageOfIncompleted,
-                  completedLevel,
-                  percentageOfCompleted,
-                },
-                index
-              ) => (
-                <li
-                  key={date + index}
-                  className="relative table-cell align-bottom min-w-[48px] max-w-[48px] px-1"
-                >
-                  <StyledBar
-                    total={totalLevel}
-                    barHeightPercentage={barHeightPercentage}
-                    date={date}
-                    percentageOfIncompleted={percentageOfIncompleted}
-                    percentageOfCompleted={percentageOfCompleted}
-                  >
-                    <div className="incompleted bg-yellow-500 text-[10px] text-gray-50 flex items-center justify-center">
-                      {incompletedLevel}
-                    </div>
-                    <div className="completed bg-blue-500 h-[30%] text-[10px] text-gray-50 flex items-center justify-center">
-                      {completedLevel}
-                    </div>
-                  </StyledBar>
-                </li>
+          {book &&
+            _(book.stats.studyHistory)
+              .takeRight(15)
+              .reverse()
+              .map(
+                ({ level: { completed, nonCompleted }, date }, index, arr) => {
+                  const totalLevel =
+                    Math.floor(completed * 1000 + nonCompleted * 100) / 100;
+                  const barHeightPercentage = !!maxLevel
+                    ? Math.round((totalLevel / maxLevel) * 100) + "%"
+                    : "0%";
+                  const incompletedLevel = Math.round(nonCompleted * 100) / 100;
+                  const percentageOfIncompleted = !!totalLevel
+                    ? Math.round((incompletedLevel / totalLevel) * 100) + "%"
+                    : "0%";
+                  const completedLevel = Math.round(completed * 100) / 100;
+                  const percentageOfCompleted = !!totalLevel
+                    ? Math.round((completedLevel / totalLevel) * 100) + "%"
+                    : "0%";
+                  return {
+                    date: moment(date).format("M월D일"),
+                    totalLevel,
+                    barHeightPercentage,
+                    incompletedLevel,
+                    percentageOfIncompleted,
+                    completedLevel,
+                    percentageOfCompleted,
+                  };
+                }
               )
-            )
-            .value()}
+              .map(
+                (
+                  {
+                    date,
+                    totalLevel,
+                    barHeightPercentage,
+                    incompletedLevel,
+                    percentageOfIncompleted,
+                    completedLevel,
+                    percentageOfCompleted,
+                  },
+                  index
+                ) => (
+                  <li
+                    key={date + index}
+                    className="relative table-cell align-bottom min-w-[48px] max-w-[48px] px-1"
+                  >
+                    <StyledBar
+                      total={totalLevel}
+                      barHeightPercentage={barHeightPercentage}
+                      date={date}
+                      percentageOfIncompleted={percentageOfIncompleted}
+                      percentageOfCompleted={percentageOfCompleted}
+                    >
+                      <div className="incompleted bg-yellow-500 text-[10px] text-gray-50 flex items-center justify-center">
+                        {incompletedLevel}
+                      </div>
+                      <div className="completed bg-blue-500 h-[30%] text-[10px] text-gray-50 flex items-center justify-center">
+                        {completedLevel}
+                      </div>
+                    </StyledBar>
+                  </li>
+                )
+              )
+              .value()}
         </ul>
       </div>
     </div>

@@ -577,6 +577,7 @@ export const QUERY_SESSION_FOR_RESULT_BY_SESSION_ID = gql`
     }
   }
 `;
+
 export const QUERY_EXAM_FOR_RESULT_BY_SESSION_ID = gql`
   ${FRAGMENT_EXAM_FOR_RESULT}
   query getSessionForResult($session_id: ID) {

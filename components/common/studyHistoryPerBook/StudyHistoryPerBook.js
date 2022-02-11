@@ -44,26 +44,24 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
       : QUERY_SESSION_STATUS_BY_BOOK_ID,
     {
       onCompleted: async (received_data) => {
-        // if (received_data[`${queryNameOfCardset}`].status === "200") {
-        console.log("멘토링용 책 섹션 데이터 받음", received_data);
-        // }
-        //  else if (
-        //   received_data[
-        //     `${
-        //       forWhom === "mentor"
-        //         ? "mybook_getMybookForMentor"
-        //         : "session_getSessionByMybookid"
-        //     }`
-        //   ].status === "400"
-        // ) {
-        //   console.log("접근 권한이 없음", received_data);
-        //   location.href = "/m/mentoring";
-        // }
-        // else if (received_data[`${queryNameOfCardset}`].status === "401") {
-        //   router.push("/account/login");
-        // } else {
-        //   console.log("어떤 문제가 발생함");
-        // }
+        if (received_data[`${queryNameOfCardset}`].status === "200") {
+          console.log("멘토링용 책 섹션 데이터 받음", received_data);
+        } else if (
+          received_data[
+            `${
+              forWhom === "mentor"
+                ? "mybook_getMybookForMentor"
+                : "session_getSessionByMybookid"
+            }`
+          ].status === "400"
+        ) {
+          console.log("접근 권한이 없음", received_data);
+          location.href = "/m/mentoring";
+        } else if (received_data[`${queryNameOfCardset}`].status === "401") {
+          router.push("/account/login");
+        } else {
+          console.log("어떤 문제가 발생함");
+        }
       },
       variables:
         forWhom === "mentor"
@@ -88,25 +86,6 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
     }
   );
 
-  // const numberOfCards = useMemo(
-  //   () => ({
-  //     hold:
-  //       data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[0]
-  //         ?.numCardsByStatus?.hold ?? 0,
-  //     ing:
-  //       data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[0]
-  //         ?.numCardsByStatus?.ing ?? 0,
-  //     completed:
-  //       data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[0]
-  //         ?.numCardsByStatus?.completed ?? 0,
-  //     yet:
-  //       data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[0]
-  //         ?.numCardsByStatus?.yet ?? 0,
-  //   }),
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   [data, forWhom]
-  // );
-
   const {
     ing: Ing,
     hold: Hold,
@@ -118,7 +97,6 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
         .value()[0].numCardsByStatus
     : { ing: 0, hold: 0, yet: 0, completed: 0 };
 
-  console.log({ Ing, Hold, Yet });
   const currentNumberOfIncompletedCards = Ing + Hold + Yet;
 
   const { completed, nonCompleted } = data
@@ -128,7 +106,7 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
     : { ing: 0, hold: 0, yet: 0, completed: 0 };
 
   const currentLevelOfIncompletedCards =
-    Math.floor(completed * 100 + nonCompleted * 100) / 100;
+    Math.floor((nonCompleted / currentNumberOfIncompletedCards) * 100) / 100;
 
   return (
     <div className="">
@@ -140,15 +118,31 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
             <SectionWrapper
               title="요약"
               content={
-                <div className="grid w-full grid-cols-2 gap-4">
-                  <BoxForSummaryOfMainPage
-                    title="미완료 카드수"
-                    content={"" + currentNumberOfIncompletedCards + "장"}
-                  />
-                  <BoxForSummaryOfMainPage
-                    title="미완료 카드 평균 레벨"
-                    content={currentLevelOfIncompletedCards}
-                  />
+                <div className="flex justify-between w-full gap-2">
+                  <div className="min-w-[90px] flex flex-col gap-[2px]">
+                    <div className="text-base text-center font-[600] border border-gray-200  bg-slate-100">
+                      완료 카드수
+                    </div>
+                    <div className="text-base text-center font-[600] text-[1.16667rem] h-[40px] py-[10px] border border-gray-200">
+                      {completed}장
+                    </div>
+                  </div>
+                  <div className="min-w-[90px] flex flex-col gap-[2px]">
+                    <div className="text-base text-center font-[600] border border-gray-200  bg-slate-100">
+                      미완료 카드수
+                    </div>
+                    <div className="text-base text-center font-[600] text-[1.16667rem] h-[40px] py-[10px] border border-gray-200">
+                      {currentNumberOfIncompletedCards}장
+                    </div>
+                  </div>
+                  <div className="w-full flex flex-col gap-[2px]">
+                    <div className="text-base text-center font-[600] border border-gray-200  bg-slate-100">
+                      미완료 카드 평균 레벨
+                    </div>
+                    <div className="text-base text-center font-[600] text-[1.16667rem] h-[40px] py-[10px] border border-gray-200">
+                      {currentLevelOfIncompletedCards}
+                    </div>
+                  </div>
                 </div>
               }
             />

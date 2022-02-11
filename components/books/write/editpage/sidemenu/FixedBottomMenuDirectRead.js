@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { message, Modal, Space, Drawer, Button, Radio, Select } from "antd";
+import { message, Modal, Space, Drawer, Button, Radio, Select, Table, Spin  } from "antd";
 import M_LeftDrawerDirectRead from "../M_LeftDrawerDirectRead";
 import {
   ProfileOutlined,
@@ -80,10 +80,12 @@ const FloatingMenu = ({
 
   const handleOk = () => {
     setIsModalVisible(false);
+    setCreateCardOn(false);
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    setCreateCardOn(false);
   };
   const info = () => {
     var selectionText = sessionStorage.getItem("selectionText");
@@ -383,6 +385,59 @@ const FloatingMenu = ({
       });
     }
   }
+
+  if(searchResult){
+    var dictionaryData = [
+      {
+        key: "1",
+        name: "선택단어",
+        value: searchResult.selectionText,
+      },
+      {
+        key: "2",
+        name: "뜻",
+        value: searchResult.meaning1,
+      },
+      {
+        key: "3",
+        name: "영어뜻",
+        value: searchResult.meaningEng1,
+      },
+      {
+        key: "4",
+        name: "뜻2",
+        value: searchResult.meaning2,
+      },
+      {
+        key: "5",
+        name: "예문1",
+        value: searchResult.example1,
+      },
+      {
+        key: "6",
+        name: "예문2",
+        value: searchResult.example2,
+      },
+    ];
+  
+    var dictionaryColumns = [
+      {
+        title: "분류",
+        dataIndex: "name",
+      },
+      {
+        title: "내용",
+        dataIndex: "value",
+      },
+    ];
+  } else {
+    if(createCardOn === true){
+      setCreateCardOn(false);
+      setIsModalVisible(false)
+    } 
+  }
+  
+
   return (
     <>
       <svg xmlns="//www.w3.org/2000/svg" version="1.1" className="svg-filters" style={{ display: "none" }}>
@@ -596,10 +651,8 @@ const FloatingMenu = ({
               </Drawer>
               {/* 사전검색 모달 */}
 
-
-              
               <Modal footer={null} title="카드생성" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-                {searchResult && (
+                {/* {searchResult && (
                   <>
                     <div style={{ fontSize: "1rem" }}>선택단어 : {searchResult.selectionText}</div>
                     <div style={{ fontSize: "1rem" }}>뜻 : {searchResult.meaning1}</div>
@@ -609,23 +662,28 @@ const FloatingMenu = ({
                     <div style={{ fontSize: "1rem" }}>예문1 : {searchResult.example1}</div>
                     <div style={{ fontSize: "1rem" }}>예문2 : {searchResult.example2}</div>
                   </>
-                )}
-                <Button size="small" type="primary" onClick={createCardInDictionary}>
-                  카드생성
-                </Button>
-                {createCardOn && (
-                  <>
-                    <Radio.Group onChange={onChange} value={caseRadio}>
-                      <Space direction="vertical">
-                        <Radio value="next">현재카드 바로 뒤</Radio>
-                        <Radio value="same_last">현재카드 인덱스 맨 뒤</Radio>
+                )} */}
+                {searchResult ? (
+                  <Table className="dictionary_result_table" bordered={true} size="small" pagination={false} columns={dictionaryColumns} dataSource={dictionaryData} />
+                ):<Spin />}
+               
+                <div style={{marginTop:"10px", marginBottom:"10px", display:"flex", justifyContent:"space-between", alignItems:"center"}}>
+                  {searchResult&& <Button size="small" type="primary" onClick={createCardInDictionary}>
+                    카드생성
+                  </Button>}
+                  {createCardOn && (
+                    <>
+                      <Radio.Group onChange={onChange} value={caseRadio}>
+                        <Space direction="vertical">
+                          <Radio value="next">현재카드 바로 뒤</Radio>
+                          {/* <Radio value="same_last">현재카드 인덱스 맨 뒤</Radio>
                         <Radio value="diff_last">현재책 다른 인덱스 맨 뒤</Radio>
-                        <Radio value="diff_book">다른책 다른 인덱스 맨 뒤</Radio>
-                      </Space>
-                    </Radio.Group>
-                  </>
-                )}
-                {caseRadio === "next" && (
+                        <Radio value="diff_book">다른책 다른 인덱스 맨 뒤</Radio> */}
+                        </Space>
+                      </Radio.Group>
+                    </>
+                  )}
+                  {/* {caseRadio === "next" && (
                   <>
                     <div>현재카드 바로뒤 selection</div>
                   </>
@@ -644,22 +702,21 @@ const FloatingMenu = ({
                   <>
                     <div>다른책 다른 인덱스 맨 뒤 selection</div>
                   </>
-                )}
+                )} */}
 
-                {selectedCardType && (
-                  <>
-                    <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange}>
-                      <Option value="default" disabled>
-                        카드타입 선택
-                      </Option>
-                      {selections}
-                    </Select>
-                  </>
-                )}
+                  {selectedCardType && (
+                    <>
+                      <Select defaultValue="default" style={{ width: 120 }} onChange={handleChange}>
+                        <Option value="default" disabled>
+                          카드타입 선택
+                        </Option>
+                        {selections}
+                      </Select>
+                    </>
+                  )}
+                </div>
                 {editorOn}
               </Modal>
-
-
 
               {/* 사전검색모달 */}
             </div>

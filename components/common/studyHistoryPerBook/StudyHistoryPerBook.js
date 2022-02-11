@@ -201,7 +201,7 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
               title="총 학습 카드 개수"
               content={
                 <ChartForStudiedCardsPerDay
-                  data={data[`${queryNameOfBook}`].mybooks[0]}
+                  book={data[`${queryNameOfBook}`].mybooks[0]}
                 />
               }
             />
@@ -209,7 +209,7 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
               title="총 획득 레벨"
               content={
                 <ChartForGainedLevelPerDay
-                  data={data[`${queryNameOfBook}`].mybooks[0]}
+                  book={data[`${queryNameOfBook}`].mybooks[0]}
                 />
               }
             />

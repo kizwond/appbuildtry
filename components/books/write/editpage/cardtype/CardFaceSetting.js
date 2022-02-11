@@ -12,6 +12,7 @@ const CardFaceSetting = ({
   cardTypeDetail,
   getUpdatedCardTypeList,
   tabValue,
+  cardTypeId,
 }) => {
   const cardType = cardTypeDetail[0].cardtype_info.cardtype;
   const [faceSelected, setFaceSelected] = useState(0);
@@ -135,11 +136,12 @@ const CardFaceSetting = ({
 
   useEffect(() => {
     console.log("cardTypeDetail", cardTypeDetail[0]);
-    if (cardTypeDetail.length > 0) {
-      resetToPreservedSetting(faceSelected);
+    if (cardTypeId) {
+      resetToPreservedSetting(0);
+      setFaceSelected(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardTypeDetail, tabValue]);
+  }, [cardTypeDetail, cardTypeId, tabValue]);
 
   const [cardtypeset_updatefacestyle] = useMutation(UpdateCardFace, {
     onCompleted: afterupdatemutation,
@@ -327,10 +329,18 @@ const CardFaceSetting = ({
           >
             {cardType !== "flip" && (
               <>
-                <Select.Option value={0} style={{ fontSize: "0.8rem" }}>
+                <Select.Option
+                  value={0}
+                  label="1면"
+                  style={{ fontSize: "0.8rem" }}
+                >
                   1면
                 </Select.Option>
-                <Select.Option value={1} style={{ fontSize: "0.8rem" }}>
+                <Select.Option
+                  value={1}
+                  label="주석"
+                  style={{ fontSize: "0.8rem" }}
+                >
                   주석
                 </Select.Option>
               </>
@@ -338,8 +348,12 @@ const CardFaceSetting = ({
 
             {cardType === "flip" && (
               <>
-                <Select.Option value={0} label="전체면">
-                  <div className="flex justify-between items-center">
+                <Select.Option
+                  value={0}
+                  label="전체면"
+                  style={{ fontSize: "0.8rem" }}
+                >
+                  <div className="flex items-center justify-between">
                     전체면
                     <div className="w-[65px] h-[44px] relative">
                       <Image
@@ -350,8 +364,12 @@ const CardFaceSetting = ({
                     </div>
                   </div>
                 </Select.Option>
-                <Select.Option value={1} label="1면">
-                  <div className="flex justify-between items-center">
+                <Select.Option
+                  value={1}
+                  label="1면"
+                  style={{ fontSize: "0.8rem" }}
+                >
+                  <div className="flex items-center justify-between">
                     1면
                     <div className="w-[65px] h-[44px] relative">
                       <Image
@@ -362,8 +380,12 @@ const CardFaceSetting = ({
                     </div>
                   </div>
                 </Select.Option>
-                <Select.Option value={2} label="2면">
-                  <div className="flex justify-between items-center">
+                <Select.Option
+                  value={2}
+                  label="2면"
+                  style={{ fontSize: "0.8rem" }}
+                >
+                  <div className="flex items-center justify-between">
                     2면
                     <div className="w-[65px] h-[44px] relative">
                       <Image
@@ -374,7 +396,11 @@ const CardFaceSetting = ({
                     </div>
                   </div>
                 </Select.Option>
-                <Select.Option value={3} label="주석">
+                <Select.Option
+                  value={3}
+                  label="주석"
+                  style={{ fontSize: "0.8rem" }}
+                >
                   주석
                 </Select.Option>
               </>

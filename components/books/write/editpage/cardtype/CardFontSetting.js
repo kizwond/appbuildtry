@@ -5,19 +5,27 @@ import { UpdateRowFont } from "../../../../../graphql/query/cardtype";
 import { CompactPicker } from "react-color";
 const { Option } = Select;
 
-const CardFaceSetting = ({
+const CardFontSetting = ({
   cardTypeId,
   cardTypeSetId,
   cardTypeDetail,
   getUpdatedCardTypeList,
   tabValue,
 }) => {
-  const [displayColorPicker, setDisplayColorPicker] = useState(false);
   const cardType = cardTypeDetail[0].cardtype_info.cardtype;
 
   const [faceSelected, setFaceSelected] = useState("face1");
   const [rowSelected, setRowSelected] = useState(0);
-  const [rowOptions, setRowOptions] = useState();
+  const [rowOptions, setRowOptions] = useState([]);
+
+  const [isOpendFontColorPicker, setIsOpendFontColorPicker] = useState(false);
+  const toggleFontColorPicker = () => {
+    setIsOpendFontColorPicker(!isOpendFontColorPicker);
+  };
+  const fontColorHandler = (color) => {
+    set_color(color.hex);
+    toggleFontColorPicker();
+  };
 
   const [align, set_align] = useState();
   const [bold, set_bold] = useState();
@@ -44,23 +52,21 @@ const CardFaceSetting = ({
     if (cardTypeId) {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face1;
       let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
+      for (var i = 0; i < num_of_row; i++) {
         nums.push(i);
       }
       const rows = nums.map((item) => (
-        <Select.Option
-          key={`${item - 1}`}
-          value={item - 1}
-          style={{ fontSize: "0.8rem" }}
-        >
-          {item}
+        <Select.Option key={item} value={item} style={{ fontSize: "0.8rem" }}>
+          {item + 1}
         </Select.Option>
       ));
       setRowOptions(rows);
-      resetToPreservedSetting(faceSelected, rowSelected);
+      setFaceSelected("face1");
+      setRowSelected(0);
+      resetToPreservedSetting("face1", 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardTypeId, cardTypeDetail, tabValue]);
+  }, [cardTypeId, tabValue]);
 
   const [cardtypeset_updaterowfont] = useMutation(UpdateRowFont, {
     onCompleted: afterupdatemutation,
@@ -114,48 +120,36 @@ const CardFaceSetting = ({
     if (selectedFaceStr === "face1") {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face1;
       let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
+      for (var i = 0; i < num_of_row; i++) {
         nums.push(i);
       }
       const rows = nums.map((item) => (
-        <Select.Option
-          key={`${item - 1}`}
-          value={item - 1}
-          style={{ fontSize: "0.8rem" }}
-        >
-          {item}
+        <Select.Option key={item} value={item} style={{ fontSize: "0.8rem" }}>
+          {item + 1}
         </Select.Option>
       ));
       setRowOptions(rows);
     } else if (selectedFaceStr === "face2") {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face2;
       let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
+      for (var i = 0; i < num_of_row; i++) {
         nums.push(i);
       }
       const rows = nums.map((item) => (
-        <Select.Option
-          value={item - 1}
-          key={`${item - 1}`}
-          style={{ fontSize: "0.8rem" }}
-        >
-          {item}
+        <Select.Option key={item} value={item} style={{ fontSize: "0.8rem" }}>
+          {item + 1}
         </Select.Option>
       ));
       setRowOptions(rows);
     } else if (selectedFaceStr === "annotation") {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.annotation;
       let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
+      for (var i = 0; i < num_of_row; i++) {
         nums.push(i);
       }
       const rows = nums.map((item) => (
-        <Select.Option
-          value={item - 1}
-          key={`${item - 1}`}
-          style={{ fontSize: "0.8rem" }}
-        >
-          {item}
+        <Select.Option key={item} value={item} style={{ fontSize: "0.8rem" }}>
+          {item + 1}
         </Select.Option>
       ));
       setRowOptions(rows);
@@ -164,18 +158,6 @@ const CardFaceSetting = ({
   const selectRowHandler = (selectedRowNum) => {
     setRowSelected(selectedRowNum);
     resetToPreservedSetting(faceSelected, selectedRowNum);
-  };
-
-  const handleClick = () => {
-    setDisplayColorPicker(!displayColorPicker);
-  };
-
-  const handleClose = () => {
-    setDisplayColorPicker(false);
-  };
-
-  const handleChangeComplete = (color) => {
-    set_color(color.hex);
   };
 
   return (
@@ -245,6 +227,9 @@ const CardFaceSetting = ({
             onChange={selectRowHandler}
           >
             {rowOptions}
+            {cardType === "flip" && faceSelected === "face1" && (
+              <Select.Option value={rowOptions.length}>보기</Select.Option>
+            )}
           </Select>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
@@ -302,15 +287,15 @@ const CardFaceSetting = ({
             <span style={{ fontSize: "0.8rem" }}>색</span>
             <Button
               size="small"
-              onClick={handleClick}
+              onClick={toggleFontColorPicker}
               style={{ width: "80px", fontSize: "0.8rem", background: color }}
             >
               Color
             </Button>
-            {displayColorPicker ? (
+            {isOpendFontColorPicker ? (
               <div style={popover}>
-                <div style={cover} onClick={handleClose} />
-                <CompactPicker color={color} onChange={handleChangeComplete} />
+                <div style={cover} />
+                <CompactPicker color={color} onChange={fontColorHandler} />
                 {/* <span>none</span> */}
               </div>
             ) : null}
@@ -422,7 +407,7 @@ const CardFaceSetting = ({
   );
 };
 
-export default CardFaceSetting;
+export default CardFontSetting;
 
 const popover = {
   position: "absolute",

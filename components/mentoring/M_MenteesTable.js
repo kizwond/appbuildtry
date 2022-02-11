@@ -196,7 +196,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
               onFilter: (value, record) =>
                 record.menteeUsername.indexOf(value) === 0,
               filterSearch: true,
-              sorter: (a, b) => a.menteeUsername - b.menteeUsername,
+              // sorter: (a, b) => a.menteeUsername - b.menteeUsername,
               render: function disp(v, record) {
                 return (
                   <div className="px-1 overflow-hidden">

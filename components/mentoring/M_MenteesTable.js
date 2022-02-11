@@ -26,6 +26,7 @@ import moment from "moment";
 import styled from "styled-components";
 import StudyHistoryPerBook from "../common/studyHistoryPerBook/StudyHistoryPerBook";
 import Text from "antd/lib/typography/Text";
+import _ from "lodash";
 
 const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
   const router = useRouter();
@@ -178,10 +179,24 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
             },
             {
               title: "멘티",
-              dataIndex: "menteeName",
+              dataIndex: "menteeUsername",
               ellipsis: true,
               width: "15%",
               align: "center",
+              filters: _.sortBy(
+                _.uniqBy(
+                  newData.map((item) => ({
+                    text: item.menteeUsername,
+                    value: item.menteeUsername,
+                  })),
+                  "text"
+                ),
+                "text"
+              ),
+              onFilter: (value, record) =>
+                record.menteeUsername.indexOf(value) === 0,
+              filterSearch: true,
+              sorter: (a, b) => a.menteeUsername - b.menteeUsername,
               render: function disp(v, record) {
                 return (
                   <div className="px-1 overflow-hidden">

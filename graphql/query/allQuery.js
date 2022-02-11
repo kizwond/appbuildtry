@@ -567,8 +567,8 @@ export const QUERY_SESSION_BY_USER = gql`
 `;
 export const QUERY_SESSION_FOR_RESULT_BY_SESSION_ID = gql`
   ${FRAGMENT_SESSION_FOR_RESULT}
-  query getSessionForResult($session_id: ID) {
-    session_getSession(session_id: $session_id) {
+  query getSessionForResult($session_id: ID, $user_id: ID) {
+    session_getSession(session_id: $session_id, user_id: $user_id) {
       status
       msg
       sessions {

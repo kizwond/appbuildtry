@@ -4,17 +4,29 @@ import { Fragment, memo, useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../../graphql/query/allQuery";
 import decodeHtMLEntities from "../../common/logic/decodeHtMLEntities";
 
-const TableForRankedCards = ({ data, contentType }) => {
+const TableForRankedCards = ({ data, forWhom, contentType }) => {
   const [cardIdForMore, setCardIdForMore] = useState();
   const [cardContent, setCardContent] = useState(null);
 
-  const fiveSortedCards = [...data.cardset_getByMybookIDs.cardsets[0].cards]
-    .sort((a, b) =>
-      contentType === "times"
-        ? b.studyStatus.totalStudyTimes - a.studyStatus.totalStudyTimes
-        : b.studyStatus.totalStudyHour - a.studyStatus.totalStudyHour
-    )
-    .filter((card, i) => i < 5);
+  const queryNameOfCardset =
+    forWhom === "mentor"
+      ? "cardset_getCardsetByMybookidForMentor"
+      : "cardset_getByMybookIDs";
+
+  const fiveSortedCards =
+    (data[`${queryNameOfCardset}`] &&
+      data[`${queryNameOfCardset}`].cardsets &&
+      data[`${queryNameOfCardset}`].cardsets.length > 0 &&
+      data[`${queryNameOfCardset}`].cardsets[0].cards &&
+      data[`${queryNameOfCardset}`].cardsets[0].cards.length > 0 &&
+      [...data[`${queryNameOfCardset}`].cardsets[0].cards]
+        .sort((a, b) =>
+          contentType === "times"
+            ? b.studyStatus.totalStudyTimes - a.studyStatus.totalStudyTimes
+            : b.studyStatus.totalStudyHour - a.studyStatus.totalStudyHour
+        )
+        .filter((card, i) => i < 5)) ||
+    [];
 
   const fiveContentIdsForMybook = fiveSortedCards
     .filter((card) => card.content.location === "my")
@@ -86,8 +98,7 @@ const TableForRankedCards = ({ data, contentType }) => {
         </tr>
       </thead>
       <tbody>
-        {data &&
-          data.cardset_getByMybookIDs?.cardsets[0]?.cards?.length > 0 &&
+        {fiveSortedCards.length > 0 &&
           fiveSortedCards.map((card, index) => {
             return (
               <Fragment key={card._id}>

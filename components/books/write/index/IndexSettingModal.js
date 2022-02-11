@@ -341,10 +341,7 @@ const TableRow = ({
                 />
               </div>
             </div>
-            <div className="truncate">
-              {index.level}
-              {index.name}
-            </div>
+            <div className="truncate">{index.name}</div>
           </div>
         </td>
 

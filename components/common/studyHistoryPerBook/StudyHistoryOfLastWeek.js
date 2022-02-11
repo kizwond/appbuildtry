@@ -12,6 +12,10 @@ import _ from "lodash";
 
 const StudyHistoryOfLastWeek = ({ data, isAllList, forWhom }) => {
   const router = useRouter();
+  const queryNameOfSession =
+    forWhom === "mentor"
+      ? "session_getSessionByMybookidForMentor"
+      : "session_getSessionByMybookid";
 
   const [getSessionDataForResult, { variables }] = useLazyQuery(
     QUERY_SESSION_FOR_RESULT_BY_SESSION_ID,
@@ -149,8 +153,8 @@ const StudyHistoryOfLastWeek = ({ data, isAllList, forWhom }) => {
   }, []);
 
   const list = isAllList
-    ? _([...data.session_getSessionByMybookid.sessions])
-    : _([...data.session_getSessionByMybookid.sessions]).takeRight(5);
+    ? _([...data[`${queryNameOfSession}`].sessions])
+    : _([...data[`${queryNameOfSession}`].sessions]).takeRight(5);
   return (
     <table className="w-full table-fixed">
       <thead>

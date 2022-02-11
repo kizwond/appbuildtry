@@ -188,9 +188,7 @@ const M_MentorsTable = ({
                 return (
                   <StyledFlexAlignCenter>
                     <StyledFlexAlignCenter>
-                      <StyledBookTypeDiv booktype={_record.bookType}>
-                        {_record.bookType === "my" ? null : "$"}
-                      </StyledBookTypeDiv>
+                      <StyledBookTypeDiv booktype={_record.bookType} />
                     </StyledFlexAlignCenter>
                     <DoubleLinesEllipsisContainer>
                       {v}

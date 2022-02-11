@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { memo, useMemo, useState } from "react";
+import { forwardRef, memo, useMemo, useState } from "react";
 import styled from "styled-components";
 import {
   QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID,
@@ -25,23 +25,28 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
   const [drawerVisibleForStudyTimesCards, setDrawerVisibleForStudyTimesCards] =
     useState(false);
 
+  const queryNameOfBook =
+    forWhom === "mentor"
+      ? "mybook_getMybookForMentor"
+      : "mybook_getMybookByMybookIDs";
+  const queryNameOfSession =
+    forWhom === "mentor"
+      ? "session_getSessionByMybookidForMentor"
+      : "session_getSessionByMybookid";
+  const queryNameOfCardset =
+    forWhom === "mentor"
+      ? "cardset_getCardsetByMybookidForMentor"
+      : "cardset_getByMybookIDs";
+
   const { data, variables } = useQuery(
     forWhom === "mentor"
       ? QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID
       : QUERY_SESSION_STATUS_BY_BOOK_ID,
     {
       onCompleted: async (received_data) => {
-        if (
-          received_data[
-            `${
-              forWhom === "mentor"
-                ? "mybook_getMybookForMentor"
-                : "session_getSessionByMybookid"
-            }`
-          ].status === "200"
-        ) {
-          console.log("멘토링용 책 섹션 데이터 받음", received_data);
-        }
+        // if (received_data[`${queryNameOfCardset}`].status === "200") {
+        console.log("멘토링용 책 섹션 데이터 받음", received_data);
+        // }
         //  else if (
         //   received_data[
         //     `${
@@ -54,19 +59,11 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
         //   console.log("접근 권한이 없음", received_data);
         //   location.href = "/m/mentoring";
         // }
-        else if (
-          received_data[
-            `${
-              forWhom === "mentor"
-                ? "mybook_getMybookForMentor"
-                : "session_getSessionByMybookid"
-            }`
-          ].status === "401"
-        ) {
-          router.push("/account/login");
-        } else {
-          console.log("어떤 문제가 발생함");
-        }
+        // else if (received_data[`${queryNameOfCardset}`].status === "401") {
+        //   router.push("/account/login");
+        // } else {
+        //   console.log("어떤 문제가 발생함");
+        // }
       },
       variables:
         forWhom === "mentor"
@@ -91,23 +88,24 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
     }
   );
 
-  const numberOfCards = useMemo(
-    () => ({
-      hold:
-        data?.mybook_getMybookByMybookIDs?.mybooks[0]?.stats?.studyHistory[0]
-          ?.numCardsByStatus?.hold ?? 0,
-      ing:
-        data?.mybook_getMybookByMybookIDs?.mybooks[0]?.stats?.studyHistory[0]
-          ?.numCardsByStatus?.ing ?? 0,
-      completed:
-        data?.mybook_getMybookByMybookIDs?.mybooks[0]?.stats?.studyHistory[0]
-          ?.numCardsByStatus?.completed ?? 0,
-      yet:
-        data?.mybook_getMybookByMybookIDs?.mybooks[0]?.stats?.studyHistory[0]
-          ?.numCardsByStatus?.yet ?? 0,
-    }),
-    [data]
-  );
+  // const numberOfCards = useMemo(
+  //   () => ({
+  //     hold:
+  //       data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[0]
+  //         ?.numCardsByStatus?.hold ?? 0,
+  //     ing:
+  //       data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[0]
+  //         ?.numCardsByStatus?.ing ?? 0,
+  //     completed:
+  //       data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[0]
+  //         ?.numCardsByStatus?.completed ?? 0,
+  //     yet:
+  //       data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[0]
+  //         ?.numCardsByStatus?.yet ?? 0,
+  //   }),
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  //   [data, forWhom]
+  // );
 
   const {
     ing: Ing,
@@ -115,15 +113,16 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
     yet: Yet,
     completed: Completed,
   } = data
-    ? _(data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory)
+    ? _(data[`${queryNameOfBook}`].mybooks[0].stats.studyHistory)
         .takeRight()
         .value()[0].numCardsByStatus
     : { ing: 0, hold: 0, yet: 0, completed: 0 };
 
+  console.log({ Ing, Hold, Yet });
   const currentNumberOfIncompletedCards = Ing + Hold + Yet;
 
   const { completed, nonCompleted } = data
-    ? _(data.mybook_getMybookByMybookIDs.mybooks[0].stats.studyHistory)
+    ? _(data[`${queryNameOfBook}`].mybooks[0].stats.studyHistory)
         .takeRight()
         .value()[0].level
     : { ing: 0, hold: 0, yet: 0, completed: 0 };
@@ -133,157 +132,186 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
 
   return (
     <div className="">
-      {data && (
-        <div className="w-full flex flex-col gap-[8px]">
-          <SectionWrapper
-            title="요약"
-            content={
-              <div className="grid w-full grid-cols-2 gap-4">
-                <BoxForSummaryOfMainPage
-                  title="미완료 카드수"
-                  content={"" + currentNumberOfIncompletedCards + "장"}
-                />
-                <BoxForSummaryOfMainPage
-                  title="미완료 카드 평균 레벨"
-                  content={currentLevelOfIncompletedCards}
-                />
+      {data &&
+        data[`${queryNameOfBook}`] &&
+        data[`${queryNameOfBook}`].mybooks &&
+        data[`${queryNameOfBook}`].mybooks.length > 0 && (
+          <div className="w-full flex flex-col gap-[8px]">
+            <SectionWrapper
+              title="요약"
+              content={
+                <div className="grid w-full grid-cols-2 gap-4">
+                  <BoxForSummaryOfMainPage
+                    title="미완료 카드수"
+                    content={"" + currentNumberOfIncompletedCards + "장"}
+                  />
+                  <BoxForSummaryOfMainPage
+                    title="미완료 카드 평균 레벨"
+                    content={currentLevelOfIncompletedCards}
+                  />
+                </div>
+              }
+            />
+            <SectionWrapper
+              title={
+                <div className="flex items-end space-x-3">
+                  <div className="!text-[1.16667rem]">최근 학습 실적</div>
+                  <a
+                    className="!text-[1rem] text-blue-700"
+                    onClick={() => {
+                      setDrawerVisibleForAllStudyHistory(true);
+                    }}
+                  >
+                    자세히 보기
+                  </a>
+                </div>
+              }
+              content={<StudyHistoryOfLastWeek data={data} forWhom={forWhom} />}
+            />
+            <DrawerWrapper
+              title="최근 학습 실적"
+              placement="right"
+              width={"100%"}
+              visible={drawerVisibleForAllStudyHistory}
+              onClose={() => {
+                setDrawerVisibleForAllStudyHistory(false);
+              }}
+              headerStyle={{ padding: "12px 12px 8px 12px" }}
+              bodyStyle={{ backgroundColor: "#e9e9e9" }}
+            >
+              <div className="p-2 mb-3 bg-white">
+                {drawerVisibleForAllStudyHistory && (
+                  <StudyHistoryOfLastWeek
+                    data={data}
+                    isAllList
+                    forWhom={forWhom}
+                  />
+                )}
               </div>
-            }
-          />
-          <SectionWrapper
-            title={
-              <div className="flex items-end space-x-3">
-                <div className="!text-[1.16667rem]">최근 학습 실적</div>
-                <a
-                  className="!text-[1rem] text-blue-700"
-                  onClick={() => {
-                    setDrawerVisibleForAllStudyHistory(true);
-                  }}
-                >
-                  자세히 보기
-                </a>
-              </div>
-            }
-            content={<StudyHistoryOfLastWeek data={data} forWhom={forWhom} />}
-          />
-          <DrawerWrapper
-            title="최근 학습 실적"
-            placement="right"
-            width={"100%"}
-            visible={drawerVisibleForAllStudyHistory}
-            onClose={() => {
-              setDrawerVisibleForAllStudyHistory(false);
-            }}
-            headerStyle={{ padding: "12px 12px 8px 12px" }}
-            bodyStyle={{ backgroundColor: "#e9e9e9" }}
-          >
-            <div className="p-2 mb-3 bg-white">
-              {drawerVisibleForAllStudyHistory && (
-                <StudyHistoryOfLastWeek
+            </DrawerWrapper>
+
+            <SectionWrapper
+              title="총 학습 카드 개수"
+              content={
+                <ChartForStudiedCardsPerDay
+                  data={data[`${queryNameOfBook}`].mybooks[0]}
+                />
+              }
+            />
+            <SectionWrapper
+              title="총 획득 레벨"
+              content={
+                <ChartForGainedLevelPerDay
+                  data={data[`${queryNameOfBook}`].mybooks[0]}
+                />
+              }
+            />
+
+            <SectionWrapper
+              title={
+                <div className="flex items-end space-x-3">
+                  <div className="!text-[1.16667rem]">학습 시간 많은 카드</div>
+                  <a
+                    className="!text-[1rem] text-blue-700"
+                    onClick={() => {
+                      setDrawerVisibleForStudyHourCards(true);
+                    }}
+                  >
+                    자세히 보기
+                  </a>
+                </div>
+              }
+              content={
+                <TableForRankedCards
                   data={data}
-                  isAllList
+                  contentType="hours"
                   forWhom={forWhom}
                 />
-              )}
-            </div>
-          </DrawerWrapper>
-
-          <SectionWrapper
-            title="총 학습 카드 개수"
-            content={<ChartForStudiedCardsPerDay data={data} />}
-          />
-          <SectionWrapper
-            title="총 획득 레벨"
-            content={<ChartForGainedLevelPerDay data={data} />}
-          />
-
-          <SectionWrapper
-            title={
-              <div className="flex items-end space-x-3">
-                <div className="!text-[1.16667rem]">학습 시간 많은 카드</div>
-                <a
-                  className="!text-[1rem] text-blue-700"
-                  onClick={() => {
-                    setDrawerVisibleForStudyHourCards(true);
-                  }}
-                >
-                  자세히 보기
-                </a>
+              }
+            />
+            <DrawerWrapper
+              title="학습 시간 많은 카드"
+              placement="right"
+              width={"100%"}
+              visible={drawerVisibleForStudyHourCards}
+              onClose={() => {
+                setDrawerVisibleForStudyHourCards(false);
+              }}
+              headerStyle={{ padding: "12px 12px 8px 12px" }}
+              bodyStyle={{ backgroundColor: "#e9e9e9" }}
+            >
+              <div className="p-2 mb-3 bg-white">
+                {drawerVisibleForStudyHourCards && (
+                  <TableForAllCards
+                    cards={data[`${queryNameOfCardset}`].cardsets[0].cards}
+                    contentType="hours"
+                  />
+                )}
               </div>
-            }
-            content={<TableForRankedCards data={data} contentType="hours" />}
-          />
-          <DrawerWrapper
-            title="학습 시간 많은 카드"
-            placement="right"
-            width={"100%"}
-            visible={drawerVisibleForStudyHourCards}
-            onClose={() => {
-              setDrawerVisibleForStudyHourCards(false);
-            }}
-            headerStyle={{ padding: "12px 12px 8px 12px" }}
-            bodyStyle={{ backgroundColor: "#e9e9e9" }}
-          >
-            <div className="p-2 mb-3 bg-white">
-              {drawerVisibleForStudyHourCards && (
-                <TableForAllCards
-                  cards={data.cardset_getByMybookIDs.cardsets[0].cards}
-                  contentType="hours"
-                />
-              )}
-            </div>
-          </DrawerWrapper>
+            </DrawerWrapper>
 
-          <SectionWrapper
-            title={
-              <div className="flex items-end space-x-3">
-                <div className="!text-[1.16667rem]">학습 횟수 많은 카드</div>
-                <a
-                  className="!text-[1rem] text-blue-700"
-                  onClick={() => {
-                    setDrawerVisibleForStudyTimesCards(true);
-                  }}
-                >
-                  자세히 보기
-                </a>
+            <SectionWrapper
+              title={
+                <div className="flex items-end space-x-3">
+                  <div className="!text-[1.16667rem]">학습 횟수 많은 카드</div>
+                  <a
+                    className="!text-[1rem] text-blue-700"
+                    onClick={() => {
+                      setDrawerVisibleForStudyTimesCards(true);
+                    }}
+                  >
+                    자세히 보기
+                  </a>
+                </div>
+              }
+              content={<TableForRankedCards data={data} contentType="times" />}
+            />
+            <DrawerWrapper
+              title="학습 횟수 많은 카드"
+              placement="right"
+              width={"100%"}
+              visible={drawerVisibleForStudyTimesCards}
+              onClose={() => {
+                setDrawerVisibleForStudyTimesCards(false);
+              }}
+              headerStyle={{ padding: "12px 12px 8px 12px" }}
+              bodyStyle={{ backgroundColor: "#e9e9e9" }}
+            >
+              <div className="p-2 mb-3 bg-white">
+                {drawerVisibleForStudyTimesCards && (
+                  <TableForAllCards
+                    cards={data[`${queryNameOfCardset}`].cardsets[0].cards}
+                    contentType="times"
+                  />
+                )}
               </div>
-            }
-            content={<TableForRankedCards data={data} contentType="times" />}
-          />
-          <DrawerWrapper
-            title="학습 횟수 많은 카드"
-            placement="right"
-            width={"100%"}
-            visible={drawerVisibleForStudyTimesCards}
-            onClose={() => {
-              setDrawerVisibleForStudyTimesCards(false);
-            }}
-            headerStyle={{ padding: "12px 12px 8px 12px" }}
-            bodyStyle={{ backgroundColor: "#e9e9e9" }}
-          >
-            <div className="p-2 mb-3 bg-white">
-              {drawerVisibleForStudyTimesCards && (
-                <TableForAllCards
-                  cards={data.cardset_getByMybookIDs.cardsets[0].cards}
-                  contentType="times"
-                />
-              )}
-            </div>
-          </DrawerWrapper>
+            </DrawerWrapper>
 
-          <SectionWrapper
-            title="카드 상태"
-            content={
-              <TableForStatusOfCard
-                hold={numberOfCards.hold}
-                yet={numberOfCards.yet}
-                completed={numberOfCards.completed}
-                ing={numberOfCards.ing}
-              />
-            }
-          />
-        </div>
-      )}
+            <SectionWrapper
+              title="카드 상태"
+              content={
+                <TableForStatusOfCard
+                  hold={
+                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats
+                      ?.studyHistory[0]?.numCardsByStatus?.hold
+                  }
+                  yet={
+                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats
+                      ?.studyHistory[0]?.numCardsByStatus?.yet
+                  }
+                  completed={
+                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats
+                      ?.studyHistory[0]?.numCardsByStatus?.completed
+                  }
+                  ing={
+                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats
+                      ?.studyHistory[0]?.numCardsByStatus?.ing
+                  }
+                />
+              }
+            />
+          </div>
+        )}
     </div>
   );
 };

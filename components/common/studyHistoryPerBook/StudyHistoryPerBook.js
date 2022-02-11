@@ -191,6 +191,7 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
                     data={data}
                     isAllList
                     forWhom={forWhom}
+                    menteeUser_id={menteeUser_id}
                   />
                 )}
               </div>

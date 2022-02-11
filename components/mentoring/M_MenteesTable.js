@@ -183,12 +183,15 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
               ellipsis: true,
               width: "15%",
               align: "center",
-              filters: _.sortedUniqBy(
-                newData.map((item) => ({
-                  text: item.menteeUsername,
-                  value: item.menteeUsername,
-                })),
-                (a, b) => a.menteeUsername - b.menteeUsername
+              filters: _.sortBy(
+                _.uniqBy(
+                  newData.map((item) => ({
+                    text: item.menteeUsername,
+                    value: item.menteeUsername,
+                  })),
+                  "text"
+                ),
+                "text"
               ),
               onFilter: (value, record) =>
                 record.menteeUsername.indexOf(value) === 0,

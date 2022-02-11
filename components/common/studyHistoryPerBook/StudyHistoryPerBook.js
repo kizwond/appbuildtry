@@ -166,7 +166,13 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
                   </a>
                 </div>
               }
-              content={<StudyHistoryOfLastWeek data={data} forWhom={forWhom} />}
+              content={
+                <StudyHistoryOfLastWeek
+                  data={data}
+                  forWhom={forWhom}
+                  menteeUser_id={menteeUser_id}
+                />
+              }
             />
             <DrawerWrapper
               title="최근 학습 실적"

@@ -10,7 +10,12 @@ import produce from "immer";
 import moment from "moment";
 import _ from "lodash";
 
-const StudyHistoryOfLastWeek = ({ data, isAllList, forWhom }) => {
+const StudyHistoryOfLastWeek = ({
+  data,
+  isAllList,
+  forWhom,
+  menteeUser_id,
+}) => {
   const router = useRouter();
   const queryNameOfSession =
     forWhom === "mentor"
@@ -91,11 +96,20 @@ const StudyHistoryOfLastWeek = ({ data, isAllList, forWhom }) => {
 
   const getSessionResult = useCallback(async ({ session_id }) => {
     try {
-      getSessionDataForResult({
-        variables: {
-          session_id,
-        },
-      });
+      getSessionDataForResult(
+        forWhom === "mentor"
+          ? {
+              variables: {
+                session_id,
+                user_id: menteeUser_id,
+              },
+            }
+          : {
+              variables: {
+                session_id,
+              },
+            }
+      );
     } catch (error) {
       console.log(error);
     }

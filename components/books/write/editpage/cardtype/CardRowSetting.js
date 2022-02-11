@@ -5,7 +5,7 @@ import { UpdateRowStyle } from "../../../../../graphql/query/cardtype";
 import { CompactPicker } from "react-color";
 const { Option } = Select;
 
-const CardFaceSetting = ({
+const CardRowSetting = ({
   cardTypeId,
   cardTypeSetId,
   cardTypeDetail,
@@ -799,7 +799,7 @@ const CardFaceSetting = ({
   );
 };
 
-export default CardFaceSetting;
+export default CardRowSetting;
 
 const popover = {
   position: "absolute",

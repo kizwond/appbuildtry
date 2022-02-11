@@ -12,18 +12,65 @@ const CardFaceSetting = ({
   cardTypeDetail,
   getUpdatedCardTypeList,
   tabValue,
+  cardTypeId,
 }) => {
   const cardType = cardTypeDetail[0].cardtype_info.cardtype;
   const [faceSelected, setFaceSelected] = useState(0);
 
   const [backgroundColor, setBackgroundColor] = useState();
   const [opacity, setOpacity] = useState();
-  const [displayColorPicker, setDisplayColorPicker] = useState(false);
 
-  const [displayColorPicker1, setDisplayColorPicker1] = useState(false);
-  const [displayColorPicker2, setDisplayColorPicker2] = useState(false);
-  const [displayColorPicker3, setDisplayColorPicker3] = useState(false);
-  const [displayColorPicker4, setDisplayColorPicker4] = useState(false);
+  const [
+    isOpendFaceBackgroundColorPicker,
+    setIsOpendFaceBackgroundColorPicker,
+  ] = useState(false);
+  const toggleFaceBackgroundColorPicker = () => {
+    setIsOpendFaceBackgroundColorPicker(!isOpendFaceBackgroundColorPicker);
+  };
+  const faceBackgroundHandler = (color) => {
+    setBackgroundColor(color.hex);
+    toggleFaceBackgroundColorPicker();
+  };
+
+  const [isOpendBorderTopColorPicker, setIsOpendBorderTopColorPicker] =
+    useState(false);
+  const toggleBorderTopColorPicker = () => {
+    setIsOpendBorderTopColorPicker(!isOpendBorderTopColorPicker);
+  };
+  const borderTopColorHandler = (color) => {
+    set_border_top_color(color.hex);
+    setIsOpendBorderTopColorPicker(!isOpendBorderTopColorPicker);
+  };
+
+  const [isOpendBorderBottomColorPicker, setIsOpendBorderBottomColorPicker] =
+    useState(false);
+  const toggleBorderBottomColorPicker = () => {
+    setIsOpendBorderBottomColorPicker(!isOpendBorderBottomColorPicker);
+  };
+  const borderBottomColorHandler = (color) => {
+    set_border_bottom_color(color.hex);
+    toggleBorderBottomColorPicker();
+  };
+
+  const [isOpendBorderLeftColorPicker, setIsOpendBorderLeftColorPicker] =
+    useState(false);
+  const toggleBorderLeftColorPicker = () => {
+    setIsOpendBorderLeftColorPicker(!isOpendBorderLeftColorPicker);
+  };
+  const borderLeftColorHandler = (color) => {
+    set_border_left_color(color.hex);
+    toggleBorderLeftColorPicker();
+  };
+
+  const [isOpendBorderRightColorPicker, setIsOpendBorderRightColorPicker] =
+    useState(false);
+  const toggleBorderRightColorPicker = () => {
+    setIsOpendBorderRightColorPicker(!isOpendBorderRightColorPicker);
+  };
+  const borderRightColorHandler = (color) => {
+    set_border_right_color(color.hex);
+    toggleBorderRightColorPicker();
+  };
 
   const [background_color, set_background_color] = useState();
   const [card_direction, set_card_direction] = useState();
@@ -135,11 +182,12 @@ const CardFaceSetting = ({
 
   useEffect(() => {
     console.log("cardTypeDetail", cardTypeDetail[0]);
-    if (cardTypeDetail.length > 0) {
-      resetToPreservedSetting(faceSelected);
+    if (cardTypeId) {
+      resetToPreservedSetting(0);
+      setFaceSelected(0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardTypeDetail, tabValue]);
+  }, [cardTypeDetail, cardTypeId, tabValue]);
 
   const [cardtypeset_updatefacestyle] = useMutation(UpdateCardFace, {
     onCompleted: afterupdatemutation,
@@ -247,65 +295,6 @@ const CardFaceSetting = ({
     resetToPreservedSetting(_face);
   };
 
-  const handleClick = () => {
-    setDisplayColorPicker(!displayColorPicker);
-  };
-
-  const handleClose = () => {
-    setDisplayColorPicker(false);
-  };
-
-  const handleChangeComplete = (color) => {
-    setBackgroundColor(color.hex);
-  };
-
-  const handleClick1 = () => {
-    setDisplayColorPicker1(!displayColorPicker1);
-  };
-
-  const handleClose1 = () => {
-    setDisplayColorPicker1(false);
-  };
-
-  const borderTopColorHandler = (color) => {
-    set_border_top_color(color.hex);
-  };
-
-  const handleClick2 = () => {
-    setDisplayColorPicker2(!displayColorPicker2);
-  };
-
-  const handleClose2 = () => {
-    setDisplayColorPicker2(false);
-  };
-
-  const borderBottomColorHandler = (color) => {
-    set_border_bottom_color(color.hex);
-  };
-
-  const handleClick3 = () => {
-    setDisplayColorPicker3(!displayColorPicker3);
-  };
-
-  const handleClose3 = () => {
-    setDisplayColorPicker3(false);
-  };
-
-  const borderLeftColorHandler = (color) => {
-    set_border_left_color(color.hex);
-  };
-
-  const handleClick4 = () => {
-    setDisplayColorPicker4(!displayColorPicker4);
-  };
-
-  const handleClose4 = () => {
-    setDisplayColorPicker4(false);
-  };
-
-  const borderRightColorHandler = (color) => {
-    set_border_right_color(color.hex);
-  };
   return (
     <div style={{ padding: "0px 10px 10px 10px" }}>
       <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
@@ -327,10 +316,18 @@ const CardFaceSetting = ({
           >
             {cardType !== "flip" && (
               <>
-                <Select.Option value={0} style={{ fontSize: "0.8rem" }}>
+                <Select.Option
+                  value={0}
+                  label="1면"
+                  style={{ fontSize: "0.8rem" }}
+                >
                   1면
                 </Select.Option>
-                <Select.Option value={1} style={{ fontSize: "0.8rem" }}>
+                <Select.Option
+                  value={1}
+                  label="주석"
+                  style={{ fontSize: "0.8rem" }}
+                >
                   주석
                 </Select.Option>
               </>
@@ -338,8 +335,12 @@ const CardFaceSetting = ({
 
             {cardType === "flip" && (
               <>
-                <Select.Option value={0} label="전체면">
-                  <div className="flex justify-between items-center">
+                <Select.Option
+                  value={0}
+                  label="전체면"
+                  style={{ fontSize: "0.8rem" }}
+                >
+                  <div className="flex items-center justify-between">
                     전체면
                     <div className="w-[65px] h-[44px] relative">
                       <Image
@@ -350,8 +351,12 @@ const CardFaceSetting = ({
                     </div>
                   </div>
                 </Select.Option>
-                <Select.Option value={1} label="1면">
-                  <div className="flex justify-between items-center">
+                <Select.Option
+                  value={1}
+                  label="1면"
+                  style={{ fontSize: "0.8rem" }}
+                >
+                  <div className="flex items-center justify-between">
                     1면
                     <div className="w-[65px] h-[44px] relative">
                       <Image
@@ -362,8 +367,12 @@ const CardFaceSetting = ({
                     </div>
                   </div>
                 </Select.Option>
-                <Select.Option value={2} label="2면">
-                  <div className="flex justify-between items-center">
+                <Select.Option
+                  value={2}
+                  label="2면"
+                  style={{ fontSize: "0.8rem" }}
+                >
+                  <div className="flex items-center justify-between">
                     2면
                     <div className="w-[65px] h-[44px] relative">
                       <Image
@@ -374,7 +383,11 @@ const CardFaceSetting = ({
                     </div>
                   </div>
                 </Select.Option>
-                <Select.Option value={3} label="주석">
+                <Select.Option
+                  value={3}
+                  label="주석"
+                  style={{ fontSize: "0.8rem" }}
+                >
                   주석
                 </Select.Option>
               </>
@@ -439,7 +452,7 @@ const CardFaceSetting = ({
           <div style={{ fontSize: "0.8rem" }}>면배경색</div>
           <Button
             size="small"
-            onClick={handleClick}
+            onClick={toggleFaceBackgroundColorPicker}
             style={{
               width: "80px",
               fontSize: "0.8rem",
@@ -448,12 +461,12 @@ const CardFaceSetting = ({
           >
             Color
           </Button>
-          {displayColorPicker ? (
+          {isOpendFaceBackgroundColorPicker ? (
             <div style={popover}>
-              <div style={cover} onClick={handleClose} />
+              <div style={cover} />
               <CompactPicker
                 color={backgroundColor}
-                onChange={handleChangeComplete}
+                onChange={faceBackgroundHandler}
               />
               {/* <span>none</span> */}
             </div>
@@ -625,7 +638,7 @@ const CardFaceSetting = ({
             {/* <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input> */}
             <Button
               size="small"
-              onClick={handleClick1}
+              onClick={toggleBorderTopColorPicker}
               style={{
                 width: "50px",
                 fontSize: "0.8rem",
@@ -634,9 +647,9 @@ const CardFaceSetting = ({
             >
               Color
             </Button>
-            {displayColorPicker1 ? (
+            {isOpendBorderTopColorPicker ? (
               <div style={popover1}>
-                <div style={cover1} onClick={handleClose1} />
+                <div style={cover1} />
                 <CompactPicker
                   color={border_top_color}
                   onChange={borderTopColorHandler}
@@ -681,7 +694,7 @@ const CardFaceSetting = ({
             {/* <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input> */}
             <Button
               size="small"
-              onClick={handleClick2}
+              onClick={toggleBorderBottomColorPicker}
               style={{
                 width: "50px",
                 fontSize: "0.8rem",
@@ -690,9 +703,9 @@ const CardFaceSetting = ({
             >
               Color
             </Button>
-            {displayColorPicker2 ? (
+            {isOpendBorderBottomColorPicker ? (
               <div style={popover}>
-                <div style={cover} onClick={handleClose2} />
+                <div style={cover} />
                 <CompactPicker
                   color={border_bottom_color}
                   onChange={borderBottomColorHandler}
@@ -737,7 +750,7 @@ const CardFaceSetting = ({
             {/* <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input> */}
             <Button
               size="small"
-              onClick={handleClick3}
+              onClick={toggleBorderLeftColorPicker}
               style={{
                 width: "50px",
                 fontSize: "0.8rem",
@@ -746,9 +759,9 @@ const CardFaceSetting = ({
             >
               Color
             </Button>
-            {displayColorPicker3 ? (
+            {isOpendBorderLeftColorPicker ? (
               <div style={popover}>
-                <div style={cover} onClick={handleClose3} />
+                <div style={cover} />
                 <CompactPicker
                   color={border_left_color}
                   onChange={borderLeftColorHandler}
@@ -793,7 +806,7 @@ const CardFaceSetting = ({
             {/* <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input> */}
             <Button
               size="small"
-              onClick={handleClick4}
+              onClick={toggleBorderRightColorPicker}
               style={{
                 width: "50px",
                 fontSize: "0.8rem",
@@ -802,9 +815,9 @@ const CardFaceSetting = ({
             >
               Color
             </Button>
-            {displayColorPicker4 ? (
+            {isOpendBorderRightColorPicker ? (
               <div style={popover}>
-                <div style={cover} onClick={handleClose4} />
+                <div style={cover} />
                 <CompactPicker
                   color={border_right_color}
                   onChange={borderRightColorHandler}

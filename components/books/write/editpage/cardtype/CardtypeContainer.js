@@ -13,7 +13,7 @@ const CardTypeContainer = ({
   cardTypeDetail,
   getUpdatedCardTypeList,
 }) => {
-  const [tabValue, setTabValue] = useState("3");
+  const [tabValue, setTabValue] = useState("1");
 
   const changeTabValue = useCallback((_tab) => {
     setTabValue(_tab);
@@ -34,6 +34,7 @@ const CardTypeContainer = ({
             key="1"
           >
             <CardFaceSetting
+              cardTypeId={cardTypeId}
               cardTypeSetId={cardTypeSetId}
               cardTypeDetail={cardTypeDetail}
               getUpdatedCardTypeList={getUpdatedCardTypeList}

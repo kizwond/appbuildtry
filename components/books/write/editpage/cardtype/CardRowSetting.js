@@ -5,7 +5,7 @@ import { UpdateRowStyle } from "../../../../../graphql/query/cardtype";
 import { CompactPicker } from "react-color";
 const { Option } = Select;
 
-const CardFaceSetting = ({
+const CardRowSetting = ({
   cardTypeId,
   cardTypeSetId,
   cardTypeDetail,
@@ -16,14 +16,57 @@ const CardFaceSetting = ({
 
   const [faceSelected, setFaceSelected] = useState("face1");
   const [rowSelected, setRowSelected] = useState(0);
-  const [rowOptions, setRowOptions] = useState();
+  const [rowOptions, setRowOptions] = useState([]);
 
-  const [displayColorPicker, setDisplayColorPicker] = useState(false);
+  const [isOpendRowBackgroundColorPicker, setIsOpendRowBackgroundColorPicker] =
+    useState(false);
+  const toggleRowBackgroundColorPicker = () => {
+    setIsOpendRowBackgroundColorPicker(!isOpendRowBackgroundColorPicker);
+  };
+  const rowBackgroundHandler = (color) => {
+    setBackgroundColor(color.hex);
+    toggleRowBackgroundColorPicker();
+  };
 
-  const [displayColorPicker1, setDisplayColorPicker1] = useState(false);
-  const [displayColorPicker2, setDisplayColorPicker2] = useState(false);
-  const [displayColorPicker3, setDisplayColorPicker3] = useState(false);
-  const [displayColorPicker4, setDisplayColorPicker4] = useState(false);
+  const [isOpendBorderTopColorPicker, setIsOpendBorderTopColorPicker] =
+    useState(false);
+  const toggleBorderTopColorPicker = () => {
+    setIsOpendBorderTopColorPicker(!isOpendBorderTopColorPicker);
+  };
+  const borderTopColorHandler = (color) => {
+    set_border_top_color(color.hex);
+    setIsOpendBorderTopColorPicker(!isOpendBorderTopColorPicker);
+  };
+
+  const [isOpendBorderBottomColorPicker, setIsOpendBorderBottomColorPicker] =
+    useState(false);
+  const toggleBorderBottomColorPicker = () => {
+    setIsOpendBorderBottomColorPicker(!isOpendBorderBottomColorPicker);
+  };
+  const borderBottomColorHandler = (color) => {
+    set_border_bottom_color(color.hex);
+    toggleBorderBottomColorPicker();
+  };
+
+  const [isOpendBorderLeftColorPicker, setIsOpendBorderLeftColorPicker] =
+    useState(false);
+  const toggleBorderLeftColorPicker = () => {
+    setIsOpendBorderLeftColorPicker(!isOpendBorderLeftColorPicker);
+  };
+  const borderLeftColorHandler = (color) => {
+    set_border_left_color(color.hex);
+    toggleBorderLeftColorPicker();
+  };
+
+  const [isOpendBorderRightColorPicker, setIsOpendBorderRightColorPicker] =
+    useState(false);
+  const toggleBorderRightColorPicker = () => {
+    setIsOpendBorderRightColorPicker(!isOpendBorderRightColorPicker);
+  };
+  const borderRightColorHandler = (color) => {
+    set_border_right_color(color.hex);
+    toggleBorderRightColorPicker();
+  };
 
   const [backgroundColor, setBackgroundColor] = useState();
   const [opacity, setOpacity] = useState();
@@ -133,19 +176,21 @@ const CardFaceSetting = ({
     if (cardTypeId) {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face1;
       let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
+      for (var i = 0; i < num_of_row; i++) {
         nums.push(i);
       }
       const rows = nums.map((item) => (
-        <React.Fragment key={`${item - 1}`}>
-          <Select.Option value={item - 1}>{item}</Select.Option>
-        </React.Fragment>
+        <Select.Option key={item} value={item} style={{ fontSize: "0.8rem" }}>
+          {item + 1}
+        </Select.Option>
       ));
       setRowOptions(rows);
-      resetToPreservedSetting(faceSelected, rowSelected);
+      setFaceSelected("face1");
+      setRowSelected(0);
+      resetToPreservedSetting("face1", 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardTypeId, cardTypeDetail, tabValue]);
+  }, [cardTypeId, tabValue]);
 
   const [cardtypeset_updaterowstyle] = useMutation(UpdateRowStyle, {
     onCompleted: afterupdatemutation,
@@ -166,6 +211,7 @@ const CardFaceSetting = ({
             cardtype_id: cardTypeId,
             cardtypeset_id: cardTypeSetId,
             target_face: faceSelected,
+            // 아래부분만 잘 연구
             target_row: rowSelected,
             row_style: {
               background: { color: backgroundColor, opacity: 100 },
@@ -247,101 +293,42 @@ const CardFaceSetting = ({
     if (_face === "face1") {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face1;
       let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
+      for (var i = 0; i < num_of_row; i++) {
         nums.push(i);
       }
       const rows = nums.map((item) => (
-        <React.Fragment key={`${item - 1}`}>
-          <Select.Option value={item - 1}>{item}</Select.Option>
-        </React.Fragment>
+        <Select.Option key={item} value={item} style={{ fontSize: "0.8rem" }}>
+          {item + 1}
+        </Select.Option>
       ));
       setRowOptions(rows);
     } else if (_face === "face2") {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.face2;
       let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
+      for (var i = 0; i < num_of_row; i++) {
         nums.push(i);
       }
       const rows = nums.map((item) => (
-        <React.Fragment key={`${item - 1}`}>
-          <Select.Option value={item - 1}>{item}</Select.Option>
-        </React.Fragment>
+        <Select.Option key={item} value={item} style={{ fontSize: "0.8rem" }}>
+          {item + 1}
+        </Select.Option>
       ));
       setRowOptions(rows);
     } else if (_face === "annotation") {
       const num_of_row = cardTypeDetail[0].cardtype_info.num_of_row.annotation;
       let nums = [];
-      for (var i = 1; i < num_of_row + 1; i++) {
+      for (var i = 0; i < num_of_row; i++) {
         nums.push(i);
       }
       const rows = nums.map((item) => (
-        <React.Fragment key={`${item - 1}`}>
-          <Select.Option value={item - 1}>{item}</Select.Option>
-        </React.Fragment>
+        <Select.Option key={item} value={item} style={{ fontSize: "0.8rem" }}>
+          {item + 1}
+        </Select.Option>
       ));
       setRowOptions(rows);
     }
   };
 
-  const handleClick = () => {
-    setDisplayColorPicker(!displayColorPicker);
-  };
-
-  const handleClose = () => {
-    setDisplayColorPicker(false);
-  };
-
-  const handleChangeComplete = (color) => {
-    setBackgroundColor(color.hex);
-  };
-
-  const handleClick1 = () => {
-    setDisplayColorPicker1(!displayColorPicker1);
-  };
-
-  const handleClose1 = () => {
-    setDisplayColorPicker1(false);
-  };
-
-  const borderTopColorHandler = (color) => {
-    set_border_top_color(color.hex);
-  };
-
-  const handleClick2 = () => {
-    setDisplayColorPicker2(!displayColorPicker2);
-  };
-
-  const handleClose2 = () => {
-    setDisplayColorPicker2(false);
-  };
-
-  const borderBottomColorHandler = (color) => {
-    set_border_bottom_color(color.hex);
-  };
-
-  const handleClick3 = () => {
-    setDisplayColorPicker3(!displayColorPicker3);
-  };
-
-  const handleClose3 = () => {
-    setDisplayColorPicker3(false);
-  };
-
-  const borderLeftColorHandler = (color) => {
-    set_border_left_color(color.hex);
-  };
-
-  const handleClick4 = () => {
-    setDisplayColorPicker4(!displayColorPicker4);
-  };
-
-  const handleClose4 = () => {
-    setDisplayColorPicker4(false);
-  };
-
-  const borderRightColorHandler = (color) => {
-    set_border_right_color(color.hex);
-  };
   return (
     <div>
       <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
@@ -407,6 +394,9 @@ const CardFaceSetting = ({
             onChange={selectRowHandler}
           >
             {rowOptions}
+            {cardType === "flip" && faceSelected === "face1" && (
+              <Select.Option value={rowOptions.length}>보기</Select.Option>
+            )}
           </Select>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
@@ -420,7 +410,7 @@ const CardFaceSetting = ({
           <div style={{ fontSize: "0.8rem" }}>행배경색</div>
           <Button
             size="small"
-            onClick={handleClick}
+            onClick={toggleRowBackgroundColorPicker}
             style={{
               width: "80px",
               fontSize: "0.8rem",
@@ -429,12 +419,12 @@ const CardFaceSetting = ({
           >
             Color
           </Button>
-          {displayColorPicker ? (
+          {isOpendRowBackgroundColorPicker ? (
             <div style={popover}>
-              <div style={cover} onClick={handleClose} />
+              <div style={cover} />
               <CompactPicker
                 color={backgroundColor}
-                onChange={handleChangeComplete}
+                onChange={rowBackgroundHandler}
               />
             </div>
           ) : null}
@@ -600,7 +590,7 @@ const CardFaceSetting = ({
             {/* <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input> */}
             <Button
               size="small"
-              onClick={handleClick1}
+              onClick={toggleBorderTopColorPicker}
               style={{
                 width: "50px",
                 fontSize: "0.8rem",
@@ -609,9 +599,9 @@ const CardFaceSetting = ({
             >
               Color
             </Button>
-            {displayColorPicker1 ? (
+            {isOpendBorderTopColorPicker ? (
               <div style={popover}>
-                <div style={cover} onClick={handleClose1} />
+                <div style={cover} />
                 <CompactPicker
                   color={border_top_color}
                   onChange={borderTopColorHandler}
@@ -656,7 +646,7 @@ const CardFaceSetting = ({
             {/* <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input> */}
             <Button
               size="small"
-              onClick={handleClick2}
+              onClick={toggleBorderBottomColorPicker}
               style={{
                 width: "50px",
                 fontSize: "0.8rem",
@@ -665,9 +655,9 @@ const CardFaceSetting = ({
             >
               Color
             </Button>
-            {displayColorPicker2 ? (
+            {isOpendBorderBottomColorPicker ? (
               <div style={popover}>
-                <div style={cover} onClick={handleClose2} />
+                <div style={cover} />
                 <CompactPicker
                   color={border_bottom_color}
                   onChange={borderBottomColorHandler}
@@ -712,7 +702,7 @@ const CardFaceSetting = ({
             {/* <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input> */}
             <Button
               size="small"
-              onClick={handleClick3}
+              onClick={toggleBorderLeftColorPicker}
               style={{
                 width: "50px",
                 fontSize: "0.8rem",
@@ -721,9 +711,9 @@ const CardFaceSetting = ({
             >
               Color
             </Button>
-            {displayColorPicker3 ? (
+            {isOpendBorderLeftColorPicker ? (
               <div style={popover}>
-                <div style={cover} onClick={handleClose3} />
+                <div style={cover} />
                 <CompactPicker
                   color={border_left_color}
                   onChange={borderLeftColorHandler}
@@ -768,7 +758,7 @@ const CardFaceSetting = ({
             {/* <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input> */}
             <Button
               size="small"
-              onClick={handleClick4}
+              onClick={toggleBorderRightColorPicker}
               style={{
                 width: "50px",
                 fontSize: "0.8rem",
@@ -777,9 +767,9 @@ const CardFaceSetting = ({
             >
               Color
             </Button>
-            {displayColorPicker4 ? (
+            {isOpendBorderRightColorPicker ? (
               <div style={popover}>
-                <div style={cover} onClick={handleClose4} />
+                <div style={cover} />
                 <CompactPicker
                   color={border_right_color}
                   onChange={borderRightColorHandler}
@@ -809,7 +799,7 @@ const CardFaceSetting = ({
   );
 };
 
-export default CardFaceSetting;
+export default CardRowSetting;
 
 const popover = {
   position: "absolute",

@@ -112,6 +112,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const [bookSelectedForEditor, setBookSelectedForEditor] = useState("default");
   const [indexSelectedForEditor, setIndexSelectedForEditor] = useState("default");
   const [cardSetForEditor, setCardSetForEditor] = useState();
+  const [dictionaryCardType, setDictionaryCardType] = useState();
 
   const showModal = () => {
     setIsNewCardModalVisible(true);
@@ -301,19 +302,21 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   };
   const fireEditor = (cardtypeId) => {
     const selectedCardType_tmp = selectedCardType.filter((item) => item._id === cardtypeId);
-    cardTypeInfo(selectedCardType_tmp[0], null, null);
+    sessionStorage.setItem("dictionaryCardType", JSON.stringify(selectedCardType_tmp[0]))
+    cardTypeInfo(selectedCardType_tmp[0], null, null, searchResult);
   };
 
   const onFinish = (values, from) => {
+    
     console.log(values);
     const selectionTextCardId = sessionStorage.getItem("selectionTextCardId");
     const cardListStudying = JSON.parse(sessionStorage.getItem("cardListStudying"));
     const selectionCard = cardListStudying.filter((item) => item._id === selectionTextCardId);
-    console.log(selectionCard);
+    const dictionaryCardType = JSON.parse(sessionStorage.getItem("dictionaryCardType"))
     const mybook_id = selectionCard[0].card_info.mybook_id;
-    const cardtype = selectionCard[0].card_info.cardtype;
-    const cardtype_id = selectionCard[0].card_info.cardtype_id;
-    const current_position_card_id = selectionCard[0].card_info.card_id;
+    const cardtype = dictionaryCardType.cardtype_info.cardtype; //수정해야함
+    const cardtype_id = dictionaryCardType._id; //수정해야함
+    const current_position_card_id = selectionCard[0]._id;
     const indexSetId = selectionCard[0].card_info.indexset_id;
     const index_id = selectionCard[0].card_info.index_id;
     const cardSetId = selectionCard[0].card_info.cardset_id;
@@ -379,6 +382,10 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
   const [cardset_addcardAtSameIndex] = useMutation(AddCard, { onCompleted: afteraddcardmutation });
 
   function afteraddcardmutation(data) {
+    setDictionaryCardType()
+    setSearchResult()
+    setSelectedCardType()
+    sessionStorage.removeItem("dictionaryCardType")
     console.log(data.cardset_addcardAtSameIndex.cardsets[0].cards);
     const sameIndexCheck = sessionStorage.getItem("sameIndexSelectedCheck");
     const createdCards = JSON.parse(sessionStorage.getItem("createdCards"));
@@ -725,7 +732,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
 
   // 새카드 만들기 부분 끝
 
-  const cardTypeInfo = (selectedCardType_tmp, parentId, selections) => {
+  const cardTypeInfo = (selectedCardType_tmp, parentId, selections, datas) => {
     const cardtype_info = selectedCardType_tmp.cardtype_info;
     sessionStorage.setItem("cardtype_info", JSON.stringify(cardtype_info));
     sessionStorage.setItem("parentId", parentId);
@@ -835,6 +842,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
             onFinish={onFinish}
             setEditorOn={setEditorOn}
             cardtype_info={cardtype_info}
+            datas={datas}
             // addSelections={addSelections}
             // addPolly={addPolly}
             // forceUpdateBool={forceUpdateBool}
@@ -1068,7 +1076,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                     sessionStorage.setItem("parentIdOfSelection", parentId[0]);
                     sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
                     sessionStorage.setItem("selectionTextCardSetId", cardSetId);
-                    sessionStorage.setItem("selectionTextCardId", cardIdSelection);
+                    sessionStorage.setItem("gCardId", cardIdSelection);
                   }
                 }
               }
@@ -4068,7 +4076,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     [cardset_deleteEffect]
   );
 
-  const [searchResult, setSearchResult] = useState(false);
+  const [searchResult, setSearchResult] = useState();
   const [cardset_inquireLanguageDictionary] = useMutation(Dictionary, {
     onCompleted: afterdictionary,
   });

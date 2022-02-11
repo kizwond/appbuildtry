@@ -1389,3 +1389,9 @@ audio {
 .ant-divider-inner-text{
   padding :0px 5px 0px 5px !important;
 }
+
+.dictionary_result_table .ant-table.ant-table-small .ant-table-tbody > tr > td{
+  border-bottom: 1px solid #f0f0f0 !important;
+  height: 2rem !important;
+  padding: 5px !important;
+}

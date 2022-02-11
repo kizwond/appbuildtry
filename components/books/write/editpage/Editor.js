@@ -35,7 +35,7 @@ class Editor extends Component {
     this.myRef15 = React.createRef();
     this.myRef16 = React.createRef();
     this.state = {
-      editor1: props.getLink,
+      editor1: "",
       editor2: "",
       editor3: "",
       editor4: "",
@@ -168,7 +168,21 @@ class Editor extends Component {
         }
       }
     };
-
+    if(this.props.datas){
+      console.log(this.props.datas)
+      const selectionText = (this.props.datas.selectionText)
+      const meaning = (`${this.props.datas.meaning1}, ${this.props.datas.meaning2}`)
+      const addtional = (`${this.props.datas.example1}</br>${this.props.datas.example2}`)
+      this.setState({
+        editor1 : selectionText,
+      })
+      this.setState({
+        editor2 : meaning
+      })
+      this.setState({
+        editor3 : addtional
+      })
+    }
     if (this.props.addPolly) {
       console.log(this.props);
       FroalaEditor.RegisterCommand("alert", {

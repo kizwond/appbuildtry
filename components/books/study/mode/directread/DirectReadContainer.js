@@ -316,7 +316,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
     const mybook_id = selectionCard[0].card_info.mybook_id;
     const cardtype = dictionaryCardType.cardtype_info.cardtype; //수정해야함
     const cardtype_id = dictionaryCardType._id; //수정해야함
-    const current_position_card_id = selectionCard[0].card_info.card_id;
+    const current_position_card_id = selectionCard[0]._id;
     const indexSetId = selectionCard[0].card_info.indexset_id;
     const index_id = selectionCard[0].card_info.index_id;
     const cardSetId = selectionCard[0].card_info.cardset_id;
@@ -1076,7 +1076,7 @@ const DirectReadContainer = ({ FroalaEditorView, indexChanged, index_changed, in
                     sessionStorage.setItem("parentIdOfSelection", parentId[0]);
                     sessionStorage.setItem("parentInnerHtml", parentNodeInnerHtml);
                     sessionStorage.setItem("selectionTextCardSetId", cardSetId);
-                    sessionStorage.setItem("selectionTextCardId", cardIdSelection);
+                    sessionStorage.setItem("gCardId", cardIdSelection);
                   }
                 }
               }

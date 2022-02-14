@@ -1,46 +1,5 @@
 import { gql } from "@apollo/client";
 
-export const GET_BOOKS_INFO = gql`
-  query GetBooksInfo($mybook_ids: [ID]) {
-    mybook_getManyMybookInfo(mybook_ids: $mybook_ids) {
-      status
-      msg
-      mybooks {
-        _id
-        mybook_info {
-          title
-        }
-        stats {
-          overall {
-            accuLevel
-            studyHour
-            numSession
-          }
-          recent {
-            timeStudy
-            timeModify
-          }
-          numCards {
-            total
-            read
-            flip
-          }
-          writeHistory {
-            date
-            numCreatedCards
-          }
-          studyHistory {
-            _id
-            date
-            level
-            studyHour
-          }
-        }
-      }
-    }
-  }
-`;
-
 export const SEARCH_USER_INFO = gql`
   query SearchUserInfo($username: String) {
     user_getUserMinInfo(username: $username) {

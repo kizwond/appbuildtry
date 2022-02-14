@@ -4,16 +4,13 @@ import {
   Col,
   Drawer,
   Form,
-  Input,
   Popconfirm,
   Row,
   Select,
-  Space,
   Table,
-  Tag,
 } from "antd";
 import { useRouter } from "next/router";
-import React, { useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import {
   MUTATION_RE_ASSIGN_MENTORING_GROUP_MEMBER,
   MUTATION_TERMINATE_MENTORING,
@@ -303,7 +300,7 @@ const M_MenteesTable = ({ newData, isMenteeEditMode, menteeGroup }) => {
   );
 };
 
-export default M_MenteesTable;
+export default memo(M_MenteesTable);
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;

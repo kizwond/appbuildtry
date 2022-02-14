@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
 import prettyMilliseconds from "pretty-ms";
-import { Fragment, memo, useState } from "react";
+import { Fragment, memo, useMemo, useState } from "react";
 import { QUERY_MY_CARD_CONTENTS } from "../../../graphql/query/allQuery";
 import decodeHtMLEntities from "../../common/logic/decodeHtMLEntities";
 
@@ -56,36 +56,39 @@ const TableForRankedCards = ({ data, forWhom, contentType }) => {
       .mycontents,
   ];
 
-  const getThirdCol =
-    contentType === "times"
-      ? function (card) {
-          console.log(card.studyStatus);
-          return card.studyStatus.totalStudyTimes;
-        }
-      : function (card) {
-          const time = prettyMilliseconds(card.studyStatus.totalStudyHour, {
-            colonNotation: true,
-            secondsDecimalDigits: 0,
-          });
-          const displayTime = (time) => {
-            switch (time.length) {
-              case 4:
-                return "00:0" + time;
-              case 5:
-                return "00:" + time;
-              case 6:
-                return "00" + time;
-              case 7:
-                return "0" + time;
-              case 8:
-                return time;
-              default:
-                throw new Error(`${time}은 지정된 형식의 시간이 아닙니다.`);
-            }
-          };
+  const getThirdCol = useMemo(
+    () =>
+      contentType === "times"
+        ? function (card) {
+            return card.studyStatus.totalStudyTimes;
+          }
+        : function (card) {
+            const time = prettyMilliseconds(card.studyStatus.totalStudyHour, {
+              colonNotation: true,
+              secondsDecimalDigits: 0,
+            });
+            const displayTime = (time) => {
+              switch (time.length) {
+                case 4:
+                  return "00:0" + time;
+                case 5:
+                  return "00:" + time;
+                case 6:
+                  return "00" + time;
+                case 7:
+                  return "0" + time;
+                case 8:
+                  return time;
+                default:
+                  throw new Error(`${time}은 지정된 형식의 시간이 아닙니다.`);
+              }
+            };
 
-          return displayTime(time);
-        };
+            return displayTime(time);
+          },
+    [contentType]
+  );
+
   return (
     <table className="w-full table-fixed">
       <thead>
@@ -218,4 +221,4 @@ const TableForRankedCards = ({ data, forWhom, contentType }) => {
   );
 };
 
-export default TableForRankedCards;
+export default memo(TableForRankedCards);

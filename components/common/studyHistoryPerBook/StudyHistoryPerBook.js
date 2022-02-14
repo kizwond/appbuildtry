@@ -265,7 +265,13 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
                   </a>
                 </div>
               }
-              content={<TableForRankedCards data={data} contentType="times" />}
+              content={
+                <TableForRankedCards
+                  data={data}
+                  contentType="times"
+                  forWhom={forWhom}
+                />
+              }
             />
             <DrawerWrapper
               title="학습 횟수 많은 카드"

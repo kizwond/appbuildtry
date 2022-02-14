@@ -20,7 +20,11 @@ const RatingArea = () => {
       </StarRateInputWrapper>
       <ReviewForm>
         <div>
-          <ReviewTextarea name="content" title="리뷰입력" placeholder="리뷰 작성시 광고 및 욕설, 비속어나 타인을 비방하는 문구를 사용하시면 비공개될 수 있습니다." />
+          <ReviewTextarea
+            name="content"
+            title="리뷰입력"
+            placeholder="리뷰 작성시 광고 및 욕설, 비속어나 타인을 비방하는 문구를 사용하시면 비공개될 수 있습니다."
+          />
         </div>
         <SubmitButtonWrapper>
           <SubmitButton type="submit">리뷰 남기기</SubmitButton>
@@ -109,7 +113,8 @@ const SubmitButtonWrapper = styled.div`
 `;
 
 const SubmitButton = styled.div`
-  font-family: ridi-roboto, Helvetica Neue, Apple SD Gothic Neo, "나눔고딕", Nanum Gothic, "돋움", arial, Dotum, Tahoma, Geneva, sans-serif;
+  font-family: ridi-roboto, Helvetica Neue, Apple SD Gothic Neo, "나눔고딕",
+    Nanum Gothic, "돋움", arial, Dotum, Tahoma, Geneva, sans-serif;
   letter-spacing: -0.03em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

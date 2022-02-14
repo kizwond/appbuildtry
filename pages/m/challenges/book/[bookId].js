@@ -12,6 +12,9 @@ import { StyledTwoLinesEllipsis } from "../../../../components/common/styledComp
 import { Button, Card } from "antd";
 import { MUTATION_CREATE_MY_BOOK_FROM_BUY_BOOK } from "../../../../graphql/mutation/buyBook";
 import { useMutation, useQuery } from "@apollo/client";
+import ReviewArea from "../../../../components/challenges/bookDetail/ReviewArea";
+import RatingArea from "../../../../components/challenges/bookDetail/RatingArea";
+import CommentCard from "../../../../components/challenges/bookDetail/CommentCard";
 
 // 결론 이 페이지는 서버사이드 정적 페이지로 작성한다.
 // 대신 getStaticPath는 따로 작성하지 않고 처음 로딩할 때만 정보를 불러온다.
@@ -193,6 +196,11 @@ const BuyBookDetail = (props) => {
                     ))}
                 </div>
               </div>
+              <ReviewArea />
+              <RatingArea />
+              {[1, 2, 3, 4, 5, 6].map((comment) => (
+                <CommentCard key={comment} />
+              ))}
             </div>
           </M_Layout>
         </>

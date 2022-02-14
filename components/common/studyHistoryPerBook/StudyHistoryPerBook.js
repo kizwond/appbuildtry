@@ -299,20 +299,28 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
               content={
                 <TableForStatusOfCard
                   hold={
-                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats
-                      ?.studyHistory[0]?.numCardsByStatus?.hold
+                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[
+                      data[`${queryNameOfBook}`]?.mybooks[0]?.stats
+                        ?.studyHistory.length - 1
+                    ]?.numCardsByStatus?.hold
                   }
                   yet={
-                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats
-                      ?.studyHistory[0]?.numCardsByStatus?.yet
+                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[
+                      data[`${queryNameOfBook}`]?.mybooks[0]?.stats
+                        ?.studyHistory.length - 1
+                    ]?.numCardsByStatus?.yet
                   }
                   completed={
-                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats
-                      ?.studyHistory[0]?.numCardsByStatus?.completed
+                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[
+                      data[`${queryNameOfBook}`]?.mybooks[0]?.stats
+                        ?.studyHistory.length - 1
+                    ]?.numCardsByStatus?.completed
                   }
                   ing={
-                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats
-                      ?.studyHistory[0]?.numCardsByStatus?.ing
+                    data[`${queryNameOfBook}`]?.mybooks[0]?.stats?.studyHistory[
+                      data[`${queryNameOfBook}`]?.mybooks[0]?.stats
+                        ?.studyHistory.length - 1
+                    ]?.numCardsByStatus?.ing
                   }
                 />
               }

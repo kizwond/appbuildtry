@@ -36,7 +36,6 @@ export const FRAGMENT_MYBOOK = gql`
         numCreatedCards
       }
       studyHistory {
-        _id
         date
         level {
           completed

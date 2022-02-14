@@ -101,7 +101,7 @@ const ChartForStudiedCardsPerDay = ({ book }) => {
   );
 };
 
-export default memo(ChartForStudiedCardsPerDay);
+export default ChartForStudiedCardsPerDay;
 
 const StyledBar = styled.div`
   height: ${(props) => props.barHeightPercentage};

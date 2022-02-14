@@ -59,6 +59,7 @@ const TableForRankedCards = ({ data, forWhom, contentType }) => {
   const getThirdCol =
     contentType === "times"
       ? function (card) {
+          console.log(card.studyStatus);
           return card.studyStatus.totalStudyTimes;
         }
       : function (card) {
@@ -217,4 +218,4 @@ const TableForRankedCards = ({ data, forWhom, contentType }) => {
   );
 };
 
-export default memo(TableForRankedCards);
+export default TableForRankedCards;

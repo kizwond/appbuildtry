@@ -317,7 +317,7 @@ const StudyHistoryPerBook = ({ mybook_id, menteeUser_id, forWhom }) => {
   );
 };
 
-export default memo(StudyHistoryPerBook);
+export default StudyHistoryPerBook;
 
 const DrawerWrapper = styled(Drawer)`
   top: 40px;

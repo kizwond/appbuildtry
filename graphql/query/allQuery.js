@@ -638,7 +638,6 @@ export const QUERY_SESSION_FOR_MENTORING_BY_BOOK_ID = gql`
         _id
         stats {
           studyHistory {
-            _id
             date
             level {
               completed
@@ -715,7 +714,6 @@ export const QUERY_SESSION_STATUS_BY_BOOK_ID = gql`
         _id
         stats {
           studyHistory {
-            _id
             date
             level {
               completed

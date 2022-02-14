@@ -181,7 +181,6 @@ const CardFaceSetting = ({
   };
 
   useEffect(() => {
-    console.log("cardTypeDetail", cardTypeDetail[0]);
     if (cardTypeId) {
       resetToPreservedSetting(0);
       setFaceSelected(0);

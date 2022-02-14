@@ -18,6 +18,7 @@ const CardRowSetting = ({
   const [rowSelected, setRowSelected] = useState(0);
   const [rowOptions, setRowOptions] = useState([]);
 
+  const [backgroundColor, setBackgroundColor] = useState();
   const [isOpendRowBackgroundColorPicker, setIsOpendRowBackgroundColorPicker] =
     useState(false);
   const toggleRowBackgroundColorPicker = () => {
@@ -28,6 +29,7 @@ const CardRowSetting = ({
     toggleRowBackgroundColorPicker();
   };
 
+  const [border_top_color, set_border_top_color] = useState();
   const [isOpendBorderTopColorPicker, setIsOpendBorderTopColorPicker] =
     useState(false);
   const toggleBorderTopColorPicker = () => {
@@ -38,6 +40,7 @@ const CardRowSetting = ({
     setIsOpendBorderTopColorPicker(!isOpendBorderTopColorPicker);
   };
 
+  const [border_bottom_color, set_border_bottom_color] = useState();
   const [isOpendBorderBottomColorPicker, setIsOpendBorderBottomColorPicker] =
     useState(false);
   const toggleBorderBottomColorPicker = () => {
@@ -48,6 +51,7 @@ const CardRowSetting = ({
     toggleBorderBottomColorPicker();
   };
 
+  const [border_left_color, set_border_left_color] = useState();
   const [isOpendBorderLeftColorPicker, setIsOpendBorderLeftColorPicker] =
     useState(false);
   const toggleBorderLeftColorPicker = () => {
@@ -58,6 +62,7 @@ const CardRowSetting = ({
     toggleBorderLeftColorPicker();
   };
 
+  const [border_right_color, set_border_right_color] = useState();
   const [isOpendBorderRightColorPicker, setIsOpendBorderRightColorPicker] =
     useState(false);
   const toggleBorderRightColorPicker = () => {
@@ -68,7 +73,6 @@ const CardRowSetting = ({
     toggleBorderRightColorPicker();
   };
 
-  const [backgroundColor, setBackgroundColor] = useState();
   const [opacity, setOpacity] = useState();
 
   const [outer_margin_top, set_outer_margin_top] = useState();
@@ -90,11 +94,6 @@ const CardRowSetting = ({
   const [border_bottom_thickness, set_border_bottom_thickness] = useState();
   const [border_left_thickness, set_border_left_thickness] = useState();
   const [border_right_thickness, set_border_right_thickness] = useState();
-
-  const [border_top_color, set_border_top_color] = useState();
-  const [border_bottom_color, set_border_bottom_color] = useState();
-  const [border_left_color, set_border_left_color] = useState();
-  const [border_right_color, set_border_right_color] = useState();
 
   const resetToPreservedSetting = (faceSelected, e) => {
     setBackgroundColor(
@@ -587,7 +586,6 @@ const CardRowSetting = ({
                 dotted
               </Option>
             </Select>
-            {/* <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input> */}
             <Button
               size="small"
               onClick={toggleBorderTopColorPicker}
@@ -599,16 +597,15 @@ const CardRowSetting = ({
             >
               Color
             </Button>
-            {isOpendBorderTopColorPicker ? (
+            {isOpendBorderTopColorPicker && (
               <div style={popover}>
                 <div style={cover} />
                 <CompactPicker
                   color={border_top_color}
                   onChange={borderTopColorHandler}
                 />
-                {/* <span>none</span> */}
               </div>
-            ) : null}
+            )}
             <InputNumber
               size="small"
               style={{ fontSize: "0.8rem", width: 60 }}
@@ -643,7 +640,6 @@ const CardRowSetting = ({
                 dotted
               </Option>
             </Select>
-            {/* <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input> */}
             <Button
               size="small"
               onClick={toggleBorderBottomColorPicker}
@@ -655,16 +651,15 @@ const CardRowSetting = ({
             >
               Color
             </Button>
-            {isOpendBorderBottomColorPicker ? (
+            {isOpendBorderBottomColorPicker && (
               <div style={popover}>
                 <div style={cover} />
                 <CompactPicker
                   color={border_bottom_color}
                   onChange={borderBottomColorHandler}
                 />
-                {/* <span>none</span> */}
               </div>
-            ) : null}
+            )}
             <InputNumber
               size="small"
               style={{ fontSize: "0.8rem", width: 60 }}
@@ -699,7 +694,6 @@ const CardRowSetting = ({
                 dotted
               </Option>
             </Select>
-            {/* <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input> */}
             <Button
               size="small"
               onClick={toggleBorderLeftColorPicker}
@@ -711,16 +705,15 @@ const CardRowSetting = ({
             >
               Color
             </Button>
-            {isOpendBorderLeftColorPicker ? (
+            {isOpendBorderLeftColorPicker && (
               <div style={popover}>
                 <div style={cover} />
                 <CompactPicker
                   color={border_left_color}
                   onChange={borderLeftColorHandler}
                 />
-                {/* <span>none</span> */}
               </div>
-            ) : null}
+            )}
             <InputNumber
               size="small"
               style={{ fontSize: "0.8rem", width: 60 }}
@@ -755,7 +748,6 @@ const CardRowSetting = ({
                 dotted
               </Option>
             </Select>
-            {/* <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input> */}
             <Button
               size="small"
               onClick={toggleBorderRightColorPicker}
@@ -767,16 +759,15 @@ const CardRowSetting = ({
             >
               Color
             </Button>
-            {isOpendBorderRightColorPicker ? (
+            {isOpendBorderRightColorPicker && (
               <div style={popover}>
                 <div style={cover} />
                 <CompactPicker
                   color={border_right_color}
                   onChange={borderRightColorHandler}
                 />
-                {/* <span>none</span> */}
               </div>
-            ) : null}
+            )}
             <InputNumber
               size="small"
               style={{ fontSize: "0.8rem", width: 60 }}

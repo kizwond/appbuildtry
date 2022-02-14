@@ -1,28 +1,37 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { GetCardType } from "../../../../../graphql/query/cardtype";
-import { useQuery, useMutation } from "@apollo/client";
-import { Form, Input, Button, Radio, Select, Cascader, Divider, InputNumber, TreeSelect, Switch } from "antd";
+import { useMutation } from "@apollo/client";
+import { Button, Select, Divider, InputNumber } from "antd";
 import { UpdateFlagFigure } from "../../../../../graphql/mutation/flagUpdate";
 import { CompactPicker } from "react-color";
 
 const { Option } = Select;
 
-const FlagShapeSetting = ({ cardTypeSets, cardTypeSetId }) => {
-  const [displayColorPicker, setDisplayColorPicker] = useState(false);
-  const [shape, set_shape] = useState();
-  const [size, set_size] = useState();
-  const [color, set_color] = useState();
+const FlagShapeSetting = ({ figureStyle, cardTypeSetId, tabValue }) => {
+  const [shape, setShape] = useState();
+  const [size, setSize] = useState();
+
+  const [color, setColor] = useState();
+  const [isOpendColorPicker, setIsOpendColorPicker] = useState(false);
+  const toggleColorPicker = () => {
+    setIsOpendColorPicker(!isOpendColorPicker);
+  };
+  const colorHandler = (color) => {
+    setColor(color.hex);
+    toggleColorPicker();
+  };
 
   useEffect(() => {
-    if (cardTypeSets) {
-      console.log("cardTypeSets", cardTypeSets);
-      set_shape(cardTypeSets[0].makerFlag_style.figure_style.shape);
-      set_size(cardTypeSets[0].makerFlag_style.figure_style.size);
-      set_color(cardTypeSets[0].makerFlag_style.figure_style.color);
+    if (figureStyle) {
+      setShape(figureStyle.shape);
+      setSize(figureStyle.size);
+      setColor(figureStyle.color);
     }
-  }, [cardTypeSets]);
+  }, [figureStyle, tabValue, cardTypeSetId]);
 
-  const [cardtypeset_updateMakerFlagFigureStyle] = useMutation(UpdateFlagFigure, { onCompleted: afterupdatemutation });
+  const [cardtypeset_updateMakerFlagFigureStyle] = useMutation(
+    UpdateFlagFigure,
+    { onCompleted: afterupdatemutation }
+  );
 
   function afterupdatemutation(data) {
     console.log("data", data);
@@ -45,31 +54,28 @@ const FlagShapeSetting = ({ cardTypeSets, cardTypeSetId }) => {
     }
   }
 
-  const shapeHandler = (e) => set_shape(e);
-  const sizeHandler = (e) => set_size(e);
-
+  const shapeHandler = (e) => setShape(e);
+  const sizeHandler = (e) => setSize(e);
   const handleSubmit = () => updateflagfiguretyle();
-
-  const handleClick = () => {
-    setDisplayColorPicker(!displayColorPicker);
-  };
-
-  const handleClose = () => {
-    setDisplayColorPicker(false);
-  };
-
-  const handleChangeComplete = (color) => {
-    console.log(color.hex);
-    set_color(color.hex);
-  };
 
   return (
     <div>
       <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
         <li>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span style={{ fontSize: "0.8rem" }}>모양</span>
-            <Select size="small" value={shape} style={{ width: 120, fontSize: "0.8rem" }} onChange={shapeHandler}>
+            <Select
+              size="small"
+              value={shape}
+              style={{ width: 120, fontSize: "0.8rem" }}
+              onChange={shapeHandler}
+            >
               <Option value="star" style={{ fontSize: "0.8rem" }}>
                 별
               </Option>
@@ -81,27 +87,51 @@ const FlagShapeSetting = ({ cardTypeSets, cardTypeSetId }) => {
               </Option>
             </Select>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span style={{ fontSize: "0.8rem" }}>size</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={size} onChange={sizeHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={size}
+              onChange={sizeHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <div style={{ fontSize: "0.8rem" }}>색</div>
-            <Button size="small" onClick={handleClick} style={{ width: "80px", fontSize: "0.8rem", background: color }}>
+            <Button
+              size="small"
+              onClick={toggleColorPicker}
+              style={{ width: "80px", fontSize: "0.8rem", background: color }}
+            >
               Color
             </Button>
-            {displayColorPicker ? (
+            {isOpendColorPicker ? (
               <div style={popover}>
-                <div style={cover} onClick={handleClose} />
-                <CompactPicker color={color} onChange={handleChangeComplete} />
-                {/* <span>none</span> */}
+                <div style={cover} />
+                <CompactPicker color={color} onChange={colorHandler} />
               </div>
             ) : null}
           </div>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li style={{ textAlign: "right" }}>
-          <Button size="small" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
+          <Button
+            size="small"
+            style={{ fontSize: "0.8rem" }}
+            onClick={handleSubmit}
+          >
             적용하기
           </Button>
         </li>

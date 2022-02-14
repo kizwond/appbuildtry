@@ -4,8 +4,12 @@ import { gql } from "@apollo/client";
 import { FRAGMENT_CATEGORYSET } from "../fragment/categorySet";
 
 export const UpdateMakerFlagRowStyle = gql`
-  mutation UpdateMakerFlagRowStyle($forUpdateMakerFlagRowStyle: forUpdateMakerFlagRowStyle) {
-    cardtypeset_updateMakerFlagRowStyle(forUpdateMakerFlagRowStyle: $forUpdateMakerFlagRowStyle) {
+  mutation UpdateMakerFlagRowStyle(
+    $forUpdateMakerFlagRowStyle: forUpdateMakerFlagRowStyle
+  ) {
+    cardtypeset_updateMakerFlagRowStyle(
+      forUpdateMakerFlagRowStyle: $forUpdateMakerFlagRowStyle
+    ) {
       status
       msg
       cardtypesets {
@@ -72,8 +76,12 @@ export const UpdateMakerFlagRowStyle = gql`
 `;
 
 export const UpdateFlagRowFont = gql`
-  mutation UpdateFlagRowFont($forUpdateMakerFlagRowFont: forUpdateMakerFlagRowFont) {
-    cardtypeset_updateMakerFlagRowFont(forUpdateMakerFlagRowFont: $forUpdateMakerFlagRowFont) {
+  mutation UpdateFlagRowFont(
+    $forUpdateMakerFlagCommentFont: forUpdateMakerFlagCommentFont
+  ) {
+    cardtypeset_updateMakerFlagCommentFont(
+      forUpdateMakerFlagCommentFont: $forUpdateMakerFlagCommentFont
+    ) {
       status
       msg
       cardtypesets {
@@ -140,8 +148,12 @@ export const UpdateFlagRowFont = gql`
 `;
 
 export const UpdateFlagFigure = gql`
-  mutation UpdateFlagFigure($forUpdateMakerFlagFigureStyle: forUpdateMakerFlagFigureStyle) {
-    cardtypeset_updateMakerFlagFigureStyle(forUpdateMakerFlagFigureStyle: $forUpdateMakerFlagFigureStyle) {
+  mutation UpdateFlagFigure(
+    $forUpdateMakerFlagFigureStyle: forUpdateMakerFlagFigureStyle
+  ) {
+    cardtypeset_updateMakerFlagFigureStyle(
+      forUpdateMakerFlagFigureStyle: $forUpdateMakerFlagFigureStyle
+    ) {
       status
       msg
       cardtypesets {

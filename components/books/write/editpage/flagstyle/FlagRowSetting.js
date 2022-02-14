@@ -1,20 +1,65 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { GetCardType } from "../../../../../graphql/query/cardtype";
-import { useQuery, useMutation } from "@apollo/client";
-import { Form, Input, Button, Radio, Select, Divider, DatePicker, InputNumber, TreeSelect, Switch } from "antd";
+import { useMutation } from "@apollo/client";
+import { Button, Select, Divider, InputNumber } from "antd";
 import { UpdateMakerFlagRowStyle } from "../../../../../graphql/mutation/flagUpdate";
 import { CompactPicker } from "react-color";
 const { Option } = Select;
 
-const FlagRowSetting = ({ cardTypeSets, cardTypeSetId }) => {
-  const [displayColorPicker, setDisplayColorPicker] = useState(false);
-
-  const [displayColorPicker1, setDisplayColorPicker1] = useState(false);
-  const [displayColorPicker2, setDisplayColorPicker2] = useState(false);
-  const [displayColorPicker3, setDisplayColorPicker3] = useState(false);
-  const [displayColorPicker4, setDisplayColorPicker4] = useState(false);
-
+const FlagRowSetting = ({ rowStyle, cardTypeSetId, tabValue }) => {
   const [backgroundColor, setBackgroundColor] = useState();
+  const [isOpendRowBackgroundColorPicker, setIsOpendRowBackgroundColorPicker] =
+    useState(false);
+  const toggleRowBackgroundColorPicker = () => {
+    setIsOpendRowBackgroundColorPicker(!isOpendRowBackgroundColorPicker);
+  };
+  const rowBackgroundHandler = (color) => {
+    setBackgroundColor(color.hex);
+    toggleRowBackgroundColorPicker();
+  };
+
+  const [border_top_color, set_border_top_color] = useState();
+  const [isOpendBorderTopColorPicker, setIsOpendBorderTopColorPicker] =
+    useState(false);
+  const toggleBorderTopColorPicker = () => {
+    setIsOpendBorderTopColorPicker(!isOpendBorderTopColorPicker);
+  };
+  const borderTopColorHandler = (color) => {
+    set_border_top_color(color.hex);
+    setIsOpendBorderTopColorPicker(!isOpendBorderTopColorPicker);
+  };
+
+  const [border_bottom_color, set_border_bottom_color] = useState();
+  const [isOpendBorderBottomColorPicker, setIsOpendBorderBottomColorPicker] =
+    useState(false);
+  const toggleBorderBottomColorPicker = () => {
+    setIsOpendBorderBottomColorPicker(!isOpendBorderBottomColorPicker);
+  };
+  const borderBottomColorHandler = (color) => {
+    set_border_bottom_color(color.hex);
+    toggleBorderBottomColorPicker();
+  };
+
+  const [border_left_color, set_border_left_color] = useState();
+  const [isOpendBorderLeftColorPicker, setIsOpendBorderLeftColorPicker] =
+    useState(false);
+  const toggleBorderLeftColorPicker = () => {
+    setIsOpendBorderLeftColorPicker(!isOpendBorderLeftColorPicker);
+  };
+  const borderLeftColorHandler = (color) => {
+    set_border_left_color(color.hex);
+    toggleBorderLeftColorPicker();
+  };
+
+  const [border_right_color, set_border_right_color] = useState();
+  const [isOpendBorderRightColorPicker, setIsOpendBorderRightColorPicker] =
+    useState(false);
+  const toggleBorderRightColorPicker = () => {
+    setIsOpendBorderRightColorPicker(!isOpendBorderRightColorPicker);
+  };
+  const borderRightColorHandler = (color) => {
+    set_border_right_color(color.hex);
+    toggleBorderRightColorPicker();
+  };
 
   const [outer_margin_top, set_outer_margin_top] = useState();
   const [outer_margin_bottom, set_outer_margin_bottom] = useState();
@@ -36,45 +81,81 @@ const FlagRowSetting = ({ cardTypeSets, cardTypeSetId }) => {
   const [border_left_thickness, set_border_left_thickness] = useState();
   const [border_right_thickness, set_border_right_thickness] = useState();
 
-  const [border_top_color, set_border_top_color] = useState();
-  const [border_bottom_color, set_border_bottom_color] = useState();
-  const [border_left_color, set_border_left_color] = useState();
-  const [border_right_color, set_border_right_color] = useState();
-
   useEffect(() => {
-    console.log("플래그 디테일 세팅 화면 온");
-    if (cardTypeSets) {
-      console.log("cardTypeSets", cardTypeSets);
-      setBackgroundColor(cardTypeSets[0].makerFlag_style.row_style.background.color);
+    if (rowStyle) {
+      const {
+        background: { color: bgColor },
+        outer_margin: {
+          top: marginTop,
+          bottom: marginBottom,
+          left: marginLeft,
+          right: marginRight,
+        },
+        inner_padding: {
+          top: paddingTop,
+          bottom: paddingBottom,
+          left: paddingLeft,
+          right: paddingRight,
+        },
+        border: {
+          top: {
+            bordertype: borderTopType,
+            thickness: borderTopThickness,
+            color: borderTopColor,
+          },
+          bottom: {
+            bordertype: borderBottomType,
+            thickness: borderBottomThickness,
+            color: borderBottomColor,
+          },
+          left: {
+            bordertype: borderLeftType,
+            thickness: borderLeftThickness,
+            color: borderLeftColor,
+          },
+          right: {
+            bordertype: borderRightType,
+            thickness: borderRightThickness,
+            color: borderRightColor,
+          },
+        },
+      } = rowStyle;
 
-      set_outer_margin_top(cardTypeSets[0].makerFlag_style.row_style.outer_margin.top);
-      set_outer_margin_bottom(cardTypeSets[0].makerFlag_style.row_style.outer_margin.bottom);
-      set_outer_margin_left(cardTypeSets[0].makerFlag_style.row_style.outer_margin.left);
-      set_outer_margin_right(cardTypeSets[0].makerFlag_style.row_style.outer_margin.right);
+      setBackgroundColor(bgColor);
 
-      set_inner_padding_top(cardTypeSets[0].makerFlag_style.row_style.inner_padding.top);
-      set_inner_padding_bottom(cardTypeSets[0].makerFlag_style.row_style.inner_padding.bottom);
-      set_inner_padding_left(cardTypeSets[0].makerFlag_style.row_style.inner_padding.left);
-      set_inner_padding_right(cardTypeSets[0].makerFlag_style.row_style.inner_padding.right);
+      set_outer_margin_top(marginTop);
+      set_outer_margin_bottom(marginBottom);
+      set_outer_margin_left(marginLeft);
+      set_outer_margin_right(marginRight);
 
-      set_border_top_type(cardTypeSets[0].makerFlag_style.row_style.border.top.bordertype);
-      set_border_bottom_type(cardTypeSets[0].makerFlag_style.row_style.border.bottom.bordertype);
-      set_border_left_type(cardTypeSets[0].makerFlag_style.row_style.border.left.bordertype);
-      set_border_right_type(cardTypeSets[0].makerFlag_style.row_style.border.right.bordertype);
+      set_inner_padding_top(paddingTop);
+      set_inner_padding_bottom(paddingBottom);
+      set_inner_padding_left(paddingLeft);
+      set_inner_padding_right(paddingRight);
 
-      set_border_top_thickness(cardTypeSets[0].makerFlag_style.row_style.border.top.thickness);
-      set_border_bottom_thickness(cardTypeSets[0].makerFlag_style.row_style.border.bottom.thickness);
-      set_border_left_thickness(cardTypeSets[0].makerFlag_style.row_style.border.left.thickness);
-      set_border_right_thickness(cardTypeSets[0].makerFlag_style.row_style.border.right.thickness);
+      set_border_top_type(borderTopType);
+      set_border_top_thickness(borderTopThickness);
+      set_border_top_color(borderTopColor);
 
-      set_border_top_color(cardTypeSets[0].makerFlag_style.row_style.border.top.color);
-      set_border_bottom_color(cardTypeSets[0].makerFlag_style.row_style.border.bottom.color);
-      set_border_left_color(cardTypeSets[0].makerFlag_style.row_style.border.left.color);
-      set_border_right_color(cardTypeSets[0].makerFlag_style.row_style.border.right.color);
+      set_border_bottom_type(borderBottomType);
+      set_border_bottom_thickness(borderBottomThickness);
+      set_border_bottom_color(borderBottomColor);
+
+      set_border_left_type(borderLeftType);
+      set_border_left_thickness(borderLeftThickness);
+      set_border_left_color(borderLeftColor);
+
+      set_border_right_type(borderRightType);
+      set_border_right_thickness(borderRightThickness);
+      set_border_right_color(borderRightColor);
     }
-  }, [cardTypeSets]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowStyle, tabValue, cardTypeSetId]);
 
-  const [cardtypeset_updateMakerFlagRowStyle] = useMutation(UpdateMakerFlagRowStyle, { onCompleted: afterupdatemutation });
+  const [cardtypeset_updateMakerFlagRowStyle] = useMutation(
+    UpdateMakerFlagRowStyle,
+    { onCompleted: afterupdatemutation }
+  );
 
   function afterupdatemutation(data) {
     console.log("data", data);
@@ -153,209 +234,392 @@ const FlagRowSetting = ({ cardTypeSets, cardTypeSetId }) => {
 
   const handleSubmit = () => updaterowstyle();
 
-  const handleClick = () => {
-    setDisplayColorPicker(!displayColorPicker);
-  };
-
-  const handleClose = () => {
-    setDisplayColorPicker(false);
-  };
-
-  const handleChangeComplete = (color) => {
-      console.log(color.hex)
-    setBackgroundColor(color.hex);
-  };
-
-  const handleClick1 = () => {
-    console.log("clicked handleclick 1");
-    setDisplayColorPicker1(!displayColorPicker1);
-  };
-
-  const handleClose1 = () => {
-    setDisplayColorPicker1(false);
-  };
-
-  const borderTopColorHandler = (color) => {
-    set_border_top_color(color.hex);
-  };
-
-  const handleClick2 = () => {
-    setDisplayColorPicker2(!displayColorPicker2);
-  };
-
-  const handleClose2 = () => {
-    setDisplayColorPicker2(false);
-  };
-
-  const borderBottomColorHandler = (color) => {
-    set_border_bottom_color(color.hex);
-  };
-
-  const handleClick3 = () => {
-    setDisplayColorPicker3(!displayColorPicker3);
-  };
-
-  const handleClose3 = () => {
-    setDisplayColorPicker3(false);
-  };
-
-  const borderLeftColorHandler = (color) => {
-    set_border_left_color(color.hex);
-  };
-
-  const handleClick4 = () => {
-    setDisplayColorPicker4(!displayColorPicker4);
-  };
-
-  const handleClose4 = () => {
-    setDisplayColorPicker4(false);
-  };
-
-  const borderRightColorHandler = (color) => {
-    set_border_right_color(color.hex);
-  };
   return (
     <div>
       <ul style={{ listStyle: "none", padding: "10px 0px 0px 0px" }}>
-        <li style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <li
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <div style={{ fontSize: "0.8rem" }}>행배경색</div>
-          <Button size="small" onClick={handleClick} style={{ width: "80px", fontSize: "0.8rem", background: backgroundColor }}>
+          <Button
+            size="small"
+            onClick={toggleRowBackgroundColorPicker}
+            style={{
+              width: "80px",
+              fontSize: "0.8rem",
+              background: backgroundColor,
+            }}
+          >
             Color
           </Button>
-          {displayColorPicker ? (
+          {isOpendRowBackgroundColorPicker && (
             <div style={popover}>
-              <div style={cover} onClick={handleClose} />
-              <CompactPicker color={backgroundColor} onChange={handleChangeComplete} />
-              {/* <span>none</span> */}
+              <div style={cover} />
+              <CompactPicker
+                color={backgroundColor}
+                onChange={rowBackgroundHandler}
+              />
             </div>
-          ) : null}
+          )}
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li style={{ fontSize: "0.8rem" }}>
           <div>행테두리바깥쪽여백</div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>상</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_top} onChange={outerMarginTopHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={outer_margin_top}
+              onChange={outerMarginTopHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>하</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_bottom} onChange={outerMarginBottomHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={outer_margin_bottom}
+              onChange={outerMarginBottomHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>좌</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_left} onChange={outerMarginLeftHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={outer_margin_left}
+              onChange={outerMarginLeftHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>우</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={outer_margin_right} onChange={outerMarginRightHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={outer_margin_right}
+              onChange={outerMarginRightHandler}
+            />
           </div>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li style={{ fontSize: "0.8rem" }}>
           <div>행테두리안쪽여백</div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>상</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_top} onChange={innerPaddingTopHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={inner_padding_top}
+              onChange={innerPaddingTopHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>하</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_bottom} onChange={innerPaddingBottomHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={inner_padding_bottom}
+              onChange={innerPaddingBottomHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>좌</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_left} onChange={innerPaddingLeftHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={inner_padding_left}
+              onChange={innerPaddingLeftHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>우</span>
-            <InputNumber size="small" style={{ fontSize: "0.8rem" }} value={inner_padding_right} onChange={innerPaddingRightHandler} />
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem" }}
+              value={inner_padding_right}
+              onChange={innerPaddingRightHandler}
+            />
           </div>
         </li>
         <Divider style={{ width: "100%", marginTop: 10, marginBottom: 10 }} />
         <li style={{ fontSize: "0.8rem" }}>
           <div>행테두리</div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>상</span>
-            <Select size="small" value={border_top_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderTopTypeHandler}>
-              <Option value="solid">solid</Option>
-              <Option value="dashed">dashed</Option>
-              <Option value="dotted">dotted</Option>
+            <Select
+              size="small"
+              value={border_top_type}
+              style={{ width: 75, fontSize: "0.8rem" }}
+              onChange={borderTopTypeHandler}
+            >
+              <Option value="none" style={{ fontSize: "0.8rem" }}>
+                none
+              </Option>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
             </Select>
-            {/* <input type="color" name="border_top_thickness" value={border_top_color} onChange={borderTopColorHandler}></input> */}
-            <Button size="small" onClick={handleClick1} style={{ width: "50px", fontSize: "0.8rem", background: border_top_color }}>
+            <Button
+              size="small"
+              onClick={toggleBorderTopColorPicker}
+              style={{
+                width: "50px",
+                fontSize: "0.8rem",
+                background: border_top_color,
+              }}
+            >
               Color
             </Button>
-            {displayColorPicker1 ? (
+            {isOpendBorderTopColorPicker && (
               <div style={popover}>
-                <div style={cover} onClick={handleClose1} />
-                <CompactPicker color={border_top_color} onChange={borderTopColorHandler} />
-                {/* <span>none</span> */}
+                <div style={cover} />
+                <CompactPicker
+                  color={border_top_color}
+                  onChange={borderTopColorHandler}
+                />
               </div>
-            ) : null}
-            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_top_thickness} onChange={borderTopThicknessHandler} />
+            )}
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem", width: 60 }}
+              value={border_top_thickness}
+              onChange={borderTopThicknessHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>하</span>
-            <Select size="small" value={border_bottom_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderBottomTypeHandler}>
-              <Option value="solid">solid</Option>
-              <Option value="dashed">dashed</Option>
-              <Option value="dotted">dotted</Option>
+            <Select
+              size="small"
+              value={border_bottom_type}
+              style={{ width: 75, fontSize: "0.8rem" }}
+              onChange={borderBottomTypeHandler}
+            >
+              <Option value="none" style={{ fontSize: "0.8rem" }}>
+                none
+              </Option>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
             </Select>
-            {/* <input type="color" name="border_bottom_thickness" value={border_bottom_color} onChange={borderBottomColorHandler}></input> */}
-            <Button size="small" onClick={handleClick2} style={{ width: "50px", fontSize: "0.8rem", background: border_bottom_color }}>
+            <Button
+              size="small"
+              onClick={toggleBorderBottomColorPicker}
+              style={{
+                width: "50px",
+                fontSize: "0.8rem",
+                background: border_bottom_color,
+              }}
+            >
               Color
             </Button>
-            {displayColorPicker2 ? (
+            {isOpendBorderBottomColorPicker && (
               <div style={popover}>
-                <div style={cover} onClick={handleClose2} />
-                <CompactPicker color={border_bottom_color} onChange={borderBottomColorHandler} />
-                {/* <span>none</span> */}
+                <div style={cover} />
+                <CompactPicker
+                  color={border_bottom_color}
+                  onChange={borderBottomColorHandler}
+                />
               </div>
-            ) : null}
-            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_bottom_thickness} onChange={borderBottomThicknessHandler} />
+            )}
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem", width: 60 }}
+              value={border_bottom_thickness}
+              onChange={borderBottomThicknessHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>좌</span>
-            <Select size="small" value={border_left_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderLeftTypeHandler}>
-              <Option value="solid">solid</Option>
-              <Option value="dashed">dashed</Option>
-              <Option value="dotted">dotted</Option>
+            <Select
+              size="small"
+              value={border_left_type}
+              style={{ width: 75, fontSize: "0.8rem" }}
+              onChange={borderLeftTypeHandler}
+            >
+              <Option value="none" style={{ fontSize: "0.8rem" }}>
+                none
+              </Option>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
             </Select>
-            {/* <input type="color" name="border_left_thickness" value={border_left_color} onChange={borderLeftColorHandler}></input> */}
-            <Button size="small" onClick={handleClick3} style={{ width: "50px", fontSize: "0.8rem", background: border_left_color }}>
+            <Button
+              size="small"
+              onClick={toggleBorderLeftColorPicker}
+              style={{
+                width: "50px",
+                fontSize: "0.8rem",
+                background: border_left_color,
+              }}
+            >
               Color
             </Button>
-            {displayColorPicker3 ? (
+            {isOpendBorderLeftColorPicker && (
               <div style={popover}>
-                <div style={cover} onClick={handleClose3} />
-                <CompactPicker color={border_left_color} onChange={borderLeftColorHandler} />
-                {/* <span>none</span> */}
+                <div style={cover} />
+                <CompactPicker
+                  color={border_left_color}
+                  onChange={borderLeftColorHandler}
+                />
               </div>
-            ) : null}
-            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_left_thickness} onChange={borderLeftThicknessHandler} />
+            )}
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem", width: 60 }}
+              value={border_left_thickness}
+              onChange={borderLeftThicknessHandler}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <span>우</span>
-            <Select size="small" value={border_right_type} style={{ width: 75, fontSize: "0.8rem" }} onChange={borderRightTypeHandler}>
-              <Option value="solid">solid</Option>
-              <Option value="dashed">dashed</Option>
-              <Option value="dotted">dotted</Option>
+            <Select
+              size="small"
+              value={border_right_type}
+              style={{ width: 75, fontSize: "0.8rem" }}
+              onChange={borderRightTypeHandler}
+            >
+              <Option value="none" style={{ fontSize: "0.8rem" }}>
+                none
+              </Option>
+              <Option value="solid" style={{ fontSize: "0.8rem" }}>
+                solid
+              </Option>
+              <Option value="dashed" style={{ fontSize: "0.8rem" }}>
+                dashed
+              </Option>
+              <Option value="dotted" style={{ fontSize: "0.8rem" }}>
+                dotted
+              </Option>
             </Select>
-            {/* <input type="color" name="border_right_thickness" value={border_right_color} onChange={borderRightColorHandler}></input> */}
-            <Button size="small" onClick={handleClick4} style={{ width: "50px", fontSize: "0.8rem", background: border_right_color }}>
+            <Button
+              size="small"
+              onClick={toggleBorderRightColorPicker}
+              style={{
+                width: "50px",
+                fontSize: "0.8rem",
+                background: border_right_color,
+              }}
+            >
               Color
             </Button>
-            {displayColorPicker4 ? (
+            {isOpendBorderRightColorPicker && (
               <div style={popover}>
-                <div style={cover} onClick={handleClose4} />
-                <CompactPicker color={border_right_color} onChange={borderRightColorHandler} />
-                {/* <span>none</span> */}
+                <div style={cover} />
+                <CompactPicker
+                  color={border_right_color}
+                  onChange={borderRightColorHandler}
+                />
               </div>
-            ) : null}
-            <InputNumber size="small" style={{ fontSize: "0.8rem", width: 60 }} value={border_right_thickness} onChange={borderRightThicknessHandler} />
+            )}
+            <InputNumber
+              size="small"
+              style={{ fontSize: "0.8rem", width: 60 }}
+              value={border_right_thickness}
+              onChange={borderRightThicknessHandler}
+            />
           </div>
         </li>
         <li style={{ textAlign: "right" }}>
-          <Button size="small" style={{ fontSize: "0.8rem" }} onClick={handleSubmit}>
+          <Button
+            size="small"
+            style={{ fontSize: "0.8rem" }}
+            onClick={handleSubmit}
+          >
             적용하기
           </Button>
         </li>

@@ -54,8 +54,8 @@ const LoginComponent = () => {
   }
 
   const onFinish = (values) => {
-    // alert("현재 회원가입이 불가능합니다.")
-    postuser(values.user_id, values.password);
+    alert("현재 회원가입이 불가능합니다.")
+    // postuser(values.user_id, values.password);
   };
 
   return (
